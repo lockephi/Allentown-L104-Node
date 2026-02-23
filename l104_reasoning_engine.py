@@ -218,6 +218,7 @@ class InferenceEngine:
         self.confidence_map: Dict[str, float] = {}  # Track inference confidence
         self.meta_rules: List[Rule] = []  # Meta-level rules about rules
         self.reasoning_depth: int = 0
+        self._backward_root_depth: int = 0
         self.emergence_factor: float = 1.0
 
     def add_fact(self, predicate: Predicate, confidence: float = 1.0):
@@ -309,14 +310,35 @@ class InferenceEngine:
         """
         self.inference_trace = []
         self.reasoning_depth = 0
-        return self._backward_chain_helper([goal], {}, depth, 1.0)
+        self._backward_root_depth = max(1, int(depth))
+        return self._backward_chain_helper([goal], {}, depth, 1.0, set())
 
     def _backward_chain_helper(self, goals: List[Predicate],
-                               bindings: Dict, depth: int, confidence: float = 1.0) -> List[Dict]:
+                               bindings: Dict,
+                               depth: int,
+                               confidence: float = 1.0,
+                               visited_states: Optional[Set[Tuple[str, ...]]] = None) -> List[Dict]:
         if depth <= 0:
             return []
 
-        self.reasoning_depth = max(self.reasoning_depth, INFERENCE_DEPTH_LIMIT - depth)
+        if visited_states is None:
+            visited_states = set()
+
+        state_key = (
+            *(str(g) for g in goals),
+            "|",
+            *(f"{str(k)}={str(v)}" for k, v in sorted(bindings.items(), key=lambda item: str(item[0]))),
+            f"depth={depth}",
+        )
+        if state_key in visited_states:
+            self.inference_trace.append(f"Cycle-Guard: skipped repeated goal state at depth={depth}")
+            return []
+
+        next_visited_states = set(visited_states)
+        next_visited_states.add(state_key)
+
+        traversed_depth = max(0, self._backward_root_depth - depth)
+        self.reasoning_depth = max(self.reasoning_depth, traversed_depth)
 
         if not goals:
             return [{'bindings': bindings, 'confidence': confidence}]
@@ -335,7 +357,13 @@ class InferenceEngine:
                 fact_confidence = self.confidence_map.get(str(fact), 1.0)
                 combined_confidence = confidence * fact_confidence * (1 - depth_factor * 0.1)
                 self.inference_trace.append(f"Matched[{combined_confidence:.3f}] {goal} with fact {fact}")
-                sub_solutions = self._backward_chain_helper(remaining, new_bindings, depth, combined_confidence)
+                sub_solutions = self._backward_chain_helper(
+                    remaining,
+                    new_bindings,
+                    depth,
+                    combined_confidence,
+                    next_visited_states,
+                )
                 solutions.extend(sub_solutions)
 
         # Try to match with rule consequents
@@ -347,7 +375,13 @@ class InferenceEngine:
                              for a in rule.antecedents] + remaining
                 rule_confidence = confidence * rule.confidence * (1 - depth_factor * 0.05)
                 self.inference_trace.append(f"Applying rule[{rule_confidence:.3f}]: {rule}")
-                sub_solutions = self._backward_chain_helper(new_goals, new_bindings, depth - 1, rule_confidence)
+                sub_solutions = self._backward_chain_helper(
+                    new_goals,
+                    new_bindings,
+                    depth - 1,
+                    rule_confidence,
+                    next_visited_states,
+                )
                 solutions.extend(sub_solutions)
 
         # Rank solutions by confidence
@@ -1020,7 +1054,9 @@ class L104ReasoningCoordinator:
         }
 
         # Forward chain to derive new facts
-        derived = self.reason_forward(max_iterations=max_depth * 10)
+        safe_depth = max(1, min(int(max_depth), 1000))
+        safe_iterations = max(1, min(safe_depth * 10, 5000))
+        derived = self.reason_forward(max_iterations=safe_iterations)
         results['conclusions'] = [str(f) for f in derived]
 
         # Compute overall confidence from derived facts

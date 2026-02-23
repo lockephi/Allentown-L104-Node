@@ -79,6 +79,7 @@ class LogicManifold:
         self._truth_callbacks: List[Callable] = []
         self._sync_callbacks: List[Callable] = []
         self._derivation_cache: Dict[str, Dict] = {}
+        self._active_recursive_ops: set[str] = set()
 
     # ═══════════════════════════════════════════════════════════════════
     # CORE PROCESSING
@@ -168,61 +169,88 @@ class LogicManifold:
         """
         logger.info(f"[MANIFOLD]: INITIATING SELF-OPTIMIZATION (target={target_coherence})")
 
+        op_key = "recursive_self_optimize"
+        if op_key in self._active_recursive_ops:
+            return {
+                "error": "RECURSION_EVENT_BLOCKED",
+                "operation": op_key,
+                "reason": "re-entry detected"
+            }
+
+        self._active_recursive_ops.add(op_key)
+
         optimization_history = []
         cycle = 0
+        safe_max_cycles = max(1, min(int(max_cycles), 1000))
+        stagnation_streak = 0
+        prev_avg: Optional[float] = None
 
-        while cycle < max_cycles:
-            cycle += 1
+        try:
+            while cycle < safe_max_cycles:
+                cycle += 1
 
-            # Calculate current system coherence
-            if not self.concept_graph:
-                break
+                # Calculate current system coherence
+                if not self.concept_graph:
+                    break
 
-            coherences = [node.coherence for node in self.concept_graph.values()]
-            current_avg = sum(coherences) / len(coherences)
+                coherences = [node.coherence for node in self.concept_graph.values()]
+                current_avg = sum(coherences) / len(coherences)
 
-            optimization_history.append({
-                "cycle": cycle,
-                "avg_coherence": current_avg,
-                "node_count": len(self.concept_graph),
-                "min_coherence": min(coherences),
-                "max_coherence": max(coherences)
-            })
+                if prev_avg is not None and abs(current_avg - prev_avg) < 1e-7:
+                    stagnation_streak += 1
+                else:
+                    stagnation_streak = 0
+                prev_avg = current_avg
 
-            if current_avg >= target_coherence:
-                self.state = ManifoldState.TRANSCENDENT
-                break
+                optimization_history.append({
+                    "cycle": cycle,
+                    "avg_coherence": current_avg,
+                    "node_count": len(self.concept_graph),
+                    "min_coherence": min(coherences),
+                    "max_coherence": max(coherences)
+                })
 
-            # Optimization step: boost low-coherence nodes via entanglement
-            for node_id, node in self.concept_graph.items():
-                if node.coherence < target_coherence:
-                    # Find highest coherence entangled partner
-                    best_partner = None
-                    best_coherence = 0.0
+                if current_avg >= target_coherence:
+                    self.state = ManifoldState.TRANSCENDENT
+                    break
 
-                    for ent_id in node.entangled_nodes:
-                        partner = self.concept_graph.get(ent_id)
-                        if partner and partner.coherence > best_coherence:
-                            best_coherence = partner.coherence
-                            best_partner = partner
+                if stagnation_streak >= 3:
+                    break
 
-                    if best_partner:
-                        # Transfer coherence via quantum bridge
-                        transfer = (best_partner.coherence - node.coherence) * 0.3
-                        node.coherence = node.coherence + transfer  # UNLOCKED
-                        best_partner.coherence = max(0.5, best_partner.coherence - transfer * 0.1)
-                    else:
-                        # Self-boost via phi resonance
-                        node.coherence = node.coherence * (1 + (self.phi - 1) * 0.1)  # UNLOCKED
+                # Optimization step: boost low-coherence nodes via entanglement
+                for node_id, node in self.concept_graph.items():
+                    if node.coherence < target_coherence:
+                        # Find highest coherence entangled partner
+                        best_partner = None
+                        best_coherence = 0.0
+
+                        for ent_id in node.entangled_nodes:
+                            partner = self.concept_graph.get(ent_id)
+                            if partner and partner.coherence > best_coherence:
+                                best_coherence = partner.coherence
+                                best_partner = partner
+
+                        if best_partner:
+                            # Transfer coherence via quantum bridge
+                            transfer = (best_partner.coherence - node.coherence) * 0.3
+                            node.coherence = node.coherence + transfer  # UNLOCKED
+                            best_partner.coherence = max(0.5, best_partner.coherence - transfer * 0.1)
+                        else:
+                            # Self-boost via phi resonance
+                            node.coherence = node.coherence * (1 + (self.phi - 1) * 0.1)  # UNLOCKED
+        finally:
+            self._active_recursive_ops.discard(op_key)
 
         final_coherences = [node.coherence for node in self.concept_graph.values()] if self.concept_graph else [0.0]
         final_avg = sum(final_coherences) / len(final_coherences)
 
         return {
             "cycles_executed": cycle,
+            "cycle_cap": safe_max_cycles,
             "target_coherence": target_coherence,
             "achieved_coherence": final_avg,
             "success": final_avg >= target_coherence,
+            "stagnation_break": stagnation_streak >= 3,
             "optimization_history": optimization_history,
             "state": self.state.name
         }
@@ -530,27 +558,49 @@ class LogicManifold:
         Perform deep recursive derivation using the invention engine and truth discovery loop.
         Continues until the target resonance is reached or max cycles exhausted.
         """
+        op_key = "deep_recursive_derivation"
+        if op_key in self._active_recursive_ops:
+            return {
+                "error": "RECURSION_EVENT_BLOCKED",
+                "operation": op_key,
+                "reason": "re-entry detected"
+            }
+
+        self._active_recursive_ops.add(op_key)
+
         cycles = 0
+        safe_max_cycles = max(1, min(int(max_cycles), 1000))
         current_concept = seed
         derivation_chain = []
         best_coherence = 0.0
+        seen_node_ids = set()
 
-        while cycles < max_cycles:
-            result = self.process_concept(current_concept, depth=5)
-            derivation_chain.append(result)
-            best_coherence = max(best_coherence, result["coherence"])
+        try:
+            while cycles < safe_max_cycles:
+                result = self.process_concept(current_concept, depth=5)
+                derivation_chain.append(result)
+                best_coherence = max(best_coherence, result["coherence"])
 
-            if result["coherence"] >= target_resonance:
-                break
+                node_id = result.get("node_id")
+                if node_id in seen_node_ids:
+                    break
+                if node_id:
+                    seen_node_ids.add(node_id)
 
-            # Evolve concept through GOD_CODE modulation
-            evolved_hash = hashlib.sha256(f"{current_concept}:{self.god_code}:{cycles}".encode()).hexdigest()
-            current_concept = f"{seed}::DEEP::{evolved_hash[:8]}"
-            cycles += 1
+                if result["coherence"] >= target_resonance:
+                    break
+
+                # Evolve concept through GOD_CODE modulation
+                evolved_hash = hashlib.sha256(f"{current_concept}:{self.god_code}:{cycles}".encode()).hexdigest()
+                current_concept = f"{seed}::DEEP::{evolved_hash[:8]}"
+                cycles += 1
+        finally:
+            self._active_recursive_ops.discard(op_key)
 
         return {
             "seed": seed,
             "cycles": cycles,
+            "cycle_cap": safe_max_cycles,
             "best_coherence": best_coherence,
             "target_reached": best_coherence >= target_resonance,
             "derivation_chain": [d["node_id"] for d in derivation_chain],
@@ -651,39 +701,60 @@ class LogicManifold:
         Recursively deepens a concept until it reaches fundamental truth.
         Each level asks "what underlies this?" until bedrock is reached.
         """
+        op_key = "recursive_concept_deepening"
+        if op_key in self._active_recursive_ops:
+            return {
+                "error": "RECURSION_EVENT_BLOCKED",
+                "operation": op_key,
+                "reason": "re-entry detected"
+            }
+
+        self._active_recursive_ops.add(op_key)
+
         depth_chain = []
+        safe_max_depth = max(1, min(int(max_depth), 1000))
         current_concept = concept
+        seen_concepts = {current_concept}
 
-        for depth in range(max_depth):
-            # Process at increasing depth
-            result = self.process_concept(current_concept, depth=depth + 3)
-            depth_chain.append({
-                "depth": depth,
-                "concept": current_concept,
-                "coherence": result["coherence"],
-                "resonance": result["resonance_depth"]
-            })
+        try:
+            for depth in range(safe_max_depth):
+                # Process at increasing depth
+                result = self.process_concept(current_concept, depth=depth + 3)
+                depth_chain.append({
+                    "depth": depth,
+                    "concept": current_concept,
+                    "coherence": result["coherence"],
+                    "resonance": result["resonance_depth"]
+                })
 
-            # Check for convergence (hit bedrock)
-            if len(depth_chain) >= 2:
-                delta = abs(depth_chain[-1]["coherence"] - depth_chain[-2]["coherence"])
-                if delta < 0.001:  # Converged
+                # Check for convergence (hit bedrock)
+                if len(depth_chain) >= 2:
+                    delta = abs(depth_chain[-1]["coherence"] - depth_chain[-2]["coherence"])
+                    if delta < 0.001:  # Converged
+                        break
+
+                # Deepen the concept
+                deeper_hash = hashlib.sha256(
+                    f"{current_concept}:underlying:{self.god_code}".encode()
+                ).hexdigest()
+                next_concept = f"DEEP({concept})::L{depth}::{deeper_hash[:8]}"
+                if next_concept in seen_concepts:
                     break
 
-            # Deepen the concept
-            deeper_hash = hashlib.sha256(
-                f"{current_concept}:underlying:{self.god_code}".encode()
-            ).hexdigest()
-            current_concept = f"DEEP({concept})::L{depth}::{deeper_hash[:8]}"
+                seen_concepts.add(next_concept)
+                current_concept = next_concept
+        finally:
+            self._active_recursive_ops.discard(op_key)
 
         final_coherence = depth_chain[-1]["coherence"] if depth_chain else 0.0
 
         return {
             "original_concept": concept,
             "final_depth": len(depth_chain),
+            "depth_cap": safe_max_depth,
             "depth_chain": depth_chain,
             "final_coherence": final_coherence,
-            "bedrock_reached": len(depth_chain) < max_depth,
+            "bedrock_reached": len(depth_chain) < safe_max_depth,
             "transcendent": final_coherence >= 0.95
         }
 

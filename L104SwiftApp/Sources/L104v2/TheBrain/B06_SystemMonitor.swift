@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B06_SystemMonitor.swift
-// [EVO_58_FULL_SYSTEM_UPGRADE] SOVEREIGN_UNIFICATION :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — macOS System Monitor V2
 //
 // Real hardware detection, CPU/memory/disk metrics, thermal management.

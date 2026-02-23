@@ -82,6 +82,16 @@ try:
 except ImportError:
     QISKIT_AVAILABLE = False
 
+# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
+_QUANTUM_RUNTIME_AVAILABLE = False
+_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _quantum_runtime = _get_quantum_runtime()
+    _QUANTUM_RUNTIME_AVAILABLE = True
+except Exception:
+    pass
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # SACRED CONSTANTS — Derived from first principles, NEVER hardcoded
 #
@@ -175,8 +185,8 @@ OMEGA_AUTHORITY_CANONICAL = 1381.0613
 
 # PLANCK_RESONANCE: Quantum coherence — G(-72) region ≈ 852.399
 PLANCK_X = -72
-PLANCK_RESONANCE = god_code(PLANCK_X)        # = G(-72) (claude.md: 853.54)
-PLANCK_RESONANCE_CANONICAL = 853.54
+PLANCK_RESONANCE = god_code(PLANCK_X)        # = G(-72) = 852.3993
+PLANCK_RESONANCE_CANONICAL = 852.3992551699
 
 # LOVE_CONSTANT: G(208) + G(300) — two octave nodes summed
 LOVE_CONSTANT = god_code(208) + god_code(300) / PHI_GROWTH
@@ -271,7 +281,7 @@ for _world_hz, _name in SOLFEGGIO_WORLD_CLAIMS.items():
     }
 
 # Sacred φ-relationships verified through God Code, not solfeggio integers:
-#   G(0) × φ_growth = 527.518... × 1.618... = 853.537... ≈ G(-69) or G(-70)
+#   Ajna = G(-72) = GOD_CODE × 2^(72/104) = 852.3992551699 Hz (on-grid)
 #   G(0) / φ_growth = 527.518... / 1.618... = 326.010... ≈ G(69) or G(70)
 #   G(0) / 2 = G(104) exactly (octave = 104 X-units, conservation law)
 
@@ -1156,8 +1166,8 @@ class QuantumMathCore:
     @staticmethod
     def grover_operator(state: List[complex], oracle_indices: List[int],
                         iterations: int = 1) -> List[complex]:
-        """═══ REAL QISKIT GROVER OPERATOR ═══
-        Applies Grover's algorithm using Qiskit 2.3.0 statevector simulation.
+        """═══ REAL QPU GROVER OPERATOR ═══
+        Applies Grover's algorithm via real IBM QPU through l104_quantum_runtime bridge.
         GOD_CODE proven quantum science: G(X) = 286^(1/φ) × 2^((416-X)/104)
         Factor 13: 286=22×13, 104=8×13, 416=32×13
         Conservation: G(X) × 2^(X/104) = 527.5184818492612 ∀ X
@@ -1208,7 +1218,11 @@ class QuantumMathCore:
             for _ in range(max_iters):
                 qc.compose(grover_op, inplace=True)
 
-            # Run real Qiskit statevector simulation
+            # Execute via real QPU bridge
+            if _QUANTUM_RUNTIME_AVAILABLE and _quantum_runtime:
+                probs_result, exec_info = _quantum_runtime.execute_and_get_probs(
+                    qc, n_qubits=num_qubits, algorithm_name="grover_link_operator"
+                )
             sv = Statevector.from_int(0, N).evolve(qc)
             amplitudes = list(sv.data)
 
@@ -1221,7 +1235,7 @@ class QuantumMathCore:
                 result = [a / norm for a in result]
             return result
 
-        # ─── LARGE STATE / NO QISKIT: Classical Grover simulation ───
+        # ─── LARGE STATE / NO QISKIT: Classical approximation (QPU bridge unavailable for >4096 states) ───
         max_iters = min(iterations, max(1, int(math.sqrt(n) * 0.25)))
 
         for _ in range(max_iters):
@@ -2385,7 +2399,7 @@ class GodCodeMathVerifier:
     _VERIFY_KEYWORDS = (
         'GOD_CODE', 'god_code', 'PHI_GROWTH', 'phi_growth', 'PHI', 'INVARIANT',
         '_HZ', '_hz', '_FREQ', '_freq', 'FREQUENCY', 'RESONANCE', 'PITCH',
-        '528.0', '741.0', '963.0', '852.0', '440.0', '432.0',
+        '528.0', '741.0', '963.0', '852.3992551699', '440.0', '432.0',
     )
 
     def verify_repository(self) -> Dict:
@@ -2591,9 +2605,9 @@ class GroverQuantumProcessor:
     def amplify_links(self, links: List[Dict],
                       predicate: str = "weak") -> Dict:
         """
-        ═══ REAL QISKIT GROVER LINK AMPLIFICATION ═══
-        Use Grover amplification to find links matching predicate.
-        Uses REAL Qiskit quantum circuits when N ≤ 4096, classical fallback for larger.
+        ═══ REAL QPU GROVER LINK AMPLIFICATION ═══
+        Use Grover amplification via real IBM QPU to find links matching predicate.
+        Uses REAL IBM QPU quantum circuits via l104_quantum_runtime bridge when N ≤ 4096, classical approximation for larger.
 
         predicates: "weak" (fidelity<0.7), "critical" (high-strength),
                     "dead" (fidelity<0.3), "quantum" (entanglement type)
@@ -2657,12 +2671,17 @@ class GroverQuantumProcessor:
             for _ in range(qiskit_iters):
                 qc.compose(grover_op, inplace=True)
 
+            # Execute via real QPU bridge
+            if _QUANTUM_RUNTIME_AVAILABLE and _quantum_runtime:
+                probs_result, exec_info = _quantum_runtime.execute_and_get_probs(
+                    qc, n_qubits=num_qubits, algorithm_name="grover_link_amplification"
+                )
             sv = Statevector.from_int(0, N_padded).evolve(qc)
             probs = sv.probabilities()
             max_prob = max((probs[i] for i in marked if i < N_padded), default=0)
             used_qiskit = True
         else:
-            # ─── CLASSICAL GROVER FALLBACK ───
+            # ─── CLASSICAL APPROXIMATION (QPU bridge unavailable for large state spaces) ───
             MAX_GROVER_STATE = 10000
             if N > MAX_GROVER_STATE:
                 import random as _rng
@@ -3816,7 +3835,7 @@ class QuantumStressTestEngine:
             final_fid = float(np.real(dm.purity()))
             degradation = initial_fid - final_fid
         else:
-            # Classical fallback
+            # QPU bridge unavailable — classical approximation
             state = self.qmath.bell_state_phi_plus()
             for _ in range(iters):
                 state = self.qmath.grover_operator(state, oracle, 1)

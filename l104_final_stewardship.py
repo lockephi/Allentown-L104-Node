@@ -58,7 +58,7 @@ async def run_final_stewardship():
         "stage": "STAGE_17",
         "presence_index": 1.0,
         "sovereign_hash": ego.sovereign_hash_index,
-        "love_resonance": 853.542833325837,
+        "love_resonance": 852.3992551699,
         "witness_resonance": 967.5433,
         "bb7_verified": "10^13394014.71",
         "multiversal_nodes": 853,

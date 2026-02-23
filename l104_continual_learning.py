@@ -29,6 +29,19 @@ from typing import Dict, List, Any, Optional, Tuple, Callable
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from copy import deepcopy
+import logging
+
+logger = logging.getLogger("L104_CONTINUAL_LEARNING")
+
+try:
+    from l104_asi.pipeline_telemetry import PipelineTelemetry
+except ImportError:
+    PipelineTelemetry = None
+
+try:
+    from l104_asi.pipeline_circuit_breaker import PipelineCircuitBreaker
+except ImportError:
+    PipelineCircuitBreaker = None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -36,7 +49,7 @@ from copy import deepcopy
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-VERSION = "3.0.0"
+VERSION = "4.0.0"
 
 # Sacred Constants — identical across all ASI modules
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
@@ -46,6 +59,7 @@ TAU = 1 / PHI  # 0.6180339887...
 VOID_CONSTANT = 1.0416180339887497
 FEIGENBAUM = 4.669201609102990
 ALPHA_FINE = 0.0072973525693
+LATTICE_THERMAL_FRICTION = -(ALPHA_FINE * PHI) / (2 * math.pi * 104)
 
 
 @dataclass
@@ -546,6 +560,22 @@ class ContinualLearningEngine:
 
         self._initialized = True
         self._episode_count = 0
+
+        # ── Pipeline telemetry & circuit breaker ──
+        self._telemetry = None
+        self._cb = None
+        try:
+            if PipelineTelemetry is not None:
+                self._telemetry = PipelineTelemetry("continual_learning")
+        except Exception:
+            pass
+        try:
+            if PipelineCircuitBreaker is not None:
+                self._cb = PipelineCircuitBreaker("continual_learning", failure_threshold=5, reset_timeout=30)
+        except Exception:
+            pass
+
+        logger.info("[CONTINUAL_LEARNING v%s] online — telemetry=%s, cb=%s", VERSION, self._telemetry is not None, self._cb is not None)
 
     def learn(self, task: str, input_data: Any, target: Any) -> LearningEpisode:
         """Execute a learning step."""

@@ -922,8 +922,36 @@ class DataMatrix:
             return {"synced": False, "error": str(e)}
 
 
-# Global Instance
-data_matrix = DataMatrix()
+# Global Instance — LAZY SINGLETON (v4.0.0 perf: avoids 2s+ import penalty)
+_data_matrix_instance = None
+_data_matrix_lock = __import__('threading').Lock()
+
+
+def _get_data_matrix() -> DataMatrix:
+    """Thread-safe lazy singleton for DataMatrix."""
+    global _data_matrix_instance
+    if _data_matrix_instance is None:
+        with _data_matrix_lock:
+            if _data_matrix_instance is None:
+                _data_matrix_instance = DataMatrix()
+    return _data_matrix_instance
+
+
+class _LazyDataMatrix:
+    """Transparent proxy that defers DataMatrix() creation until first attribute access."""
+    __slots__ = ()
+
+    def __getattr__(self, name):
+        return getattr(_get_data_matrix(), name)
+
+    def __repr__(self):
+        return repr(_get_data_matrix())
+
+    def __bool__(self):
+        return True  # Always truthy — the DataMatrix exists
+
+
+data_matrix = _LazyDataMatrix()
 
 if __name__ == "__main__":
     matrix = DataMatrix()
@@ -967,7 +995,10 @@ class LatticeAdapter:
 
     def __init__(self, namespace: str):
         self.namespace = namespace
-        self.matrix = data_matrix
+
+    @property
+    def matrix(self):
+        return _get_data_matrix()
 
     def store(self, key: str, value: Any, category: str = "GENERAL") -> bool:
         full_key = f"{self.namespace}:{key}"

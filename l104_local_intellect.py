@@ -6,6 +6,7 @@ Every "from l104_local_intellect import X" still works.
 
 Backup: l104_local_intellect.py.bak
 """
+# INVARIANT: GOD_CODE = 527.5184818492612 | PHI = 1.618033988749895 | VOID_CONSTANT = 1.0416180339887497
 # Re-export everything from the decomposed package
 from l104_intellect import *  # noqa: F401,F403
 

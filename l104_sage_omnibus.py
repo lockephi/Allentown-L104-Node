@@ -13,10 +13,13 @@ import json
 import random
 import hashlib
 import math
+import os
 from typing import Dict, List, Any, Optional, Set
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from collections import defaultdict
+from pathlib import Path
+from datetime import datetime, timezone
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -137,6 +140,91 @@ class SageDataIngester:
         self.total_ingested = 0
         self.total_resonance = 0.0
         self.sources_accessed: Set[DataSource] = set()
+        self.quarantine_dir = Path.home() / ".l104_ingestion_quarantine" / "sage_omnibus"
+        self.quarantine_dir.mkdir(parents=True, exist_ok=True)
+        self.quarantine_policy = {
+            "retention_days": int(os.getenv("L104_INGEST_QUARANTINE_RETENTION_DAYS", "30")),
+            "size_cap_gb": float(os.getenv("L104_INGEST_QUARANTINE_SIZE_CAP_GB", "2.0")),
+        }
+        self.quarantine_stats = {
+            "records_quarantined": 0,
+            "last_quarantine_at": None,
+        }
+
+    def _quarantine_record(self, stream: str, source: str, reason: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        payload = {
+            "status": "QUARANTINED_STRIPPED",
+            "stream": stream,
+            "source": source,
+            "reason": reason,
+            "metadata": metadata or {},
+            "quarantined_at": datetime.now(timezone.utc).isoformat(),
+        }
+        serial = f"{stream}|{source}|{reason}|{payload['quarantined_at']}"
+        digest = hashlib.sha256(serial.encode("utf-8")).hexdigest()[:16]
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        target = self.quarantine_dir / f"{stamp}_{digest}.json"
+        with open(target, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2, ensure_ascii=False)
+        self.quarantine_stats["records_quarantined"] += 1
+        self.quarantine_stats["last_quarantine_at"] = payload["quarantined_at"]
+
+    def run_quarantine_lifecycle(self, dry_run: bool = False) -> Dict[str, Any]:
+        now = datetime.now(timezone.utc)
+        retention_days = int(self.quarantine_policy.get("retention_days", 30))
+        size_cap_gb = float(self.quarantine_policy.get("size_cap_gb", 2.0))
+        size_cap_bytes = int(size_cap_gb * 1024 * 1024 * 1024)
+
+        files = [f for f in self.quarantine_dir.glob("*.json") if f.is_file()]
+        rows: List[Dict[str, Any]] = []
+        for file_path in files:
+            stat = file_path.stat()
+            age_days = (now - datetime.fromtimestamp(stat.st_mtime, timezone.utc)).total_seconds() / 86400.0
+            rows.append({"path": file_path, "size": stat.st_size, "age_days": age_days, "reasons": []})
+
+        for row in rows:
+            if row["age_days"] >= retention_days:
+                row["reasons"].append("ttl_expired")
+
+        total_size = sum(r["size"] for r in rows)
+        if total_size > size_cap_bytes:
+            overflow = total_size - size_cap_bytes
+            for row in sorted(rows, key=lambda r: r["age_days"], reverse=True):
+                if overflow <= 0:
+                    break
+                if "size_cap_trim" not in row["reasons"]:
+                    row["reasons"].append("size_cap_trim")
+                    overflow -= row["size"]
+
+        candidates = [r for r in rows if r["reasons"]]
+        deleted = []
+        if not dry_run:
+            for row in candidates:
+                try:
+                    os.remove(row["path"])
+                    deleted.append(str(row["path"]))
+                except OSError:
+                    pass
+
+        return {
+            "status": "QUARANTINE_LIFECYCLE_COMPLETE",
+            "mode": "dry_run" if dry_run else "execute",
+            "files_scanned": len(rows),
+            "files_marked": len(candidates),
+            "files_deleted": len(deleted),
+            "retention_days": retention_days,
+            "size_cap_gb": size_cap_gb,
+        }
+
+    def get_quarantine_status(self) -> Dict[str, Any]:
+        files = [f for f in self.quarantine_dir.glob("*.json") if f.is_file()]
+        return {
+            "directory": str(self.quarantine_dir),
+            "files": len(files),
+            "size_bytes": sum(f.stat().st_size for f in files),
+            "policy": self.quarantine_policy,
+            "stats": self.quarantine_stats,
+        }
 
     async def ingest_from_manifold(self) -> List[LearnedPattern]:
         """Ingest patterns from the Knowledge Manifold."""
@@ -146,6 +234,14 @@ class SageDataIngester:
         patterns = []
 
         for key, data in manifold.memory.get("patterns", {}).items():
+            if not isinstance(data, dict):
+                self._quarantine_record(
+                    stream="manifold",
+                    source=str(key),
+                    reason="non_dict_pattern",
+                    metadata={"type": type(data).__name__},
+                )
+                continue
             pattern = LearnedPattern(
                 name=key,
                 source=DataSource.MANIFOLD,
@@ -168,6 +264,14 @@ class SageDataIngester:
 
             patterns = []
             for name, arch_pattern in kb.architectural_patterns.items():
+                principles = getattr(arch_pattern, "key_principles", None)
+                if not principles:
+                    self._quarantine_record(
+                        stream="codebase",
+                        source=str(name),
+                        reason="missing_key_principles",
+                    )
+                    continue
                 pattern = LearnedPattern(
                     name=name,
                     source=DataSource.CODEBASE,
@@ -175,7 +279,7 @@ class SageDataIngester:
                         "description": arch_pattern.description,
                         "principles": arch_pattern.key_principles
                     },
-                    resonance=GOD_CODE / len(arch_pattern.key_principles),
+                    resonance=GOD_CODE / len(principles),
                     entropy=len(arch_pattern.file_sources) / 10
                 )
                 patterns.append(pattern)
@@ -185,6 +289,12 @@ class SageDataIngester:
             self.total_ingested += len(patterns)
             return patterns
         except Exception as e:
+            self._quarantine_record(
+                stream="codebase",
+                source="CodebaseKnowledge",
+                reason="ingest_error",
+                metadata={"error": str(e)},
+            )
             print(f"    [WARN] Codebase ingest: {e}")
             return []
 
@@ -229,6 +339,15 @@ class SageDataIngester:
         for i in range(104):  # QUANTUM AMPLIFIED (was 8)
             phase = (i / 8) * 2 * math.pi
             amplitude = abs(math.cos(phase * PHI))
+
+            if not (0.0 <= amplitude <= 1.0):
+                self._quarantine_record(
+                    stream="quantum",
+                    source=f"QUANTUM_STATE_{i}",
+                    reason="amplitude_out_of_range",
+                    metadata={"amplitude": amplitude},
+                )
+                continue
 
             pattern = LearnedPattern(
                 name=f"QUANTUM_STATE_{i}",
@@ -294,6 +413,10 @@ class SageDataIngester:
         # Calculate total resonance
         for pattern in self.patterns.values():
             self.total_resonance += pattern.resonance
+
+        lifecycle = self.run_quarantine_lifecycle(dry_run=False)
+        results["quarantine"] = self.get_quarantine_status()
+        results["quarantine_lifecycle"] = lifecycle
 
         print(f"    ✓ Total patterns ingested: {self.total_ingested}")
         print(f"    ✓ Total resonance: {self.total_resonance:.4f}")
@@ -456,7 +579,7 @@ class SageOmnibus:
         self.teacher = SageTeacher(self.ingester, self.connector)
 
         self.is_satiated = False
-        self.satiation_threshold = GOD_CODE * PHI  # ~853.54
+        self.satiation_threshold = GOD_CODE * 2 ** (72.0 / 104)  # G(-72) = 852.3993
         self.cycles_completed = 0
         self.total_operations = 0
 
@@ -645,6 +768,7 @@ class SageOmnibus:
         summary = {
             "patterns_learned": self.ingester.total_ingested,
             "total_resonance": self.ingester.total_resonance,
+            "quarantine": self.ingester.get_quarantine_status(),
             "providers_connected": len(self.connector.connections),
             "egos_created": self.factory.total_created,
             "teachings_delivered": self.teacher.teachings_delivered,

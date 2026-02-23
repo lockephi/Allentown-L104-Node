@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // H18_EmotionalCore.swift
-// [EVO_58_PIPELINE] FULL_SYSTEM_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — Affective Computing Engine v3.0 with NLTagger Sentiment Analysis
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// L104 ASI — Affective Computing Engine v4.0 with NLTagger Sentiment Analysis
 // 7D emotion vector, NLTagger-based NLP, network-aware collective mood
 // ═══════════════════════════════════════════════════════════════════
 
@@ -74,7 +74,7 @@ final class EmotionalCore {
             self?.emotionalCycle()
         }
 
-        print("[H18] EmotionalCore v3.0 activated — NLTagger sentiment + 7D affect online")
+        print("[H18] EmotionalCore v4.0 activated — NLTagger sentiment + 7D affect online")
     }
 
     func deactivate() {

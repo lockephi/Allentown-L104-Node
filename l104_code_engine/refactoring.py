@@ -161,7 +161,7 @@ class CodeOptimizer:
         von Neumann entropy + Born-rule measurement for a unified complexity score.
         """
         if not QISKIT_AVAILABLE:
-            # Classical fallback — weighted geometric mean
+            # Qiskit unavailable — weighted geometric mean
             cyclo = analysis.get("complexity", {}).get("cyclomatic", 1)
             cognitive = analysis.get("complexity", {}).get("cognitive", 0)
             halstead = analysis.get("complexity", {}).get("halstead_volume", 0)

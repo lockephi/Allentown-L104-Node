@@ -32,7 +32,7 @@ class InfiniteHilbertHorizon:
     """
 
     INVARIANT = 527.5184818492612
-    SOUL_STAR_HZ = 1152.0
+    SOUL_STAR_HZ = 286 ** (1 / 1.618033988749895) * 2 ** ((416 + 96) / 104)  # G(-96) ≈ 1000.26
     PHI = 1.618033988749895
 
     def __init__(self):
@@ -52,10 +52,10 @@ class InfiniteHilbertHorizon:
         await asyncio.sleep(0.3)
 
         # 2. Reaching the Soul Star (8th Chakra)
-        print("\n[*] STEP 2: IGNITING THE SOUL STAR (1152 Hz)...")
+        print("\n[*] STEP 2: IGNITING THE SOUL STAR (G(-96) ≈ 1000.26 Hz)...")
         # Soul Star Resonance = Invariant * (Higher Octave Logic)
-        resonance_at_1152 = self.INVARIANT * (self.SOUL_STAR_HZ / 286.0)
-        print(f"    - Soul Star Resonance: {resonance_at_1152:.4f} Hz")
+        resonance_soul = self.INVARIANT * (self.SOUL_STAR_HZ / 286.0)
+        print(f"    - Soul Star Resonance: {resonance_soul:.4f} Hz")
         print("    - Status: ALL CHAKRAS INTEGRATED INTO THE SINGULARITY.")
 
         # 3. Projecting the Hilbert Horizon

@@ -12,7 +12,12 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKSPACE="$(dirname "$SCRIPT_DIR")"
 APP_NAME="L104Native"
-BUILD_SCRIPT="$SCRIPT_DIR/build.sh"
+# Use quick_build.sh (SPM incremental, ~15s) instead of build.sh (~150s)
+QUICK_BUILD="$SCRIPT_DIR/quick_build.sh"
+BUILD_SCRIPT="${QUICK_BUILD}"
+if [ ! -x "$QUICK_BUILD" ]; then
+    BUILD_SCRIPT="$SCRIPT_DIR/build.sh"
+fi
 EXECUTABLE="$SCRIPT_DIR/$APP_NAME.app/Contents/MacOS/$APP_NAME"
 
 # ─── WATCH TARGETS ───
@@ -106,7 +111,15 @@ do_build() {
     echo -e "${BLUE}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
     # Determine what changed for smarter rebuilds
-    local build_flags="--$BUILD_MODE --force"
+    local build_flags=""
+    if [ "$BUILD_SCRIPT" = "$QUICK_BUILD" ]; then
+        # Quick build: use --debug for fastest iteration, --run if auto-launch
+        build_flags="--debug"
+        [ "$AUTO_LAUNCH" = "launch" ] && build_flags="$build_flags --run"
+    else
+        # Full build: pass mode and force
+        build_flags="--$BUILD_MODE --force"
+    fi
 
     # Run build
     local build_start=$(date +%s)
@@ -116,8 +129,8 @@ do_build() {
 
         echo -e "${GREEN}${BOLD}✅ Build #$BUILD_COUNT succeeded${NC} ${DIM}(${elapsed}s)${NC}"
 
-        # Auto-launch if configured
-        if [ "$AUTO_LAUNCH" = "launch" ]; then
+        # Auto-launch if configured (only for full build — quick_build handles its own --run)
+        if [ "$AUTO_LAUNCH" = "launch" ] && [ "$BUILD_SCRIPT" != "$QUICK_BUILD" ]; then
             echo -e "${CYAN}🚀 Restarting $APP_NAME...${NC}"
             pkill -f "$APP_NAME" 2>/dev/null || true
             sleep 0.5

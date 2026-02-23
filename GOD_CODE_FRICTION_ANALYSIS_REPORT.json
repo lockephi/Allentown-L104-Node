@@ -1,0 +1,185 @@
+{
+  "analysis": "L104 God Code Computational Friction Analysis",
+  "version": "1.0.0",
+  "timestamp": "2026-02-21T11:19:54.051860+00:00",
+  "elapsed_seconds": 6.568764925003052,
+  "god_code_original": 527.5184818492611,
+  "god_code_v3_original": 45.41141298077539,
+  "phi": 1.618033988749895,
+  "omega": 6539.34712682,
+  "dual_layer_analysis": {
+    "dual_layer_engine": {
+      "available": true,
+      "total_domains": 10,
+      "total_constants": 65,
+      "mean_error_pct": 0.0020836,
+      "median_error_pct": 0.0018752,
+      "verification_verdict": "VERIFIED",
+      "verified_count": 21,
+      "phi_resonant_count": 4,
+      "cross_validation_verdict": "CROSS-VALIDATED"
+    },
+    "omega_chain": {
+      "omega_computed": 6539.347126816804,
+      "omega_canonical": 6539.34712682,
+      "delta": 3.19596438203007e-09,
+      "relative_error": 4.887283577472704e-13,
+      "guardian_zeta": 1.5710438581497739,
+      "alchemist_cos": 0.08742572471696197,
+      "architect_curvature": 18.399379155119814
+    },
+    "quantum_exponent_analysis": {
+      "num_qubits": 8,
+      "total_exponents": 66,
+      "exponent_range": [
+        -791744,
+        627569
+      ],
+      "exponent_coherence": 0.00022471005621735467,
+      "exponent_entanglement_entropy": 0.5062379193097525,
+      "shannon_entropy": 3.1331652499352476
+    },
+    "friction_detection": {
+      "mean_phase_deviation": 1.5549001298247471,
+      "std_phase_deviation": 0.9971442670973284,
+      "estimated_friction_coefficient": 0.048788592665159974,
+      "god_code_phase": 6.014101353355436
+    }
+  },
+  "friction_candidates_count": 13,
+  "overall_winner": "dynamic",
+  "scalar_search": {
+    "total_tested": 27,
+    "best_friction": 0.0,
+    "best_name": "BASELINE (no friction)",
+    "best_formula": "0",
+    "best_mean_error": 0.002083597615757676,
+    "best_improvement": 0.0,
+    "best_god_code": 527.5184818492611,
+    "top_5": [
+      {
+        "rank": 1,
+        "name": "BASELINE (no friction)",
+        "friction": 0.0,
+        "mean_error": 0.002083597615757676,
+        "improvement": 0.0,
+        "god_code": 527.5184818492611,
+        "improved_count": 0
+      },
+      {
+        "rank": 2,
+        "name": "Second-Order QED Friction (\u03b1\u00b2\u03c6/(e\u03c0)) [NEGATIVE]",
+        "friction": -1.008959990022448e-05,
+        "mean_error": 0.0020969700630506668,
+        "improvement": -1.3372447292990617e-05,
+        "god_code": 527.5131593988392,
+        "improved_count": 31
+      },
+      {
+        "rank": 3,
+        "name": "Second-Order QED Friction (\u03b1\u00b2\u03c6/(e\u03c0))",
+        "friction": 1.008959990022448e-05,
+        "mean_error": 0.002473402273245117,
+        "improvement": -0.0003898046574874409,
+        "god_code": 527.523804299683,
+        "improved_count": 20
+      },
+      {
+        "rank": 4,
+        "name": "Exponential Decay Friction (e^(-\u03c0/\u03c6)/GC) [NEGATIVE]",
+        "friction": -0.0002719764870312251,
+        "mean_error": 0.0268404184683014,
+        "improvement": -0.024756820852543722,
+        "god_code": 527.3750092257237,
+        "improved_count": 0
+      },
+      {
+        "rank": 5,
+        "name": "Exponential Decay Friction (e^(-\u03c0/\u03c6)/GC)",
+        "friction": 0.0002719764870312251,
+        "mean_error": 0.027555073307240607,
+        "improvement": -0.02547147569148293,
+        "god_code": 527.6619544727985,
+        "improved_count": 0
+      }
+    ]
+  },
+  "dynamic_search": {
+    "total_tested": 20,
+    "best_name": "Lattice Thermal Correction (X + \u03b1\u03c6/(2\u03c0\u00d7104)) [NEGATIVE]",
+    "best_type": "base_correction",
+    "best_epsilon": -1.806923483340632e-05,
+    "best_formula": "X \u2192 X + \u03b1\u03c6/(2\u03c0\u00d7104)",
+    "best_mean_error": 0.002082696449339881,
+    "best_improvement": 9.011664177951094e-07,
+    "best_god_code": 45.41141120759507,
+    "best_improved_count": 40,
+    "top_5": [
+      {
+        "rank": 1,
+        "name": "Lattice Thermal Correction (X + \u03b1\u03c6/(2\u03c0\u00d7104)) [NEGATIVE]",
+        "type": "base_correction",
+        "epsilon": -1.806923483340632e-05,
+        "mean_error": 0.002082696449339881,
+        "improvement": 9.011664177951094e-07,
+        "god_code": 45.41141120759507,
+        "improved_count": 40
+      },
+      {
+        "rank": 2,
+        "name": "Lattice Thermal Correction (X + \u03b1\u03c6/(2\u03c0\u00d7104))",
+        "type": "base_correction",
+        "epsilon": 1.806923483340632e-05,
+        "mean_error": 0.002084618926818337,
+        "improvement": -1.0213110606606575e-06,
+        "god_code": 45.411414753955654,
+        "improved_count": 24
+      },
+      {
+        "rank": 3,
+        "name": "Dial Coefficient \u03b1/\u03c6 Shift (p \u2192 p + \u03b1/\u03c6)",
+        "type": "dial_correction",
+        "epsilon": 0.004510011915708761,
+        "mean_error": 0.016922589821963527,
+        "improvement": -0.01483899220620585,
+        "god_code": 45.41141298077539,
+        "improved_count": 33
+      },
+      {
+        "rank": 4,
+        "name": "Dial Coefficient \u03b1/\u03c6 Shift (p \u2192 p + \u03b1/\u03c6) [NEGATIVE]",
+        "type": "dial_correction",
+        "epsilon": -0.004510011915708761,
+        "mean_error": 0.01735424356289001,
+        "improvement": -0.015270645947132334,
+        "god_code": 45.41141298077539,
+        "improved_count": 19
+      },
+      {
+        "rank": 5,
+        "name": "Golden-Square Octave Shift (K \u2192 K + \u03c6\u00b2) [NEGATIVE]",
+        "type": "octave_shift",
+        "epsilon": -2.618033988749895,
+        "mean_error": 0.02728466653527912,
+        "improvement": -0.02520106891952144,
+        "god_code": 45.39886040559826,
+        "improved_count": 0
+      }
+    ]
+  },
+  "quantum_analysis": {
+    "num_qubits": 8,
+    "coherence_with_friction": 0.003906249999999996,
+    "coherence_without_friction": 0.003906249999999996,
+    "entanglement_with": 0.1301031499269836,
+    "state_fidelity": 0.9999999742208093,
+    "qpe_error": 0.4999819307651666
+  },
+  "physics_validation": {
+    "verdict": "ALL PHYSICS ALIGNED",
+    "best_error": 0.002082696449339881,
+    "best_improved": 40,
+    "best_total": 65,
+    "best_god_code": 45.41141120759507
+  }
+}

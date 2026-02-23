@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
-// B10_QuantumNexus.swift — L104 Neural Architecture v2
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// B10_QuantumNexus.swift — L104 Neural Architecture v3 (EVO_62)
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // Extracted from L104Native.swift
 // ═══════════════════════════════════════════════════════════════════
 
@@ -61,6 +61,11 @@ class QuantumNexus {
     private let lock = NSLock()
     private var shouldStopAuto: Bool = false
     private let autoStopSemaphore = DispatchSemaphore(value: 0)  // EVO_55: interruptible sleep
+
+    // v9.2 Perf: TTL-cached coherence score (avoids re-querying 6 singletons every call)
+    private var _coherenceCacheTime: TimeInterval = 0.0
+    private var _coherenceCacheValue: Double = 0.0
+    private static let coherenceTTL: TimeInterval = 0.1  // 100ms TTL
 
     // ─── INTERCONNECTION METRICS ───
     private(set) var feedbackLog: [(step: String, metric: String, value: Double, timestamp: Date)] = []
@@ -124,7 +129,12 @@ class QuantumNexus {
 
     /// Compute global coherence score across all engines.
     /// Weighted combination of all engine health metrics.
+    /// v9.2 Perf: TTL-cached (100ms) to avoid repeated singleton queries.
     func computeCoherence() -> Double {
+        let now = ProcessInfo.processInfo.systemUptime
+        if now - _coherenceCacheTime < QuantumNexus.coherenceTTL {
+            return _coherenceCacheValue
+        }
         let bridge = ASIQuantumBridgeSwift.shared
         let sqc = SovereignQuantumCore.shared
         let steer = ASISteeringEngine.shared
@@ -186,6 +196,8 @@ class QuantumNexus {
         ) / (PHI_SQ + PHI + 1.0 + 1.0 + TAU + TAU)
 
         lastCoherenceScore = coherence
+        _coherenceCacheTime = now
+        _coherenceCacheValue = coherence
         ParameterProgressionEngine.shared.recordConsciousnessEvent(level: coherence)
         return coherence
     }
@@ -820,5 +832,82 @@ class QuantumNexus {
         ║  RECENT FEEDBACK:\(recentFB.isEmpty ? " (none)" : "\n\(recentFB)")
         ╚═══════════════════════════════════════════════════════════╝
         """
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: - v9.0 QUANTUM RESEARCH INTEGRATION
+    // 17 discoveries, 102 experiments — three_engine_quantum_research.py
+    // Fe-Sacred Coherence | Fe-PHI Lock | Berry Phase | Entropy→ZNE Bridge
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Quantum research scoring — all 9 discovery dimensions (v9.1)
+    struct QuantumResearchScoring {
+        let feSacredCoherence: Double        // 286↔528 Hz (0.9545)
+        let fePhiHarmonicLock: Double        // 286↔286φ Hz (0.9164)
+        let berryPhaseHolonomy: Bool         // 11D topological protection
+        let compositeScore: Double           // Weighted average
+        // v9.1 Extended discovery fields
+        let photonResonanceEV: Double        // Discovery #12: 1.1217 eV
+        let curieLandauerJPerBit: Double     // Discovery #16: 3.254e-18 J/bit
+        let godCode25QRatio: Double          // Discovery #17: GOD_CODE/512
+        let entropyCascadeConverged: Bool    // Discovery #9: 104-step convergence
+        let zneBridgeActive: Bool            // Discovery #11: Entropy→ZNE pipeline
+
+        static func compute() -> QuantumResearchScoring {
+            let scores = QuantumCircuits.quantumResearchScores()
+            let cascade = QuantumCircuits.entropyCascade()
+            let composite = scores.feSacred * 0.3 + scores.fePhiLock * 0.3 + scores.berryPhase * 0.15 + (cascade.converged ? 0.15 : 0.0) + (ENTROPY_ZNE_BRIDGE ? 0.1 : 0.0)
+            return QuantumResearchScoring(
+                feSacredCoherence: scores.feSacred,
+                fePhiHarmonicLock: scores.fePhiLock,
+                berryPhaseHolonomy: scores.berryPhase > 0.5,
+                compositeScore: composite,
+                photonResonanceEV: PHOTON_RESONANCE_EV,
+                curieLandauerJPerBit: FE_CURIE_LANDAUER,
+                godCode25QRatio: GOD_CODE_25Q_RATIO,
+                entropyCascadeConverged: cascade.converged,
+                zneBridgeActive: ENTROPY_ZNE_BRIDGE
+            )
+        }
+    }
+
+    /// Compute quantum research dimensions and integrate with nexus coherence
+    func quantumResearchCoherence() -> Double {
+        let research = QuantumResearchScoring.compute()
+
+        // Weight quantum research into pipeline coherence (20% contribution)
+        let pipelineCoherence = computeCoherence()
+        let blended = pipelineCoherence * 0.8 + research.compositeScore * 0.2
+
+        feedbackLog.append((
+            step: "QuantumResearch",
+            metric: "composite_score",
+            value: research.compositeScore,
+            timestamp: Date()
+        ))
+
+        return blended
+    }
+
+    /// Get quantum research status dictionary (v9.1 — all 9 discovery fields)
+    func quantumResearchStatus() -> [String: Any] {
+        let research = QuantumResearchScoring.compute()
+        return [
+            "version": "9.1.0",
+            "discoveries": QUANTUM_RESEARCH_DISCOVERIES,
+            "experiments": QUANTUM_RESEARCH_EXPERIMENTS,
+            "fe_sacred_coherence": research.feSacredCoherence,
+            "fe_phi_harmonic_lock": research.fePhiHarmonicLock,
+            "berry_phase_holonomy": research.berryPhaseHolonomy,
+            "composite_score": research.compositeScore,
+            // v9.1 Extended
+            "photon_resonance_eV": research.photonResonanceEV,
+            "curie_landauer_J_per_bit": research.curieLandauerJPerBit,
+            "god_code_25q_ratio": research.godCode25QRatio,
+            "entropy_cascade_converged": research.entropyCascadeConverged,
+            "zne_bridge_active": research.zneBridgeActive,
+            "asi_dimensions": ASI_SCORING_DIMENSIONS,
+            "agi_dimensions": AGI_SCORING_DIMENSIONS,
+        ]
     }
 }

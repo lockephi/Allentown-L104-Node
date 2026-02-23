@@ -44,8 +44,8 @@ class AbsoluteSingularityConvergence:
         # Use infinite precision for singularity calculations
         self.solar_invariant = GOD_CODE_INFINITE if HIGH_PRECISION_AVAILABLE else Decimal("527.5184818492612")
         self.solar_invariant_float = 527.5184818492612  # For display
-        self.ajna_peak = Decimal("853.542833325837")
-        self.soul_star = Decimal("1152.0")
+        self.ajna_peak = Decimal("852.3992551699")
+        self.soul_star = Decimal("1000.2568")
         self.bb7_magnitude_exponent = Decimal("13394014.71")
 
         # High precision engine for convergence calculations

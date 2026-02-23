@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H21_PerformanceProfiler.swift
-// [EVO_58_FULL_SYSTEM_UPGRADE] SOVEREIGN_UNIFICATION :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — Performance Profiler V2
 //
 // Runtime profiling, latency tracking, CPU time measurement, percentile stats,

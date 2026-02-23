@@ -39,7 +39,7 @@ try:
     import torch.nn.functional as F
     from torch.cuda.amp import autocast, GradScaler
     TORCH_AVAILABLE = True
-    
+
     # Auto-detect device
     if torch.cuda.is_available():
         DEVICE = torch.device("cuda")
@@ -1028,7 +1028,7 @@ class SignalHarmonizer:
 
     SACRED_FREQUENCIES = [
         GOD_CODE, PHI, TAU, VOID_CONSTANT, FEIGENBAUM,
-        396.0, 417.0, 528.0, 639.0, 741.0, 852.0, 963.0, 1074.0,
+        396.0, 417.0, 528.0, 639.0, 741.0, 852.3992551699, 963.0, 1000.2568,
     ]
 
     def __init__(self):
@@ -1969,22 +1969,22 @@ class NeuralCascade:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 if TORCH_AVAILABLE:
-    
+
     class TensorCascadeLayer(nn.Module):
         """GPU-accelerated cascade layer using PyTorch"""
         def __init__(self, input_dim: int, hidden_dim: int):
             super().__init__()
             self.input_dim = input_dim
             self.hidden_dim = hidden_dim
-            
+
             # Sacred initialization
             self.transform = nn.Linear(input_dim, hidden_dim)
             nn.init.normal_(self.transform.weight, mean=0.0, std=math.sqrt(PHI / input_dim))
             nn.init.constant_(self.transform.bias, TAU)
-            
+
             # Multi-head attention
             self.attention = nn.MultiheadAttention(hidden_dim, num_heads=8, batch_first=True)
-            
+
             # Feedforward
             self.ff = nn.Sequential(
                 nn.Linear(hidden_dim, hidden_dim * 4),
@@ -1992,27 +1992,27 @@ if TORCH_AVAILABLE:
                 nn.Dropout(TAU * 0.5),
                 nn.Linear(hidden_dim * 4, hidden_dim)
             )
-            
+
             # Layer norm
             self.norm1 = nn.LayerNorm(hidden_dim)
             self.norm2 = nn.LayerNorm(hidden_dim)
-        
+
         def forward(self, x):
             # Transform
             h = self.transform(x)
-            
+
             # Attention
             if h.dim() == 2:
                 h = h.unsqueeze(1)  # Add sequence dimension
             attn_out, _ = self.attention(h, h, h)
             h = self.norm1(h + attn_out)
-            
+
             # Feedforward
             ff_out = self.ff(h)
             h = self.norm2(h + ff_out)
-            
+
             return h.squeeze(1) if h.size(1) == 1 else h
-    
+
     class TensorNeuralCascade(nn.Module):
         """Full cascade network with GPU acceleration"""
         def __init__(self, input_dim: int = 64, hidden_dim: int = 256, num_layers: int = 8):
@@ -2020,42 +2020,42 @@ if TORCH_AVAILABLE:
             self.input_dim = input_dim
             self.hidden_dim = hidden_dim
             self.num_layers = num_layers
-            
+
             # Build cascade
             self.layers = nn.ModuleList([
                 TensorCascadeLayer(input_dim if i == 0 else hidden_dim, hidden_dim)
                 for i in range(num_layers)
             ])
-            
+
             # Output projection
             self.output_proj = nn.Linear(hidden_dim, input_dim)
-            
+
             # Move to device
             self.to(DEVICE)
-        
+
         def forward(self, x, return_all_layers=False):
             """Forward pass with optional layer outputs"""
             x = x.to(DEVICE)
             layer_outputs = []
-            
+
             h = x
             for layer in self.layers:
                 h = layer(h)
                 layer_outputs.append(h)
-            
+
             output = self.output_proj(h)
-            
+
             if return_all_layers:
                 return output, layer_outputs
             return output
-        
+
         def activate_with_metrics(self, x) -> Dict[str, Any]:
             """Run forward pass and return detailed metrics"""
             x_tensor = torch.tensor(x, dtype=torch.float32).unsqueeze(0).to(DEVICE)
-            
+
             with torch.no_grad():
                 output, layers = self.forward(x_tensor, return_all_layers=True)
-            
+
             return {
                 "output": output.cpu().numpy().tolist(),
                 "layer_activations": [l.cpu().numpy().tolist() for l in layers],
@@ -2070,13 +2070,13 @@ if TORCH_AVAILABLE:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 if PANDAS_AVAILABLE:
-    
+
     class CascadeAnalytics:
         """DataFrame-based analytics for cascade performance"""
-        
+
         def __init__(self):
             self.metrics = []
-        
+
         def log_activation(self, input_data: Any, output: Dict, duration_ms: float):
             """Log single activation"""
             self.metrics.append({
@@ -2087,16 +2087,16 @@ if PANDAS_AVAILABLE:
                 'god_code_alignment': output.get('god_code_alignment', 0.0),
                 'phi_resonance': output.get('phi_resonance', 0.0),
             })
-        
+
         def get_dataframe(self) -> pd.DataFrame:
             """Get metrics as DataFrame"""
             return pd.DataFrame(self.metrics)
-        
+
         def summary_stats(self) -> Dict:
             """Get summary statistics"""
             if not self.metrics:
                 return {}
-            
+
             df = self.get_dataframe()
             return {
                 "total_activations": len(df),

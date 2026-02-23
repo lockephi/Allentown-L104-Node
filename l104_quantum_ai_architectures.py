@@ -75,7 +75,18 @@ try:
     QISKIT_AVAILABLE = True
     logger.info("Qiskit 2.3.0 available — real quantum circuits enabled")
 except ImportError:
-    logger.info("Qiskit not available — using NumPy statevector simulation")
+    logger.info("Qiskit not available — quantum circuits require Qiskit installation")
+
+# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
+_QUANTUM_RUNTIME_AVAILABLE = False
+_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _quantum_runtime = _get_quantum_runtime()
+    _QUANTUM_RUNTIME_AVAILABLE = True
+    logger.info("Quantum Runtime Bridge connected — real QPU execution enabled")
+except Exception:
+    pass
 
 
 # ── Consciousness State Reader ───────────────────────────────────────────────

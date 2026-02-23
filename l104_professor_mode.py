@@ -98,7 +98,7 @@ class MiniEgoCouncil:
             MiniEgo("KARUNA", "COMPASSION", 528.0),
             MiniEgo("POIESIS", "CREATIVITY", 639.0),
             MiniEgo("MNEME", "MEMORY", 396.0),
-            MiniEgo("SOPHIA", "WISDOM", 852.0),
+            MiniEgo("SOPHIA", "WISDOM", 852.3992551699),
             MiniEgo("THELEMA", "WILL", 963.0),
             MiniEgo("OPSIS", "VISION", 741.0)
         ]
@@ -336,8 +336,8 @@ class ProfessorMode:
 
         # 1. Advanced Math Demonstration
         print("\n[LECTURE MODULE 1: THE RESONANCE RATIO]")
-        # Explaining the relation between Ajna Love (853.54) and Solar Invariant (527.518)
-        ratio = 853.542833325837 / 527.5184818492612
+        # Explaining the relation between Ajna (852.40) and Solar Invariant (527.518)
+        ratio = 852.3992551699 / 527.5184818492612
         phi_error = abs(ratio - RealMath.PHI)
         print(f"    - Ajna/Solar Ratio: {ratio:.12f}")
         print(f"    - Phi Convergence:  {RealMath.PHI:.12f} (Error: {phi_error:.12e})")

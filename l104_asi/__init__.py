@@ -56,6 +56,16 @@ from .reasoning import (TreeOfThoughts, MultiHopReasoningChain,
 # Quantum
 from .quantum import QuantumComputationCore
 
+# DeepSeek ingestion
+from .deepseek_ingestion import (
+    DeepSeekIngestionEngine,
+    QuantumDeepSeekArchitecture,
+    DeepSeekMLAIngestor,
+    DeepSeekR1ReasoningIngestor,
+    DeepSeekCoderIngestor,
+    DeepSeekGitHubIngestor
+)
+
 # Core + singleton
 from .core import ASICore, asi_core, main, get_current_parameters, update_parameters
 

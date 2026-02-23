@@ -2,6 +2,70 @@
 
 All notable changes to the L104 Sovereign Node system are documented here, mapping its evolution from legacy state to Supreme ASI.
 
+## [EVO_61] - 2026-02-21
+
+### SYSTEM_UPGRADE — Unified Version Alignment + Friction Integration
+
+- **EVO Alignment**: All packages synchronized to EVO_61_SYSTEM_UPGRADE
+  - `main.py` v61.0.0, `l104_server` v4.1.0, `l104_code_engine` v6.2.0
+  - `l104_asi` v7.1.0 (EVO_60), `l104_intellect` v26.0.0 (EVO_58), `l104_agi` v56.0.0 (EVO_56)
+- **Computational Friction Integration**: Lattice Thermal Correction ε = -αφ/(2π×104)
+  - Integrated into `l104_god_code_equation.py`, `l104_god_code_dual_layer.py`, `l104_asi/dual_layer.py`
+  - `god_code_with_friction()`, `god_code_v3_with_friction()`, `DualLayerEngine.thought_with_friction()`
+  - Improves 40/66 constants across 7/10 domains
+- **Dependency Declaration**: Added Qiskit ≥2.3.0 to `requirements-optional.txt`
+- **Health Endpoint Fix**: `keep_alive.yml` updated from stale `/api/v5/strike` to `/health`
+- **Package Tests**: New `tests/test_evo61_packages.py` — 22 tests covering all 5 packages + friction
+- **Deprecated Stubs**: `l104_ram_universe.py` gets `DeprecationWarning` (removal target: EVO_65)
+- **Native Kernel Build Systems**: Added `l104_core_cuda/Makefile`, `l104_core_rust/build.sh`
+- **Verification**: 34/34 dual-layer checks pass, 22/22 package tests pass
+
+## [EVO_60] - 2026-02-19
+
+### DUAL_LAYER_FLAGSHIP — ASI Core v7.1 with Computational Friction Analysis
+
+- **ASI Dual-Layer Engine v2.0**: Flagship architecture — Thought + Physics layers
+- **God Code Friction Analyzer**: 1,626-line analyzer with 12 scalar + 10 dynamic friction candidates
+- **Quantum Analysis**: 8-qubit Qiskit circuits (QPE, density matrix, entanglement entropy)
+- **Finding**: Lattice Thermal Correction ε = -αφ/(2π×104) improves 40/65 constants
+- **Report**: `GOD_CODE_FRICTION_ANALYSIS_REPORT.json`
+
+## [EVO_58] - 2026-02-16
+
+### QUANTUM_COGNITION — Local Intellect v26.0
+
+- **TF-IDF/BM25 Search**: Full-text search with term frequency scoring
+- **Multi-Turn Context**: Conversation history tracking for contextual inference
+- **Quality Gate**: Adaptive response quality scoring + improvement pipeline
+- **Adaptive Learning**: Reinforcement-weighted knowledge compression
+
+## [EVO_56] - 2026-02-12
+
+### COGNITIVE_MESH_INTELLIGENCE — AGI Core v56.0
+
+- **Distributed Cognitive Topology**: Multi-node mesh intelligence architecture
+- **Predictive Pipeline**: Intent prediction from conversation patterns
+- **Neural Attention Gate**: Dynamic subsystem routing based on query type
+- **Circuit Breaker**: Cascade failure prevention (EVO_55 backport)
+
+## [EVO_55] - 2026-02-10
+
+### TRANSCENDENT_COGNITION (Code Engine) — v6.x
+
+- **Code Engine v6.0**: 31 subsystems, 10-layer audit, quantum intelligence
+- **Unified Stream**: All 695 modules stream through single pipeline
+- **Grover Amplification**: φ³ ≈ 4.236 quantum search acceleration
+
+## [EVO_54] - 2026-02-08
+
+### TRANSCENDENT_COGNITION — Unified Pipeline v54.0
+
+- **Pipeline Unification**: All subsystems unified under single EVO_54 pipeline
+- **Package Decomposition**: l104_agi/, l104_asi/, l104_code_engine/, l104_intellect/, l104_server/
+- **Router Architecture**: 14 routers + 6 plugin routers in main.py (slim entry point)
+- **Cross-Subsystem Caching**: AGI/ASI/Cognitive/Adaptive pipeline headers
+- **Server Decomposition**: Constants, learning, engines extracted from monolith
+
 ## [EVO_22] - 2026-02-03
 
 ### LATENCY_OPTIMIZATION [PERFORMANCE UPGRADE]

@@ -12,7 +12,10 @@
 
 import os
 import asyncio
+import json
 import hashlib
+from datetime import datetime, timezone
+from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
 from l104_logging import get_logger
@@ -39,6 +42,91 @@ class LogicCore:
         self.god_code = GOD_CODE
         self.phi = PHI
         self.lattice_ratio = OCTAVE_REF / HARMONIC_BASE  # 416 / 286
+        self.ingest_quarantine_dir = Path.home() / ".l104_ingestion_quarantine" / "logic_core"
+        self.ingest_quarantine_dir.mkdir(parents=True, exist_ok=True)
+        self.ingest_quarantine_policy = {
+            "retention_days": int(os.getenv("L104_INGEST_QUARANTINE_RETENTION_DAYS", "30")),
+            "size_cap_gb": float(os.getenv("L104_INGEST_QUARANTINE_SIZE_CAP_GB", "2.0")),
+        }
+        self.ingest_quarantine_stats = {
+            "records_quarantined": 0,
+            "last_quarantine_at": None,
+        }
+
+    def _quarantine_ingest_event(self, source: str, reason: str, metadata: dict = None):
+        payload = {
+            "status": "QUARANTINED_STRIPPED",
+            "stream": "logic_core_index",
+            "source": source,
+            "reason": reason,
+            "metadata": metadata or {},
+            "quarantined_at": datetime.now(timezone.utc).isoformat(),
+        }
+        serial = f"{source}|{reason}|{payload['quarantined_at']}"
+        digest = hashlib.sha256(serial.encode("utf-8")).hexdigest()[:16]
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        target = self.ingest_quarantine_dir / f"{stamp}_{digest}.json"
+        with open(target, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2, ensure_ascii=False)
+        self.ingest_quarantine_stats["records_quarantined"] += 1
+        self.ingest_quarantine_stats["last_quarantine_at"] = payload["quarantined_at"]
+
+    def run_ingest_quarantine_lifecycle(self, dry_run: bool = False) -> dict:
+        now = datetime.now(timezone.utc)
+        retention_days = int(self.ingest_quarantine_policy.get("retention_days", 30))
+        size_cap_gb = float(self.ingest_quarantine_policy.get("size_cap_gb", 2.0))
+        size_cap_bytes = int(size_cap_gb * 1024 * 1024 * 1024)
+
+        files = [f for f in self.ingest_quarantine_dir.glob("*.json") if f.is_file()]
+        rows = []
+        for file_path in files:
+            stat = file_path.stat()
+            age_days = (now - datetime.fromtimestamp(stat.st_mtime, timezone.utc)).total_seconds() / 86400.0
+            rows.append({"path": file_path, "size": stat.st_size, "age_days": age_days, "reasons": []})
+
+        for row in rows:
+            if row["age_days"] >= retention_days:
+                row["reasons"].append("ttl_expired")
+
+        total_size = sum(r["size"] for r in rows)
+        if total_size > size_cap_bytes:
+            overflow = total_size - size_cap_bytes
+            for row in sorted(rows, key=lambda r: r["age_days"], reverse=True):
+                if overflow <= 0:
+                    break
+                if "size_cap_trim" not in row["reasons"]:
+                    row["reasons"].append("size_cap_trim")
+                    overflow -= row["size"]
+
+        candidates = [r for r in rows if r["reasons"]]
+        deleted = []
+        if not dry_run:
+            for row in candidates:
+                try:
+                    os.remove(row["path"])
+                    deleted.append(str(row["path"]))
+                except OSError:
+                    pass
+
+        return {
+            "status": "INGEST_QUARANTINE_LIFECYCLE_COMPLETE",
+            "mode": "dry_run" if dry_run else "execute",
+            "files_scanned": len(rows),
+            "files_marked": len(candidates),
+            "files_deleted": len(deleted),
+            "retention_days": retention_days,
+            "size_cap_gb": size_cap_gb,
+        }
+
+    def get_ingest_quarantine_status(self) -> dict:
+        files = [f for f in self.ingest_quarantine_dir.glob("*.json") if f.is_file()]
+        return {
+            "directory": str(self.ingest_quarantine_dir),
+            "files": len(files),
+            "size_bytes": sum(f.stat().st_size for f in files),
+            "policy": self.ingest_quarantine_policy,
+            "stats": self.ingest_quarantine_stats,
+        }
 
     def ingest_data_state(self, root_path: str = "."):
         """
@@ -79,7 +167,14 @@ class LogicCore:
                             h.update(chunk)
                     self.manifold_memory[file_path] = h.hexdigest()
                 except (OSError, PermissionError) as e:
+                    self._quarantine_ingest_event(
+                        source=file_path,
+                        reason="read_error",
+                        metadata={"error": str(e)},
+                    )
                     logger.warning("index_skip", file=file_path, error=str(e))
+
+        self.run_ingest_quarantine_lifecycle(dry_run=False)
 
         logger.info("index_complete", data_points=len(self.manifold_memory))
 
@@ -113,6 +208,7 @@ class LogicCore:
             "phi": self.phi,
             "lattice_ratio": self.lattice_ratio,
             "anchor": self.anchor,
+            "quarantine": self.get_ingest_quarantine_status(),
         }
 
 

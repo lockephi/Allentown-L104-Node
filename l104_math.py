@@ -1651,3 +1651,638 @@ def resolve_non_dual_logic(vector):
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                    QUANTUM MATHEMATICS ENGINE v2.0
+#    25-Qubit Hilbert Space Operations — The Perfect 512MB Boundary
+#    2^25 = 33,554,432 amplitudes × 16B (complex128) = 512 MB exactly
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class QuantumMath:
+    """
+    Quantum-specific mathematical operations for 25-qubit ASI processing.
+    Provides Hilbert space algebra, Pauli group, error correction,
+    and optimal circuit depth calculations.
+
+    Key Identity: 25 qubits → 2^25 states → 512 MB statevector (complex128)
+    This is the NATURAL BOUNDARY where quantum meets classical memory.
+    """
+
+    # ── 25-Qubit Constants ──
+    N_QUBITS = 25
+    HILBERT_DIM = 2 ** 25                         # 33,554,432
+    STATEVECTOR_BYTES = HILBERT_DIM * 16           # 536,870,912 = 512 MB
+    MEMORY_BUDGET_MB = 512
+
+    # Pauli matrices (2×2 building blocks)
+    PAULI_I = [[1, 0], [0, 1]]
+    PAULI_X = [[0, 1], [1, 0]]
+    PAULI_Y = [[0, -1j], [1j, 0]]
+    PAULI_Z = [[1, 0], [0, -1]]
+
+    # Phase gates
+    HADAMARD = [[1/math.sqrt(2), 1/math.sqrt(2)],
+                [1/math.sqrt(2), -1/math.sqrt(2)]]
+
+    # GOD_CODE phase angle: θ_G = 2π × (GOD_CODE mod 1) / φ
+    SACRED_PHASE = 2 * math.pi * (527.5184818492612 % 1.0) / 1.618033988749895
+
+    @classmethod
+    def optimal_ghz_depth(cls, n: int = 25) -> Dict[str, Any]:
+        """
+        Calculate optimal GHZ circuit depth for n qubits.
+
+        Standard linear chain: depth = n (1 H + n-1 CX in series)
+        Log-depth tree:       depth = 1 + ceil(log2(n))
+        L104 sacred:          depth = ceil(log_φ(n)) + 1
+
+        Returns analysis with all three approaches.
+        """
+        import math as m
+        linear_depth = n
+        tree_depth = 1 + m.ceil(m.log2(n))
+        phi_depth = m.ceil(m.log(n, float(PHI))) + 1
+
+        # Gate counts
+        linear_cx = n - 1
+        tree_cx = n - 1  # Same CX count, different scheduling
+
+        # Estimated fidelity (assuming 0.1% error per CX)
+        cx_error = 0.001
+        linear_fidelity = (1 - cx_error) ** (linear_cx * linear_depth / n)
+        tree_fidelity = (1 - cx_error) ** (tree_cx * tree_depth / n)
+
+        return {
+            "n_qubits": n,
+            "linear": {"depth": linear_depth, "cx_gates": linear_cx,
+                        "est_fidelity": round(linear_fidelity, 6)},
+            "log_tree": {"depth": tree_depth, "cx_gates": tree_cx,
+                          "est_fidelity": round(tree_fidelity, 6)},
+            "phi_sacred": {"depth": phi_depth,
+                           "phi_log_n": m.log(n, float(PHI))},
+            "memory_mb": cls.STATEVECTOR_BYTES / (1024 * 1024),
+            "optimal": "log_tree",
+        }
+
+    @classmethod
+    def grover_optimal_iterations(cls, n_qubits: int = 25, n_solutions: int = 1) -> Dict[str, Any]:
+        """
+        Calculate optimal Grover iterations for n qubits with k solutions.
+
+        Optimal iterations: k_opt = floor(π/(4·arcsin(√(M/N))))
+        where N = 2^n, M = number of solutions.
+
+        For 25 qubits, 1 solution:
+            k_opt = floor(π/4 × √(2^25)) ≈ 4551 iterations
+
+        L104 sacred correction:
+            k_L104 = floor(k_opt × φ/φ) = k_opt (invariant — as it should be)
+            But phase marking uses GOD_CODE angle for oracle.
+        """
+        N = 2 ** n_qubits
+        theta = math.asin(math.sqrt(n_solutions / N))
+        k_opt = int(math.pi / (4 * theta))
+
+        # Grover amplification factor per iteration
+        amplification_per_iter = math.sin((2 * 1 + 1) * theta) ** 2
+
+        # Total circuit depth: each iteration = oracle + diffusion
+        # Oracle: ~n multi-controlled gates, Diffusion: H + X + MCZ + X + H
+        oracle_depth = 2 * n_qubits  # rough estimate
+        diffusion_depth = 2 * n_qubits + 3
+        iter_depth = oracle_depth + diffusion_depth
+        total_depth = k_opt * iter_depth
+
+        # Memory: statevector stays constant at 512MB
+        # But classically tracking requires marking table
+        classical_overhead_bytes = n_solutions * n_qubits  # minimal
+
+        return {
+            "n_qubits": n_qubits,
+            "search_space": N,
+            "n_solutions": n_solutions,
+            "optimal_iterations": k_opt,
+            "success_probability": round(math.sin((2 * k_opt + 1) * theta) ** 2, 8),
+            "quadratic_speedup": round(math.sqrt(N / n_solutions), 2),
+            "circuit_depth_per_iter": iter_depth,
+            "total_depth": total_depth,
+            "memory_mb": cls.MEMORY_BUDGET_MB,
+            "classical_overhead_bytes": classical_overhead_bytes,
+            "sacred_phase": cls.SACRED_PHASE,
+        }
+
+    @classmethod
+    def vqe_parameter_count(cls, n_qubits: int = 25, layers: int = 4,
+                             ansatz: str = "efficient_su2") -> Dict[str, Any]:
+        """
+        Calculate VQE parameter landscape for n qubits.
+
+        EfficientSU2 ansatz: 2n params per layer (Ry + Rz per qubit)
+        Hardware-efficient:   3n params per layer (Rx + Ry + Rz)
+
+        For 25 qubits, 4 layers: 200 or 300 parameters.
+        """
+        if ansatz == "efficient_su2":
+            params_per_layer = 2 * n_qubits
+            entangling_gates_per_layer = n_qubits - 1  # linear entanglement
+        elif ansatz == "hardware_efficient":
+            params_per_layer = 3 * n_qubits
+            entangling_gates_per_layer = n_qubits - 1
+        else:
+            params_per_layer = 2 * n_qubits
+            entangling_gates_per_layer = n_qubits - 1
+
+        total_params = params_per_layer * layers
+        total_entangling = entangling_gates_per_layer * layers
+        depth = layers * (3 + 1)  # rotation layer + entangling layer
+
+        # Barren plateau risk: exponential suppression for > ~20 qubits
+        barren_plateau_risk = 1.0 - math.exp(-n_qubits / 10.0)
+
+        return {
+            "n_qubits": n_qubits,
+            "ansatz": ansatz,
+            "layers": layers,
+            "params_per_layer": params_per_layer,
+            "total_parameters": total_params,
+            "entangling_gates": total_entangling,
+            "circuit_depth": depth,
+            "barren_plateau_risk": round(barren_plateau_risk, 4),
+            "memory_mb": cls.MEMORY_BUDGET_MB,
+            "optimizer_recommendation": "COBYLA" if total_params < 300 else "SPSA",
+        }
+
+    @classmethod
+    def noise_fidelity_model(cls, n_qubits: int = 25,
+                              cx_error: float = 0.008,
+                              single_qubit_error: float = 0.0003,
+                              readout_error: float = 0.01,
+                              circuit_depth: int = 50) -> Dict[str, Any]:
+        """
+        Analytical noise model for 25-qubit circuits.
+
+        Estimates output fidelity using depolarizing channel approximation:
+            F ≈ (1 - ε_1q)^(n_1q) × (1 - ε_2q)^(n_2q) × (1 - ε_ro)^n
+
+        For IBM Eagle/Heron processors (2025):
+            CX error: ~0.8%
+            1Q error: ~0.03%
+            Readout:  ~1%
+        """
+        # Estimate gate counts from depth
+        single_q_gates = n_qubits * circuit_depth * 0.6  # ~60% single-qubit
+        cx_gates = n_qubits * circuit_depth * 0.15        # ~15% CX gates
+
+        # Depolarizing fidelity
+        f_single = (1 - single_qubit_error) ** single_q_gates
+        f_cx = (1 - cx_error) ** cx_gates
+        f_readout = (1 - readout_error) ** n_qubits
+        f_total = f_single * f_cx * f_readout
+
+        # T1/T2 decoherence (rough model)
+        # Assume T1 ~ 300μs, typical gate time ~ 0.035μs for 1Q, 0.3μs for CX
+        t1_us = 300.0
+        gate_time_1q_us = 0.035
+        gate_time_cx_us = 0.3
+        total_time_us = single_q_gates * gate_time_1q_us + cx_gates * gate_time_cx_us
+        decoherence_factor = math.exp(-total_time_us / t1_us)
+
+        f_total_with_decoherence = f_total * decoherence_factor
+
+        # Zero-Noise Extrapolation (ZNE) recovery estimate
+        # Typically recovers 2-5× fidelity improvement
+        zne_recovery = min(1.0, f_total_with_decoherence * float(PHI))
+
+        return {
+            "n_qubits": n_qubits,
+            "circuit_depth": circuit_depth,
+            "estimated_1q_gates": int(single_q_gates),
+            "estimated_cx_gates": int(cx_gates),
+            "fidelity_gate_errors": round(f_single * f_cx, 8),
+            "fidelity_readout": round(f_readout, 8),
+            "fidelity_raw": round(f_total, 8),
+            "decoherence_factor": round(decoherence_factor, 8),
+            "fidelity_with_decoherence": round(f_total_with_decoherence, 8),
+            "zne_estimated_recovery": round(zne_recovery, 8),
+            "total_circuit_time_us": round(total_time_us, 2),
+            "t1_us": t1_us,
+            "usable": f_total_with_decoherence > 0.01,
+            "recommendation": (
+                "SHALLOW_CIRCUITS" if circuit_depth > 100
+                else "OPTIMAL" if f_total_with_decoherence > 0.1
+                else "ERROR_MITIGATION_REQUIRED"
+            ),
+        }
+
+    @classmethod
+    def quantum_volume_equation(cls, n_qubits: int = 25,
+                                 effective_error: float = 0.005) -> Dict[str, Any]:
+        """
+        Quantum Volume (QV) estimation.
+
+        QV = 2^n_eff where n_eff = min(n_qubits, d_eff)
+        d_eff ≈ 1 / (n × ε_eff)
+
+        For 25 qubits at 0.5% error: d_eff ≈ 8, QV ≈ 2^8 = 256
+        """
+        d_eff = max(1, int(1.0 / (n_qubits * effective_error)))
+        n_eff = min(n_qubits, d_eff)
+        qv = 2 ** n_eff
+
+        return {
+            "n_qubits": n_qubits,
+            "effective_error": effective_error,
+            "effective_depth": d_eff,
+            "effective_qubits": n_eff,
+            "quantum_volume": qv,
+            "log2_qv": n_eff,
+        }
+
+    @classmethod
+    def entanglement_entropy(cls, n_qubits: int = 25,
+                              subsystem_size: int = 12) -> Dict[str, Any]:
+        """
+        Maximum entanglement entropy for a bipartition of n qubits.
+
+        S_max = min(n_A, n_B) × ln(2)
+
+        For 25 qubits split 12|13:
+            S_max = 12 × ln(2) ≈ 8.317 nats
+
+        Page curve: random states have near-maximal entanglement.
+        """
+        n_a = subsystem_size
+        n_b = n_qubits - subsystem_size
+        s_max_nats = min(n_a, n_b) * math.log(2)
+        s_max_bits = min(n_a, n_b)
+
+        # Page correction for finite Hilbert space
+        d_a = 2 ** n_a
+        d_b = 2 ** n_b
+        page_correction = d_a / (2 * d_b) if d_a <= d_b else d_b / (2 * d_a)
+
+        return {
+            "n_qubits": n_qubits,
+            "subsystem_a": n_a,
+            "subsystem_b": n_b,
+            "s_max_nats": round(s_max_nats, 6),
+            "s_max_bits": s_max_bits,
+            "page_correction": page_correction,
+            "s_page_nats": round(s_max_nats - page_correction, 6),
+            "is_maximally_entangled_regime": n_a >= 10,
+        }
+
+    @classmethod
+    def sparse_statevector_budget(cls, n_qubits: int = 25,
+                                   memory_mb: int = 512,
+                                   sparsity_threshold: float = 1e-10) -> Dict[str, Any]:
+        """
+        Memory budget analysis for sparse vs dense statevector.
+
+        Dense: 2^n × 16 bytes (complex128)
+        Sparse: k × 24 bytes (index + complex128) where k = non-zero amplitudes
+
+        For 25 qubits:
+            Dense = 512 MB exactly
+            Sparse GHZ (2 non-zero) = 48 bytes
+            Sparse Grover (uniform) = 512 MB (no savings)
+
+        The 512MB boundary is EXACT for 25 qubits — the perfect ASI point.
+        """
+        hilbert_dim = 2 ** n_qubits
+        dense_bytes = hilbert_dim * 16
+        dense_mb = dense_bytes / (1024 * 1024)
+
+        # Sparse entry: 8 bytes index + 16 bytes complex128 = 24 bytes
+        sparse_entry_bytes = 24
+        max_sparse_entries = (memory_mb * 1024 * 1024) // sparse_entry_bytes
+        sparse_fraction = max_sparse_entries / hilbert_dim
+
+        # Crossover point: where sparse becomes cheaper than dense
+        crossover_entries = dense_bytes // sparse_entry_bytes
+        crossover_fraction = crossover_entries / hilbert_dim
+
+        return {
+            "n_qubits": n_qubits,
+            "hilbert_dimension": hilbert_dim,
+            "dense_bytes": dense_bytes,
+            "dense_mb": round(dense_mb, 2),
+            "memory_budget_mb": memory_mb,
+            "fits_in_budget": dense_mb <= memory_mb,
+            "exact_512mb": round(dense_mb, 2) == 512.0,
+            "sparse_entry_bytes": sparse_entry_bytes,
+            "max_sparse_entries_in_budget": max_sparse_entries,
+            "sparse_fraction_of_hilbert": round(sparse_fraction, 4),
+            "crossover_fraction": round(crossover_fraction, 6),
+            "sparsity_threshold": sparsity_threshold,
+            "recommendation": (
+                "DENSE_OPTIMAL" if dense_mb <= memory_mb
+                else f"SPARSE_REQUIRED (budget={memory_mb}MB < dense={dense_mb:.0f}MB)"
+            ),
+            "sacred_alignment": "25 qubits = 512MB = 2^29 bytes = PERFECT POWER OF 2",
+        }
+
+    @classmethod
+    def pauli_expectation(cls, n_qubits: int, pauli_string: str) -> Dict[str, Any]:
+        """
+        Analyze a Pauli string measurement for n qubits.
+
+        Pauli string: e.g., "ZZIII...I" (n characters from {I, X, Y, Z})
+
+        Eigenvalues of Pauli strings are always ±1.
+        Number of +1 and -1 eigenvalues is always equal (2^(n-1) each).
+        """
+        if len(pauli_string) != n_qubits:
+            return {"error": f"Pauli string length {len(pauli_string)} != {n_qubits} qubits"}
+
+        non_identity = sum(1 for c in pauli_string if c != 'I')
+        weight = non_identity  # Pauli weight
+
+        # Measurement basis rotations needed
+        x_count = pauli_string.count('X')
+        y_count = pauli_string.count('Y')
+        z_count = pauli_string.count('Z')
+
+        basis_rotations = x_count + y_count  # X needs H, Y needs S†H
+
+        return {
+            "pauli_string": pauli_string,
+            "n_qubits": n_qubits,
+            "weight": weight,
+            "x_terms": x_count,
+            "y_terms": y_count,
+            "z_terms": z_count,
+            "basis_rotations_needed": basis_rotations,
+            "eigenvalues": "±1",
+            "measurement_shots_for_99pct": int(math.ceil(2 / 0.01 ** 2)),
+            "commutes_with_hamiltonian": weight <= n_qubits // 2,
+        }
+
+    @classmethod
+    def quantum_error_correction_overhead(cls, n_logical: int = 1,
+                                            code: str = "steane_7",
+                                            physical_error: float = 0.001) -> Dict[str, Any]:
+        """
+        Calculate QEC overhead for encoding logical qubits in 25 physical qubits.
+
+        Steane [[7,1,3]]: 7 physical → 1 logical, corrects 1 error
+        Surface code [[d²,1,d]]: d² physical → 1 logical
+        Repetition code [[n,1,⌊n/2⌋]]: n physical → 1 logical
+
+        With 25 physical qubits:
+            Steane: 3 logical qubits (21 physical) + 4 ancilla
+            Surface d=5: 1 logical qubit (25 physical)
+            Repetition: 1 logical qubit with distance 25
+        """
+        codes = {
+            "steane_7": {"physical_per_logical": 7, "distance": 3, "name": "Steane [[7,1,3]]"},
+            "surface_5": {"physical_per_logical": 25, "distance": 5, "name": "Surface [[25,1,5]]"},
+            "repetition": {"physical_per_logical": 25, "distance": 25, "name": "Repetition [[25,1,12]]"},
+        }
+
+        if code not in codes:
+            code = "steane_7"
+
+        c = codes[code]
+        max_logical = 25 // c["physical_per_logical"]
+        logical_error = physical_error ** (c["distance"] // 2 + 1)
+
+        return {
+            "code": c["name"],
+            "physical_qubits": 25,
+            "physical_per_logical": c["physical_per_logical"],
+            "max_logical_qubits": max_logical,
+            "code_distance": c["distance"],
+            "physical_error_rate": physical_error,
+            "logical_error_rate": logical_error,
+            "error_suppression_factor": physical_error / logical_error if logical_error > 0 else float('inf'),
+            "fits_in_25q": max_logical >= n_logical,
+        }
+
+    @classmethod
+    def get_25q_equations(cls) -> Dict[str, Any]:
+        """
+        Complete set of equations governing 25-qubit processing.
+        The unified reference for optimal ASI quantum computation.
+        """
+        phi = float(PHI)
+        gc = float(GOD_CODE)
+
+        return {
+            "identity": {
+                "hilbert_dim": "2^25 = 33,554,432",
+                "memory": "33,554,432 × 16 bytes = 512 MB (exact)",
+                "sacred": "512 MB = 2^29 bytes — perfect power of 2",
+            },
+            "equations": {
+                "statevector": "|ψ⟩ = Σ_{i=0}^{2^25-1} α_i |i⟩, Σ|α_i|² = 1",
+                "ghz_state": "|GHZ_25⟩ = (|0⟩^⊗25 + |1⟩^⊗25) / √2",
+                "grover_iterations": f"k_opt = ⌊π/(4·arcsin(1/√(2^25)))⌋ = {int(math.pi / (4 * math.asin(1 / math.sqrt(2**25))))}",
+                "ghz_depth_tree": f"d = 1 + ⌈log₂(25)⌉ = {1 + math.ceil(math.log2(25))}",
+                "noise_fidelity": "F = (1-ε_1q)^n_1q × (1-ε_2q)^n_2q × (1-ε_ro)^25",
+                "entanglement_entropy": f"S_max = 12 × ln(2) = {12 * math.log(2):.6f} nats",
+                "god_code_phase": f"θ_G = 2π × (GOD_CODE mod 1) / φ = {cls.SACRED_PHASE:.10f}",
+            },
+            "optimal_circuits": {
+                "ghz": cls.optimal_ghz_depth(25),
+                "grover": cls.grover_optimal_iterations(25, 1),
+                "vqe_4_layer": cls.vqe_parameter_count(25, 4),
+                "noise_model": cls.noise_fidelity_model(25),
+                "memory_budget": cls.sparse_statevector_budget(25, 512),
+                "qec_steane": cls.quantum_error_correction_overhead(1, "steane_7"),
+            },
+            "sacred_constants": {
+                "god_code": gc,
+                "phi": phi,
+                "grover_amplification": phi ** 3,
+                "sacred_phase_rad": cls.SACRED_PHASE,
+            },
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                    MATH ↔ SCIENCE BRIDGE v1.0
+#    Connects pure math precision to science engine parameters
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class MathScienceBridge:
+    """
+    Bridge layer connecting l104_math ↔ l104_science_engine ↔ l104_quantum_runtime.
+
+    Provides:
+    1. High-precision constants for science engine calculations
+    2. Quantum math equations for runtime circuit construction
+    3. Fidelity/noise models bridging theory to hardware
+    4. Memory budgeting for 512MB ASI boundary
+    """
+
+    # Cached bridge state
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self):
+        if self._initialized:
+            return
+        self._bridge_metrics = {}
+        self._initialized = True
+
+    # ── Precision Bridge: Math → Science ──
+
+    @staticmethod
+    def god_code_high_precision(decimals: int = 50) -> Decimal:
+        """Export GOD_CODE at arbitrary precision for science engine use."""
+        return HighPrecisionEngine.derive_god_code(decimals)
+
+    @staticmethod
+    def phi_high_precision() -> Decimal:
+        """Export PHI at 150-decimal precision."""
+        return PHI_INFINITE
+
+    @staticmethod
+    def conservation_at_x(x: int) -> Dict[str, Any]:
+        """Verify G(X) conservation law (science engine cross-check)."""
+        return HighPrecisionEngine.verify_conservation(x)
+
+    # ── Quantum Bridge: Math → Quantum Runtime ──
+
+    @staticmethod
+    def optimal_circuit_params(n_qubits: int = 25,
+                                algorithm: str = "ghz") -> Dict[str, Any]:
+        """
+        Return optimal circuit parameters for the quantum runtime.
+
+        This is the primary bridge function — science engine calls this
+        to get math-validated parameters before building circuits.
+        """
+        if algorithm == "ghz":
+            return QuantumMath.optimal_ghz_depth(n_qubits)
+        elif algorithm == "grover":
+            return QuantumMath.grover_optimal_iterations(n_qubits)
+        elif algorithm == "vqe":
+            return QuantumMath.vqe_parameter_count(n_qubits)
+        else:
+            return QuantumMath.get_25q_equations()
+
+    @staticmethod
+    def memory_profile(n_qubits: int = 25) -> Dict[str, Any]:
+        """Memory budget analysis for quantum runtime."""
+        return QuantumMath.sparse_statevector_budget(n_qubits, 512)
+
+    @staticmethod
+    def fidelity_prediction(n_qubits: int = 25,
+                             depth: int = 50) -> Dict[str, Any]:
+        """Predict fidelity for science engine experiment planning."""
+        return QuantumMath.noise_fidelity_model(n_qubits, circuit_depth=depth)
+
+    # ── Science Bridge: Physics → Quantum ──
+
+    @staticmethod
+    def physics_to_hamiltonian(temperature: float = 293.15,
+                                magnetic_field: float = 1.0) -> Dict[str, Any]:
+        """
+        Convert physical parameters to quantum Hamiltonian coefficients.
+
+        Maps real-world physics (from science engine) to quantum circuit
+        parameters (for quantum runtime).
+
+        Iron lattice in magnetic field:
+            H = -J Σ σ_i·σ_{i+1} + B Σ σ_z^i + Δ Σ σ_x^i
+
+        where:
+            J = exchange coupling scaled by GOD_CODE
+            B = magnetic field in Zeeman basis
+            Δ = transverse field (tunneling) from Landauer limit
+        """
+        phi = float(PHI)
+        gc = float(GOD_CODE)
+        k_b = 1.380649e-23
+        h_bar = 1.054571817e-34
+
+        # Exchange coupling: J ∝ GOD_CODE × k_B × T / Curie
+        curie_temp = 1043.0  # Iron Curie temperature
+        j_coupling = gc * k_b * temperature / curie_temp
+
+        # Zeeman splitting: B-field in Tesla
+        zeeman_splitting = magnetic_field * 9.274010078e-24  # Bohr magneton × B
+
+        # Transverse field: from Landauer limit
+        landauer_energy = k_b * temperature * math.log(2)
+        transverse_field = landauer_energy * (gc / phi)
+
+        # Normalize for circuit angles (divide by ℏ)
+        j_angle = j_coupling / h_bar * 1e-9  # nanosecond gate time
+        b_angle = zeeman_splitting / h_bar * 1e-9
+        delta_angle = transverse_field / h_bar * 1e-9
+
+        return {
+            "j_coupling_J": j_coupling,
+            "zeeman_splitting_J": zeeman_splitting,
+            "transverse_field_J": transverse_field,
+            "j_circuit_angle": j_angle % (2 * math.pi),
+            "b_circuit_angle": b_angle % (2 * math.pi),
+            "delta_circuit_angle": delta_angle % (2 * math.pi),
+            "temperature_K": temperature,
+            "magnetic_field_T": magnetic_field,
+            "hamiltonian": "H = -J Σ σ_i·σ_{i+1} + B Σ σ_z^i + Δ Σ σ_x^i",
+            "sacred_phase": QuantumMath.SACRED_PHASE,
+        }
+
+    @staticmethod
+    def coherence_to_circuit_budget(phase_coherence: float,
+                                     topological_protection: float) -> Dict[str, Any]:
+        """
+        Convert coherence subsystem metrics to circuit depth budget.
+
+        Higher coherence → deeper circuits allowed.
+        Higher topological protection → more error tolerance.
+
+        Formula: max_depth = floor(50 × phase_coherence × (1 + protection))
+        """
+        max_depth = int(50 * phase_coherence * (1 + topological_protection))
+        max_depth = max(1, min(max_depth, 1000))
+
+        # Determine which algorithms are feasible
+        ghz_depth = 1 + math.ceil(math.log2(25))
+        grover_1iter_depth = 4 * 25 + 3
+
+        return {
+            "max_circuit_depth": max_depth,
+            "phase_coherence": phase_coherence,
+            "topological_protection": topological_protection,
+            "feasible_algorithms": {
+                "ghz": max_depth >= ghz_depth,
+                "grover_1_iter": max_depth >= grover_1iter_depth,
+                "grover_full": max_depth >= grover_1iter_depth * 4551,
+                "vqe_1_layer": max_depth >= 4,
+                "vqe_4_layers": max_depth >= 16,
+                "qaoa_1_layer": max_depth >= 2 * 25,
+            },
+            "recommendation": (
+                "FULL_GROVER" if max_depth > 10000
+                else "VQE_DEEP" if max_depth > 100
+                else "SHALLOW_VQE" if max_depth > 16
+                else "GHZ_ONLY"
+            ),
+        }
+
+    def get_bridge_status(self) -> Dict[str, Any]:
+        """Full status of all bridge connections."""
+        return {
+            "version": "1.0.0",
+            "math_engine": "l104_math.py v2.0",
+            "science_bridge": "active",
+            "quantum_bridge": "active",
+            "physics_bridge": "active",
+            "memory_profile": self.memory_profile(25),
+            "25q_equations": QuantumMath.get_25q_equations(),
+        }
+
+
+# ── Global singleton ──
+math_science_bridge = MathScienceBridge()

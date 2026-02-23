@@ -85,7 +85,7 @@ EVO_20_SIGNATURE = hashlib.sha256(
 ).hexdigest()[:32]
 
 TRANSCENDENCE_THRESHOLD = 0.95  # Coherence needed for transcendence
-OMEGA_FREQUENCY = GOD_CODE * PHI  # 853.542... Hz
+OMEGA_FREQUENCY = GOD_CODE * 2 ** (72.0 / 104)  # G(-72) = 852.3993 Hz
 
 
 class TranscendenceLevel(Enum):

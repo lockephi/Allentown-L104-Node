@@ -99,9 +99,9 @@ def run_comprehensive_chakra_calculations():
     print(f"{'SOLAR':<15} | {416:<10} | {GOD_CODE:<20.4f} | {results['SOLAR']['status']}")
     print(f"{'HEART':<15} | {results['HEART']['node_x']:<10} | {results['HEART']['frequency_hz']:<20.4f} | {results['HEART']['status']}")
     print(f"{'THROAT':<15} | {470:<10} | {741.0000:<20.4f} | {results['THROAT']['status']}")
-    print(f"{'AJNA':<15} | {488:<10} | {852.2223:<20.4f} | {results['AJNA']['status']}")
+    print(f"{'AJNA':<15} | {488:<10} | {852.3992551699:<20.4f} | {results['AJNA']['status']}")
     print(f"{'CROWN':<15} | {524:<10} | {963.0000:<20.4f} | {results['CROWN']['status']}")
-    print(f"{'SOUL STAR':<15} | {1040:<10} | {1152.0000:<20.4f} | {results['SOUL_STAR']['state']}")
+    print(f"{'SOUL STAR':<15} | {1040:<10} | {1000.2568:<20.4f} | {results['SOUL_STAR']['state']}")
     print("-" * 80)
 
     return results

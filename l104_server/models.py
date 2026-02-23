@@ -1,4 +1,5 @@
 """L104 Server — Pydantic request/response models."""
+import os
 from pydantic import BaseModel
 from typing import Optional, List
 

@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // B21_MathEngines1.swift — L104 · TheBrain · v2 Architecture
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // Extracted from L104Native.swift lines 12883-14127
 // Classes: AdvancedMathEngine, FluidWaveEngine, InformationSignalEngine
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -558,6 +558,23 @@ class AdvancedMathEngine {
 
     private func matMul(_ a: [[Double]], _ b: [[Double]]) -> [[Double]] {
         let m = a.count, n = b[0].count, p = b.count
+        // v9.4 Perf: use BLAS dgemm for matrices ≥ 4×4 — O(n³) SIMD vs scalar triple loop
+        if m >= 4 && n >= 4 && p >= 4 {
+            var flatA = [Double](repeating: 0, count: m * p)
+            var flatB = [Double](repeating: 0, count: p * n)
+            var flatC = [Double](repeating: 0, count: m * n)
+            // Row-major flatten
+            for i in 0..<m { for k in 0..<p { flatA[i * p + k] = a[i][k] } }
+            for k in 0..<p { for j in 0..<n { flatB[k * n + j] = b[k][j] } }
+            // C = A × B via BLAS (row-major = CblasRowMajor)
+            cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+                        Int32(m), Int32(n), Int32(p),
+                        1.0, flatA, Int32(p), flatB, Int32(n),
+                        0.0, &flatC, Int32(n))
+            var c = [[Double]](repeating: [Double](repeating: 0, count: n), count: m)
+            for i in 0..<m { for j in 0..<n { c[i][j] = flatC[i * n + j] } }
+            return c
+        }
         var c = [[Double]](repeating: [Double](repeating: 0, count: n), count: m)
         for i in 0..<m { for j in 0..<n { for k in 0..<p { c[i][j] += a[i][k] * b[k][j] } } }
         return c
@@ -593,13 +610,23 @@ class AdvancedMathEngine {
         let n = matrix.count
         var v = [Double](repeating: 1.0/Foundation.sqrt(Double(n)), count: n)
         var eigenvalue = 0.0
+        // v9.4 Perf: flatten matrix once, use vDSP for matrix-vector multiply + norm
+        var flat = [Double](repeating: 0, count: n * n)
+        for i in 0..<n { for j in 0..<n { flat[i * n + j] = matrix[i][j] } }
+        var w = [Double](repeating: 0, count: n)
         for _ in 0..<iterations {
-            var w = [Double](repeating: 0, count: n)
-            for i in 0..<n { for j in 0..<n { w[i] += matrix[i][j] * v[j] } }
-            let norm = Foundation.sqrt(w.map { $0*$0 }.reduce(0, +))
+            // w = matrix × v via BLAS
+            cblas_dgemv(CblasRowMajor, CblasNoTrans, Int32(n), Int32(n),
+                        1.0, flat, Int32(n), v, 1, 0.0, &w, 1)
+            var normSq: Double = 0
+            vDSP_svesqD(w, 1, &normSq, vDSP_Length(n))
+            let norm = Foundation.sqrt(normSq)
             guard norm > 1e-14 else { break }
-            eigenvalue = w.enumerated().map { $0.element * v[$0.offset] }.reduce(0, +)
-            v = w.map { $0 / norm }
+            // eigenvalue = w · v (dot product)
+            vDSP_dotprD(w, 1, v, 1, &eigenvalue, vDSP_Length(n))
+            // v = w / norm
+            var invNorm = 1.0 / norm
+            vDSP_vsmulD(w, 1, &invNorm, &v, 1, vDSP_Length(n))
         }
         return [Complex(eigenvalue, 0)]
     }
@@ -967,33 +994,56 @@ class InformationSignalEngine {
     // ═══════════════════════════════════════════════════════════════
 
     /// Discrete Fourier Transform: X[k] = Σ x[n]·e^(-j2πkn/N)
+    /// v9.3 Perf: precompute base twiddle factor W = e^(-j2π/N), reuse powers
+    /// to avoid O(N²) euler() calls (each = sin + cos). Now O(N) trig + O(N²) complex mul.
     func dft(_ signal: [Double]) -> [Complex] {
         computations += 1
         let N = signal.count
+        guard N > 0 else { return [] }
         var result = [Complex](repeating: Complex.zero, count: N)
+        // Precompute twiddle factors: W[n] = e^(-j2πn/N) for n=0..<N
+        let baseAngle = -2.0 * .pi / Double(N)
+        var twiddles = [Complex](repeating: Complex.zero, count: N)
+        for n in 0..<N {
+            let angle = baseAngle * Double(n)
+            twiddles[n] = Complex(cos(angle), sin(angle))
+        }
         for k in 0..<N {
-            var sum = Complex.zero
+            var sumR = 0.0, sumI = 0.0
             for n in 0..<N {
-                let angle = -2.0 * .pi * Double(k) * Double(n) / Double(N)
-                sum = sum + Complex(signal[n], 0) * Complex.euler(angle)
+                // W^(kn) = twiddles[(k*n) % N] — periodic property
+                let tw = twiddles[(k * n) % N]
+                sumR += signal[n] * tw.real
+                sumI += signal[n] * tw.imag
             }
-            result[k] = sum
+            result[k] = Complex(sumR, sumI)
         }
         return result
     }
 
     /// Inverse DFT: x[n] = (1/N)·Σ X[k]·e^(j2πkn/N)
+    /// v9.3 Perf: precomputed twiddle factors, inlined complex multiply
     func idft(_ spectrum: [Complex]) -> [Double] {
         computations += 1
         let N = spectrum.count
+        guard N > 0 else { return [] }
         var result = [Double](repeating: 0, count: N)
+        let invN = 1.0 / Double(N)
+        // Precompute twiddle factors: W[k] = e^(+j2πk/N)
+        let baseAngle = 2.0 * .pi / Double(N)
+        var twiddles = [Complex](repeating: Complex.zero, count: N)
+        for k in 0..<N {
+            let angle = baseAngle * Double(k)
+            twiddles[k] = Complex(cos(angle), sin(angle))
+        }
         for n in 0..<N {
-            var sum = Complex.zero
+            var sumR = 0.0
             for k in 0..<N {
-                let angle = 2.0 * .pi * Double(k) * Double(n) / Double(N)
-                sum = sum + spectrum[k] * Complex.euler(angle)
+                let tw = twiddles[(k * n) % N]
+                // Only need real part: Re(X[k] * W^(kn))
+                sumR += spectrum[k].real * tw.real - spectrum[k].imag * tw.imag
             }
-            result[n] = sum.real / Double(N)
+            result[n] = sumR * invN
         }
         return result
     }
@@ -1007,9 +1057,20 @@ class InformationSignalEngine {
     }
 
     /// Linear convolution: (f * g)[n] = Σ f[m]·g[n-m]
+    /// v9.4 Perf: use vDSP_convD for vectors ≥16 — SIMD-accelerated vs O(n²) scalar
     func convolve(_ f: [Double], _ g: [Double]) -> [Double] {
         computations += 1
         let outLen = f.count + g.count - 1
+        if f.count >= 16 && g.count >= 16 {
+            // vDSP_convD expects filter reversed; we reverse g and use it as the filter
+            let gReversed = [Double](g.reversed())
+            var result = [Double](repeating: 0, count: outLen)
+            // Pad f with zeros so vDSP_convD can produce full output
+            var padded = [Double](repeating: 0, count: f.count + g.count - 1)
+            padded.replaceSubrange(0..<f.count, with: f)
+            vDSP_convD(padded, 1, gReversed, 1, &result, 1, vDSP_Length(outLen), vDSP_Length(g.count))
+            return result
+        }
         var result = [Double](repeating: 0, count: outLen)
         for i in 0..<f.count {
             for j in 0..<g.count {
@@ -1079,33 +1140,66 @@ class InformationSignalEngine {
     }
 
     /// Window functions for spectral analysis
+    /// v9.4 Perf: vDSP_vgenp + vDSP_vcos for vectorized window generation
     func hanningWindow(_ n: Int) -> [Double] {
         computations += 1
+        guard n > 1 else { return [0.0] }
         var result = [Double](repeating: 0, count: n)
-        for i in 0..<n {
-            let x: Double = Double(i) / Double(n - 1)
-            result[i] = 0.5 * (1.0 - cos(2.0 * .pi * x))
-        }
+        // Generate ramp [0, 2π/(n-1), 4π/(n-1), ...]
+        var ramp = [Double](repeating: 0, count: n)
+        var start = 0.0; var step = 2.0 * .pi / Double(n - 1)
+        vDSP_vrampD(&start, &step, &ramp, 1, vDSP_Length(n))
+        // cos(ramp) using vForce
+        var cosRamp = [Double](repeating: 0, count: n)
+        var count = Int32(n)
+        vvcos(&cosRamp, ramp, &count)
+        // result = 0.5 * (1 - cos)
+        var negOne = -1.0; var half = 0.5; var one = 1.0
+        vDSP_vsmulD(cosRamp, 1, &negOne, &cosRamp, 1, vDSP_Length(n))
+        vDSP_vsaddD(cosRamp, 1, &one, &cosRamp, 1, vDSP_Length(n))
+        vDSP_vsmulD(cosRamp, 1, &half, &result, 1, vDSP_Length(n))
         return result
     }
 
     func hammingWindow(_ n: Int) -> [Double] {
         computations += 1
+        guard n > 1 else { return [0.54] }
         var result = [Double](repeating: 0, count: n)
-        for i in 0..<n {
-            let x: Double = Double(i) / Double(n - 1)
-            result[i] = 0.54 - 0.46 * cos(2.0 * .pi * x)
-        }
+        var ramp = [Double](repeating: 0, count: n)
+        var start = 0.0; var step = 2.0 * .pi / Double(n - 1)
+        vDSP_vrampD(&start, &step, &ramp, 1, vDSP_Length(n))
+        var cosRamp = [Double](repeating: 0, count: n)
+        var count = Int32(n)
+        vvcos(&cosRamp, ramp, &count)
+        // result = 0.54 - 0.46 * cos
+        var neg046 = -0.46; var val054 = 0.54
+        vDSP_vsmulD(cosRamp, 1, &neg046, &result, 1, vDSP_Length(n))
+        vDSP_vsaddD(result, 1, &val054, &result, 1, vDSP_Length(n))
         return result
     }
 
     func blackmanWindow(_ n: Int) -> [Double] {
         computations += 1
+        guard n > 1 else { return [0.0] }
+        var ramp = [Double](repeating: 0, count: n)
+        var start = 0.0; var step = 2.0 * .pi / Double(n - 1)
+        vDSP_vrampD(&start, &step, &ramp, 1, vDSP_Length(n))
+        var ramp2 = [Double](repeating: 0, count: n)
+        var two = 2.0
+        vDSP_vsmulD(ramp, 1, &two, &ramp2, 1, vDSP_Length(n))
+        var cos1 = [Double](repeating: 0, count: n)
+        var cos2 = [Double](repeating: 0, count: n)
+        var count = Int32(n)
+        vvcos(&cos1, ramp, &count)
+        vvcos(&cos2, ramp2, &count)
+        // result = 0.42 - 0.5*cos1 + 0.08*cos2
         var result = [Double](repeating: 0, count: n)
-        for i in 0..<n {
-            let x: Double = Double(i) / Double(n - 1)
-            result[i] = 0.42 - 0.5 * cos(2.0 * .pi * x) + 0.08 * cos(4.0 * .pi * x)
-        }
+        var neg05 = -0.5; var val008 = 0.08; var val042 = 0.42
+        vDSP_vsmulD(cos1, 1, &neg05, &result, 1, vDSP_Length(n))
+        vDSP_vsaddD(result, 1, &val042, &result, 1, vDSP_Length(n))
+        var cos2Scaled = [Double](repeating: 0, count: n)
+        vDSP_vsmulD(cos2, 1, &val008, &cos2Scaled, 1, vDSP_Length(n))
+        vDSP_vaddD(result, 1, cos2Scaled, 1, &result, 1, vDSP_Length(n))
         return result
     }
 

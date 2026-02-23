@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H24_APIGateway.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — API Gateway: HTTP endpoint management, request routing,
 // rate limiting, connection pooling, and external service integration
 // for the L104 network mesh.
@@ -55,15 +55,15 @@ final class APIGateway {
     private var healthTimer: Timer?
     private var rateLimitResetTimer: Timer?  // EVO_56: Per-minute rate counter reset
     private let lock = NSLock()
-    private let poolSize = 8
+    private let poolSize = 12  // EVO_63: increased from 8 for concurrent requests
     private let session: URLSession
 
     init() {
         let config = URLSessionConfiguration.ephemeral
-        config.timeoutIntervalForRequest = 10
-        config.timeoutIntervalForResource = 30
-        config.httpMaximumConnectionsPerHost = 4
-        config.waitsForConnectivity = false
+        config.timeoutIntervalForRequest = 6     // EVO_63: 6s (was 10) — fail fast
+        config.timeoutIntervalForResource = 15   // EVO_63: 15s (was 30) — don't hold stale connections
+        config.httpMaximumConnectionsPerHost = 6  // EVO_63: 6 (was 4) — more parallel requests
+        config.waitsForConnectivity = true        // EVO_63: true (was false) — wait briefly for connectivity
         session = URLSession(configuration: config)
     }
 

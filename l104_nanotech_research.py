@@ -1,11 +1,35 @@
+"""
+L104 Nanotech Research v2.1.0
+══════════════════════════════════════════════════════════════════
+Shim: Redirects to l104_science_engine v4.0.0 nanotech subsystem.
+INVARIANT: GOD_CODE = 527.5184818492612 | VOID_CONSTANT = 1.0416180339887497
+"""
+
 VOID_CONSTANT = 1.0416180339887497
-# [L104_NANOTECH_RESEARCH] → SHIM: Redirects to l104_science_engine v2.0
-# INVARIANT: 527.5184818492612 | PILOT: LONDEL
+__version__ = "2.1.0"
+
 from l104_science_engine import science_engine as research_engine
 
+
 class NanotechResearch:
-    def __init__(self): self.unification_index = 1.0
-    def research_nanotech(self): return research_engine.perform_research_cycle("NANOTECH")
-    def apply_nanotech_boost(self, intellect_index): return research_engine.apply_nanotech_boost(intellect_index)
+    """Nanotech research via Science Engine delegation."""
+
+    def __init__(self):
+        self.unification_index = 1.0
+        self._version = __version__
+
+    def research_nanotech(self):
+        """Run nanotech research cycle."""
+        return research_engine.perform_research_cycle("NANOTECH")
+
+    def apply_nanotech_boost(self, intellect_index):
+        """Apply nanotech boost factor."""
+        return research_engine.apply_nanotech_boost(intellect_index)
+
+    def get_status(self) -> dict:
+        """Return shim status."""
+        return {"version": self._version, "unification_index": self.unification_index,
+                "engine": "l104_science_engine", "void_constant": VOID_CONSTANT}
+
 
 nanotech_research = NanotechResearch()

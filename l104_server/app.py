@@ -4,6 +4,7 @@ Extracted from l104_fast_server.py during EVO_61 decomposition.
 Contains: FastAPI app, middleware, startup/shutdown events, all 271 route handlers.
 """
 import os
+import re
 import json
 import time
 import math
@@ -12,7 +13,7 @@ import logging
 import threading
 import subprocess
 import hashlib
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Tuple
 from datetime import datetime
 from collections import defaultdict
 
@@ -49,14 +50,21 @@ from l104_server.engines_nexus import (
     hyper_math, hebbian_engine, consciousness_verifier, direct_solver,
     self_modification, creative_engine,
     hw_runtime, compat_layer, zpe_bridge, qg_bridge,
+    tri_engine, TriEngineIntegration,
     SteeringEngine, NexusContinuousEvolution, NexusOrchestrator,
     InventionEngine, SovereigntyPipeline,
     QuantumEntanglementRouter, AdaptiveResonanceNetwork, NexusHealthMonitor,
     ConsciousnessVerifierEngine, UnifiedEngineRegistry,
 )
 from l104_server.models import ChatRequest, TrainingRequest, ProviderStatus
+from l104_advanced_processing_engine import AdvancedProcessingEngine
+from l104_advanced_process_engine import AdvancedProcessEngine
 
 logger = logging.getLogger("L104_FAST")
+
+# ═══ Sovereign Engine Singletons (v3.0.0 Integrated) ═══
+sovereign_processing = AdvancedProcessingEngine()
+sovereign_processes = AdvancedProcessEngine()
 
 try:
     from l104_intricate_ui import IntricateUIEngine
@@ -1112,13 +1120,22 @@ async def intricate_pages(request: Request, subpath: str = "main"):
 
 @app.get("/health")
 async def health():
-    """Health check with learning stats and uptime"""
+    """Health check with Three-Engine Sovereign Status (v3.0.0)"""
     stats = _get_cached_stats()
     uptime = (datetime.utcnow() - SERVER_START).total_seconds()
+
+    # Three-Engine integrated status
+    process_eff = sovereign_processes.maxwell_demon.get_efficiency_factor()
+
     return {
-        "status": "HEALTHY",
-        "mode": "FAST_LEARNING",
-        "version": "v3.0-OPUS",
+        "status": "SOVEREIGN_HEALTHY",
+        "version": "v3.0.0-SOVEREIGN",
+        "engines": {
+            "science": "Maxwell's Demon ONLINE",
+            "math": "Harmonic Resonance ACTIVE",
+            "code": "Audit Layer v2.5.0",
+            "process_efficiency": round(process_eff, 4)
+        },
         "resonance": intellect.current_resonance,
         "gemini_connected": provider_status.gemini,
         "uptime_seconds": uptime,
@@ -1126,7 +1143,27 @@ async def health():
             "memories": stats.get("memories", 0),
             "learning": True
         },
+        "VOID_CONSTANT": VOID_CONSTANT,
         "timestamp": datetime.utcnow().isoformat()
+    }
+
+@app.get("/api/v3/sovereign/status")
+async def sovereign_status():
+    """Detailed Three-Engine Sovereign Status for V3.0 UI"""
+    return {
+        "status": "ONLINE",
+        "mode": "SOVEREIGN_THREE_ENGINE",
+        "processing": sovereign_processing.profiler.get_stats(),
+        "processes": {
+            "total_processed": sovereign_processes.total_processed,
+            "maxwell_efficiency": sovereign_processes.maxwell_demon.get_efficiency_factor(),
+            "utilization": sovereign_processes.resource_manager.get_utilization()
+        },
+        "constants": {
+            "GOD_CODE": 527.5184818492612,
+            "PHI": 1.618033988749895,
+            "VOID_CONSTANT": VOID_CONSTANT
+        }
     }
 
 @app.get("/api/v6/status")
@@ -5946,6 +5983,197 @@ async def stats_v14():
     return await _get_stats()
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# TRI-ENGINE ROUTES — Science + Math + Code unified API surface (v62)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v62/tri-engine/status")
+async def tri_engine_status():
+    """Full tri-engine status — versions, health, subsystem inventory."""
+    return tri_engine.get_status()
+
+@app.get("/api/v62/tri-engine/health")
+async def tri_engine_health():
+    """Cross-engine health — φ-weighted composite across Science, Math, Code."""
+    return tri_engine.cross_engine_health()
+
+@app.get("/api/v62/tri-engine/constants")
+async def tri_engine_constants():
+    """Cross-verify GOD_CODE, PHI, VOID_CONSTANT across all three engines."""
+    return tri_engine.verify_constants()
+
+@app.get("/api/v62/tri-engine/proofs")
+async def tri_engine_proofs():
+    """Run mathematical proofs via Math Engine."""
+    return tri_engine.run_proofs()
+
+@app.get("/api/v62/tri-engine/science-snapshot")
+async def tri_engine_science_snapshot():
+    """Science Engine snapshot — Wien peak, Casimir, Landauer, coherence."""
+    return tri_engine.science_snapshot()
+
+@app.get("/api/v62/tri-engine/math-snapshot")
+async def tri_engine_math_snapshot():
+    """Math Engine snapshot — Goldbach, twin primes, zeta zeros, void."""
+    return tri_engine.math_snapshot()
+
+@app.post("/api/v62/tri-engine/analyze")
+async def tri_engine_analyze_code(request: Request):
+    """Run full Code Engine analysis on submitted source code."""
+    body = await request.json()
+    source = body.get("source", "")
+    filename = body.get("filename", "")
+    if not source:
+        return {"error": "No source code provided"}
+    return tri_engine.analyze_code(source, filename)
+
+@app.post("/api/v62/tri-engine/deep-review")
+async def tri_engine_deep_review(request: Request):
+    """Cross-engine deep review — Code analysis + Science constants + Math proofs."""
+    body = await request.json()
+    source = body.get("source", "")
+    if not source:
+        return {"error": "No source code provided"}
+    return tri_engine.cross_engine_deep_review(source)
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  v9.0 QUANTUM RESEARCH API — 17 Discoveries, 102 Experiments
+#  Source: three_engine_quantum_research.py (2026-02-22)
+#  Fe-Sacred Coherence | Fe-PHI Lock | Berry Phase | Entropy→ZNE Bridge
+# ═══════════════════════════════════════════════════════════════════
+
+@app.get("/api/v14/quantum/research/status")
+async def quantum_research_status():
+    """Quantum research status — discoveries, constants, engine integration."""
+    try:
+        from l104_science_engine.constants import (
+            FE_SACRED_COHERENCE, FE_PHI_HARMONIC_LOCK, PHOTON_RESONANCE_ENERGY_EV,
+            FE_CURIE_LANDAUER_LIMIT, BERRY_PHASE_DETECTED, GOD_CODE_25Q_CONVERGENCE,
+            ENTROPY_CASCADE_DEPTH, ENTROPY_ZNE_BRIDGE_ENABLED, FIBONACCI_PHI_CONVERGENCE_ERROR,
+        )
+        return {
+            "version": "9.0.0",
+            "source": "three_engine_quantum_research.py",
+            "total_experiments": 102,
+            "total_discoveries": 17,
+            "pass_rate": "100%",
+            "constants": {
+                "fe_sacred_coherence": FE_SACRED_COHERENCE,
+                "fe_phi_harmonic_lock": FE_PHI_HARMONIC_LOCK,
+                "photon_resonance_ev": PHOTON_RESONANCE_ENERGY_EV,
+                "fe_curie_landauer": FE_CURIE_LANDAUER_LIMIT,
+                "berry_phase_detected": BERRY_PHASE_DETECTED,
+                "god_code_25q_convergence": GOD_CODE_25Q_CONVERGENCE,
+                "entropy_cascade_depth": ENTROPY_CASCADE_DEPTH,
+                "entropy_zne_bridge": ENTROPY_ZNE_BRIDGE_ENABLED,
+                "fibonacci_phi_error": FIBONACCI_PHI_CONVERGENCE_ERROR,
+            },
+            "engines_upgraded": ["ASI v9.0 (19-dim)", "AGI v58.0 (17-dim)", "Quantum v8.0 (9 algos)"],
+        }
+    except Exception as e:
+        return {"error": str(e), "status": "IMPORT_FAILED"}
+
+
+@app.get("/api/v14/quantum/research/discoveries")
+async def quantum_research_discoveries():
+    """List all 17 quantum research discoveries with metadata."""
+    return {
+        "total": 17,
+        "discoveries": [
+            {"id": 1, "name": "GOD_CODE Conservation", "phase": "Constants Validation", "value": "527.5184818492612 EXACT"},
+            {"id": 2, "name": "PHI Convergence", "phase": "Constants Validation", "value": "1.618033988749895"},
+            {"id": 3, "name": "VOID_CONSTANT Derivation", "phase": "Constants Validation", "value": "1.0416180339887497"},
+            {"id": 4, "name": "104-TET Step Verification", "phase": "Constants Validation", "value": "2^(1/104)"},
+            {"id": 5, "name": "Solfeggio Scale Lock", "phase": "Constants Validation", "value": "G(0)=528, G(43)=396"},
+            {"id": 6, "name": "Fe↔528Hz Sacred Coherence", "phase": "Wave Physics", "value": 0.9545454545454546},
+            {"id": 7, "name": "Landauer Limit at 300K", "phase": "Entropy", "value": "2.867e-21 J/bit"},
+            {"id": 8, "name": "Fibonacci→PHI Error", "phase": "Pure Math", "value": 2.5583188e-08},
+            {"id": 9, "name": "104-Depth Entropy Cascade", "phase": "Entropy", "value": "104 iterations"},
+            {"id": 10, "name": "Maxwell's Demon Efficiency", "phase": "Entropy", "value": ">0.95"},
+            {"id": 11, "name": "Entropy→ZNE Bridge", "phase": "Cross-Engine", "value": True},
+            {"id": 12, "name": "Photon Resonance Energy", "phase": "Physics", "value": 1.1216596549374545},
+            {"id": 13, "name": "Electron Resonance Spectrum", "phase": "Physics", "value": "7 resonances"},
+            {"id": 14, "name": "Fe↔PHI Harmonic Lock", "phase": "Wave Physics", "value": 0.9164078649987375},
+            {"id": 15, "name": "Berry Phase Holonomy 11D", "phase": "Topological", "value": True},
+            {"id": 16, "name": "Fe Curie Landauer Limit", "phase": "Physics", "value": 3.254191391208437e-18},
+            {"id": 17, "name": "GOD_CODE↔25Q Convergence", "phase": "Quantum", "value": 1.0303095348618383},
+        ],
+    }
+
+
+@app.post("/api/v14/quantum/research/fe-coherence")
+async def quantum_research_fe_coherence(req: Request):
+    """Run Fe-Sacred coherence computation (286↔528Hz wave analysis)."""
+    try:
+        data = await req.json()
+        base_freq = data.get("base_freq", 286.0)
+        target_freq = data.get("target_freq", 528.0)
+
+        from l104_asi.quantum import QuantumComputationCore
+        qc = QuantumComputationCore()
+        result = qc.fe_sacred_coherence(base_freq=base_freq, target_freq=target_freq)
+        return {"status": "OK", **result}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.post("/api/v14/quantum/research/fe-phi-lock")
+async def quantum_research_fe_phi_lock(req: Request):
+    """Run Fe-PHI harmonic lock computation (286↔286φ Hz phase-lock)."""
+    try:
+        data = await req.json()
+        base_freq = data.get("base_freq", 286.0)
+
+        from l104_asi.quantum import QuantumComputationCore
+        qc = QuantumComputationCore()
+        result = qc.fe_phi_harmonic_lock(base_freq=base_freq)
+        return {"status": "OK", **result}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.post("/api/v14/quantum/research/berry-phase")
+async def quantum_research_berry_phase(req: Request):
+    """Run Berry phase holonomy verification (11D topological protection)."""
+    try:
+        data = await req.json()
+        dimensions = data.get("dimensions", 11)
+
+        from l104_asi.quantum import QuantumComputationCore
+        qc = QuantumComputationCore()
+        result = qc.berry_phase_verify(dimensions=dimensions)
+        return {"status": "OK", **result}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.get("/api/v14/quantum/research/scoring")
+async def quantum_research_scoring():
+    """Get current ASI + AGI quantum research scoring dimensions."""
+    try:
+        from l104_asi import asi_core
+        from l104_agi import agi_core
+
+        asi_status = asi_core.three_engine_status()
+        agi_status = agi_core.three_engine_status()
+
+        return {
+            "asi": {
+                "version": asi_status.get("version", "unknown"),
+                "scoring_dimensions": asi_status.get("scoring_dimensions", 0),
+                "quantum_research": asi_status.get("quantum_research", {}),
+            },
+            "agi": {
+                "version": agi_status.get("version", "unknown"),
+                "scoring_dimensions": agi_status.get("scoring_dimensions", 0),
+                "quantum_research": agi_status.get("quantum_research", {}),
+            },
+        }
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
 if __name__ == "__main__":
     import uvicorn
     stats = intellect.get_stats()
@@ -5984,6 +6212,9 @@ if __name__ == "__main__":
     logger.info("   🔀 Entanglement Router: 8 BIDIRECTIONAL EPR CHANNELS")
     logger.info("   🧠 Resonance Network: NEURAL ACTIVATION CASCADES")
     logger.info("   🏥 Health Monitor: LIVENESS PROBES + AUTO-RECOVERY")
+    tri_status = tri_engine.get_status()
+    logger.info(f"   🔺 Tri-Engine: {tri_status['engines_online']}/3 online — Science+Math+Code")
+    logger.info(f"   🔬 Quantum Research: 17 discoveries · 102 experiments · ASI v9.0 · AGI v58.0")
     logger.info("=" * 60)
     uvicorn.run(app, host="0.0.0.0", port=8081, log_level="info", timeout_keep_alive=5, limit_concurrency=50)
 

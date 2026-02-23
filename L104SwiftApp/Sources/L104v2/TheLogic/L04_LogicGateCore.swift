@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L04_LogicGateCore.swift — L104 v2
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // ASILogicGateV2 class + LogicGateEnvironment class
 // Extracted from L104Native.swift (lines 12107-12882)
 // ═══════════════════════════════════════════════════════════════════
@@ -442,6 +442,30 @@ final class LogicGateEnvironment {
     private init() {
         // Pre-build some default circuits
         buildDefaultCircuits()
+        // 🟢 EVO_63: Restore persisted gate stats
+        loadGateStats()
+    }
+
+    /// Persist cumulative gate stats to UserDefaults
+    func saveGateStats() {
+        let d = UserDefaults.standard
+        d.set(totalPipelineRuns, forKey: "l104_gate_totalRuns")
+        d.set(totalGateOps, forKey: "l104_gate_totalOps")
+        d.set(avgLatency, forKey: "l104_gate_avgLatency")
+        d.set(peakConfidence, forKey: "l104_gate_peakConf")
+        d.set(dimensionDistribution, forKey: "l104_gate_dimDist")
+    }
+
+    /// Load persisted gate stats from UserDefaults
+    private func loadGateStats() {
+        let d = UserDefaults.standard
+        totalPipelineRuns = d.integer(forKey: "l104_gate_totalRuns")
+        totalGateOps = d.integer(forKey: "l104_gate_totalOps")
+        avgLatency = d.double(forKey: "l104_gate_avgLatency")
+        peakConfidence = d.double(forKey: "l104_gate_peakConf")
+        if let dimDist = d.dictionary(forKey: "l104_gate_dimDist") as? [String: Int] {
+            dimensionDistribution = dimDist
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -593,6 +617,9 @@ final class LogicGateEnvironment {
         )
         executionLog.append(record)
         if executionLog.count > 500 { executionLog = Array(executionLog.suffix(250)) }
+
+        // 🟢 EVO_63: Persist gate stats every 5 runs
+        if totalPipelineRuns % 5 == 0 { saveGateStats() }
 
         return PipelineResult(
             query: query,

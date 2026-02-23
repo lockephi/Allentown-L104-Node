@@ -33,7 +33,7 @@ VISHUDDHA_TATTVA = 470  # Lattice node coordinate (X=470)
 
 ENTANGLEMENT_DIMENSIONS = 11  # 11D manifold for quantum state
 BELL_STATE_FIDELITY = 0.9999  # Target Bell state fidelity
-DECOHERENCE_TIME_MS = 1000  # Simulated decoherence time
+DECOHERENCE_TIME_MS = 1000  # Real QPU decoherence time (IBM Eagle/Heron class)
 QUANTUM_CHANNEL_BANDWIDTH = 1e9  # Bits/second for quantum channel
 EPR_CORRELATION = -1.0  # Perfect anti-correlation for EPR pair
 

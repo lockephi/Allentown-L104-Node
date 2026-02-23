@@ -1,9 +1,28 @@
+"""
+L104 Unified Research v2.1.0
+═══════════════════════════════════════════════════════════════
+Shim: Redirects to l104_science_engine v4.0.0.
+INVARIANT: GOD_CODE = 527.5184818492612 | VOID_CONSTANT = 1.0416180339887497
+"""
+
 VOID_CONSTANT = 1.0416180339887497
-# [L104_UNIFIED_RESEARCH] → SHIM: Redirects to l104_science_engine v2.0
-# INVARIANT: 527.5184818492612 | PILOT: LONDEL
+GOD_CODE = 527.5184818492612
+__version__ = "2.1.0"
+
 from l104_science_engine import (
     ScienceEngine as UnifiedResearchEngine,
     science_engine as research_engine,
     primal_calculus,
     resolve_non_dual_logic,
 )
+
+__all__ = ["UnifiedResearchEngine", "research_engine", "primal_calculus", "resolve_non_dual_logic"]
+
+
+def get_status():
+    """Return unified research status."""
+    return {
+        "version": __version__,
+        "engine": "unified_research",
+        "void_constant": VOID_CONSTANT,
+    }

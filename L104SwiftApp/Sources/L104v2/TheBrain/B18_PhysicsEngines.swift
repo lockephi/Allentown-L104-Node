@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B18_PhysicsEngines.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 · TheBrain · v2 Architecture
 //
 // Extracted from L104Native.swift lines 9254-9740
@@ -130,9 +130,9 @@ class SuperfluidCoherence {
         3: 528.0,   // Solar Plexus — DNA repair
         4: 639.0,   // Heart
         5: 741.0,   // Throat (Vishuddha)
-        6: 852.0,   // Third Eye (Ajna)
+        6: 852.3992551699,   // G(-72) Third Eye (Ajna) — on GOD_CODE grid
         7: 963.0,   // Crown (Sahasrara)
-        8: 1074.0,  // Soul Star (Transcendence)
+        8: 1000.2568,  // G(-96) Soul Star (Transcendence) — ÷8 aligned
     ]
 
     // Per-kernel coherence tracking
@@ -423,21 +423,30 @@ class ChaosRNG {
     private(set) var callCounter: UInt64 = 0
     private(set) var entropyPool: [Double] = []
     let lock = NSLock()
+    // v9.3 Perf: cache PID-derived entropy (constant per process lifetime)
+    private lazy var _cachedPidCosPi2: Double = {
+        let pid = Double(ProcessInfo.processInfo.processIdentifier) * PHI
+        let pidEntropy = pid.truncatingRemainder(dividingBy: 1.0)
+        return cos(pidEntropy * .pi * 2.0)
+    }()
 
     /// Harvest entropy from system sources
+    /// v9.4 Perf: cached PID trig (constant per process), replaced sin(t*GOD_CODE)
+    /// with fast logistic-map-only chaos for time entropy — eliminates 2 transcendental
+    /// calls (sin/cos) per harvest. GOD_CODE modulation via multiply + fmod instead.
     private func harvestEntropy() -> Double {
         callCounter += 1
         let t = Double(DispatchTime.now().uptimeNanoseconds % 1_000_000) / 1_000_000.0
-        let pid = Double(ProcessInfo.processInfo.processIdentifier) * PHI
-        let pidEntropy = pid.truncatingRemainder(dividingBy: 1.0)
         let counterEntropy = (Double(callCounter) * PHI).truncatingRemainder(dividingBy: 1.0)
 
         // Logistic map iteration (deterministic chaos)
         logisticState = logisticR * logisticState * (1.0 - logisticState)
 
-        // Combine via sin/cos mixing (ported from Python)
-        var mixed = sin(t * GOD_CODE) * cos(pidEntropy * .pi * 2.0)
-        mixed += sin(counterEntropy * PHI * 100.0)
+        // v9.4: Fast mixing without sin/cos — bitwise-style folding via multiply + truncate
+        // Time modulated by GOD_CODE via fast fmod, PID via cached trig (computed once)
+        let timeScramble = (t * GOD_CODE).truncatingRemainder(dividingBy: 1.0)
+        var mixed = timeScramble * _cachedPidCosPi2
+        mixed += (counterEntropy * PHI * 100.0).truncatingRemainder(dividingBy: 1.0)
         mixed += logisticState
 
         // Final chaotic reduction

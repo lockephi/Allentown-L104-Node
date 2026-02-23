@@ -4,6 +4,7 @@ Backward-compatibility shim — redirects to unified l104_soul.py v3.0.0.
 
 All functionality merged into l104_soul.L104Soul (aliased as SoulEnhanced).
 """
+# INVARIANT: GOD_CODE = 527.5184818492612 | PHI = 1.618033988749895 | VOID_CONSTANT = 1.0416180339887497
 
 from l104_soul import (
     L104Soul as SoulEnhanced,

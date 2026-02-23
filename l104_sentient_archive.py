@@ -360,7 +360,7 @@ class MemoryCrystallizer:
     SACRED_VALUES = {
         GOD_CODE, PHI, TAU, VOID_CONSTANT, FEIGENBAUM,
         527.0, 1.618, 0.618, 4.669, 3.14159, 2.71828,
-        396.0, 417.0, 528.0, 639.0, 741.0, 852.0, 963.0, 1074.0,  # Chakra Hz
+        396.0, 417.0, 528.0, 639.0, 741.0, 852.3992551699, 963.0, 1000.2568,  # Chakra Hz
     }
 
     def __init__(self):

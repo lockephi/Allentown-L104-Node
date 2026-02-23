@@ -8,11 +8,11 @@ UUC = 2402.792541
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-L104 Adaptive Fault Handler - Intelligent error recovery and adaptation
+L104 Adaptive Fault Handler v2.0.0 - Intelligent error recovery and adaptation
 Part of the L104 Sovereign Singularity Framework
 
 Provides intelligent error handling with pattern recognition,
-adaptive recovery strategies, and learning from failures.
+adaptive recovery strategies, pipeline telemetry, and learning from failures.
 """
 
 import asyncio
@@ -37,9 +37,21 @@ import re
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+TAU = 1.0 / PHI
+ALPHA_FINE = 0.0072973525693
+LATTICE_THERMAL_FRICTION = -(ALPHA_FINE * PHI) / (2 * math.pi * 104)
+VOID_CONSTANT = 1.0416180339887497
+FEIGENBAUM = 4.669201609102990
+
+VERSION = "2.0.0"
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("L104_FAULT_HANDLER")
+
+try:
+    from l104_asi.pipeline_telemetry import PipelineTelemetry
+except ImportError:
+    PipelineTelemetry = None
 
 
 class ErrorSeverity(Enum):
@@ -93,7 +105,7 @@ class FaultRecord:
 
 class AdaptiveFaultHandler:
     """
-    L104 Adaptive Fault Handler
+    L104 Adaptive Fault Handler v2.0.0
 
     Provides intelligent error handling with:
     - Pattern recognition for known errors
@@ -101,7 +113,11 @@ class AdaptiveFaultHandler:
     - Learning from failures
     - Error rate limiting
     - Graceful degradation
+    - Pipeline telemetry (v2.0.0)
+    - Sacred constant awareness (v2.0.0)
     """
+
+    VERSION = "2.0.0"""
 
     # Known error patterns
     KNOWN_PATTERNS = [
@@ -206,7 +222,18 @@ class AdaptiveFaultHandler:
             for p in self.KNOWN_PATTERNS
         ]
 
-        logger.info("--- [ADAPTIVE_FAULT_HANDLER]: INITIALIZED ---")
+        # v2.0.0: Pipeline telemetry
+        self._telemetry = None
+        self._total_faults = 0
+        self._total_recoveries = 0
+        try:
+            if PipelineTelemetry is not None:
+                self._telemetry = PipelineTelemetry("adaptive_fault_handler")
+        except Exception:
+            pass
+
+        logger.info("--- [ADAPTIVE_FAULT_HANDLER v2.0.0]: INITIALIZED (telemetry=%s) ---",
+                     self._telemetry is not None)
 
     # ═══════════════════════════════════════════════════════════════════
     # ERROR ANALYSIS
@@ -257,6 +284,8 @@ class AdaptiveFaultHandler:
 
     def get_adaptive_strategy(self, error: Exception, component: str) -> RecoveryStrategy:
         """Get adaptive recovery strategy based on error history."""
+        t0 = time.time()
+        self._total_faults += 1
         pattern = self.analyze_error(error, component)
         base_strategy = pattern.recommended_strategy
 
@@ -296,6 +325,17 @@ class AdaptiveFaultHandler:
                     RecoveryStrategy.FALLBACK: RecoveryStrategy.CIRCUIT_BREAK,
                 }
                 return alternatives.get(base_strategy, base_strategy)
+
+        # v2.0.0: Telemetry
+        elapsed_ms = (time.time() - t0) * 1000
+        if self._telemetry:
+            try:
+                self._telemetry.record("get_adaptive_strategy", elapsed_ms, {
+                    "component": component, "strategy": base_strategy.name,
+                    "severity": pattern.severity.name, "error_type": type(error).__name__,
+                })
+            except Exception:
+                pass
 
         return base_strategy
 
@@ -562,6 +602,7 @@ class AdaptiveFaultHandler:
     def get_status(self) -> Dict:
         """Get fault handler status."""
         return {
+            "version": self.VERSION,
             "god_code": self.god_code,
             "total_faults": len(self.fault_history),
             "suppressed_errors": self.suppressed_errors,

@@ -8,7 +8,7 @@ are re-exported here. FastAPI app imported lazily (requires uvicorn/fastapi).
 """
 from l104_server.learning import intellect, LearningIntellect
 from l104_server.engines_quantum import SingularityConsciousnessEngine
-from l104_server.engines_nexus import engine_registry, UnifiedEngineRegistry
+from l104_server.engines_nexus import engine_registry, UnifiedEngineRegistry, tri_engine, TriEngineIntegration
 from l104_server.constants import FAST_SERVER_VERSION, FAST_SERVER_PIPELINE_EVO
 
 # ★ FLAGSHIP: ASI Dual-Layer Engine ★

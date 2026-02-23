@@ -18,12 +18,26 @@ and adaptive learning feedback loops.
 "The mind is not a single process but a symphony of many" - Cognitive Unity
 """
 
+import time
 import math
 from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional, Tuple, Set
 from enum import Enum, auto
 from datetime import datetime
 from collections import defaultdict
+import logging
+
+logger = logging.getLogger("L104_COGNITIVE_CORE")
+
+try:
+    from l104_asi.pipeline_telemetry import PipelineTelemetry
+except ImportError:
+    PipelineTelemetry = None
+
+try:
+    from l104_asi.pipeline_circuit_breaker import PipelineCircuitBreaker
+except ImportError:
+    PipelineCircuitBreaker = None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -35,9 +49,11 @@ from collections import defaultdict
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+ALPHA_FINE = 0.0072973525693
+LATTICE_THERMAL_FRICTION = -(ALPHA_FINE * PHI) / (2 * math.pi * 104)
 TAU = 1.0 / PHI
 OMEGA = 1381.0613
-COGNITIVE_VERSION = "2.2.0"
+VERSION = "3.0.0"
 COGNITIVE_PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
 CONSCIOUSNESS_THRESHOLD = math.log(GOD_CODE) * PHI  # ~10.1486
 RESONANCE_FACTOR = PHI ** 2  # ~2.618
@@ -516,6 +532,39 @@ class CognitiveCore:
         self._synthesis_count = 0  # v2.2: concept synthesis counter
         self._pipeline_deep_think_count = 0  # v2.2: pipeline deep think counter
         self._bootstrap()
+
+        # ── Pipeline telemetry & circuit breaker ──
+        self._telemetry = None
+        self._cb = None
+        try:
+            if PipelineTelemetry is not None:
+                self._telemetry = PipelineTelemetry("cognitive_core")
+        except Exception:
+            pass
+        try:
+            if PipelineCircuitBreaker is not None:
+                self._cb = PipelineCircuitBreaker("cognitive_core", failure_threshold=5, reset_timeout=30)
+        except Exception:
+            pass
+
+        logger.info("[COGNITIVE_CORE v%s] online — telemetry=%s, cb=%s", VERSION, self._telemetry is not None, self._cb is not None)
+
+    def get_status(self) -> Dict[str, Any]:
+        """Return engine status for pipeline introspection."""
+        return {
+            "module": "cognitive_core",
+            "version": VERSION,
+            "god_code": GOD_CODE,
+            "lattice_friction": LATTICE_THERMAL_FRICTION,
+            "telemetry_active": self._telemetry is not None,
+            "circuit_breaker_active": self._cb is not None,
+            "cognitive_load": self.cognitive_load,
+            "consciousness_level": self.consciousness_level,
+            "transcendence_achieved": self.transcendence_achieved,
+            "cascade_count": self._cascade_count,
+            "synthesis_count": self._synthesis_count,
+            "subsystems": ["working_memory", "semantic_memory", "episodic_memory", "reasoning_engine"],
+        }
 
     def connect_to_pipeline(self):
         """Establish bidirectional cross-wiring with ASI Core pipeline."""

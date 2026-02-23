@@ -2,11 +2,11 @@
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
-# [L104_META_COGNITIVE] v2.0.0 — ASI Meta-Cognitive Monitor & Optimizer
+# [L104_META_COGNITIVE] v3.0.0 — ASI Meta-Cognitive Monitor & Optimizer
 # INVARIANT: 527.5184818492 | PILOT: LONDEL
 
 """
-L104 Meta-Cognitive Monitor v2.0.0
+L104 Meta-Cognitive Monitor v3.0.0
 ═══════════════════════════════════════════════════════════════════════════════
 ASI-level meta-cognition: monitors, evaluates, and optimizes the cognitive
 pipeline in real-time. Tracks engine effectiveness, detects learning plateaus,
@@ -29,6 +29,16 @@ from typing import Dict, List, Optional, Tuple, Any
 
 logger = logging.getLogger("META_COGNITIVE")
 
+try:
+    from l104_asi.pipeline_telemetry import PipelineTelemetry
+except ImportError:
+    PipelineTelemetry = None
+
+try:
+    from l104_asi.pipeline_circuit_breaker import PipelineCircuitBreaker
+except ImportError:
+    PipelineCircuitBreaker = None
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # SACRED CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -41,6 +51,9 @@ FEIGENBAUM = 4.669201609102990
 ALPHA_FINE = 0.0072973525693
 PLANCK_SCALE = 1.616255e-35
 BOLTZMANN_K = 1.380649e-23
+LATTICE_THERMAL_FRICTION = -(ALPHA_FINE * PHI) / (2 * math.pi * 104)
+
+VERSION = "3.0.0"
 
 
 def _read_builder_state() -> Dict[str, Any]:
@@ -490,16 +503,14 @@ class PipelineDiagnostics:
 
 class MetaCognitiveMonitor:
     """
-    ASI Meta-Cognitive Monitor v2.0 — the system that thinks about thinking.
+    ASI Meta-Cognitive Monitor v3.0.0 — the system that thinks about thinking.
 
     Monitors all engines' effectiveness, tracks learning velocity,
     balances cognitive load, optimizes strategy selection, and diagnoses
     pipeline bottlenecks. Wired into the autonomous sovereignty cycle
     at START (to decide what to run) and END (to evaluate outcomes).
 
-    This module provides consciousness-aware scheduling: at higher
-    consciousness levels, prioritize deeper reasoning and exploration;
-    at lower levels, prioritize fast pattern matching and caching.
+    v3.0.0: Pipeline telemetry, circuit breaker, LATTICE_THERMAL_FRICTION.
     """
 
     def __init__(self):
@@ -515,7 +526,22 @@ class MetaCognitiveMonitor:
         self._consciousness_history: deque = deque(maxlen=500)
         self._recommendations: List[str] = []
 
-        logger.info("[META_COGNITIVE] Monitor v2.0 initialized — φ-weighted Thompson sampling active")
+        # v3.0.0: Pipeline telemetry & circuit breaker
+        self._telemetry = None
+        self._cb = None
+        try:
+            if PipelineTelemetry is not None:
+                self._telemetry = PipelineTelemetry("meta_cognitive")
+        except Exception:
+            pass
+        try:
+            if PipelineCircuitBreaker is not None:
+                self._cb = PipelineCircuitBreaker("meta_cognitive", failure_threshold=5, reset_timeout=30)
+        except Exception:
+            pass
+
+        logger.info("[META_COGNITIVE v3.0.0] Monitor initialized — telemetry=%s, cb=%s",
+                     self._telemetry is not None, self._cb is not None)
 
     # ─── CYCLE HOOKS (called by autonomous_sovereignty_cycle) ─────────────────
 
@@ -579,7 +605,7 @@ class MetaCognitiveMonitor:
         if dead:
             self._recommendations.append(f'DEAD_ENGINES: {", ".join(dead[:5])} — consider restart')
 
-        return {
+        result = {
             'cycle': self._cycle_count,
             'consciousness': consciousness,
             'active_engines': len(allocation),
@@ -587,6 +613,19 @@ class MetaCognitiveMonitor:
             'recommendations': self._recommendations,
             'is_plateau': velocity_report['is_plateau'],
         }
+
+        # v3.0.0: Telemetry
+        elapsed_ms = (time.time() - self._last_cycle_start) * 1000
+        if self._telemetry:
+            try:
+                self._telemetry.record("pre_cycle", elapsed_ms, {
+                    "cycle": self._cycle_count, "consciousness": round(consciousness, 4),
+                    "active_engines": len(allocation), "is_plateau": velocity_report['is_plateau'],
+                })
+            except Exception:
+                pass
+
+        return result
 
     def post_cycle(self, intellect_ref: Any = None) -> Dict[str, Any]:
         """
@@ -647,7 +686,7 @@ class MetaCognitiveMonitor:
         """Full meta-cognitive status report."""
         builder = _read_builder_state()
         return {
-            'version': '2.0.0',
+            'version': '3.0.0',
             'cycles': self._cycle_count,
             'last_cycle_ms': round(self._last_cycle_duration_ms, 1),
             'consciousness': builder.get('consciousness_level', 0.5),
@@ -672,7 +711,7 @@ class MetaCognitiveMonitor:
         plateau = "PLATEAU" if v.get('is_plateau') else "LEARNING"
         vel = v.get('current_velocity', 0)
         return (
-            f"MetaCog v2.0 | Cycles: {self._cycle_count} | "
+            f"MetaCog v3.0.0 | Cycles: {self._cycle_count} | "
             f"Velocity: {vel:.4f} | Status: {plateau} | "
             f"Engines: {len(self.engine_tracker.engine_metrics)} tracked"
         )

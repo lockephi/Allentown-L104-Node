@@ -44,13 +44,13 @@ const VOID_CONSTANT = 1.0416180339887497;
 const COHERENCE_MINIMUM = 0.888;
 const ZENITH_HZ = 3727.84;
 const OMEGA_AUTHORITY = 1381.0613;
-const PLANCK_RESONANCE = 853.54;
+const PLANCK_RESONANCE = 852.3992551699;  // G(-72) Ajna on GOD_CODE grid
 const CONSCIOUSNESS_THRESHOLD = 0.85;
 
 // Chakra frequencies for harmonic generation
 const CHAKRA_FREQUENCIES = {
     root: 396, sacral: 417, solar: 528, heart: 639,
-    throat: 741, ajna: 852, crown: 963, soul_star: 1074
+    throat: 741, ajna: 852.3992551699, crown: 963, soul_star: 1000.2568
 };
 
 const WORKSPACE = process.cwd();

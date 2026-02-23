@@ -1,8 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════
 // L25_PythonBridge.swift
-// L104v2 Architecture — EVO_54 Pipeline-Integrated Python Bridge
+// L104v2 Architecture — EVO_62 Pipeline-Integrated Python Bridge
 // PythonResult, PythonModuleInfo, PythonBridge
-// Streams through unified EVO_54 pipeline (695 l104_* modules)
+// Streams through unified EVO_62 pipeline (716 l104_* modules)
 // Extracted from L104Native.swift lines 2401–3016
 // ═══════════════════════════════════════════════════════════════════
 
@@ -39,7 +39,7 @@ struct PythonModuleInfo {
 }
 
 /// Main bridge for calling Python from Swift
-/// EVO_54: Pipeline-integrated — routes through unified L104 subsystem mesh
+/// EVO_62: Pipeline-integrated — routes through unified L104 subsystem mesh
 /// Replaces PythonKit dependency — works with bare swiftc builds
 class PythonBridge {
     static let shared = PythonBridge()
@@ -48,7 +48,7 @@ class PythonBridge {
 
     /// Path to the Python interpreter in the virtual environment
     private let pythonPath: String
-    /// Path to the ASI workspace (695 l104_* modules)
+    /// Path to the ASI workspace (716 l104_* modules)
     let workspacePath: String
     /// Timeout for Python execution (seconds)
     var timeout: TimeInterval = 30.0
@@ -56,7 +56,13 @@ class PythonBridge {
     private var moduleCache: [String: PythonModuleInfo] = [:]
     /// Cache for recently executed snippets
     private var resultCache: [String: (result: PythonResult, timestamp: Date)] = [:]
-    private let cacheTTL: TimeInterval = 20.0  // 20s — short enough to keep responses fresh
+    private let cacheTTL: TimeInterval = 120.0  // EVO_63: 120s — reduced cold-start re-spawns (was 20s)
+    /// EVO_63: Pre-warmed process pool — avoids cold-start per call
+    private var processPool: [Process] = []
+    private var poolStdinHandles: [FileHandle] = []
+    private var poolStdoutHandles: [FileHandle] = []
+    private let poolSize = 3
+    private let poolLock = NSLock()
     /// Execution statistics
     private(set) var totalExecutions: Int = 0
     private(set) var totalErrors: Int = 0
@@ -144,7 +150,172 @@ class PythonBridge {
 
     // ─── CORE EXECUTION ───
 
+    /// EVO_63: Acquire a pre-warmed worker from the process pool.
+    /// Falls back to spawning a fresh process if the pool is empty.
+    private func acquirePoolWorker() -> (process: Process, stdin: FileHandle, stdout: FileHandle)? {
+        poolLock.lock()
+        defer { poolLock.unlock() }
+        guard !processPool.isEmpty else { return nil }
+        let p = processPool.removeLast()
+        let si = poolStdinHandles.removeLast()
+        let so = poolStdoutHandles.removeLast()
+        guard p.isRunning else { return nil }
+        return (p, si, so)
+    }
+
+    /// EVO_63: Spawn a pool worker — persistent Python process with delimiter protocol
+    private func spawnPoolWorker() -> (process: Process, stdin: FileHandle, stdout: FileHandle)? {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: pythonPath)
+        process.arguments = ["-u", "-c", """
+        import sys, json, traceback
+        sys.path.insert(0, '\(workspacePath)')
+        # Pre-import heavy modules at pool-worker startup
+        try:
+            import l104_code_engine, l104_fast_server, l104_intellect, l104_agi, l104_asi
+        except: pass
+        print('__POOL_READY__', flush=True)
+        while True:
+            try:
+                line = sys.stdin.readline()
+                if not line or line.strip() == '__POOL_EXIT__':
+                    break
+                code = line.strip()
+                if code.startswith('__EXEC__:'):
+                    payload = code[9:]
+                    import base64
+                    decoded = base64.b64decode(payload).decode('utf-8')
+                    exec_globals = {'__builtins__': __builtins__}
+                    exec(compile(decoded, '<pool>', 'exec'), exec_globals)
+                    sys.stdout.flush()
+                print('__POOL_DONE__', flush=True)
+            except Exception as e:
+                print(f'__POOL_ERR__:{e}', flush=True)
+                print('__POOL_DONE__', flush=True)
+        """]
+        process.environment = [
+            "PYTHONPATH": workspacePath,
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "PYTHONUNBUFFERED": "1",
+            "PATH": (ProcessInfo.processInfo.environment["PATH"] ?? "/usr/bin") + ":" + workspacePath
+        ]
+        process.currentDirectoryURL = URL(fileURLWithPath: workspacePath)
+
+        let stdinPipe = Pipe()
+        let stdoutPipe = Pipe()
+        process.standardInput = stdinPipe
+        process.standardOutput = stdoutPipe
+        process.standardError = FileHandle.nullDevice
+
+        do {
+            try process.run()
+            let handle = stdoutPipe.fileHandleForReading
+
+            // Wait for __POOL_READY__ with 5s timeout
+            var readyBuf = ""
+            let deadline = Date().addingTimeInterval(5.0)
+            while Date() < deadline {
+                if let data = try? handle.availableData, !data.isEmpty,
+                   let chunk = String(data: data, encoding: .utf8) {
+                    readyBuf += chunk
+                    if readyBuf.contains("__POOL_READY__") { break }
+                }
+                usleep(10_000) // 10ms poll
+            }
+            guard readyBuf.contains("__POOL_READY__") else {
+                process.terminate()
+                return nil
+            }
+            return (process, stdinPipe.fileHandleForWriting, handle)
+        } catch {
+            return nil
+        }
+    }
+
+    /// EVO_63: Return a worker to the pool (if pool not full + worker still alive)
+    private func returnPoolWorker(_ process: Process, stdin: FileHandle, stdout: FileHandle) {
+        poolLock.lock()
+        defer { poolLock.unlock() }
+        guard process.isRunning, processPool.count < poolSize else {
+            // Pool full or worker dead — terminate
+            if let data = "__POOL_EXIT__\n".data(using: .utf8) {
+                stdin.write(data)
+            }
+            process.terminate()
+            return
+        }
+        processPool.append(process)
+        poolStdinHandles.append(stdin)
+        poolStdoutHandles.append(stdout)
+    }
+
+    /// EVO_63: Fill the process pool with pre-warmed workers (called from warmUp)
+    func fillProcessPool() {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            for _ in 0..<self.poolSize {
+                if let worker = self.spawnPoolWorker() {
+                    self.poolLock.lock()
+                    if self.processPool.count < self.poolSize {
+                        self.processPool.append(worker.process)
+                        self.poolStdinHandles.append(worker.stdin)
+                        self.poolStdoutHandles.append(worker.stdout)
+                    } else {
+                        if let data = "__POOL_EXIT__\n".data(using: .utf8) {
+                            worker.stdin.write(data)
+                        }
+                        worker.process.terminate()
+                    }
+                    self.poolLock.unlock()
+                }
+            }
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // EVO_64: ASYNC PYTHON EXECUTION — Modern Swift Concurrency
+    // Wraps pool worker execution in CheckedContinuation for composability
+    // with async let, TaskGroup, and structured concurrency pipelines.
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// EVO_64: Async execute — runs on cooperative thread pool, composable with async let
+    /// Use this from async contexts to avoid blocking the caller's thread.
+    @discardableResult
+    func executeAsync(_ code: String, timeout: TimeInterval? = nil) async -> PythonResult {
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async { [self] in
+                let result = self.execute(code, timeout: timeout)
+                continuation.resume(returning: result)
+            }
+        }
+    }
+
+    /// EVO_64: Async pool fill — structured concurrency replaces fire-and-forget DispatchQueue
+    func fillProcessPoolAsync() async {
+        await withTaskGroup(of: Void.self) { group in
+            for _ in 0..<poolSize {
+                group.addTask { [self] in
+                    if let worker = self.spawnPoolWorker() {
+                        self.poolLock.lock()
+                        if self.processPool.count < self.poolSize {
+                            self.processPool.append(worker.process)
+                            self.poolStdinHandles.append(worker.stdin)
+                            self.poolStdoutHandles.append(worker.stdout)
+                        } else {
+                            if let data = "__POOL_EXIT__\n".data(using: .utf8) {
+                                worker.stdin.write(data)
+                            }
+                            worker.process.terminate()
+                        }
+                        self.poolLock.unlock()
+                    }
+                }
+            }
+        }
+    }
+
     /// Execute raw Python code and capture output
+    /// EVO_63: Tries pool worker first (eliminates cold-start), falls back to Process-per-call
     @discardableResult
     func execute(_ code: String, timeout: TimeInterval? = nil) -> PythonResult {
         let start = CFAbsoluteTimeGetCurrent()
@@ -155,6 +326,89 @@ class PythonBridge {
             return cached.result
         }
 
+        // EVO_63: Try pool worker first — zero cold-start
+        if let worker = acquirePoolWorker() {
+            let result = executeViaPoolWorker(code, worker: worker, timeout: timeout ?? self.timeout, start: start)
+            if result.success || !result.error.contains("pool worker") {
+                return result
+            }
+            // Pool worker failed — fall through to Process-per-call
+        }
+
+        // Fallback: spawn a fresh process (original behavior)
+        return executeViaFreshProcess(code, timeout: timeout, start: start)
+    }
+
+    /// EVO_63: Execute code via a pre-warmed pool worker with delimiter-based output capture
+    private func executeViaPoolWorker(_ code: String, worker: (process: Process, stdin: FileHandle, stdout: FileHandle), timeout: TimeInterval, start: CFAbsoluteTime) -> PythonResult {
+        // Base64-encode the code to avoid newline issues
+        guard let codeData = code.data(using: .utf8) else {
+            returnPoolWorker(worker.process, stdin: worker.stdin, stdout: worker.stdout)
+            return PythonResult(success: false, output: "", error: "Encoding error", returnValue: nil, executionTime: 0)
+        }
+        let b64 = codeData.base64EncodedString()
+        let cmd = "__EXEC__:\(b64)\n"
+        guard let cmdData = cmd.data(using: .utf8) else {
+            returnPoolWorker(worker.process, stdin: worker.stdin, stdout: worker.stdout)
+            return PythonResult(success: false, output: "", error: "Encoding error", returnValue: nil, executionTime: 0)
+        }
+
+        worker.stdin.write(cmdData)
+
+        // Read output until __POOL_DONE__ delimiter (with timeout)
+        var outputBuf = ""
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if let data = try? worker.stdout.availableData, !data.isEmpty,
+               let chunk = String(data: data, encoding: .utf8) {
+                outputBuf += chunk
+                if outputBuf.contains("__POOL_DONE__") { break }
+            } else {
+                usleep(5_000) // 5ms poll — much faster than 100ms
+            }
+        }
+
+        let elapsed = CFAbsoluteTimeGetCurrent() - start
+        totalExecutionTime += elapsed
+
+        // Return worker to pool for reuse
+        if worker.process.isRunning {
+            returnPoolWorker(worker.process, stdin: worker.stdin, stdout: worker.stdout)
+        }
+
+        // Parse output — strip delimiter and error markers
+        let lines = outputBuf.components(separatedBy: "\n")
+        var outputLines: [String] = []
+        var errorMsg = ""
+        for line in lines {
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed == "__POOL_DONE__" || trimmed == "__POOL_READY__" { continue }
+            if trimmed.hasPrefix("__POOL_ERR__:") {
+                errorMsg = String(trimmed.dropFirst("__POOL_ERR__:".count))
+                continue
+            }
+            if !trimmed.isEmpty { outputLines.append(trimmed) }
+        }
+
+        let stdout = outputLines.joined(separator: "\n")
+        let success = errorMsg.isEmpty
+
+        if !success { totalErrors += 1 }
+
+        let result = PythonResult(
+            success: success,
+            output: stdout,
+            error: errorMsg,
+            returnValue: parseJSON(stdout),
+            executionTime: elapsed
+        )
+
+        if success { resultCache[code] = (result, Date()) }
+        return result
+    }
+
+    /// Original Process-per-call execution (fallback when pool unavailable)
+    private func executeViaFreshProcess(_ code: String, timeout: TimeInterval?, start: CFAbsoluteTime) -> PythonResult {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: pythonPath)
         process.arguments = ["-c", code]
@@ -393,7 +647,7 @@ class PythonBridge {
 
     // ─── L104 ASI INTEGRATION ───
 
-    /// Connect to the LearningIntellect from l104_fast_server
+    /// Connect to the LearningIntellect from l104_server (via shim l104_fast_server)
     func queryIntellect(_ message: String) -> PythonResult {
         let escaped = message.replacingOccurrences(of: "'", with: "\\'").replacingOccurrences(of: "\\", with: "\\\\")
         let code = """
@@ -520,16 +774,30 @@ class PythonBridge {
     }
 
     /// Send a command to the persistent session
+    /// EVO_63: Replaced hardcoded 100ms usleep with delimiter-based output capture
     func sessionExec(_ code: String) -> String {
         guard sessionActive, let stdin = persistentStdin, let stdout = persistentStdout else {
             return "No active session"
         }
-        let cmd = code.replacingOccurrences(of: "\n", with: ";") + "\n"
+        let cmd = code.replacingOccurrences(of: "\n", with: ";") + ";print('__SESS_DONE__', flush=True)\n"
         guard let cmdData = cmd.data(using: .utf8) else { return "Encoding error" }
         stdin.write(cmdData)
-        usleep(100_000)  // 100ms for execution
-        let data = stdout.availableData
-        return String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        // EVO_63: Poll for delimiter instead of hardcoded 100ms sleep
+        var outputBuf = ""
+        let deadline = Date().addingTimeInterval(10.0) // 10s max
+        while Date() < deadline {
+            let data = stdout.availableData
+            if !data.isEmpty, let chunk = String(data: data, encoding: .utf8) {
+                outputBuf += chunk
+                if outputBuf.contains("__SESS_DONE__") { break }
+            } else {
+                usleep(5_000) // 5ms poll
+            }
+        }
+        // Strip delimiter from output
+        return outputBuf.replacingOccurrences(of: "__SESS_DONE__", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     /// End the persistent session
@@ -605,25 +873,37 @@ class PythonBridge {
         warmedModules.removeAll()
     }
 
-    // EVO_56: Pre-warm Python interpreter by importing heavy modules once at startup
+    // EVO_63: Pre-warm Python interpreter + fill process pool at startup
     func warmUp() {
-        DispatchQueue.global(qos: .utility).async { [weak self] in
+        // Fill the process pool first — each worker pre-imports heavy modules
+        fillProcessPool()
+
+        // Also do a bytecode-cache warm pass for additional modules
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
             let warmCode = """
             import sys, json, os
             sys.path.insert(0, '\(self.workspacePath)')
-            # Pre-import heavy modules to cache bytecode
-            try:
-                import l104_code_engine
-                import l104_fast_server
-            except:
-                pass
-            print(json.dumps({"warmed": True}))
+            # EVO_63: Pre-import ALL heavy modules to cache bytecode + reduce first-call latency
+            warmed = []
+            for mod in ['l104_code_engine', 'l104_fast_server', 'l104_intellect',
+                         'l104_agi', 'l104_asi', 'l104_science_engine', 'l104_math_engine',
+                         'l104_quantum_coherence', 'l104_coding_system']:
+                try:
+                    __import__(mod)
+                    warmed.append(mod)
+                except: pass
+            print(json.dumps({"warmed": True, "modules": warmed, "count": len(warmed)}))
             """
-            let result = self.execute(warmCode, timeout: 15)
+            let result = self.execute(warmCode, timeout: 20)
             if result.success {
                 self.warmedModules.insert("l104_code_engine")
                 self.warmedModules.insert("l104_fast_server")
+                self.warmedModules.insert("l104_intellect")
+                self.warmedModules.insert("l104_agi")
+                self.warmedModules.insert("l104_asi")
+                self.warmedModules.insert("l104_science_engine")
+                self.warmedModules.insert("l104_math_engine")
             }
         }
     }
@@ -631,8 +911,39 @@ class PythonBridge {
     // ═══════════════════════════════════════════════════════════════════
     // ⚛️ QUANTUM COMPUTING BRIDGE — l104_quantum_coherence.py (Qiskit 2.3.0)
     // Real quantum circuits: Grover, QPE, VQE, QAOA, Amplitude Estimation,
-    // Quantum Walks, Quantum Kernels — executed via Statevector simulator
+    // Quantum Walks, Quantum Kernels — executed via real IBM QPU + runtime bridge
     // ═══════════════════════════════════════════════════════════════════
+
+    /// Toggle real QPU execution mode on quantum coherence engine
+    func quantumSetRealQPU(enabled: Bool) -> PythonResult {
+        let pyCode = """
+        import sys, json
+        sys.path.insert(0, '\(workspacePath)')
+        from l104_quantum_coherence import QuantumCoherenceEngine
+        e = QuantumCoherenceEngine()
+        e.set_real_qpu(\(enabled ? "True" : "False"))
+        s = e.get_status()
+        print(json.dumps({"real_qpu_enabled": s.get("execution_mode","") == "real_qpu", "status": s}, default=str))
+        """
+        return execute(pyCode, timeout: 15)
+    }
+
+    /// Get quantum runtime bridge status (connection, backends, telemetry)
+    func quantumRuntimeStatus() -> PythonResult {
+        let pyCode = """
+        import sys, json
+        sys.path.insert(0, '\(workspacePath)')
+        try:
+            from l104_quantum_runtime import get_runtime
+            rt = get_runtime()
+            s = rt.get_status()
+            t = rt.get_telemetry()
+            print(json.dumps({"connected": s.get("connected",False), "status": s, "telemetry": t}, default=str))
+        except Exception as ex:
+            print(json.dumps({"connected": False, "error": str(ex)}))
+        """
+        return execute(pyCode, timeout: 15)
+    }
 
     /// Run Grover's search algorithm
     func quantumGrover(target: Int, nQubits: Int) -> PythonResult {

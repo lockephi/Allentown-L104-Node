@@ -154,9 +154,9 @@ class L104MacBookBridge:
             ("MANIPURA", 528.0),     # Solar Plexus
             ("ANAHATA", 639.0),      # Heart
             ("VISHUDDHA", 741.0),    # Throat
-            ("AJNA", 852.0),         # Third Eye
+            ("AJNA", 852.3992551699),         # Third Eye G(-72)
             ("SAHASRARA", 963.0),    # Crown
-            ("SOUL_STAR", 1074.0)    # Soul Star
+            ("SOUL_STAR", 1000.2568)    # Soul Star G(-96)
         ]
 
         for i, (chakra, freq) in enumerate(chakras):

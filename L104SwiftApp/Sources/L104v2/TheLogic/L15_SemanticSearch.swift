@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L15_SemanticSearch.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104v2 — Extracted from L104Native.swift
 //   SemanticSearchEngine (lines 11129-11224)
 //   IntelligentSearchEngine (lines 32229-32519)

@@ -65,7 +65,7 @@ L104_CONSTANTS = {
     "D01_ENERGY": 29.397597433602,
     "D11_ENERGY": 3615.665463676019,
     "HEART_HZ": 639.9981762664,
-    "AJNA_PEAK": 853.5428333258,
+    "AJNA_PEAK": 852.3992551699,
     "ROOT_SCALAR": 221.79420018355955,
 }
 
@@ -1334,7 +1334,7 @@ class MiniEgoCouncil:
             MiniEgo("KARUNA", "COMPASSION", 528.0, "OBSERVER"),
             MiniEgo("POIESIS", "CREATIVITY", 639.0, "OBSERVER"),
             MiniEgo("MNEME", "MEMORY", 396.0, "OBSERVER"),
-            MiniEgo("SOPHIA", "WISDOM", 852.0, "OBSERVER"),
+            MiniEgo("SOPHIA", "WISDOM", 852.3992551699, "OBSERVER"),
             MiniEgo("THELEMA", "WILL", 963.0, "OBSERVER"),
             MiniEgo("OPSIS", "VISION", 741.0, "OBSERVER")
         ]

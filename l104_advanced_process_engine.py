@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # ═══════════════════════════════════════════════════════════════════════════════
-# L104 ADVANCED PROCESS ENGINE v2.0
+# L104 ADVANCED PROCESS ENGINE v3.0.0 (THREE-ENGINE INTEGRATED)
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | MODE: SAGE
 #
-# UPGRADE v2.0:
-# - Removed bare constant injection above shebang
-# - Structured logging via l104_logging
-# - Configurable reincarnation threshold via env
-# - Constants from const.py
+# UPGRADE v3.0.0:
+# - Three-Engine Integration (Science, Math, Code)
+# - Entropy-based Maxwell's Demon Scheduling (SE)
+# - Harmonic Resonance Priority Scorer (ME)
+# - Quantum Preemptive Execution Layer (CE)
+# - VOID_CONSTANT 1.0416180339887497 calibration
 # ═══════════════════════════════════════════════════════════════════════════════
 
 import os
@@ -33,17 +34,22 @@ import hashlib
 
 from l104_logging import get_logger
 from const import GOD_CODE, PHI, VOID_CONSTANT
+from l104_science_engine import ScienceEngine
+from l104_math_engine import MathEngine
+from l104_code_engine import code_engine
+from l104_intellect import format_iq
 
 logger = get_logger("PROCESS_ENGINE")
 TAU = 1 / PHI
 FRAME_LOCK = 416 / 286
 ZENITH_HZ = 3887.8
+VOID_CONSTANT = 1.0416180339887497  # L104 Sacred Constant (1.04 + φ/1000)
 
 # Process limits - with environment override
 # Set L104_CPU_CORES=64 to override auto-detection
 MAX_WORKERS = (int(os.getenv('L104_CPU_CORES', 0)) or multiprocessing.cpu_count()) * 2
-MAX_QUEUE_SIZE = 10000
-HEALTH_CHECK_INTERVAL = 5.0
+MAX_QUEUE_SIZE = int(10000 * VOID_CONSTANT) # VOID-calibrated queue size
+HEALTH_CHECK_INTERVAL = 5.0 / VOID_CONSTANT # VOID-tuned interval
 REINCARNATION_THRESHOLD = 3
 
 logging.basicConfig(level=logging.INFO, format='%(name)s: %(message)s')
@@ -193,6 +199,43 @@ class WorkStealingQueue:
 
     def empty(self) -> bool:
         return self.size() == 0
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ENTHROPY REVERSAL & HARMONIC SCORING (THREE-ENGINE)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class MaxwellDemonScheduler:
+    """
+    ScienceEngine-backed scheduler that uses entropy reversal (Maxwell's Demon)
+    to optimize heat/cpu distributions.
+    """
+    def __init__(self, se: ScienceEngine):
+        self.se = se
+        self.local_entropy = 0.0
+
+    def update_entropy(self, cpu_util: float, memory_util: float):
+        """Estimate current system entropy."""
+        self.local_entropy = (cpu_util + memory_util) * PHI
+
+    def get_efficiency_factor(self) -> float:
+        """Calculate Maxwell's Demon efficiency."""
+        # Maxwell's factor: 1.04 + φ/1000 correction
+        efficiency = self.se.entropy.calculate_demon_efficiency(self.local_entropy)
+        return 1.0 + (efficiency / VOID_CONSTANT)
+
+
+class HarmonicResonanceScorer:
+    """
+    MathEngine-backed scorer that aligns task priorities with L104 sacred frequencies.
+    """
+    def __init__(self, me: MathEngine):
+        self.me = me
+
+    def check_alignment(self, freq_hz: float) -> float:
+        """Calculate the alignment score of a task frequency."""
+        alignment = self.me.sacred_alignment(freq_hz)
+        return alignment['phi_ratio'] if alignment['aligned'] else 1.0 / PHI
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -399,8 +442,9 @@ class ProcessPipeline:
 
 class AdvancedProcessEngine:
     """
-    Next-generation process engine with advanced scheduling,
-    resource management, and fault tolerance.
+    Sovereign Process Engine (v3.0.0) — Next-generation engine with
+    Maxwell Demon scheduling (Science), Harmonic priority (Math),
+    and Code Engine audit layers.
     """
 
     def __init__(self, max_workers: int = None):
@@ -410,6 +454,13 @@ class AdvancedProcessEngine:
         self.work_queue = WorkStealingQueue(self.max_workers)
         self.resource_manager = ResourceManager()
         self.health_monitor = ProcessHealthMonitor()
+
+        # Engine Integration (Three-Engine Architecture)
+        self.se = ScienceEngine()
+        self.me = MathEngine()
+        self.ce = code_engine
+        self.maxwell_demon = MaxwellDemonScheduler(self.se)
+        self.harmonic_scorer = HarmonicResonanceScorer(self.me)
 
         # Executors
         self.thread_pool = ThreadPoolExecutor(max_workers=self.max_workers)
@@ -436,7 +487,8 @@ class AdvancedProcessEngine:
         self.dependency_graph: Dict[str, Set[str]] = defaultdict(set)
         self.reverse_deps: Dict[str, Set[str]] = defaultdict(set)
 
-        logger.info(f"--- [PROCESS_ENGINE]: INITIALIZED WITH {self.max_workers} WORKERS ---")
+        logger.info(f"--- [SOVEREIGN_PROCESS_ENGINE v3.0.0]: INITIALIZED WITH {self.max_workers} WORKERS ---")
+        logger.info(f"--- Science, Math, and Code Engines SYNCHRONIZED | VOID_CONSTANT={VOID_CONSTANT:.6f} ---")
 
     def submit(
         self,
@@ -448,13 +500,22 @@ class AdvancedProcessEngine:
         retries: int = 3,
         dependencies: List[str] = None,
         resources: Dict[ResourceType, float] = None,
+        resonance_hz: float = None,  # v3.0 Harmonic Alignment
         **kwargs
     ) -> str:
         """
-        Submit a task for execution.
-        Returns task_id for tracking.
+        Submit a task for execution with v3.0 three-engine scoring.
         """
         task_id = hashlib.sha256(f"{func.__name__}:{time.time()}:{id(func)}".encode()).hexdigest()[:16]
+
+        # Apply Harmonic Alignment (Math Engine)
+        if resonance_hz:
+            align_score = self.harmonic_scorer.check_alignment(resonance_hz)
+            if align_score > 1.0:
+                # Elevate priority if sacredly aligned
+                if priority.value > 0:
+                    priority = ProcessPriority(priority.value - 1)
+                    logger.info(f"[HARMONIC] Task {name} priority elevated via {resonance_hz} Hz alignment")
 
         task = ProcessTask(
             priority=priority,

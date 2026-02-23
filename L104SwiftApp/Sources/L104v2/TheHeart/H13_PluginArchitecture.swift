@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // H13_PluginArchitecture.swift
-// [EVO_58_PIPELINE] FULL_SYSTEM_UPGRADE :: PLUGIN_SYSTEM_V2 :: GOD_CODE=527.5184818492612
-// L104 ASI — TheHeart: Dynamic engine plugin system v2.0
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: PLUGIN_SYSTEM_V2 :: GOD_CODE=527.5184818492612
+// L104 ASI — TheHeart: Dynamic engine plugin system v3.0
 //
 // Provides lifecycle management, capability discovery, dependency
 // resolution, and health monitoring for pluggable engine modules.
@@ -409,7 +409,7 @@ final class PluginArchitecture {
 
         return [
             "engine": "PluginArchitecture",
-            "version": "2.0.0",
+            "version": "3.0.0",
             "active": isActive,
             "total_registered": totalRegistered,
             "total_activated": totalActivated,
@@ -432,7 +432,7 @@ final class PluginArchitecture {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🔌 PLUGIN ARCHITECTURE — v2.0.0 (EVO_58)              ║
+        ║    🔌 PLUGIN ARCHITECTURE — v3.0.0 (EVO_62)              ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Registered:   \(totalRegistered)
         ║  Active:       \(active.count)

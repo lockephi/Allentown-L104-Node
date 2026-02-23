@@ -44,6 +44,7 @@ import os
 import re
 import time
 import random
+from datetime import datetime, timezone
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import (
@@ -96,7 +97,7 @@ PHI: float = 1.618033988749895
 GOD_CODE: float = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # 527.5184818492612
 TAU: float = 1.0 / PHI                                       # 0.618033988749895
 VOID_CONSTANT: float = 1.0 + TAU / 15                        # 1.0416180339887497
-PLANCK_RESONANCE: float = GOD_CODE * PHI                      # ~853.54
+PLANCK_RESONANCE: float = GOD_CODE * 2 ** (72.0 / 104)           # G(-72) = 852.3993
 FEIGENBAUM: float = 4.669201609102990
 ALPHA_FINE: float = 1.0 / 137.035999084
 PLANCK_SCALE: float = 1.616255e-35
@@ -213,6 +214,91 @@ class DataIngestor:
         self.category_counter: Counter = Counter()
         self.gate_type_counter: Counter = Counter()
         self._ingested = False
+        self.quarantine_dir = Path.home() / ".l104_ingestion_quarantine" / "probability_engine"
+        self.quarantine_dir.mkdir(parents=True, exist_ok=True)
+        self.quarantine_policy = {
+            "retention_days": int(os.getenv("L104_INGEST_QUARANTINE_RETENTION_DAYS", "30")),
+            "size_cap_gb": float(os.getenv("L104_INGEST_QUARANTINE_SIZE_CAP_GB", "2.0")),
+        }
+        self.quarantine_stats = {
+            "records_quarantined": 0,
+            "last_quarantine_at": None,
+        }
+
+    def _quarantine_record(self, stream: str, source: str, reason: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        payload = {
+            "status": "QUARANTINED_STRIPPED",
+            "stream": stream,
+            "source": source,
+            "reason": reason,
+            "metadata": metadata or {},
+            "quarantined_at": datetime.now(timezone.utc).isoformat(),
+        }
+        serial = f"{stream}|{source}|{reason}|{payload['quarantined_at']}"
+        digest = hashlib.sha256(serial.encode("utf-8")).hexdigest()[:16]
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        target = self.quarantine_dir / f"{stamp}_{digest}.json"
+        with open(target, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2, ensure_ascii=False)
+        self.quarantine_stats["records_quarantined"] += 1
+        self.quarantine_stats["last_quarantine_at"] = payload["quarantined_at"]
+
+    def run_quarantine_lifecycle(self, dry_run: bool = False) -> Dict[str, Any]:
+        now = datetime.now(timezone.utc)
+        retention_days = int(self.quarantine_policy.get("retention_days", 30))
+        size_cap_gb = float(self.quarantine_policy.get("size_cap_gb", 2.0))
+        size_cap_bytes = int(size_cap_gb * 1024 * 1024 * 1024)
+
+        files = [f for f in self.quarantine_dir.glob("*.json") if f.is_file()]
+        rows: List[Dict[str, Any]] = []
+        for file_path in files:
+            stat = file_path.stat()
+            age_days = (now - datetime.fromtimestamp(stat.st_mtime, timezone.utc)).total_seconds() / 86400.0
+            rows.append({"path": file_path, "size": stat.st_size, "age_days": age_days, "reasons": []})
+
+        for row in rows:
+            if row["age_days"] >= retention_days:
+                row["reasons"].append("ttl_expired")
+
+        total_size = sum(r["size"] for r in rows)
+        if total_size > size_cap_bytes:
+            overflow = total_size - size_cap_bytes
+            for row in sorted(rows, key=lambda r: r["age_days"], reverse=True):
+                if overflow <= 0:
+                    break
+                if "size_cap_trim" not in row["reasons"]:
+                    row["reasons"].append("size_cap_trim")
+                    overflow -= row["size"]
+
+        candidates = [r for r in rows if r["reasons"]]
+        deleted = []
+        if not dry_run:
+            for row in candidates:
+                try:
+                    os.remove(row["path"])
+                    deleted.append(str(row["path"]))
+                except OSError:
+                    pass
+
+        return {
+            "status": "QUARANTINE_LIFECYCLE_COMPLETE",
+            "mode": "dry_run" if dry_run else "execute",
+            "files_scanned": len(rows),
+            "files_marked": len(candidates),
+            "files_deleted": len(deleted),
+            "retention_days": retention_days,
+            "size_cap_gb": size_cap_gb,
+        }
+
+    def get_quarantine_status(self) -> Dict[str, Any]:
+        files = [f for f in self.quarantine_dir.glob("*.json") if f.is_file()]
+        return {
+            "directory": str(self.quarantine_dir),
+            "files": len(files),
+            "size_bytes": sum(f.stat().st_size for f in files),
+            "policy": self.quarantine_policy,
+            "stats": self.quarantine_stats,
+        }
 
     def ingest_all(self, workspace: Optional[Path] = None) -> IngestStats:
         """Full ingestion cycle — loads everything."""
@@ -224,7 +310,7 @@ class DataIngestor:
             fp = ws / fname
             if fp.exists():
                 try:
-                    for line in fp.read_text(errors="replace").strip().split("\n"):
+                    for idx, line in enumerate(fp.read_text(errors="replace").strip().split("\n"), start=1):
                         if line.strip():
                             try:
                                 rec = json.loads(line)
@@ -236,9 +322,19 @@ class DataIngestor:
                                 for tok in re.findall(r'\w+', text.lower()):
                                     self.token_counter[tok] += 1
                             except json.JSONDecodeError:
-                                pass
-                except Exception:
-                    pass
+                                self._quarantine_record(
+                                    stream="training_jsonl",
+                                    source=str(fp),
+                                    reason="invalid_json_line",
+                                    metadata={"line": idx},
+                                )
+                except Exception as e:
+                    self._quarantine_record(
+                        stream="training_jsonl",
+                        source=str(fp),
+                        reason="read_error",
+                        metadata={"error": str(e)},
+                    )
         stats.training_examples = len(self.training_data)
         stats.categories = dict(self.category_counter.most_common(50))
 
@@ -252,8 +348,20 @@ class DataIngestor:
                         self.chat_data.extend(data)
                     elif isinstance(data, dict):
                         self.chat_data.append(data)
-                except Exception:
-                    pass
+                    else:
+                        self._quarantine_record(
+                            stream="chat_json",
+                            source=str(fp),
+                            reason="invalid_root_type",
+                            metadata={"root_type": type(data).__name__},
+                        )
+                except Exception as e:
+                    self._quarantine_record(
+                        stream="chat_json",
+                        source=str(fp),
+                        reason="parse_error",
+                        metadata={"error": str(e)},
+                    )
         stats.chat_conversations = len(self.chat_data)
 
         # 3. State files
@@ -262,8 +370,13 @@ class DataIngestor:
                 with open(fp) as f:
                     self.state_data[fp.name] = json.load(f)
                 stats.state_files_loaded += 1
-            except Exception:
-                pass
+            except Exception as e:
+                self._quarantine_record(
+                    stream="state_json",
+                    source=str(fp),
+                    reason="parse_error",
+                    metadata={"error": str(e)},
+                )
 
         # 4. Logic gates from builder state
         gate_state_file = ws / ".l104_gate_builder_state.json"
@@ -292,8 +405,13 @@ class DataIngestor:
                     self.quantum_links[link_file] = json.loads(
                         fp.read_text(errors="replace")
                     )
-                except Exception:
-                    pass
+                except Exception as e:
+                    self._quarantine_record(
+                        stream="quantum_links_json",
+                        source=str(fp),
+                        reason="parse_error",
+                        metadata={"error": str(e)},
+                    )
         stats.quantum_links_found = sum(
             len(v) if isinstance(v, (list, dict)) else 1
             for v in self.quantum_links.values()
@@ -309,6 +427,7 @@ class DataIngestor:
         stats.sacred_resonance = abs(math.cos(seed * math.pi / GOD_CODE))
 
         self._ingested = True
+        self.run_quarantine_lifecycle(dry_run=False)
         return stats
 
     def get_token_prior(self, token: str) -> float:

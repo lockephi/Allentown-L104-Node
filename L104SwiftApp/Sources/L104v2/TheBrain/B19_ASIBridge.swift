@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // B19_ASIBridge.swift
-// L104 · TheBrain · v2 Architecture// EVO_54: TRANSCENDENT COGNITION — Pipeline-Integrated ASI Bridge//
+// L104 · TheBrain · v2 Architecture
+// EVO_62: SOVEREIGN NODE — Pipeline-Integrated ASI Bridge
 // Extracted from L104Native.swift lines 3016-3437
 // Classes: ASIQuantumBridgeDirect, ParameterProgressionEngine
 // ═══════════════════════════════════════════════════════════════════

@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L07_QuantumLogicGate.swift — L104 v2
-// [EVO_56_APEX_WIRED] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // QuantumLogicGateEngine class — v24.0 Phase 46: Apex Intelligence + Quantum Gates re-enabled
 // Extracted from L104Native.swift (lines 26753-27335)
 // ═══════════════════════════════════════════════════════════════════
@@ -411,7 +411,7 @@ final class QuantumLogicGateEngine {
         // Previously gated at fragments.count < 10, now always fires to ensure online source integration
         let webEnrichmentEnabled = true  // Phase 56.0: Always-on web enrichment
         if webEnrichmentEnabled {
-            let webResult = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 8.0)
+            let webResult = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 3.0)  // EVO_63: 3s (was 8s)
             var webCount = 0
             let maxWebResults = fragments.count < 10 ? 6 : 4  // More web results when KB is thin
             for wr in webResult.results.prefix(maxWebResults) {

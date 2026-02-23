@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L18_DataIngest.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_63_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
 // L104v2 — Extracted from L104Native.swift (lines 32520-32851)
 //
 // DATA INGEST PIPELINE — Runtime knowledge ingestion + training
@@ -18,10 +18,21 @@ import NaturalLanguage
 class DataIngestPipeline {
     static let shared = DataIngestPipeline()
 
-    private var ingestCount: Int = 0
+    private var ingestCount: Int
+    var totalIngested: Int { ingestCount }
     private var ingestHistory: [(source: String, entries: Int, timestamp: Date)] = []
     private var processingQueue: [(prompt: String, completion: String, category: String)] = []
     private let grover = GroverResponseAmplifier.shared
+
+    private init() {
+        // 🟢 EVO_63: Restore persisted ingest count so it survives restarts
+        ingestCount = UserDefaults.standard.integer(forKey: "l104_ingestCount")
+    }
+
+    /// Persist the ingest counter (called after each ingest operation)
+    private func persistCount() {
+        UserDefaults.standard.set(ingestCount, forKey: "l104_ingestCount")
+    }
 
     // ═══ INGEST TEXT ═══ Process raw text into KB-ready entries
     func ingestText(_ text: String, source: String = "user", category: String = "ingested") -> IngestResult {
@@ -60,6 +71,7 @@ class DataIngestPipeline {
         }
 
         ingestCount += accepted
+        persistCount()
         ingestHistory.append((source: source, entries: accepted, timestamp: Date()))
         if ingestHistory.count > 250 { ingestHistory = Array(ingestHistory.suffix(200)) }
 
@@ -89,6 +101,7 @@ class DataIngestPipeline {
         kb.trainingData.append(entry)
         kb.persistIngestedEntry(entry)
         ingestCount += 1
+        persistCount()
 
         // Also teach the evolver
         let evolver = ASIEvolver.shared
@@ -131,6 +144,7 @@ class DataIngestPipeline {
         ASIKnowledgeBase.shared.trainingData.append(entry)
         ASIKnowledgeBase.shared.persistIngestedEntry(entry)
         ingestCount += 1
+        persistCount()
     }
 
     // ═══ STATUS ═══

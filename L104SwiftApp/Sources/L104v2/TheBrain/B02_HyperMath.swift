@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B02_HyperMath.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — High-Dimensional Mathematics Engine
 //
 // HyperVector (N-dimensional), HyperTensor (multi-rank),
@@ -48,16 +48,42 @@ struct HyperVector: CustomStringConvertible {
     var normalized: HyperVector { let m = magnitude; return m > 0 ? self / m : self }
 
     static func + (lhs: HyperVector, rhs: HyperVector) -> HyperVector {
-        HyperVector(zip(lhs.components, rhs.components).map { $0 + $1 })
+        let n = min(lhs.components.count, rhs.components.count)
+        if n >= 16 {
+            var result = [Double](repeating: 0.0, count: n)
+            vDSP_vaddD(lhs.components, 1, rhs.components, 1, &result, 1, vDSP_Length(n))
+            return HyperVector(result)
+        }
+        return HyperVector(zip(lhs.components, rhs.components).map { $0 + $1 })
     }
     static func - (lhs: HyperVector, rhs: HyperVector) -> HyperVector {
-        HyperVector(zip(lhs.components, rhs.components).map { $0 - $1 })
+        let n = min(lhs.components.count, rhs.components.count)
+        if n >= 16 {
+            var result = [Double](repeating: 0.0, count: n)
+            vDSP_vsubD(rhs.components, 1, lhs.components, 1, &result, 1, vDSP_Length(n))
+            return HyperVector(result)
+        }
+        return HyperVector(zip(lhs.components, rhs.components).map { $0 - $1 })
     }
     static func * (lhs: HyperVector, rhs: Double) -> HyperVector {
-        HyperVector(lhs.components.map { $0 * rhs })
+        let n = lhs.components.count
+        if n >= 16 {
+            var scalar = rhs
+            var result = [Double](repeating: 0.0, count: n)
+            vDSP_vsmulD(lhs.components, 1, &scalar, &result, 1, vDSP_Length(n))
+            return HyperVector(result)
+        }
+        return HyperVector(lhs.components.map { $0 * rhs })
     }
     static func / (lhs: HyperVector, rhs: Double) -> HyperVector {
-        HyperVector(lhs.components.map { $0 / rhs })
+        let n = lhs.components.count
+        if n >= 16 {
+            var scalar = rhs
+            var result = [Double](repeating: 0.0, count: n)
+            vDSP_vsdivD(lhs.components, 1, &scalar, &result, 1, vDSP_Length(n))
+            return HyperVector(result)
+        }
+        return HyperVector(lhs.components.map { $0 / rhs })
     }
 
     /// Dot product (inner product) — vDSP-accelerated for dim ≥ 16
@@ -113,7 +139,15 @@ struct HyperTensor {
     }
 
     /// Frobenius norm (generalization of Euclidean norm)
-    var frobeniusNorm: Double { sqrt(data.reduce(0) { $0 + $1 * $1 }) }
+    /// v9.4 Perf: vDSP-accelerated for large tensors
+    var frobeniusNorm: Double {
+        if data.count >= 16 {
+            var sumSq: Double = 0
+            vDSP_svesqD(data, 1, &sumSq, vDSP_Length(data.count))
+            return sqrt(sumSq)
+        }
+        return sqrt(data.reduce(0) { $0 + $1 * $1 })
+    }
 
     /// Trace (sum of diagonal elements for 2D tensor)
     var trace: Double {
@@ -280,15 +314,24 @@ class HyperDimensionalMath {
     }
 
     /// Quantum Fourier Transform (1D)
+    /// v9.4 Perf: precompute base twiddle e^(i2πk/n) and build higher harmonics
+    /// via Complex multiplication instead of calling euler() n×n times.
     func qft(_ amplitudes: [Complex]) -> [Complex] {
         let n = amplitudes.count
+        guard n > 0 else { return [] }
+        let invSqrtN = 1.0 / sqrt(Double(n))
+        // Precompute base twiddle factors: W_n^k = e^(i2πk/n) for k=0..<n
+        var twiddle = [Complex](repeating: Complex.zero, count: n)
+        for k in 0..<n { twiddle[k] = Complex.euler(2.0 * Double.pi * Double(k) / Double(n)) }
         var result = [Complex](repeating: Complex(0), count: n)
         for k in 0..<n {
+            var sum = Complex.zero
             for j in 0..<n {
-                let angle = 2 * Double.pi * Double(j * k) / Double(n)
-                result[k] = result[k] + amplitudes[j] * Complex.euler(angle)
+                // W_n^(jk) = twiddle[(j*k) mod n] — avoids per-element trig
+                let idx = (j * k) % n
+                sum = sum + amplitudes[j] * twiddle[idx]
             }
-            result[k] = result[k] * Complex(1.0 / sqrt(Double(n)))
+            result[k] = sum * Complex(invSqrtN)
         }
         return result
     }

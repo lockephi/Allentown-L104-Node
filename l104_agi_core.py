@@ -1301,7 +1301,8 @@ class AGICore:
 
         # 3. Sync with Gemini Bridge (Internal)
         core_dump = {
-            "ram_universe": ram_universe.get_all_facts(),
+            "ram_universe": ram_universe.get_status(),
+            "ram_facts": ram_universe.get_all_facts(),
             "system_state": self.truth,
             "intellect": self.intellect_index
         }
@@ -1826,8 +1827,13 @@ class AGICore:
 
         # Sync Ram Universe
         try:
-            ram_healthy = ram_universe is not None and hasattr(ram_universe, 'get_all_facts')
-            sync_report["subsystems"]["ram_universe"] = {"healthy": ram_healthy}
+            ram_status = ram_universe.get_status()
+            ram_healthy = ram_status.get("active", False)
+            sync_report["subsystems"]["ram_universe"] = {
+                "healthy": ram_healthy,
+                "version": ram_status.get("version", "unknown"),
+                "total_facts": ram_status.get("lattice", {}).get("total_facts", 0),
+            }
         except Exception:
             sync_report["subsystems"]["ram_universe"] = {"healthy": False}
 
@@ -2198,7 +2204,8 @@ class AGICore:
 
         # 9. Ram Universe — knowledge grounding validation
         try:
-            fact_count = len(ram_universe.get_all_facts()) if hasattr(ram_universe, 'get_all_facts') else 0
+            ram_facts = ram_universe.get_all_facts()
+            fact_count = ram_facts.get("total_facts", 0) if isinstance(ram_facts, dict) else len(ram_facts)
             if fact_count > 0:
                 synthesis["sources"].append("ram_universe")
                 synthesis["total_boost"] += min(0.1, fact_count * 0.001)

@@ -31,7 +31,7 @@ import time
 import threading
 import random
 from typing import Optional, Dict, Any, List, Set, Tuple
-from datetime import datetime
+from datetime import datetime, timezone
 from collections import defaultdict, Counter
 from dataclasses import dataclass, field
 from functools import lru_cache
@@ -355,6 +355,90 @@ class L104KnowledgeGraph:
         self._init_db()
         self._load_graph()
         self._build_semantic_index()
+        self.ingest_storage_dir = _BASE_DIR / ".l104_ingestion_storage" / "knowledge_graph"
+        self.ingest_quarantine_dir = self.ingest_storage_dir / "quarantine"
+        self.ingest_storage_dir.mkdir(parents=True, exist_ok=True)
+        self.ingest_quarantine_dir.mkdir(parents=True, exist_ok=True)
+        self.ingest_policy = {
+            "retention_days": int(os.getenv("L104_INGEST_QUARANTINE_RETENTION_DAYS", "30")),
+            "size_cap_gb": float(os.getenv("L104_INGEST_QUARANTINE_SIZE_CAP_GB", "2.0")),
+            "strip_on_quarantine": True,
+        }
+
+    def _quarantine_ingest_event(self, source_file: str, reason: str, metadata: Optional[Dict[str, Any]] = None) -> Optional[str]:
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        digest = hashlib.sha256(f"{source_file}|{reason}|{timestamp}".encode("utf-8")).hexdigest()[:16]
+        target = self.ingest_quarantine_dir / f"{timestamp}_{digest}.json"
+        payload = {
+            "status": "QUARANTINED_STRIPPED",
+            "source_file": source_file,
+            "reason": reason,
+            "metadata": metadata or {},
+            "quarantined_at": datetime.now(timezone.utc).isoformat(),
+            "retention_days": self.ingest_policy.get("retention_days", 30),
+        }
+        try:
+            with open(target, "w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=2, ensure_ascii=False)
+            return str(target)
+        except Exception:
+            return None
+
+    def run_ingest_quarantine_lifecycle(self, dry_run: bool = False) -> Dict[str, Any]:
+        now = datetime.now(timezone.utc)
+        retention_days = int(self.ingest_policy.get("retention_days", 30))
+        size_cap_gb = float(self.ingest_policy.get("size_cap_gb", 2.0))
+        size_cap_bytes = int(size_cap_gb * 1024 * 1024 * 1024)
+
+        files = [f for f in self.ingest_quarantine_dir.glob("*.json") if f.is_file()]
+        rows = []
+        for file_path in files:
+            stat = file_path.stat()
+            age_days = (now - datetime.fromtimestamp(stat.st_mtime, timezone.utc)).total_seconds() / 86400.0
+            rows.append({"path": file_path, "size": stat.st_size, "age_days": age_days, "reasons": []})
+
+        for row in rows:
+            if row["age_days"] >= retention_days:
+                row["reasons"].append("ttl_expired")
+
+        total_size = sum(row["size"] for row in rows)
+        if total_size > size_cap_bytes:
+            overflow = total_size - size_cap_bytes
+            for row in sorted(rows, key=lambda item: item["age_days"], reverse=True):
+                if overflow <= 0:
+                    break
+                if "size_cap_trim" not in row["reasons"]:
+                    row["reasons"].append("size_cap_trim")
+                    overflow -= row["size"]
+
+        candidates = [row for row in rows if row["reasons"]]
+        deleted = []
+        if not dry_run:
+            for row in candidates:
+                try:
+                    os.remove(row["path"])
+                    deleted.append(str(row["path"]))
+                except OSError:
+                    pass
+
+        return {
+            "status": "QUARANTINE_LIFECYCLE_COMPLETE",
+            "mode": "dry_run" if dry_run else "execute",
+            "files_scanned": len(rows),
+            "files_marked": len(candidates),
+            "files_deleted": len(deleted),
+            "retention_days": retention_days,
+            "size_cap_gb": size_cap_gb,
+        }
+
+    def get_ingest_quarantine_status(self) -> Dict[str, Any]:
+        files = [f for f in self.ingest_quarantine_dir.glob("*.json") if f.is_file()]
+        return {
+            "directory": str(self.ingest_quarantine_dir),
+            "files": len(files),
+            "size_bytes": sum(f.stat().st_size for f in files),
+            "policy": self.ingest_policy,
+        }
 
     def _build_semantic_index(self):
         """Build semantic vectors for all existing nodes."""
@@ -797,10 +881,11 @@ class L104KnowledgeGraph:
         Each line: {"type": "node"|"edge", ...node_or_edge_fields...}
         """
         nodes_added, edges_added, errors = 0, 0, 0
+        quarantine_records: List[str] = []
         try:
             with open(filepath) as f:
                 node_batch, edge_batch = [], []
-                for line in f:
+                for line_no, line in enumerate(f, start=1):
                     line = line.strip()
                     if not line:
                         continue
@@ -813,6 +898,13 @@ class L104KnowledgeGraph:
                             node_batch.append(obj)
                     except json.JSONDecodeError:
                         errors += 1
+                        quarantine_path = self._quarantine_ingest_event(
+                            filepath,
+                            "invalid_json_line",
+                            {"line": line_no},
+                        )
+                        if quarantine_path:
+                            quarantine_records.append(quarantine_path)
 
                 if node_batch:
                     result = self.bulk_add_nodes(node_batch)
@@ -825,7 +917,16 @@ class L104KnowledgeGraph:
         except FileNotFoundError:
             return {"error": f"File not found: {filepath}"}
 
-        return {"nodes_added": nodes_added, "edges_added": edges_added, "errors": errors}
+        lifecycle = self.run_ingest_quarantine_lifecycle(dry_run=False)
+
+        return {
+            "nodes_added": nodes_added,
+            "edges_added": edges_added,
+            "errors": errors,
+            "quarantine_records": quarantine_records,
+            "quarantine": self.get_ingest_quarantine_status(),
+            "quarantine_lifecycle": lifecycle,
+        }
 
     # ═══════════════════════════════════════════════════════════════════
     # PATH FINDING (Enhanced)

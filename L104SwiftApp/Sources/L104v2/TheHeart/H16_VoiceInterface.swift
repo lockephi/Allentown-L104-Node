@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // H16_VoiceInterface.swift
-// [EVO_58_PIPELINE] FULL_SYSTEM_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — Mesh-Aware Voice & Audio Interface v2.0
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// L104 ASI — Mesh-Aware Voice & Audio Interface v3.0
 // Real NSSpeechSynthesizer TTS, speech recognition prep, mesh voice relay
 // ═══════════════════════════════════════════════════════════════════
 
@@ -57,7 +57,7 @@ final class VoiceInterface {
         lock.lock()
         defer { lock.unlock() }
         isActive = true
-        print("[H16] VoiceInterface v2.0 activated — real TTS + mesh voice relay")
+        print("[H16] VoiceInterface v3.0 activated — real TTS + mesh voice relay")
     }
 
     func deactivate() {

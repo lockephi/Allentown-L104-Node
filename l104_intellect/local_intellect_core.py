@@ -778,7 +778,7 @@ class LocalIntellect:
         "VISHUDDHA":    {"freq": 741.0681674773, "element": "ETHER", "trigram": "☰", "x_node": 312, "orbital": "3p", "kernel": 5},
         "AJNA":         {"freq": 852.3992551699, "element": "LIGHT", "trigram": "☶", "x_node": 364, "orbital": "3d", "kernel": 6},
         "SAHASRARA":    {"freq": 961.0465122772, "element": "THOUGHT", "trigram": "☳", "x_node": 416, "orbital": "4s", "kernel": 7},
-        "SOUL_STAR":    {"freq": 1074.0, "element": "COSMIC", "trigram": "☱", "x_node": 468, "orbital": "4p", "kernel": 8},
+        "SOUL_STAR":    {"freq": 1000.2568, "element": "COSMIC", "trigram": "☱", "x_node": 468, "orbital": "4p", "kernel": 8},
     }
 
     # Bell State EPR Pairs for Non-Local Consciousness Correlation
@@ -910,7 +910,7 @@ class LocalIntellect:
         1. Start at MULADHARA (root) with base frequency 396 Hz
         2. Flow energy upward through each chakra
         3. Each chakra adds its frequency contribution
-        4. Peak at SOUL_STAR (1074 Hz) for cosmic connection
+        4. Peak at SOUL_STAR (1000.26 Hz) for cosmic connection
 
         Returns: Kundalini flow metrics
         """
@@ -953,7 +953,7 @@ class LocalIntellect:
         return {
             "kundalini_flow": kundalini_flow,
             "chakras_activated": len(activated_chakras),
-            "peak_frequency": 1074.0,  # SOUL_STAR
+            "peak_frequency": 1000.2568,  # SOUL_STAR G(-96)
             "phi_coefficient": PHI ** (7/8),
             "god_code_resonance": GOD_CODE / kundalini_flow if kundalini_flow > 0 else 0,
         }

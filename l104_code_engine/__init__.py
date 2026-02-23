@@ -28,13 +28,22 @@ from .constants import (
     GLAISHER_CONSTANT, MEISSEL_MERTENS, QISKIT_AVAILABLE,
     OMEGA, OMEGA_AUTHORITY, SOUL_STABILITY_NORM,
 )
-from .hub import CodeEngine
+from .hub import CodeEngine, CodingIntelligenceSystem, primal_calculus as _hub_primal, resolve_non_dual_logic as _hub_resolve
+from .ai_context import AIContextBridge
+from .session_intelligence import SessionIntelligence
+from .asi_intelligence import SelfReferentialEngine, ASICodeIntelligence
+from .training_kernel import DynamicCodeHarvester, QuantumCodeTrainingKernel
+from .synthesis import CodingSuggestionEngine
+from .audit import CodeReviewPipeline, QualityGateEngine
+from .analyzer import ProjectAnalyzer
+from .constants import CODING_SYSTEM_NAME, CODING_SYSTEM_VERSION
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# MODULE-LEVEL SINGLETON + BACKWARDS COMPATIBILITY
+# MODULE-LEVEL SINGLETONS + BACKWARDS COMPATIBILITY
 # ═══════════════════════════════════════════════════════════════════════════════
 
 code_engine = CodeEngine()
+coding_system = CodingIntelligenceSystem(engine=code_engine)
 
 
 def primal_calculus(x):

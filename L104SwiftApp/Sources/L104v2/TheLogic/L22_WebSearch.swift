@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L22_WebSearch.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 Sovereign Intelligence — Web Search Engines
 // LiveWebSearchEngine: DuckDuckGo + Wikipedia multi-source search
 // RealTimeSearchEngine: Inverted index search with query expansion
@@ -26,9 +26,12 @@ final class LiveWebSearchEngine {
     private var totalWebRequests: Int = 0
     private var successfulRequests: Int = 0
     private var failedRequests: Int = 0
-    private let cacheTTL: TimeInterval = 20.0  // 20s cache — short enough to keep web results fresh
-    private let requestTimeout: TimeInterval = 15.0
+    private let cacheTTL: TimeInterval = 60.0  // EVO_63: 60s cache (was 20s) — reduces redundant HTTP calls
+    private let requestTimeout: TimeInterval = 6.0  // EVO_63: 6s (was 15s) — fail fast, don't block pipeline
     private let session: URLSession
+    /// EVO_63: In-flight query dedup — prevents duplicate HTTP requests for same query
+    private var inflightQueries: [String: [(WebSearchResult) -> Void]] = [:]
+    private let inflightLock = NSLock()
 
     struct CachedWebResult {
         let content: String
@@ -55,8 +58,8 @@ final class LiveWebSearchEngine {
 
     private init() {
         let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = 15
-        config.timeoutIntervalForResource = 30
+        config.timeoutIntervalForRequest = 6   // EVO_63: fast timeout (was 15)
+        config.timeoutIntervalForResource = 10  // EVO_63: fast resource timeout (was 30)
         config.httpAdditionalHeaders = [
             "User-Agent": "L104-Sovereign-Intellect/19.0 (macOS; Quantum-Core)",
             "Accept": "text/html,application/json,text/plain;q=0.9,*/*;q=0.8",
@@ -87,6 +90,16 @@ final class LiveWebSearchEngine {
             completion(result)
             return
         }
+
+        // EVO_63: In-flight dedup — if same query is already in-flight, piggyback on it
+        inflightLock.lock()
+        if inflightQueries[cacheKey] != nil {
+            inflightQueries[cacheKey]?.append(completion)
+            inflightLock.unlock()
+            return
+        }
+        inflightQueries[cacheKey] = [completion]
+        inflightLock.unlock()
 
         totalWebRequests += 1
         searchHistory.append((query: query, source: "web_search", timestamp: Date()))
@@ -152,12 +165,19 @@ final class LiveWebSearchEngine {
                 synthesized: synthesized,
                 source: "live_web", latency: elapsed, fromCache: false
             )
-            completion(result)
+
+            // EVO_63: Dispatch result to ALL waiting callbacks (in-flight dedup)
+            self.inflightLock.lock()
+            let waitingCallbacks = self.inflightQueries.removeValue(forKey: cacheKey) ?? [completion]
+            self.inflightLock.unlock()
+            for cb in waitingCallbacks {
+                cb(result)
+            }
         }
     }
 
-    // ═══ SYNCHRONOUS WEB SEARCH — Runs on background queue to avoid blocking main thread ═══
-    func webSearchSync(_ query: String, timeout: TimeInterval = 12.0) -> WebSearchResult {
+    // ═══ SYNCHRONOUS WEB SEARCH — EVO_63: Reduced default timeout from 12s to 4s ═══
+    func webSearchSync(_ query: String, timeout: TimeInterval = 4.0) -> WebSearchResult {
         // Safety: dispatch to background if called from main thread
         if Thread.isMainThread {
             var result: WebSearchResult?
@@ -591,6 +611,257 @@ Cache Entries: \(webCache.count)
 Search History: \(searchHistory.count) queries
 ═══════════════════════════════════════════
 """
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // EVO_64: NATIVE ASYNC WEB SEARCH — Modern Swift Concurrency
+    // Eliminates: DispatchGroup fan-out, DispatchSemaphore blocking, callback chains
+    // Uses: URLSession.data(for:) async, async let true-parallel fan-out
+    // macOS 12+ / Swift 5.7+ required (already in Package.swift)
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// EVO_64: Native async web search — true parallel DuckDuckGo + Wikipedia via async let
+    /// Replaces: DispatchGroup + NSLock fan-out pattern in webSearch(_ query:completion:)
+    func webSearchAsync(_ query: String) async -> WebSearchResult {
+        let start = CFAbsoluteTimeGetCurrent()
+        let cacheKey = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Cache check — same 60s TTL as sync path
+        if let cached = webCache[cacheKey],
+           Date().timeIntervalSince(cached.timestamp) < cacheTTL {
+            return WebSearchResult(
+                query: query,
+                results: [WebResult(title: "Cached", snippet: cached.content, url: cached.url, relevance: 1.0)],
+                synthesized: cached.content,
+                source: "cache (\(cached.source))",
+                latency: CFAbsoluteTimeGetCurrent() - start,
+                fromCache: true
+            )
+        }
+
+        totalWebRequests += 1
+        searchHistory.append((query: query, source: "web_search_async", timestamp: Date()))
+        if searchHistory.count > 1000 { searchHistory.removeFirst(500) }
+
+        // ═══ TRUE PARALLEL FAN-OUT: async let — both HTTP requests launch simultaneously ═══
+        // No DispatchGroup, no NSLock, no callback pyramid
+        async let ddgResults = searchDuckDuckGoAsync(query)
+        async let wikiResults = searchWikipediaAsync(query)
+
+        let allResults = await (ddgResults + wikiResults).sorted {
+            if abs($0.relevance - $1.relevance) < 0.1 { return Bool.random() }
+            return $0.relevance > $1.relevance
+        }
+
+        let elapsed = CFAbsoluteTimeGetCurrent() - start
+        let synthesized = synthesizeWebResults(query: query, results: allResults)
+
+        // Cache synthesized result
+        if !synthesized.isEmpty {
+            successfulRequests += 1
+            webCache[cacheKey] = CachedWebResult(
+                content: synthesized, source: "multi_source_async",
+                timestamp: Date(), url: "aggregated"
+            )
+            // EVO_60: LRU eviction (same policy as sync path)
+            if webCache.count > 500 {
+                let sorted = webCache.sorted { $0.value.timestamp < $1.value.timestamp }
+                for entry in sorted.prefix(webCache.count - 300) {
+                    webCache.removeValue(forKey: entry.key)
+                }
+            }
+        }
+
+        return WebSearchResult(
+            query: query, results: allResults,
+            synthesized: synthesized,
+            source: "live_web_async", latency: elapsed, fromCache: false
+        )
+    }
+
+    /// EVO_64: Async DuckDuckGo — URLSession.data(for:) replaces dataTask callback chain
+    private func searchDuckDuckGoAsync(_ query: String) async -> [WebResult] {
+        let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
+        guard let url = URL(string: "https://api.duckduckgo.com/?q=\(encoded)&format=json&no_html=1&skip_disambig=1") else {
+            return []
+        }
+
+        var request = URLRequest(url: url)
+        request.timeoutInterval = requestTimeout
+
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let httpResp = response as? HTTPURLResponse, httpResp.statusCode == 200 else { return [] }
+            guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { return [] }
+
+            var results: [WebResult] = []
+
+            if let abstract = json["Abstract"] as? String, !abstract.isEmpty {
+                let source = json["AbstractSource"] as? String ?? "DuckDuckGo"
+                let absURL = json["AbstractURL"] as? String ?? ""
+                results.append(WebResult(title: "📌 \(source) — Direct Answer", snippet: abstract, url: absURL, relevance: 1.0))
+            }
+            if let answer = json["Answer"] as? String, !answer.isEmpty {
+                results.append(WebResult(title: "💡 Instant Answer", snippet: answer, url: "", relevance: 0.95))
+            }
+            if let definition = json["Definition"] as? String, !definition.isEmpty {
+                let defSource = json["DefinitionSource"] as? String ?? ""
+                let defURL = json["DefinitionURL"] as? String ?? ""
+                results.append(WebResult(title: "📖 Definition (\(defSource))", snippet: definition, url: defURL, relevance: 0.85))
+            }
+            if let relatedTopics = json["RelatedTopics"] as? [[String: Any]] {
+                for (idx, topic) in relatedTopics.prefix(5).enumerated() {
+                    if let text = topic["Text"] as? String, !text.isEmpty {
+                        let topicURL = topic["FirstURL"] as? String ?? ""
+                        results.append(WebResult(title: "🔗 Related [\(idx + 1)]", snippet: text, url: topicURL, relevance: 0.7 - Double(idx) * 0.05))
+                    }
+                }
+            }
+            if let infobox = json["Infobox"] as? [String: Any],
+               let content = infobox["content"] as? [[String: Any]] {
+                let infoLines = content.prefix(8).compactMap { item -> String? in
+                    guard let label = item["label"] as? String,
+                          let value = item["value"] as? String else { return nil }
+                    return "• \(label): \(value)"
+                }
+                if !infoLines.isEmpty {
+                    results.append(WebResult(title: "📊 Quick Facts", snippet: infoLines.joined(separator: "\n"), url: "", relevance: 0.8))
+                }
+            }
+            return results
+        } catch {
+            return []
+        }
+    }
+
+    /// EVO_64: Async Wikipedia — sequential await replaces nested dataTask + DispatchGroup
+    private func searchWikipediaAsync(_ query: String) async -> [WebResult] {
+        let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
+        guard let searchURL = URL(string: "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=\(encoded)&srlimit=3&format=json&utf8=1") else {
+            return []
+        }
+
+        var request = URLRequest(url: searchURL)
+        request.timeoutInterval = requestTimeout
+
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let httpResp = response as? HTTPURLResponse, httpResp.statusCode == 200 else { return [] }
+            guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let queryResult = json["query"] as? [String: Any],
+                  let searchResults = queryResult["search"] as? [[String: Any]] else { return [] }
+
+            var wikiResults: [WebResult] = []
+
+            for (idx, result) in searchResults.prefix(3).enumerated() {
+                guard let title = result["title"] as? String,
+                      let pageId = result["pageid"] as? Int else { continue }
+                let snippet = (result["snippet"] as? String ?? "")
+                    .replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
+
+                if idx == 0 {
+                    // Fetch full extract for top result — clean sequential await (no nested callback)
+                    if let extract = await fetchWikipediaExtractAsync(pageId: pageId, title: title) {
+                        wikiResults.append(WebResult(
+                            title: "📚 Wikipedia: \(title)",
+                            snippet: extract,
+                            url: "https://en.wikipedia.org/wiki/\(title.replacingOccurrences(of: " ", with: "_"))",
+                            relevance: 0.9
+                        ))
+                    }
+                } else {
+                    wikiResults.append(WebResult(
+                        title: "📖 Wiki: \(title)",
+                        snippet: snippet.isEmpty ? title : snippet,
+                        url: "https://en.wikipedia.org/wiki/\(title.replacingOccurrences(of: " ", with: "_"))",
+                        relevance: 0.6 - Double(idx) * 0.1
+                    ))
+                }
+            }
+
+            return wikiResults
+        } catch {
+            return []
+        }
+    }
+
+    /// EVO_64: Async Wikipedia extract fetch
+    private func fetchWikipediaExtractAsync(pageId: Int, title: String) async -> String? {
+        guard let url = URL(string: "https://en.wikipedia.org/w/api.php?action=query&pageids=\(pageId)&prop=extracts&exintro=1&explaintext=1&exsectionformat=plain&format=json") else {
+            return nil
+        }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = requestTimeout
+
+        do {
+            let (data, _) = try await session.data(for: request)
+            guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let queryResult = json["query"] as? [String: Any],
+                  let pages = queryResult["pages"] as? [String: Any] else { return nil }
+            for (_, pageInfo) in pages {
+                if let page = pageInfo as? [String: Any],
+                   let extract = page["extract"] as? String, !extract.isEmpty {
+                    return String(extract.prefix(2000))
+                }
+            }
+            return nil
+        } catch {
+            return nil
+        }
+    }
+
+    /// EVO_64: Async URL fetch — native URLSession.data(for:) replaces callback + semaphore
+    func fetchURLAsync(_ urlString: String) async -> String {
+        totalWebRequests += 1
+        searchHistory.append((query: urlString, source: "url_fetch_async", timestamp: Date()))
+
+        let cacheKey = "url_\(urlString)"
+        if let cached = webCache[cacheKey], Date().timeIntervalSince(cached.timestamp) < cacheTTL {
+            return cached.content
+        }
+
+        guard let url = URL(string: urlString) else {
+            failedRequests += 1
+            return "❌ Invalid URL: \(urlString)"
+        }
+
+        var request = URLRequest(url: url)
+        request.timeoutInterval = requestTimeout
+
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let httpResp = response as? HTTPURLResponse else {
+                failedRequests += 1
+                return "❌ No response from \(urlString)"
+            }
+            guard httpResp.statusCode == 200 else {
+                failedRequests += 1
+                return "❌ HTTP \(httpResp.statusCode) from \(urlString)"
+            }
+
+            successfulRequests += 1
+
+            if let contentType = httpResp.value(forHTTPHeaderField: "Content-Type"),
+               contentType.contains("json") {
+                if let jsonStr = String(data: data, encoding: .utf8) {
+                    let result = "📄 JSON Response from \(urlString):\n\(String(jsonStr.prefix(5000)))"
+                    cacheResult(key: cacheKey, content: result, source: "json", url: urlString)
+                    return result
+                }
+            }
+
+            if let html = String(data: data, encoding: .utf8) ?? String(data: data, encoding: .ascii) {
+                let extracted = extractTextFromHTML(html)
+                let result = extracted.isEmpty ? String(html.prefix(3000)) : extracted
+                cacheResult(key: cacheKey, content: result, source: "html", url: urlString)
+                return result
+            }
+
+            return "❌ Could not decode response from \(urlString)"
+        } catch {
+            failedRequests += 1
+            return "❌ Fetch error: \(error.localizedDescription)"
+        }
     }
 }
 

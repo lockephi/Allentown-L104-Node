@@ -33,6 +33,7 @@ import time
 import hashlib
 import struct
 import json
+import os
 from typing import Dict, List, Any, Optional, Tuple, Callable, Iterator, Union, TypeVar, Set
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
@@ -40,6 +41,8 @@ from enum import Enum, auto
 from functools import reduce
 import threading
 from queue import Queue, Empty
+from pathlib import Path
+from datetime import datetime, timezone
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -808,9 +811,94 @@ class DataPipelineEngine:
         self.secure = SecurePipeline()
         self.cache = CachingLayer()
         self.lineage = DataLineage()
+        self.ingest_quarantine_dir = Path.home() / ".l104_ingestion_quarantine" / "data_pipeline"
+        self.ingest_quarantine_dir.mkdir(parents=True, exist_ok=True)
+        self.ingest_quarantine_policy = {
+            "retention_days": int(os.getenv("L104_INGEST_QUARANTINE_RETENTION_DAYS", "30")),
+            "size_cap_gb": float(os.getenv("L104_INGEST_QUARANTINE_SIZE_CAP_GB", "2.0")),
+        }
+        self.ingest_quarantine_stats = {
+            "records_quarantined": 0,
+            "last_quarantine_at": None,
+        }
 
         self._initialized = True
         self._init_default_validators()
+
+    def _quarantine_ingest_event(self, stream: str, source: str, reason: str, metadata: Dict[str, Any] = None) -> None:
+        payload = {
+            "status": "QUARANTINED_STRIPPED",
+            "stream": stream,
+            "source": source,
+            "reason": reason,
+            "metadata": metadata or {},
+            "quarantined_at": datetime.now(timezone.utc).isoformat(),
+        }
+        serial = f"{stream}|{source}|{reason}|{payload['quarantined_at']}"
+        digest = hashlib.sha256(serial.encode("utf-8")).hexdigest()[:16]
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        target = self.ingest_quarantine_dir / f"{stamp}_{digest}.json"
+        with open(target, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2, ensure_ascii=False)
+        self.ingest_quarantine_stats["records_quarantined"] += 1
+        self.ingest_quarantine_stats["last_quarantine_at"] = payload["quarantined_at"]
+
+    def run_ingest_quarantine_lifecycle(self, dry_run: bool = False) -> Dict[str, Any]:
+        now = datetime.now(timezone.utc)
+        retention_days = int(self.ingest_quarantine_policy.get("retention_days", 30))
+        size_cap_gb = float(self.ingest_quarantine_policy.get("size_cap_gb", 2.0))
+        size_cap_bytes = int(size_cap_gb * 1024 * 1024 * 1024)
+
+        files = [f for f in self.ingest_quarantine_dir.glob("*.json") if f.is_file()]
+        rows: List[Dict[str, Any]] = []
+        for file_path in files:
+            stat = file_path.stat()
+            age_days = (now - datetime.fromtimestamp(stat.st_mtime, timezone.utc)).total_seconds() / 86400.0
+            rows.append({"path": file_path, "size": stat.st_size, "age_days": age_days, "reasons": []})
+
+        for row in rows:
+            if row["age_days"] >= retention_days:
+                row["reasons"].append("ttl_expired")
+
+        total_size = sum(r["size"] for r in rows)
+        if total_size > size_cap_bytes:
+            overflow = total_size - size_cap_bytes
+            for row in sorted(rows, key=lambda r: r["age_days"], reverse=True):
+                if overflow <= 0:
+                    break
+                if "size_cap_trim" not in row["reasons"]:
+                    row["reasons"].append("size_cap_trim")
+                    overflow -= row["size"]
+
+        candidates = [r for r in rows if r["reasons"]]
+        deleted = []
+        if not dry_run:
+            for row in candidates:
+                try:
+                    os.remove(row["path"])
+                    deleted.append(str(row["path"]))
+                except OSError:
+                    pass
+
+        return {
+            "status": "INGEST_QUARANTINE_LIFECYCLE_COMPLETE",
+            "mode": "dry_run" if dry_run else "execute",
+            "files_scanned": len(rows),
+            "files_marked": len(candidates),
+            "files_deleted": len(deleted),
+            "retention_days": retention_days,
+            "size_cap_gb": size_cap_gb,
+        }
+
+    def get_ingest_quarantine_status(self) -> Dict[str, Any]:
+        files = [f for f in self.ingest_quarantine_dir.glob("*.json") if f.is_file()]
+        return {
+            "directory": str(self.ingest_quarantine_dir),
+            "files": len(files),
+            "size_bytes": sum(f.stat().st_size for f in files),
+            "policy": self.ingest_quarantine_policy,
+            "stats": self.ingest_quarantine_stats,
+        }
 
     def _init_default_validators(self):
         """Initialize default validation rules."""
@@ -842,6 +930,16 @@ class DataPipelineEngine:
 
     def ingest(self, source_name: str, data: Any, metadata: Dict = None) -> Optional[DataRecord]:
         """Ingest data from a named source."""
+        if data is None:
+            self._quarantine_ingest_event(
+                stream="data_pipeline_ingest",
+                source=source_name,
+                reason="null_data",
+                metadata={"metadata_keys": sorted((metadata or {}).keys())},
+            )
+            self.run_ingest_quarantine_lifecycle(dry_run=False)
+            return None
+
         source = self.sources.get_source(source_name)
         if source is None:
             source = self.create_source(source_name)
@@ -853,6 +951,15 @@ class DataPipelineEngine:
 
     def process(self, pipeline_name: str, record: DataRecord) -> Optional[DataRecord]:
         """Process a record through a named pipeline."""
+        if record is None:
+            self._quarantine_ingest_event(
+                stream="data_pipeline_process",
+                source=pipeline_name,
+                reason="null_record",
+            )
+            self.run_ingest_quarantine_lifecycle(dry_run=False)
+            return None
+
         # Check cache
         cache_key = f"{pipeline_name}:{record.id}"
         cached = self.cache.get(cache_key)
@@ -867,6 +974,13 @@ class DataPipelineEngine:
         # Validate
         is_valid, _ = self.validator.validate(record)
         if not is_valid:
+            self._quarantine_ingest_event(
+                stream="data_pipeline_process",
+                source=pipeline_name,
+                reason="validation_failed",
+                metadata={"record_id": record.id},
+            )
+            self.run_ingest_quarantine_lifecycle(dry_run=False)
             return None
 
         # Process
@@ -904,7 +1018,8 @@ class DataPipelineEngine:
             'cache': self.cache.get_stats(),
             'encryption_count': self.secure.encryption_count,
             'integrity_failures': self.secure.integrity_failures,
-            'god_code_verified': abs(GOD_CODE - 527.5184818492612) < 1e-10
+            'god_code_verified': abs(GOD_CODE - 527.5184818492612) < 1e-10,
+            'ingest_quarantine': self.get_ingest_quarantine_status(),
         }
 
 

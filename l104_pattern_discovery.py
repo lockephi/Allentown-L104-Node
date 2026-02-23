@@ -23,6 +23,7 @@ Capabilities:
 - Cross-domain pattern matching
 """
 
+import time
 import math
 import random
 from dataclasses import dataclass, field
@@ -39,6 +40,19 @@ import itertools
 
 # Import high precision engines for pattern magic
 from decimal import Decimal, getcontext
+import logging
+
+logger = logging.getLogger("L104_PATTERN_DISCOVERY")
+
+try:
+    from l104_asi.pipeline_telemetry import PipelineTelemetry
+except ImportError:
+    PipelineTelemetry = None
+
+try:
+    from l104_asi.pipeline_circuit_breaker import PipelineCircuitBreaker
+except ImportError:
+    PipelineCircuitBreaker = None
 getcontext().prec = 150
 
 try:
@@ -55,9 +69,13 @@ except ImportError:
 PHI = 1.618033988749895
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+ALPHA_FINE = 0.0072973525693
+LATTICE_THERMAL_FRICTION = -(ALPHA_FINE * PHI) / (2 * math.pi * 104)
 FEIGENBAUM = 4.669201609102990671853
 EULER = 2.718281828459045
 PI = 3.141592653589793
+
+VERSION = "1.0.0"
 
 class PatternType(Enum):
     NUMERIC = auto()
@@ -574,6 +592,36 @@ class PatternDiscoveryEngine:
         self.chaos_analyzer = ChaosAnalyzer()
         self.discovered_patterns: List[Pattern] = []
         self.pattern_library: Dict[str, Pattern] = {}
+
+        # ── Pipeline telemetry & circuit breaker ──
+        self._telemetry = None
+        self._cb = None
+        try:
+            if PipelineTelemetry is not None:
+                self._telemetry = PipelineTelemetry("pattern_discovery")
+        except Exception:
+            pass
+        try:
+            if PipelineCircuitBreaker is not None:
+                self._cb = PipelineCircuitBreaker("pattern_discovery", failure_threshold=5, reset_timeout=30)
+        except Exception:
+            pass
+
+        logger.info("[PATTERN_DISCOVERY v%s] online — telemetry=%s, cb=%s", VERSION, self._telemetry is not None, self._cb is not None)
+
+    def get_status(self) -> Dict[str, Any]:
+        """Return engine status for pipeline introspection."""
+        return {
+            "module": "pattern_discovery",
+            "version": VERSION,
+            "god_code": GOD_CODE,
+            "lattice_friction": LATTICE_THERMAL_FRICTION,
+            "telemetry_active": self._telemetry is not None,
+            "circuit_breaker_active": self._cb is not None,
+            "discovered_patterns": len(self.discovered_patterns),
+            "pattern_library_size": len(self.pattern_library),
+            "subsystems": ["sequence_analyzer", "fractal_analyzer", "sacred_detector", "chaos_analyzer"],
+        }
 
     def discover_in_sequence(self, sequence: List[float]) -> List[Pattern]:
         """Discover all patterns in a sequence."""

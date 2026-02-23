@@ -375,7 +375,7 @@ class MiniEgoProviderSpread:
             "COMPASSION": 528.0,
             "CREATIVITY": 639.0,
             "MEMORY": 396.0,
-            "WISDOM": 852.0,
+            "WISDOM": 852.3992551699,
             "WILL": 963.0,
             "VISION": 741.0
         }

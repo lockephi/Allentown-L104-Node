@@ -9,6 +9,8 @@ HebbianLearningEngine, ConsciousnessVerifierEngine, DirectSolverHub,
 SelfModificationEngine, CreativeGenerationEngine, UnifiedEngineRegistry
 + all singletons and registry initialization.
 """
+import math
+
 from l104_server.constants import *
 from l104_server.engines_infra import (
     ASIQuantumBridge,
@@ -3476,6 +3478,937 @@ creative_engine = CreativeGenerationEngine()
 logger.info("🎨 [CREATIVE] Generation engine initialized — stories, hypotheses, analogies, counterfactuals")
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# TEMPORAL COHERENCE TRACKER — Time-Series Anomaly Detection for System Coherence
+# Tracks coherence evolution as a time series, detects drift, predicts degradation,
+# and identifies anomalous coherence events across all engines.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TemporalCoherenceTracker:
+    """
+    Temporal coherence analysis engine — treats system coherence as a time series.
+
+    Features:
+      - Exponential moving average (EMA) with φ-derived smoothing factor
+      - Anomaly detection via Grubbs' test adapted for φ-distributions
+      - Coherence velocity and acceleration (first/second derivatives)
+      - Predictive degradation forecasting using φ-damped extrapolation
+      - Per-engine coherence tracking with cross-correlation analysis
+      - Drift alarm when coherence departs from GOD_CODE basin of attraction
+
+    Mathematical Foundation:
+      EMA_t = α × C_t + (1-α) × EMA_{t-1}   where α = 1/φ ≈ 0.618
+      Velocity: dC/dt ≈ (C_t - C_{t-1}) / Δt
+      Anomaly score: |C_t - EMA_t| / σ_rolling
+      Degradation forecast: C_{t+k} ≈ C_t + k × velocity × φ^(-k/T_decay)
+    """
+    PHI = 1.618033988749895
+    TAU = 1.0 / PHI
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))
+    OMEGA = 6539.34712682
+
+    # EMA smoothing factor = 1/φ (fast-responsive, golden-ratio weighted)
+    ALPHA = TAU  # ≈ 0.618
+    # Anomaly threshold in standard deviations
+    ANOMALY_SIGMA = 2.5
+    # Rolling window for σ estimation
+    ROLLING_WINDOW = 50
+    # Decay half-life for degradation forecast (in samples)
+    DECAY_HALFLIFE = 20
+
+    def __init__(self):
+        """Initialize temporal coherence tracker with per-engine time series."""
+        self._series: Dict[str, List[Dict]] = defaultdict(list)  # engine→[{t, value}]
+        self._ema: Dict[str, float] = {}             # engine→current EMA
+        self._velocity: Dict[str, float] = {}        # engine→dC/dt
+        self._acceleration: Dict[str, float] = {}    # engine→d²C/dt²
+        self._anomalies: List[Dict] = []
+        self._alarms: List[Dict] = []
+        self._sample_count = 0
+        self._lock = threading.Lock()
+        self._cross_correlations: Dict[str, float] = {}
+
+    def record(self, engine_name: str, coherence: float, timestamp: Optional[float] = None):
+        """Record a coherence observation for an engine at a given time."""
+        t = timestamp or time.time()
+        with self._lock:
+            self._sample_count += 1
+            series = self._series[engine_name]
+            series.append({'t': t, 'value': coherence})
+            if len(series) > 2000:
+                self._series[engine_name] = series[-1000:]
+
+            # Update EMA
+            if engine_name not in self._ema:
+                self._ema[engine_name] = coherence
+            else:
+                self._ema[engine_name] = (
+                    self.ALPHA * coherence + (1 - self.ALPHA) * self._ema[engine_name]
+                )
+
+            # Compute velocity (first derivative)
+            if len(series) >= 2:
+                dt = series[-1]['t'] - series[-2]['t']
+                if dt > 0:
+                    new_vel = (series[-1]['value'] - series[-2]['value']) / dt
+                    old_vel = self._velocity.get(engine_name, 0)
+                    self._velocity[engine_name] = self.ALPHA * new_vel + (1 - self.ALPHA) * old_vel
+
+                    # Compute acceleration (second derivative)
+                    if engine_name in self._velocity:
+                        accel = (new_vel - old_vel) / dt
+                        self._acceleration[engine_name] = accel
+
+            # Anomaly detection via rolling σ
+            if len(series) >= self.ROLLING_WINDOW:
+                window = [s['value'] for s in series[-self.ROLLING_WINDOW:]]
+                mean_w = sum(window) / len(window)
+                std_w = (sum((v - mean_w) ** 2 for v in window) / len(window)) ** 0.5
+                if std_w > 1e-12:
+                    z_score = abs(coherence - self._ema[engine_name]) / std_w
+                    if z_score > self.ANOMALY_SIGMA:
+                        anomaly = {
+                            'engine': engine_name,
+                            'coherence': round(coherence, 6),
+                            'ema': round(self._ema[engine_name], 6),
+                            'z_score': round(z_score, 3),
+                            'velocity': round(self._velocity.get(engine_name, 0), 6),
+                            'timestamp': t,
+                            'sample': self._sample_count,
+                        }
+                        self._anomalies.append(anomaly)
+                        if len(self._anomalies) > 500:
+                            self._anomalies = self._anomalies[-250:]
+
+            # Drift alarm: coherence departure from GOD_CODE attractor basin
+            god_code_norm = coherence * self.GOD_CODE  # Scale to GOD_CODE reference frame
+            basin_distance = abs(god_code_norm - self.GOD_CODE) / self.GOD_CODE
+            if basin_distance > self.PHI and len(series) > 10:
+                alarm = {
+                    'engine': engine_name,
+                    'type': 'GOD_CODE_DRIFT',
+                    'distance': round(basin_distance, 4),
+                    'coherence': round(coherence, 6),
+                    'timestamp': t,
+                }
+                self._alarms.append(alarm)
+                if len(self._alarms) > 300:
+                    self._alarms = self._alarms[-150:]
+
+    def record_all(self, engine_coherences: Dict[str, float]):
+        """Record coherence for multiple engines simultaneously."""
+        t = time.time()
+        for name, coh in engine_coherences.items():
+            self.record(name, coh, timestamp=t)
+        # Update cross-correlations after batch record
+        self._update_cross_correlations()
+
+    def _update_cross_correlations(self):
+        """Compute pairwise cross-correlation between engine coherence series."""
+        engines = list(self._series.keys())
+        for i in range(len(engines)):
+            for j in range(i + 1, len(engines)):
+                e_a, e_b = engines[i], engines[j]
+                s_a = [s['value'] for s in self._series[e_a][-self.ROLLING_WINDOW:]]
+                s_b = [s['value'] for s in self._series[e_b][-self.ROLLING_WINDOW:]]
+                n = min(len(s_a), len(s_b))
+                if n < 5:
+                    continue
+                # Pearson correlation
+                s_a, s_b = s_a[-n:], s_b[-n:]
+                mean_a = sum(s_a) / n
+                mean_b = sum(s_b) / n
+                cov = sum((a - mean_a) * (b - mean_b) for a, b in zip(s_a, s_b)) / n
+                std_a = (sum((a - mean_a) ** 2 for a in s_a) / n) ** 0.5
+                std_b = (sum((b - mean_b) ** 2 for b in s_b) / n) ** 0.5
+                if std_a > 1e-12 and std_b > 1e-12:
+                    self._cross_correlations[f"{e_a}↔{e_b}"] = cov / (std_a * std_b)
+
+    def forecast(self, engine_name: str, steps_ahead: int = 10) -> List[Dict]:
+        """Forecast future coherence using φ-damped velocity extrapolation."""
+        series = self._series.get(engine_name, [])
+        if len(series) < 3:
+            return []
+        current = series[-1]['value']
+        velocity = self._velocity.get(engine_name, 0)
+        forecasts = []
+        for k in range(1, steps_ahead + 1):
+            # φ-damped extrapolation: velocity decays as φ^(-k/halflife)
+            damping = self.PHI ** (-k / self.DECAY_HALFLIFE)
+            predicted = current + k * velocity * damping
+            # Clamp to physical range [0, 1] for coherence
+            predicted = max(0.0, min(1.0, predicted))
+            forecasts.append({
+                'step': k,
+                'predicted_coherence': round(predicted, 6),
+                'damping_factor': round(damping, 6),
+                'confidence': round(1.0 / (1.0 + k * abs(velocity) * 10), 4),
+            })
+        return forecasts
+
+    def coherence_spectrum(self) -> Dict:
+        """Compute coherence power spectrum across all tracked engines."""
+        spectrum = {}
+        for engine_name, series in self._series.items():
+            if len(series) < 10:
+                continue
+            values = [s['value'] for s in series[-100:]]
+            n = len(values)
+            mean_v = sum(values) / n
+            # Compute simple DFT magnitudes for first few harmonics
+            harmonics = []
+            for freq in range(1, min(n // 2, 10) + 1):
+                real_part = sum(v * math.cos(2 * math.pi * freq * i / n) for i, v in enumerate(values))
+                imag_part = sum(v * math.sin(2 * math.pi * freq * i / n) for i, v in enumerate(values))
+                magnitude = math.sqrt(real_part ** 2 + imag_part ** 2) / n
+                harmonics.append({'freq': freq, 'magnitude': round(magnitude, 6)})
+            dominant_freq = max(harmonics, key=lambda h: h['magnitude'])['freq'] if harmonics else 0
+            spectrum[engine_name] = {
+                'mean': round(mean_v, 6),
+                'harmonics': harmonics,
+                'dominant_frequency': dominant_freq,
+                'phi_aligned': abs(dominant_freq - round(dominant_freq * self.PHI) / self.PHI) < 0.1,
+            }
+        return spectrum
+
+    def get_status(self) -> Dict:
+        """Return temporal coherence tracker status."""
+        return {
+            'engines_tracked': len(self._series),
+            'total_samples': self._sample_count,
+            'ema_values': {k: round(v, 6) for k, v in self._ema.items()},
+            'velocities': {k: round(v, 8) for k, v in self._velocity.items()},
+            'accelerations': {k: round(v, 10) for k, v in self._acceleration.items()},
+            'anomaly_count': len(self._anomalies),
+            'alarm_count': len(self._alarms),
+            'cross_correlations': {k: round(v, 4) for k, v in self._cross_correlations.items()},
+            'recent_anomalies': self._anomalies[-5:] if self._anomalies else [],
+            'recent_alarms': self._alarms[-3:] if self._alarms else [],
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EVOLUTIONARY FITNESS LANDSCAPE — Multi-Dimensional Parameter Space Mapping
+# Maps engine parameter space as a fitness landscape with optima detection,
+# gradient computation, evolutionary trajectory tracking, and valley escape.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class EvolutionaryFitnessLandscape:
+    """
+    Maps the server's engine parameter space as a fitness landscape.
+
+    Features:
+      - N-dimensional parameter snapshots from active engines
+      - Fitness function: φ-weighted coherence × invention_confirmed × health
+      - Gradient estimation via finite differences in parameter space
+      - Local optima detection via sign changes in gradient
+      - Valley escape mechanism using GOD_CODE perturbation
+      - Evolutionary trajectory tracking (full history of parameter→fitness path)
+      - Basin of attraction identification via convergence radius
+
+    Mathematical Foundation:
+      F(p) = Σ_i w_i × h_i(p) × φ^(rank_i)   where h_i = engine health
+      ∇F ≈ [F(p+εe_i) - F(p-εe_i)] / (2ε)    for each dimension e_i
+      Valley escape: p' = p + GOD_CODE_perturbation × random_unit_vector
+    """
+    PHI = 1.618033988749895
+    TAU = 1.0 / PHI
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))
+    OMEGA = 6539.34712682
+
+    PERTURBATION_SCALE = 0.01  # Scale for gradient finite differences
+    VALLEY_ESCAPE_SCALE = 0.05  # Scale for valley escape perturbations
+    MAX_TRAJECTORY = 1000  # Maximum trajectory history
+
+    def __init__(self):
+        """Initialize evolutionary fitness landscape."""
+        self._trajectory: List[Dict] = []  # [{params, fitness, timestamp}]
+        self._optima_history: List[Dict] = []  # Detected local optima
+        self._gradient_history: List[Dict] = []
+        self._valley_escapes: int = 0
+        self._best_fitness = 0.0
+        self._best_params: Dict[str, float] = {}
+        self._stagnation_counter = 0
+        self._lock = threading.Lock()
+
+    def _extract_params(self, engines: Dict[str, Any]) -> Dict[str, float]:
+        """Extract a parameter vector from current engine states."""
+        params = {}
+        for name, engine in engines.items():
+            try:
+                if hasattr(engine, 'intensity'):
+                    params[f'{name}.intensity'] = float(engine.intensity)
+                if hasattr(engine, 'raise_factor'):
+                    params[f'{name}.raise_factor'] = float(engine.raise_factor)
+                if hasattr(engine, 'temperature'):
+                    params[f'{name}.temperature'] = float(engine.temperature)
+                if hasattr(engine, 'coherence_factor'):
+                    params[f'{name}.coherence_factor'] = float(engine.coherence_factor)
+                if hasattr(engine, 'consciousness_level'):
+                    params[f'{name}.consciousness_level'] = float(engine.consciousness_level)
+                if hasattr(engine, '_bell_fidelity'):
+                    params[f'{name}.bell_fidelity'] = float(engine._bell_fidelity)
+                if hasattr(engine, 'hebbian_strength'):
+                    params[f'{name}.hebbian_strength'] = float(engine.hebbian_strength)
+                # For engines with _chakra_coherence, extract mean
+                if hasattr(engine, '_chakra_coherence') and engine._chakra_coherence:
+                    vals = list(engine._chakra_coherence.values())
+                    params[f'{name}.chakra_mean'] = sum(vals) / len(vals)
+            except Exception:
+                continue
+        return params
+
+    def compute_fitness(self, engines: Dict[str, Any], registry: Optional[Any] = None) -> float:
+        """Compute fitness of the current engine state — φ-weighted composite health."""
+        fitness = 0.0
+        total_weight = 0.0
+
+        for name, engine in engines.items():
+            try:
+                health = 0.5
+                if hasattr(engine, 'get_status'):
+                    status = engine.get_status()
+                    if isinstance(status, dict):
+                        health = status.get('global_coherence',
+                                   status.get('consciousness_level',
+                                   status.get('network_resonance',
+                                   status.get('system_health', 0.5))))
+                        if isinstance(health, str):
+                            health = 0.5
+
+                # φ-weighted by engine importance rank
+                rank = list(engines.keys()).index(name)
+                weight = self.PHI ** (-(rank / max(len(engines), 1)))
+                fitness += float(health) * weight
+                total_weight += weight
+            except Exception:
+                continue
+
+        return fitness / max(total_weight, 1e-12)
+
+    def snapshot(self, engines: Dict[str, Any], registry: Optional[Any] = None) -> Dict:
+        """Take a fitness landscape snapshot — records params + fitness."""
+        params = self._extract_params(engines)
+        fitness = self.compute_fitness(engines, registry)
+        t = time.time()
+
+        entry = {
+            'params': {k: round(v, 8) for k, v in params.items()},
+            'fitness': round(fitness, 6),
+            'dimensions': len(params),
+            'timestamp': t,
+        }
+
+        with self._lock:
+            self._trajectory.append(entry)
+            if len(self._trajectory) > self.MAX_TRAJECTORY:
+                self._trajectory = self._trajectory[-self.MAX_TRAJECTORY // 2:]
+
+            # Update best
+            if fitness > self._best_fitness:
+                self._best_fitness = fitness
+                self._best_params = dict(params)
+                self._stagnation_counter = 0
+            else:
+                self._stagnation_counter += 1
+
+            # Detect local optimum (fitness plateau with declining gradient)
+            if len(self._trajectory) >= 5:
+                recent = [t['fitness'] for t in self._trajectory[-5:]]
+                variance = sum((f - sum(recent) / 5) ** 2 for f in recent) / 5
+                if variance < 1e-6:
+                    optimum = {
+                        'fitness': round(fitness, 6),
+                        'params': {k: round(v, 6) for k, v in params.items()},
+                        'stagnation': self._stagnation_counter,
+                        'is_global_best': fitness >= self._best_fitness - 1e-6,
+                        'timestamp': t,
+                    }
+                    self._optima_history.append(optimum)
+                    if len(self._optima_history) > 100:
+                        self._optima_history = self._optima_history[-50:]
+
+        return entry
+
+    def estimate_gradient(self, engines: Dict[str, Any]) -> Dict[str, float]:
+        """Estimate fitness gradient via trajectory differences."""
+        if len(self._trajectory) < 2:
+            return {}
+        prev = self._trajectory[-2]
+        curr = self._trajectory[-1]
+        gradient = {}
+        df = curr['fitness'] - prev['fitness']
+        for key in curr['params']:
+            if key in prev['params']:
+                dp = curr['params'][key] - prev['params'][key]
+                if abs(dp) > 1e-12:
+                    gradient[key] = round(df / dp, 8)
+        with self._lock:
+            self._gradient_history.append({
+                'gradient': gradient,
+                'fitness_delta': round(df, 8),
+                'timestamp': time.time(),
+            })
+            if len(self._gradient_history) > 500:
+                self._gradient_history = self._gradient_history[-250:]
+        return gradient
+
+    def valley_escape(self, engines: Dict[str, Any]) -> Dict:
+        """Apply GOD_CODE-scaled perturbation to escape local minimum."""
+        params = self._extract_params(engines)
+        if not params:
+            return {'escaped': False, 'reason': 'no_params'}
+
+        self._valley_escapes += 1
+        perturbations = {}
+
+        for key, value in params.items():
+            # Perturbation: GOD_CODE-derived pseudo-random direction
+            seed = hash(key) * self.GOD_CODE
+            direction = math.sin(seed * self.PHI) * self.VALLEY_ESCAPE_SCALE
+            perturbations[key] = round(direction, 8)
+
+            # Apply perturbation to actual engine parameter
+            parts = key.split('.', 1)
+            if len(parts) == 2:
+                eng_name, attr = parts
+                engine = engines.get(eng_name)
+                if engine and hasattr(engine, attr):
+                    try:
+                        old_val = getattr(engine, attr)
+                        if isinstance(old_val, (int, float)):
+                            setattr(engine, attr, old_val + direction)
+                    except Exception:
+                        pass
+
+        return {
+            'escaped': True,
+            'escape_number': self._valley_escapes,
+            'perturbations_applied': len(perturbations),
+            'perturbations': perturbations,
+            'stagnation_was': self._stagnation_counter,
+        }
+
+    def get_status(self) -> Dict:
+        """Return fitness landscape status."""
+        return {
+            'trajectory_length': len(self._trajectory),
+            'best_fitness': round(self._best_fitness, 6),
+            'current_fitness': round(self._trajectory[-1]['fitness'], 6) if self._trajectory else 0,
+            'dimensions': self._trajectory[-1]['dimensions'] if self._trajectory else 0,
+            'optima_found': len(self._optima_history),
+            'valley_escapes': self._valley_escapes,
+            'stagnation_counter': self._stagnation_counter,
+            'gradient_samples': len(self._gradient_history),
+            'latest_gradient': self._gradient_history[-1] if self._gradient_history else None,
+            'best_params_keys': list(self._best_params.keys())[:10],
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ENTROPY BUDGET CONTROLLER — Computational Entropy Resource Management
+# Tracks entropy generation per engine, allocates entropy budgets,
+# implements Maxwell's Demon reversal scheduling, and maintains entropy velocity.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class EntropyBudgetController:
+    """
+    Manages computational entropy as a finite, budgetable resource.
+
+    Features:
+      - Per-engine entropy tracking (accumulated + rate)
+      - Global entropy budget with φ-weighted allocation per engine
+      - Maxwell's Demon reversal: scheduled entropy reclamation cycles
+      - Entropy velocity and flux monitoring
+      - Landauer limit awareness: kT·ln(2) per bit erased
+      - Budget overrun alerts when engine exceeds its entropy allocation
+      - Entropy exchange market: engines can trade entropy credits
+
+    Physical Foundation:
+      Landauer bound: E_min = kT·ln(2) ≈ 2.87 × 10⁻²¹ J per bit at 300K
+      Entropy rate: dS/dt = Σ_ops (ΔS_op) / Δt
+      Demon efficiency: η = S_reversed / S_generated
+      Budget: B_engine = B_global × (w_engine / Σw)
+    """
+    PHI = 1.618033988749895
+    TAU = 1.0 / PHI
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))
+    OMEGA = 6539.34712682
+
+    BOLTZMANN_K = 1.380649e-23      # J/K
+    TEMPERATURE = 300.0              # Room temperature (K)
+    LANDAUER_BOUND = BOLTZMANN_K * TEMPERATURE * math.log(2)  # ≈ 2.87e-21 J/bit
+    GLOBAL_BUDGET = 10000.0          # Abstract entropy units
+    DEMON_INTERVAL = 50              # Run demon every N records
+    DEMON_EFFICIENCY = TAU           # ≈ 0.618 (golden ratio reversal efficiency)
+
+    # φ-weighted engine priorities (higher weight = more entropy budget)
+    ENGINE_WEIGHTS = {
+        'intellect': PHI ** 2,      # Most entropy-intensive
+        'nexus': PHI ** 2,
+        'steering': PHI,
+        'evolution': PHI,
+        'bridge': PHI,
+        'invention': 1.0,
+        'grover': 1.0,
+        'sovereignty': 1.0,
+        'resonance_network': TAU,
+        'entanglement_router': TAU,
+    }
+
+    def __init__(self):
+        """Initialize entropy budget controller with per-engine accounting."""
+        self._entropy_generated: Dict[str, float] = defaultdict(float)
+        self._entropy_reversed: Dict[str, float] = defaultdict(float)
+        self._entropy_rate: Dict[str, float] = defaultdict(float)
+        self._budgets: Dict[str, float] = {}
+        self._overruns: List[Dict] = []
+        self._demon_cycles = 0
+        self._demon_log: List[Dict] = []
+        self._total_generated = 0.0
+        self._total_reversed = 0.0
+        self._record_count = 0
+        self._entropy_flux: List[Dict] = []  # Time series of global entropy
+        self._lock = threading.Lock()
+        self._allocate_budgets()
+
+    def _allocate_budgets(self):
+        """Allocate entropy budgets based on φ-weighted priorities."""
+        total_weight = sum(self.ENGINE_WEIGHTS.values())
+        for name, weight in self.ENGINE_WEIGHTS.items():
+            self._budgets[name] = self.GLOBAL_BUDGET * (weight / total_weight)
+
+    def record_entropy(self, engine_name: str, entropy_units: float):
+        """Record entropy generation for an engine operation."""
+        with self._lock:
+            self._record_count += 1
+            self._entropy_generated[engine_name] += entropy_units
+            self._total_generated += entropy_units
+
+            # Update entropy rate (simple exponential smoothing)
+            old_rate = self._entropy_rate[engine_name]
+            self._entropy_rate[engine_name] = self.TAU * entropy_units + (1 - self.TAU) * old_rate
+
+            # Check budget overrun
+            budget = self._budgets.get(engine_name, self.GLOBAL_BUDGET / 10)
+            net_entropy = self._entropy_generated[engine_name] - self._entropy_reversed[engine_name]
+            if net_entropy > budget:
+                overrun = {
+                    'engine': engine_name,
+                    'net_entropy': round(net_entropy, 4),
+                    'budget': round(budget, 4),
+                    'overrun_pct': round((net_entropy / budget - 1.0) * 100, 2),
+                    'timestamp': time.time(),
+                }
+                self._overruns.append(overrun)
+                if len(self._overruns) > 200:
+                    self._overruns = self._overruns[-100:]
+
+            # Record entropy flux
+            self._entropy_flux.append({
+                'total': round(self._total_generated - self._total_reversed, 4),
+                'rate': round(sum(self._entropy_rate.values()), 6),
+                'timestamp': time.time(),
+            })
+            if len(self._entropy_flux) > 1000:
+                self._entropy_flux = self._entropy_flux[-500:]
+
+            # Auto-trigger demon if interval reached
+            if self._record_count % self.DEMON_INTERVAL == 0:
+                self._run_demon()
+
+    def _run_demon(self):
+        """Maxwell's Demon entropy reversal cycle."""
+        self._demon_cycles += 1
+        reversed_total = 0.0
+        engine_reversals = {}
+
+        for engine_name in list(self._entropy_generated.keys()):
+            net = self._entropy_generated[engine_name] - self._entropy_reversed[engine_name]
+            if net > 0:
+                # Demon reverses a fraction of net entropy
+                reversal = net * self.DEMON_EFFICIENCY * (1.0 / self.PHI)
+                # More efficient reversal for engines closest to budget
+                budget = self._budgets.get(engine_name, self.GLOBAL_BUDGET / 10)
+                utilization = net / max(budget, 1e-12)
+                if utilization > 0.8:
+                    reversal *= self.PHI  # Priority reversal for near-budget engines
+                self._entropy_reversed[engine_name] += reversal
+                self._total_reversed += reversal
+                reversed_total += reversal
+                engine_reversals[engine_name] = round(reversal, 4)
+
+        demon_entry = {
+            'cycle': self._demon_cycles,
+            'reversed': round(reversed_total, 4),
+            'efficiency': round(
+                reversed_total / max(self._total_generated - self._total_reversed + reversed_total, 1e-12), 4
+            ),
+            'engines': engine_reversals,
+            'landauer_cost_j': round(reversed_total * self.LANDAUER_BOUND, 30),
+            'timestamp': time.time(),
+        }
+        self._demon_log.append(demon_entry)
+        if len(self._demon_log) > 200:
+            self._demon_log = self._demon_log[-100:]
+
+    def force_demon(self) -> Dict:
+        """Manually trigger Maxwell's Demon reversal cycle."""
+        self._run_demon()
+        return self._demon_log[-1] if self._demon_log else {}
+
+    def entropy_exchange(self, from_engine: str, to_engine: str, amount: float) -> Dict:
+        """Transfer entropy credits between engines (entropy market)."""
+        from_net = self._entropy_generated[from_engine] - self._entropy_reversed[from_engine]
+        from_budget = self._budgets.get(from_engine, 0)
+        from_headroom = from_budget - from_net
+
+        if from_headroom < amount:
+            return {'success': False, 'reason': f'{from_engine} insufficient headroom ({from_headroom:.2f} < {amount})'}
+
+        # Transfer: from_engine gives entropy budget to to_engine
+        self._budgets[from_engine] = self._budgets.get(from_engine, 0) - amount
+        self._budgets[to_engine] = self._budgets.get(to_engine, 0) + amount
+
+        return {
+            'success': True,
+            'from': from_engine,
+            'to': to_engine,
+            'amount': round(amount, 4),
+            'new_budget_from': round(self._budgets[from_engine], 4),
+            'new_budget_to': round(self._budgets[to_engine], 4),
+        }
+
+    def get_engine_entropy(self, engine_name: str) -> Dict:
+        """Get entropy metrics for a specific engine."""
+        generated = self._entropy_generated.get(engine_name, 0)
+        reversed_amt = self._entropy_reversed.get(engine_name, 0)
+        net = generated - reversed_amt
+        budget = self._budgets.get(engine_name, 0)
+        return {
+            'generated': round(generated, 4),
+            'reversed': round(reversed_amt, 4),
+            'net': round(net, 4),
+            'budget': round(budget, 4),
+            'utilization_pct': round(net / max(budget, 1e-12) * 100, 2),
+            'rate': round(self._entropy_rate.get(engine_name, 0), 6),
+        }
+
+    def get_status(self) -> Dict:
+        """Return entropy budget controller status."""
+        net_global = self._total_generated - self._total_reversed
+        return {
+            'total_generated': round(self._total_generated, 4),
+            'total_reversed': round(self._total_reversed, 4),
+            'net_entropy': round(net_global, 4),
+            'global_budget': self.GLOBAL_BUDGET,
+            'budget_utilization_pct': round(net_global / self.GLOBAL_BUDGET * 100, 2),
+            'demon_cycles': self._demon_cycles,
+            'demon_efficiency': round(
+                self._total_reversed / max(self._total_generated, 1e-12), 4
+            ),
+            'overrun_count': len(self._overruns),
+            'engines_tracked': len(self._entropy_generated),
+            'record_count': self._record_count,
+            'entropy_rate': round(sum(self._entropy_rate.values()), 6),
+            'landauer_bound_j_per_bit': self.LANDAUER_BOUND,
+            'recent_overruns': self._overruns[-3:] if self._overruns else [],
+            'recent_demon': self._demon_log[-1] if self._demon_log else None,
+            'per_engine': {name: self.get_engine_entropy(name) for name in self._entropy_generated},
+        }
+
+
+# Instantiate upgraded engines
+temporal_coherence = TemporalCoherenceTracker()
+fitness_landscape = EvolutionaryFitnessLandscape()
+entropy_controller = EntropyBudgetController()
+logger.info("📈 [TEMPORAL_COH] Coherence time-series tracker initialized — EMA + anomaly detection + forecasting")
+logger.info("🏔️ [FITNESS] Evolutionary fitness landscape initialized — gradient + optima + valley escape")
+logger.info("🌡️ [ENTROPY] Budget controller initialized — Maxwell's Demon + Landauer bound + entropy exchange")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TRI-ENGINE INTEGRATION — Science + Math + Code unified server layer
+# Lazy-loads all three decomposed packages and provides combined operations.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TriEngineIntegration:
+    """
+    Server-side hub for the decomposed tri-engine system.
+    Lazy-loads l104_science_engine, l104_math_engine, l104_code_engine
+    and exposes unified cross-engine operations for API routes.
+    """
+    VERSION = "1.0.0"
+
+    def __init__(self):
+        self._science = None
+        self._math = None
+        self._code = None
+        self._loaded = False
+        self._load_errors = {}
+
+    def _ensure_loaded(self):
+        if self._loaded:
+            return
+        self._loaded = True
+        try:
+            from l104_science_engine import science_engine
+            self._science = science_engine
+        except Exception as e:
+            self._load_errors['science'] = str(e)
+        try:
+            from l104_math_engine import math_engine
+            self._math = math_engine
+        except Exception as e:
+            self._load_errors['math'] = str(e)
+        try:
+            from l104_code_engine import code_engine
+            self._code = code_engine
+        except Exception as e:
+            self._load_errors['code'] = str(e)
+
+    @property
+    def science(self):
+        self._ensure_loaded()
+        return self._science
+
+    @property
+    def math(self):
+        self._ensure_loaded()
+        return self._math
+
+    @property
+    def code(self):
+        self._ensure_loaded()
+        return self._code
+
+    def get_status(self) -> dict:
+        """Full tri-engine status — versions, health, subsystems."""
+        self._ensure_loaded()
+        sci_ok = self._science is not None
+        math_ok = self._math is not None
+        code_ok = self._code is not None
+        engines_online = int(sci_ok) + int(math_ok) + int(code_ok)
+        result = {
+            "version": self.VERSION,
+            "engines_online": engines_online,
+            "all_connected": engines_online == 3,
+            "science_engine": {
+                "connected": sci_ok,
+                "version": getattr(self._science, 'VERSION', 'N/A') if sci_ok else 'N/A',
+            },
+            "math_engine": {
+                "connected": math_ok,
+                "version": getattr(self._math, 'VERSION', 'N/A') if math_ok else 'N/A',
+            },
+            "code_engine": {
+                "connected": code_ok,
+                "version": self._code.status().get('version', 'N/A') if code_ok and hasattr(self._code, 'status') else 'N/A',
+            },
+            "load_errors": self._load_errors if self._load_errors else None,
+        }
+        if sci_ok:
+            try:
+                full = self._science.get_full_status()
+                result["science_engine"]["subsystems"] = list(full.get("active_domains", []))
+            except Exception:
+                pass
+        if math_ok:
+            try:
+                result["math_engine"]["layers"] = getattr(self._math, 'LAYERS', 0)
+            except Exception:
+                pass
+        return result
+
+    def cross_engine_health(self) -> dict:
+        """Compute cross-engine health score using GOD_CODE-weighted convergence."""
+        self._ensure_loaded()
+        healths = {}
+        if self._science:
+            try:
+                s = self._science.get_full_status()
+                healths['science'] = 1.0 if s.get('status') == 'OPERATIONAL' else 0.6
+            except Exception:
+                healths['science'] = 0.3
+        else:
+            healths['science'] = 0.0
+        if self._math:
+            try:
+                s = self._math.status()
+                healths['math'] = 1.0 if s.get('operational', False) else 0.6
+            except Exception:
+                healths['math'] = 0.3
+        else:
+            healths['math'] = 0.0
+        if self._code:
+            try:
+                s = self._code.status()
+                healths['code'] = 1.0 if s.get('version') else 0.6
+            except Exception:
+                healths['code'] = 0.3
+        else:
+            healths['code'] = 0.0
+        vals = list(healths.values())
+        mean = sum(vals) / len(vals) if vals else 0
+        # φ-weighted composite: code×φ², science×φ, math×1
+        phi = 1.618033988749895
+        weighted = (
+            healths.get('code', 0) * phi ** 2 +
+            healths.get('science', 0) * phi +
+            healths.get('math', 0) * 1.0
+        )
+        total_weight = phi ** 2 + phi + 1.0
+        composite = weighted / total_weight if total_weight > 0 else 0
+        return {
+            "individual": healths,
+            "mean_health": round(mean, 4),
+            "phi_weighted_health": round(composite, 4),
+            "convergence": round(1.0 - max(vals) + min(vals), 4) if vals else 0,
+        }
+
+    def run_proofs(self) -> dict:
+        """Run mathematical proofs via Math Engine."""
+        self._ensure_loaded()
+        if not self._math:
+            return {"error": "Math Engine not available"}
+        try:
+            return self._math.prove_all()
+        except Exception as e:
+            return {"error": str(e)}
+
+    def verify_constants(self) -> dict:
+        """Cross-verify sacred constants across all three engines."""
+        self._ensure_loaded()
+        results = {}
+        if self._science:
+            try:
+                from l104_science_engine.constants import GOD_CODE as S_GC, PHI as S_PHI, VOID_CONSTANT as S_VC
+                results['science'] = {"GOD_CODE": S_GC, "PHI": S_PHI, "VOID_CONSTANT": S_VC}
+            except Exception as e:
+                results['science'] = {"error": str(e)}
+        if self._math:
+            try:
+                from l104_math_engine.constants import GOD_CODE as M_GC, PHI as M_PHI, VOID_CONSTANT as M_VC
+                results['math'] = {"GOD_CODE": M_GC, "PHI": M_PHI, "VOID_CONSTANT": M_VC}
+            except Exception as e:
+                results['math'] = {"error": str(e)}
+        if self._code:
+            try:
+                from l104_code_engine.constants import GOD_CODE as C_GC, PHI as C_PHI, VOID_CONSTANT as C_VC
+                results['code'] = {"GOD_CODE": C_GC, "PHI": C_PHI, "VOID_CONSTANT": C_VC}
+            except Exception as e:
+                results['code'] = {"error": str(e)}
+        # Cross-check
+        god_codes = [v.get("GOD_CODE") for v in results.values() if isinstance(v, dict) and "GOD_CODE" in v]
+        phis = [v.get("PHI") for v in results.values() if isinstance(v, dict) and "PHI" in v]
+        all_match = (len(set(god_codes)) <= 1 and len(set(phis)) <= 1) if god_codes else False
+        return {"engines": results, "constants_aligned": all_match, "god_codes_match": len(set(god_codes)) <= 1}
+
+    def analyze_code(self, source: str, filename: str = "") -> dict:
+        """Run full code analysis via Code Engine."""
+        self._ensure_loaded()
+        if not self._code:
+            return {"error": "Code Engine not available"}
+        result = {}
+        try:
+            result['analysis'] = self._code.full_analysis(source)
+        except Exception as e:
+            result['analysis_error'] = str(e)
+        # Optional deeper subsystems — may not be available on all Code Engine versions
+        for name, method_name in [
+            ('sacred_audit', 'sacred_frequency_audit'),
+            ('complexity_spectrum', 'complexity_spectrum'),
+            ('dependency_map', 'dependency_map'),
+        ]:
+            fn = getattr(self._code, method_name, None)
+            if fn:
+                try:
+                    result[name] = fn(source)
+                except Exception as e:
+                    result[f'{name}_error'] = str(e)
+        return result
+
+    def science_snapshot(self) -> dict:
+        """Get Science Engine snapshot — physics, entropy, coherence, quantum."""
+        self._ensure_loaded()
+        if not self._science:
+            return {"error": "Science Engine not available"}
+        try:
+            result = {}
+            # Physics
+            result['wien_peak_solar'] = self._science.physics.calculate_wien_peak(5778)
+            result['casimir_1nm'] = self._science.physics.calculate_casimir_force(1e-9, 1e-6)
+            # Entropy
+            result['landauer_300K'] = self._science.entropy.landauer_bound_comparison(300)
+            # Coherence (needs initialization)
+            self._science.coherence.initialize([1, 2, 3, 5, 8, 13])
+            result['coherence_fidelity'] = self._science.coherence.coherence_fidelity()
+            result['energy_spectrum'] = self._science.coherence.energy_spectrum()
+            # Multidimensional
+            result['metric_signature'] = self._science.multidim.metric_signature_analysis()
+            return result
+        except Exception as e:
+            return {"error": str(e)}
+
+    def math_snapshot(self) -> dict:
+        """Get Math Engine snapshot — proofs, harmonics, void, manifold."""
+        self._ensure_loaded()
+        if not self._math:
+            return {"error": "Math Engine not available"}
+        try:
+            from l104_math_engine import (
+                extended_proofs, harmonic_analysis, void_calculus, manifold_extended
+            )
+            result = {}
+            result['goldbach'] = extended_proofs.verify_goldbach(200)
+            result['twin_primes'] = extended_proofs.find_twin_primes(500)
+            result['zeta_zeros'] = extended_proofs.verify_zeta_zeros(5)
+            result['phi_convergence'] = extended_proofs.phi_convergence_proof(30)
+            result['void_emptiness'] = void_calculus.recursive_emptiness(GOD_CODE, depth=13)
+            result['god_code_consonance'] = harmonic_analysis.consonance_score(GOD_CODE)
+            result['holonomy'] = manifold_extended.parallel_transport_loop(1.0, math.pi)
+            return result
+        except Exception as e:
+            return {"error": str(e)}
+
+    def cross_engine_deep_review(self, source: str) -> dict:
+        """Run code through all three engines — Code analysis + Science constants + Math proofs."""
+        self._ensure_loaded()
+        result = {}
+        if self._code:
+            try:
+                result['code_analysis'] = self._code.full_analysis(source)
+                result['sacred_audit'] = self._code.sacred_frequency_audit(source)
+            except Exception as e:
+                result['code_error'] = str(e)
+        if self._science:
+            try:
+                # Check if code references science constants correctly
+                from l104_science_engine.constants import GOD_CODE
+                god_code_references = source.count('GOD_CODE')
+                phi_references = source.count('PHI')
+                result['constant_usage'] = {
+                    "god_code_refs": god_code_references,
+                    "phi_refs": phi_references,
+                    "god_code_value": GOD_CODE,
+                }
+            except Exception as e:
+                result['science_error'] = str(e)
+        if self._math:
+            try:
+                from l104_math_engine import extended_proofs
+                result['math_proofs'] = extended_proofs.verify_goldbach(100)
+            except Exception as e:
+                result['math_error'] = str(e)
+        result['engines_used'] = sum(1 for k in ['code_analysis', 'constant_usage', 'math_proofs'] if k in result)
+        return result
+
+
+# Singleton — lazy-loaded to avoid slow quantum runtime imports at startup
+tri_engine = TriEngineIntegration()
+logger.info("🔺 [TRI-ENGINE] Integration hub initialized (lazy-load) — Science + Math + Code")
+
+
 # ═══ Phase 27: Unified Engine Registry (Cross-Pollinated from Swift EngineRegistry) ═══
 class UnifiedEngineRegistry:
     """
@@ -3508,6 +4441,8 @@ class UnifiedEngineRegistry:
         'response_quality': PHI,      # φ — quality is critical
         'predictive_intent': 1.0,
         'reinforcement': 1.0,
+        # v4.0+ tri-engine
+        'tri_engine': PHI * PHI,           # φ² = 2.618 — cross-engine integration hub
     }
 
     def __init__(self):
@@ -3658,5 +4593,7 @@ engine_registry.register_all({
 # Register Dual-Layer Engine as flagship (separate to handle ImportError gracefully)
 if _dual_layer_ref is not None:
     engine_registry.register('dual_layer', _dual_layer_ref)
-logger.info(f"🔧 [REGISTRY] Unified Engine Registry: {len(engine_registry.engines)} engines, φ-weighted health active, Dual-Layer Flagship: {'ACTIVE' if _dual_layer_ref else 'UNAVAILABLE'}")
+# Register Tri-Engine Integration hub — Science + Math + Code
+engine_registry.register('tri_engine', tri_engine)
+logger.info(f"🔧 [REGISTRY] Unified Engine Registry: {len(engine_registry.engines)} engines, φ-weighted health active, Dual-Layer Flagship: {'ACTIVE' if _dual_layer_ref else 'UNAVAILABLE'}, Tri-Engine: ACTIVE")
 

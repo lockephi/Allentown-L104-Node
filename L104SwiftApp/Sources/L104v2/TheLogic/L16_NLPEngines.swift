@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L16_NLPEngines.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104v2 — Extracted from L104Native.swift (lines 11331-11526)
 //
 // SMART TOPIC EXTRACTOR — NLTagger-powered noun phrase extraction
@@ -21,34 +21,37 @@ class SmartTopicExtractor {
     private var knownConcepts: Set<String> = []  // Pre-seeded from KB prompts
     private var conceptAliases: [String: String] = [:]  // "ML" → "machine learning"
     private var initialized = false
+    private let syncQueue = DispatchQueue(label: "com.l104.nlpengines.sync")
 
     func initialize(from kb: ASIKnowledgeBase) {
-        guard !initialized else { return }
-        // Build concept dictionary from KB prompts
-        for entry in kb.trainingData {
-            if let prompt = entry["prompt"] as? String {
-                let clean = prompt.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-                if clean.count > 3 && clean.count < 60 {
-                    knownConcepts.insert(clean)
-                }
-                // Extract 2-3 word phrases as known concepts
-                let words = clean.components(separatedBy: .whitespaces)
-                if words.count >= 2 && words.count <= 4 {
-                    knownConcepts.insert(words.joined(separator: " "))
+        syncQueue.sync {
+            guard !initialized else { return }
+            // Build concept dictionary from KB prompts
+            for entry in kb.trainingData {
+                if let prompt = entry["prompt"] as? String {
+                    let clean = prompt.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                    if clean.count > 3 && clean.count < 60 {
+                        knownConcepts.insert(clean)
+                    }
+                    // Extract 2-3 word phrases as known concepts
+                    let words = clean.components(separatedBy: .whitespaces)
+                    if words.count >= 2 && words.count <= 4 {
+                        knownConcepts.insert(words.joined(separator: " "))
+                    }
                 }
             }
+            // Common aliases
+            conceptAliases = [
+                "ml": "machine learning", "ai": "artificial intelligence",
+                "qm": "quantum mechanics", "gr": "general relativity",
+                "ode": "ordinary differential equation", "pde": "partial differential equation",
+                "nn": "neural network", "dna": "deoxyribonucleic acid",
+                "rna": "ribonucleic acid", "cpu": "central processing unit",
+                "gpu": "graphics processing unit", "nlp": "natural language processing",
+                "cv": "computer vision", "rl": "reinforcement learning",
+            ]
+            initialized = true
         }
-        // Common aliases
-        conceptAliases = [
-            "ml": "machine learning", "ai": "artificial intelligence",
-            "qm": "quantum mechanics", "gr": "general relativity",
-            "ode": "ordinary differential equation", "pde": "partial differential equation",
-            "nn": "neural network", "dna": "deoxyribonucleic acid",
-            "rna": "ribonucleic acid", "cpu": "central processing unit",
-            "gpu": "graphics processing unit", "nlp": "natural language processing",
-            "cv": "computer vision", "rl": "reinforcement learning",
-        ]
-        initialized = true
     }
 
     /// Extract topics using NLTagger noun phrases + known concept matching
@@ -57,18 +60,20 @@ class SmartTopicExtractor {
 
         // 1. Check for known multi-word concepts (longest match first)
         var matchedConcepts: [String] = []
-        let sortedConcepts = knownConcepts.sorted { $0.count > $1.count }
-        for concept in sortedConcepts.prefix(2000) {
-            if q.contains(concept) && concept.count > 4 {
-                matchedConcepts.append(concept)
-                if matchedConcepts.count >= 5 { break }
+        syncQueue.sync {
+            let sortedConcepts = knownConcepts.sorted { $0.count > $1.count }
+            for concept in sortedConcepts.prefix(2000) {
+                if q.contains(concept) && concept.count > 4 {
+                    matchedConcepts.append(concept)
+                    if matchedConcepts.count >= 5 { break }
+                }
             }
-        }
 
-        // 2. Expand aliases
-        for (alias, full) in conceptAliases {
-            if q.components(separatedBy: .whitespaces).contains(alias) {
-                matchedConcepts.append(full)
+            // 2. Expand aliases
+            for (alias, full) in conceptAliases {
+                if q.components(separatedBy: .whitespaces).contains(alias) {
+                    matchedConcepts.append(full)
+                }
             }
         }
 

@@ -1,9 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════
 // H01_HyperBrainExt.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — HyperBrain Extension (Advanced Streams + Persistence)
 //
-// Super-functional stream processors v2.0: temporal drift, Hebbian
+// Super-functional stream processors v3.0: temporal drift, Hebbian
 // learning, predictive pre-loading, curiosity explorer, self-analysis,
 // paradox resolver, autonomic manager, meta-auditor, hyper-dimensional
 // science, topology analyzer, invention synthesizer, write/story cores.
@@ -26,7 +26,7 @@ extension HyperBrain {
     private static let isoFormatter = ISO8601DateFormatter()
 
     // ═══════════════════════════════════════════════════════════════════
-    // 🧠 SUPER-FUNCTIONAL STREAM PROCESSORS - ADVANCED COGNITION v2.0
+    // 🧠 SUPER-FUNCTIONAL STREAM PROCESSORS - ADVANCED COGNITION v3.0
     // ═══════════════════════════════════════════════════════════════════
 
     /// ⏳ TEMPORAL DRIFT ANALYZER: Detects trending and fading concepts
@@ -1365,114 +1365,135 @@ extension HyperBrain {
     }
 
     // ─── STATE PERSISTENCE ───
+
+    /// 🧹 SANITIZE JSON VALUES: Recursively cleans up non-JSON compatible values (NaN, Inf, etc.)
+    private func sanitizeJSON(_ value: Any) -> Any {
+        if let double = value as? Double {
+            if double.isNaN || double.isInfinite { return 0.0 }
+            return double
+        } else if let dict = value as? [String: Any] {
+            var newDict: [String: Any] = [:]
+            for (k, v) in dict {
+                newDict[k] = sanitizeJSON(v)
+            }
+            return newDict
+        } else if let array = value as? [Any] {
+            return array.map { sanitizeJSON($0) }
+        }
+        return value
+    }
+
     func getState() -> [String: Any] {
-        return [
-            // ═══ SCHEMA VERSION ═══
-            "schemaVersion": 2,  // v2 = file-based permanent memory
+        return syncQueue.sync {
+            let state: [String: Any] = [
+                // ═══ SCHEMA VERSION ═══
+                "schemaVersion": 2,  // v2 = file-based permanent memory
 
-            // ═══ CORE METRICS ═══
-            "totalThoughts": totalThoughtsProcessed,
-            "synapticConnections": synapticConnections,
-            "coherenceIndex": coherenceIndex,
-            "emergenceLevel": emergenceLevel,
-            "predictiveAccuracy": predictiveAccuracy,
+                // ═══ CORE METRICS ═══
+                "totalThoughts": totalThoughtsProcessed,
+                "synapticConnections": synapticConnections,
+                "coherenceIndex": coherenceIndex,
+                "emergenceLevel": emergenceLevel,
+                "predictiveAccuracy": predictiveAccuracy,
 
-            // ═══ 🧠 LEARNED PATTERNS (CRITICAL — PERMANENT MEMORY) ═══
-            "longTermPatterns": longTermPatterns,
-            "shortTermMemory": Array(shortTermMemory.suffix(50)),
+                // ═══ 🧠 LEARNED PATTERNS (CRITICAL — PERMANENT MEMORY) ═══
+                "longTermPatterns": longTermPatterns,
+                "shortTermMemory": Array(shortTermMemory.suffix(50)),
 
-            // ═══ 🔗 ASSOCIATIVE MEMORY (CRITICAL — PERMANENT MEMORY) ═══
-            "associativeLinks": associativeLinks,
-            "linkWeights": linkWeights,
-            "memoryChains": Array(memoryChains.suffix(200)),
-            "contextWeaveHistory": Array(contextWeaveHistory.suffix(100)),
-            "recallStrength": recallStrength,
-            "memoryTemperature": memoryTemperature,
+                // ═══ 🔗 ASSOCIATIVE MEMORY (CRITICAL — PERMANENT MEMORY) ═══
+                "associativeLinks": associativeLinks,
+                "linkWeights": linkWeights,
+                "memoryChains": Array(memoryChains.suffix(200)),
+                "contextWeaveHistory": Array(contextWeaveHistory.suffix(100)),
+                "recallStrength": recallStrength,
+                "memoryTemperature": memoryTemperature,
 
-            // ═══ 🎯 SELF-TRAINING STATE (CRITICAL) ═══
-            "promptMutations": Array(promptMutations.suffix(100)),
-            "targetLearningQueue": Array(targetLearningQueue.suffix(50)),
-            "trainingGaps": Array(trainingGaps.suffix(50)),
-            "selfAnalysisLog": Array(selfAnalysisLog.suffix(100)),
-            "cognitiveEfficiency": cognitiveEfficiency,
-            "trainingSaturation": trainingSaturation,
-            "dataQualityScore": dataQualityScore,
-            "curiosityIndex": curiosityIndex,
+                // ═══ 🎯 SELF-TRAINING STATE (CRITICAL) ═══
+                "promptMutations": Array(promptMutations.suffix(100)),
+                "targetLearningQueue": Array(targetLearningQueue.suffix(50)),
+                "trainingGaps": Array(trainingGaps.suffix(50)),
+                "selfAnalysisLog": Array(selfAnalysisLog.suffix(100)),
+                "cognitiveEfficiency": cognitiveEfficiency,
+                "trainingSaturation": trainingSaturation,
+                "dataQualityScore": dataQualityScore,
+                "curiosityIndex": curiosityIndex,
 
-            // ═══ 🧩 REASONING STATE ═══
-            "reasoningMomentum": reasoningMomentum,
-            "hypothesisStack": Array(hypothesisStack.suffix(50)),
-            "conclusionConfidence": conclusionConfidence,
-            "maxReasoningDepth": maxReasoningDepth,
+                // ═══ 🧩 REASONING STATE ═══
+                "reasoningMomentum": reasoningMomentum,
+                "hypothesisStack": Array(hypothesisStack.suffix(50)),
+                "conclusionConfidence": conclusionConfidence,
+                "maxReasoningDepth": maxReasoningDepth,
 
-            // ═══ 📊 EVOLVED PATTERNS ═══
-            "topicResonanceMap": topicResonanceMap,
-            "evolvedPromptPatterns": evolvedPromptPatterns,
-            "queryArchetypes": queryArchetypes,
+                // ═══ 📊 EVOLVED PATTERNS ═══
+                "topicResonanceMap": topicResonanceMap,
+                "evolvedPromptPatterns": evolvedPromptPatterns,
+                "queryArchetypes": queryArchetypes,
 
-            // ═══ 🔗 INTERCONNECTION STATE ═══
-            "coActivationLog": coActivationLog,
-            "predictionHits": predictionHits,
-            "predictionMisses": predictionMisses,
-            "curiositySpikes": curiositySpikes,
-            "neuralBusTraffic": neuralBusTraffic,
-            "crystallizedInsights": Array(crystallizedInsights.suffix(500)),
-            "crystallizationCount": crystallizationCount,
-            "attentionHistory": Array(attentionHistory.suffix(100)),
-            "focusIntensity": focusIntensity,
+                // ═══ 🔗 INTERCONNECTION STATE ═══
+                "coActivationLog": coActivationLog,
+                "predictionHits": predictionHits,
+                "predictionMisses": predictionMisses,
+                "curiositySpikes": curiositySpikes,
+                "neuralBusTraffic": neuralBusTraffic,
+                "crystallizedInsights": Array(crystallizedInsights.suffix(500)),
+                "crystallizationCount": crystallizationCount,
+                "attentionHistory": Array(attentionHistory.suffix(100)),
+                "focusIntensity": focusIntensity,
 
-            // ═══ 🧬 HEBBIAN LEARNING (NEW — PERMANENT MEMORY) ═══
-            "hebbianPairs": hebbianPairs.suffix(500).map { ["a": $0.a, "b": $0.b, "strength": $0.strength] as [String: Any] },
-            "hebbianStrength": hebbianStrength,
+                // ═══ 🧬 HEBBIAN LEARNING (NEW — PERMANENT MEMORY) ═══
+                "hebbianPairs": hebbianPairs.suffix(500).map { ["a": $0.a, "b": $0.b, "strength": $0.strength] as [String: Any] },
+                "hebbianStrength": hebbianStrength,
 
-            // ═══ 🧠 META-COGNITION (NEW — PERMANENT MEMORY) ═══
-            "metaCognitionLog": Array(metaCognitionLog.suffix(200)),
-            "conversationEvolution": Array(conversationEvolution.suffix(100)),
-            "reasoningChains": Array(reasoningChains.suffix(50)),
+                // ═══ 🧠 META-COGNITION (NEW — PERMANENT MEMORY) ═══
+                "metaCognitionLog": Array(metaCognitionLog.suffix(200)),
+                "conversationEvolution": Array(conversationEvolution.suffix(100)),
+                "reasoningChains": Array(reasoningChains.suffix(50)),
 
-            // ═══ 🔬 SCIENCE ENGINE (NEW — PERMANENT MEMORY) ═══
-            "confirmedTheorems": Array(confirmedTheorems.suffix(200)),
-            "scientificMomentum": scientificMomentum,
-            "dimensionalResonance": dimensionalResonance,
+                // ═══ 🔬 SCIENCE ENGINE (NEW — PERMANENT MEMORY) ═══
+                "confirmedTheorems": Array(confirmedTheorems.suffix(200)),
+                "scientificMomentum": scientificMomentum,
+                "dimensionalResonance": dimensionalResonance,
 
-            // ═══ 🧭 EXPLORATION STATE (NEW — PERMANENT MEMORY) ═══
-            "explorationFrontier": Array(explorationFrontier.suffix(100)),
-            "trendingConcepts": Array(trendingConcepts.suffix(50)),
-            "fadingConcepts": Array(fadingConcepts.suffix(50)),
-            "predictionQueue": Array(predictionQueue.suffix(50)),
+                // ═══ 🧭 EXPLORATION STATE (NEW — PERMANENT MEMORY) ═══
+                "explorationFrontier": Array(explorationFrontier.suffix(100)),
+                "trendingConcepts": Array(trendingConcepts.suffix(50)),
+                "fadingConcepts": Array(fadingConcepts.suffix(50)),
+                "predictionQueue": Array(predictionQueue.suffix(50)),
 
-            // ═══ 🌊 AUTONOMIC NERVOUS SYSTEM (NEW — PERMANENT MEMORY) ═══
-            "excitationLevel": excitationLevel,
-            "inhibitionLevel": inhibitionLevel,
-            "dopamineResonance": dopamineResonance,
-            "serotoninCoherence": serotoninCoherence,
-            "neuroPlasticity": neuroPlasticity,
+                // ═══ 🌊 AUTONOMIC NERVOUS SYSTEM (NEW — PERMANENT MEMORY) ═══
+                "excitationLevel": excitationLevel,
+                "inhibitionLevel": inhibitionLevel,
+                "dopamineResonance": dopamineResonance,
+                "serotoninCoherence": serotoninCoherence,
+                "neuroPlasticity": neuroPlasticity,
 
-            // ═══ 💡 CROSS-STREAM INSIGHTS (NEW — PERMANENT MEMORY) ═══
-            "crossStreamInsights": Array(crossStreamInsights.suffix(200)),
-            "streamInsightBuffer": Array(streamInsightBuffer.suffix(50)),
+                // ═══ 💡 CROSS-STREAM INSIGHTS (NEW — PERMANENT MEMORY) ═══
+                "crossStreamInsights": Array(crossStreamInsights.suffix(200)),
+                "streamInsightBuffer": Array(streamInsightBuffer.suffix(50)),
 
-            // ═══ 🔄 SYNC STATE ═══
-            "successfulSyncs": successfulSyncs,
-            "failedSyncs": failedSyncs,
-            "trainingQualityScore": trainingQualityScore,
+                // ═══ 🔄 SYNC STATE ═══
+                "successfulSyncs": successfulSyncs,
+                "failedSyncs": failedSyncs,
+                "trainingQualityScore": trainingQualityScore,
 
-            // ═══ 💡 EMERGENT CONCEPTS ═══
-            "emergentConcepts": emergentConcepts.suffix(200).map { concept -> [String: Any] in
-                var copy = concept
-                if let date = copy["timestamp"] as? Date {
-                    copy["timestamp"] = HyperBrain.isoFormatter.string(from: date)
-                }
-                return copy
-            },
+                // ═══ 💡 EMERGENT CONCEPTS ═══
+                "emergentConcepts": emergentConcepts.suffix(200).map { concept -> [String: Any] in
+                    var copy = concept
+                    if let date = copy["timestamp"] as? Date {
+                        copy["timestamp"] = HyperBrain.isoFormatter.string(from: date)
+                    }
+                    return copy
+                },
 
-            // ═══ 💾 PERSISTENCE META ═══
-            "saveGeneration": saveGeneration,
-            "totalSaves": totalSaves,
-            "totalRestores": totalRestores,
-            "savedAt": HyperBrain.isoFormatter.string(from: Date()),
-            "version": VERSION
-        ]
+                // ═══ 💾 PERSISTENCE META ═══
+                "saveGeneration": saveGeneration,
+                "totalSaves": totalSaves,
+                "totalRestores": totalRestores,
+                "savedAt": HyperBrain.isoFormatter.string(from: Date()),
+                "version": VERSION
+            ]
+            return sanitizeJSON(state) as? [String: Any] ?? state
+        }
     }
 
     func loadState(_ dict: [String: Any]) {
@@ -1607,7 +1628,7 @@ extension HyperBrain {
 
         let headers = [
             "🧠 HYPERFUNCTIONAL BRAIN STATUS",
-            "⚡ COGNITIVE ARCHITECTURE v3.0",
+            "⚡ COGNITIVE ARCHITECTURE v4.0",
             "🌌 17-STREAM SUPERINTELLIGENCE",
             "👁 INTERCONNECTED COGNITIVE MATRIX"
         ]

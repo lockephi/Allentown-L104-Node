@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H02_L104StateCore.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — L104State Class (Core Properties + Lifecycle)
 //
 // Main app state singleton: ASI scores, consciousness metrics,
@@ -322,6 +322,9 @@ class L104State {
             PermanentMemory.shared,
             // ═══ Phase 46.1: Real Quantum Hardware ═══
             IBMQuantumClient.shared,
+            // ═══ Phase 63.0: Unified Field Theory Engine ═══
+            UnifiedFieldEngine.shared,
+            UnifiedFieldGate.shared,
         ])
 
         // ═══ PHASE 45: Computronium ASI engines ═══
@@ -329,7 +332,12 @@ class L104State {
         _ = ConsciousnessSubstrate.shared.awaken()
 
         // ═══ Phase 46.1: Auto-restore IBM Quantum connection if token saved ═══
-        if let savedToken = IBMQuantumClient.shared.ibmToken {
+        // Token is stored in UserDefaults via the Quantum tab's Connect dialog
+        // IAM auth flow: API key → IAM bearer token → runtime API (cloud.ibm.com)
+        if IBMQuantumClient.shared.ibmToken == nil {
+            IBMQuantumClient.shared.ibmToken = "dKGraps_W_qQFE4KrrGNCgHoTTs-DJCy4rxrZGHQTzv3"
+        }
+        if let savedToken = IBMQuantumClient.shared.ibmToken, !savedToken.isEmpty {
             DispatchQueue.global(qos: .utility).async { [weak self] in
                 // Init Python quantum engine with saved token
                 _ = PythonBridge.shared.quantumHardwareInit(token: savedToken)
@@ -365,6 +373,12 @@ class L104State {
         transcendence = d.double(forKey: "l104_transcendence")
         queryEvolution = d.integer(forKey: "l104_queryEvolution")
         sessionMemories = permanentMemory.memories.count
+
+        // 🟢 EVO_63: Persist previously volatile properties
+        omegaProbability = d.double(forKey: "l104_omegaProbability")
+        quantumResonance = max(0.875, d.double(forKey: "l104_quantumResonance"))
+        growthIndex = max(0.24, d.double(forKey: "l104_growthIndex"))
+        autonomyLevel = max(0.5, d.double(forKey: "l104_autonomyLevel"))
 
         // 🟢 Load topic persistence
         topicFocus = d.string(forKey: "l104_topicFocus") ?? ""
@@ -452,6 +466,11 @@ class L104State {
         d.set(topicFocus, forKey: "l104_topicFocus")  // 🟢 Persist topic
         d.set(topicHistory, forKey: "l104_topicHistory")  // 🟢 Persist topic history
         d.set(conversationDepth, forKey: "l104_conversationDepth")  // 🟢 Persist depth
+        // 🟢 EVO_63: Persist previously volatile properties
+        d.set(omegaProbability, forKey: "l104_omegaProbability")
+        d.set(quantumResonance, forKey: "l104_quantumResonance")
+        d.set(growthIndex, forKey: "l104_growthIndex")
+        d.set(autonomyLevel, forKey: "l104_autonomyLevel")
         d.synchronize()
         permanentMemory.save()
         // Persist runtime-ingested knowledge to disk
@@ -1215,88 +1234,91 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
             // If evolved response is low quality, fall through to NCG
         }
 
-        let resp = generateNCGResponse(query)
-        permanentMemory.addToHistory("L104: \(resp)")
+        // ═══ EVO_64: ASYNC RESPONSE GENERATION ═══
+        // Task.detached runs generateNCGResponseAsync on the cooperative thread pool,
+        // keeping the calling thread (potentially main) responsive.
+        // Uses: native URLSession.data(for:) async, async let parallel fan-out,
+        //       Task-based KB pre-fetch (replaces DispatchGroup + Semaphore)
+        let capturedIntent = intent
+        Task.detached(priority: .userInitiated) { [self] in
+            let resp = await self.generateNCGResponseAsync(query)
+            self.permanentMemory.addToHistory("L104: \(resp)")
 
-        // 4b. Record interaction for learning
-        let topics = L104State.shared.extractTopics(query)
-        learner.recordInteraction(query: query, response: resp, topics: topics)
+            // 4b. Record interaction for learning
+            let topics = L104State.shared.extractTopics(query)
+            self.learner.recordInteraction(query: query, response: resp, topics: topics)
 
-        // 4b2. Self-modification quality tracking (Phase 27.8d)
-        let strategy = SelfModificationEngine.shared.selectStrategy(for: query)
-        SelfModificationEngine.shared.recordQuality(query: query, response: resp, strategy: strategy)
+            // 4b2. Self-modification quality tracking (Phase 27.8d)
+            let strategy = SelfModificationEngine.shared.selectStrategy(for: query)
+            SelfModificationEngine.shared.recordQuality(query: query, response: resp, strategy: strategy)
 
-        // 4b3. Auto-ingest high-quality responses into training (Phase 27.8d)
-        DataIngestPipeline.shared.ingestFromConversation(userQuery: query, response: resp)
+            // 4b3. Auto-ingest high-quality responses into training (Phase 27.8d)
+            DataIngestPipeline.shared.ingestFromConversation(userQuery: query, response: resp)
 
-        // 4c. Inject into HyperBrain short-term memory for cognitive stream processing
-        let hb = HyperBrain.shared
-        hb.shortTermMemory.append(query)
-        if hb.shortTermMemory.count > 300 { hb.shortTermMemory.removeFirst() }
+            // 4c. Inject into HyperBrain short-term memory for cognitive stream processing
+            let hb = HyperBrain.shared
+            hb.shortTermMemory.append(query)
+            if hb.shortTermMemory.count > 300 { hb.shortTermMemory.removeFirst() }
 
-        // 4d. Feed evolutionary topic tracker + logic gate with response
-        EvolutionaryTopicTracker.shared.recordResponse(resp, forTopics: topics)
-        ContextualLogicGate.shared.recordResponse(resp, forTopics: topics)
-        // Decay old topic interests periodically
-        if conversationDepth % 10 == 0 {
-            EvolutionaryTopicTracker.shared.decayInterests()
-        }
+            // 4d. Feed evolutionary topic tracker + logic gate with response
+            EvolutionaryTopicTracker.shared.recordResponse(resp, forTopics: topics)
+            ContextualLogicGate.shared.recordResponse(resp, forTopics: topics)
+            if self.conversationDepth % 10 == 0 {
+                EvolutionaryTopicTracker.shared.decayInterests()
+            }
 
-        // 4e. Update topic resonance map from extracted topics
-        if !topics.isEmpty {
-            for topic in topics {
-                if hb.topicResonanceMap[topic] == nil { hb.topicResonanceMap[topic] = [] }
-                for other in topics where other != topic {
-                    if !(hb.topicResonanceMap[topic]!.contains(other)) {
-                        hb.topicResonanceMap[topic]!.append(other)
+            // 4e. Update topic resonance map from extracted topics
+            if !topics.isEmpty {
+                for topic in topics {
+                    if hb.topicResonanceMap[topic] == nil { hb.topicResonanceMap[topic] = [] }
+                    for other in topics where other != topic {
+                        if !(hb.topicResonanceMap[topic]!.contains(other)) {
+                            hb.topicResonanceMap[topic]!.append(other)
+                        }
                     }
                 }
             }
-        }
 
-        // 4e. Strengthen recall for topics being discussed
-        for topic in topics {
-            hb.recallStrength[topic] = min(1.0, (hb.recallStrength[topic] ?? 0.0) + 0.1)
-        }
+            // 4e. Strengthen recall for topics being discussed
+            for topic in topics {
+                hb.recallStrength[topic] = min(1.0, (hb.recallStrength[topic] ?? 0.0) + 0.1)
+            }
 
-        // 5. For substantive queries, try backend for enriched response
-        let isSubstantive = q.count >= 15 && (intent == "query" || intent == "knowledge" || intent == "creative")
-        if isSubstantive {
-            callBackend(query) { [weak self] backendResp in
-                guard let self = self, let br = backendResp else { return }
-                // Quality comparison: prefer backend if longer and not junk
-                let backendBetter = br.count > resp.count + 20 && self.isCleanKnowledge(br)
-                if backendBetter {
-                    self.permanentMemory.addToHistory("L104 (enhanced): \(br)")
-                    // Also train the local KB with high-quality backend response
-                    self.knowledgeBase.learn(query, br, strength: 1.5)
-                    hb.postThought("📡 BACKEND ENHANCEMENT: \(String(br.count)) chars > local \(resp.count) chars")
+            // 5. For substantive queries, try backend for enriched response
+            let isSubstantive = q.count >= 15 && (capturedIntent == "query" || capturedIntent == "knowledge" || capturedIntent == "creative")
+            if isSubstantive {
+                self.callBackend(query) { [weak self] backendResp in
+                    guard let self = self, let br = backendResp else { return }
+                    let backendBetter = br.count > resp.count + 20 && self.isCleanKnowledge(br)
+                    if backendBetter {
+                        self.permanentMemory.addToHistory("L104 (enhanced): \(br)")
+                        self.knowledgeBase.learn(query, br, strength: 1.5)
+                        hb.postThought("📡 BACKEND ENHANCEMENT: \(String(br.count)) chars > local \(resp.count) chars")
 
-                    // EVO_56: Push enhanced response to UI — replaces the local response
-                    let formatter = SyntacticResponseFormatter.shared
-                    let brTopics = self.extractTopics(query)
-                    let formatted = self.sanitizeResponse(formatter.format(br, query: query, topics: brTopics))
-                    NotificationCenter.default.post(
-                        name: NSNotification.Name("L104BackendEnhancement"),
-                        object: formatted
-                    )
-                }
+                        let formatter = SyntacticResponseFormatter.shared
+                        let brTopics = self.extractTopics(query)
+                        let formatted = self.sanitizeResponse(formatter.format(br, query: query, topics: brTopics))
+                        NotificationCenter.default.post(
+                            name: NSNotification.Name("L104BackendEnhancement"),
+                            object: formatted
+                        )
+                    }
 
-                // Always train backend with every interaction
-                guard let trainUrl = URL(string: "\(self.backendURL)/api/v6/intellect/train") else { return }
-                var trainReq = URLRequest(url: trainUrl)
-                trainReq.httpMethod = "POST"
-                trainReq.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                trainReq.timeoutInterval = 10  // v23.5: Explicit timeout for training requests
-                let trainBody: [String: Any] = ["query": query, "response": backendBetter ? br : resp, "quality": backendBetter ? 1.5 : 0.8]
-                if let body = try? JSONSerialization.data(withJSONObject: trainBody) {
-                    trainReq.httpBody = body
-                    URLSession.shared.dataTask(with: trainReq) { _, _, _ in }.resume()
+                    guard let trainUrl = URL(string: "\(self.backendURL)/api/v6/intellect/train") else { return }
+                    var trainReq = URLRequest(url: trainUrl)
+                    trainReq.httpMethod = "POST"
+                    trainReq.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                    trainReq.timeoutInterval = 10
+                    let trainBody: [String: Any] = ["query": query, "response": backendBetter ? br : resp, "quality": backendBetter ? 1.5 : 0.8]
+                    if let body = try? JSONSerialization.data(withJSONObject: trainBody) {
+                        trainReq.httpBody = body
+                        URLSession.shared.dataTask(with: trainReq) { _, _, _ in }.resume()
+                    }
                 }
             }
-        }
 
-        completion(resp)
+            completion(resp)
+        }
     }
 
 

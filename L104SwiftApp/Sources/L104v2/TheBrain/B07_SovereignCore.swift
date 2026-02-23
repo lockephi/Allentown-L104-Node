@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
-// B07_SovereignCore.swift — L104 Neural Architecture v2
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// B07_SovereignCore.swift — L104 Neural Architecture v3 (EVO_62)
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // Extracted from L104Native.swift
 // ═══════════════════════════════════════════════════════════════════
 
@@ -42,7 +42,7 @@ class SovereignQuantumCore {
 
     // ─── CHAKRA FREQUENCIES (mirrors Python CHAKRA_QUANTUM_LATTICE) ───
     private let chakraFrequencies: [Double] = [
-        396.0, 417.0, 528.0, 639.0, 741.0, 852.0, 963.0, 1074.0
+        396.0, 417.0, 528.0, 639.0, 741.0, 852.3992551699, 963.0, 1000.2568
     ]
 
     /// Load parameters into the core

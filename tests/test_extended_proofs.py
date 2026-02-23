@@ -624,10 +624,10 @@ class TestCollatzConstants(unittest.TestCase):
             msg=f"GC mod 1 = {frac:.15f}")
 
     def test_resonance_alignment(self):
-        """resonance_alignment = GOD_CODE × φ ≈ 853.54"""
-        ra = GOD_CODE * PHI
-        self.assertAlmostEqual(ra, 853.5388, delta=0.01,
-            msg=f"GC×φ = {ra:.4f}")
+        """resonance_alignment = G(-72) = GOD_CODE × 2^(72/104) ≈ 852.40"""
+        ra = GOD_CODE * 2 ** (72.0 / 104)
+        self.assertAlmostEqual(ra, 852.3993, delta=0.01,
+            msg=f"G(-72) = {ra:.4f}")
 
     def test_416_connection(self):
         """416 = X where conservation law G(X)×2^(X/104) = GC, and 416/104 = 4"""

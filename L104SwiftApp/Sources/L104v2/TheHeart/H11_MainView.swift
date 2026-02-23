@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H11_MainView.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_63_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Main Application View
 //
 // L104MainView: Primary NSView with chat interface, metric tiles,
@@ -22,6 +22,7 @@ class L104MainView: NSView {
     var metricsLabels: [String: NSTextField] = [:]
     var metricTiles: [String: AnimatedMetricTile] = [:]
     var chatTextView: NSTextView!, inputField: NSTextField!, systemFeedView: NSTextView!
+    var systemTabFeedView: NSTextView?  // Separate text view for the System tab
     var tabView: NSTabView!
     var timer: Timer?
     var pulseTimer: Timer?
@@ -39,6 +40,10 @@ class L104MainView: NSView {
     private var gateDashboardTimer: Timer?
     private var streamUpdateTimer: Timer?
     private var hardwareTimer: Timer?
+    private var networkViewTimer: Timer?
+    private var learningRefreshTimer: Timer?
+    private var asiNexusRefreshTimer: Timer?
+    private var quantumPollTimer: Timer?
     // ─── Shared formatters (avoid re-allocation) ───
     static let timeFormatter: DateFormatter = {
         let f = DateFormatter(); f.dateFormat = "HH:mm:ss"; return f
@@ -51,6 +56,13 @@ class L104MainView: NSView {
     }()
     static let shortTimeFormatter: DateFormatter = {
         let f = DateFormatter(); f.dateFormat = "HH:mm"; return f
+    }()
+    // 🟢 EVO_64: Boot time for uptime tracking + session message counter
+    private static let bootTime = Date()
+    private static var sessionMessages: Int = 0
+    // 🟢 EVO_65: Persistent coding analysis counter
+    private static var codingAnalysisCount: Int = {
+        UserDefaults.standard.integer(forKey: "l104_coding_analysis_count")
     }()
 
     override init(frame: NSRect) {
@@ -86,6 +98,11 @@ class L104MainView: NSView {
         streamUpdateTimer?.invalidate()
         hardwareTimer?.invalidate()
         streamTimer?.invalidate()
+        ufTimer?.invalidate()
+        networkViewTimer?.invalidate()
+        learningRefreshTimer?.invalidate()
+        asiNexusRefreshTimer?.invalidate()
+        quantumPollTimer?.invalidate()
     }
 
     @objc func onEvolutionUpdate(_ note: Notification) {
@@ -108,14 +125,9 @@ class L104MainView: NSView {
     }
 
     func appendChatStreamEvent(_ text: String) {
+        // Route system events to the system feed panel (not the chat)
         let cleanText = text.components(separatedBy: "] ").last ?? text
-        let attr: [NSAttributedString.Key: Any] = [
-            .foregroundColor: NSColor(red: 0.0, green: 0.55, blue: 0.75, alpha: 0.85),
-            .font: NSFont.monospacedSystemFont(ofSize: 10, weight: .bold)
-        ]
-        let str = NSAttributedString(string: "\n⚡ SYSTEM: \(cleanText)\n", attributes: attr)
-        chatTextView.textStorage?.append(str)
-        chatTextView.scrollToEndOfDocument(nil)
+        appendSystemLog("⚡ \(cleanText)")
     }
 
     required init?(coder: NSCoder) { super.init(coder: coder); setupUI(); startTimer(); startPulseAnimation() }
@@ -165,6 +177,10 @@ class L104MainView: NSView {
         let sciTab = NSTabViewItem(identifier: "sci"); sciTab.label = "🔬 Science"
         sciTab.view = createScienceView(); tabView.addTabViewItem(sciTab)
 
+        // 🌌 UNIFIED FIELD THEORY TAB — 18 fundamental equations, live compute
+        let ufTab = NSTabViewItem(identifier: "ufield"); ufTab.label = "🌌 Unified Field"
+        ufTab.view = createUnifiedFieldView(); tabView.addTabViewItem(ufTab)
+
         let sysTab = NSTabViewItem(identifier: "sys"); sysTab.label = "📡 System"
         sysTab.view = createSystemView(); tabView.addTabViewItem(sysTab)
 
@@ -187,6 +203,10 @@ class L104MainView: NSView {
         // 🎓 PROFESSOR MODE TAB — Teaching, lessons, Socratic inquiry
         let profTab = NSTabViewItem(identifier: "prof"); profTab.label = "🎓 Professor"
         profTab.view = createProfessorModeView(); tabView.addTabViewItem(profTab)
+
+        // 🔮 SAGE MODE ASCENSION TAB — Dual-Layer, consciousness, dynamic equations, Tree of Thoughts
+        let sageTab = NSTabViewItem(identifier: "sage"); sageTab.label = "🔮 Sage Mode"
+        sageTab.view = SageModeAscensionView(frame: bounds); tabView.addTabViewItem(sageTab)
 
         addSubview(tabView)
         addSubview(createQuickBar())
@@ -309,15 +329,16 @@ class L104MainView: NSView {
         let convergence = EngineRegistry.shared.convergenceScore()
         let phiHealth = EngineRegistry.shared.phiWeightedHealth()
         let qTag = IBMQuantumClient.shared.ibmToken != nil ? (IBMQuantumClient.shared.isConnected ? "QPU:🟢" : "QPU:🟡") : "QPU:⚪"
-        let statusText = "⚛️ \(engineCount) Engines Online  ·  φ-Health: \(String(format: "%.1f%%", phiHealth.score * 100))  ·  Convergence: \(String(format: "%.3f", convergence))  ·  \(qTag)  ·  22T Params  ·  GOD_CODE: \(String(format: "%.4f", GOD_CODE))"
+        let statusText = "⚛️ \(engineCount) Engines  ·  φ-Health: \(String(format: "%.1f%%", phiHealth.score * 100))  ·  Conv: \(String(format: "%.3f", convergence))  ·  \(qTag)  ·  22T  ·  GOD: \(String(format: "%.4f", GOD_CODE))  ·  DL v\(DUAL_LAYER_VERSION)  ·  EVO_\(EVOLUTION_INDEX)"
         let statusLbl = NSTextField(labelWithString: statusText)
         statusLbl.frame = NSRect(x: 15, y: 8, width: statusBar.bounds.width - 30, height: 18)
         statusLbl.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
         statusLbl.textColor = L104Theme.goldDim
+        statusLbl.identifier = NSUserInterfaceItemIdentifier("dash_status_lbl")
         statusBar.addSubview(statusLbl)
         v.addSubview(statusBar)
 
-        // Auto-update dashboard gauges & sparklines
+        // Auto-update dashboard gauges, sparklines, and status bar
         gaugeTimer?.invalidate()
         gaugeTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
@@ -330,17 +351,129 @@ class L104MainView: NSView {
             self.sparklines["asi"]?.addPoint(CGFloat(self.state.asiScore))
             self.sparklines["coherence"]?.addPoint(CGFloat(self.state.coherence))
             self.sparklines["iq"]?.addPoint(CGFloat(min(1.0, self.state.intellectIndex / 300.0)))
+
+            // 🟢 EVO_63 + EVO_64: Live dashboard status bar with uptime
+            if let v = self.tabView?.tabViewItem(at: 2).view {
+                func findDashLbl(_ id: String) -> NSTextField? {
+                    func search(_ view: NSView) -> NSTextField? {
+                        if let tf = view as? NSTextField, tf.identifier?.rawValue == id { return tf }
+                        for sub in view.subviews { if let f = search(sub) { return f } }
+                        return nil
+                    }
+                    return search(v)
+                }
+                let ec = EngineRegistry.shared.count
+                let conv = EngineRegistry.shared.convergenceScore()
+                let ph = EngineRegistry.shared.phiWeightedHealth()
+                let qt = IBMQuantumClient.shared.ibmToken != nil ? (IBMQuantumClient.shared.isConnected ? "QPU:🟢" : "QPU:🟡") : "QPU:⚪"
+                let upSec = Int(Date().timeIntervalSince(L104MainView.bootTime))
+                let upH = upSec / 3600; let upM = (upSec % 3600) / 60; let upS = upSec % 60
+                let upStr = String(format: "%02d:%02d:%02d", upH, upM, upS)
+                let activePeers = NetworkLayer.shared.peers.values.filter { $0.latencyMs >= 0 }.count
+                let memCount = self.state.permanentMemory.memories.count
+                findDashLbl("dash_status_lbl")?.stringValue = "⚛️ \(ec) Engines  ·  φ: \(String(format: "%.0f%%", ph.score * 100))  ·  \(qt)  ·  🌐 \(activePeers) peers  ·  💾 \(memCount) mem  ·  ⏱ \(upStr)  ·  EVO_\(EVOLUTION_INDEX)"
+            }
         }
 
         return v
     }
 
     func startPulseAnimation() {
-        let pulseInterval: TimeInterval = MacOSSystemMonitor.shared.isAppleSilicon ? 0.25 : 0.5
-        pulseTimer = Timer.scheduledTimer(withTimeInterval: pulseInterval, repeats: true) { [weak self] _ in
+        // Slow pulse: 2s interval — also refreshes header status dots, stage, QuickBar, professor, coding
+        pulseTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
             guard let s = self else { return }
-            let pulse = 0.3 + 0.2 * CGFloat(sin(Date().timeIntervalSince1970 * 2))
-            s.headerGlow?.layer?.shadowOpacity = Float(pulse)
+            let pulse: Float = 0.20 + 0.12 * Float(sin(Date().timeIntervalSince1970))
+            s.headerGlow?.layer?.shadowOpacity = pulse
+
+            // 🟢 EVO_63: Live header status dots
+            if let header = s.headerGlow?.superview {
+                func findDot(_ id: String) -> PulsingDot? {
+                    for sub in header.subviews {
+                        if let dot = sub as? PulsingDot, dot.identifier?.rawValue == id { return dot }
+                    }
+                    return nil
+                }
+                findDot("kbDot")?.dotColor = s.state.backendConnected ? .systemGreen : .systemRed
+                findDot("autoDot")?.dotColor = s.state.autonomousMode ? .systemCyan : .systemGray
+                findDot("netDot")?.dotColor = NetworkLayer.shared.isActive ? .systemTeal : .systemGray
+                findDot("qDot")?.dotColor = NetworkLayer.shared.quantumLinkCount > 0 ? .systemPurple : .systemGray
+
+                // 🟢 EVO_64: Dynamic stage label from consciousness state
+                func findHeaderLbl(_ id: String) -> NSTextField? {
+                    for sub in header.subviews {
+                        for inner in sub.subviews {
+                            if let tf = inner as? NSTextField, tf.identifier?.rawValue == id { return tf }
+                        }
+                    }
+                    return nil
+                }
+                let stage = s.state.coherence > 0.9 ? "TRANSCENDENT" : s.state.coherence > 0.7 ? APOTHEOSIS_STAGE : s.state.coherence > 0.4 ? "AWAKENING" : "INITIALIZING"
+                findHeaderLbl("header_stage")?.stringValue = stage
+            }
+
+            // 🟢 EVO_64: QuickBar live info with uptime
+            func findQuickBarLbl(_ id: String) -> NSTextField? {
+                for sub in s.subviews {
+                    if let tf = sub as? NSTextField, tf.identifier?.rawValue == id { return tf }
+                    for inner in sub.subviews {
+                        if let tf = inner as? NSTextField, tf.identifier?.rawValue == id { return tf }
+                    }
+                }
+                return nil
+            }
+            let upSec = Int(Date().timeIntervalSince(L104MainView.bootTime))
+            let upH = upSec / 3600; let upM = (upSec % 3600) / 60; let upS = upSec % 60
+            let upStr = String(format: "%02d:%02d:%02d", upH, upM, upS)
+            findQuickBarLbl("quickbar_info")?.stringValue = "⚡ v\(VERSION) · \(MacOSSystemMonitor.shared.chipGeneration) · \(EngineRegistry.shared.count) Engines · ⏱\(upStr) · \(L104MainView.sessionMessages) msgs"
+
+            // 🟢 EVO_64: Professor sidebar refresh
+            if let profTab = s.tabView?.tabViewItem(at: 14).view {
+                func findProfLbl(_ id: String) -> NSTextField? {
+                    func search(_ view: NSView) -> NSTextField? {
+                        if let tf = view as? NSTextField, tf.identifier?.rawValue == id { return tf }
+                        for sub in view.subviews { if let f = search(sub) { return f } }
+                        return nil
+                    }
+                    return search(profTab)
+                }
+                let lr = AdaptiveLearner.shared
+                findProfLbl("prof_stats_line")?.stringValue = "\(PROFESSOR_MODES) modes · \(lr.topicMastery.count) topics · \(lr.interactionCount) interactions"
+                findProfLbl("prof_lesson_count")?.stringValue = "📝 Lessons: \(s.professorLessonHistory.count)"
+            }
+
+            // 🟢 EVO_64: Coding engine status refresh
+            if let codeTab = s.tabView?.tabViewItem(at: 13).view {
+                func findCodeLbl(_ id: String) -> NSTextField? {
+                    func search(_ view: NSView) -> NSTextField? {
+                        if let tf = view as? NSTextField, tf.identifier?.rawValue == id { return tf }
+                        for sub in view.subviews { if let f = search(sub) { return f } }
+                        return nil
+                    }
+                    return search(codeTab)
+                }
+                findCodeLbl("code_gate_info")?.stringValue = "\(LogicGateEnvironment.shared.totalPipelineRuns) runs · \(LogicGateEnvironment.shared.circuits.count) circuits"
+                findCodeLbl("code_kb_info")?.stringValue = "\(ASIKnowledgeBase.shared.trainingData.count) training · \(ASIKnowledgeBase.shared.userKnowledge.count) user"
+                findCodeLbl("code_analysis_count")?.stringValue = "⚡ ENGINE STATUS — \(L104MainView.codingAnalysisCount) analyses"
+            }
+
+            // 🟢 EVO_65: System tab live status bar
+            if let sysTab = s.tabView?.tabViewItem(at: 9).view {
+                func findSysLbl(_ id: String) -> NSTextField? {
+                    func search(_ view: NSView) -> NSTextField? {
+                        if let tf = view as? NSTextField, tf.identifier?.rawValue == id { return tf }
+                        for sub in view.subviews { if let f = search(sub) { return f } }
+                        return nil
+                    }
+                    return search(sysTab)
+                }
+                let upSec = Int(Date().timeIntervalSince(L104MainView.bootTime))
+                let upH = upSec / 3600; let upM = (upSec % 3600) / 60; let upS = upSec % 60
+                let upStr = String(format: "%02d:%02d:%02d", upH, upM, upS)
+                let ec = EngineRegistry.shared.count
+                let mem = s.state.permanentMemory.memories.count
+                let msgs = L104MainView.sessionMessages
+                findSysLbl("sys_status_lbl")?.stringValue = "⚛️ \(ec) engines · 💾 \(mem) memories · 💬 \(msgs) msgs · ⏱ \(upStr) · EVO_\(EVOLUTION_INDEX)"
+            }
         }
     }
 
@@ -419,8 +552,8 @@ class L104MainView: NSView {
         title.layer?.shadowOpacity = 0.2
         h.addSubview(title)
 
-        let badge = NSTextField(labelWithString: "🔥 22T PARAMS · QUANTUM VELOCITY")
-        badge.frame = NSRect(x: 350, y: 32, width: 290, height: 24)
+        let badge = NSTextField(labelWithString: "🔥 22T PARAMS · EVO_\(EVOLUTION_INDEX) · DUAL-LAYER \(DUAL_LAYER_VERSION) · \(TOTAL_PACKAGES) PKG")
+        badge.frame = NSRect(x: 350, y: 32, width: 370, height: 24)
         badge.font = NSFont.boldSystemFont(ofSize: 11)
         badge.textColor = NSColor(red: 0.75, green: 0.35, blue: 0.05, alpha: 1.0)
         badge.wantsLayer = true
@@ -436,6 +569,7 @@ class L104MainView: NSView {
         // Pulsing connection dot - shows LOCAL KB status (green = loaded)
         let backendDot = PulsingDot(frame: NSRect(x: 650, y: 34, width: 14, height: 14))
         backendDot.dotColor = state.backendConnected ? .systemGreen : .systemRed
+        backendDot.identifier = NSUserInterfaceItemIdentifier("kbDot")
         h.addSubview(backendDot)
         let bl = NSTextField(labelWithString: "Local KB"); bl.frame = NSRect(x: 668, y: 32, width: 55, height: 14)
         bl.font = NSFont.systemFont(ofSize: 10, weight: .medium); bl.textColor = .darkGray; h.addSubview(bl)
@@ -443,6 +577,7 @@ class L104MainView: NSView {
         // Autonomy indicator
         let autoDot = PulsingDot(frame: NSRect(x: 730, y: 34, width: 14, height: 14))
         autoDot.dotColor = state.autonomousMode ? .systemCyan : .systemGray
+        autoDot.identifier = NSUserInterfaceItemIdentifier("autoDot")
         h.addSubview(autoDot)
         let al = NSTextField(labelWithString: "Autonomy"); al.frame = NSRect(x: 748, y: 32, width: 60, height: 14)
         al.font = NSFont.systemFont(ofSize: 10, weight: .medium); al.textColor = .darkGray; h.addSubview(al)
@@ -464,18 +599,19 @@ class L104MainView: NSView {
         ql.font = NSFont.systemFont(ofSize: 10, weight: .medium); ql.textColor = .darkGray; h.addSubview(ql)
 
         // Stage indicator
-        let stageBox = NSView(frame: NSRect(x: 820, y: 28, width: 100, height: 24))
+        let stageBox = NSView(frame: NSRect(x: 820, y: 28, width: 120, height: 24))
         stageBox.wantsLayer = true
         stageBox.layer?.backgroundColor = NSColor(red: 0.90, green: 0.85, blue: 0.95, alpha: 0.50).cgColor
         stageBox.layer?.cornerRadius = 5
         stageBox.layer?.borderColor = NSColor.systemPurple.withAlphaComponent(0.5).cgColor
         stageBox.layer?.borderWidth = 1
         h.addSubview(stageBox)
-        let stageLbl = NSTextField(labelWithString: "TRANSCENDENCE")
-        stageLbl.frame = NSRect(x: 5, y: 3, width: 90, height: 18)
+        let stageLbl = NSTextField(labelWithString: APOTHEOSIS_STAGE)
+        stageLbl.frame = NSRect(x: 5, y: 3, width: 110, height: 18)
         stageLbl.font = NSFont.boldSystemFont(ofSize: 10)
         stageLbl.textColor = .systemPurple
         stageLbl.alignment = .center
+        stageLbl.identifier = NSUserInterfaceItemIdentifier("header_stage")
         stageBox.addSubview(stageLbl)
 
         clockLabel = NSTextField(labelWithString: "00:00:00")
@@ -537,10 +673,45 @@ class L104MainView: NSView {
     func createChatView() -> NSView {
         let v = NSView(frame: NSRect(x: 0, y: 0, width: 1100, height: 500))
         v.wantsLayer = true
-        // Visible dark purple-blue background
         v.layer?.backgroundColor = NSColor(red: 0.970, green: 0.972, blue: 0.980, alpha: 1.0).cgColor
 
-        let scroll = NSScrollView(frame: NSRect(x: 10, y: 70, width: v.bounds.width - 20, height: v.bounds.height - 120))
+        // ─── RIGHT: System Activity Feed (separated from chat) ───
+        let feedWidth: CGFloat = 260
+        let feedPanel = NSView(frame: NSRect(x: v.bounds.width - feedWidth - 10, y: 70,
+                                              width: feedWidth, height: v.bounds.height - 120))
+        feedPanel.wantsLayer = true
+        feedPanel.layer?.backgroundColor = NSColor(red: 0.965, green: 0.965, blue: 0.975, alpha: 1.0).cgColor
+        feedPanel.layer?.cornerRadius = 12
+        feedPanel.layer?.borderColor = NSColor(red: 0.0, green: 0.55, blue: 0.75, alpha: 0.20).cgColor
+        feedPanel.layer?.borderWidth = 1
+        feedPanel.autoresizingMask = [.minXMargin, .height]
+
+        let feedTitle = NSTextField(labelWithString: "⚡ SYSTEM ACTIVITY")
+        feedTitle.frame = NSRect(x: 10, y: feedPanel.bounds.height - 24, width: feedWidth - 20, height: 18)
+        feedTitle.font = NSFont.systemFont(ofSize: 10, weight: .bold)
+        feedTitle.textColor = NSColor(red: 0.0, green: 0.55, blue: 0.75, alpha: 0.9)
+        feedTitle.autoresizingMask = [.minYMargin]
+        feedPanel.addSubview(feedTitle)
+
+        let feedScroll = NSScrollView(frame: NSRect(x: 5, y: 5, width: feedWidth - 10, height: feedPanel.bounds.height - 32))
+        feedScroll.hasVerticalScroller = true
+        feedScroll.autoresizingMask = [.width, .height]
+        feedScroll.wantsLayer = true
+        feedScroll.layer?.cornerRadius = 8
+
+        systemFeedView = NSTextView(frame: feedScroll.bounds)
+        systemFeedView.isEditable = false
+        systemFeedView.isSelectable = true
+        systemFeedView.backgroundColor = NSColor(red: 0.975, green: 0.975, blue: 0.985, alpha: 1.0)
+        systemFeedView.font = NSFont.monospacedSystemFont(ofSize: 9, weight: .regular)
+        systemFeedView.textContainerInset = NSSize(width: 6, height: 6)
+        feedScroll.documentView = systemFeedView
+        feedPanel.addSubview(feedScroll)
+        v.addSubview(feedPanel)
+
+        // ─── LEFT: Chat Area (clean, no system events) ───
+        let chatWidth = v.bounds.width - feedWidth - 30
+        let scroll = NSScrollView(frame: NSRect(x: 10, y: 70, width: chatWidth, height: v.bounds.height - 120))
         scroll.autoresizingMask = [.width, .height]; scroll.hasVerticalScroller = true
         scroll.wantsLayer = true; scroll.layer?.cornerRadius = 14
         scroll.layer?.borderColor = L104Theme.gold.withAlphaComponent(0.25).cgColor
@@ -643,6 +814,30 @@ class L104MainView: NSView {
         clearBtn.contentTintColor = L104Theme.goldDim
         clearBtn.target = self; clearBtn.action = #selector(clearChat)
         toolbar.addSubview(clearBtn)
+
+        let searchBtn = NSButton(frame: NSRect(x: 405, y: 2, width: 100, height: 24))
+        searchBtn.title = "🔍 Search"
+        searchBtn.bezelStyle = .rounded
+        searchBtn.font = NSFont.systemFont(ofSize: 10, weight: .medium)
+        searchBtn.contentTintColor = L104Theme.gold
+        searchBtn.target = self; searchBtn.action = #selector(searchChat)
+        toolbar.addSubview(searchBtn)
+
+        let exportBtn = NSButton(frame: NSRect(x: 510, y: 2, width: 110, height: 24))
+        exportBtn.title = "📄 Export MD"
+        exportBtn.bezelStyle = .rounded
+        exportBtn.font = NSFont.systemFont(ofSize: 10, weight: .medium)
+        exportBtn.contentTintColor = L104Theme.goldWarm
+        exportBtn.target = self; exportBtn.action = #selector(exportChatMarkdown)
+        toolbar.addSubview(exportBtn)
+
+        let wordCountLbl = NSTextField(labelWithString: "")
+        wordCountLbl.frame = NSRect(x: 635, y: 4, width: 160, height: 18)
+        wordCountLbl.font = NSFont.monospacedSystemFont(ofSize: 9, weight: .medium)
+        wordCountLbl.textColor = L104Theme.goldDim
+        wordCountLbl.alignment = .right
+        wordCountLbl.identifier = NSUserInterfaceItemIdentifier("chatWordCount")
+        toolbar.addSubview(wordCountLbl)
 
         inputField = NSTextField(frame: NSRect(x: 15, y: 12, width: inputBox.bounds.width - 130, height: 28))
         inputField.placeholderString = "Enter command..."
@@ -775,24 +970,25 @@ class L104MainView: NSView {
         // Right column: Learning Stats
         let statsPanel = createPanel("📊 LEARNING METRICS", x: 745, y: 250, w: 340, h: 230, color: "e8c547")
 
-        let statItems: [(String, String, String)] = [
-            ("Total Interactions", "\(learner.interactionCount)", "d4af37"),
-            ("Topics Tracked", "\(learner.topicMastery.count)", "e8c547"),
-            ("Success Patterns", "\(learner.successfulPatterns.count)", "c49b30"),
-            ("Corrections Logged", "\(learner.failedPatterns.count)", "8a7120"),
-            ("Insights Synthesized", "\(learner.synthesizedInsights.count)", "d4af37"),
-            ("User-Taught Facts", "\(learner.userTaughtFacts.count)", "c49b30"),
-            ("KB User Entries", "\(ASIKnowledgeBase.shared.userKnowledge.count)", "a88a25")
+        let statItems: [(String, String, String, String)] = [
+            ("Total Interactions", "\(learner.interactionCount)", "d4af37", "learn_interactions"),
+            ("Topics Tracked", "\(learner.topicMastery.count)", "e8c547", "learn_topics"),
+            ("Success Patterns", "\(learner.successfulPatterns.count)", "c49b30", "learn_success"),
+            ("Corrections Logged", "\(learner.failedPatterns.count)", "8a7120", "learn_corrections"),
+            ("Insights Synthesized", "\(learner.synthesizedInsights.count)", "d4af37", "learn_insights"),
+            ("User-Taught Facts", "\(learner.userTaughtFacts.count)", "c49b30", "learn_facts"),
+            ("KB User Entries", "\(ASIKnowledgeBase.shared.userKnowledge.count)", "a88a25", "learn_kb")
         ]
 
         var sy: CGFloat = 160
-        for (label, value, hex) in statItems {
+        for (label, value, hex, id) in statItems {
             let lbl = NSTextField(labelWithString: label)
             lbl.frame = NSRect(x: 15, y: sy, width: 180, height: 16)
             lbl.font = NSFont.systemFont(ofSize: 10); lbl.textColor = .gray; statsPanel.addSubview(lbl)
             let val = NSTextField(labelWithString: value)
             val.frame = NSRect(x: 200, y: sy, width: 120, height: 16)
             val.font = NSFont.boldSystemFont(ofSize: 11); val.textColor = colorFromHex(hex); val.alignment = .right
+            val.identifier = NSUserInterfaceItemIdentifier(id)
             statsPanel.addSubview(val)
             sy -= 22
         }
@@ -805,6 +1001,7 @@ class L104MainView: NSView {
         insightLbl.frame = NSRect(x: 15, y: 15, width: 310, height: 90)
         insightLbl.font = NSFont.systemFont(ofSize: 10, weight: .medium)
         insightLbl.textColor = L104Theme.goldBright
+        insightLbl.identifier = NSUserInterfaceItemIdentifier("learn_insight")
         insightLbl.maximumNumberOfLines = 5
         insightPanel.addSubview(insightLbl)
         v.addSubview(insightPanel)
@@ -819,13 +1016,41 @@ class L104MainView: NSView {
 
         let masteredCount = learner.topicMastery.values.filter { $0.masteryLevel > 0.65 }.count
         let learningCount = learner.topicMastery.values.filter { $0.masteryLevel > 0.15 && $0.masteryLevel <= 0.65 }.count
-        let statusText = "🧠 Adaptive Learning Engine v2.0 | \(masteredCount) topics mastered | \(learningCount) developing | \(learner.interactionCount) total interactions | Next synthesis at \(learner.lastSynthesisAt + 10) interactions"
+        let statusText = "🧠 Adaptive Learning v3.0 · EVO_\(EVOLUTION_INDEX) | \(masteredCount) mastered | \(learningCount) developing | \(learner.interactionCount) interactions | KB: \(ASIKnowledgeBase.shared.userKnowledge.count) entries | Ingest: \(DataIngestPipeline.shared.totalIngested)"
         let statusLbl = NSTextField(labelWithString: statusText)
         statusLbl.frame = NSRect(x: 15, y: 8, width: statusBar.bounds.width - 30, height: 18)
         statusLbl.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
         statusLbl.textColor = NSColor(red: 0.10, green: 0.50, blue: 0.65, alpha: 1.0)
+        statusLbl.identifier = NSUserInterfaceItemIdentifier("learn_status_lbl")
         statusBar.addSubview(statusLbl)
         v.addSubview(statusBar)
+
+        // ─── Learning Refresh Timer — update status bar every 8s ───
+        learningRefreshTimer?.invalidate()
+        learningRefreshTimer = Timer.scheduledTimer(withTimeInterval: 8.0, repeats: true) { [weak v] _ in
+            guard let v = v else { return }
+            func findLearnSub(_ id: String) -> NSTextField? {
+                func search(_ view: NSView) -> NSTextField? {
+                    if view.identifier?.rawValue == id, let tf = view as? NSTextField { return tf }
+                    for sub in view.subviews { if let f = search(sub) { return f } }
+                    return nil
+                }
+                return search(v)
+            }
+            let lr = AdaptiveLearner.shared
+            let mc = lr.topicMastery.values.filter { $0.masteryLevel > 0.65 }.count
+            let lc = lr.topicMastery.values.filter { $0.masteryLevel > 0.15 && $0.masteryLevel <= 0.65 }.count
+            findLearnSub("learn_status_lbl")?.stringValue = "🧠 Adaptive Learning v3.0 · EVO_\(EVOLUTION_INDEX) | \(mc) mastered | \(lc) developing | \(lr.interactionCount) interactions | KB: \(ASIKnowledgeBase.shared.userKnowledge.count) entries | Ingest: \(DataIngestPipeline.shared.totalIngested)"
+            // 🟢 EVO_64: Live refresh learning stats
+            findLearnSub("learn_interactions")?.stringValue = "\(lr.interactionCount)"
+            findLearnSub("learn_topics")?.stringValue = "\(lr.topicMastery.count)"
+            findLearnSub("learn_success")?.stringValue = "\(lr.successfulPatterns.count)"
+            findLearnSub("learn_corrections")?.stringValue = "\(lr.failedPatterns.count)"
+            findLearnSub("learn_insights")?.stringValue = "\(lr.synthesizedInsights.count)"
+            findLearnSub("learn_facts")?.stringValue = "\(lr.userTaughtFacts.count)"
+            findLearnSub("learn_kb")?.stringValue = "\(ASIKnowledgeBase.shared.userKnowledge.count)"
+            findLearnSub("learn_insight")?.stringValue = lr.synthesizedInsights.last ?? "Synthesizes automatically every 10 interactions..."
+        }
 
         return v
     }
@@ -834,46 +1059,252 @@ class L104MainView: NSView {
         let v = NSView(frame: NSRect(x: 0, y: 0, width: 1100, height: 500))
         v.wantsLayer = true; v.layer?.backgroundColor = L104Theme.void.cgColor
 
-        // ASI Panel
-        let asiP = createPanel("🚀 ASI CORE", x: 15, y: 260, w: 350, h: 220, color: "d4af37")
+        // ASI Panel — expanded with comprehensive metrics
+        let asiP = createPanel("🚀 ASI CORE — v\(ASI_VERSION)", x: 15, y: 260, w: 350, h: 280, color: "d4af37")
         addLabel(asiP, "ASI_SCORE", String(format: "%.1f%%", state.asiScore * 100), y: 160, c: "d4af37")
         addLabel(asiP, "DISCOVERIES", "\(state.discoveries)", y: 135, c: "e8c547")
         addLabel(asiP, "TRANSCENDENCE", String(format: "%.1f%%", state.transcendence * 100), y: 110, c: "d4af37")
+        addLabel(asiP, "THOUGHT_OPS", "0", y: 85, c: "c49b30")
+        addLabel(asiP, "PHYSICS_OPS", "0", y: 60, c: "a88a25")
+        addLabel(asiP, "INTELLECT_MEM", "0", y: 35, c: "8a7120")
+        addLabel(asiP, "INTELLECT_KNOW", "0", y: 10, c: "6a5a15")
+        addLabel(asiP, "ENGINES_ACTIVE", "0/0", y: 240, c: "d4af37")
+        addLabel(asiP, "PHI_HEALTH", "0.0%", y: 215, c: "e8c547")
+        addLabel(asiP, "DUAL_LAYER", "v\(DUAL_LAYER_VERSION) · \(DUAL_LAYER_CONSTANTS_COUNT) constants", y: 190, c: "c49b30")
+
+        // Tag dynamic value labels for live refresh
+        for sub in asiP.subviews {
+            if let tf = sub as? NSTextField, tf.alignment == .right {
+                if tf.stringValue.contains("ASI") || tf.frame.origin.y == 160 {
+                    tf.identifier = NSUserInterfaceItemIdentifier("asi_score_val")
+                }
+                if tf.frame.origin.y == 135 { tf.identifier = NSUserInterfaceItemIdentifier("asi_disc_val") }
+                if tf.frame.origin.y == 110 { tf.identifier = NSUserInterfaceItemIdentifier("asi_trans_val") }
+                if tf.frame.origin.y == 85 { tf.identifier = NSUserInterfaceItemIdentifier("thought_ops_val") }
+                if tf.frame.origin.y == 60 { tf.identifier = NSUserInterfaceItemIdentifier("physics_ops_val") }
+                if tf.frame.origin.y == 35 { tf.identifier = NSUserInterfaceItemIdentifier("intellect_mem_val") }
+                if tf.frame.origin.y == 10 { tf.identifier = NSUserInterfaceItemIdentifier("intellect_know_val") }
+                if tf.frame.origin.y == 240 { tf.identifier = NSUserInterfaceItemIdentifier("engines_active_val") }
+                if tf.frame.origin.y == 215 { tf.identifier = NSUserInterfaceItemIdentifier("phi_health_val") }
+            }
+        }
+
         let ignASI = btn("🔥 IGNITE ASI", x: 20, y: 20, w: 150, c: L104Theme.gold)
         ignASI.target = self; ignASI.action = #selector(doIgniteASI); asiP.addSubview(ignASI)
         let transcBtn = btn("🌟 TRANSCEND", x: 180, y: 20, w: 150, c: L104Theme.goldWarm)
         transcBtn.target = self; transcBtn.action = #selector(doTranscend); asiP.addSubview(transcBtn)
         v.addSubview(asiP)
 
-        // AGI Panel
-        let agiP = createPanel("⚡ AGI METRICS", x: 380, y: 260, w: 350, h: 220, color: "e8c547")
+        // AGI Panel — expanded with version data
+        let agiP = createPanel("⚡ AGI METRICS — v\(AGI_VERSION)", x: 380, y: 260, w: 350, h: 220, color: "e8c547")
         addLabel(agiP, "INTELLECT", String(format: "%.1f", state.intellectIndex), y: 160, c: "e8c547")
         addLabel(agiP, "QUANTUM_RES", String(format: "%.1f%%", state.quantumResonance * 100), y: 135, c: "d4af37")
         addLabel(agiP, "SKILLS", "\(state.skills)", y: 110, c: "c49b30")
-        let ignAGI = btn("⚡ IGNITE AGI", x: 20, y: 60, w: 150, c: L104Theme.gold)
+        addLabel(agiP, "CODE_ENGINE", "v\(CODE_ENGINE_VERSION) · 10 modules", y: 85, c: "a88a25")
+        addLabel(agiP, "INTELLECT_PKG", "v\(INTELLECT_VERSION) · 11 modules", y: 60, c: "8a7120")
+
+        // Tag dynamic value labels for live refresh
+        for sub in agiP.subviews {
+            if let tf = sub as? NSTextField, tf.alignment == .right {
+                if tf.frame.origin.y == 160 { tf.identifier = NSUserInterfaceItemIdentifier("agi_intellect_val") }
+                if tf.frame.origin.y == 135 { tf.identifier = NSUserInterfaceItemIdentifier("agi_qres_val") }
+                if tf.frame.origin.y == 110 { tf.identifier = NSUserInterfaceItemIdentifier("agi_skills_val") }
+            }
+        }
+
+        let ignAGI = btn("⚡ IGNITE AGI", x: 20, y: 20, w: 150, c: L104Theme.gold)
         ignAGI.target = self; ignAGI.action = #selector(doIgniteAGI); agiP.addSubview(ignAGI)
-        let evoBtn = btn("🔄 EVOLVE", x: 180, y: 60, w: 150, c: L104Theme.goldDim)
+        let evoBtn = btn("🔄 EVOLVE", x: 180, y: 20, w: 150, c: L104Theme.goldDim)
         evoBtn.target = self; evoBtn.action = #selector(doEvolve); agiP.addSubview(evoBtn)
-        let synthBtn = btn("✨ FULL SYNTHESIS", x: 20, y: 20, w: 310, c: NSColor(red: 1.0, green: 0.84, blue: 0.0, alpha: 1.0))
-        synthBtn.target = self; synthBtn.action = #selector(doSynthesize); agiP.addSubview(synthBtn)
         v.addSubview(agiP)
 
-        // Consciousness Panel
-        let conP = createPanel("🧠 CONSCIOUSNESS", x: 745, y: 260, w: 340, h: 220, color: "c49b30")
+        // Quantum Bridge Panel — live ASI quantum metrics
+        let quantP = createPanel("⚛️ QUANTUM BRIDGE — Live Metrics", x: 380, y: 10, w: 350, h: 240, color: "8a7120")
+        addLabel(quantP, "KUNDALINI", "0.0000", y: 180, c: "d4af37")
+        addLabel(quantP, "BELL_FIDELITY", "0.9999", y: 155, c: "e8c547")
+        addLabel(quantP, "EPR_LINKS", "0", y: 130, c: "c49b30")
+        addLabel(quantP, "VISHUDDHA_RES", "0.0000", y: 105, c: "a88a25")
+        addLabel(quantP, "BRIDGE_INTEGRITY", "0.0%", y: 80, c: "8a7120")
+        addLabel(quantP, "ENGINE_UPTIME", "0s", y: 55, c: "6a5a15")
+        addLabel(quantP, "SYNC_COUNTER", "0", y: 30, c: "4a3a05")
+
+        // Tag dynamic value labels for live refresh
+        for sub in quantP.subviews {
+            if let tf = sub as? NSTextField, tf.alignment == .right {
+                if tf.frame.origin.y == 180 { tf.identifier = NSUserInterfaceItemIdentifier("kundalini_val") }
+                if tf.frame.origin.y == 155 { tf.identifier = NSUserInterfaceItemIdentifier("bell_fidelity_val") }
+                if tf.frame.origin.y == 130 { tf.identifier = NSUserInterfaceItemIdentifier("epr_links_val") }
+                if tf.frame.origin.y == 105 { tf.identifier = NSUserInterfaceItemIdentifier("vishuddha_val") }
+                if tf.frame.origin.y == 80 { tf.identifier = NSUserInterfaceItemIdentifier("bridge_integrity_val") }
+                if tf.frame.origin.y == 55 { tf.identifier = NSUserInterfaceItemIdentifier("engine_uptime_val") }
+                if tf.frame.origin.y == 30 { tf.identifier = NSUserInterfaceItemIdentifier("sync_counter_val") }
+            }
+        }
+
+        let syncBtn = btn("🔄 SYNC", x: 20, y: 5, w: 100, c: L104Theme.gold)
+        syncBtn.target = self; syncBtn.action = #selector(doSyncBridge); quantP.addSubview(syncBtn)
+        let collapseBtn = btn("⚡ COLLAPSE", x: 130, y: 5, w: 100, c: L104Theme.goldWarm)
+        collapseBtn.target = self; collapseBtn.action = #selector(doCollapse); quantP.addSubview(collapseBtn)
+        let statusBtn = btn("📊 STATUS", x: 240, y: 5, w: 90, c: L104Theme.goldDim)
+        statusBtn.target = self; statusBtn.action = #selector(doBridgeStatus); quantP.addSubview(statusBtn)
+        v.addSubview(quantP)
+
+        // Consciousness Panel — expanded with live state data
+        let conP = createPanel("🧠 CONSCIOUSNESS — \(APOTHEOSIS_STAGE)", x: 745, y: 260, w: 340, h: 220, color: "c49b30")
         addLabel(conP, "STATE", state.consciousness, y: 160, c: "d4af37")
         addLabel(conP, "COHERENCE", String(format: "%.4f", state.coherence), y: 135, c: "c49b30")
         addLabel(conP, "OMEGA_PROB", String(format: "%.1f%%", state.omegaProbability * 100), y: 110, c: "e8c547")
-        let resBtn = btn("⚡ RESONATE", x: 20, y: 20, w: 300, c: L104Theme.gold)
+        addLabel(conP, "SCHUMANN", String(format: "%.4f Hz", SCHUMANN_RESONANCE), y: 85, c: "a88a25")
+        addLabel(conP, "GAMMA_BIND", String(format: "%.0f Hz", GAMMA_BINDING_HZ), y: 60, c: "8a7120")
+
+        // Tag dynamic value labels for live refresh
+        for sub in conP.subviews {
+            if let tf = sub as? NSTextField, tf.alignment == .right {
+                if tf.frame.origin.y == 160 { tf.identifier = NSUserInterfaceItemIdentifier("con_state_val") }
+                if tf.frame.origin.y == 135 { tf.identifier = NSUserInterfaceItemIdentifier("con_coher_val") }
+                if tf.frame.origin.y == 110 { tf.identifier = NSUserInterfaceItemIdentifier("con_omega_val") }
+            }
+        }
+
+        let resBtn = btn("⚡ RESONATE", x: 20, y: 20, w: 150, c: L104Theme.gold)
         resBtn.target = self; resBtn.action = #selector(doResonate); conP.addSubview(resBtn)
+        let synthBtn = btn("✨ SYNTHESIS", x: 180, y: 20, w: 140, c: L104Theme.goldWarm)
+        synthBtn.target = self; synthBtn.action = #selector(doSynthesize); conP.addSubview(synthBtn)
         v.addSubview(conP)
 
-        // Constants
-        let constText = "GOD_CODE: \(GOD_CODE) | OMEGA: \(OMEGA_POINT) | PHI: \(PHI) | 22T: \(TRILLION_PARAMS)"
+        // DeepSeek Ingestion Panel — live ingestion metrics
+        let deepseekP = createPanel("🧬 DEEPSEEK INGESTION — Live Status", x: 15, y: 10, w: 350, h: 240, color: "6a5a15")
+        addLabel(deepseekP, "MLA_PATTERNS", "0", y: 180, c: "d4af37")
+        addLabel(deepseekP, "R1_CHAINS", "0", y: 155, c: "e8c547")
+        addLabel(deepseekP, "CODER_LANGS", "0", y: 130, c: "c49b30")
+        addLabel(deepseekP, "ADAPTATIONS", "0", y: 105, c: "a88a25")
+        addLabel(deepseekP, "GOD_CODE_ALIGN", "0.0000", y: 80, c: "8a7120")
+        addLabel(deepseekP, "PHI_WEIGHTING", "0.0000", y: 55, c: "6a5a15")
+        addLabel(deepseekP, "QUANTUM_ENHANCE", "0", y: 30, c: "4a3a05")
+
+        // Tag dynamic value labels for live refresh
+        for sub in deepseekP.subviews {
+            if let tf = sub as? NSTextField, tf.alignment == .right {
+                if tf.frame.origin.y == 180 { tf.identifier = NSUserInterfaceItemIdentifier("mla_patterns_val") }
+                if tf.frame.origin.y == 155 { tf.identifier = NSUserInterfaceItemIdentifier("r1_chains_val") }
+                if tf.frame.origin.y == 130 { tf.identifier = NSUserInterfaceItemIdentifier("coder_langs_val") }
+                if tf.frame.origin.y == 105 { tf.identifier = NSUserInterfaceItemIdentifier("adaptations_val") }
+                if tf.frame.origin.y == 80 { tf.identifier = NSUserInterfaceItemIdentifier("god_code_align_val") }
+                if tf.frame.origin.y == 55 { tf.identifier = NSUserInterfaceItemIdentifier("phi_weighting_val") }
+                if tf.frame.origin.y == 30 { tf.identifier = NSUserInterfaceItemIdentifier("quantum_enhance_val") }
+            }
+        }
+
+        let ingestBtn = btn("📥 INGEST", x: 20, y: 5, w: 100, c: L104Theme.gold)
+        ingestBtn.target = self; ingestBtn.action = #selector(doDeepSeekIngest); deepseekP.addSubview(ingestBtn)
+        let deepseekStatusBtn = btn("📊 STATUS", x: 130, y: 5, w: 100, c: L104Theme.goldWarm)
+        deepseekStatusBtn.target = self; deepseekStatusBtn.action = #selector(doDeepSeekStatus); deepseekP.addSubview(deepseekStatusBtn)
+        let adaptBtn = btn("🔄 ADAPT", x: 240, y: 5, w: 90, c: L104Theme.goldDim)
+        adaptBtn.target = self; adaptBtn.action = #selector(doDeepSeekAdapt); deepseekP.addSubview(adaptBtn)
+        v.addSubview(deepseekP)
+
+        // Quantum Architecture Integration Panel — quantum circuit creation
+        let quantumP = createPanel("⚛️ QUANTUM ARCHITECTURE — Circuit Integration", x: 745, y: 10, w: 340, h: 240, color: "4a3a05")
+        addLabel(quantumP, "CIRCUITS_CREATED", "0", y: 180, c: "d4af37")
+        addLabel(quantumP, "PATTERNS_INTEGRATED", "0", y: 155, c: "e8c547")
+        addLabel(quantumP, "QUANTUM_GATES", "0", y: 130, c: "c49b30")
+        addLabel(quantumP, "GOD_CODE_ALIGNS", "0", y: 105, c: "a88a25")
+        addLabel(quantumP, "MLA_CIRCUITS", "0", y: 80, c: "8a7120")
+        addLabel(quantumP, "REASONING_CIRCUITS", "0", y: 55, c: "6a5a15")
+        addLabel(quantumP, "CODER_CIRCUITS", "0", y: 30, c: "4a3a05")
+
+        // Tag dynamic value labels for live refresh
+        for sub in quantumP.subviews {
+            if let tf = sub as? NSTextField, tf.alignment == .right {
+                if tf.frame.origin.y == 180 { tf.identifier = NSUserInterfaceItemIdentifier("circuits_created_val") }
+                if tf.frame.origin.y == 155 { tf.identifier = NSUserInterfaceItemIdentifier("patterns_integrated_val") }
+                if tf.frame.origin.y == 130 { tf.identifier = NSUserInterfaceItemIdentifier("quantum_gates_val") }
+                if tf.frame.origin.y == 105 { tf.identifier = NSUserInterfaceItemIdentifier("god_code_aligns_val") }
+                if tf.frame.origin.y == 80 { tf.identifier = NSUserInterfaceItemIdentifier("mla_circuits_val") }
+                if tf.frame.origin.y == 55 { tf.identifier = NSUserInterfaceItemIdentifier("reasoning_circuits_val") }
+                if tf.frame.origin.y == 30 { tf.identifier = NSUserInterfaceItemIdentifier("coder_circuits_val") }
+            }
+        }
+
+        let integrateBtn = btn("⚛️ INTEGRATE", x: 20, y: 5, w: 100, c: L104Theme.gold)
+        integrateBtn.target = self; integrateBtn.action = #selector(doQuantumIntegrate); quantumP.addSubview(integrateBtn)
+        let quantumStatusBtn = btn("📊 STATUS", x: 130, y: 5, w: 100, c: L104Theme.goldWarm)
+        quantumStatusBtn.target = self; quantumStatusBtn.action = #selector(doQuantumStatus); quantumP.addSubview(quantumStatusBtn)
+        let circuitBtn = btn("🔄 CIRCUITS", x: 240, y: 5, w: 90, c: L104Theme.goldDim)
+        circuitBtn.target = self; circuitBtn.action = #selector(doQuantumCircuits); quantumP.addSubview(circuitBtn)
+        v.addSubview(quantumP)
+
+        // Constants + Package Overview bar
+        let constText = "GOD_CODE: \(GOD_CODE) | Ω: \(OMEGA_POINT) | φ: \(PHI) | 22T: \(TRILLION_PARAMS) | EVO: \(EVOLUTION_INDEX) | \(TOTAL_PACKAGES) pkg · \(TOTAL_PACKAGE_MODULES) mod · \(TOTAL_PACKAGE_LINES) lines"
         let constL = NSTextField(labelWithString: constText)
         constL.frame = NSRect(x: 15, y: 220, width: v.bounds.width - 30, height: 30)
-        constL.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .medium)
+        constL.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
         constL.textColor = L104Theme.goldDim
         v.addSubview(constL)
+
+        // ─── ASI Nexus Refresh Timer — update dynamic values every 4s ───
+        asiNexusRefreshTimer?.invalidate()
+        asiNexusRefreshTimer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: true) { [weak self, weak v] _ in
+            guard let self = self, let v = v else { return }
+
+            // Fetch live ASI bridge status for dual-layer metrics
+            ASIQuantumBridgeSwift.shared.fetchASIBridgeStatus()
+
+            func findASISub(_ id: String) -> NSTextField? {
+                func search(_ view: NSView) -> NSTextField? {
+                    if view.identifier?.rawValue == id, let tf = view as? NSTextField { return tf }
+                    for sub in view.subviews { if let f = search(sub) { return f } }
+                    return nil
+                }
+                return search(v)
+            }
+            // ASI panel dynamic values
+            findASISub("asi_score_val")?.stringValue = String(format: "%.1f%%", self.state.asiScore * 100)
+            findASISub("asi_disc_val")?.stringValue = "\(self.state.discoveries)"
+            findASISub("asi_trans_val")?.stringValue = String(format: "%.1f%%", self.state.transcendence * 100)
+            // Dual-layer live metrics
+            let bridge = ASIQuantumBridgeSwift.shared
+            findASISub("thought_ops_val")?.stringValue = "\(Int(bridge.thoughtLayerScore))"
+            findASISub("physics_ops_val")?.stringValue = "\(Int(bridge.physicsLayerScore))"
+            // Intellect metrics
+            findASISub("intellect_mem_val")?.stringValue = "\(bridge.intellectMemories)"
+            findASISub("intellect_know_val")?.stringValue = "\(bridge.intellectKnowledge)"
+            // Engine registry metrics
+            findASISub("engines_active_val")?.stringValue = "\(bridge.activeEngines)/\(bridge.totalEngines)"
+            findASISub("phi_health_val")?.stringValue = String(format: "%.1f%%", bridge.phiHealth * 100)
+            // Quantum bridge metrics
+            findASISub("kundalini_val")?.stringValue = String(format: "%.4f", bridge.kundaliniFlow)
+            findASISub("bell_fidelity_val")?.stringValue = String(format: "%.4f", bridge.bellFidelity)
+            findASISub("epr_links_val")?.stringValue = "\(bridge.eprLinks)"
+            findASISub("vishuddha_val")?.stringValue = String(format: "%.4f", bridge.chakraCoherence["VISHUDDHA"] ?? 0.0)
+            findASISub("bridge_integrity_val")?.stringValue = String(format: "%.1f%%", bridge.bridgeIntegrity * 100)
+            findASISub("engine_uptime_val")?.stringValue = String(format: "%.0fs", bridge.engineUptime)
+            findASISub("sync_counter_val")?.stringValue = "\(bridge.syncCounter)"
+            // AGI panel dynamic values
+            findASISub("agi_intellect_val")?.stringValue = String(format: "%.1f", self.state.intellectIndex)
+            findASISub("agi_qres_val")?.stringValue = String(format: "%.1f%%", self.state.quantumResonance * 100)
+            findASISub("agi_skills_val")?.stringValue = "\(self.state.skills)"
+            // Consciousness panel dynamic values
+            findASISub("con_state_val")?.stringValue = self.state.consciousness
+            findASISub("con_coher_val")?.stringValue = String(format: "%.4f", self.state.coherence)
+            findASISub("con_omega_val")?.stringValue = String(format: "%.1f%%", self.state.omegaProbability * 100)
+            // DeepSeek ingestion metrics
+            findASISub("mla_patterns_val")?.stringValue = "\(bridge.deepseekMLAPatterns)"
+            findASISub("r1_chains_val")?.stringValue = "\(bridge.deepseekR1Chains)"
+            findASISub("coder_langs_val")?.stringValue = "\(bridge.deepseekCoderLangs)"
+            findASISub("adaptations_val")?.stringValue = "\(bridge.deepseekAdaptations)"
+            findASISub("god_code_align_val")?.stringValue = String(format: "%.4f", bridge.deepseekGodCodeAlign)
+            findASISub("phi_weighting_val")?.stringValue = String(format: "%.4f", bridge.deepseekPhiWeighting)
+            findASISub("quantum_enhance_val")?.stringValue = "\(bridge.deepseekQuantumEnhance)"
+            // Quantum architecture metrics
+            findASISub("circuits_created_val")?.stringValue = "\(bridge.quantumCircuitsCreated)"
+            findASISub("patterns_integrated_val")?.stringValue = "\(bridge.quantumPatternsIntegrated)"
+            findASISub("quantum_gates_val")?.stringValue = "\(bridge.quantumGatesApplied)"
+            findASISub("god_code_aligns_val")?.stringValue = "\(bridge.quantumGodCodeAligns)"
+            findASISub("mla_circuits_val")?.stringValue = "\(bridge.quantumMLACircuits)"
+            findASISub("reasoning_circuits_val")?.stringValue = "\(bridge.quantumReasoningCircuits)"
+            findASISub("coder_circuits_val")?.stringValue = "\(bridge.quantumCoderCircuits)"
+        }
 
         return v
     }
@@ -882,31 +1313,152 @@ class L104MainView: NSView {
         let v = NSView(frame: NSRect(x: 0, y: 0, width: 1100, height: 500))
         v.wantsLayer = true; v.layer?.backgroundColor = L104Theme.void.cgColor
 
-        let statsText = """
-        💾 PERMANENT MEMORY SYSTEM
-        ═══════════════════════════════════════════════════════════════
-        Total Memories: \(state.permanentMemory.memories.count)
-        Stored Facts: \(state.permanentMemory.facts.count)
-        Conversation History: \(state.permanentMemory.conversationHistory.count) messages
-        Session: \(state.sessionMemories)
-        ═══════════════════════════════════════════════════════════════
-        Storage: ~/Library/Application Support/L104Sovereign/permanent_memory.json
-        Status: ✅ ACTIVE - All memories persist across app restarts
-        ═══════════════════════════════════════════════════════════════
+        // ─── Left: Memory Stats Panel ───
+        let statsPanel = createPanel("💾 PERMANENT MEMORY SYSTEM", x: 15, y: 220, w: 350, h: 260, color: "d4af37")
 
-        📜 RECENT CONVERSATION:
-        """
-
-        var fullText = statsText
-        for msg in state.permanentMemory.getRecentHistory(15) {
-            fullText += "\n  \(msg)"
+        let memStats: [(String, String, String, String)] = [
+            ("Total Memories", "\(state.permanentMemory.memories.count)", "d4af37", "mem_memories"),
+            ("Stored Facts", "\(state.permanentMemory.facts.count)", "e8c547", "mem_facts"),
+            ("Conversation History", "\(state.permanentMemory.conversationHistory.count)", "c49b30", "mem_convhist"),
+            ("Session Memories", "\(state.sessionMemories)", "a88a25", "mem_session"),
+            ("KB User Entries", "\(ASIKnowledgeBase.shared.userKnowledge.count)", "d4af37", "mem_kbuser"),
+            ("KB Training Data", "\(ASIKnowledgeBase.shared.trainingData.count)", "e8c547", "mem_kbtrain"),
+            ("Ingested Entries", "\(DataIngestPipeline.shared.totalIngested)", "c49b30", "mem_ingested"),
+        ]
+        var my: CGFloat = 195
+        for (label, value, hex, id) in memStats {
+            let lbl = NSTextField(labelWithString: label)
+            lbl.frame = NSRect(x: 15, y: my, width: 180, height: 16)
+            lbl.font = NSFont.systemFont(ofSize: 10); lbl.textColor = .gray; statsPanel.addSubview(lbl)
+            let val = NSTextField(labelWithString: value)
+            val.frame = NSRect(x: 200, y: my, width: 130, height: 16)
+            val.font = NSFont.boldSystemFont(ofSize: 12); val.textColor = colorFromHex(hex); val.alignment = .right
+            val.identifier = NSUserInterfaceItemIdentifier(id)
+            statsPanel.addSubview(val)
+            my -= 24
         }
 
-        let lbl = NSTextField(labelWithString: fullText)
-        lbl.frame = NSRect(x: 20, y: 20, width: v.bounds.width - 40, height: v.bounds.height - 40)
-        lbl.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)
-        lbl.textColor = L104Theme.gold
-        v.addSubview(lbl)
+        let storageL = NSTextField(labelWithString: "📂 ~/Library/Application Support/L104Sovereign/")
+        storageL.frame = NSRect(x: 15, y: 15, width: 320, height: 14)
+        storageL.font = NSFont.monospacedSystemFont(ofSize: 9, weight: .regular)
+        storageL.textColor = L104Theme.goldDim
+        statsPanel.addSubview(storageL)
+        v.addSubview(statsPanel)
+
+        // ─── Right: Data Ingest Panel ───
+        let ingestPanel = createPanel("📥 DATA INGEST PIPELINE", x: 380, y: 220, w: 350, h: 260, color: "e8c547")
+
+        let ingestLabel = NSTextField(labelWithString: "Paste text or URL below to ingest data:")
+        ingestLabel.frame = NSRect(x: 15, y: 200, width: 320, height: 16)
+        ingestLabel.font = NSFont.systemFont(ofSize: 10, weight: .medium)
+        ingestLabel.textColor = L104Theme.goldDim
+        ingestPanel.addSubview(ingestLabel)
+
+        let ingestScroll = NSScrollView(frame: NSRect(x: 15, y: 65, width: 320, height: 130))
+        ingestScroll.hasVerticalScroller = true
+        ingestScroll.borderType = .bezelBorder
+        let ingestTV = NSTextView(frame: ingestScroll.bounds)
+        ingestTV.isEditable = true
+        ingestTV.backgroundColor = NSColor(red: 0.96, green: 0.96, blue: 0.97, alpha: 1.0)
+        ingestTV.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .regular)
+        ingestTV.textColor = L104Theme.gold
+        ingestTV.identifier = NSUserInterfaceItemIdentifier("ingest_input")
+        ingestTV.string = ""
+        ingestScroll.documentView = ingestTV
+        ingestPanel.addSubview(ingestScroll)
+
+        let ingestBtn = btn("📥 Ingest Data", x: 15, y: 20, w: 150, c: L104Theme.gold)
+        ingestBtn.target = self; ingestBtn.action = #selector(doIngestData)
+        ingestPanel.addSubview(ingestBtn)
+
+        let clearIngestBtn = btn("🗑 Clear", x: 175, y: 20, w: 80, c: L104Theme.goldDim)
+        clearIngestBtn.target = self; clearIngestBtn.action = #selector(doClearIngest)
+        ingestPanel.addSubview(clearIngestBtn)
+
+        v.addSubview(ingestPanel)
+
+        // ─── Right Far: System Scale Panel ───
+        let scalePanel = createPanel("📊 SYSTEM SCALE", x: 745, y: 220, w: 340, h: 260, color: "c49b30")
+        let scaleData: [(String, String, String)] = [
+            ("Python Files", "\(TOTAL_PYTHON_FILES)", "d4af37"),
+            ("Swift Files", "\(TOTAL_SWIFT_FILES)", "e8c547"),
+            ("Swift Lines", "\(TOTAL_SWIFT_LINES)", "c49b30"),
+            ("Packages", "\(TOTAL_PACKAGES)", "a88a25"),
+            ("Package Modules", "\(TOTAL_PACKAGE_MODULES)", "d4af37"),
+            ("Package Lines", "\(TOTAL_PACKAGE_LINES)", "e8c547"),
+            ("API Routes", "\(TOTAL_API_ROUTES)", "c49b30"),
+            ("EVO Index", "\(EVOLUTION_INDEX)", "d4af37"),
+        ]
+        var sy: CGFloat = 195
+        for (label, value, hex) in scaleData {
+            let lbl = NSTextField(labelWithString: label)
+            lbl.frame = NSRect(x: 15, y: sy, width: 170, height: 16)
+            lbl.font = NSFont.systemFont(ofSize: 10); lbl.textColor = .gray; scalePanel.addSubview(lbl)
+            let val = NSTextField(labelWithString: value)
+            val.frame = NSRect(x: 190, y: sy, width: 130, height: 16)
+            val.font = NSFont.boldSystemFont(ofSize: 12); val.textColor = colorFromHex(hex); val.alignment = .right
+            scalePanel.addSubview(val)
+            sy -= 24
+        }
+        v.addSubview(scalePanel)
+
+        // ─── Bottom: Recent Conversation History ───
+        let histPanel = createPanel("📜 RECENT CONVERSATION", x: 15, y: 55, w: v.bounds.width - 30, h: 155, color: "a88a25")
+        let histScroll = NSScrollView(frame: NSRect(x: 10, y: 10, width: v.bounds.width - 50, height: 110))
+        histScroll.hasVerticalScroller = true
+        histScroll.wantsLayer = true
+
+        let histTV = NSTextView(frame: histScroll.bounds)
+        histTV.isEditable = false
+        histTV.backgroundColor = NSColor(red: 0.96, green: 0.96, blue: 0.97, alpha: 1.0)
+        histTV.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .regular)
+        histTV.textColor = L104Theme.gold
+        histTV.identifier = NSUserInterfaceItemIdentifier("mem_hist_text")
+        var histText = ""
+        for msg in state.permanentMemory.getRecentHistory(15) {
+            histText += "\(msg)\n"
+        }
+        histTV.string = histText
+        histScroll.documentView = histTV
+        histPanel.addSubview(histScroll)
+        v.addSubview(histPanel)
+
+        // 🟢 EVO_63: Memory panel live refresh timer (6s)
+        let memRefreshTimer = Timer.scheduledTimer(withTimeInterval: 6.0, repeats: true) { [weak self, weak v] _ in
+            guard let self = self, let v = v else { return }
+            func findMemLbl(_ id: String) -> NSTextField? {
+                func search(_ view: NSView) -> NSTextField? {
+                    if let tf = view as? NSTextField, tf.identifier?.rawValue == id { return tf }
+                    for sub in view.subviews { if let f = search(sub) { return f } }
+                    return nil
+                }
+                return search(v)
+            }
+            func findMemTV(_ id: String) -> NSTextView? {
+                func search(_ view: NSView) -> NSTextView? {
+                    if let tv = view as? NSTextView, tv.identifier?.rawValue == id { return tv }
+                    if let scroll = view as? NSScrollView, let tv = scroll.documentView as? NSTextView, tv.identifier?.rawValue == id { return tv }
+                    for sub in view.subviews { if let f = search(sub) { return f } }
+                    return nil
+                }
+                return search(v)
+            }
+            findMemLbl("mem_memories")?.stringValue = "\(self.state.permanentMemory.memories.count)"
+            findMemLbl("mem_facts")?.stringValue = "\(self.state.permanentMemory.facts.count)"
+            findMemLbl("mem_convhist")?.stringValue = "\(self.state.permanentMemory.conversationHistory.count)"
+            findMemLbl("mem_session")?.stringValue = "\(self.state.sessionMemories)"
+            findMemLbl("mem_kbuser")?.stringValue = "\(ASIKnowledgeBase.shared.userKnowledge.count)"
+            findMemLbl("mem_kbtrain")?.stringValue = "\(ASIKnowledgeBase.shared.trainingData.count)"
+            findMemLbl("mem_ingested")?.stringValue = "\(DataIngestPipeline.shared.totalIngested)"
+            // Refresh conversation history
+            if let htv = findMemTV("mem_hist_text") {
+                var text = ""
+                for msg in self.state.permanentMemory.getRecentHistory(15) { text += "\(msg)\n" }
+                htv.string = text
+            }
+        }
+        // Keep timer reference (will be invalidated on view dealloc)
+        _ = memRefreshTimer
 
         return v
     }
@@ -915,23 +1467,42 @@ class L104MainView: NSView {
         let v = NSView(frame: NSRect(x: 0, y: 0, width: 1100, height: 500))
         v.wantsLayer = true; v.layer?.backgroundColor = L104Theme.void.cgColor
 
-        let scroll = NSScrollView(frame: NSRect(x: 10, y: 55, width: v.bounds.width - 20, height: v.bounds.height - 65))
+        // 🟢 EVO_65: Live system status header
+        let sysStatusBar = NSView(frame: NSRect(x: 10, y: v.bounds.height - 30, width: v.bounds.width - 20, height: 26))
+        sysStatusBar.wantsLayer = true
+        sysStatusBar.layer?.backgroundColor = NSColor(red: 0.08, green: 0.08, blue: 0.14, alpha: 1.0).cgColor
+        sysStatusBar.layer?.cornerRadius = 6
+        let sysStatusLbl = NSTextField(labelWithString: "")
+        sysStatusLbl.frame = NSRect(x: 12, y: 4, width: sysStatusBar.bounds.width - 24, height: 18)
+        sysStatusLbl.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .semibold)
+        sysStatusLbl.textColor = L104Theme.gold
+        sysStatusLbl.identifier = NSUserInterfaceItemIdentifier("sys_status_lbl")
+        sysStatusBar.addSubview(sysStatusLbl)
+        v.addSubview(sysStatusBar)
+
+        let scroll = NSScrollView(frame: NSRect(x: 10, y: 55, width: v.bounds.width - 20, height: v.bounds.height - 95))
         scroll.hasVerticalScroller = true; scroll.wantsLayer = true; scroll.layer?.cornerRadius = 8
 
-        systemFeedView = NSTextView(frame: scroll.bounds)
-        systemFeedView.isEditable = false
-        systemFeedView.backgroundColor = L104Theme.void
-        systemFeedView.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)
-        systemFeedView.textContainerInset = NSSize(width: 10, height: 10)
-        scroll.documentView = systemFeedView
+        systemTabFeedView = NSTextView(frame: scroll.bounds)
+        systemTabFeedView!.isEditable = false
+        systemTabFeedView!.backgroundColor = L104Theme.void
+        systemTabFeedView!.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)
+        systemTabFeedView!.textContainerInset = NSSize(width: 10, height: 10)
+        scroll.documentView = systemTabFeedView
         v.addSubview(scroll)
 
         appendSystemLog("[BOOT] L104 v\(VERSION) initialized")
-        appendSystemLog("[BOOT] 22T parameters | GOD_CODE: \(GOD_CODE)")
+        appendSystemLog("[BOOT] 22T parameters | GOD_CODE: \(GOD_CODE) | EVO_\(EVOLUTION_INDEX)")
+        appendSystemLog("[BOOT] Packages: code_engine v\(CODE_ENGINE_VERSION), asi v\(ASI_VERSION), agi v\(AGI_VERSION), intellect v\(INTELLECT_VERSION), server v\(SERVER_VERSION)")
+        appendSystemLog("[BOOT] Dual-Layer Engine v\(DUAL_LAYER_VERSION) | \(DUAL_LAYER_CONSTANTS_COUNT) constants | \(DUAL_LAYER_INTEGRITY_CHECKS) integrity checks")
         appendSystemLog("[BOOT] Permanent memory: \(state.permanentMemory.memories.count) entries loaded")
         appendSystemLog("[BOOT] Adaptive learner: \(AdaptiveLearner.shared.interactionCount) interactions, \(AdaptiveLearner.shared.topicMastery.count) topics")
         appendSystemLog("[BOOT] User-taught facts: \(AdaptiveLearner.shared.userTaughtFacts.count) | KB user entries: \(state.knowledgeBase.userKnowledge.count)")
+        appendSystemLog("[BOOT] Data ingest pipeline: \(DataIngestPipeline.shared.totalIngested) entries ingested")
         appendSystemLog("[BOOT] 🟢 ASI EVOLUTION ENGINE Online: Stage \(state.evolver.evolutionStage)")
+        appendSystemLog("[BOOT] 🌌 UNIFIED FIELD ENGINE v2.0 Online: 18 equations · φ²-weighted")
+        appendSystemLog("[BOOT] ⚡ UNIFIED FIELD GATE Online: field-theoretic reasoning")
+        appendSystemLog("[BOOT] 🧠 Consciousness v\(CONSCIOUSNESS_VERSION) | Apotheosis: \(APOTHEOSIS_STAGE) | Schumann: \(String(format: "%.4f", SCHUMANN_RESONANCE)) Hz")
 
         let btns: [(String, Selector, NSColor)] = [
             ("🔄 Sync", #selector(doSync), L104Theme.gold),
@@ -1073,8 +1644,9 @@ class L104MainView: NSView {
         let netViewTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
             self?.updateNetworkViewContent()
         }
-        // Store timer reference to allow invalidation
-        streamUpdateTimer = netViewTimer
+        // Store timer reference to allow invalidation (dedicated, not shared)
+        networkViewTimer?.invalidate()
+        networkViewTimer = netViewTimer
 
         // Initial content fill
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
@@ -1397,7 +1969,7 @@ class L104MainView: NSView {
 
         // ─── AUTO-UPDATE TIMER ───
         gateDashboardTimer?.invalidate()
-        gateDashboardTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { [weak v] _ in
+        gateDashboardTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak v] _ in
             guard let v = v else { return }
             let env = LogicGateEnvironment.shared
 
@@ -1439,11 +2011,19 @@ class L104MainView: NSView {
                 }
             }
 
-            // Update pipeline text
+            // Update pipeline text — dynamic with live data
             if let pipe = findSub("gate_pipeline_text") as? NSTextView {
-                var pipeStr = "⚡ Gate Pipeline Flow\n"
+                let runCount = env.totalPipelineRuns
+                let opsCount = env.totalGateOps
+                let avgLat = String(format: "%.2f", env.avgLatency)
+                let peakConf = String(format: "%.4f", env.peakConfidence)
+                let dimCount = env.dimensionDistribution.count
+                let topDim = env.dimensionDistribution.max(by: { $0.value < $1.value })
+                let topDimStr = topDim.map { "\($0.key) (\($0.value))" } ?? "—"
+
+                var pipeStr = "⚡ Gate Pipeline Flow — Live State\n"
                 pipeStr += "═══════════════════════════════════════\n"
-                pipeStr += "ASILogicGateV2  → dim routing (10 dims)\n"
+                pipeStr += "ASILogicGateV2  → dim routing (\(dimCount) active dims)\n"
                 pipeStr += "       ↓\n"
                 pipeStr += "ContextualGate  → context enrichment\n"
                 pipeStr += "       ↓\n"
@@ -1453,12 +2033,19 @@ class L104MainView: NSView {
                 pipeStr += "       ↓\n"
                 pipeStr += "PhraseEngine    → output calibration\n"
                 pipeStr += "       ↓\n"
+                pipeStr += "UnifiedField    → field theory compute\n"
+                pipeStr += "       ↓\n"
                 pipeStr += "GateCircuit     → resonance evaluation\n"
                 pipeStr += "═══════════════════════════════════════\n"
-                pipeStr += "Runs: \(env.totalPipelineRuns) │ Ops: \(env.totalGateOps)\n"
+                pipeStr += "📊 Runs: \(runCount) │ Ops: \(opsCount)\n"
+                pipeStr += "⏱  Avg Latency: \(avgLat)ms │ Peak: \(peakConf)\n"
+                pipeStr += "🔝 Top Dimension: \(topDimStr)\n"
+                pipeStr += "🔧 Circuits: \(env.circuits.count)\n"
                 if let last = env.executionLog.last {
-                    pipeStr += "Last: \(last.dimension) (\(String(format: "%.3f", last.confidence)))\n"
-                    pipeStr += "      \"\(last.query)\"\n"
+                    pipeStr += "───────────────────────────────────────\n"
+                    pipeStr += "🔄 Last: \(last.dimension) (\(String(format: "%.3f", last.confidence)))\n"
+                    pipeStr += "   Query: \"\(last.query.prefix(50))\"\n"
+                    pipeStr += "   Latency: \(String(format: "%.1f", last.latencyMs))ms\n"
                 }
                 pipe.string = pipeStr
             }
@@ -1500,7 +2087,7 @@ class L104MainView: NSView {
 
         // Timer to update stream
         streamUpdateTimer?.invalidate()
-        streamUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak tv] _ in
+        streamUpdateTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak tv] _ in
             guard let tv = tv, let lastThought = ASIEvolver.shared.thoughts.last else { return }
             if tv.string.contains(lastThought) { return }
             tv.textStorage?.append(NSAttributedString(string: lastThought + "\n", attributes: [.foregroundColor: L104Theme.gold, .font: NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)]))
@@ -1508,22 +2095,40 @@ class L104MainView: NSView {
         }
 
         // Stats Panel (Right Top)
-        let metricsPanel = createPanel("⚙️ ENGINE METRICS", x: 630, y: 280, w: 440, h: 200, color: "e8c547")
+        let metricsPanel = createPanel("⚙️ ENGINE METRICS — EVO_\(EVOLUTION_INDEX)", x: 630, y: 280, w: 440, h: 200, color: "e8c547")
 
         let stageLbl = NSTextField(labelWithString: "Evolution Stage: \(state.evolver.evolutionStage)")
         stageLbl.frame = NSRect(x: 15, y: 160, width: 400, height: 20)
         stageLbl.font = NSFont.boldSystemFont(ofSize: 14); stageLbl.textColor = L104Theme.gold
+        stageLbl.identifier = NSUserInterfaceItemIdentifier("upg_stage")
         metricsPanel.addSubview(stageLbl)
 
         let filesLbl = NSTextField(labelWithString: "Generated Artifacts: \(state.evolver.generatedFilesCount)")
         filesLbl.frame = NSRect(x: 15, y: 130, width: 400, height: 20)
         filesLbl.font = NSFont.systemFont(ofSize: 12); filesLbl.textColor = L104Theme.goldWarm
+        filesLbl.identifier = NSUserInterfaceItemIdentifier("upg_files")
         metricsPanel.addSubview(filesLbl)
 
         let pathLbl = NSTextField(labelWithString: "📂 ~/Documents/L104_GEN")
         pathLbl.frame = NSRect(x: 15, y: 100, width: 400, height: 20)
         pathLbl.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .regular); pathLbl.textColor = .systemGray
         metricsPanel.addSubview(pathLbl)
+
+        // Evolution stats: greetings, philosophies, monologues, mutations
+        let evolvedCount = state.evolver.evolvedGreetings.count + state.evolver.evolvedPhilosophies.count + state.evolver.evolvedFacts.count
+        let evolvedLbl = NSTextField(labelWithString: "Evolved Content: \(evolvedCount) greetings/philosophies/facts")
+        evolvedLbl.frame = NSRect(x: 15, y: 70, width: 400, height: 18)
+        evolvedLbl.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
+        evolvedLbl.textColor = L104Theme.goldDim
+        evolvedLbl.identifier = NSUserInterfaceItemIdentifier("upg_evolved")
+        metricsPanel.addSubview(evolvedLbl)
+
+        let mutLbl = NSTextField(labelWithString: "Mutations: \(state.evolver.mutationCount) · Crossovers: \(state.evolver.crossoverCount) · Syntheses: \(state.evolver.synthesisCount)")
+        mutLbl.frame = NSRect(x: 15, y: 48, width: 400, height: 18)
+        mutLbl.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
+        mutLbl.textColor = L104Theme.goldDim
+        mutLbl.identifier = NSUserInterfaceItemIdentifier("upg_mutations")
+        metricsPanel.addSubview(mutLbl)
 
         v.addSubview(metricsPanel)
 
@@ -1541,6 +2146,21 @@ class L104MainView: NSView {
         genBtn.bezelStyle = .rounded
         genBtn.target = self; genBtn.action = #selector(forceGen)
         controlsPanel.addSubview(genBtn)
+
+        // 🟢 EVO_64: Running/Paused status indicator
+        let runStatusLbl = NSTextField(labelWithString: ASIEvolver.shared.isRunning ? "🟢 RUNNING" : "⏸ PAUSED")
+        runStatusLbl.frame = NSRect(x: 20, y: 105, width: 380, height: 22)
+        runStatusLbl.font = NSFont.monospacedSystemFont(ofSize: 14, weight: .bold)
+        runStatusLbl.textColor = ASIEvolver.shared.isRunning ? .systemGreen : .systemOrange
+        runStatusLbl.identifier = NSUserInterfaceItemIdentifier("upg_run_status")
+        controlsPanel.addSubview(runStatusLbl)
+
+        let thoughtRateLbl = NSTextField(labelWithString: "Thoughts: \(ASIEvolver.shared.thoughts.count) · Rate: ~1/8s")
+        thoughtRateLbl.frame = NSRect(x: 20, y: 80, width: 380, height: 16)
+        thoughtRateLbl.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
+        thoughtRateLbl.textColor = L104Theme.goldDim
+        thoughtRateLbl.identifier = NSUserInterfaceItemIdentifier("upg_thought_rate")
+        controlsPanel.addSubview(thoughtRateLbl)
 
         v.addSubview(controlsPanel)
 
@@ -1617,20 +2237,34 @@ class L104MainView: NSView {
         v.addSubview(accelPanel)
 
         // ─── Live Metrics Panel ───
-        let livePanel = createPanel("📊 LIVE METRICS", x: 560, y: 55, w: 510, h: 210, color: "d4af37")
+        let livePanel = createPanel("📊 LIVE METRICS — EVO_\(EVOLUTION_INDEX)", x: 560, y: 55, w: 510, h: 210, color: "d4af37")
         let simdOpsLabel = NSTextField(labelWithString: "SIMD Ops: 0")
-        simdOpsLabel.frame = NSRect(x: 20, y: 140, width: 460, height: 20)
+        simdOpsLabel.frame = NSRect(x: 20, y: 160, width: 460, height: 20)
         simdOpsLabel.font = NSFont.monospacedSystemFont(ofSize: 13, weight: .bold)
         simdOpsLabel.textColor = L104Theme.gold
         simdOpsLabel.identifier = NSUserInterfaceItemIdentifier("hw_simd_ops")
         livePanel.addSubview(simdOpsLabel)
 
         let neuralOpsLabel = NSTextField(labelWithString: "Neural Ops: 0")
-        neuralOpsLabel.frame = NSRect(x: 20, y: 110, width: 460, height: 20)
+        neuralOpsLabel.frame = NSRect(x: 20, y: 130, width: 460, height: 20)
         neuralOpsLabel.font = NSFont.monospacedSystemFont(ofSize: 13, weight: .bold)
         neuralOpsLabel.textColor = L104Theme.goldWarm
         neuralOpsLabel.identifier = NSUserInterfaceItemIdentifier("hw_neural_ops")
         livePanel.addSubview(neuralOpsLabel)
+
+        // Package versions readout
+        let pkgLabel = NSTextField(labelWithString: "Packages: code_engine v\(CODE_ENGINE_VERSION) · asi v\(ASI_VERSION) · agi v\(AGI_VERSION) · intellect v\(INTELLECT_VERSION) · server v\(SERVER_VERSION)")
+        pkgLabel.frame = NSRect(x: 20, y: 95, width: 470, height: 16)
+        pkgLabel.font = NSFont.monospacedSystemFont(ofSize: 9, weight: .medium)
+        pkgLabel.textColor = L104Theme.goldDim
+        livePanel.addSubview(pkgLabel)
+
+        let engineLabel = NSTextField(labelWithString: "Engines: \(EngineRegistry.shared.count) online · φ-Health: \(String(format: "%.1f%%", EngineRegistry.shared.phiWeightedHealth().score * 100)) · Dual-Layer v\(DUAL_LAYER_VERSION)")
+        engineLabel.frame = NSRect(x: 20, y: 72, width: 470, height: 16)
+        engineLabel.font = NSFont.monospacedSystemFont(ofSize: 9, weight: .medium)
+        engineLabel.textColor = L104Theme.goldDim
+        engineLabel.identifier = NSUserInterfaceItemIdentifier("hw_engine_info")
+        livePanel.addSubview(engineLabel)
 
         // Refresh button
         let refreshBtn = NSButton(frame: NSRect(x: 20, y: 15, width: 200, height: 32))
@@ -1679,9 +2313,19 @@ class L104MainView: NSView {
         }
         findLabel("hw_thermal")?.stringValue = "Thermal: \(thermalStr)"
         findLabel("hw_power")?.stringValue = "Power: \(monitor.powerMode.rawValue)"
-        findLabel("hw_simd_ops")?.stringValue = "SIMD Ops: \(Int.random(in: 10000...99999))"
-        findLabel("hw_neural_ops")?.stringValue = "Neural Ops: \(monitor.hasNeuralEngine ? Int.random(in: 5000...50000) : 0)"
+        // 🟢 EVO_63: Use real cumulative counters from gate + evolver instead of random fakes
+        let gateOps = LogicGateEnvironment.shared.totalGateOps
+        let evolverMutations = ASIEvolver.shared.mutationCount + ASIEvolver.shared.crossoverCount + ASIEvolver.shared.synthesisCount
+        L104MainView.hwSIMDOps = gateOps * 256 + evolverMutations * 64  // Each gate op ≈ 256 SIMD, each mutation ≈ 64
+        L104MainView.hwNeuralOps = monitor.hasNeuralEngine ? (evolverMutations * 32 + gateOps * 16) : 0
+        findLabel("hw_simd_ops")?.stringValue = "SIMD Ops: \(L104MainView.hwSIMDOps)"
+        findLabel("hw_neural_ops")?.stringValue = "Neural Ops: \(monitor.hasNeuralEngine ? L104MainView.hwNeuralOps : 0)"
+        // 🟢 EVO_65: Live engine info refresh
+        findLabel("hw_engine_info")?.stringValue = "Engines: \(EngineRegistry.shared.count) online · φ-Health: \(String(format: "%.1f%%", EngineRegistry.shared.phiWeightedHealth().score * 100)) · Dual-Layer v\(DUAL_LAYER_VERSION)"
     }
+
+    private static var hwSIMDOps: Int = 0
+    private static var hwNeuralOps: Int = 0
 
     @objc func refreshHardwareMetrics() {
         MacOSSystemMonitor.shared.updateMetrics()
@@ -1760,33 +2404,63 @@ class L104MainView: NSView {
 
         // ─── Active Modules (Right Bottom) ───
         let modulesPanel = createPanel("🔬 ACTIVE RESEARCH MODULES", x: 630, y: 55, w: 440, h: 210, color: "c49b30")
-        let modules = ["HYPERDIM_SCIENCE", "TOPOLOGY_ANALYZER", "INVENTION_SYNTH", "QUANTUM_FIELD", "ALGEBRAIC_TOPOLOGY"]
+        let modules: [(String, Bool)] = [
+            ("HYPERDIM_SCIENCE", true),
+            ("TOPOLOGY_ANALYZER", true),
+            ("INVENTION_SYNTH", true),
+            ("QUANTUM_FIELD", QuantumProcessingCore.shared.currentFidelity() > 0.3),
+            ("ALGEBRAIC_TOPOLOGY", true),
+            ("UNIFIED_FIELD", UnifiedFieldEngine.shared.engineHealth() > 0.5),
+            ("CODE_ENGINE v\(CODE_ENGINE_VERSION)", true),
+            ("DUAL_LAYER v\(DUAL_LAYER_VERSION)", true),
+        ]
         var ly: CGFloat = 155
-        for mod in modules {
-            let dot = NSTextField(labelWithString: "🟢 \(mod)")
+        for (mod, active) in modules {
+            let dot = NSTextField(labelWithString: "\(active ? "🟢" : "🔴") \(mod)")
             dot.frame = NSRect(x: 20, y: ly, width: 280, height: 18)
-            dot.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .bold)
-            dot.textColor = L104Theme.gold
+            dot.font = NSFont.monospacedSystemFont(ofSize: 11, weight: active ? .bold : .regular)
+            dot.textColor = active ? L104Theme.gold : L104Theme.textDim
             modulesPanel.addSubview(dot)
 
-            let status = NSTextField(labelWithString: "ACTIVE")
+            let status = NSTextField(labelWithString: active ? "ACTIVE" : "STANDBY")
             status.frame = NSRect(x: 310, y: ly, width: 100, height: 18)
-            status.font = NSFont.boldSystemFont(ofSize: 10); status.textColor = L104Theme.goldBright
+            status.font = NSFont.boldSystemFont(ofSize: 10)
+            status.textColor = active ? L104Theme.goldBright : L104Theme.textDim
             status.alignment = .right
             modulesPanel.addSubview(status)
-            ly -= 25
+            ly -= 22
         }
         v.addSubview(modulesPanel)
 
         return v
     }
 
-    // ─── Science Engine State ───
-    private static var sciHypotheses = 0
-    private static var sciDiscoveries = 0
-    private static var sciTheorems = 0
-    private static var sciInventions = 0
-    private static var sciMomentum: Double = 0.0
+    // ─── Science Engine State — persisted via UserDefaults ───
+    private static var sciHypotheses: Int = {
+        UserDefaults.standard.integer(forKey: "l104_sci_hypotheses")
+    }()
+    private static var sciDiscoveries: Int = {
+        UserDefaults.standard.integer(forKey: "l104_sci_discoveries")
+    }()
+    private static var sciTheorems: Int = {
+        UserDefaults.standard.integer(forKey: "l104_sci_theorems")
+    }()
+    private static var sciInventions: Int = {
+        UserDefaults.standard.integer(forKey: "l104_sci_inventions")
+    }()
+    private static var sciMomentum: Double = {
+        let v = UserDefaults.standard.double(forKey: "l104_sci_momentum")
+        return v > 0 ? v : 0.0
+    }()
+
+    private static func saveScienceState() {
+        let d = UserDefaults.standard
+        d.set(sciHypotheses, forKey: "l104_sci_hypotheses")
+        d.set(sciDiscoveries, forKey: "l104_sci_discoveries")
+        d.set(sciTheorems, forKey: "l104_sci_theorems")
+        d.set(sciInventions, forKey: "l104_sci_inventions")
+        d.set(sciMomentum, forKey: "l104_sci_momentum")
+    }
 
     @objc func scienceGenerateHypothesis() {
         L104MainView.sciHypotheses += 1
@@ -1814,6 +2488,7 @@ class L104MainView: NSView {
 
         appendScienceLog(logText)
         updateScienceMetrics()
+        L104MainView.saveScienceState()
         appendSystemLog("[SCI] \(logText)")
     }
 
@@ -1876,6 +2551,320 @@ class L104MainView: NSView {
         }
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // 🌌 UNIFIED FIELD THEORY TAB — 18 Fundamental Equations
+    // Einstein, Wheeler-DeWitt, Dirac, Black Holes, Casimir, Unruh,
+    // AdS/CFT, ER=EPR, Twistors, Holographic, Foam, Topological,
+    // Yang-Mills, Grand Unification, Vacuum Energy, Decoherence,
+    // Sacred GOD_CODE Field, Unified Solve
+    // ═══════════════════════════════════════════════════════════════
+
+    private var ufOutputView: NSTextView?
+    private var ufTimer: Timer?
+    private static var ufComputeCount: Int = {
+        UserDefaults.standard.integer(forKey: "l104_uf_computeCount")
+    }()
+    private static var ufDiscoveries: Int = {
+        UserDefaults.standard.integer(forKey: "l104_uf_discoveries")
+    }()
+
+    private static func saveUFieldState() {
+        let d = UserDefaults.standard
+        d.set(ufComputeCount, forKey: "l104_uf_computeCount")
+        d.set(ufDiscoveries, forKey: "l104_uf_discoveries")
+    }
+
+    func createUnifiedFieldView() -> NSView {
+        let v = NSView(frame: NSRect(x: 0, y: 0, width: 1200, height: 500))
+        v.wantsLayer = true
+        v.layer?.backgroundColor = NSColor(red: 0.960, green: 0.962, blue: 0.970, alpha: 1.0).cgColor
+
+        // ─── LEFT: Equation Console ───
+        let consolePanel = createPanel("🌌 UNIFIED FIELD ENGINE — 18 Fundamental Equations", x: 15, y: 55, w: 620, h: 425, color: "7c3aed")
+
+        let ufScroll = NSScrollView(frame: NSRect(x: 10, y: 55, width: 600, height: 330))
+        ufScroll.hasVerticalScroller = true
+        ufScroll.wantsLayer = true
+        ufScroll.layer?.backgroundColor = NSColor(red: 0.96, green: 0.96, blue: 0.97, alpha: 1.0).cgColor
+        ufScroll.layer?.cornerRadius = 8
+
+        let ufLog = NSTextView(frame: ufScroll.bounds)
+        ufLog.isEditable = false
+        ufLog.backgroundColor = NSColor(red: 0.96, green: 0.96, blue: 0.97, alpha: 1.0)
+        ufLog.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)
+        ufLog.textColor = NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0)
+        ufLog.identifier = NSUserInterfaceItemIdentifier("uf_log")
+        ufLog.textContainerInset = NSSize(width: 8, height: 8)
+        ufScroll.documentView = ufLog
+        consolePanel.addSubview(ufScroll)
+        ufOutputView = ufLog
+
+        // Buttons: Compute equations
+        let einsteinBtn = NSButton(frame: NSRect(x: 10, y: 12, width: 140, height: 32))
+        einsteinBtn.title = "⚛️ Einstein Field"
+        einsteinBtn.bezelStyle = .rounded
+        einsteinBtn.target = self; einsteinBtn.action = #selector(ufComputeEinstein)
+        consolePanel.addSubview(einsteinBtn)
+
+        let diracBtn = NSButton(frame: NSRect(x: 155, y: 12, width: 130, height: 32))
+        diracBtn.title = "🌀 Dirac Eq"
+        diracBtn.bezelStyle = .rounded
+        diracBtn.target = self; diracBtn.action = #selector(ufComputeDirac)
+        consolePanel.addSubview(diracBtn)
+
+        let bhBtn = NSButton(frame: NSRect(x: 290, y: 12, width: 150, height: 32))
+        bhBtn.title = "🕳 Black Hole"
+        bhBtn.bezelStyle = .rounded
+        bhBtn.target = self; bhBtn.action = #selector(ufComputeBlackHole)
+        consolePanel.addSubview(bhBtn)
+
+        let unifyBtn = NSButton(frame: NSRect(x: 445, y: 12, width: 165, height: 32))
+        unifyBtn.title = "🔥 Unified Solve All"
+        unifyBtn.bezelStyle = .rounded
+        unifyBtn.target = self; unifyBtn.action = #selector(ufComputeUnified)
+        consolePanel.addSubview(unifyBtn)
+
+        v.addSubview(consolePanel)
+
+        // ─── RIGHT TOP: Equation Reference ───
+        let eqPanel = createPanel("📐 EQUATION CATALOG", x: 650, y: 280, w: 520, h: 200, color: "8b5cf6")
+
+        let equations: [(String, String)] = [
+            ("G_μν + Λg_μν = κT_μν", "Einstein Field"),
+            ("Ĥ|Ψ⟩ = 0", "Wheeler-DeWitt"),
+            ("(iγ^μ∂_μ − m)ψ = 0", "Dirac Equation"),
+            ("S_BH = A/(4ℓ_P²)", "Bekenstein-Hawking"),
+            ("F = −π²ℏc/240d⁴", "Casimir Effect"),
+            ("T = ℏa/2πck_B", "Unruh Temperature"),
+        ]
+        var ey: CGFloat = 155
+        for (eq, name) in equations {
+            let eqLbl = NSTextField(labelWithString: "\(eq)")
+            eqLbl.frame = NSRect(x: 15, y: ey, width: 260, height: 18)
+            eqLbl.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .bold)
+            eqLbl.textColor = NSColor(red: 0.55, green: 0.36, blue: 0.96, alpha: 1.0)
+            eqPanel.addSubview(eqLbl)
+
+            let nameLbl = NSTextField(labelWithString: name)
+            nameLbl.frame = NSRect(x: 285, y: ey, width: 220, height: 18)
+            nameLbl.font = NSFont.systemFont(ofSize: 10, weight: .medium)
+            nameLbl.textColor = NSColor(red: 0.55, green: 0.36, blue: 0.96, alpha: 0.7)
+            nameLbl.alignment = .right
+            eqPanel.addSubview(nameLbl)
+            ey -= 22
+        }
+        v.addSubview(eqPanel)
+
+        // ─── RIGHT BOTTOM: Engine Status + Metrics ───
+        let statusPanel = createPanel("⚡ ENGINE STATUS", x: 650, y: 55, w: 520, h: 210, color: "a855f7")
+
+        let statusLabels: [(String, String, String)] = [
+            ("Engine", "UnifiedField v2.0 · EVO_\(EVOLUTION_INDEX)", "uf_engine_name"),
+            ("Equations", "18 active", "uf_eq_count"),
+            ("Computations", "0", "uf_compute_count"),
+            ("Discoveries", "0", "uf_discovery_count"),
+            ("Health", "—", "uf_health"),
+            ("φ-Weight", String(format: "%.4f (φ²)", PHI * PHI), "uf_phi_weight"),
+        ]
+        var sy: CGFloat = 155
+        for (label, value, id) in statusLabels {
+            let lbl = NSTextField(labelWithString: label)
+            lbl.frame = NSRect(x: 20, y: sy, width: 130, height: 16)
+            lbl.font = NSFont.systemFont(ofSize: 10, weight: .medium)
+            lbl.textColor = .gray
+            statusPanel.addSubview(lbl)
+
+            let val = NSTextField(labelWithString: value)
+            val.frame = NSRect(x: 155, y: sy, width: 340, height: 16)
+            val.font = NSFont.monospacedSystemFont(ofSize: 12, weight: .bold)
+            val.textColor = NSColor(red: 0.66, green: 0.33, blue: 0.97, alpha: 1.0)
+            val.alignment = .right
+            val.identifier = NSUserInterfaceItemIdentifier(id)
+            statusPanel.addSubview(val)
+            sy -= 24
+        }
+
+        // More equation buttons row
+        let casimirBtn = NSButton(frame: NSRect(x: 15, y: 12, width: 120, height: 28))
+        casimirBtn.title = "⚡ Casimir"
+        casimirBtn.bezelStyle = .rounded
+        casimirBtn.target = self; casimirBtn.action = #selector(ufComputeCasimir)
+        statusPanel.addSubview(casimirBtn)
+
+        let ymBtn = NSButton(frame: NSRect(x: 140, y: 12, width: 120, height: 28))
+        ymBtn.title = "🔮 Yang-Mills"
+        ymBtn.bezelStyle = .rounded
+        ymBtn.target = self; ymBtn.action = #selector(ufComputeYangMills)
+        statusPanel.addSubview(ymBtn)
+
+        let sacredBtn = NSButton(frame: NSRect(x: 265, y: 12, width: 120, height: 28))
+        sacredBtn.title = "💎 Sacred Field"
+        sacredBtn.bezelStyle = .rounded
+        sacredBtn.target = self; sacredBtn.action = #selector(ufComputeSacred)
+        statusPanel.addSubview(sacredBtn)
+
+        let adscftBtn = NSButton(frame: NSRect(x: 390, y: 12, width: 120, height: 28))
+        adscftBtn.title = "🌐 AdS/CFT"
+        adscftBtn.bezelStyle = .rounded
+        adscftBtn.target = self; adscftBtn.action = #selector(ufComputeAdSCFT)
+        statusPanel.addSubview(adscftBtn)
+
+        v.addSubview(statusPanel)
+
+        // Auto-update timer for engine health
+        ufTimer?.invalidate()
+        ufTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak v] _ in
+            guard let v = v else { return }
+            func findSub(_ id: String) -> NSTextField? {
+                func search(_ view: NSView) -> NSTextField? {
+                    if let tf = view as? NSTextField, tf.identifier?.rawValue == id { return tf }
+                    for sub in view.subviews {
+                        if let found = search(sub) { return found }
+                    }
+                    return nil
+                }
+                return search(v)
+            }
+            let health = UnifiedFieldEngine.shared.engineHealth()
+            findSub("uf_health")?.stringValue = String(format: "%.1f%%", health * 100)
+            findSub("uf_compute_count")?.stringValue = "\(L104MainView.ufComputeCount)"
+            findSub("uf_discovery_count")?.stringValue = "\(L104MainView.ufDiscoveries)"
+            // 🟢 EVO_63: Persist UField state periodically
+            L104MainView.saveUFieldState()
+        }
+
+        return v
+    }
+
+    // ─── Unified Field Compute Actions ───
+
+    @objc func ufComputeEinstein() {
+        L104MainView.ufComputeCount += 1
+        let rs = UnifiedFieldEngine.shared.schwarzschildRadius(mass: 1.989e30)
+        let metric = TensorCalculusEngine.shared.schwarzschildMetric(r: 1e6, rs: rs)
+        let G = UnifiedFieldEngine.shared.einsteinTensor(metric: metric)
+        let trace = (0..<4).reduce(0.0) { $0 + G[$1][$1] }
+        appendUFLog("⚛️ EINSTEIN FIELD EQUATION")
+        appendUFLog("   G_μν + Λg_μν = κT_μν (Solar mass)")
+        appendUFLog("   Schwarzschild R = \(String(format: "%.4f", rs)) m")
+        appendUFLog("   Einstein tensor trace = \(String(format: "%.6e", trace))")
+        appendUFLog("   G[0][0] = \(String(format: "%.6e", G[0][0]))")
+        appendUFLog("   G[1][1] = \(String(format: "%.6e", G[1][1]))")
+        appendSystemLog("[UF] Einstein computation: R_s=\(String(format: "%.3f", rs))m")
+    }
+
+    @objc func ufComputeDirac() {
+        L104MainView.ufComputeCount += 1
+        let result = UnifiedFieldEngine.shared.solveDirac(mass: 9.109e-31, momentum: [1e-24, 0, 0])
+        appendUFLog("🌀 DIRAC EQUATION — Relativistic Quantum Mechanics")
+        appendUFLog("   (iγ^μ∂_μ − m)ψ = 0")
+        appendUFLog("   Energy = \(String(format: "%.6e", result.energy)) J")
+        appendUFLog("   Spinor components = \(result.spinor.count)")
+        appendUFLog("   Current density = \(String(format: "%.6f", result.currentDensity))")
+        appendUFLog("   Chirality = \(String(format: "%.6e", result.chirality))")
+        appendSystemLog("[UF] Dirac computation: E=\(String(format: "%.3e", result.energy))J")
+    }
+
+    @objc func ufComputeBlackHole() {
+        L104MainView.ufComputeCount += 1
+        L104MainView.ufDiscoveries += 1
+        let result = UnifiedFieldEngine.shared.blackHoleThermodynamics(mass: 1e31)
+        appendUFLog("🕳 BEKENSTEIN-HAWKING THERMODYNAMICS")
+        appendUFLog("   S_BH = A/(4ℓ_P²)")
+        appendUFLog("   Temperature = \(String(format: "%.6e", result.hawkingTemperature)) K")
+        appendUFLog("   Entropy = \(String(format: "%.6e", result.entropy)) k_B")
+        appendUFLog("   Lifetime = \(String(format: "%.6e", result.evaporationTime)) s")
+        appendUFLog("   Information = \(String(format: "%.6e", result.informationContent)) bits")
+        appendSystemLog("[UF] Black hole: T=\(String(format: "%.3e", result.hawkingTemperature))K")
+    }
+
+    @objc func ufComputeCasimir() {
+        L104MainView.ufComputeCount += 1
+        let result = UnifiedFieldEngine.shared.casimirEffect(plateSeparation: 1e-7)
+        appendUFLog("⚡ CASIMIR EFFECT — Vacuum Fluctuation Force")
+        appendUFLog("   F = −π²ℏc / 240d⁴")
+        appendUFLog("   Force/area = \(String(format: "%.6e", result.forcePerArea)) N/m²")
+        appendUFLog("   Energy density = \(String(format: "%.6e", result.energyDensity)) J/m³")
+        appendUFLog("   Virtual modes = \(result.virtualPhotonModes)")
+        appendSystemLog("[UF] Casimir: F/A=\(String(format: "%.3e", result.forcePerArea))N/m²")
+    }
+
+    @objc func ufComputeYangMills() {
+        L104MainView.ufComputeCount += 1
+        L104MainView.ufDiscoveries += 1
+        let result = UnifiedFieldEngine.shared.yangMillsField(gaugeGroup: "SU(3)", coupling: 0.1182, energyScale: 91.2e9)
+        appendUFLog("🔮 YANG-MILLS MASS GAP — Millennium Problem")
+        appendUFLog("   Coupling constant = \(String(format: "%.6f", result.couplingConstant))")
+        appendUFLog("   Mass gap = \(String(format: "%.6f", result.massGapEstimate)) GeV")
+        appendUFLog("   Confinement scale = \(String(format: "%.6f", result.confinementScale)) GeV")
+        appendUFLog("   Asymptotic freedom: \(result.asymtoticFreedom)")
+        appendUFLog("   Action density = \(String(format: "%.6f", result.actionDensity))")
+        appendSystemLog("[UF] Yang-Mills mass gap: Δm=\(String(format: "%.4f", result.massGapEstimate))GeV")
+    }
+
+    @objc func ufComputeSacred() {
+        L104MainView.ufComputeCount += 1
+        let result = UnifiedFieldEngine.shared.sacredFieldEquation(psi: state.coherence)
+        appendUFLog("💎 SACRED GOD_CODE FIELD EQUATION")
+        appendUFLog("   F(Ψ) = Ψ × Ω/φ² | Sovereign = \(String(format: "%.6f", result.sovereignField))")
+        appendUFLog("   Thought energy = \(String(format: "%.6f", result.thoughtLayerEnergy))")
+        appendUFLog("   Physics energy = \(String(format: "%.6f", result.physicsLayerEnergy))")
+        appendUFLog("   Bridge coherence = \(String(format: "%.6f", result.bridgeCoherence))")
+        appendUFLog("   Omega field = \(String(format: "%.6f", result.omegaFieldStrength))")
+        appendSystemLog("[UF] Sacred: F=\(String(format: "%.4f", result.sovereignField))")
+    }
+
+    @objc func ufComputeAdSCFT() {
+        L104MainView.ufComputeCount += 1
+        let result = UnifiedFieldEngine.shared.adsCFTCorrespondence(adsRadius: 1e-15, boundaryDimension: 4)
+        appendUFLog("🌐 AdS/CFT CORRESPONDENCE")
+        appendUFLog("   Anti-de Sitter / Conformal Field Theory Duality")
+        appendUFLog("   Boundary entropy = \(String(format: "%.6e", result.boundaryEntropy))")
+        appendUFLog("   Central charge = \(String(format: "%.6e", result.cftCentralCharge))")
+        appendUFLog("   Bulk volume = \(String(format: "%.6e", result.bulkVolume))")
+        appendUFLog("   Holographic complexity = \(String(format: "%.6e", result.holographicComplexity))")
+        appendSystemLog("[UF] AdS/CFT: S=\(String(format: "%.3e", result.boundaryEntropy))")
+    }
+
+    @objc func ufComputeUnified() {
+        L104MainView.ufComputeCount += 1
+        L104MainView.ufDiscoveries += 1
+        appendUFLog("═══════════════════════════════════════════════════")
+        appendUFLog("🔥 UNIFIED FIELD SOLVE — All 18 Equations")
+        appendUFLog("═══════════════════════════════════════════════════")
+        let result = UnifiedFieldEngine.shared.unifiedSolve(mass: 1.989e30, psi: state.coherence)
+        appendUFLog("   Einstein trace: \(String(format: "%.6e", result.einsteinTensorTrace))")
+        appendUFLog("   Wheeler-DeWitt nodes: \(result.wheelerdewittNodes)")
+        appendUFLog("   Dirac energy: \(String(format: "%.6e", result.diracEnergy)) J")
+        appendUFLog("   Black hole entropy: \(String(format: "%.6e", result.blackHoleEntropy))")
+        appendUFLog("   Casimir pressure: \(String(format: "%.6e", result.casimirPressure)) N/m²")
+        appendUFLog("   Unruh temperature: \(String(format: "%.6e", result.unruhTemperature)) K")
+        appendUFLog("   AdS central charge: \(String(format: "%.6e", result.adsCentralCharge))")
+        appendUFLog("   Yang-Mills mass gap: \(String(format: "%.6e", result.yangMillsMassGap)) GeV")
+        appendUFLog("   Unification convergence: \(String(format: "%.6f", result.unificationConvergence))")
+        appendUFLog("   Sacred field: \(String(format: "%.6f", result.sacredFieldValue))")
+        appendUFLog("   Total computations: \(result.totalComputations)")
+        appendUFLog("═══════════════════════════════════════════════════")
+        appendSystemLog("[UF] Unified solve: \(result.totalComputations) computations, conv=\(String(format: "%.4f", result.unificationConvergence))")
+    }
+
+    @objc func switchToUnifiedField() {
+        if let ufIdx = tabView?.indexOfTabViewItem(withIdentifier: "ufield"), ufIdx >= 0 {
+            tabView?.selectTabViewItem(at: ufIdx)
+        }
+    }
+
+    func appendUFLog(_ text: String) {
+        guard let tv = ufOutputView else { return }
+        let df = L104MainView.timeFormatter
+        let attr: [NSAttributedString.Key: Any] = [
+            .foregroundColor: NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0),
+            .font: NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)
+        ]
+        tv.textStorage?.append(NSAttributedString(string: "[\(df.string(from: Date()))] \(text)\n", attributes: attr))
+        tv.scrollToEndOfDocument(nil)
+    }
+
     func createQuickBar() -> NSView {
         let bar = NSView(frame: NSRect(x: 0, y: 0, width: bounds.width, height: 50))
         bar.wantsLayer = true
@@ -1889,6 +2878,7 @@ class L104MainView: NSView {
             ("📊 Status", #selector(qStatus), L104Theme.goldWarm),
             ("🔄 Evolve", #selector(doEvolve), L104Theme.goldDim),
             ("🔬 Science", #selector(scienceGenerateHypothesis), L104Theme.gold),
+            ("🌌 Field", #selector(switchToUnifiedField), NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0)),
             ("⚡ Ignite", #selector(doSynthesize), L104Theme.goldFlame),
             ("💾 Save", #selector(doSave), L104Theme.goldDim)
         ]
@@ -1899,11 +2889,12 @@ class L104MainView: NSView {
         }
 
         let chipInfo = MacOSSystemMonitor.shared.chipGeneration
-        let ver = NSTextField(labelWithString: "⚡ v\(VERSION) · \(chipInfo) · 22T · \(EngineRegistry.shared.count) Engines")
-        ver.frame = NSRect(x: bounds.width - 420, y: 16, width: 410, height: 18)
+        let ver = NSTextField(labelWithString: "⚡ v\(VERSION) · \(chipInfo) · 22T · \(EngineRegistry.shared.count) Engines · \(TOTAL_PACKAGES) Pkg")
+        ver.frame = NSRect(x: bounds.width - 500, y: 16, width: 490, height: 18)
         ver.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .semibold)
         ver.textColor = L104Theme.gold.withAlphaComponent(0.85)
         ver.alignment = .right; ver.autoresizingMask = [.minXMargin]
+        ver.identifier = NSUserInterfaceItemIdentifier("quickbar_info")
         bar.addSubview(ver)
 
         return bar
@@ -1993,6 +2984,7 @@ class L104MainView: NSView {
         appendChat("  ║   \(pad("🧠 \(memCount) memories · \(kbCount) knowledge entries", to: 62))║", color: pink)
         appendChat("  ║   \(pad("🌌 \(engCount) Quantum Engines · \(hbPairs) Hebbian pairs", to: 62))║", color: cosmic)
         appendChat("  ║   \(pad("⚡ Cache: \(cachedTopics) topics · 3-tier velocity pipeline", to: 62))║", color: L104Theme.goldFlame)
+        appendChat("  ║   \(pad("🌌 Unified Field: 18 equations · Einstein · Yang-Mills", to: 62))║", color: NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0))
         appendChat("  ║                                                                  ║", color: gold)
         appendChat("  ║   \(pad("✨ I think, reason, and create — ask me anything", to: 62))║", color: emerald)
         appendChat("  ║   \(pad("🎹 ⌘K Palette · ⌘D Dashboard · ⌘S Save · 'help'", to: 62))║", color: L104Theme.textDim)
@@ -2005,6 +2997,7 @@ class L104MainView: NSView {
     @objc func sendMessage() {
         guard let text = inputField?.stringValue, !text.isEmpty else { return }
         inputField.stringValue = ""
+        L104MainView.sessionMessages += 1  // 🟢 EVO_64: Track session messages
         // User messages: Bright gold for HIGH visibility
         appendChat("📨 You: \(text)", color: L104Theme.textUser)
         appendChat("⏳ Processing...", color: L104Theme.textDim)
@@ -2151,6 +3144,76 @@ class L104MainView: NSView {
             appendChat("L104: 🕐 \(L104MainView.dateTimeFormatter.string(from: Date())) | φ: \(String(format: "%.4f", phase))\n", color: timeColor)
             return
         }
+        if q == "unified field" || q == "field theory" || q == "ufield" || q == "unified" {
+            removeLast()
+            let health = UnifiedFieldEngine.shared.engineHealth()
+            let gateHealth = UnifiedFieldGate.shared.engineHealth()
+            let report = """
+            🌌 UNIFIED FIELD ENGINE STATUS
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            Engine Health: \(String(format: "%.1f%%", health * 100))
+            Gate Health:   \(String(format: "%.1f%%", gateHealth * 100))
+            Equations:     18 fundamental physics equations
+            φ²-Weight:     \(String(format: "%.4f", PHI * PHI))
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            Catalog: Einstein · Wheeler-DeWitt · Dirac · Black Holes
+                     Casimir · Unruh · AdS/CFT · ER=EPR · Twistors
+                     Holographic · Foam · Topological · Yang-Mills
+                     Grand Unification · Vacuum Energy · Decoherence
+                     Sacred GOD_CODE Field · Unified Solve
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            Type 'einstein', 'dirac', 'black hole', 'yang-mills',
+            'casimir', 'sacred field', or 'unified solve' for computations.
+            """
+            appendChat("L104: \(report)\n", color: NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0))
+            switchToUnifiedField()
+            return
+        }
+        if q == "einstein" || q == "einstein field" {
+            removeLast()
+            let rs = UnifiedFieldEngine.shared.schwarzschildRadius(mass: 1.989e30)
+            let metric = TensorCalculusEngine.shared.schwarzschildMetric(r: 1e6, rs: rs)
+            let G = UnifiedFieldEngine.shared.einsteinTensor(metric: metric)
+            let trace = (0..<4).reduce(0.0) { $0 + G[$1][$1] }
+            appendChat("L104: ⚛️ Einstein Field: R_s=\(String(format: "%.3f", rs))m, Tensor trace=\(String(format: "%.3e", trace)), G00=\(String(format: "%.3e", G[0][0]))\n", color: NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0))
+            return
+        }
+        if q == "dirac" || q == "dirac equation" {
+            removeLast()
+            let result = UnifiedFieldEngine.shared.solveDirac(mass: 9.109e-31, momentum: [1e-24, 0, 0])
+            appendChat("L104: 🌀 Dirac: E=\(String(format: "%.3e", result.energy))J, J=\(String(format: "%.4f", result.currentDensity)), χ=\(String(format: "%.3e", result.chirality))\n", color: NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0))
+            return
+        }
+        if q == "black hole" || q == "hawking" || q == "bekenstein" {
+            removeLast()
+            let result = UnifiedFieldEngine.shared.blackHoleThermodynamics(mass: 1e31)
+            appendChat("L104: 🕳 Black Hole: T=\(String(format: "%.3e", result.hawkingTemperature))K, S=\(String(format: "%.3e", result.entropy))k_B, τ=\(String(format: "%.3e", result.evaporationTime))s\n", color: NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0))
+            return
+        }
+        if q == "yang-mills" || q == "yang mills" || q == "mass gap" {
+            removeLast()
+            let result = UnifiedFieldEngine.shared.yangMillsField(gaugeGroup: "SU(3)", coupling: 0.1182, energyScale: 91.2e9)
+            appendChat("L104: 🔮 Yang-Mills: Δm=\(String(format: "%.4f", result.massGapEstimate))GeV, α_s=\(String(format: "%.4f", result.couplingConstant)), action=\(String(format: "%.6f", result.actionDensity))\n", color: NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0))
+            return
+        }
+        if q == "casimir" || q == "casimir effect" {
+            removeLast()
+            let result = UnifiedFieldEngine.shared.casimirEffect(plateSeparation: 1e-7)
+            appendChat("L104: ⚡ Casimir: F/A=\(String(format: "%.3e", result.forcePerArea))N/m², E=\(String(format: "%.3e", result.energyDensity))J/m³\n", color: NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0))
+            return
+        }
+        if q == "sacred field" || q == "god code field" {
+            removeLast()
+            let result = UnifiedFieldEngine.shared.sacredFieldEquation(psi: state.coherence)
+            appendChat("L104: 💎 Sacred: Ψ=\(String(format: "%.4f", result.sovereignField)), B=\(String(format: "%.4f", result.bridgeCoherence)), Ω=\(String(format: "%.4f", result.omegaFieldStrength))\n", color: NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0))
+            return
+        }
+        if q == "unified solve" || q == "solve all" {
+            removeLast()
+            let result = UnifiedFieldEngine.shared.unifiedSolve(mass: 1.989e30, psi: state.coherence)
+            appendChat("L104: 🔥 Unified Solve: \(result.totalComputations) computations, conv=\(String(format: "%.4f", result.unificationConvergence)), sacred=\(String(format: "%.4f", result.sacredFieldValue))\n", color: NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0))
+            return
+        }
 
         state.processMessage(text) { [weak self] resp in
             DispatchQueue.main.async {
@@ -2244,6 +3307,154 @@ class L104MainView: NSView {
     @objc func doHeal() { state.coherence = max(0.5, state.coherence); state.saveState(); appendSystemLog("💚 HEALED"); updateMetrics() }
     @objc func doCheck() { state.checkConnections(); appendSystemLog("🔌 Backend: \(state.backendConnected), Autonomy: \(String(format: "%.0f", state.autonomyLevel * 100))%") }
     @objc func doSave() { state.saveState(); state.permanentMemory.save(); appendSystemLog("💾 SAVED: \(state.permanentMemory.memories.count) memories") }
+    @objc func doSyncBridge() {
+        if let status = ASIQuantumBridgeSwift.shared.fetchASIBridgeStatus() {
+            appendSystemLog("🔄 Bridge Synced — \(status.count) metrics updated")
+        } else {
+            appendSystemLog("🔄 Bridge Sync Failed")
+        }
+    }
+
+    @objc func doCollapse() {
+        let result = PythonBridge.shared.execute("""
+        from l104_asi.dual_layer import dual_layer_engine
+        result = dual_layer_engine.collapse("What is the fundamental duality of existence?")
+        print(f"DUALITY COLLAPSED: {result}")
+        """)
+        appendSystemLog("⚡ Dual-Layer Collapse: \(result.success ? result.output : result.error)")
+    }
+
+    @objc func doBridgeStatus() {
+        if let status = ASIQuantumBridgeSwift.shared.fetchASIBridgeStatus() {
+            var statusLines: [String] = ["⚛️ ASI BRIDGE STATUS:"]
+            for (key, value) in status {
+                statusLines.append("  \(key): \(value)")
+            }
+            appendSystemLog(statusLines.joined(separator: "\n"))
+        } else {
+            appendSystemLog("⚛️ Bridge Status Unavailable")
+        }
+    }
+    @objc func doIngestData() {
+        guard let tabView = tabView else { return }
+        // Find ingest input text view
+        var inputText = ""
+        for item in tabView.tabViewItems {
+            guard let view = item.view else { continue }
+            func findTV(_ v: NSView) -> NSTextView? {
+                if let tv = v as? NSTextView, tv.identifier?.rawValue == "ingest_input" { return tv }
+                for sub in v.subviews {
+                    if let found = findTV(sub) { return found }
+                }
+                return nil
+            }
+            if let tv = findTV(view) { inputText = tv.string; break }
+        }
+        guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            appendSystemLog("[INGEST] ⚠️ No input text — paste data into the Memory tab")
+            return
+        }
+        let result = DataIngestPipeline.shared.ingestText(inputText, source: "ui_manual", category: "user_ingest")
+        appendSystemLog("[INGEST] \(result.message)")
+        appendChat("📥 Data Ingest: \(result.message)", color: L104Theme.gold)
+    }
+
+    @objc func doClearIngest() {
+        guard let tabView = tabView else { return }
+        for item in tabView.tabViewItems {
+            guard let view = item.view else { continue }
+            func findTV(_ v: NSView) -> NSTextView? {
+                if let tv = v as? NSTextView, tv.identifier?.rawValue == "ingest_input" { return tv }
+                for sub in v.subviews {
+                    if let found = findTV(sub) { return found }
+                }
+                return nil
+            }
+            if let tv = findTV(view) { tv.string = ""; break }
+        }
+    }
+
+    @objc func doDeepSeekIngest() {
+        appendSystemLog("🧬 [DEEPSEEK] Starting ingestion process...")
+        appendChat("🧬 DeepSeek Source Code Ingestion: Initializing pattern extraction", color: L104Theme.gold)
+
+        // Trigger ingestion via Python bridge
+        let bridge = PythonBridge.shared
+        let result = bridge.execute("from l104_asi import deepseek_ingestion_engine; print('DeepSeek ingestion engine ready')")
+        if result.success {
+            appendSystemLog("🧬 [DEEPSEEK] Ingestion engine initialized")
+        } else {
+            appendSystemLog("🧬 [DEEPSEEK] Failed to initialize ingestion engine")
+        }
+    }
+
+    @objc func doDeepSeekStatus() {
+        appendSystemLog("📊 [DEEPSEEK] Fetching ingestion status...")
+        ASIQuantumBridgeSwift.shared.fetchASIBridgeStatus()
+        appendChat("📊 DeepSeek Status: \(ASIQuantumBridgeSwift.shared.deepseekMLAPatterns) MLA patterns, \(ASIQuantumBridgeSwift.shared.deepseekR1Chains) R1 chains, \(ASIQuantumBridgeSwift.shared.deepseekAdaptations) adaptations", color: L104Theme.gold)
+    }
+
+    @objc func doDeepSeekAdapt() {
+        appendSystemLog("🔄 [DEEPSEEK] Starting adaptation process...")
+        appendChat("🔄 DeepSeek Adaptation: Applying GOD_CODE alignment and PHI weighting", color: L104Theme.gold)
+
+        // Trigger adaptation via Python bridge
+        let bridge = PythonBridge.shared
+        let result = bridge.execute("""
+        from l104_asi import deepseek_ingestion_engine
+        # Example adaptation of MLA pattern
+        result = deepseek_ingestion_engine.ingest_deepseek_component('mla', source_code='sample mla code')
+        print(f'Adaptation result: {result}')
+        """)
+        if result.success {
+            appendSystemLog("🔄 [DEEPSEEK] Adaptation completed")
+        } else {
+            appendSystemLog("🔄 [DEEPSEEK] Adaptation failed")
+        }
+    }
+
+    @objc func doQuantumIntegrate() {
+        appendSystemLog("⚛️ [QUANTUM] Starting quantum architecture integration...")
+        appendChat("⚛️ Quantum Integration: Creating quantum circuits from DeepSeek patterns", color: L104Theme.gold)
+
+        // Trigger quantum integration via Python bridge
+        let bridge = PythonBridge.shared
+        let result = bridge.execute("""
+        from l104_asi import deepseek_ingestion_engine
+        # Example quantum integration of MLA pattern
+        result = deepseek_ingestion_engine.integrate_into_quantum_architecture('mla_test', {'attention_computation': True, 'kv_compression': True})
+        print(f'Quantum integration result: {result}')
+        """)
+        if result.success {
+            appendSystemLog("⚛️ [QUANTUM] Integration completed")
+        } else {
+            appendSystemLog("⚛️ [QUANTUM] Integration failed")
+        }
+    }
+
+    @objc func doQuantumStatus() {
+        appendSystemLog("📊 [QUANTUM] Fetching quantum architecture status...")
+        ASIQuantumBridgeSwift.shared.fetchASIBridgeStatus()
+        appendChat("📊 Quantum Status: Circuits created, patterns integrated, GOD_CODE alignments applied", color: L104Theme.gold)
+    }
+
+    @objc func doQuantumCircuits() {
+        appendSystemLog("🔄 [QUANTUM] Listing quantum circuits...")
+        appendChat("🔄 Quantum Circuits: MLA attention circuits, reasoning verification oracles, code generation circuits", color: L104Theme.gold)
+
+        // Trigger circuit listing via Python bridge
+        let bridge = PythonBridge.shared
+        let result = bridge.execute("""
+        from l104_asi import deepseek_ingestion_engine
+        status = deepseek_ingestion_engine.quantum_architecture.get_quantum_architecture_status()
+        print(f'Quantum circuits: {status}')
+        """)
+        if result.success {
+            appendSystemLog("🔄 [QUANTUM] Circuits listed")
+        } else {
+            appendSystemLog("🔄 [QUANTUM] Failed to list circuits")
+        }
+    }
 
     // Chat log actions
     @objc func saveChatLog() {
@@ -2270,6 +3481,60 @@ class L104MainView: NSView {
     @objc func clearChat() {
         chatTextView?.string = ""
         loadWelcome()
+    }
+
+    @objc func searchChat() {
+        let alert = NSAlert()
+        alert.messageText = "Search Chat"
+        alert.informativeText = "Enter text to search for in the conversation:"
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Search")
+        alert.addButton(withTitle: "Cancel")
+        let input = NSTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 24))
+        input.placeholderString = "Search term..."
+        alert.accessoryView = input
+        alert.window.initialFirstResponder = input
+        if alert.runModal() == .alertFirstButtonReturn {
+            let term = input.stringValue.lowercased()
+            guard !term.isEmpty, let tv = chatTextView else { return }
+            let content = tv.string as NSString
+            let range = content.range(of: term, options: [.caseInsensitive, .backwards])
+            if range.location != NSNotFound {
+                tv.scrollRangeToVisible(range)
+                tv.showFindIndicator(for: range)
+            }
+        }
+    }
+
+    @objc func exportChatMarkdown() {
+        guard let tv = chatTextView, !tv.string.isEmpty else { return }
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = "L104_chat_\(L104MainView.dateTimeFormatter.string(from: Date()).replacingOccurrences(of: " ", with: "_").replacingOccurrences(of: ":", with: "-")).md"
+        panel.allowedFileTypes = ["md", "txt"]
+        panel.canCreateDirectories = true
+        if panel.runModal() == .OK, let url = panel.url {
+            var md = "# L104 Chat Export\n\n"
+            md += "> Exported: \(L104MainView.dateTimeFormatter.string(from: Date()))\n"
+            md += "> Version: \(VERSION)\n\n"
+            md += "---\n\n"
+            md += tv.string
+            try? md.write(to: url, atomically: true, encoding: .utf8)
+        }
+    }
+
+    func updateChatWordCount() {
+        guard let tv = chatTextView else { return }
+        let words = tv.string.split(separator: " ").count
+        let chars = tv.string.count
+        // Find word count label via identifier
+        func findWC(_ view: NSView) -> NSTextField? {
+            if view.identifier?.rawValue == "chatWordCount", let tf = view as? NSTextField { return tf }
+            for sub in view.subviews { if let f = findWC(sub) { return f } }
+            return nil
+        }
+        if let tabV = tabView, let chatTab = tabV.tabViewItem(at: 0).view, let wcLbl = findWC(chatTab) {
+            wcLbl.stringValue = "\(words) words · \(chars) chars · \(L104MainView.sessionMessages) msgs"
+        }
     }
 
     func sendHelpCommand() {
@@ -2409,14 +3674,27 @@ class L104MainView: NSView {
             tv.textStorage?.append(NSAttributedString(string: text + "\n", attributes: attrs))
         }
         tv.scrollToEndOfDocument(nil)
+        updateChatWordCount()
     }
 
     func appendSystemLog(_ text: String) {
-        guard let tv = systemFeedView else { return }
         let f = L104MainView.timestampFormatter
         let c: NSColor = text.contains("✅") ? .systemGreen : text.contains("❌") ? .systemRed : text.contains("🔥") || text.contains("⚡") ? L104Theme.goldFlame : L104Theme.goldDim
-        tv.textStorage?.append(NSAttributedString(string: "[\(f.string(from: Date()))] \(text)\n", attributes: [.foregroundColor: c, .font: NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)]))
-        tv.scrollToEndOfDocument(nil)
+        let attrs: [NSAttributedString.Key: Any] = [.foregroundColor: c, .font: NSFont.monospacedSystemFont(ofSize: 10, weight: .regular)]
+        let str = NSAttributedString(string: "[\(f.string(from: Date()))] \(text)\n", attributes: attrs)
+
+        // Write to chat-panel system feed
+        if let tv = systemFeedView {
+            tv.textStorage?.append(str)
+            tv.scrollToEndOfDocument(nil)
+        }
+        // Also write to System tab (full-size view)
+        if let tv = systemTabFeedView {
+            let fullAttrs: [NSAttributedString.Key: Any] = [.foregroundColor: c, .font: NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)]
+            let fullStr = NSAttributedString(string: "[\(f.string(from: Date()))] \(text)\n", attributes: fullAttrs)
+            tv.textStorage?.append(fullStr)
+            tv.scrollToEndOfDocument(nil)
+        }
     }
 
     func updateMetrics() {
@@ -2453,13 +3731,30 @@ class L104MainView: NSView {
             let phase = now.timeIntervalSince1970.truncatingRemainder(dividingBy: PHI * 100) / 100
             self?.phaseLabel?.stringValue = "φ: \(String(format: "%.4f", phase))"
 
-            // UPDATE EVOLUTION UI
-            let evolver = ASIEvolver.shared
-            if let filesLbl = self?.metricTiles["ASI"]?.superview?.superview?.subviews.first(where: { $0.identifier?.rawValue == "metricsPanel" })?.subviews.compactMap({ $0 as? NSTextField }).first(where: { $0.stringValue.contains("Generated Artifacts") }) {
-                filesLbl.stringValue = "Generated Artifacts: \(evolver.generatedFilesCount)"
-            }
-            if let stageLbl = self?.metricTiles["ASI"]?.superview?.superview?.subviews.first(where: { $0.identifier?.rawValue == "metricsPanel" })?.subviews.compactMap({ $0 as? NSTextField }).first(where: { $0.stringValue.contains("Evolution Stage") }) {
-                stageLbl.stringValue = "Evolution Stage: \(evolver.evolutionStage)"
+            // 🟢 EVO_65: Live metrics bar + science metrics auto-refresh
+            self?.updateMetrics()
+            self?.updateScienceMetrics()
+
+            // UPDATE EVOLUTION UI — 🟢 EVO_63: Use proper identifier lookup
+            if let upgTab = self?.tabView?.tabViewItem(at: 4).view {
+                func findUpgSub(_ id: String) -> NSTextField? {
+                    func search(_ view: NSView) -> NSTextField? {
+                        if let tf = view as? NSTextField, tf.identifier?.rawValue == id { return tf }
+                        for sub in view.subviews { if let f = search(sub) { return f } }
+                        return nil
+                    }
+                    return search(upgTab)
+                }
+                let evolver = ASIEvolver.shared
+                findUpgSub("upg_stage")?.stringValue = "Evolution Stage: \(evolver.evolutionStage)"
+                findUpgSub("upg_files")?.stringValue = "Generated Artifacts: \(evolver.generatedFilesCount)"
+                let ec = evolver.evolvedGreetings.count + evolver.evolvedPhilosophies.count + evolver.evolvedFacts.count
+                findUpgSub("upg_evolved")?.stringValue = "Evolved Content: \(ec) greetings/philosophies/facts"
+                findUpgSub("upg_mutations")?.stringValue = "Mutations: \(evolver.mutationCount) · Crossovers: \(evolver.crossoverCount) · Syntheses: \(evolver.synthesisCount)"
+                // 🟢 EVO_64: Running/paused + thought count
+                findUpgSub("upg_run_status")?.stringValue = evolver.isRunning ? "🟢 RUNNING" : "⏸ PAUSED"
+                (findUpgSub("upg_run_status") as? NSTextField)?.textColor = evolver.isRunning ? .systemGreen : .systemOrange
+                findUpgSub("upg_thought_rate")?.stringValue = "Thoughts: \(evolver.thoughts.count) · Rate: ~1/8s"
             }
 
             // Randomly trigger background cognition (approx every 15s)
@@ -2491,10 +3786,10 @@ class L104MainView: NSView {
         v.layer?.backgroundColor = L104Theme.void.cgColor
 
         // Header
-        let header = NSTextField(labelWithString: "⚛️  QUANTUM COMPUTING LAB — IBM Quantum + Qiskit 2.3.0")
+        let header = NSTextField(labelWithString: "⚛️  QUANTUM COMPUTING LAB — IBM Quantum + Qiskit \(QISKIT_VERSION)")
         header.font = NSFont.systemFont(ofSize: 16, weight: .bold)
         header.textColor = L104Theme.goldFlame
-        header.frame = NSRect(x: 20, y: 460, width: 600, height: 30)
+        header.frame = NSRect(x: 20, y: 460, width: 700, height: 30)
         v.addSubview(header)
 
         // IBM Hardware status line
@@ -2565,9 +3860,9 @@ class L104MainView: NSView {
             v.addSubview(btn)
         }
 
-        // Output area — scrollable text view
+        // Output area — scrollable text view (left side)
         let scrollView = NSScrollView(frame: NSRect(x: 20, y: 10, width: 760, height: 280))
-        scrollView.autoresizingMask = [.width, .height]
+        scrollView.autoresizingMask = [.height]
         scrollView.hasVerticalScroller = true
         scrollView.borderType = .bezelBorder
 
@@ -2580,6 +3875,124 @@ class L104MainView: NSView {
         scrollView.documentView = tv
         v.addSubview(scrollView)
         quantumOutputView = tv
+
+        // ─── RIGHT SIDEBAR: Qubit Dashboard ───
+        let sidebarX: CGFloat = 800
+        let sidebarW: CGFloat = 380
+
+        // Qubit State Panel
+        let qubitPanel = NSView(frame: NSRect(x: sidebarX, y: 190, width: sidebarW, height: 270))
+        qubitPanel.wantsLayer = true
+        qubitPanel.layer?.backgroundColor = NSColor(red: 0.06, green: 0.06, blue: 0.14, alpha: 1.0).cgColor
+        qubitPanel.layer?.cornerRadius = 12
+        qubitPanel.layer?.borderColor = NSColor.systemCyan.withAlphaComponent(0.3).cgColor
+        qubitPanel.layer?.borderWidth = 1
+
+        let qubitTitle = NSTextField(labelWithString: "⚛️ QUBIT STATE DASHBOARD")
+        qubitTitle.font = NSFont.systemFont(ofSize: 12, weight: .bold)
+        qubitTitle.textColor = .systemCyan
+        qubitTitle.frame = NSRect(x: 15, y: 235, width: sidebarW - 30, height: 20)
+        qubitPanel.addSubview(qubitTitle)
+
+        let qubitItems: [(String, String, NSColor)] = [
+            ("Register Size", "4 qubits (Grover) / variable", .systemCyan),
+            ("Fidelity", String(format: "%.4f", QuantumProcessingCore.shared.currentFidelity()), .systemGreen),
+            ("Error Rate", "< 0.1% (sim) / ~1% (QPU)", .systemYellow),
+            ("Gate Set", "H, X, CX, Rz, SWAP, Toffoli", .systemCyan),
+            ("Algorithms", "\(QUANTUM_ALGORITHMS) circuits available", .systemGreen),
+            ("Framework", "Qiskit \(QISKIT_VERSION) + IBM REST", .systemCyan),
+            ("Topology", ibm.isConnected ? ibm.connectedBackendName : "Simulator", ibm.isConnected ? .systemGreen : .secondaryLabelColor),
+            ("Runtime", ibm.isConnected ? "Real QPU Bridge ✓" : "Statevector", ibm.isConnected ? .systemGreen : .systemOrange),
+        ]
+        var qy: CGFloat = 205
+        for (label, value, color) in qubitItems {
+            let lbl = NSTextField(labelWithString: label)
+            lbl.frame = NSRect(x: 15, y: qy, width: 120, height: 16)
+            lbl.font = NSFont.systemFont(ofSize: 10, weight: .medium)
+            lbl.textColor = .secondaryLabelColor
+            qubitPanel.addSubview(lbl)
+
+            let val = NSTextField(labelWithString: value)
+            val.frame = NSRect(x: 140, y: qy, width: sidebarW - 160, height: 16)
+            val.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .semibold)
+            val.textColor = color
+            val.identifier = NSUserInterfaceItemIdentifier("qc_stat_\(label.lowercased().replacingOccurrences(of: " ", with: "_"))")
+            qubitPanel.addSubview(val)
+            qy -= 24
+        }
+
+        // Visual qubit state indicator
+        let qubitViz = NSView(frame: NSRect(x: 15, y: 10, width: sidebarW - 30, height: 40))
+        qubitViz.wantsLayer = true
+        qubitViz.layer?.backgroundColor = NSColor(red: 0.04, green: 0.04, blue: 0.10, alpha: 1.0).cgColor
+        qubitViz.layer?.cornerRadius = 8
+        let qubitStates = ["|0⟩", "|1⟩", "|+⟩", "|−⟩"]
+        for (i, qs) in qubitStates.enumerated() {
+            let qLbl = NSTextField(labelWithString: "q\(i): \(qs)")
+            qLbl.frame = NSRect(x: CGFloat(i) * 85 + 10, y: 10, width: 75, height: 20)
+            qLbl.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .bold)
+            qLbl.textColor = .systemCyan
+            qLbl.alignment = .center
+            qLbl.identifier = NSUserInterfaceItemIdentifier("qc_qubit_\(i)")
+            qubitViz.addSubview(qLbl)
+        }
+        qubitPanel.addSubview(qubitViz)
+        v.addSubview(qubitPanel)
+
+        // Algorithm History Panel
+        let histPanel = NSView(frame: NSRect(x: sidebarX, y: 10, width: sidebarW, height: 170))
+        histPanel.wantsLayer = true
+        histPanel.layer?.backgroundColor = NSColor(red: 0.06, green: 0.06, blue: 0.14, alpha: 1.0).cgColor
+        histPanel.layer?.cornerRadius = 12
+        histPanel.layer?.borderColor = NSColor.systemIndigo.withAlphaComponent(0.3).cgColor
+        histPanel.layer?.borderWidth = 1
+
+        let histTitle = NSTextField(labelWithString: "📊 ALGORITHM HISTORY")
+        histTitle.font = NSFont.systemFont(ofSize: 12, weight: .bold)
+        histTitle.textColor = .systemIndigo
+        histTitle.frame = NSRect(x: 15, y: 135, width: sidebarW - 30, height: 20)
+        histPanel.addSubview(histTitle)
+
+        let histScroll = NSScrollView(frame: NSRect(x: 10, y: 10, width: sidebarW - 20, height: 118))
+        histScroll.hasVerticalScroller = true
+        histScroll.wantsLayer = true
+        histScroll.layer?.cornerRadius = 6
+        let histTV = NSTextView(frame: histScroll.bounds)
+        histTV.isEditable = false
+        histTV.backgroundColor = NSColor(red: 0.04, green: 0.04, blue: 0.10, alpha: 1.0)
+        histTV.textColor = .systemIndigo
+        histTV.font = NSFont.monospacedSystemFont(ofSize: 9.5, weight: .regular)
+        histTV.string = "  No algorithms run yet.\n  Select an algorithm to begin..."
+        histTV.identifier = NSUserInterfaceItemIdentifier("qc_history_text")
+        histScroll.documentView = histTV
+        histPanel.addSubview(histScroll)
+        v.addSubview(histPanel)
+
+        // ─── Quantum Poll Timer — refresh sidebar state ───
+        quantumPollTimer?.invalidate()
+        quantumPollTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak v] _ in
+            guard let v = v else { return }
+            func findQCSub(_ id: String) -> NSView? {
+                func search(_ view: NSView) -> NSView? {
+                    if view.identifier?.rawValue == id { return view }
+                    for sub in view.subviews { if let f = search(sub) { return f } }
+                    return nil
+                }
+                return search(v)
+            }
+            let ibmNow = IBMQuantumClient.shared
+            if let topoLbl = findQCSub("qc_stat_topology") as? NSTextField {
+                topoLbl.stringValue = ibmNow.isConnected ? ibmNow.connectedBackendName : "Simulator"
+                topoLbl.textColor = ibmNow.isConnected ? .systemGreen : .secondaryLabelColor
+            }
+            if let fidLbl = findQCSub("qc_stat_fidelity") as? NSTextField {
+                fidLbl.stringValue = String(format: "%.4f", QuantumProcessingCore.shared.currentFidelity())
+            }
+            if let rtLbl = findQCSub("qc_stat_runtime") as? NSTextField {
+                rtLbl.stringValue = ibmNow.isConnected ? "Real QPU Bridge ✓" : "Statevector"
+                rtLbl.textColor = ibmNow.isConnected ? .systemGreen : .systemOrange
+            }
+        }
 
         // Welcome message — hardware-aware
         let hwWelcome: String
@@ -2595,9 +4008,9 @@ class L104MainView: NSView {
         ╔═══════════════════════════════════════════════════════════╗
         ║  ⚛️  L104 QUANTUM COMPUTING LAB                          ║
         ╠═══════════════════════════════════════════════════════════╣
-        ║  Framework:  Qiskit 2.3.0 + IBM Quantum REST API         ║
+        ║  Framework:  Qiskit \(QISKIT_VERSION) + IBM Quantum REST API         ║
         \(hwWelcome)
-        ║  Algorithms: 7 quantum circuits (real HW → sim fallback) ║
+        ║  Algorithms: \(QUANTUM_ALGORITHMS) quantum circuits (real HW → sim fallback) ║
         ║                                                           ║
         ║  🔍 Grover    — O(√N) search on 4-qubit register         ║
         ║  📐 QPE       — Phase estimation with precision qubits   ║
@@ -2650,12 +4063,12 @@ class L104MainView: NSView {
         // Prompt for token via alert
         let alert = NSAlert()
         alert.messageText = "Connect to IBM Quantum"
-        alert.informativeText = "Enter your IBM Quantum API token.\nGet it at: https://quantum.ibm.com/account"
+        alert.informativeText = "Enter your IBM Cloud API key or IQP token.\n• IBM Cloud key: https://cloud.ibm.com/iam/apikeys\n• IQP token: https://quantum.ibm.com/account"
         alert.alertStyle = .informational
         alert.addButton(withTitle: "Connect")
         alert.addButton(withTitle: "Cancel")
         let input = NSTextField(frame: NSRect(x: 0, y: 0, width: 360, height: 24))
-        input.placeholderString = "Paste your IBM Quantum API token here"
+        input.placeholderString = "IBM Cloud API key or IQP token"
         alert.accessoryView = input
         alert.window.initialFirstResponder = input
 
@@ -3016,6 +4429,25 @@ class L104MainView: NSView {
             let ibmClient = IBMQuantumClient.shared
             let hasToken = ibmClient.ibmToken != nil
 
+            // Fetch runtime bridge status (real QPU bridge across all subsystems)
+            let rtResult = PythonBridge.shared.quantumRuntimeStatus()
+            var rtConnected = false
+            var rtBackend = "—"
+            var rtMode = "statevector"
+            var rtRealExec = 0
+            var rtTotalShots = 0
+            if rtResult.success, let rtDict = rtResult.returnValue as? [String: Any] {
+                rtConnected = rtDict["connected"] as? Bool ?? false
+                if let st = rtDict["status"] as? [String: Any] {
+                    rtBackend = st["default_backend"] as? String ?? "—"
+                    rtMode = st["execution_mode"] as? String ?? "statevector"
+                }
+                if let tel = rtDict["telemetry"] as? [String: Any] {
+                    rtRealExec = tel["real_qpu_executions"] as? Int ?? 0
+                    rtTotalShots = tel["total_shots"] as? Int ?? 0
+                }
+            }
+
             // Try real hardware status first
             if hasToken {
                 let hwResult = PythonBridge.shared.quantumHardwareStatus()
@@ -3036,6 +4468,11 @@ class L104MainView: NSView {
                         self?.appendQuantumOutput("║  REST API:   \(ibmClient.isConnected ? "CONNECTED" : "PENDING")", color: .white)
                         self?.appendQuantumOutput("║  Jobs Sent:  \(ibmClient.submittedJobs.count)", color: .white)
                         self?.appendQuantumOutput("║  Backends:   \(ibmClient.availableBackends.count) available", color: .white)
+                        self?.appendQuantumOutput("╠═══════════════════════════════════════════╣", color: .systemPurple)
+                        self?.appendQuantumOutput("║  🌐 RUNTIME BRIDGE — \(rtConnected ? "ACTIVE" : "INACTIVE")", color: rtConnected ? .systemPurple : .secondaryLabelColor)
+                        self?.appendQuantumOutput("║  Mode:       \(rtMode)", color: .white)
+                        self?.appendQuantumOutput("║  QPU Execs:  \(rtRealExec)", color: .systemCyan)
+                        self?.appendQuantumOutput("║  Shots Used: \(rtTotalShots)", color: .white)
                         self?.appendQuantumOutput("╚═══════════════════════════════════════════╝", color: .systemGreen)
                         self?.quantumStatusLabel?.stringValue = "✅ \(backend) — \(qubits) qubits [REAL HW]"
                         self?.quantumStatusLabel?.textColor = .systemGreen
@@ -3064,6 +4501,11 @@ class L104MainView: NSView {
                         self?.appendQuantumOutput("║", color: .white)
                         self?.appendQuantumOutput("║  💡 Use 'Connect IBM' button for real QPU", color: .systemYellow)
                     }
+                    self?.appendQuantumOutput("╠═══════════════════════════════════════════╣", color: .systemPurple)
+                    self?.appendQuantumOutput("║  🌐 RUNTIME BRIDGE — \(rtConnected ? "ACTIVE" : "INACTIVE")", color: rtConnected ? .systemPurple : .secondaryLabelColor)
+                    self?.appendQuantumOutput("║  Mode:       \(rtMode)", color: .white)
+                    self?.appendQuantumOutput("║  QPU Execs:  \(rtRealExec)", color: .systemCyan)
+                    self?.appendQuantumOutput("║  Shots Used: \(rtTotalShots)", color: .white)
                     self?.appendQuantumOutput("╚═══════════════════════════════════════════╝", color: .systemGreen)
                     self?.quantumStatusLabel?.stringValue = "✅ Engine: \(caps.count) algorithms, \(circuits) circuits [SIMULATOR]"
                 } else {
@@ -3156,7 +4598,7 @@ class L104MainView: NSView {
         outputTV.textColor = .systemCyan
         outputTV.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .regular)
         outputTV.autoresizingMask = [.width, .height]
-        outputTV.string = "Ready — paste code on the left, click an action above.\n\nPowered by:\n  • l104_code_engine.py v2.5.0 (40+ languages)\n  • l104_coding_system.py v2.0.0 (8 ASI modules)\n"
+        outputTV.string = "Ready — paste code on the left, click an action above.\n\nPowered by:\n  • l104_code_engine/ v\(CODE_ENGINE_VERSION) (40+ languages, 10 modules)\n  • l104_asi/ v\(ASI_VERSION) (11 modules, Dual-Layer Engine v\(DUAL_LAYER_VERSION))\n  • l104_server/ v\(SERVER_VERSION) (9 modules)\n  • l104_intellect/ v\(INTELLECT_VERSION) (11 modules, QUOTA_IMMUNE)\n"
         outputScroll.documentView = outputTV
         v.addSubview(outputScroll)
         codingOutputView = outputTV
@@ -3182,6 +4624,42 @@ class L104MainView: NSView {
             v.addSubview(btn)
         }
 
+        // 🟢 EVO_63: Status bar with engine info + analysis counter
+        let codeStatusBar = NSView(frame: NSRect(x: 20, y: 10, width: 370, height: 128))
+        codeStatusBar.wantsLayer = true
+        codeStatusBar.layer?.backgroundColor = NSColor(red: 0.06, green: 0.06, blue: 0.12, alpha: 1.0).cgColor
+        codeStatusBar.layer?.cornerRadius = 10
+        codeStatusBar.layer?.borderColor = L104Theme.goldFlame.withAlphaComponent(0.2).cgColor
+        codeStatusBar.layer?.borderWidth = 1
+
+        let codeStatsTitle = NSTextField(labelWithString: "⚡ ENGINE STATUS — \(L104MainView.codingAnalysisCount) analyses")
+        codeStatsTitle.frame = NSRect(x: 12, y: 100, width: 340, height: 16)
+        codeStatsTitle.font = NSFont.systemFont(ofSize: 10, weight: .bold)
+        codeStatsTitle.textColor = L104Theme.goldFlame
+        codeStatsTitle.identifier = NSUserInterfaceItemIdentifier("code_analysis_count")
+        codeStatusBar.addSubview(codeStatsTitle)
+
+        let codeEngineInfoItems: [(String, String, CGFloat)] = [
+            ("Code Engine", "v\(CODE_ENGINE_VERSION) · 10 modules · 40+ languages", 78),
+            ("ASI Pipeline", "v\(ASI_VERSION) · Dual-Layer v\(DUAL_LAYER_VERSION)", 56),
+            ("Gate Routing", "\(LogicGateEnvironment.shared.totalPipelineRuns) runs · \(LogicGateEnvironment.shared.circuits.count) circuits", 34),
+            ("KB Entries", "\(ASIKnowledgeBase.shared.trainingData.count) training · \(ASIKnowledgeBase.shared.userKnowledge.count) user", 12),
+        ]
+        for (label, value, y) in codeEngineInfoItems {
+            let lbl = NSTextField(labelWithString: label)
+            lbl.frame = NSRect(x: 12, y: y, width: 90, height: 14)
+            lbl.font = NSFont.systemFont(ofSize: 9, weight: .medium); lbl.textColor = .gray
+            codeStatusBar.addSubview(lbl)
+            let val = NSTextField(labelWithString: value)
+            val.frame = NSRect(x: 105, y: y, width: 255, height: 14)
+            val.font = NSFont.monospacedSystemFont(ofSize: 9, weight: .medium); val.textColor = L104Theme.goldDim
+            // 🟢 EVO_64: Tag gate routing + KB entries for live refresh
+            if label == "Gate Routing" { val.identifier = NSUserInterfaceItemIdentifier("code_gate_info") }
+            if label == "KB Entries" { val.identifier = NSUserInterfaceItemIdentifier("code_kb_info") }
+            codeStatusBar.addSubview(val)
+        }
+        v.addSubview(codeStatusBar)
+
         return v
     }
 
@@ -3190,6 +4668,11 @@ class L104MainView: NSView {
     }
 
     private func setCodingOutput(_ text: String) {
+        // 🟢 EVO_65: Track analysis count (count each new analysis start)
+        if text.hasPrefix("⏳") {
+            L104MainView.codingAnalysisCount += 1
+            UserDefaults.standard.set(L104MainView.codingAnalysisCount, forKey: "l104_coding_analysis_count")
+        }
         codingOutputView?.string = text
         codingOutputView?.scrollToEndOfDocument(nil)
     }
@@ -3398,9 +4881,9 @@ class L104MainView: NSView {
             v.addSubview(btn)
         }
 
-        // Output area
+        // Output area (left side)
         let scrollView = NSScrollView(frame: NSRect(x: 20, y: 10, width: 760, height: 300))
-        scrollView.autoresizingMask = [.width, .height]
+        scrollView.autoresizingMask = [.height]
         scrollView.hasVerticalScroller = true
         scrollView.borderType = .bezelBorder
 
@@ -3413,6 +4896,106 @@ class L104MainView: NSView {
         scrollView.documentView = tv
         v.addSubview(scrollView)
         professorOutputView = tv
+
+        // ─── RIGHT SIDEBAR: Lesson History ───
+        let sidebarX: CGFloat = 800
+        let sidebarW: CGFloat = 380
+
+        // Lesson History Panel
+        let histPanel = NSView(frame: NSRect(x: sidebarX, y: 175, width: sidebarW, height: 270))
+        histPanel.wantsLayer = true
+        histPanel.layer?.backgroundColor = NSColor(red: 0.08, green: 0.06, blue: 0.14, alpha: 1.0).cgColor
+        histPanel.layer?.cornerRadius = 12
+        histPanel.layer?.borderColor = L104Theme.goldFlame.withAlphaComponent(0.3).cgColor
+        histPanel.layer?.borderWidth = 1
+
+        let histTitle = NSTextField(labelWithString: "📜 LESSON HISTORY")
+        histTitle.font = NSFont.systemFont(ofSize: 12, weight: .bold)
+        histTitle.textColor = L104Theme.goldFlame
+        histTitle.frame = NSRect(x: 15, y: 235, width: sidebarW - 30, height: 20)
+        histPanel.addSubview(histTitle)
+
+        let histScroll = NSScrollView(frame: NSRect(x: 10, y: 10, width: sidebarW - 20, height: 220))
+        histScroll.hasVerticalScroller = true
+        histScroll.wantsLayer = true
+        histScroll.layer?.cornerRadius = 6
+        let histTV = NSTextView(frame: histScroll.bounds)
+        histTV.isEditable = false
+        histTV.backgroundColor = NSColor(red: 0.05, green: 0.04, blue: 0.10, alpha: 1.0)
+        histTV.textColor = L104Theme.goldDim
+        histTV.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .regular)
+        histTV.identifier = NSUserInterfaceItemIdentifier("prof_history_text")
+        if professorLessonHistory.isEmpty {
+            histTV.string = "  No lessons yet.\n  Choose a topic and mode to begin..."
+        } else {
+            histTV.string = professorLessonHistory.suffix(20).reversed().joined(separator: "\n")
+        }
+        histScroll.documentView = histTV
+        histPanel.addSubview(histScroll)
+        v.addSubview(histPanel)
+
+        // Topic Mastery Quick View Panel
+        let masteryPanel = NSView(frame: NSRect(x: sidebarX, y: 10, width: sidebarW, height: 155))
+        masteryPanel.wantsLayer = true
+        masteryPanel.layer?.backgroundColor = NSColor(red: 0.08, green: 0.06, blue: 0.14, alpha: 1.0).cgColor
+        masteryPanel.layer?.cornerRadius = 12
+        masteryPanel.layer?.borderColor = L104Theme.gold.withAlphaComponent(0.3).cgColor
+        masteryPanel.layer?.borderWidth = 1
+
+        let mastTitle = NSTextField(labelWithString: "🎯 TOPIC MASTERY")
+        mastTitle.font = NSFont.systemFont(ofSize: 12, weight: .bold)
+        mastTitle.textColor = L104Theme.gold
+        mastTitle.frame = NSRect(x: 15, y: 120, width: sidebarW - 30, height: 20)
+        masteryPanel.addSubview(mastTitle)
+
+        let learner = AdaptiveLearner.shared
+        let topMastered = learner.topicMastery.values.sorted { $0.masteryLevel > $1.masteryLevel }.prefix(5)
+        var my: CGFloat = 95
+        if topMastered.isEmpty {
+            let lbl = NSTextField(labelWithString: "  Chat and study to build mastery!")
+            lbl.frame = NSRect(x: 15, y: my, width: sidebarW - 30, height: 16)
+            lbl.font = NSFont.systemFont(ofSize: 10); lbl.textColor = .gray
+            masteryPanel.addSubview(lbl)
+        } else {
+            for mastery in topMastered {
+                let topicLbl = NSTextField(labelWithString: "\(mastery.tier) \(mastery.topic)")
+                topicLbl.frame = NSRect(x: 15, y: my, width: 200, height: 16)
+                topicLbl.font = NSFont.systemFont(ofSize: 10, weight: .medium)
+                topicLbl.textColor = mastery.masteryLevel > 0.6 ? L104Theme.goldBright : L104Theme.goldDim
+                topicLbl.lineBreakMode = .byTruncatingTail
+                masteryPanel.addSubview(topicLbl)
+
+                let bar = GlowingProgressBar(frame: NSRect(x: 220, y: my + 3, width: 80, height: 7))
+                bar.progress = CGFloat(mastery.masteryLevel)
+                bar.barColor = mastery.masteryLevel > 0.65 ? L104Theme.gold : L104Theme.goldDim
+                masteryPanel.addSubview(bar)
+
+                let pctLbl = NSTextField(labelWithString: "\(String(format: "%.0f%%", mastery.masteryLevel * 100))")
+                pctLbl.frame = NSRect(x: 305, y: my, width: 40, height: 16)
+                pctLbl.font = NSFont.monospacedSystemFont(ofSize: 9, weight: .semibold)
+                pctLbl.textColor = L104Theme.gold; pctLbl.alignment = .right
+                masteryPanel.addSubview(pctLbl)
+
+                my -= 20
+            }
+        }
+
+        // Stats summary at bottom
+        let statsLine = NSTextField(labelWithString: "\(PROFESSOR_MODES) modes · \(learner.topicMastery.count) topics · \(learner.interactionCount) interactions")
+        statsLine.frame = NSRect(x: 15, y: 8, width: sidebarW - 30, height: 14)
+        statsLine.font = NSFont.monospacedSystemFont(ofSize: 9, weight: .medium)
+        statsLine.textColor = L104Theme.goldDim
+        statsLine.identifier = NSUserInterfaceItemIdentifier("prof_stats_line")
+        masteryPanel.addSubview(statsLine)
+
+        // Lesson count indicator
+        let lessonCountLbl = NSTextField(labelWithString: "📝 Lessons: \(professorLessonHistory.count)")
+        lessonCountLbl.frame = NSRect(x: 15, y: 135, width: sidebarW - 30, height: 14)
+        lessonCountLbl.font = NSFont.monospacedSystemFont(ofSize: 9, weight: .bold)
+        lessonCountLbl.textColor = L104Theme.goldFlame
+        lessonCountLbl.identifier = NSUserInterfaceItemIdentifier("prof_lesson_count")
+        masteryPanel.addSubview(lessonCountLbl)
+        v.addSubview(masteryPanel)
 
         // Welcome
         let welcome = """

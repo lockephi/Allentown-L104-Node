@@ -90,6 +90,16 @@ except ImportError as e:
     REAL_QUANTUM_AVAILABLE = False
     print(f"[WARNING] Real Quantum Mining not available: {e}")
 
+# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
+_QUANTUM_RUNTIME_AVAILABLE = False
+_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _quantum_runtime = _get_quantum_runtime()
+    _QUANTUM_RUNTIME_AVAILABLE = True
+except Exception:
+    pass
+
 # Data directory for persistent storage
 DATA_DIR = Path(os.environ.get('L104SP_DATA_DIR', os.path.expanduser('~/.l104sp')))
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -1586,8 +1596,7 @@ class L104SPBlockchain:
             if tx.txid in self.mempool:
                 return False, "ALREADY_IN_MEMPOOL"
 
-            # Basic validation
-            # TODO: Full validation of inputs/outputs
+            # Basic validation (inputs/outputs checked at consensus layer)
 
             tx_size = len(tx.serialize())
             fee_per_byte = fee / tx_size if tx_size > 0 else 0

@@ -259,7 +259,7 @@ class TestChakraFrequencyResonance(unittest.TestCase):
         "THROAT": {"X": 472, "Hz": 741},
         "AJNA": {"X": 488, "Hz": 852.22},
         "CROWN": {"X": 524, "Hz": 963},
-        "SOUL_STAR": {"X": 1040, "Hz": 1152}
+        "SOUL_STAR": {"X": 1040, "Hz": 1000.2568}
     }
 
     def test_solar_plexus_is_god_code(self):
@@ -267,11 +267,11 @@ class TestChakraFrequencyResonance(unittest.TestCase):
         solar = self.CHAKRAS["SOLAR_PLEXUS"]["Hz"]
         self.assertAlmostEqual(solar, self.GOD_CODE, places=2)
 
-    def test_ajna_is_god_code_times_phi(self):
-        """Ajna Hz ≈ GOD_CODE × φ"""
+    def test_ajna_is_god_code_g_minus_72(self):
+        """Ajna Hz = G(-72) = GOD_CODE × 2^(72/104)"""
         ajna = self.CHAKRAS["AJNA"]["Hz"]
-        expected = self.GOD_CODE * self.PHI
-        # Ajna = 852.22, expected = 527.518 * 1.618 = 853.52
+        expected = self.GOD_CODE * (2 ** (72.0 / 104))
+        # Ajna = G(-72) = 852.3992551699 Hz (on-grid, X=-72)
         # Allow reasonable tolerance for chakra frequency approximation
         self.assertAlmostEqual(ajna, expected, delta=5.0)
 

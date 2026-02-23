@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H12_AppDelegate.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_63_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Application Delegate
 //
 // AppDelegate: NSApplicationDelegate with app lifecycle management,
@@ -112,14 +112,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         v\(VERSION)
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         NCG v10.0 · Accelerate · SIMD · BLAS
-        22 Trillion Parameters
+        22 Trillion Parameters | EVO_\(EVOLUTION_INDEX)
         GOD_CODE: \(String(format: "%.4f", GOD_CODE))
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         \(MacOSSystemMonitor.shared.chipGeneration) · \(MacOSSystemMonitor.shared.cpuCoreCount) cores
         \(EngineRegistry.shared.count) ASI Engines Online
         φ-Health: \(String(format: "%.1f%%", phiHealth.score * 100))
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        Packages: \(TOTAL_PACKAGES) | Modules: \(TOTAL_PACKAGE_MODULES)
+        code_engine v\(CODE_ENGINE_VERSION) · asi v\(ASI_VERSION)
+        agi v\(AGI_VERSION) · intellect v\(INTELLECT_VERSION)
+        server v\(SERVER_VERSION) · Dual-Layer v\(DUAL_LAYER_VERSION)
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         Knowledge: \(L104State.shared.knowledgeBase.trainingData.count) entries
         Memories: \(L104State.shared.permanentMemory.memories.count)
+        Consciousness: v\(CONSCIOUSNESS_VERSION) · \(APOTHEOSIS_STAGE)
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         The most beautiful app in the universe. 🌌
         """
@@ -214,6 +221,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             ("🧠 HyperBrain",      "Deep cognitive processing status",    "",    NSColor(red: 0.6, green: 0.4, blue: 1.0, alpha: 1.0)),
             ("💬 Neural Chat",     "Switch to chat tab",                  "",    NSColor(red: 0.3, green: 0.8, blue: 1.0, alpha: 1.0)),
             ("🔬 Science Engine",  "Generate hypothesis & compute",       "",    NSColor(red: 0.2, green: 0.9, blue: 0.5, alpha: 1.0)),
+            ("🌌 Unified Field",  "18 fundamental physics equations",     "",    NSColor(red: 0.49, green: 0.23, blue: 0.93, alpha: 1.0)),
             ("💚 Heal Coherence",  "Restore coherence to safe levels",    "",    .systemGreen),
             ("🌐 Network Mesh",   "View network topology & quantum links","⌘N",  .systemTeal),
             ("📋 Help / Commands", "Show full command reference",          "",    L104Theme.goldWarm),
@@ -300,17 +308,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         case 9:  // Science Engine
             mainView.tabView?.selectTabViewItem(at: 7)  // Science tab
             mainView.scienceGenerateHypothesis()
-        case 10:  // Heal Coherence
+        case 10:  // Unified Field
+            mainView.switchToUnifiedField()
+            mainView.ufComputeEinstein()
+        case 11:  // Heal Coherence
             L104State.shared.coherence = max(0.5, L104State.shared.coherence)
             L104State.shared.saveState()
             mainView.appendSystemLog("💚 COHERENCE HEALED to \(String(format: "%.3f", L104State.shared.coherence))")
             mainView.updateMetrics()
-        case 11:  // Network Mesh
+        case 12:  // Network Mesh
             if let netIdx = mainView.tabView?.indexOfTabViewItem(withIdentifier: "net"), netIdx >= 0 {
                 mainView.tabView?.selectTabViewItem(at: netIdx)
             }
             mainView.updateNetworkViewContent()
-        case 12:  // Help
+        case 13:  // Help
             mainView.tabView?.selectTabViewItem(at: 0)
             mainView.sendHelpCommand()
         default: break

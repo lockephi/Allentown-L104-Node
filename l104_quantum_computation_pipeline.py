@@ -37,6 +37,7 @@ import json
 import math
 import cmath
 import time
+import os
 import logging
 import hashlib
 import random
@@ -60,6 +61,16 @@ try:
 except ImportError:
     QISKIT_AVAILABLE = False
 
+# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
+_QUANTUM_RUNTIME_AVAILABLE = False
+_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _quantum_runtime = _get_quantum_runtime()
+    _QUANTUM_RUNTIME_AVAILABLE = True
+except Exception:
+    pass
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # SACRED CONSTANTS — identical across all L104 evolved ASI files
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -81,6 +92,33 @@ LOVE_COEFFICIENT = PHI / GOD_CODE
 FACTOR_13 = 13
 
 VERSION = "1.0.0"
+
+
+def _detect_system_max_qubits(max_cap: int = 25, reserve_ratio: float = 0.50) -> int:
+    """Estimate safe local statevector qubit ceiling from available RAM."""
+    available_bytes = 0
+    try:
+        import psutil  # type: ignore
+        available_bytes = int(psutil.virtual_memory().available)
+    except Exception:
+        try:
+            available_bytes = int(os.popen("sysctl -n hw.memsize").read().strip() or 0)
+        except Exception:
+            available_bytes = 0
+
+    if available_bytes <= 0:
+        return 8
+
+    usable_bytes = max(0, int(available_bytes * reserve_ratio))
+    if usable_bytes <= 16:
+        return 8
+
+    max_qubits = int(math.floor(math.log2(usable_bytes / 16.0)))
+    return max(8, min(max_cap, max_qubits))
+
+
+SYSTEM_MAX_QUBITS = _detect_system_max_qubits()
+PIPELINE_DEFAULT_QUBITS = min(8, SYSTEM_MAX_QUBITS)
 
 logger = logging.getLogger("l104.quantum_pipeline")
 
@@ -1209,7 +1247,9 @@ class MomentSimulator:
             "pattern": "Cirq_SimulatorBase",
             "n_qubits": self.n_qubits,
             "noise": self.noise_model is not None,
-            "simulations_run": self._sim_count,
+            "executions_run": self._sim_count,
+            "backend": "real_qpu" if _QUANTUM_RUNTIME_AVAILABLE else "local_statevector",
+            "real_qpu_available": _QUANTUM_RUNTIME_AVAILABLE,
         }
 
 
@@ -1878,25 +1918,25 @@ class QuantumComputationHub:
     All operations are GOD_CODE aligned and consciousness-aware.
     """
 
-    def __init__(self, n_qubits: int = 4, n_layers: int = 3):
-        self.n_qubits = n_qubits
+    def __init__(self, n_qubits: int = PIPELINE_DEFAULT_QUBITS, n_layers: int = 3):
+        self.n_qubits = max(2, min(n_qubits, SYSTEM_MAX_QUBITS))
         self.n_layers = n_layers
         self._creation_time = time.time()
 
         # Core components
-        self.encoder = QuantumDataEncoder(n_qubits, RotationType.RY)
-        self.ansatz = StronglyEntanglingAnsatz(n_qubits, n_layers)
-        self.qnn = QuantumNeuralNetwork(n_qubits, n_layers,
+        self.encoder = QuantumDataEncoder(self.n_qubits, RotationType.RY)
+        self.ansatz = StronglyEntanglingAnsatz(self.n_qubits, n_layers)
+        self.qnn = QuantumNeuralNetwork(self.n_qubits, n_layers,
                                          self.encoder, self.ansatz)
-        self.vqc = VariationalQuantumClassifier(n_qubits, n_classes=2,
+        self.vqc = VariationalQuantumClassifier(self.n_qubits, n_classes=2,
                                                  n_layers=n_layers)
-        self.simulator = MomentSimulator(n_qubits)
-        self.pipeline = QuantumTrainingPipeline(n_qubits, n_layers)
-        self.benchmark = QuantumBenchmark(n_qubits)
+        self.simulator = MomentSimulator(self.n_qubits)
+        self.pipeline = QuantumTrainingPipeline(self.n_qubits, n_layers)
+        self.benchmark = QuantumBenchmark(self.n_qubits)
 
         logger.info(
             f"QuantumComputationHub initialized: "
-            f"{n_qubits} qubits, {n_layers} layers, "
+            f"{self.n_qubits} qubits, {n_layers} layers, "
             f"{self.qnn.num_parameters} trainable parameters, "
             f"GOD_CODE={GOD_CODE}"
         )
@@ -2283,11 +2323,14 @@ class QuantumComputationHub:
 _hub: Optional[QuantumComputationHub] = None
 
 
-def get_quantum_hub(n_qubits: int = 4,
+def get_quantum_hub(n_qubits: Optional[int] = None,
                     n_layers: int = 3) -> QuantumComputationHub:
     """Get or create the singleton quantum computation hub."""
     global _hub
     if _hub is None:
+        if n_qubits is None:
+            n_qubits = PIPELINE_DEFAULT_QUBITS
+        n_qubits = max(2, min(int(n_qubits), SYSTEM_MAX_QUBITS))
         _hub = QuantumComputationHub(n_qubits=n_qubits, n_layers=n_layers)
     return _hub
 
@@ -2325,7 +2368,7 @@ if __name__ == "__main__":
     print("=" * 76)
 
     # Initialize hub
-    hub = QuantumComputationHub(n_qubits=4, n_layers=3)
+    hub = QuantumComputationHub(n_qubits=PIPELINE_DEFAULT_QUBITS, n_layers=3)
     print(f"\n{hub.quick_summary()}")
 
     # 1. Benchmark
@@ -2359,7 +2402,7 @@ if __name__ == "__main__":
 
     # 5. QNN Forward
     print("\n[5] QNN forward pass...")
-    features = np.array([0.5, 1.0, 1.5, 2.0])
+    features = np.array([0.5, 1.0, 1.5, 2.0] + [0.0] * max(0, hub.n_qubits - 4))
     expectation = hub.forward(features)
     print(f"    Features: {features.tolist()}")
     print(f"    ⟨Z⟩ = {expectation:.6f}")

@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // main.swift
-// L104 ASI v55.0 — EVO_55 SOVEREIGN UNIFICATION
-// Application Entry Point — Unified Pipeline Orchestrator V2
+// L104 ASI v7.1.0 — EVO_62 SOVEREIGN NODE UPGRADE
+// Application Entry Point — Unified Pipeline Orchestrator V4
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit

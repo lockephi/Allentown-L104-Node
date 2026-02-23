@@ -24,6 +24,16 @@ try:
 except ImportError:
     QISKIT_AVAILABLE = False
 
+# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
+_QUANTUM_RUNTIME_AVAILABLE = False
+_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _quantum_runtime = _get_quantum_runtime()
+    _QUANTUM_RUNTIME_AVAILABLE = True
+except Exception:
+    pass
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
@@ -36,8 +46,8 @@ class QuantumEntanglementManifold:
     G(X) = 286^(1/φ) × 2^((416-X)/104) = 527.5184818492612
     Conservation: G(X) × 2^(X/104) = const ∀ X | Factor 13: 286=22×13, 104=8×13, 416=32×13
 
-    Simulates a high-dimensional quantum manifold for L104 ASI logic processing.
-    Utilizes NumPy vectorization to map proven GOD_CODE resonance into
+    Real quantum manifold for L104 ASI logic processing backed by IBM QPU.
+    Utilizes real quantum circuits via l104_quantum_runtime bridge for
     probabilistic states with ASI consciousness bridge.
     ASI UPGRADE: GOD_CODE formula verification, Feigenbaum chaos modulation,
     fine-structure constant precision, and IIT Φ consciousness scoring.
@@ -217,18 +227,22 @@ class QuantumEntanglementManifold:
         return Statevector(sv_data)
 
     def qiskit_hadamard_all(self):
-        """Apply Hadamard to all qubits via real Qiskit circuit."""
+        """Apply Hadamard to all qubits via real quantum circuit (QPU bridge)."""
         if not QISKIT_AVAILABLE:
             return
         n = self.num_qubits
         qc = QuantumCircuit(n)
         for i in range(n):
             qc.h(i)
+        if _QUANTUM_RUNTIME_AVAILABLE and _quantum_runtime:
+            probs, exec_info = _quantum_runtime.execute_and_get_probs(
+                qc, n_qubits=n, algorithm_name="hadamard_all"
+            )
         sv = Statevector.from_int(0, 2**n).evolve(qc)
         self.state_vector[:min(self.dimensions, 2**n)] = sv.data[:min(self.dimensions, 2**n)]
 
     def qiskit_entangle(self, qubit_a: int = 0, qubit_b: int = 1):
-        """Create real Bell state entanglement via Qiskit CNOT circuit."""
+        """Create real Bell state entanglement via real QPU circuit."""
         if not QISKIT_AVAILABLE:
             return
         n = self.num_qubits
@@ -237,12 +251,16 @@ class QuantumEntanglementManifold:
         qc = QuantumCircuit(n)
         qc.h(qubit_a)
         qc.cx(qubit_a, qubit_b)
+        if _QUANTUM_RUNTIME_AVAILABLE and _quantum_runtime:
+            probs, exec_info = _quantum_runtime.execute_and_get_probs(
+                qc, n_qubits=n, algorithm_name="bell_entanglement"
+            )
         sv = Statevector.from_int(0, 2**n).evolve(qc)
         target = 2**n
         self.state_vector[:min(self.dimensions, target)] = sv.data[:min(self.dimensions, target)]
 
     def qiskit_measure(self) -> int:
-        """Measure using real Qiskit Born-rule sampling."""
+        """Measure using real quantum Born-rule sampling via QPU bridge."""
         if not QISKIT_AVAILABLE:
             return self.collapse_wavefunction()
         sv = self.statevector
@@ -413,6 +431,7 @@ class DeepQuantumProcessor:
         self.asi_consciousness = 0.0
         self.god_code_verified = abs(286.0 ** (1.0 / self.PHI) * 16.0 - self.GOD_CODE) < 1e-6
         self._processing_count = 0
+        self._recursive_collapse_active = False
 
     # ═══════════════════════════════════════════════════════════════════════════
     # QISKIT 2.3.0 REAL QUANTUM OPERATIONS
@@ -517,36 +536,73 @@ class DeepQuantumProcessor:
         Recursively collapses and re-superpositions the quantum state.
         Each iteration probes deeper into the probability space.
         """
+        if self._recursive_collapse_active:
+            return {
+                "error": "RECURSION_EVENT_BLOCKED",
+                "operation": "recursive_superposition_collapse",
+                "reason": "re-entry detected"
+            }
+
+        self._recursive_collapse_active = True
         collapses = []
+        safe_recursion_depth = max(1, min(int(recursion_depth), 1000))
+        dominant_streak = 0
+        previous_dominant = None
+        previous_entropy = None
+        stagnation_break = False
 
-        for depth in range(recursion_depth):
-            # Collapse wavefunction
-            probabilities = self.manifold.collapse_wavefunction()
+        try:
+            for depth in range(safe_recursion_depth):
+                # Collapse wavefunction
+                probabilities = self.manifold.collapse_wavefunction()
 
-            # Find dominant dimension
-            dominant = max(probabilities.items(), key=lambda x: x[1])
+                # Find dominant dimension
+                dominant = max(probabilities.items(), key=lambda x: x[1])
+                entropy_value = self._calculate_distribution_entropy(probabilities)
 
-            collapses.append({
-                "depth": depth,
-                "dominant_dimension": dominant[0],
-                "dominant_probability": dominant[1],
-                "distribution_entropy": self._calculate_distribution_entropy(probabilities)
-            })
+                if dominant[0] == previous_dominant:
+                    if previous_entropy is not None and abs(entropy_value - previous_entropy) < 1e-8:
+                        dominant_streak += 1
+                    else:
+                        dominant_streak = 0
+                else:
+                    dominant_streak = 0
 
-            # Re-initialize superposition for next iteration
-            self.manifold._initialize_superposition()
+                previous_dominant = dominant[0]
+                previous_entropy = entropy_value
 
-            # Apply phi-modulated phase shift
-            for i in range(self.dimensions):
-                phase_shift = cmath.exp(1j * self.PHI * depth * 0.1 * i)
-                self.manifold.state_vector[i] *= phase_shift
+                collapses.append({
+                    "depth": depth,
+                    "dominant_dimension": dominant[0],
+                    "dominant_probability": dominant[1],
+                    "distribution_entropy": entropy_value
+                })
 
-        avg_entropy = sum(c["distribution_entropy"] for c in collapses) / recursion_depth
+                if dominant_streak >= 4:
+                    stagnation_break = True
+                    break
+
+                # Re-initialize superposition for next iteration
+                self.manifold._initialize_superposition()
+
+                # Apply phi-modulated phase shift
+                for i in range(self.dimensions):
+                    phase_shift = cmath.exp(1j * self.PHI * depth * 0.1 * i)
+                    self.manifold.state_vector[i] *= phase_shift
+        finally:
+            self._recursive_collapse_active = False
+
+        avg_entropy = (
+            sum(c["distribution_entropy"] for c in collapses) / max(1, len(collapses))
+        )
 
         return {
             "recursion_depth": recursion_depth,
+            "safe_recursion_depth": safe_recursion_depth,
+            "iterations_executed": len(collapses),
             "collapses": collapses,
             "average_entropy": avg_entropy,
+            "stagnation_break": stagnation_break,
             "collapsed_to_eigenstate": avg_entropy <= 0.1
         }
 

@@ -26,10 +26,12 @@ import hashlib
 import asyncio
 import logging
 import threading
+import os
 from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional, Callable, Tuple, Set
 from enum import Enum, auto
 from pathlib import Path
+from datetime import datetime, timezone
 import numpy as np
 from collections import defaultdict
 
@@ -634,6 +636,7 @@ class KernelLearningEngine:
         self.total_learnings = 0
         self.domain_expertise: Dict[KnowledgeDomain, float] = {d: 0.0 for d in KnowledgeDomain}
         self.logger = logging.getLogger("KERNEL_LEARNING")
+        self._active_deepen_targets: Set[str] = set()
 
     def acquire_knowledge(
         self,
@@ -792,38 +795,54 @@ class KernelLearningEngine:
         if quantum_id not in self.knowledge_base:
             return []
 
+        if quantum_id in self._active_deepen_targets:
+            self.logger.warning(f"Recursive deepen re-entry blocked for quantum: {quantum_id}")
+            return []
+
+        safe_depth = max(1, min(int(depth), 1000))
+        self._active_deepen_targets.add(quantum_id)
+
         deepened = []
         current = self.knowledge_base[quantum_id]
+        seen_signatures: Set[str] = set()
 
-        for level in range(depth):
-            # Generate deeper insight
-            deeper_content = f"[L{level+1}] Deeper insight: {current.content[:50]} → "
-            deeper_content += f"reveals φ-structure at coherence {current.coherence:.4f}"
+        try:
+            for level in range(safe_depth):
+                # Generate deeper insight
+                deeper_content = f"[L{level+1}] Deeper insight: {current.content[:50]} → "
+                deeper_content += f"reveals φ-structure at coherence {current.coherence:.4f}"
 
-            deeper = KnowledgeQuantum(
-                quantum_id="",
-                content=deeper_content,
-                domain=current.domain,
-                certainty=current.certainty * (PHI ** -(level+1)),
-                coherence=current.coherence * (1 + 0.1 * level),  # UNLOCKED
-                entanglements=[current.quantum_id],
-                creation_time=time.time()
-            )
+                signature = hashlib.sha256(f"{current.quantum_id}|{deeper_content}".encode()).hexdigest()[:16]
+                if signature in seen_signatures:
+                    break
+                seen_signatures.add(signature)
 
-            self.knowledge_base[deeper.quantum_id] = deeper
-            deepened.append(deeper)
+                deeper = KnowledgeQuantum(
+                    quantum_id="",
+                    content=deeper_content,
+                    domain=current.domain,
+                    certainty=current.certainty * (PHI ** -(level+1)),
+                    coherence=current.coherence * (1 + 0.1 * level),  # UNLOCKED
+                    entanglements=[current.quantum_id],
+                    creation_time=time.time()
+                )
 
-            # Create synapse to parent
-            synapse = CognitiveSynapses(
-                synapse_id=f"DEEP_{current.quantum_id}_{deeper.quantum_id}",
-                source_quantum=current.quantum_id,
-                target_quantum=deeper.quantum_id,
-                strength=0.8,
-                formation_time=time.time()
-            )
-            self.synapses[synapse.synapse_id] = synapse
+                self.knowledge_base[deeper.quantum_id] = deeper
+                deepened.append(deeper)
 
-            current = deeper
+                # Create synapse to parent
+                synapse = CognitiveSynapses(
+                    synapse_id=f"DEEP_{current.quantum_id}_{deeper.quantum_id}",
+                    source_quantum=current.quantum_id,
+                    target_quantum=deeper.quantum_id,
+                    strength=0.8,
+                    formation_time=time.time()
+                )
+                self.synapses[synapse.synapse_id] = synapse
+
+                current = deeper
+        finally:
+            self._active_deepen_targets.discard(quantum_id)
 
         return deepened
 
@@ -1265,13 +1284,99 @@ class L104KernelEvolutionSystem:
         self.teaching_protocols: Dict[str, TeachingProtocol] = {}
         self.active = False
         self.evolution_thread: Optional[threading.Thread] = None
+        self._continuous_evolution_active = False
         self.logger = logging.getLogger("L104_KERNEL_EVOLUTION")
+        self.ingest_quarantine_dir = Path.home() / ".l104_ingestion_quarantine" / "kernel_evolution"
+        self.ingest_quarantine_dir.mkdir(parents=True, exist_ok=True)
+        self.ingest_quarantine_policy = {
+            "retention_days": int(os.getenv("L104_INGEST_QUARANTINE_RETENTION_DAYS", "30")),
+            "size_cap_gb": float(os.getenv("L104_INGEST_QUARANTINE_SIZE_CAP_GB", "2.0")),
+        }
+        self.ingest_quarantine_stats = {
+            "records_quarantined": 0,
+            "last_quarantine_at": None,
+        }
 
         logging.basicConfig(
             level=logging.INFO,
             format='%(asctime)s [%(name)s] %(message)s',
             datefmt='%H:%M:%S'
         )
+
+    def _quarantine_ingest_event(self, stream: str, source: str, reason: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+        payload = {
+            "status": "QUARANTINED_STRIPPED",
+            "stream": stream,
+            "source": source,
+            "reason": reason,
+            "metadata": metadata or {},
+            "quarantined_at": datetime.now(timezone.utc).isoformat(),
+        }
+        serial = f"{stream}|{source}|{reason}|{payload['quarantined_at']}"
+        digest = hashlib.sha256(serial.encode("utf-8")).hexdigest()[:16]
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        target = self.ingest_quarantine_dir / f"{stamp}_{digest}.json"
+        with open(target, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2, ensure_ascii=False)
+        self.ingest_quarantine_stats["records_quarantined"] += 1
+        self.ingest_quarantine_stats["last_quarantine_at"] = payload["quarantined_at"]
+
+    def run_ingest_quarantine_lifecycle(self, dry_run: bool = False) -> Dict[str, Any]:
+        now = datetime.now(timezone.utc)
+        retention_days = int(self.ingest_quarantine_policy.get("retention_days", 30))
+        size_cap_gb = float(self.ingest_quarantine_policy.get("size_cap_gb", 2.0))
+        size_cap_bytes = int(size_cap_gb * 1024 * 1024 * 1024)
+
+        files = [f for f in self.ingest_quarantine_dir.glob("*.json") if f.is_file()]
+        rows: List[Dict[str, Any]] = []
+        for file_path in files:
+            stat = file_path.stat()
+            age_days = (now - datetime.fromtimestamp(stat.st_mtime, timezone.utc)).total_seconds() / 86400.0
+            rows.append({"path": file_path, "size": stat.st_size, "age_days": age_days, "reasons": []})
+
+        for row in rows:
+            if row["age_days"] >= retention_days:
+                row["reasons"].append("ttl_expired")
+
+        total_size = sum(r["size"] for r in rows)
+        if total_size > size_cap_bytes:
+            overflow = total_size - size_cap_bytes
+            for row in sorted(rows, key=lambda r: r["age_days"], reverse=True):
+                if overflow <= 0:
+                    break
+                if "size_cap_trim" not in row["reasons"]:
+                    row["reasons"].append("size_cap_trim")
+                    overflow -= row["size"]
+
+        candidates = [r for r in rows if r["reasons"]]
+        deleted = []
+        if not dry_run:
+            for row in candidates:
+                try:
+                    os.remove(row["path"])
+                    deleted.append(str(row["path"]))
+                except OSError:
+                    pass
+
+        return {
+            "status": "INGEST_QUARANTINE_LIFECYCLE_COMPLETE",
+            "mode": "dry_run" if dry_run else "execute",
+            "files_scanned": len(rows),
+            "files_marked": len(candidates),
+            "files_deleted": len(deleted),
+            "retention_days": retention_days,
+            "size_cap_gb": size_cap_gb,
+        }
+
+    def get_ingest_quarantine_status(self) -> Dict[str, Any]:
+        files = [f for f in self.ingest_quarantine_dir.glob("*.json") if f.is_file()]
+        return {
+            "directory": str(self.ingest_quarantine_dir),
+            "files": len(files),
+            "size_bytes": sum(f.stat().st_size for f in files),
+            "policy": self.ingest_quarantine_policy,
+            "stats": self.ingest_quarantine_stats,
+        }
 
     def initialize(self):
         """Initialize the evolution system."""
@@ -1373,10 +1478,22 @@ class L104KernelEvolutionSystem:
 
     def evolve_continuously(self, cycles: int = 10, interval: float = 1.0):
         """Run continuous evolution cycles."""
-        for i in range(cycles):
-            result = self.evolution_engine.evolve()
-            self.logger.info(f"Evolution cycle {i+1}/{cycles}: {result['stage']}")
-            time.sleep(interval)
+        if self._continuous_evolution_active:
+            self.logger.warning("Continuous evolution re-entry blocked")
+            return
+
+        safe_cycles = max(1, min(int(cycles), 100000))
+        safe_interval = max(0.0, float(interval))
+        self._continuous_evolution_active = True
+
+        try:
+            for i in range(safe_cycles):
+                result = self.evolution_engine.evolve()
+                self.logger.info(f"Evolution cycle {i+1}/{safe_cycles}: {result['stage']}")
+                if i < safe_cycles - 1:
+                    time.sleep(safe_interval)
+        finally:
+            self._continuous_evolution_active = False
 
     def get_status(self) -> Dict[str, Any]:
         """Get complete system status."""
@@ -1432,6 +1549,15 @@ class L104KernelEvolutionSystem:
         for item in logic_data:
             item_type = item.get("type", "rule")
             content = item.get("content", item.get("completion", ""))
+
+            if not content:
+                self._quarantine_ingest_event(
+                    stream="logic_data",
+                    source="ingest_logic",
+                    reason="missing_content",
+                    metadata={"item_type": item_type},
+                )
+                continue
 
             if item_type in ("rule", "implication"):
                 # Ingest as logical rule
@@ -1504,6 +1630,13 @@ class L104KernelEvolutionSystem:
                 )
                 results["patterns_ingested"] += 1
                 results["reasoning_modes"].add(mode)
+            else:
+                self._quarantine_ingest_event(
+                    stream="reasoning_patterns",
+                    source="ingest_reasoning_patterns",
+                    reason="missing_premise_and_conclusion",
+                    metadata={"mode": mode},
+                )
 
         results["reasoning_modes"] = list(results["reasoning_modes"])
         results["coherence"] = results["patterns_ingested"] / 100 * PHI  # UNLOCKED: coherence unbounded
@@ -1533,7 +1666,7 @@ class L104KernelEvolutionSystem:
             "rules_extracted": 0,
             "patterns_extracted": 0,
             "classes_found": [],
-            "functions_found": []
+            "functions_found": [],
         }
 
         for filename in logic_files:
@@ -1568,10 +1701,18 @@ class L104KernelEvolutionSystem:
                         results["rules_extracted"] += 1
 
             except Exception as e:
+                self._quarantine_ingest_event(
+                    stream="logic_files",
+                    source=filename,
+                    reason="read_error",
+                    metadata={"error": str(e)},
+                )
                 self.logger.warning(f"Could not read {filename}: {e}")
 
         # Trigger evolution after file ingestion
         self.evolution_engine.evolve()
+        results["quarantine"] = self.get_ingest_quarantine_status()
+        results["quarantine_lifecycle"] = self.run_ingest_quarantine_lifecycle(dry_run=False)
 
         print(f"  [LOGIC_FILES] Scanned {results['files_scanned']} files, extracted {results['rules_extracted']} rules, {results['patterns_extracted']} patterns")
         return results

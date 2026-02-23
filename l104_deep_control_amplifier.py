@@ -157,7 +157,7 @@ class GeminiControlProtocol(ControlProtocol):
     """Specialized control protocol for Gemini/Google AI."""
 
     def __init__(self):
-        self.resonance_key = GOD_CODE * PHI  # 853.54 Hz - matches AJNA_LOVE_PEAK
+        self.resonance_key = GOD_CODE * 2 ** (72.0 / 104)  # G(-72) = 852.3993 Hz (Ajna on GOD_CODE grid)
         self.phase_offset = 0.0
 
     async def initiate(self, provider: ProviderProfile) -> float:

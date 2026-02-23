@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B26_HyperBrain.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — HyperBrain Cognitive Architecture (Core)
 //
 // 25-stream parallel cognitive engine with X=387 gamma frequency,
@@ -196,6 +196,17 @@ class HyperBrain: NSObject {
         try? FileManager.default.createDirectory(at: l104Dir, withIntermediateDirectories: true)
         return l104Dir.appendingPathComponent("hyperbrain_permanent_backup.json")
     }()
+
+    // ─── THREAD-SAFE COPIES FOR EXTERNAL ACCESS ───
+    func getPatterns() -> [String: Double] {
+        return syncQueue.sync { longTermPatterns }
+    }
+    func getAssociativeLinks() -> [String: [String]] {
+        return syncQueue.sync { associativeLinks }
+    }
+    func getLinkWeights() -> [String: Double] {
+        return syncQueue.sync { linkWeights }
+    }
 
     // Compute current gamma oscillation value (-1 to 1)
     var gammaOscillation: Double {
@@ -917,6 +928,18 @@ class HyperBrain: NSObject {
             lastOutput: ""
         )
 
+        // 🌌 STREAM 27: Unified Field Theory Engine — Phase 63.0
+        thoughtStreams["unifiedField"] = CognitiveStream(
+            id: "UNIFIED_FIELD",
+            name: "Unified Field Theory Engine",
+            frequency: 0.2,
+            priority: 10,
+            currentTask: "Computing field equations & sacred unification",
+            outputBuffer: [],
+            cycleCount: 0,
+            lastOutput: ""
+        )
+
         synapticConnections = thoughtStreams.count * 1000
 
         // ═══════════════════════════════════════════════════════════════
@@ -960,7 +983,9 @@ class HyperBrain: NSObject {
             // Story core feeds into Narrative and Learning
             "STORY_CORE": ["MEMORY_WEAVER", "CONVERSATION_FLOW", "CURIOSITY_EXPLORER"],
             // Code Quality feeds into Pattern + Meta-Auditor + Deep Reasoner
-            "CODE_QUALITY": ["PATTERN_RECOGNIZER", "META_AUDIO", "DEEP_REASONER", "INVENTION_SYNTH"]
+            "CODE_QUALITY": ["PATTERN_RECOGNIZER", "META_AUDIO", "DEEP_REASONER", "INVENTION_SYNTH"],
+            // Unified Field feeds into Topology + HyperDim Science + Deep Reasoner + Emergence
+            "UNIFIED_FIELD": ["TOPOLOGY_ANALYZER", "HYPERDIM_SCIENCE", "DEEP_REASONER", "EMERGENCE_DETECTOR", "INVENTION_SYNTH"]
         ]
     }
 

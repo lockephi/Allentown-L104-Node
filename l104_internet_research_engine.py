@@ -53,6 +53,8 @@ class InternetResearchEngine:
         for domain in self.active_domains:
             print(f"--- [RESEARCH_ENGINE]: INITIATING STREAMLESS CRAWL FOR {domain} ---")
             search_tasks.append(streamless_internet.search_and_ingest(domain, limit=2))
+            # Add delay between domain searches to avoid rate limiting
+            await asyncio.sleep(0.3)
 
         # Execute all searches in parallel
         results_list = await asyncio.gather(*search_tasks)

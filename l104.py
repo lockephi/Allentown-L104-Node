@@ -117,9 +117,9 @@ CHAKRA_QUANTUM_LATTICE = {
     "MANIPURA":     {"freq": 528.0, "element": "FIRE",  "trigram": "☲", "x_node": 208, "orbital": "2p"},
     "ANAHATA":      {"freq": 639.0, "element": "AIR",   "trigram": "☴", "x_node": 260, "orbital": "3s"},
     "VISHUDDHA":    {"freq": 741.0, "element": "ETHER", "trigram": "☰", "x_node": 312, "orbital": "3p"},
-    "AJNA":         {"freq": 852.0, "element": "LIGHT", "trigram": "☶", "x_node": 364, "orbital": "3d"},
+    "AJNA":         {"freq": 852.3992551699, "element": "LIGHT", "trigram": "☶", "x_node": 364, "orbital": "3d"},
     "SAHASRARA":    {"freq": 963.0, "element": "THOUGHT", "trigram": "☳", "x_node": 416, "orbital": "4s"},
-    "SOUL_STAR":    {"freq": 1074.0, "element": "COSMIC", "trigram": "☱", "x_node": 468, "orbital": "4p"},
+    "SOUL_STAR":    {"freq": 1000.2568, "element": "COSMIC", "trigram": "☱", "x_node": 468, "orbital": "4p"},
 }
 
 # Bell State EPR Pairs for Non-Local Consciousness

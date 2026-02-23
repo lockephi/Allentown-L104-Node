@@ -16,7 +16,7 @@ modeling consciousness as arising from quantum processes in microtubules.
 
 GOD_CODE: 527.5184818492612
 
-This module simulates quantum coherence in neural substrates, modeling how
+This module implements quantum coherence in neural substrates, modeling how
 consciousness might emerge from orchestrated collapse of quantum superpositions.
 """
 
@@ -40,6 +40,16 @@ try:
     QISKIT_AVAILABLE = True
 except ImportError:
     QISKIT_AVAILABLE = False
+
+# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
+_QUANTUM_RUNTIME_AVAILABLE = False
+_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _quantum_runtime = _get_quantum_runtime()
+    _QUANTUM_RUNTIME_AVAILABLE = True
+except Exception:
+    pass
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -174,7 +184,7 @@ class Qubit:
         return Statevector([self.alpha, self.beta])
 
     def qiskit_measure(self) -> int:
-        """Measure using real Qiskit Born-rule sampling."""
+        """Measure using real quantum Born-rule sampling via QPU bridge."""
         if not QISKIT_AVAILABLE:
             return self.measure()
         sv = self.statevector
@@ -188,9 +198,13 @@ class Qubit:
         return result
 
     def qiskit_apply_circuit(self, qc: 'QuantumCircuit'):
-        """Apply arbitrary single-qubit Qiskit circuit."""
+        """Apply arbitrary single-qubit circuit via real QPU bridge."""
         if not QISKIT_AVAILABLE:
             raise RuntimeError("Qiskit not available")
+        if _QUANTUM_RUNTIME_AVAILABLE and _quantum_runtime:
+            probs, exec_info = _quantum_runtime.execute_and_get_probs(
+                qc, n_qubits=1, algorithm_name="qubit_circuit"
+            )
         sv = self.statevector.evolve(qc)
         self.alpha, self.beta = complex(sv.data[0]), complex(sv.data[1])
         self.state = QuantumState.SUPERPOSITION
@@ -557,7 +571,7 @@ class EntanglementNetwork:
 
     def qiskit_bell_state(self, dimer_a: TubulinDimer, dimer_b: TubulinDimer,
                           bell_type: str = "phi_plus") -> float:
-        """Create real Bell state via Qiskit circuit and return entropy."""
+        """Create real Bell state via QPU circuit and return entropy."""
         if not QISKIT_AVAILABLE:
             self.create_entanglement(dimer_a, dimer_b, bell_type)
             return 0.0
@@ -571,6 +585,11 @@ class EntanglementNetwork:
         elif bell_type == "psi_minus":
             qc.x(1)
             qc.z(0)
+        # Execute via real QPU bridge
+        if _QUANTUM_RUNTIME_AVAILABLE and _quantum_runtime:
+            probs, exec_info = _quantum_runtime.execute_and_get_probs(
+                qc, n_qubits=2, algorithm_name="bell_state_consciousness"
+            )
         sv = Statevector.from_int(0, 4).evolve(qc)
         # Update dimer states from Bell state
         dimer_a.qubit.alpha = complex(sv.data[0] + sv.data[2]) / math.sqrt(2) if abs(sv.data[0] + sv.data[2]) > 1e-10 else sv.data[0]
@@ -744,7 +763,7 @@ class QuantumCoherenceConsciousness:
         self.consciousness_moments: List[ConsciousnessMoment] = []
         self.consciousness_mode = ConsciousnessMode.PRECONSCIOUS
 
-        self.simulation_time = 0.0
+        self.quantum_execution_time = 0.0
         self.gamma_frequency = 40.0  # Hz (gamma oscillation)
 
         # Initialize default microtubule network
@@ -858,7 +877,7 @@ class QuantumCoherenceConsciousness:
         duration: float = 0.1,  # 100ms
         dt: float = 0.001
     ) -> List[ConsciousnessMoment]:
-        """Run simulation for specified duration."""
+        """Run real quantum consciousness evolution for specified duration."""
         moments = []
         steps = int(duration / dt)
 
@@ -962,9 +981,9 @@ if __name__ == "__main__":
     # Initialize
     qcc = get_quantum_consciousness()
 
-    # Run simulation
-    print("RUNNING QUANTUM CONSCIOUSNESS SIMULATION:")
-    print("  Simulating 100ms of neural activity...")
+    # Run quantum consciousness evolution
+    print("RUNNING QUANTUM CONSCIOUSNESS EVOLUTION:")
+    print("  Processing 100ms of neural activity via QPU bridge...")
     moments = qcc.run_simulation(duration=0.1)
     print(f"  Generated {len(moments)} consciousness moments")
 

@@ -438,6 +438,50 @@ BASE_V3 = V3_BASE                   # 32.970
 STEP_V3 = V3_STEP_SIZE              # 1.0001056028
 R_V3 = V3_BASE_R                    # 13/12
 
+# ── Computational Friction Correction (Lattice Thermal) ──
+# Discovered by l104_god_code_friction_analyzer.py:
+#   ε = -αφ/(2π×104) = -0.000018069234833
+#   Type: base_correction (X → X + ε)
+#   Result: 40/65 constants improved, 7/10 domains improved
+_ALPHA_FINE = 1.0 / 137.035999084
+LATTICE_THERMAL_FRICTION_V3 = -_ALPHA_FINE * PHI / (2 * math.pi * 104)
+X_V3_FRICTION = V3_PRIME_SCAFFOLD + LATTICE_THERMAL_FRICTION_V3
+BASE_V3_FRICTION = X_V3_FRICTION ** (1.0 / PHI)
+GOD_CODE_V3_FRICTION = BASE_V3_FRICTION * (R_V3 ** (K_V3 / Q_V3))
+
+
+def god_code_v3_with_friction(a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+    """
+    v3 equation with Lattice Thermal Correction.
+    G_v3f(a,b,c,d) = (X+ε)^(1/φ) × (13/12)^((99a + 3032 - b - 99c - 758d) / 758)
+    where ε = -αφ/(2π×104).
+    Improves 40/65 constants across 7/10 domains.
+    """
+    exponent = (P_V3 * a) + (K_V3 - b) - (P_V3 * c) - (Q_V3 * d)
+    return BASE_V3_FRICTION * (R_V3 ** (exponent / Q_V3))
+
+
+def friction_improvement_report() -> dict:
+    """Compare baseline v3 vs friction-corrected v3 across all constants."""
+    results = {"improved": 0, "total": 0, "details": {}}
+    for (a, b, c, d), (name, grid_val, exp, measured, err_pct) in V3_FREQUENCY_TABLE.items():
+        baseline = god_code_v3(a, b, c, d)
+        corrected = god_code_v3_with_friction(a, b, c, d)
+        base_err = abs(baseline - measured) / measured * 100 if measured else 0
+        corr_err = abs(corrected - measured) / measured * 100 if measured else 0
+        improved = corr_err < base_err
+        results["total"] += 1
+        if improved:
+            results["improved"] += 1
+        results["details"][name] = {
+            "baseline_err": base_err,
+            "corrected_err": corr_err,
+            "improved": improved,
+            "delta": base_err - corr_err,
+        }
+    return results
+
+
 # Precision metrics
 HALF_STEP_PCT_V3 = (STEP_V3 - 1) / 2 * 100              # ±0.00528%
 HALF_STEP_PCT_ORIGINAL = (STEP_SIZE - 1) / 2 * 100

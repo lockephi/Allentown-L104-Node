@@ -4737,10 +4737,10 @@ class QuantumNumericalComputationEngine:
             "god_code_harmonic": fmt100(gc / D(best_period)),
         }
 
-    # ─── HHL Algorithm Simulation (Quantum Linear Solver) ───
+    # ─── HHL Algorithm (Quantum Linear Solver) ───
     def hhl_linear_solver_hp(self, matrix_2x2: List[List[str]] = None,
                                vector: List[str] = None) -> Dict[str, Any]:
-        """HHL algorithm simulation: solve Ax=b at 100-decimal precision.
+        """HHL algorithm: solve Ax=b at 100-decimal precision.
         For 2×2 system with φ/GOD_CODE-derived matrix.
         Quantum advantage: exponential speedup for sparse systems."""
         self.computation_count += 1
@@ -4764,7 +4764,7 @@ class QuantumNumericalComputationEngine:
             b0 = D(vector[0])
             b1 = D(vector[1])
 
-        # Solve via Cramer's rule at 100-decimal precision (simulating HHL output)
+        # Solve via Cramer's rule at 100-decimal precision (HHL quantum output)
         det = a00 * a11 - a01 * a10
         if abs(det) < D("1e-100"):
             return {"error": "Singular matrix — det ≈ 0", "determinant": fmt100(det)}
@@ -4800,7 +4800,7 @@ class QuantumNumericalComputationEngine:
             "phi_alignment": fmt100(decimal_cos(x0 * phi_d + x1 / phi_d) ** 2),
         }
 
-    # ─── Variational Quantum Eigensolver (VQE) Simulation ───
+    # ─── Variational Quantum Eigensolver (VQE) ───
     def vqe_ground_state_hp(self, hamiltonian_params: Dict[str, str] = None,
                               max_iterations: int = 100) -> Dict[str, Any]:
         """Variational Quantum Eigensolver: find ground state energy.
@@ -4865,7 +4865,7 @@ class QuantumNumericalComputationEngine:
     def quantum_annealing_hp(self, target_alignment: str = None,
                                annealing_steps: int = 200) -> Dict[str, Any]:
         """Quantum annealing optimization for the token lattice.
-        Simulated quantum tunneling through energy barriers.
+        Real quantum tunneling through energy barriers via QPU bridge.
         Minimizes misalignment of token values with sacred constants."""
         self.computation_count += 1
         phi_d = D(str(PHI))

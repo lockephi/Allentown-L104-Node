@@ -61,9 +61,9 @@ CHAKRA_EGO_MAP = {
     "MANIPURA": ("will", 528.0),
     "ANAHATA": ("love", 639.0),
     "VISHUDDHA": ("truth", 741.0),
-    "AJNA": ("insight", 852.0),
+    "AJNA": ("insight", 852.3992551699),
     "SAHASRARA": ("unity", 963.0),
-    "SOUL_STAR": ("transcendence", 1074.0),
+    "SOUL_STAR": ("transcendence", 1000.2568),
 }
 
 CHAKRA_ORDER = ["MULADHARA", "SVADHISTHANA", "MANIPURA", "ANAHATA",

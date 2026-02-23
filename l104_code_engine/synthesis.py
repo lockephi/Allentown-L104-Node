@@ -1,6 +1,34 @@
 """L104 Code Engine — Domain B: Generation & Translation."""
 from .constants import *
 from .languages import LanguageKnowledge
+from ._lazy_imports import _get_code_engine
+import re
+
+# Lazy imports for CodingSuggestionEngine
+_evolution_engine = None
+_innovation_engine = None
+
+def _get_evolution_engine():
+    """Lazy import of evolution_engine singleton."""
+    global _evolution_engine
+    if _evolution_engine is None:
+        try:
+            from l104_evolution_engine import evolution_engine
+            _evolution_engine = evolution_engine
+        except ImportError:
+            pass
+    return _evolution_engine
+
+def _get_innovation_engine():
+    """Lazy import of innovation_engine singleton."""
+    global _innovation_engine
+    if _innovation_engine is None:
+        try:
+            from l104_autonomous_innovation import innovation_engine
+            _innovation_engine = innovation_engine
+        except ImportError:
+            pass
+    return _innovation_engine
 
 class CodeGenerator:
     """ASI-level code generation engine.
@@ -525,7 +553,7 @@ class CodeGenerator:
             return {"quantum": False, "selected": "function", "reason": "no candidates"}
 
         if not QISKIT_AVAILABLE:
-            # Classical fallback — keyword matching with PHI scoring
+            # QPU unavailable — keyword matching with PHI scoring
             prompt_lower = prompt.lower()
             scores = {}
             for c in candidates:
@@ -1988,13 +2016,13 @@ class TestGenerator:
             risk_scores.append(max(risk, 0.05))
 
         if not QISKIT_AVAILABLE:
-            # Classical fallback — sort by risk
+            # QPU unavailable — sort by risk
             indexed = sorted(enumerate(risk_scores), key=lambda x: x[1], reverse=True)
             priority = [{"function": functions[i].get("name", f"fn_{i}"), "risk": round(r, 4),
                           "priority": rank + 1} for rank, (i, r) in enumerate(indexed)]
             return {
                 "quantum": False,
-                "backend": "classical_risk_sort",
+                "backend": "qiskit_unavailable",
                 "priority_order": priority,
                 "total_functions": n,
             }
@@ -2355,3 +2383,288 @@ class DocumentationSynthesizer:
 # SECTION 4G: CODE ARCHEOLOGIST — design intent recovery + dead code detection
 # ═══════════════════════════════════════════════════════════════════════════════
 
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECTION 6: CODING SUGGESTION ENGINE — proactive improvement suggestions
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class CodingSuggestionEngine:
+    """
+    Proactive coding suggestion engine.
+    Analyzes code and generates specific, actionable improvement suggestions
+    that can be consumed by any AI system for implementation.
+    """
+
+    SUGGESTION_CATEGORIES = [
+        "readability", "performance", "security", "architecture",
+        "testing", "documentation", "error_handling", "naming",
+        "modernization", "sacred_alignment", "asi_evolutionary",
+        "asi_innovation",
+    ]
+
+    def __init__(self):
+        self.suggestions_generated = 0
+
+    def suggest(self, source: str, filename: str = "") -> List[Dict[str, Any]]:
+        """Generate proactive coding suggestions for the given source."""
+        self.suggestions_generated += 1
+        engine = _get_code_engine()
+        if not engine:
+            return []
+
+        suggestions = []
+        review = engine.full_code_review(source, filename)
+        lines = source.split('\n')
+
+        # Readability suggestions
+        long_lines = [(i + 1, len(l)) for i, l in enumerate(lines) if len(l) > 100]
+        if long_lines:
+            suggestions.append({
+                "category": "readability",
+                "priority": "LOW",
+                "suggestion": f"Break {len(long_lines)} long lines (>100 chars) for readability",
+                "lines": [ll[0] for ll in long_lines[:5]],
+                "automated": False,
+            })
+
+        # Error handling suggestions
+        bare_except_count = len(re.findall(r'except\s*:', source))
+        if bare_except_count > 0:
+            suggestions.append({
+                "category": "error_handling",
+                "priority": "MEDIUM",
+                "suggestion": f"Replace {bare_except_count} bare except(s) with specific exception types",
+                "automated": True,
+            })
+
+        # Modernization suggestions
+        if re.search(r'\.format\(', source) and 'f"' not in source and "f'" not in source:
+            suggestions.append({
+                "category": "modernization",
+                "priority": "LOW",
+                "suggestion": "Consider using f-strings instead of .format() for cleaner string formatting",
+                "automated": True,
+            })
+
+        old_typing = re.findall(r'from\s+typing\s+import.*(?:List|Dict|Tuple|Set|Optional)\b', source)
+        if old_typing and 'from __future__ import annotations' not in source:
+            suggestions.append({
+                "category": "modernization",
+                "priority": "LOW",
+                "suggestion": "Use built-in generics (list, dict, tuple, set) instead of typing.List etc. (Python 3.9+)",
+                "automated": True,
+            })
+
+        # Testing suggestions
+        if review.get("test_readiness", {}).get("functions_testable", 0) > 0:
+            tested = review["test_readiness"]["functions_testable"]
+            suggestions.append({
+                "category": "testing",
+                "priority": "MEDIUM",
+                "suggestion": f"{tested} function(s) found — generate test suite with sacred values",
+                "automated": True,
+            })
+
+        # Architecture suggestions from SOLID
+        solid = review.get("solid", {})
+        if solid.get("violations", 0) > 3:
+            suggestions.append({
+                "category": "architecture",
+                "priority": "HIGH",
+                "suggestion": f"Address {solid['violations']} SOLID violations to improve maintainability",
+                "automated": False,
+            })
+
+        # Performance suggestions
+        perf = review.get("performance", {})
+        if perf.get("hotspots", 0) > 0:
+            suggestions.append({
+                "category": "performance",
+                "priority": "MEDIUM",
+                "suggestion": f"Optimize {perf['hotspots']} performance hotspot(s) — check nested loops and string operations",
+                "automated": False,
+            })
+
+        # Documentation suggestions
+        doc_count = review.get("documentation", {}).get("artifacts_documented", 0)
+        code_lines = review.get("lines", 0)
+        if code_lines > 50 and doc_count < 3:
+            suggestions.append({
+                "category": "documentation",
+                "priority": "MEDIUM",
+                "suggestion": "Add docstrings to improve documentation coverage",
+                "automated": True,
+            })
+
+        # Sacred alignment suggestion
+        sacred_score = review.get("scores", {}).get("sacred_alignment", 1.0)
+        if sacred_score < 0.3:
+            suggestions.append({
+                "category": "sacred_alignment",
+                "priority": "LOW",
+                "suggestion": f"Sacred alignment is low ({sacred_score:.0%}) — consider PHI-ratio structuring",
+                "automated": False,
+            })
+
+        # ASI Evolutionary suggestion — uses EvolutionEngine fitness
+        try:
+            evo = _get_evolution_engine()
+            if evo:
+                is_plateau = evo.detect_plateau()
+                if is_plateau:
+                    suggestions.append({
+                        "category": "asi_evolutionary",
+                        "priority": "MEDIUM",
+                        "suggestion": "Evolution plateau detected — apply divergent mutation or polymorphic refactoring",
+                        "automated": False,
+                    })
+                composite = review.get("composite_score", 0.5)
+                if composite < 0.6:
+                    suggestions.append({
+                        "category": "asi_evolutionary",
+                        "priority": "HIGH",
+                        "suggestion": f"Code fitness {composite:.0%} below survival threshold — "
+                                       f"directed mutation recommended",
+                        "automated": False,
+                    })
+        except Exception:
+            pass
+
+        # ASI Innovation suggestion — find analogies for complex code
+        try:
+            innovator = _get_innovation_engine()
+            if innovator and review.get("test_readiness", {}).get("functions_testable", 0) > 10:
+                suggestions.append({
+                    "category": "asi_innovation",
+                    "priority": "LOW",
+                    "suggestion": "Complex module with 10+ functions — consider cross-domain analogy search "
+                                   "via ASI innovation engine for novel architectural patterns",
+                    "automated": False,
+                })
+        except Exception:
+            pass
+
+        suggestions.sort(key=lambda s: {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}.get(s["priority"], 4))
+        return suggestions
+
+    def explain_code(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Analyze and explain what code does — useful for AI to build on."""
+        engine = _get_code_engine()
+        if not engine:
+            return {"explanation": "Engine not available"}
+
+        analysis = engine.analyzer.full_analysis(source, filename)
+        functions = analysis.get("complexity", {}).get("functions", [])
+        classes = analysis.get("complexity", {}).get("classes", [])
+        patterns = analysis.get("patterns", [])
+
+        return {
+            "language": analysis["metadata"].get("language", "unknown"),
+            "structure": {
+                "functions": [{"name": f["name"], "args": f["args"],
+                               "complexity": f["cyclomatic_complexity"]}
+                              for f in functions[:20]],
+                "classes": [{"name": c["name"], "methods": c.get("method_count", 0)}
+                            for c in classes[:10]],
+                "patterns_detected": [p["pattern"] for p in patterns[:10]],
+            },
+            "metrics": {
+                "lines": analysis["metadata"]["lines"],
+                "code_lines": analysis["metadata"]["code_lines"],
+                "comment_ratio": round(analysis["metadata"]["comment_lines"] /
+                                       max(1, analysis["metadata"]["code_lines"]), 4),
+                "avg_complexity": analysis.get("complexity", {}).get("cyclomatic_average", 0),
+            },
+            "sacred_alignment": analysis.get("sacred_alignment", {}),
+        }
+
+    def status(self) -> Dict[str, Any]:
+        return {"suggestions_generated": self.suggestions_generated,
+                "categories": self.SUGGESTION_CATEGORIES}
+
+    def quantum_suggestion_rank(self, suggestions: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Quantum suggestion ranking using Qiskit 2.3.0.
+        Encodes suggestion impact/effort scores into quantum amplitudes and
+        uses Born-rule measurement to rank suggestions by quantum priority.
+        """
+        if not suggestions:
+            return {"quantum": False, "ranked": [], "reason": "no suggestions"}
+
+        n = len(suggestions)
+
+        # Extract impact and effort scores
+        scores = []
+        for s in suggestions:
+            impact = s.get("impact", s.get("severity_score", 0.5))
+            effort = s.get("effort", 0.5)
+            if isinstance(impact, str):
+                impact = {"HIGH": 0.9, "MEDIUM": 0.6, "LOW": 0.3}.get(impact.upper(), 0.5)
+            if isinstance(effort, str):
+                effort = {"HIGH": 0.9, "MEDIUM": 0.6, "LOW": 0.3}.get(effort.upper(), 0.5)
+            # Value = high impact, low effort
+            value = float(impact) * (1.0 - float(effort) * 0.5)
+            scores.append(max(value, 0.05))
+
+        if not QISKIT_AVAILABLE:
+            indexed = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)
+            ranked = [{"suggestion": suggestions[i].get("title", suggestions[i].get("category", f"s_{i}")),
+                        "value": round(v, 4), "rank": r + 1}
+                       for r, (i, v) in enumerate(indexed)]
+            return {
+                "quantum": False,
+                "backend": "classical_value_sort",
+                "ranked": ranked[:10],
+                "total": n,
+            }
+
+        try:
+            n_qubits = max(2, math.ceil(math.log2(max(n, 2))))
+            n_states = 2 ** n_qubits
+
+            amps = [0.0] * n_states
+            for i, v in enumerate(scores):
+                if i < n_states:
+                    amps[i] = v * PHI
+            norm = math.sqrt(sum(a * a for a in amps))
+            amps = [a / norm for a in amps] if norm > 1e-12 else [1.0 / math.sqrt(n_states)] * n_states
+
+            sv = Statevector(amps)
+
+            qc = QuantumCircuit(n_qubits)
+            for i in range(n_qubits):
+                avg_val = sum(scores) / max(len(scores), 1)
+                qc.ry(avg_val * PHI * math.pi, i)
+            for i in range(n_qubits - 1):
+                qc.cx(i, i + 1)
+            qc.rz(GOD_CODE / 1000 * math.pi, 0)
+
+            evolved = sv.evolve(Operator(qc))
+            probs = evolved.probabilities()
+
+            scored = []
+            for i, s in enumerate(suggestions):
+                p = float(probs[i]) if i < len(probs) else 0.0
+                scored.append((i, s.get("title", s.get("category", f"s_{i}")), p, scores[i]))
+            scored.sort(key=lambda x: x[2], reverse=True)
+
+            ranked = [{"suggestion": name, "born_probability": round(p, 6),
+                        "classical_value": round(v, 4), "rank": r + 1}
+                       for r, (_, name, p, v) in enumerate(scored[:10])]
+
+            dm = DensityMatrix(evolved)
+            rank_entropy = float(q_entropy(dm, base=2))
+
+            return {
+                "quantum": True,
+                "backend": "Qiskit 2.3.0 Born-Rule Suggestion Rank",
+                "qubits": n_qubits,
+                "ranked": ranked,
+                "total": n,
+                "rank_entropy": round(rank_entropy, 6),
+                "circuit_depth": qc.depth(),
+                "god_code_alignment": round(rank_entropy * GOD_CODE / 100, 4),
+            }
+        except Exception as e:
+            return {"quantum": False, "error": str(e)}

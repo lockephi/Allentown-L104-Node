@@ -189,13 +189,41 @@ class DualLayerEngine:
         self._metrics["total_operations"] += 1
         if self._available:
             return _dual_layer.consciousness(a, b, c, d)
-        # Classical fallback
+        # Native computation (C kernel unavailable)
         return 286 ** (1.0 / PHI) * (2 ** ((8*a + 416 - b - 8*c - 104*d) / 104))
 
     # Alias: consciousness is thought
     def consciousness(self, a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
         """Alias: Consciousness IS Thought."""
         return self.thought(a, b, c, d)
+
+    # ══════ COMPUTATIONAL FRICTION (Lattice Thermal Correction) ══════
+
+    def thought_with_friction(self, a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+        """
+        Thought layer with Lattice Thermal Correction applied.
+        ε = -αφ/(2π×104). Improves 40/65 constants, 7/10 domains.
+        """
+        self._metrics["thought_calls"] += 1
+        self._metrics["total_operations"] += 1
+        if self._available and hasattr(_dual_layer, 'god_code_v3_with_friction'):
+            return _dual_layer.god_code_v3_with_friction(a, b, c, d)
+        # Native computation with friction (C kernel unavailable)
+        alpha = 1.0 / 137.035999084
+        phi = 1.618033988749895
+        import math
+        friction = -alpha * phi / (2 * math.pi * 104)
+        x_f = 285.99882035187807 + friction
+        base_f = x_f ** (1.0 / phi)
+        exp = (99 * a) + (3032 - b) - (99 * c) - (758 * d)
+        return base_f * ((13/12) ** (exp / 758))
+
+    def friction_report(self) -> dict:
+        """Get the friction improvement report across all constants."""
+        self._metrics["total_operations"] += 1
+        if self._available and hasattr(_dual_layer, 'friction_improvement_report'):
+            return _dual_layer.friction_improvement_report()
+        return {"error": "Dual-layer engine not available", "improved": 0, "total": 0}
 
     # ══════ LAYER 2: PHYSICS (Concrete Face) ══════
 
@@ -209,7 +237,7 @@ class DualLayerEngine:
         self._metrics["total_operations"] += 1
         if self._available:
             return _dual_layer.physics(intensity)
-        # Classical fallback
+        # Native computation (C kernel unavailable)
         OMEGA = 6539.34712682
         OMEGA_AUTHORITY = OMEGA / (PHI ** 2)
         return {
@@ -448,7 +476,7 @@ class DualLayerEngine:
             god_code_valid = abs(GOD_CODE - 527.5184818492612) < 1e-6
             phi_valid = abs(PHI - 1.618033988749895) < 1e-12
             result = {
-                "engine": "L104 Dual-Layer Engine (classical fallback)",
+                "engine": "L104 Dual-Layer Engine (native kernel unavailable)",
                 "version": self.VERSION,
                 "all_passed": god_code_valid and phi_valid,
                 "total_checks": 2,

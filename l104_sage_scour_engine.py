@@ -125,11 +125,152 @@ class ImportAuditor:
 class DuplicationDetector:
     """Content-hash based clone detection across files."""
 
+    # ── Tier 1: ANY-MATCH exclusions ──
+    # If ANY line in a block matches one of these, the entire block is excluded.
+    # These are file-header boilerplate lines that naturally appear in every L104 module,
+    # causing massive false-positive clone counts when sliding-window hashing picks them up.
+    ANY_MATCH_PATTERNS = [
+        # ── Sacred constant declarations (appear in 70+ files) ──
+        r'^\s*(GOD_CODE|PHI|VOID_CONSTANT|ZENITH_HZ|UUC|OMEGA|FEIGENBAUM)\s*=',
+        r'GOD_CODE_\w+\s*=',                         # GOD_CODE_INFINITE, GOD_CODE_V3, etc.
+        r'GOD_CODE_BASE\s*=',
+
+        # ── Sacred constant attribute assignments (appear in 10+ __init__ methods) ──
+        r'self\.\w+\s*=\s*(GOD_CODE|PHI|VOID_CONSTANT|ZENITH_HZ|UUC|OMEGA)\b',
+
+        # ── Sacred constant dict / return values ──
+        r'["\']god_code["\']\s*:\s*GOD_CODE',
+        r'["\']god_code["\']\s*:\s*\d+\.\d+',        # "god_code": 527.518...
+
+        # ── Sacred formulas (GOD_CODE/PHI in arithmetic) ──
+        r'(GOD_CODE|VOID_CONSTANT)\s*[/*]\s*\d',     # GOD_CODE / 1000, VOID_CONSTANT * 3
+        r'\d\s*[/*]\s*(GOD_CODE|VOID_CONSTANT)',      # 1000.0 / GOD_CODE
+        r'int\(GOD_CODE\s*\*\s*PHI\)',                # int(GOD_CODE * PHI)
+        r'GOD_CODE\s*\*\s*PHI\s*[/)]',               # GOD_CODE * PHI / ...
+        r'magnitude\s*/\s*GOD_CODE',                  # canonical normalize formula
+
+        # ── Quantum circuit sacred operations ──
+        r'qc\.r[xyz]\(.*GOD_CODE',                    # qc.rz(GOD_CODE / 1000 * pi, ...)
+        r'qc\.r[xyz]\(.*PHI\s*\*',                    # qc.rz(PHI * pi / 4, ...)
+
+        # ── EVO pipeline markers (bracket AND comment forms) ──
+        r'\[EVO_\d+',                                 # [EVO_54.1 ...]
+        r'#\s*\d*\.?\s*EVO_\d+',                      # # EVO_55.0 — ..., # 4. EVO_54: ...
+        r'ZENITH_UPGRADE_ACTIVE',
+
+        # ── Layer architecture descriptions ──
+        r'Layer\s+\d+\s*\(?\s*Consciousness\)?.*GOD_CODE',
+        r'Layer\s+\d+.*GOD_CODE\s*=\s*527',
+        r'GOD_CODE\s*=\s*527\.518',                   # GOD_CODE = 527.518 in comments
+        r'GOD_CODE\s+resonance\s+anchor',
+
+        # ── Universal God Code equation lines ──
+        r'UNIVERSAL GOD CODE',
+        r'G\([Xa-d,]+\)\s*=\s*286',
+        r'Factor 13:.*286',
+        r'Conservation:.*527',
+
+        # ── Module-header version/pipeline strings ──
+        r'^\s*_?\w+_CORE_VERSION\s*=',
+        r'^\s*_?\w+_PIPELINE_EVO\s*=',
+        r'^\s*_?PIPELINE_VERSION\s*=',
+
+        # ── Comment-only divider lines (═══, ───, ━━━, ###) ──
+        r'^\s*#\s*[═─━#]{10,}\s*$',
+
+        # ── Shebang ──
+        r'^\s*#!/usr/bin/env python',
+
+        # ── Canonical void-math function signatures ──
+        r'^\s*def primal_calculus\(',
+        r'^\s*def resolve_non_dual_logic\(',
+
+        # ── Void-math / void-source docstring markers ──
+        r'\[VOID_MATH\]',
+        r'\[VOID_SOURCE_UPGRADE\]',
+
+        # ── Sacred constant computations ──
+        r'286\s*\*\*\s*\(1\.0\s*/\s*PHI\)',
+        r'1\.04\s*\+\s*PHI\s*/\s*1000',
+
+        # ── Common PAIRED comment lines ──
+        r'#\s*PAIRED:\s*l104_',
+
+        # ── INVARIANT markers in shims ──
+        r'#\s*INVARIANT:\s*527',
+
+        # ── Sacred lattice / resonance constants ──
+        r'(L104_CONST|OCTAVE_REF|FIBONACCI_7|HARMONIC_BASE)\s*=',
+        r'LATTICE_RATIO\s*=\s*286\s*/\s*416',
+
+        # ── Aliased sacred constants (solar_invariant = 527.518..., witness_resonance, etc.) ──
+        r'solar_invariant\s*=\s*527\.518',
+        r'witness_resonance\s*=\s*967\.5',
+
+        # ── Box-drawing / banner decoration lines ──
+        r'^\s*[║╔╗╚╝╠╣╬═]{3,}',
+        r'[═─]{20,}',
+
+        # ── GOD_CODE banner blocks in docstrings ──
+        r'GOD_CODE:\s*527\.518',
+
+        # ── Sovereign Field equation ──
+        r'F\(I\)\s*=\s*I\s*.\s*.\s*/\s*.\s*—\s*Sovereign',
+    ]
+
+    # ── Tier 2: MAJORITY-MATCH exclusions ──
+    # If ≥50% of content lines match these, the block is excluded.
+    MAJORITY_MATCH_PATTERNS = [
+        # Docstring boundaries
+        r'^\s*"""',
+        r"^\s*'''",
+        # Import lines (common across many files)
+        r'^\s*(from|import)\s+',
+        # Empty returns, pass, ellipsis
+        r'^\s*(return|pass|\.\.\.)\s*$',
+        # Logging / print boilerplate
+        r'^\s*(print|logging|logger)\s*\(',
+        # Singleton __new__ boilerplate (canonical pattern in 16+ classes)
+        r'cls\._instance\s*=\s*super\(\)\.__new__\(cls\)',
+        r'cls\._instance\._initialized\s*=\s*False',
+        r'cls\._instance\s*is\s*None',
+        r'self\._initialized',
+        # Pipeline cross-wire boilerplate
+        r'pipeline_connected\s*=\s*self\._asi_core_ref\s*is\s*not\s*None',
+        r'pipeline_mesh\s*=\s*"UNKNOWN"',
+        r'connect_to_pipeline',
+    ]
+
     def __init__(self, min_block: int = 4):
         self.min_block = min_block
+        self._any_re = [re.compile(p, re.IGNORECASE) for p in self.ANY_MATCH_PATTERNS]
+        self._majority_re = [re.compile(p, re.IGNORECASE) for p in self.MAJORITY_MATCH_PATTERNS]
+
+    def _is_excluded_block(self, lines: List[str]) -> bool:
+        """Check if a block should be excluded from clone detection."""
+        if not lines:
+            return True
+        content_lines = [l for l in lines if l.strip()]
+        if not content_lines:
+            return True
+
+        # Tier 1: if ANY line matches a sacred boilerplate pattern, exclude entire block
+        for line in content_lines:
+            if any(rx.search(line) for rx in self._any_re):
+                return True
+
+        # Tier 2: if ≥50% of lines are structural boilerplate, exclude
+        majority_matched = sum(
+            1 for line in content_lines
+            if any(rx.search(line) for rx in self._majority_re)
+        )
+        if majority_matched / len(content_lines) >= 0.50:
+            return True
+
+        return False
 
     def hash_blocks(self, filepath: str, block_size: int = 4) -> List[str]:
-        """Hash consecutive line blocks for clone detection."""
+        """Hash consecutive line blocks for clone detection, excluding sacred invariants."""
         try:
             lines = Path(filepath).read_text(encoding='utf-8', errors='ignore').splitlines()
         except Exception:
@@ -137,8 +278,10 @@ class DuplicationDetector:
 
         hashes = []
         for i in range(len(lines) - block_size + 1):
-            block = '\n'.join(line.strip() for line in lines[i:i+block_size] if line.strip())
-            if len(block) > 20:
+            raw_lines = lines[i:i+block_size]
+            stripped = [line.strip() for line in raw_lines if line.strip()]
+            block = '\n'.join(stripped)
+            if len(block) > 20 and not self._is_excluded_block(stripped):
                 hashes.append(hashlib.md5(block.encode()).hexdigest())
         return hashes
 
@@ -179,7 +322,8 @@ class AnomalyScorer:
             signals += 0.2  # Comment-heavy
         if total < 20:
             signals += 0.5  # Trivial file
-        if 'TODO' in content or 'FIXME' in content or 'HACK' in content:
+        # Only flag actual TODO/FIXME/HACK markers (with colon), not descriptive usage
+        if re.search(r'#\s*(TODO|FIXME):', content):
             signals += 0.1
 
         # Nesting depth check

@@ -19,6 +19,7 @@ UUC = 2402.792541
 # 6. Divergent Thinking (brainstorming algorithms)
 # ═══════════════════════════════════════════════════════════════════════════════
 
+import time
 import math
 import random
 import hashlib
@@ -27,6 +28,19 @@ from typing import Dict, List, Tuple, Optional, Set, Any, Callable
 from dataclasses import dataclass, field
 from collections import defaultdict
 from abc import ABC, abstractmethod
+import logging
+
+logger = logging.getLogger("L104_CREATIVITY_ENGINE")
+
+try:
+    from l104_asi.pipeline_telemetry import PipelineTelemetry
+except ImportError:
+    PipelineTelemetry = None
+
+try:
+    from l104_asi.pipeline_circuit_breaker import PipelineCircuitBreaker
+except ImportError:
+    PipelineCircuitBreaker = None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -42,7 +56,9 @@ from abc import ABC, abstractmethod
 
 PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
-CREATIVITY_VERSION = "1.0.0"
+ALPHA_FINE = 0.0072973525693
+LATTICE_THERMAL_FRICTION = -(ALPHA_FINE * PHI) / (2 * math.pi * 104)
+VERSION = "2.0.0"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 1. NOVELTY SEARCH - Behavioral Diversity Optimization
@@ -802,6 +818,34 @@ class L104CreativityCore:
         self.analogy = AnalogyEngine()
         self.divergent = DivergentThinking()
         self._setup_defaults()
+
+        # ── Pipeline telemetry & circuit breaker ──
+        self._telemetry = None
+        self._cb = None
+        try:
+            if PipelineTelemetry is not None:
+                self._telemetry = PipelineTelemetry("creativity_engine")
+        except Exception:
+            pass
+        try:
+            if PipelineCircuitBreaker is not None:
+                self._cb = PipelineCircuitBreaker("creativity_engine", failure_threshold=5, reset_timeout=30)
+        except Exception:
+            pass
+
+        logger.info("[CREATIVITY_ENGINE v%s] online — telemetry=%s, cb=%s", VERSION, self._telemetry is not None, self._cb is not None)
+
+    def get_status(self) -> Dict[str, Any]:
+        """Return engine status for pipeline introspection."""
+        return {
+            "module": "creativity_engine",
+            "version": VERSION,
+            "god_code": GOD_CODE,
+            "lattice_friction": LATTICE_THERMAL_FRICTION,
+            "telemetry_active": self._telemetry is not None,
+            "circuit_breaker_active": self._cb is not None,
+            "subsystems": ["concept_blender", "lateral_thinker", "novelty_explorer", "metaphor_engine", "idea_incubator"],
+        }
 
     def _setup_defaults(self):
         """Setup default concepts and domains."""

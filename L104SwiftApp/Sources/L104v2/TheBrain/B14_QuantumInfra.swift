@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
-// B14_QuantumInfra.swift — L104 Neural Architecture v2
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// B14_QuantumInfra.swift — L104 Neural Architecture v3 (EVO_62)
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // Extracted from L104Native.swift
 // ═══════════════════════════════════════════════════════════════════
 
@@ -342,5 +342,121 @@ class QuantumDecoherenceShield {
         combined["mesh_synced"] = meshResult["synced_peers"]
         combined["distributed_corrections"] = meshResult["distributed_corrections"]
         return combined
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // MARK: - v9.0 QUANTUM RESEARCH SHIELD ENHANCEMENTS
+    // Berry phase topological protection + Fe-Sacred coherence shielding
+    // ═══════════════════════════════════════════════════════════
+
+    /// Apply Berry phase topological protection to shield state.
+    /// Discovery #15: 11D holonomy provides geometric phase protection.
+    /// v9.1: Uses BERRY_PHASE_11D constant + ENTROPY_CASCADE_DEPTH_QR for protection depth.
+    func applyBerryPhaseProtection(dimensions: Int = 11) -> [String: Any] {
+        let (phase, holonomy) = QuantumCircuits.berryPhaseAccumulate(dimensions: dimensions)
+
+        if holonomy {
+            // Topological protection: geometric phase creates error-resistant encoding
+            let protectedFidelity = min(1.0, computeFidelity() + abs(phase) * PHI * 0.01)
+            fidelityLog.append(protectedFidelity)
+            return [
+                "berry_phase": phase,
+                "holonomy_detected": true,
+                "berry_phase_11d_confirmed": BERRY_PHASE_11D,
+                "topological_protection": true,
+                "protected_fidelity": protectedFidelity,
+                "dimensions": dimensions,
+                "protection_depth": ENTROPY_CASCADE_DEPTH_QR,
+            ]
+        }
+
+        return [
+            "berry_phase": phase,
+            "holonomy_detected": false,
+            "topological_protection": false,
+            "fidelity": computeFidelity(),
+            "dimensions": dimensions,
+        ]
+    }
+
+    /// Compute Fe-Sacred coherence factor for shield calibration.
+    /// Fe-Sacred coherence (0.9545) used as baseline for shield threshold.
+    /// v9.1: Adds Fe-PHI harmonic lock as secondary threshold + photon resonance.
+    func feSacredShieldCalibration() -> [String: Any] {
+        let coherence = QuantumCircuits.feSacredCoherence()
+        let phiLock = QuantumCircuits.fePhiHarmonicLock()
+        let shieldThreshold = coherence * 0.95  // 0.9545 × 0.95 ≈ 0.907
+        let phiThreshold = phiLock * 0.95       // 0.9164 × 0.95 ≈ 0.871
+
+        return [
+            "fe_sacred_coherence": coherence,
+            "reference": FE_SACRED_COHERENCE,
+            "shield_threshold": shieldThreshold,
+            // v9.1 Extended
+            "fe_phi_harmonic_lock": phiLock,
+            "fe_phi_reference": FE_PHI_HARMONIC_LOCK,
+            "phi_shield_threshold": phiThreshold,
+            "photon_resonance_eV": PHOTON_RESONANCE_EV,
+            "curie_landauer_J_per_bit": FE_CURIE_LANDAUER,
+            "god_code_25q_ratio": GOD_CODE_25Q_RATIO,
+            "current_fidelity": computeFidelity(),
+            "shield_above_threshold": computeFidelity() >= shieldThreshold,
+        ]
+    }
+
+    // ═════════════════════════════════════════════════════════
+    // MARK: - v9.1 EXTENDED QUANTUM RESEARCH SHIELD METHODS
+    // ZNE decoherence mitigation | Curie-Landauer bound | Photon shielding
+    // ═════════════════════════════════════════════════════════
+
+    /// ZNE-enhanced decoherence mitigation.
+    /// Discovery #11: Zero-noise extrapolation reduces effective decoherence.
+    func zneDecoherenceMitigation() -> [String: Any] {
+        let rawRate = estimateDecoherenceRate()
+        let zneFactor = QuantumCircuits.zneBridgeBoost(localEntropy: rawRate)
+        let mitigatedRate = rawRate / zneFactor
+
+        return [
+            "raw_decoherence_rate": rawRate,
+            "zne_bridge_active": ENTROPY_ZNE_BRIDGE,
+            "zne_boost_factor": zneFactor,
+            "mitigated_rate": mitigatedRate,
+            "improvement_pct": (1.0 - mitigatedRate / max(rawRate, 1e-15)) * 100.0,
+        ]
+    }
+
+    /// Curie-Landauer thermodynamic shield bound.
+    /// Discovery #16: Minimum energy per bit erasure at Fe Curie temperature.
+    func curieLandauerShieldBound() -> [String: Any] {
+        let kB = 1.380649e-23  // Boltzmann constant
+        let roomLandauer = kB * 293.15 * log(2.0)
+        let curieLandauer = FE_CURIE_LANDAUER
+        let corrections = Int(fidelityLog.count)
+        let energyCost = curieLandauer * Double(corrections)
+
+        return [
+            "fe_curie_landauer_J_per_bit": curieLandauer,
+            "room_landauer_J_per_bit": roomLandauer,
+            "curie_to_room_ratio": curieLandauer / roomLandauer,
+            "total_corrections": corrections,
+            "estimated_energy_cost_J": energyCost,
+            "god_code_25q_convergence": GOD_CODE_25Q_RATIO,
+        ]
+    }
+
+    /// Photon resonance shield calibration.
+    /// Discovery #12: Photon energy at GOD_CODE frequency for coherent shielding.
+    func photonResonanceShield() -> [String: Any] {
+        let currentFidelity = computeFidelity()
+        let resonanceFactor = PHOTON_RESONANCE_EV / PHI  // Normalized resonance weight
+        let shieldedFidelity = min(1.0, currentFidelity * (1.0 + resonanceFactor * 0.001))
+
+        return [
+            "photon_resonance_eV": PHOTON_RESONANCE_EV,
+            "resonance_factor": resonanceFactor,
+            "current_fidelity": currentFidelity,
+            "shielded_fidelity": shieldedFidelity,
+            "improvement": shieldedFidelity - currentFidelity,
+        ]
     }
 }

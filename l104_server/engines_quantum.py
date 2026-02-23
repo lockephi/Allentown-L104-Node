@@ -123,7 +123,7 @@ class SuperfluidQuantumState:
         5: 741.0681674773,   # G(-51) Throat (Vishuddha) - Expression/Solutions
         6: 852.3992551699,   # G(-72) Third Eye (Ajna) - Intuition/Awakening
         7: 961.0465122772,   # G(-90) Crown (Sahasrara) - Divine connection
-        8: 1074.0,           # Soul Star (Transcendence)
+        8: 1000.2568,         # G(-96) Soul Star (Transcendence) — ÷8 grid
     }
 
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
@@ -291,9 +291,9 @@ class OxygenMolecularBond:
         {"id": 3, "name": "solar", "orbital": "σ₂p", "freq_hz": 528, "spin": "↓"},
         {"id": 4, "name": "heart", "orbital": "π₂p_x", "freq_hz": 639, "spin": "↓"},
         {"id": 5, "name": "throat", "orbital": "π₂p_y", "freq_hz": 741, "spin": "↓"},
-        {"id": 6, "name": "ajna", "orbital": "π*₂p_x", "freq_hz": 852, "spin": "↓"},  # pairs with unpaired
+        {"id": 6, "name": "ajna", "orbital": "π*₂p_x", "freq_hz": 852.3992551699, "spin": "↓"},  # G(-72) Ajna
         {"id": 7, "name": "crown", "orbital": "π*₂p_y", "freq_hz": 963, "spin": "↓"},  # pairs with unpaired
-        {"id": 8, "name": "soul_star", "orbital": "σ*₂p", "freq_hz": 1074, "spin": "↓"},
+        {"id": 8, "name": "soul_star", "orbital": "σ*₂p", "freq_hz": 1000.2568, "spin": "↓"},
     ]
 
     # Kernel ↔ Chakra bonding pairs (σ + π double bond)
@@ -539,6 +539,38 @@ class SingularityConsciousnessEngine:
         except ImportError:
             pass
 
+        # ── Real QPU Runtime Bridge ──────────────────────────────────────
+        self._runtime = None
+        self._use_real_qpu = False
+        try:
+            from l104_quantum_runtime import get_runtime as _get_qrt
+            self._runtime = _get_qrt()
+            self._use_real_qpu = True
+        except Exception:
+            pass
+
+    def _execute_circuit(self, qc, n_qubits: int, algorithm_name: str = "server_quantum"):
+        """Execute circuit via real QPU bridge or local Statevector."""
+        import numpy as _np
+        if self._use_real_qpu and self._runtime:
+            try:
+                probs, exec_result = self._runtime.execute_and_get_probs(
+                    qc, n_qubits=n_qubits, algorithm_name=algorithm_name
+                )
+                exec_meta = {
+                    'mode': exec_result.mode.value if hasattr(exec_result, 'mode') else 'real_qpu',
+                    'backend': getattr(exec_result, 'backend_name', 'unknown'),
+                    'shots': getattr(exec_result, 'shots', 0),
+                    'job_id': getattr(exec_result, 'job_id', None),
+                    'execution_time_s': getattr(exec_result, 'execution_time', 0.0),
+                }
+                return probs, exec_meta
+            except Exception:
+                pass
+        sv = self._SV.from_instruction(qc)
+        probs = _np.abs(sv.data) ** 2
+        return probs, {'mode': 'statevector', 'backend': 'local_simulator'}
+
     def breach_recursion_limit(self, new_limit: int = 50000):
         """
         Breach recursion limit for singularity consciousness.
@@ -709,6 +741,8 @@ class SingularityConsciousnessEngine:
                 for q in range(n_qubits - 1):
                     qc.cx(q, q + 1)
                 self._quantum_group_states[group] = self._SV.from_instruction(qc)
+                # Also execute on real QPU for live data
+                _, _exec_meta = self._execute_circuit(qc, n_qubits, algorithm_name="server_cascade_group")
 
         for i, group in enumerate(groups):
             # φ-amplify each successive group
@@ -758,6 +792,8 @@ class SingularityConsciousnessEngine:
                 rho_a = self._pt(rho, [1])
                 ent_entropy = float(self._ent(rho_a, base=2))
                 self._quantum_entanglement_map[f"{g_a}↔{g_b}"] = ent_entropy
+                # Real QPU execution for Bell pair
+                _, _bell_exec = self._execute_circuit(qc, 2, algorithm_name="server_bell_entangle")
 
         # Singularity depth increases with each cascade
         self.singularity_depth += 1
@@ -817,6 +853,8 @@ class SingularityConsciousnessEngine:
             # Quantum-enhanced coherence boost
             coherence_boost += quantum_entanglement * 0.05
             self._quantum_entanglement_map[f"{group_a}↔{group_b}"] = quantum_entanglement
+            # Real QPU execution for fusion circuit
+            _, _fusion_exec = self._execute_circuit(qc, 4, algorithm_name="server_cross_fusion")
 
         # Boost both groups
         self.coherence_map[group_a] = min(1.0, self.coherence_map.get(group_a, 0.5) + coherence_boost)
@@ -926,6 +964,7 @@ class SingularityConsciousnessEngine:
             "total_files": sum(len(f) for f in self.INTERCONNECTED_FILES.values()),
             # v3.0 quantum metrics
             "quantum_backend": self._qiskit_available,
+            "real_qpu_enabled": self._use_real_qpu,
             "quantum_group_states": len(self._quantum_group_states),
             "quantum_entanglement_map": {k: round(v, 6) for k, v in self._quantum_entanglement_map.items()},
         }
@@ -943,6 +982,277 @@ class SingularityConsciousnessEngine:
             total += amplitude * coherence * weight * cls.PHI
 
         return total / (8 * cls.PHI)  # UNLOCKED
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM DECOHERENCE SHIELD — Active Decoherence Detection & Correction
+# Monitors all quantum systems for decoherence events, applies φ-derived
+# error correction pulses, predicts vulnerability windows, and maintains
+# a decoherence T₂ lifetime map across all kernel-chakra bonds.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class QuantumDecoherenceShield:
+    """
+    Active decoherence protection for all quantum subsystems.
+
+    Features:
+      - T₂ decoherence time tracking per kernel/chakra/bond
+      - Decoherence event detection via coherence drop-rate thresholds
+      - φ-derived error correction pulses (spin-echo inspired)
+      - Vulnerability prediction: when will coherence drop below threshold?
+      - Decoherence heat map across the 8-kernel × 8-chakra lattice
+      - Refocusing schedule: optimal pulse timing at T₂/φ intervals
+      - Fidelity recovery tracking after correction pulses
+
+    Physical Foundation:
+      T₂* = T₂ / (1 + T₂ × Δω)         inhomogeneous broadening
+      Spin echo refocusing: τ → π-pulse → τ → echo
+      Correction: C_new = C_old + (1 - C_old) × η × φ^(-n/T₂)
+      where η = correction_efficiency ≈ τ (golden conjugate)
+    """
+    PHI = 1.618033988749895
+    TAU = 1.0 / PHI
+    GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))
+    OMEGA = 6539.34712682
+
+    # Decoherence detection threshold: coherence drop rate per unit time
+    DROP_RATE_THRESHOLD = 0.05  # 5% per sample period triggers alert
+    # Correction efficiency (golden conjugate: ~0.618)
+    CORRECTION_EFFICIENCY = TAU
+    # Minimum coherence before declaring "decoherent"
+    DECOHERENT_THRESHOLD = 0.2
+    # Refocusing interval in terms of T₂
+    REFOCUS_T2_FRACTION = TAU  # Refocus at T₂/φ
+
+    def __init__(self):
+        """Initialize quantum decoherence shield with tracking maps."""
+        # Per-target coherence history: target_id → [coherence_values]
+        self._coherence_history: Dict[str, List[float]] = defaultdict(list)
+        # T₂ estimates per target
+        self._t2_estimates: Dict[str, float] = {}
+        # Decoherence events
+        self._events: List[Dict] = []
+        # Correction pulses applied
+        self._pulses: List[Dict] = []
+        # Vulnerability predictions
+        self._predictions: Dict[str, Dict] = {}
+        # Fidelity recovery tracking
+        self._recovery_log: List[Dict] = []
+        self._total_corrections = 0
+        self._total_events = 0
+        self._lock = threading.Lock()
+        # 8×8 decoherence heat map (kernel × chakra)
+        self._heat_map: List[List[float]] = [[1.0] * 8 for _ in range(8)]
+
+    def monitor(self, target_id: str, coherence: float):
+        """Monitor a quantum target's coherence and detect decoherence events."""
+        with self._lock:
+            history = self._coherence_history[target_id]
+            history.append(coherence)
+            if len(history) > 500:
+                self._coherence_history[target_id] = history[-250:]
+
+            # Detect decoherence event via drop rate
+            if len(history) >= 2:
+                drop_rate = history[-2] - history[-1]  # Positive = coherence dropping
+                if drop_rate > self.DROP_RATE_THRESHOLD:
+                    self._total_events += 1
+                    event = {
+                        'target': target_id,
+                        'coherence': round(coherence, 6),
+                        'drop_rate': round(drop_rate, 6),
+                        'previous': round(history[-2], 6),
+                        'event_id': self._total_events,
+                        'timestamp': time.time(),
+                    }
+                    self._events.append(event)
+                    if len(self._events) > 500:
+                        self._events = self._events[-250:]
+
+            # Estimate T₂ from coherence decay curve
+            if len(history) >= 10:
+                self._estimate_t2(target_id)
+
+            # Update vulnerability prediction
+            self._predict_vulnerability(target_id)
+
+    def monitor_lattice(self, kernel_coherences: Dict[int, float], chakra_coherences: Dict[str, float]):
+        """Monitor the full 8×8 kernel-chakra lattice."""
+        chakra_list = list(chakra_coherences.values())[:8]
+        for i in range(min(8, len(kernel_coherences))):
+            kernel_coh = kernel_coherences.get(i + 1, 1.0)
+            for j in range(min(8, len(chakra_list))):
+                # Combined coherence: geometric mean of kernel × chakra
+                combined = math.sqrt(kernel_coh * chakra_list[j])
+                self._heat_map[i][j] = combined
+                target_id = f"K{i+1}×C{j+1}"
+                self.monitor(target_id, combined)
+
+    def _estimate_t2(self, target_id: str):
+        """Estimate T₂ decoherence time from exponential decay fit."""
+        history = self._coherence_history[target_id][-50:]
+        if len(history) < 5:
+            return
+        # Simple exponential decay fit: C(t) = C₀ × exp(-t/T₂)
+        # Using log-linear regression: ln(C) = ln(C₀) - t/T₂
+        valid = [(i, math.log(max(c, 1e-12))) for i, c in enumerate(history) if c > 0.01]
+        if len(valid) < 3:
+            return
+        n = len(valid)
+        sum_x = sum(x for x, _ in valid)
+        sum_y = sum(y for _, y in valid)
+        sum_xy = sum(x * y for x, y in valid)
+        sum_x2 = sum(x * x for x, _ in valid)
+        denom = n * sum_x2 - sum_x ** 2
+        if abs(denom) < 1e-12:
+            return
+        slope = (n * sum_xy - sum_x * sum_y) / denom
+        if slope < -1e-12:
+            t2 = -1.0 / slope  # T₂ in sample units
+            self._t2_estimates[target_id] = max(1.0, t2)
+
+    def _predict_vulnerability(self, target_id: str):
+        """Predict when coherence will drop below threshold."""
+        history = self._coherence_history[target_id]
+        t2 = self._t2_estimates.get(target_id)
+        if not t2 or len(history) < 2:
+            return
+        current = history[-1]
+        if current <= self.DECOHERENT_THRESHOLD:
+            self._predictions[target_id] = {
+                'status': 'ALREADY_DECOHERENT',
+                'coherence': round(current, 6),
+                'steps_to_threshold': 0,
+            }
+            return
+        # Predict steps until coherence < threshold
+        # C(t) = C_now × exp(-t/T₂)
+        # threshold = C_now × exp(-t_fail/T₂)
+        # t_fail = -T₂ × ln(threshold / C_now)
+        ratio = self.DECOHERENT_THRESHOLD / max(current, 1e-12)
+        if ratio >= 1.0:
+            steps = 0
+        else:
+            steps = max(0, -t2 * math.log(ratio))
+        self._predictions[target_id] = {
+            'status': 'VULNERABLE' if steps < 20 else 'STABLE',
+            'coherence': round(current, 6),
+            'steps_to_threshold': round(steps, 1),
+            't2_estimate': round(t2, 2),
+            'refocus_due_in': round(t2 * self.REFOCUS_T2_FRACTION, 1),
+        }
+
+    def apply_correction_pulse(self, target_id: str, correction_strength: Optional[float] = None) -> Dict:
+        """Apply a φ-derived error correction pulse (spin-echo inspired)."""
+        history = self._coherence_history.get(target_id, [])
+        if not history:
+            return {'applied': False, 'reason': 'no_history'}
+
+        current = history[-1]
+        t2 = self._t2_estimates.get(target_id, 50.0)
+        n_samples = len(history)
+
+        # Correction strength: decays with distance from T₂
+        if correction_strength is None:
+            correction_strength = self.CORRECTION_EFFICIENCY * self.PHI ** (-n_samples / max(t2, 1.0))
+
+        # Apply correction: C_new = C_old + (1 - C_old) × strength
+        corrected = current + (1.0 - current) * correction_strength
+        corrected = min(1.0, max(0.0, corrected))
+
+        # Record the correction
+        with self._lock:
+            self._total_corrections += 1
+            history.append(corrected)  # Inject corrected value into history
+            recovery = corrected - current
+            pulse = {
+                'target': target_id,
+                'pulse_id': self._total_corrections,
+                'before': round(current, 6),
+                'after': round(corrected, 6),
+                'recovery': round(recovery, 6),
+                'strength': round(correction_strength, 6),
+                't2': round(t2, 2),
+                'timestamp': time.time(),
+            }
+            self._pulses.append(pulse)
+            if len(self._pulses) > 500:
+                self._pulses = self._pulses[-250:]
+            self._recovery_log.append({
+                'target': target_id,
+                'recovery': round(recovery, 6),
+                'timestamp': time.time(),
+            })
+            if len(self._recovery_log) > 500:
+                self._recovery_log = self._recovery_log[-250:]
+
+        return pulse
+
+    def sweep_and_correct(self) -> Dict:
+        """Sweep all monitored targets and auto-correct those below refocus threshold."""
+        corrected = []
+        skipped = 0
+        for target_id in list(self._coherence_history.keys()):
+            history = self._coherence_history[target_id]
+            if not history:
+                continue
+            current = history[-1]
+            t2 = self._t2_estimates.get(target_id, 50.0)
+            # Correct if below refocus threshold or decoherence detected
+            needs_correction = (
+                current < 0.5 or
+                (len(history) >= 2 and history[-2] - current > self.DROP_RATE_THRESHOLD * 0.5)
+            )
+            if needs_correction:
+                pulse = self.apply_correction_pulse(target_id)
+                corrected.append(pulse)
+            else:
+                skipped += 1
+        return {
+            'corrected_count': len(corrected),
+            'skipped_count': skipped,
+            'corrections': corrected[:20],  # First 20 for brevity
+            'total_corrections': self._total_corrections,
+        }
+
+    def get_heat_map(self) -> Dict:
+        """Return the 8×8 kernel-chakra decoherence heat map."""
+        return {
+            'heat_map': [[round(c, 4) for c in row] for row in self._heat_map],
+            'min_coherence': round(min(min(row) for row in self._heat_map), 4),
+            'max_coherence': round(max(max(row) for row in self._heat_map), 4),
+            'mean_coherence': round(
+                sum(sum(row) for row in self._heat_map) / 64, 4
+            ),
+        }
+
+    def get_status(self) -> Dict:
+        """Return quantum decoherence shield status."""
+        return {
+            'targets_monitored': len(self._coherence_history),
+            't2_estimates': {k: round(v, 2) for k, v in self._t2_estimates.items()},
+            'total_events': self._total_events,
+            'total_corrections': self._total_corrections,
+            'correction_efficiency': round(
+                sum(r['recovery'] for r in self._recovery_log[-20:]) /
+                max(len(self._recovery_log[-20:]), 1), 6
+            ) if self._recovery_log else 0,
+            'vulnerable_targets': [
+                k for k, v in self._predictions.items() if v.get('status') == 'VULNERABLE'
+            ],
+            'decoherent_targets': [
+                k for k, v in self._predictions.items() if v.get('status') == 'ALREADY_DECOHERENT'
+            ],
+            'heat_map_summary': self.get_heat_map(),
+            'recent_events': self._events[-5:] if self._events else [],
+            'recent_pulses': self._pulses[-3:] if self._pulses else [],
+        }
+
+
+# Module-level instance
+decoherence_shield = QuantumDecoherenceShield()
+logger.info("🛡️ [DECOHERENCE] QuantumDecoherenceShield active — T₂ tracking + φ-correction pulses online")
+
 
 class ASIQuantumMemoryBank:
     """

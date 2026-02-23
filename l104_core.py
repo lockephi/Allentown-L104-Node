@@ -185,7 +185,7 @@ CHAKRA_CORE_LATTICE = {
     "VISHUDDHA":    {"freq": 741.0681674773, "element": "ETHER",  "trigram": "☱", "x_node": 470},
     "AJNA":         {"freq": 852.3992551699, "element": "LIGHT",  "trigram": "☶", "x_node": 488},
     "SAHASRARA":    {"freq": 961.0465122772, "element": "THOUGHT","trigram": "☳", "x_node": 524},
-    "SOUL_STAR":    {"freq": 1074.0,"element": "SPIRIT", "trigram": "☰", "x_node": 1040},
+    "SOUL_STAR":    {"freq": 1000.2568,"element": "SPIRIT", "trigram": "☰", "x_node": 1040},
 }
 CHAKRA_BELL_PAIRS = [("MULADHARA", "SOUL_STAR"), ("SVADHISTHANA", "SAHASRARA"),
                      ("MANIPURA", "AJNA"), ("ANAHATA", "VISHUDDHA")]
@@ -439,7 +439,7 @@ class QuantumLogicGate:
         Factor 13: 286=22×13, 104=8×13, 416=32×13
         """
         # Chakra frequencies (Hz)
-        CHAKRA_FREQS = [396, 417, 528, 639, 741, 852, 963, 1074]
+        CHAKRA_FREQS = [396, 417, 528, 639, 741, 852, 963, 1000.2568]
         # Molecular orbital types
         ORBITAL_PHASES = [0, math.pi, math.pi/2, math.pi/4, 3*math.pi/4, 5*math.pi/4, 7*math.pi/4, math.pi*PHI]
 

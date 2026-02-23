@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-L104 GROUNDING FEEDBACK ENGINE v3.0 — Response Quality & Truth Anchoring
+L104 GROUNDING FEEDBACK ENGINE v4.0.0 — Response Quality & Truth Anchoring
 =========================================================================
 Validates pipeline outputs against truth invariants, detects hallucination
 drift, scores confidence, extracts facts, checks consistency, scores
@@ -27,10 +27,23 @@ import time
 import json
 import re
 import hashlib
+import logging
 from pathlib import Path
 from datetime import datetime
 from collections import deque, defaultdict, Counter
 from typing import Dict, List, Any, Optional, Tuple, Set
+
+logger = logging.getLogger("L104_GROUNDING")
+
+try:
+    from l104_asi.pipeline_telemetry import PipelineTelemetry
+except ImportError:
+    PipelineTelemetry = None
+
+try:
+    from l104_asi.pipeline_circuit_breaker import PipelineCircuitBreaker
+except ImportError:
+    PipelineCircuitBreaker = None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -47,6 +60,9 @@ ALPHA_FINE = 1.0 / 137.035999084
 PLANCK_SCALE = 1.616255e-35
 BOLTZMANN_K = 1.380649e-23
 GROVER_AMPLIFICATION = PHI ** 3
+LATTICE_THERMAL_FRICTION = -(ALPHA_FINE * PHI) / (2 * math.pi * 104)
+
+VERSION = "4.0.0"
 
 # Grounding thresholds
 MIN_CONFIDENCE_SCORE = 0.3
@@ -658,7 +674,7 @@ class GroundingFeedbackEngine:
     Wired into ASI pipeline via connect_to_pipeline().
     """
 
-    VERSION = "3.0.0"
+    VERSION = "4.0.0"
 
     def __init__(self):
         self.truth_anchor = TruthAnchorEngine()
@@ -677,6 +693,24 @@ class GroundingFeedbackEngine:
         self._total_groundings = 0
         self.boot_time = time.time()
 
+        # v4.0.0: Pipeline telemetry & circuit breaker
+        self._telemetry = None
+        self._cb = None
+        self._total_elapsed_ms = 0.0
+        try:
+            if PipelineTelemetry is not None:
+                self._telemetry = PipelineTelemetry("grounding_feedback")
+        except Exception:
+            pass
+        try:
+            if PipelineCircuitBreaker is not None:
+                self._cb = PipelineCircuitBreaker("grounding_feedback", failure_threshold=5, reset_timeout=30)
+        except Exception:
+            pass
+
+        logger.info("[GROUNDING v4.0.0] Engine initialized — %d truth invariants, telemetry=%s, cb=%s",
+                     len(TRUTH_INVARIANTS), self._telemetry is not None, self._cb is not None)
+
     def connect_to_pipeline(self):
         """Called by ASI Core when connecting the pipeline."""
         self._pipeline_connected = True
@@ -689,6 +723,15 @@ class GroundingFeedbackEngine:
         """
         t0 = time.time()
         self._total_groundings += 1
+
+        # v4.0.0: Circuit breaker check
+        if self._cb:
+            try:
+                if not self._cb.allow_request():
+                    logger.warning("[GROUNDING] Circuit breaker OPEN — returning neutral result")
+                    return {'grounded': True, 'confidence': 0.5, 'circuit_breaker': 'open'}
+            except Exception:
+                pass
 
         # 1. Truth anchor validation
         truth_result = self.truth_anchor.validate(content, context)
@@ -747,6 +790,26 @@ class GroundingFeedbackEngine:
 
         # 9. Persist
         self.persistence.append(result)
+
+        # v4.0.0: Telemetry recording
+        self._total_elapsed_ms += elapsed_ms
+        if self._telemetry:
+            try:
+                self._telemetry.record("ground", elapsed_ms, {
+                    "grounded": result['grounded'], "confidence": result['confidence'],
+                    "violations": truth_result.get('violation_count', 0),
+                    "hallucination_triggers": len(hallucination_result.get('triggers', [])),
+                    "facts_extracted": len(facts),
+                })
+            except Exception:
+                pass
+        if self._cb:
+            try:
+                self._cb.record_success()
+            except Exception:
+                pass
+        logger.debug("[GROUNDING] ground() completed in %.1fms — grounded=%s confidence=%.4f",
+                      elapsed_ms, result['grounded'], result['confidence'])
 
         return result
 
@@ -827,7 +890,7 @@ def resolve_non_dual_logic(vector):
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("  L104 GROUNDING FEEDBACK ENGINE v3.0")
+    print("  L104 GROUNDING FEEDBACK ENGINE v4.0.0")
     print("=" * 60)
 
     # Test grounding on sample outputs

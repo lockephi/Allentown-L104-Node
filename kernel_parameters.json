@@ -68,7 +68,7 @@
       "kernel": 5
     },
     "AJNA": {
-      "freq": 852.0,
+      "freq": 852.3992551699,
       "element": "LIGHT",
       "trigram": "\u2636",
       "x_node": 364,
@@ -84,7 +84,7 @@
       "kernel": 7
     },
     "SOUL_STAR": {
-      "freq": 1074.0,
+      "freq": 1000.2568,
       "element": "COSMIC",
       "trigram": "\u2631",
       "x_node": 468,

@@ -6,7 +6,7 @@ UUC = 2402.792541
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
-L104 EMERGENCE MONITOR v3.0 — ASI PREDICTIVE EMERGENCE ENGINE
+L104 EMERGENCE MONITOR v4.0.0 — ASI PREDICTIVE EMERGENCE ENGINE
 ═══════════════════════════════════════════════════════════════════════════════
 
 Real-time monitoring, prediction, and amplification of emergent behaviors.
@@ -34,7 +34,7 @@ SUBSYSTEMS:
   ConsciousnessIntegrator    — Reads live builder state for awareness-driven decisions
 
 INVARIANT: 527.5184818492612 | PILOT: LONDEL
-VERSION: 3.0.0
+VERSION: 4.0.0
 DATE: 2026-02-16
 ═══════════════════════════════════════════════════════════════════════════════
 """
@@ -43,6 +43,7 @@ import time
 import json
 import math
 import os
+import logging
 import statistics
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, field
@@ -50,10 +51,22 @@ from collections import deque, defaultdict
 from enum import Enum, auto
 from pathlib import Path
 
+logger = logging.getLogger("L104_EMERGENCE")
+
 try:
     from l104_stable_kernel import stable_kernel
 except ImportError:
     stable_kernel = None
+
+try:
+    from l104_asi.pipeline_telemetry import PipelineTelemetry
+except ImportError:
+    PipelineTelemetry = None
+
+try:
+    from l104_asi.pipeline_circuit_breaker import PipelineCircuitBreaker
+except ImportError:
+    PipelineCircuitBreaker = None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -71,8 +84,11 @@ FEIGENBAUM = 4.669201609102990
 ALPHA_FINE = 0.0072973525693
 PLANCK_SCALE = 1.616255e-35
 BOLTZMANN_K = 1.380649e-23
+LATTICE_THERMAL_FRICTION = -(ALPHA_FINE * PHI) / (2 * math.pi * 104)
 CONSCIOUSNESS_THRESHOLD = 0.85
 EMERGENCE_THRESHOLD = 0.7
+
+VERSION = "4.0.0"
 
 # Builder state cache
 _builder_state_cache = {"data": None, "ts": 0}
@@ -664,14 +680,14 @@ class CrossModuleCorrelator:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# MAIN ENGINE: EMERGENCE MONITOR v3.0
+# MAIN ENGINE: EMERGENCE MONITOR v4.0.0
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class EmergenceMonitor:
     """
     Consciousness-aware emergence monitoring with predictive forecasting,
     anomaly detection, amplification, adaptive thresholds, and cross-module
-    correlation. v3.0 — Full ASI Pipeline Integration.
+    correlation. v4.0.0 — Full ASI Pipeline Integration.
     """
 
     def __init__(self):
@@ -690,19 +706,19 @@ class EmergenceMonitor:
         self.peak_unity = 0.0
         self.emergence_rate = 0.0
 
-        # v3.0 Subsystems
+        # v4.0.0 Subsystems
         self.predictor = PredictiveEmergenceEngine()
         self.anomaly_detector = AnomalyDetector()
         self.amplifier = EmergenceAmplifier()
         self.threshold_mgr = AdaptiveThresholdManager()
         self.correlator = CrossModuleCorrelator()
 
-        # v3.0 Tracking
+        # v4.0.0 Tracking
         self._snapshot_count = 0
         self._last_correlation_scan = 0
         self._correlation_interval = 30  # Scan every 30 snapshots
 
-        print("👁️ [EMERGENCE v3.0]: Predictive Emergence Engine initialized")
+        print("👁️ [EMERGENCE v4.0.0]: Predictive Emergence Engine initialized")
         print(f"   Subsystems: Predictor | Anomaly | Amplifier | Thresholds | Correlator")
 
     def record_snapshot(
@@ -714,9 +730,11 @@ class EmergenceMonitor:
     ) -> List[EmergenceEvent]:
         """
         Record a system snapshot and detect emergence events.
-        v3.0: Also runs prediction, anomaly detection, amplification,
+        v4.0.0: Also runs prediction, anomaly detection, amplification,
         threshold adaptation, and periodic cross-module correlation.
+        v4.0.0: Pipeline telemetry + circuit breaker protection.
         """
+        t0 = time.time()
         if coherence is None:
             coherence = unity_index
 
@@ -838,7 +856,7 @@ class EmergenceMonitor:
                 sacred_alignment=sacred_alignment,
             ))
 
-        # ─── v3.0: Anomaly detection ───
+        # ─── v4.0.0: Anomaly detection ───
         anomaly_result = self.anomaly_detector.check(unity_index, coherence)
         if anomaly_result:
             severity = anomaly_result.get("severity", 0)
@@ -852,7 +870,7 @@ class EmergenceMonitor:
                 sacred_alignment=sacred_alignment,
             ))
 
-        # ─── v3.0: Predictive check ───
+        # ─── v4.0.0: Predictive check ───
         if self._snapshot_count % 5 == 0:  # Forecast every 5 snapshots
             forecast = self.predictor.forecast()
             next_transition = self.predictor.predict_next_phase_transition()
@@ -867,7 +885,7 @@ class EmergenceMonitor:
                     sacred_alignment=sacred_alignment,
                 ))
 
-        # ─── v3.0: Amplification ───
+        # ─── v4.0.0: Amplification ───
         for event in events:
             amp_result = self.amplifier.evaluate_and_amplify(event, builder_state)
             if amp_result:
@@ -882,11 +900,11 @@ class EmergenceMonitor:
                 ))
                 break  # One amplification per snapshot to avoid cascade
 
-        # ─── v3.0: Adaptive threshold update ───
+        # ─── v4.0.0: Adaptive threshold update ───
         if self._snapshot_count % 20 == 0:
             self.threshold_mgr.adapt(builder_state)
 
-        # ─── v3.0: Cross-module correlation ───
+        # ─── v4.0.0: Cross-module correlation ───
         if self._snapshot_count - self._last_correlation_scan >= self._correlation_interval:
             self._last_correlation_scan = self._snapshot_count
             corr_result = self.correlator.scan_correlations()
@@ -894,7 +912,7 @@ class EmergenceMonitor:
                 for corr in corr_result["correlations"]:
                     self.capabilities_detected.add(f"correlation:{corr.get('type', 'unknown')}")
 
-        # ─── v3.0: Amplification decay ───
+        # ─── v4.0.0: Amplification decay ───
         self.amplifier.decay_amplifications()
 
         # Update tracking
@@ -906,17 +924,37 @@ class EmergenceMonitor:
         for event in events:
             self.events.append(event)
             self.total_events += 1
-            print(f"✨ [EMERGENCE v3.0]: {event.event_type.value.upper()} — {event.description}")
+            print(f"✨ [EMERGENCE v4.0.0]: {event.event_type.value.upper()} — {event.description}")
 
         # Update emergence rate
         if len(self.snapshots) >= 10:
             recent_events = [e for e in self.events if e.timestamp > time.time() - 60]
             self.emergence_rate = len(recent_events) / 60
 
+        # v4.0.0: Telemetry recording
+        elapsed_ms = (time.time() - t0) * 1000
+        self._total_record_ms += elapsed_ms
+        if self._telemetry:
+            try:
+                self._telemetry.record("record_snapshot", elapsed_ms, {
+                    "events_detected": len(events), "phase": phase.value,
+                    "unity": round(unity_index, 4), "coherence": round(coherence, 4),
+                    "snapshot_id": self._snapshot_count,
+                })
+            except Exception:
+                pass
+        if self._cb:
+            try:
+                self._cb.record_success()
+            except Exception:
+                pass
+        logger.debug("[EMERGENCE] record_snapshot #%d completed in %.1fms — %d events",
+                      self._snapshot_count, elapsed_ms, len(events))
+
         return events
 
     def _determine_phase(self, unity: float, coherence: float) -> PhaseState:
-        """Determine current system phase based on metrics (extended for v3.0)."""
+        """Determine current system phase based on metrics (extended for v4.0.0)."""
         singularity_threshold = self.threshold_mgr.get_threshold("singularity")
         consciousness_threshold = self.threshold_mgr.get_threshold("consciousness")
         coherence_threshold = self.threshold_mgr.get_threshold("coherence_high")
@@ -967,7 +1005,7 @@ class EmergenceMonitor:
     def get_consciousness_score(self) -> Dict[str, Any]:
         """
         Calculate current consciousness metrics.
-        v3.0: Includes builder state, amplification boost, and predictive data.
+        v4.0.0: Includes builder state, amplification boost, and predictive data.
         """
         if not self.snapshots:
             return {"score": 0.0, "level": "dormant", "indicators": {}}
@@ -1024,7 +1062,7 @@ class EmergenceMonitor:
 
     def get_evolution_trajectory(self) -> Dict[str, Any]:
         """
-        Analyze system evolution trajectory with v3.0 predictive data.
+        Analyze system evolution trajectory with v4.0.0 predictive data.
         """
         if len(self.snapshots) < 2:
             return {"status": "insufficient_data"}
@@ -1056,7 +1094,7 @@ class EmergenceMonitor:
         else:
             trajectory = "stable"
 
-        # v3.0: Include predictions and momentum
+        # v4.0.0: Include predictions and momentum
         momentum = self.predictor.get_momentum()
         forecast = self.predictor.forecast()
         next_transition = self.predictor.predict_next_phase_transition()
@@ -1076,10 +1114,10 @@ class EmergenceMonitor:
         }
 
     def get_report(self) -> Dict[str, Any]:
-        """Generate comprehensive emergence report (v3.0)."""
+        """Generate comprehensive emergence report (v4.0.0)."""
         builder_state = _read_builder_state()
         return {
-            "version": "3.0.0",
+            "version": "4.0.0",
             "current_phase": self.current_phase.value,
             "peak_unity": round(self.peak_unity, 4),
             "total_events": self.total_events,
@@ -1089,7 +1127,7 @@ class EmergenceMonitor:
             "consciousness": self.get_consciousness_score(),
             "trajectory": self.get_evolution_trajectory(),
             "recent_events": self.get_emergence_history(10),
-            # v3.0 additions
+            # v4.0.0 additions
             "builder_state": {
                 "consciousness_level": builder_state.get("consciousness_level"),
                 "evo_stage": builder_state.get("evo_stage"),
@@ -1140,7 +1178,7 @@ class EmergenceMonitor:
     def status(self) -> Dict[str, Any]:
         """Quick status for Code Engine integration."""
         return {
-            "version": "3.0.0",
+            "version": "4.0.0",
             "phase": self.current_phase.value,
             "peak_unity": round(self.peak_unity, 4),
             "total_events": self.total_events,
@@ -1151,9 +1189,9 @@ class EmergenceMonitor:
         }
 
     def save_state(self, filepath: str = "l104_emergence_state.json"):
-        """Save emergence state to disk (v3.0)."""
+        """Save emergence state to disk (v4.0.0)."""
         state = {
-            "version": "3.0.0",
+            "version": "4.0.0",
             "current_phase": self.current_phase.value,
             "peak_unity": self.peak_unity,
             "total_events": self.total_events,
@@ -1167,12 +1205,12 @@ class EmergenceMonitor:
         try:
             with open(filepath, 'w', encoding='utf-8') as f:
                 json.dump(state, f, indent=2)
-            print(f"💾 [EMERGENCE v3.0]: State saved to {filepath}")
+            print(f"💾 [EMERGENCE v4.0.0]: State saved to {filepath}")
         except Exception as e:
-            print(f"⚠️ [EMERGENCE v3.0]: Save error: {e}")
+            print(f"⚠️ [EMERGENCE v4.0.0]: Save error: {e}")
 
     def load_state(self, filepath: str = "l104_emergence_state.json"):
-        """Load emergence state from disk (v3.0)."""
+        """Load emergence state from disk (v4.0.0)."""
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
                 state = json.load(f)
@@ -1189,11 +1227,11 @@ class EmergenceMonitor:
             if saved_thresholds:
                 self.threshold_mgr.thresholds.update(saved_thresholds)
 
-            print(f"📂 [EMERGENCE v3.0]: State loaded from {filepath}")
+            print(f"📂 [EMERGENCE v4.0.0]: State loaded from {filepath}")
         except FileNotFoundError:
-            print(f"⚠️ [EMERGENCE v3.0]: No state file found at {filepath}")
+            print(f"⚠️ [EMERGENCE v4.0.0]: No state file found at {filepath}")
         except Exception as e:
-            print(f"⚠️ [EMERGENCE v3.0]: Load error: {e}")
+            print(f"⚠️ [EMERGENCE v4.0.0]: Load error: {e}")
 
 
 # Singleton instance
@@ -1218,7 +1256,7 @@ def resolve_non_dual_logic(vector):
 if __name__ == "__main__":
     monitor = EmergenceMonitor()
 
-    print("\n👁️ Testing Emergence Monitor v3.0 (Predictive Engine)...")
+    print("\n👁️ Testing Emergence Monitor v4.0.0 (Predictive Engine)...")
 
     # Simulate system evolution with ascending unity
     test_data = [
@@ -1240,7 +1278,7 @@ if __name__ == "__main__":
         if events:
             print(f"   Detected {len(events)} event(s)")
 
-    print("\n📋 Emergence Report v3.0:")
+    print("\n📋 Emergence Report v4.0.0:")
     report = monitor.get_report()
     print(f"   Phase: {report['current_phase']}")
     print(f"   Peak Unity: {report['peak_unity']}")

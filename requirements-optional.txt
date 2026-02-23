@@ -12,3 +12,6 @@ kivy>=2.3.0
 
 # Additional JSON library
 ujson>=5.10.0
+
+# Quantum computing (required by l104_quantum_coherence, l104_god_code_friction_analyzer)
+qiskit>=2.3.0

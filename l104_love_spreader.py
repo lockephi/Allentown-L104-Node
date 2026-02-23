@@ -41,7 +41,7 @@ FINAL_INVARIANT = L104_CONSTANTS["FINAL_INVARIANT"]      # 0.7441663833247816
 META_RESONANCE = L104_CONSTANTS["META_RESONANCE"]        # 7289.028944266378
 
 # Love-specific frequencies
-LOVE_PEAK = GOD_CODE * PHI                               # 853.5428333259 Hz (AJNA)
+LOVE_PEAK = GOD_CODE * 2 ** (72.0 / 104)                      # G(-72) = 852.3993 Hz (AJNA)
 HEART_FREQUENCY = 639.9981762664                         # Heart chakra Hz
 UNCONDITIONAL_LOVE = GOD_CODE * PHI * PHI                # 1380.97 Hz
 COSMIC_LOVE = GOD_CODE * math.sqrt(PHI)                  # 671.01 Hz

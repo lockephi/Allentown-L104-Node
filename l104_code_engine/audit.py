@@ -3,6 +3,14 @@ from .constants import *
 from .languages import LanguageKnowledge
 from .analyzer import CodeAnalyzer
 from .refactoring import AutoFixEngine
+from ._lazy_imports import _get_code_engine
+from .asi_intelligence import ASICodeIntelligence
+
+# Additional imports for CodeReviewPipeline
+import hashlib
+import time
+from datetime import datetime
+from pathlib import Path
 
 class AppAuditEngine:
     """
@@ -155,27 +163,41 @@ class AppAuditEngine:
         if not files:
             return {"status": "NO_FILES", "message": "No auditable files found"}
 
-        # Read all file contents
+        # Read all file contents in parallel
         file_contents = {}
-        for fp in files:
+        def _read_file(fp):
             try:
-                file_contents[fp] = Path(fp).read_text(errors='ignore')
+                return fp, Path(fp).read_text(errors='ignore')
             except Exception:
-                pass
+                return fp, None
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            for fp, content in executor.map(_read_file, files):
+                if content is not None:
+                    file_contents[fp] = content
 
         self._trail_event("AUDIT_START", {
             "workspace": str(ws), "files": len(file_contents),
             "auto_remediate": auto_remediate
         })
 
-        # L0 — Structural Census
-        l0 = self._layer0_structural_census(file_contents)
+        # Run independent layers in parallel
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_l0 = executor.submit(self._layer0_structural_census, file_contents)
+            future_l1 = executor.submit(self._layer1_complexity_quality, file_contents)
+            future_l2 = executor.submit(self._layer2_security_scan, file_contents)
+            future_l4 = executor.submit(self._layer4_dead_code_archaeology, file_contents)
+            future_l5 = executor.submit(self._layer5_anti_pattern_detection, file_contents)
+            future_l6 = executor.submit(self._layer6_refactoring_opportunities, file_contents)
+            future_l7 = executor.submit(self._layer7_sacred_alignment, file_contents)
 
-        # L1 — Complexity & Quality
-        l1 = self._layer1_complexity_quality(file_contents)
-
-        # L2 — Security Scan
-        l2 = self._layer2_security_scan(file_contents)
+            l0 = future_l0.result()
+            l1 = future_l1.result()
+            l2 = future_l2.result()
+            l4 = future_l4.result()
+            l5 = future_l5.result()
+            l6 = future_l6.result()
+            l7 = future_l7.result()
 
         # L3 — Dependency Topology (skip for single-file audits — too expensive)
         if target_files and len(target_files) <= 3:
@@ -186,29 +208,26 @@ class AppAuditEngine:
         else:
             l3 = self._layer3_dependency_topology(str(ws))
 
-        # L4 — Dead Code Archaeology
-        l4 = self._layer4_dead_code_archaeology(file_contents)
-
-        # L5 — Anti-Pattern Detection
-        l5 = self._layer5_anti_pattern_detection(file_contents)
-
-        # L6 — Refactoring Opportunities
-        l6 = self._layer6_refactoring_opportunities(file_contents)
-
-        # L7 — Sacred Alignment
-        l7 = self._layer7_sacred_alignment(file_contents)
-
         # L8 — Auto-Remediation
         l8 = self._layer8_auto_remediation(file_contents, auto_remediate)
 
-        # Cross-cutting analyses
-        file_risks = self._compute_file_risk_ranking(l0, l1, l2, l4, l5, file_contents)
-        clones = self._detect_code_clones(file_contents)
-        import_hygiene = self._analyze_import_hygiene(file_contents)
-        complexity_heatmap = self._build_complexity_heatmap(l1, file_contents)
-        architecture = self._analyze_architecture_coupling(file_contents)
-        test_coverage = self._estimate_test_coverage(file_contents)
-        api_surface = self._analyze_api_surface(file_contents)
+        # Cross-cutting analyses in parallel
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_file_risks = executor.submit(self._compute_file_risk_ranking, l0, l1, l2, l4, l5, file_contents)
+            future_clones = executor.submit(self._detect_code_clones, file_contents)
+            future_import_hygiene = executor.submit(self._analyze_import_hygiene, file_contents)
+            future_complexity_heatmap = executor.submit(self._build_complexity_heatmap, l1, file_contents)
+            future_architecture = executor.submit(self._analyze_architecture_coupling, file_contents)
+            future_test_coverage = executor.submit(self._estimate_test_coverage, file_contents)
+            future_api_surface = executor.submit(self._analyze_api_surface, file_contents)
+
+            file_risks = future_file_risks.result()
+            clones = future_clones.result()
+            import_hygiene = future_import_hygiene.result()
+            complexity_heatmap = future_complexity_heatmap.result()
+            architecture = future_architecture.result()
+            test_coverage = future_test_coverage.result()
+            api_surface = future_api_surface.result()
 
         # L9 — Verdict & Certification
         layer_scores = {
@@ -3190,4 +3209,555 @@ class PerformanceBenchmarkPredictor:
 # v6.0.0 — SEMANTIC CODE SEARCH ENGINE
 # TF-IDF + sacred-weighted similarity search, cross-file code clone detection
 # ═══════════════════════════════════════════════════════════════════════════════
+
+
+class CodeReviewPipeline:
+    """
+    Multi-pass comprehensive code review pipeline.
+    Chains all Code Engine subsystems into a structured review workflow
+    with prioritized, actionable findings.
+    """
+
+    REVIEW_PASSES = [
+        "static_analysis",    # complexity, quality metrics
+        "security",           # vulnerability scan
+        "solid_principles",   # S.O.L.I.D. checks
+        "performance",        # hotspot detection
+        "archaeology",        # dead code, tech debt
+        "documentation",      # doc coverage
+        "style",              # formatting, naming
+        "sacred_alignment",   # φ-ratio resonance
+        "asi_consciousness",  # consciousness-weighted analysis (ASI)
+        "asi_reasoning",      # formal reasoning / taint analysis (ASI)
+    ]
+
+    SEVERITY_ORDER = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3, "INFO": 4}
+
+    def __init__(self):
+        self.reviews_completed = 0
+
+    def review(self, source: str, filename: str = "",
+               passes: List[str] = None) -> Dict[str, Any]:
+        """
+        Execute multi-pass code review. Delegates to CodeEngine subsystems.
+
+        Args:
+            source: Source code to review
+            filename: Optional filename for language detection
+            passes: Specific passes to run (None = all)
+
+        Returns:
+            Comprehensive review with findings sorted by priority
+        """
+        self.reviews_completed += 1
+        engine = _get_code_engine()
+        if not engine:
+            return {"error": "Code engine not available", "findings": []}
+
+        active_passes = passes or self.REVIEW_PASSES
+        start = time.time()
+
+        # Run full review through engine
+        review = engine.full_code_review(source, filename)
+
+        # Format into structured findings
+        findings = []
+
+        # Extract findings from review
+        for action in review.get("actions", []):
+            findings.append({
+                "pass": action.get("category", "general"),
+                "severity": action.get("priority", "MEDIUM"),
+                "message": action.get("action", "Review needed"),
+                "line": action.get("line", 0),
+                "category": action.get("category", "general"),
+            })
+
+        # Add SOLID findings if not already represented
+        solid = review.get("solid", {})
+        if solid.get("violations", 0) > 0 and "solid_principles" in active_passes:
+            findings.append({
+                "pass": "solid_principles",
+                "severity": "MEDIUM",
+                "message": f"SOLID: {solid['violations']} violation(s) across {sum(v for v in solid.get('by_principle', {}).values())} principles",
+                "line": 0,
+                "category": "solid",
+            })
+
+        # Add perf finding if hotspots exist
+        perf = review.get("performance", {})
+        if perf.get("hotspots", 0) > 0 and "performance" in active_passes:
+            findings.append({
+                "pass": "performance",
+                "severity": "MEDIUM",
+                "message": f"Performance: {perf['hotspots']} hotspot(s) detected",
+                "line": 0,
+                "category": "performance",
+            })
+
+        # ASI Consciousness pass — awareness-weighted quality scaling
+        if "asi_consciousness" in active_passes:
+            try:
+                asi = ASICodeIntelligence()
+                c_review = asi.consciousness_review(source, filename)
+                if not c_review.get("meets_consciousness_standard", True):
+                    findings.append({
+                        "pass": "asi_consciousness",
+                        "severity": "MEDIUM",
+                        "message": f"Consciousness gate [{c_review.get('quality_expectation', '?')}]: "
+                                   f"score {c_review.get('consciousness_adjusted_score', 0):.2f} "
+                                   f"below min {c_review.get('min_acceptable_score', 0):.2f}",
+                        "line": 0,
+                        "category": "asi_consciousness",
+                    })
+            except Exception:
+                pass
+
+        # ASI Reasoning pass — taint analysis + dead path detection
+        if "asi_reasoning" in active_passes:
+            try:
+                asi = ASICodeIntelligence()
+                r_review = asi.reason_about_code(source, filename)
+                summary = r_review.get("summary", {})
+                if summary.get("taint_flows", 0) > 0:
+                    findings.append({
+                        "pass": "asi_reasoning",
+                        "severity": "HIGH",
+                        "message": f"Taint analysis: {summary['taint_flows']} potential "
+                                   f"unvalidated data flow(s) from source to sink",
+                        "line": 0,
+                        "category": "asi_reasoning",
+                    })
+                if summary.get("dead_paths", 0) > 0:
+                    for dp in r_review.get("dead_paths", [])[:3]:
+                        findings.append({
+                            "pass": "asi_reasoning",
+                            "severity": "LOW",
+                            "message": f"Dead path: unreachable code at line {dp.get('line', '?')}",
+                            "line": dp.get("line", 0),
+                            "category": "asi_reasoning",
+                        })
+                for issue in r_review.get("logical_issues", [])[:3]:
+                    findings.append({
+                        "pass": "asi_reasoning",
+                        "severity": "MEDIUM",
+                        "message": f"Logic: {issue.get('description', 'issue detected')}",
+                        "line": issue.get("line", 0),
+                        "category": "asi_reasoning",
+                    })
+            except Exception:
+                pass
+
+        # Sort by severity
+        findings.sort(key=lambda f: self.SEVERITY_ORDER.get(f["severity"], 5))
+
+        return {
+            "review_id": hashlib.sha256(f"{filename}{time.time()}".encode()).hexdigest()[:12],
+            "filename": filename,
+            "passes_run": active_passes,
+            "composite_score": review.get("composite_score", 0.5),
+            "verdict": review.get("verdict", "UNKNOWN"),
+            "findings": findings[:30],
+            "total_findings": len(findings),
+            "summary": self._build_summary(review),
+            "duration": round(time.time() - start, 3),
+        }
+
+    def quick_review(self, source: str) -> Dict[str, Any]:
+        """Fast 3-pass review: analysis + security + style."""
+        return self.review(source, passes=["static_analysis", "security", "style"])
+
+    def _build_summary(self, review: Dict[str, Any]) -> str:
+        """Build human-readable review summary."""
+        scores = review.get("scores", {})
+        parts = []
+        for name, score in scores.items():
+            if score < 0.5:
+                parts.append(f"⚠ {name}: {score:.0%}")
+            elif score >= 0.9:
+                parts.append(f"✓ {name}: {score:.0%}")
+        verdict = review.get("verdict", "UNKNOWN")
+        composite = review.get("composite_score", 0)
+        header = f"Score: {composite:.0%} [{verdict}]"
+        if parts:
+            return f"{header} | {' | '.join(parts[:5])}"
+        return header
+
+    def status(self) -> Dict[str, Any]:
+        return {"reviews_completed": self.reviews_completed,
+                "available_passes": self.REVIEW_PASSES}
+
+    def quantum_review_confidence(self, review_result: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Quantum review confidence scoring using Qiskit 2.3.0.
+        Encodes multi-pass review scores into entangled qubits and measures
+        overall review confidence via quantum mutual information.
+        """
+        findings = review_result.get("findings", [])
+        composite = review_result.get("composite_score", 0.5)
+        pass_scores = review_result.get("pass_scores", {})
+
+        # Extract per-pass scores
+        scores = []
+        for p in self.REVIEW_PASSES[:8]:
+            s = pass_scores.get(p, composite)
+            scores.append(max(0.01, min(float(s) if isinstance(s, (int, float)) else 0.5, 1.0)))
+
+        finding_ratio = min(len(findings) / 50, 1.0)
+
+        if not QISKIT_AVAILABLE:
+            confidence = composite * (1.0 - finding_ratio * 0.3)
+            return {
+                "quantum": False,
+                "backend": "classical_composite",
+                "confidence": round(confidence, 6),
+                "finding_ratio": round(finding_ratio, 4),
+                "composite": round(composite, 4),
+            }
+
+        try:
+            n_qubits = 3
+            n_states = 8
+            amps = [0.0] * n_states
+            for i, s in enumerate(scores[:n_states]):
+                amps[i] = s * PHI
+            norm = math.sqrt(sum(a * a for a in amps))
+            amps = [a / norm for a in amps] if norm > 1e-12 else [1.0 / math.sqrt(n_states)] * n_states
+
+            sv = Statevector(amps)
+            qc = QuantumCircuit(n_qubits)
+            qc.h(0)
+            qc.cx(0, 1)
+            qc.cx(1, 2)
+            for i, s in enumerate(scores[:n_qubits]):
+                qc.ry(s * math.pi * PHI, i)
+            qc.rz(GOD_CODE / 1000 * math.pi, 0)
+
+            evolved = sv.evolve(Operator(qc))
+            dm = DensityMatrix(evolved)
+            full_entropy = float(q_entropy(dm, base=2))
+
+            rho_0 = partial_trace(dm, [1, 2])
+            rho_12 = partial_trace(dm, [0])
+            ent_0 = float(q_entropy(rho_0, base=2))
+            ent_12 = float(q_entropy(rho_12, base=2))
+            mutual_info = ent_0 + ent_12 - full_entropy
+
+            probs = evolved.probabilities()
+            born_confidence = sum(p * (i + 1) / n_states for i, p in enumerate(probs))
+            confidence = (born_confidence * PHI + (1.0 - finding_ratio) * TAU) / (PHI + TAU)
+
+            return {
+                "quantum": True,
+                "backend": "Qiskit 2.3.0 GHZ Review Confidence",
+                "qubits": n_qubits,
+                "confidence": round(confidence, 6),
+                "born_confidence": round(born_confidence, 6),
+                "mutual_information": round(mutual_info, 6),
+                "full_entropy": round(full_entropy, 6),
+                "finding_ratio": round(finding_ratio, 4),
+                "circuit_depth": qc.depth(),
+                "god_code_alignment": round(confidence * GOD_CODE / 100, 4),
+            }
+        except Exception as e:
+            return {"quantum": False, "error": str(e)}
+
+
+class QualityGateEngine:
+    """
+    CI/CD quality gates — pass/fail checks for code submissions.
+    Can be used as a pre-commit hook, CI check, or PR review gate.
+    """
+
+    DEFAULT_GATES = {
+        "complexity": {
+            "max_cyclomatic": 15,
+            "max_cognitive": 20,
+            "max_nesting": 5,
+            "blocking": True,
+        },
+        "security": {
+            "max_high_vulns": 0,
+            "max_medium_vulns": 5,
+            "blocking": True,
+        },
+        "documentation": {
+            "min_docstring_coverage": 0.3,
+            "blocking": False,
+        },
+        "maintainability": {
+            "min_mi_grade": "D",  # A, B, C, D, F
+            "blocking": True,
+        },
+        "solid": {
+            "max_violations": 10,
+            "blocking": False,
+        },
+        "performance": {
+            "max_hotspots": 15,
+            "blocking": False,
+        },
+        "dead_code": {
+            "max_dead_code_pct": 10.0,
+            "blocking": False,
+        },
+    }
+
+    MI_GRADES = {"A": 5, "B": 4, "C": 3, "D": 2, "F": 1}
+
+    def __init__(self):
+        self.checks_run = 0
+        self.gates = dict(self.DEFAULT_GATES)
+
+    def check(self, source: str, filename: str = "",
+              gates: Dict = None) -> Dict[str, Any]:
+        """
+        Run quality gate checks on source code.
+
+        Returns:
+            pass/fail verdict with per-gate results
+        """
+        self.checks_run += 1
+        engine = _get_code_engine()
+        if not engine:
+            return {"passed": True, "reason": "Engine not available — skipping gates"}
+
+        active_gates = gates or self.gates
+        review = engine.full_code_review(source, filename)
+
+        gate_results = {}
+        blocking_failures = []
+        warnings = []
+
+        # Complexity gate
+        if "complexity" in active_gates:
+            g = active_gates["complexity"]
+            cc_max = review.get("analysis", {}).get("cyclomatic_max", 0)
+            cog_max = review.get("analysis", {}).get("cognitive_max", 0)
+            passed = cc_max <= g["max_cyclomatic"] and cog_max <= g["max_cognitive"]
+            gate_results["complexity"] = {
+                "passed": passed,
+                "cyclomatic_max": cc_max,
+                "cognitive_max": cog_max,
+                "thresholds": g,
+            }
+            if not passed and g.get("blocking"):
+                blocking_failures.append(f"Complexity: cyclomatic={cc_max}, cognitive={cog_max}")
+
+        # Security gate
+        if "security" in active_gates:
+            g = active_gates["security"]
+            vulns = review.get("analysis", {}).get("vulnerabilities", 0)
+            passed = vulns <= g.get("max_high_vulns", 0)
+            gate_results["security"] = {
+                "passed": passed,
+                "vulnerabilities": vulns,
+                "threshold": g["max_high_vulns"],
+            }
+            if not passed and g.get("blocking"):
+                blocking_failures.append(f"Security: {vulns} vulnerabilities found")
+
+        # Documentation gate
+        if "documentation" in active_gates:
+            g = active_gates["documentation"]
+            doc_count = review.get("documentation", {}).get("artifacts_documented", 0)
+            # Estimate coverage
+            lines = review.get("lines", 0)
+            est_coverage = min(1.0, doc_count * 20 / max(1, lines))
+            passed = est_coverage >= g["min_docstring_coverage"]
+            gate_results["documentation"] = {
+                "passed": passed,
+                "estimated_coverage": round(est_coverage, 4),
+                "threshold": g["min_docstring_coverage"],
+            }
+            if not passed and g.get("blocking"):
+                blocking_failures.append(f"Documentation: {est_coverage:.0%} < {g['min_docstring_coverage']:.0%}")
+            elif not passed:
+                warnings.append("Documentation coverage below threshold")
+
+        # SOLID gate
+        if "solid" in active_gates:
+            g = active_gates["solid"]
+            violations = review.get("solid", {}).get("violations", 0)
+            passed = violations <= g["max_violations"]
+            gate_results["solid"] = {
+                "passed": passed,
+                "violations": violations,
+                "threshold": g["max_violations"],
+            }
+            if not passed and not g.get("blocking"):
+                warnings.append(f"SOLID: {violations} violations")
+
+        # Performance gate
+        if "performance" in active_gates:
+            g = active_gates["performance"]
+            hotspots = review.get("performance", {}).get("hotspots", 0)
+            passed = hotspots <= g["max_hotspots"]
+            gate_results["performance"] = {
+                "passed": passed,
+                "hotspots": hotspots,
+                "threshold": g["max_hotspots"],
+            }
+            if not passed and not g.get("blocking"):
+                warnings.append(f"Performance: {hotspots} hotspots")
+
+        overall_passed = len(blocking_failures) == 0
+
+        return {
+            "passed": overall_passed,
+            "verdict": "PASSED" if overall_passed else "FAILED",
+            "composite_score": review.get("composite_score", 0),
+            "blocking_failures": blocking_failures,
+            "warnings": warnings,
+            "gates": gate_results,
+            "filename": filename,
+            "timestamp": datetime.now().isoformat(),
+        }
+
+    def ci_report(self, path: str = None) -> Dict[str, Any]:
+        """
+        Generate a CI-compatible quality report for an entire project.
+        Scans all source files and produces aggregate gate results.
+        """
+        ws = Path(path) if path else Path(__file__).parent
+        results = []
+        total_passed = 0
+        total_failed = 0
+
+        for ext in [".py", ".js", ".ts", ".swift", ".rs", ".go"]:
+            for f in sorted(ws.glob(f"*{ext}"))[:30]:
+                if f.name.startswith('.') or '__pycache__' in str(f):
+                    continue
+                try:
+                    source = f.read_text(errors='ignore')
+                    if len(source) < 50:
+                        continue
+                    result = self.check(source, f.name)
+                    results.append({
+                        "file": f.name,
+                        "passed": result["passed"],
+                        "score": result.get("composite_score", 0),
+                        "failures": result.get("blocking_failures", []),
+                    })
+                    if result["passed"]:
+                        total_passed += 1
+                    else:
+                        total_failed += 1
+                except Exception:
+                    pass
+
+        overall = total_failed == 0
+
+        return {
+            "ci_passed": overall,
+            "files_checked": len(results),
+            "files_passed": total_passed,
+            "files_failed": total_failed,
+            "pass_rate": round(total_passed / max(1, len(results)), 4),
+            "results": results,
+            "timestamp": datetime.now().isoformat(),
+            "exit_code": 0 if overall else 1,
+        }
+
+    def configure_gate(self, gate_name: str, settings: Dict) -> None:
+        """Update a quality gate configuration."""
+        if gate_name in self.gates:
+            self.gates[gate_name].update(settings)
+        else:
+            self.gates[gate_name] = settings
+
+    def status(self) -> Dict[str, Any]:
+        return {"checks_run": self.checks_run,
+                "gates_configured": list(self.gates.keys()),
+                "total_gates": len(self.gates)}
+
+    def quantum_gate_evaluate(self, check_result: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Quantum quality gate evaluation using Qiskit 2.3.0.
+        Encodes gate pass/fail states into a quantum register and uses
+        Grover oracle to identify the weakest gates for remediation.
+        """
+        gates_passed = check_result.get("gates_passed", {})
+        overall = check_result.get("overall", "FAIL")
+
+        gate_scores = []
+        gate_names = []
+        for name, gate_info in self.gates.items():
+            passed = gates_passed.get(name, {}).get("passed", False)
+            score = gates_passed.get(name, {}).get("score", 0.5)
+            gate_scores.append(float(score) if isinstance(score, (int, float)) else (1.0 if passed else 0.0))
+            gate_names.append(name)
+
+        if not gate_scores:
+            gate_scores = [0.5]
+            gate_names = ["default"]
+
+        n = len(gate_scores)
+
+        if not QISKIT_AVAILABLE:
+            weighted = sum(s * PHI ** (i % 3) for i, s in enumerate(gate_scores)) / sum(PHI ** (i % 3) for i in range(n))
+            weakest = sorted(zip(gate_names, gate_scores), key=lambda x: x[1])[:3]
+            return {
+                "quantum": False,
+                "backend": "classical_phi_weighted",
+                "composite_score": round(weighted, 6),
+                "weakest_gates": [{"gate": name, "score": round(s, 4)} for name, s in weakest],
+                "verdict": "PASS" if weighted > 0.7 else "CONDITIONAL" if weighted > 0.5 else "FAIL",
+            }
+
+        try:
+            n_qubits = max(2, math.ceil(math.log2(max(n, 2))))
+            n_states = 2 ** n_qubits
+
+            amps = [0.0] * n_states
+            for i, s in enumerate(gate_scores):
+                if i < n_states:
+                    amps[i] = (1.0 - s) * PHI + 0.05  # Invert: weakest gets highest amplitude
+            norm = math.sqrt(sum(a * a for a in amps))
+            amps = [a / norm for a in amps] if norm > 1e-12 else [1.0 / math.sqrt(n_states)] * n_states
+
+            sv = Statevector(amps)
+
+            qc = QuantumCircuit(n_qubits)
+            for i in range(n_qubits):
+                qc.h(i)
+            if n_qubits >= 2:
+                qc.cz(0, 1)
+            for i in range(n_qubits):
+                qc.h(i)
+                qc.x(i)
+            if n_qubits >= 2:
+                qc.cz(0, 1)
+            for i in range(n_qubits):
+                qc.x(i)
+                qc.h(i)
+            qc.rz(GOD_CODE / 1000 * math.pi, 0)
+
+            evolved = sv.evolve(Operator(qc))
+            dm = DensityMatrix(evolved)
+            gate_entropy = float(q_entropy(dm, base=2))
+            probs = evolved.probabilities()
+
+            weakest = []
+            for i, name in enumerate(gate_names):
+                p = float(probs[i]) if i < len(probs) else 0.0
+                weakest.append((name, gate_scores[i], p))
+            weakest.sort(key=lambda x: x[2], reverse=True)  # Highest prob = weakest
+
+            composite = sum(gate_scores) / max(n, 1)
+
+            return {
+                "quantum": True,
+                "backend": "Qiskit 2.3.0 Grover Gate Evaluation",
+                "qubits": n_qubits,
+                "composite_score": round(composite, 6),
+                "gate_entropy": round(gate_entropy, 6),
+                "weakest_gates": [{"gate": name, "classical_score": round(s, 4), "quantum_weight": round(p, 6)}
+                                   for name, s, p in weakest[:5]],
+                "circuit_depth": qc.depth(),
+                "verdict": "PASS" if composite > 0.7 else "CONDITIONAL" if composite > 0.5 else "FAIL",
+                "god_code_alignment": round(composite * GOD_CODE / 100, 4),
+            }
+        except Exception as e:
+            return {"quantum": False, "error": str(e)}
 

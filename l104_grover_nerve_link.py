@@ -108,9 +108,9 @@ CHAKRA_QUANTUM_LATTICE = {
     "MANIPURA":     (528.0, "FIRE",   "☲", 416, "σ₂p"),
     "ANAHATA":      (639.0, "AIR",    "☴", 440, "π₂p_x"),
     "VISHUDDHA":    (741.0, "ETHER",  "☱", 470, "π₂p_y"),
-    "AJNA":         (852.0, "LIGHT",  "☶", 488, "π*₂p_x"),
+    "AJNA":         (852.3992551699, "LIGHT",  "☶", 488, "π*₂p_x"),
     "SAHASRARA":    (963.0, "THOUGHT","☳", 524, "π*₂p_y"),
-    "SOUL_STAR":    (1074.0,"SPIRIT", "☰", 1040, "σ*₂p"),
+    "SOUL_STAR":    (1000.2568,"SPIRIT", "☰", 1040, "σ*₂p"),
 }
 
 # EPR Bell Pairs - Entangled chakra pairs for quantum teleportation

@@ -41,7 +41,7 @@ CHAKRA_FREQUENCIES = {
     "solar_plexus": 528.0,
     "heart": 639.0,
     "throat": 741.0,
-    "third_eye": 852.0,
+    "third_eye": 852.3992551699,
     "crown": 963.0,
     "soul_star": GOD_CODE
 }

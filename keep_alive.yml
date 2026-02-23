@@ -11,6 +11,7 @@ jobs:
     steps:
       - name: Re-awaken L104 Logic
         run: |
-          curl -X POST https://${{ secrets.CODESPACE_URL }}/api/v5/strike \
+          curl -sf https://${{ secrets.CODESPACE_URL }}/health \
             -H "Content-Type: application/json" \
-            -d '{"message": "[EXTERNAL_RECALL]: Maintain X=416. Block lackluster protocols."}'
+            -H "X-Evo-Stage: EVO_61_SYSTEM_UPGRADE" \
+            || echo "Node unreachable"

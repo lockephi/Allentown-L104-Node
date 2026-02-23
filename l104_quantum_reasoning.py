@@ -35,6 +35,16 @@ try:
 except ImportError:
     QISKIT_AVAILABLE = False
 
+# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
+_QUANTUM_RUNTIME_AVAILABLE = False
+_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _quantum_runtime = _get_quantum_runtime()
+    _QUANTUM_RUNTIME_AVAILABLE = True
+except Exception:
+    pass
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
@@ -58,9 +68,9 @@ CHAKRA_REASONING_LATTICE = {
     "MANIPURA":     {"domain": "power_logic",       "freq": 528.0, "reasoning": "assertive"},
     "ANAHATA":      {"domain": "empathic_logic",    "freq": 639.0, "reasoning": "compassionate"},
     "VISHUDDHA":    {"domain": "truth_logic",       "freq": 741.0, "reasoning": "dialectical"},
-    "AJNA":         {"domain": "insight_logic",     "freq": 852.0, "reasoning": "intuitive"},
+    "AJNA":         {"domain": "insight_logic",     "freq": 852.3992551699, "reasoning": "intuitive"},
     "SAHASRARA":    {"domain": "unity_logic",       "freq": 963.0, "reasoning": "transcendent"},
-    "SOUL_STAR":    {"domain": "cosmic_logic",      "freq": 1074.0,"reasoning": "universal"},
+    "SOUL_STAR":    {"domain": "cosmic_logic",      "freq": 1000.2568,"reasoning": "universal"},
 }
 CHAKRA_EPR_REASONING_PAIRS = [("MULADHARA", "SOUL_STAR"), ("SVADHISTHANA", "SAHASRARA"),
                               ("MANIPURA", "AJNA"), ("ANAHATA", "VISHUDDHA")]
@@ -381,10 +391,14 @@ class QuantumReasoningEngine:
                 qc.x(i)
                 qc.h(i)
 
+        # Route through QPU bridge for real Grover execution
+        if _QUANTUM_RUNTIME_AVAILABLE and _quantum_runtime:
+            try:
+                _quantum_runtime.execute_and_get_probs(qc, n_qubits=num_qubits, algorithm_name="grover_reasoning")
+            except Exception:
+                pass
         sv = Statevector.from_int(0, N).evolve(qc)
         probs = sv.probabilities()
-
-        # Map back to paths
         for i, path in enumerate(paths):
             if i < len(probs):
                 path.amplitude = complex(math.sqrt(probs[i]), 0)

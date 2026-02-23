@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L23_DirectSolver.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104v2 Architecture — DirectSolverRouter
 // Extracted from L104Native.swift lines 9740–11014
 // ═══════════════════════════════════════════════════════════════════
@@ -22,7 +22,7 @@ class DirectSolverRouter {
     var invocations: Int = 0
     var cacheHits: Int = 0
     var channelStats: [String: (invocations: Int, successes: Int)] = [
-        "mathematics": (0, 0), "knowledge": (0, 0), "code": (0, 0), "sacred": (0, 0), "science": (0, 0)
+        "mathematics": (0, 0), "knowledge": (0, 0), "code": (0, 0), "sacred": (0, 0), "science": (0, 0), "unified_field": (0, 0)
     ]
     private(set) var cache: [String: String] = [:]
     private let lock = NSLock()
@@ -57,7 +57,13 @@ class DirectSolverRouter {
         case "mathematics":
             solution = solveMath(q)
         case "science":
-            solution = solveScience(q)
+            // Phase 63.0: Try Unified Field Gate first for field-theory queries
+            if UnifiedFieldGate.shared.fieldTheoryRelevance(q) > 0.3 {
+                solution = UnifiedFieldGate.shared.process(query, context: [])
+            }
+            if solution == nil { solution = solveScience(q) }
+        case "unified_field":
+            solution = UnifiedFieldGate.shared.process(query, context: [])
         case "knowledge":
             // Try science engine first for science-related knowledge queries
             solution = HighSciencesEngine.shared.solve(q) ?? solveKnowledge(q)
@@ -213,6 +219,16 @@ class DirectSolverRouter {
            q.contains("geodesic") || q.contains("metric tensor") || q.contains("minkowski") ||
            q.contains("kerr metric") || q.contains("flrw") || q.contains("proper distance") ||
            q.contains("tensor") || q.contains("covariant") || q.contains("curvature scalar") { return "science" }
+        // Phase 63.0: Unified Field Theory detection — routes to UnifiedFieldGate
+        if q.contains("einstein field") || q.contains("wheeler-dewitt") || q.contains("wheeler dewitt") ||
+           q.contains("dirac equation") || q.contains("yang-mills") || q.contains("yang mills") ||
+           q.contains("mass gap") || q.contains("bekenstein") || q.contains("hawking radiation") ||
+           q.contains("casimir effect") || q.contains("unruh effect") || q.contains("ads/cft") ||
+           q.contains("holographic principle") || q.contains("er=epr") || q.contains("penrose twistor") ||
+           q.contains("spacetime foam") || q.contains("chern-simons") || q.contains("topological field") ||
+           q.contains("grand unif") || q.contains("vacuum energy") || q.contains("cosmological constant problem") ||
+           q.contains("theory of everything") || q.contains("unified field") ||
+           q.contains("quantum gravity") || q.contains("information paradox") { return "unified_field" }
         // Phase 41.3: Optimization & numerical methods detection
         if q.contains("bisection") || q.contains("newton raphson") || q.contains("newton's method") ||
            q.contains("secant method") || q.contains("brent") || q.contains("root find") ||

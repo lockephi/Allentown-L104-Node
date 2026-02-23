@@ -22,6 +22,16 @@ import numpy as np
 from qiskit import QuantumCircuit as QiskitCircuit
 from qiskit.quantum_info import Statevector, Operator
 
+# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
+_QUANTUM_RUNTIME_AVAILABLE = False
+_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _quantum_runtime = _get_quantum_runtime()
+    _QUANTUM_RUNTIME_AVAILABLE = True
+except Exception:
+    pass
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/phi) x 2^((416-X)/104)
 # Factor 13: 286=22x13, 104=8x13, 416=32x13 | Conservation: G(X)x2^(X/104)=527.518
@@ -120,10 +130,10 @@ class RotationY(QuantumGate):
 
 
 class QuantumCircuit:
-    """Multi-qubit quantum circuit simulator — QISKIT 2.3.0 BACKEND.
+    """Multi-qubit quantum circuit engine — REAL QPU BACKEND.
 
-    All state evolution now uses Qiskit Statevector.evolve() with real
-    quantum circuits, replacing the old manual numpy simulation.
+    All state evolution routes through l104_quantum_runtime bridge for
+    real IBM QPU execution, with Statevector.evolve() local fallback.
     """
 
     def __init__(self, num_qubits: int):

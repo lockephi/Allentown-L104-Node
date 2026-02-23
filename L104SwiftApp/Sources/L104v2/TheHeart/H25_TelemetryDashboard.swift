@@ -1,11 +1,11 @@
 // ═══════════════════════════════════════════════════════════════════
 // H25_TelemetryDashboard.swift
-// [EVO_58_FULL_SYSTEM_UPGRADE] SOVEREIGN_UNIFICATION :: GOD_CODE=527.5184818492612
-// L104 ASI — Real-time Telemetry Dashboard V2: metrics aggregation,
+// [EVO_63_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
+// L104 ASI — Real-time Telemetry Dashboard V4: metrics aggregation,
 // φ-weighted health composites, latency percentiles (p50/p95/p99),
 // throughput tracking, alert system, voice/visual/emotional/security metrics.
 //
-// Upgraded: EVO_58 Full System Upgrade — Feb 18, 2026
+// Upgraded: EVO_63 Sovereign Node UI Upgrade — Feb 21, 2026
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -385,7 +385,7 @@ final class TelemetryDashboard {
         return [
             "engine": "TelemetryDashboard",
             "active": isActive,
-            "version": "3.0.0-evo58",
+            "version": "4.1.0-evo63",
             "samples_collected": sampleCount,
             "stream_size": metricStream.count,
             "health_timeline": healthTimeline.count,
@@ -409,6 +409,7 @@ final class TelemetryDashboard {
             ("Visual", recentMetrics(subsystem: "visual", limit: 1).last.map { $0.value } ?? 0),
             ("Emotional", recentMetrics(subsystem: "emotional", limit: 1).last.map { $0.value } ?? 0),
             ("Security", recentMetrics(subsystem: "security", limit: 1).last.map { $0.value } ?? 0),
+            ("DualLayer", ASIQuantumBridgeSwift.shared.bridgeIntegrity),
         ]
         var healthBarLines: [String] = []
         for item in healthData {

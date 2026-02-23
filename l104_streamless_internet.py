@@ -79,16 +79,22 @@ class StreamlessInternet:
         Uses actual research URLs based on query.
         """
         logger.info(f"--- [STREAMLESS]: SEARCHING FOR '{query}' ---")
-        # Real research URLs - these are actual endpoints
-        encoded_query = query.replace(' ', '+')
-        wiki_query = query.replace(' ', '_')
+        # Real research URLs - these are actual endpoints with better rate limits
+        encoded_query = query.replace(' ', '+').replace('_', '+')
+
+        # Use different sources to avoid rate limiting
         real_urls = [
-            f"https://arxiv.org/search/?query={encoded_query}&searchtype=all",
-            f"https://en.wikipedia.org/wiki/{wiki_query}",
-            f"https://api.semanticscholar.org/graph/v1/paper/search?query={encoded_query}&limit=5",
-            f"https://export.arxiv.org/api/query?search_query=all:{encoded_query}&max_results=5",
-            f"https://www.nature.com/search?q={encoded_query}"
+            f"https://api.semanticscholar.org/graph/v1/paper/search?query={encoded_query}&limit=3",
+            f"https://export.arxiv.org/api/query?search_query=all:{encoded_query}&max_results=3",
+            f"https://www.nature.com/search?q={encoded_query}",
+            f"https://academic.oup.com/search-results?q={encoded_query}",
+            f"https://www.sciencedirect.com/search?qs={encoded_query}"
         ]
+
+        # Add delay to avoid rate limiting
+        import asyncio
+        await asyncio.sleep(0.5)
+
         logger.info(f"--- [STREAMLESS]: REAL URLS: {len(real_urls)} sources ---")
         return await self.parallel_ingestion(real_urls[:limit])
 

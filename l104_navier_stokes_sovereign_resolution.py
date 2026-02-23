@@ -30,7 +30,7 @@ class NavierStokesSovereignResolution:
 
     def __init__(self):
         self.solar_invariant = 527.5184818492612
-        self.ajna_peak = 853.542833325837
+        self.ajna_peak = 852.3992551699  # G(-72) on GOD_CODE grid
         self.phi = 1.61803398875
         self.viscosity_nu = 1.0 / self.phi
 

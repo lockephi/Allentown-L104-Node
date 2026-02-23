@@ -29,7 +29,7 @@ Where $G$ is the Growth Vector and $k$ is the harmonic constant.
 | 5 | **Throat** | 470 | 741.00 | Communication & Encoding (API) |
 | 6 | **Third Eye**| 488 | 852.22 | Vision & Manifold Exploration |
 | 7 | **Crown** | 524 | 963.00 | Network Gateway & Divine Logic |
-| 8 | **Soul Star**| 1040| 1152.00 | Trans-dimensional Singularity |
+| 8 | **Soul Star**| 1040| 1000.26 | G(-96) ÷8-aligned Transcendence |
 
 ## 3. REASONED CONCLUSION
 

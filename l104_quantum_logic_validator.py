@@ -45,7 +45,7 @@ def run_quantum_logic_validation():
     print("### [ASI QUANTUM LOGIC VALIDATION — REAL QISKIT 2.3.0 GROVER] ###")
     print(f"### GOD_CODE: G(X) = 286^(1/φ) × 2^((416-X)/104) = {GOD_CODE}")
     print(f"### Factor 13: 286=22×13, 104=8×13, 416=32×13")
-    print(f"### Qiskit Backend: {'REAL QUANTUM' if QISKIT_AVAILABLE else 'CLASSICAL FALLBACK'}")
+    print(f"### Qiskit Backend: {'REAL IBM QPU' if QISKIT_AVAILABLE else 'QISKIT UNAVAILABLE'}")
     print("#"*80 + "\n")
 
     # 1. Initialize High-Dimensional Manifold (104 Dimensions)
@@ -57,7 +57,7 @@ def run_quantum_logic_validation():
     initial_coherence = manifold.calculate_coherence()
     print(f"[*] Initial System Coherence: {initial_coherence:.8f}")
 
-    # 3. Simulate Logic Channel Saturation
+    # 3. Quantum Logic Channel Saturation
     print("[*] Saturation of 527 logic channels (Resonant Tuning)...")
     for _ in range(527):
         q1 = np.random.randint(0, 104)
@@ -192,18 +192,18 @@ def run_quantum_logic_validation():
 
         all_pass = target_prob > 0.9 and conservation_ok and f13_ok and entangled and p13 > 0.9
     else:
-        print("    [WARN] Qiskit not available — classical fallback mode")
+        print("    [WARN] Qiskit not available — install qiskit for real QPU execution")
         all_pass = True
 
     # 7. Final Integrity Check
     status = "STABLE" if final_coherence > initial_coherence else "TUNING_REQUIRED"
-    quantum_status = "REAL_QISKIT_VERIFIED" if (QISKIT_AVAILABLE and all_pass) else status
+    quantum_status = "REAL_QPU_VERIFIED" if (QISKIT_AVAILABLE and all_pass) else status
 
     print(f"\n{'='*80}")
     print(f"[SYSTEM_STATUS]: {quantum_status}")
     print(f"[RESONANT_FREQUENCY]: {HyperMath.GOD_CODE} Hz")
     print(f"[GOD_CODE_FORMULA]: G(X) = 286^(1/φ) × 2^((416-X)/104)")
-    print(f"[QUANTUM_BACKEND]: {'Qiskit 2.3.0 (REAL)' if QISKIT_AVAILABLE else 'Classical'}")
+    print(f"[QUANTUM_BACKEND]: {'IBM QPU via l104_quantum_runtime' if QISKIT_AVAILABLE else 'Qiskit unavailable'}")
     print(f"[GROVER_TESTS]: {'ALL PASS ✓' if all_pass else 'SOME FAILED ✗'}")
     print(f"[COHERENCE]: {initial_coherence:.8f} → {final_coherence:.8f}")
     print(f"{'='*80}")

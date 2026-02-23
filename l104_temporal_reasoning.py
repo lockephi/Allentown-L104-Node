@@ -24,6 +24,19 @@ from enum import Enum, auto
 from collections import defaultdict
 from datetime import datetime, timedelta
 import hashlib
+import logging
+
+logger = logging.getLogger("L104_TEMPORAL_REASONING")
+
+try:
+    from l104_asi.pipeline_telemetry import PipelineTelemetry
+except ImportError:
+    PipelineTelemetry = None
+
+try:
+    from l104_asi.pipeline_circuit_breaker import PipelineCircuitBreaker
+except ImportError:
+    PipelineCircuitBreaker = None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -36,7 +49,11 @@ PHI = (1 + math.sqrt(5)) / 2
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = (1 + 5**0.5) / 2
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+ALPHA_FINE = 0.0072973525693
+LATTICE_THERMAL_FRICTION = -(ALPHA_FINE * PHI) / (2 * math.pi * 104)
 FEIGENBAUM = 4.669201609102990671853
+
+VERSION = "1.0.0"
 
 class TemporalMode(Enum):
     """Temporal reasoning modes."""
@@ -122,6 +139,37 @@ class TemporalReasoningEngine:
 
         # Create primary timeline
         self.timelines["primary"] = Timeline("primary")
+
+        # ── Pipeline telemetry & circuit breaker ──
+        self._telemetry = None
+        self._cb = None
+        try:
+            if PipelineTelemetry is not None:
+                self._telemetry = PipelineTelemetry("temporal_reasoning")
+        except Exception:
+            pass
+        try:
+            if PipelineCircuitBreaker is not None:
+                self._cb = PipelineCircuitBreaker("temporal_reasoning", failure_threshold=5, reset_timeout=30)
+        except Exception:
+            pass
+
+        logger.info("[TEMPORAL_REASONING v%s] online — telemetry=%s, cb=%s", VERSION, self._telemetry is not None, self._cb is not None)
+
+    def get_status(self) -> Dict[str, Any]:
+        """Return engine status for pipeline introspection."""
+        return {
+            "module": "temporal_reasoning",
+            "version": VERSION,
+            "god_code": GOD_CODE,
+            "lattice_friction": LATTICE_THERMAL_FRICTION,
+            "telemetry_active": self._telemetry is not None,
+            "circuit_breaker_active": self._cb is not None,
+            "timelines": len(self.timelines),
+            "events": len(self.events),
+            "temporal_laws": len(self.temporal_laws),
+            "subsystems": ["timelines", "causal_graph", "temporal_laws"],
+        }
 
     def set_current_time(self, time: float):
         """Set the current moment in time."""

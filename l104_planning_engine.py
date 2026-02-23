@@ -28,6 +28,19 @@ from dataclasses import dataclass, field
 from collections import defaultdict, deque
 from enum import Enum
 import time
+import logging
+
+logger = logging.getLogger("L104_PLANNING_ENGINE")
+
+try:
+    from l104_asi.pipeline_telemetry import PipelineTelemetry
+except ImportError:
+    PipelineTelemetry = None
+
+try:
+    from l104_asi.pipeline_circuit_breaker import PipelineCircuitBreaker
+except ImportError:
+    PipelineCircuitBreaker = None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -43,7 +56,9 @@ import time
 
 PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
-PLANNING_VERSION = "1.0.0"
+ALPHA_FINE = 0.0072973525693
+LATTICE_THERMAL_FRICTION = -(ALPHA_FINE * PHI) / (2 * math.pi * 104)
+VERSION = "2.0.0"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 1. STRIPS PLANNER - Classical AI Planning
@@ -571,6 +586,34 @@ class L104PlanningCore:
         self.temporal = TemporalPlanner()
         self.goal_decomposer = GoalDecomposer()
         self._setup_default_rules()
+
+        # ── Pipeline telemetry & circuit breaker ──
+        self._telemetry = None
+        self._cb = None
+        try:
+            if PipelineTelemetry is not None:
+                self._telemetry = PipelineTelemetry("planning_engine")
+        except Exception:
+            pass
+        try:
+            if PipelineCircuitBreaker is not None:
+                self._cb = PipelineCircuitBreaker("planning_engine", failure_threshold=5, reset_timeout=30)
+        except Exception:
+            pass
+
+        logger.info("[PLANNING_ENGINE v%s] online — telemetry=%s, cb=%s", VERSION, self._telemetry is not None, self._cb is not None)
+
+    def get_status(self) -> Dict[str, Any]:
+        """Return engine status for pipeline introspection."""
+        return {
+            "module": "planning_engine",
+            "version": VERSION,
+            "god_code": GOD_CODE,
+            "lattice_friction": LATTICE_THERMAL_FRICTION,
+            "telemetry_active": self._telemetry is not None,
+            "circuit_breaker_active": self._cb is not None,
+            "subsystems": ["strips_planner", "htn_planner", "temporal_planner", "goal_decomposer"],
+        }
 
     def _setup_default_rules(self):
         """Setup default decomposition rules."""

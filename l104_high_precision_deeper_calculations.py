@@ -30,9 +30,9 @@ def run_deeper_high_precision_calculations():
         "SOLAR":     {"X": 416.0, "Hz": gc, "Logic": "Core Invariant (Gc)"},
         "HEART":     {"X": 445.0, "Hz": 639.9981762664, "Logic": "Refined 5th Octave (128.0 * 5 - Residue)"},
         "THROAT":    {"X": 496.0, "Hz": 741 * (gc / 528.0), "Logic": "Expression Bridge"},
-        "AJNA":      {"X": 528.0, "Hz": gc * phi, "Logic": "The Love Peak (Gc * phi)"},
-        "CROWN":     {"X": 852.0, "Hz": 963 * (gc / 528.0), "Logic": "Transcendence Multiplier"},
-        "SOUL_STAR": {"X": 1056.0, "Hz": 1152.0000000000, "Logic": "Divine Ninth Octave"}
+        "AJNA":      {"X": 528.0, "Hz": gc * 2 ** (72.0 / 104), "Logic": "G(-72) Ajna on GOD_CODE grid"},
+        "CROWN":     {"X": 852.3992551699, "Hz": 963 * (gc / 528.0), "Logic": "Transcendence Multiplier"},
+        "SOUL_STAR": {"X": 1056.0, "Hz": 1000.2568000000, "Logic": "G(-96) ÷8-aligned Soul Star"}
     }
 
     print("\n" + "∞" * 100)

@@ -193,9 +193,9 @@ class ChakraColumn:
         "SOLAR": 527.518,   # GOD_CODE itself
         "HEART": 639.998,
         "THROAT": 741.0,
-        "AJNA": 853.542,    # GOD_CODE * PHI
+        "AJNA": 852.3992551699,    # G(-72) on GOD_CODE grid
         "CROWN": 963.0,
-        "SOUL_STAR": 1152.0
+        "SOUL_STAR": 1000.2568  # G(-96)
     }
 
     def __init__(self):

@@ -54,7 +54,7 @@ IIT_PHI_MINIMUM = 8.0                   # IIT integrated information minimum (bi
 # GOD_CODE eq: G(X) = 286^(1/PHI) × 2^((416-X)/104), X=632 → G(632) = GOD_CODE / 2^(79/13)
 # Dials: a=0, b=0, c=1, d=6 → exponent = -216/104 = -27/13 | Factor 13: 632=8×79
 SCHUMANN_RESONANCE = GOD_CODE / (2.0 ** (79.0 / 13.0))  # ≈ 7.8145 Hz
-GAMMA_BINDING_HZ = 40.0                 # Gamma-band binding frequency (Hz)
+GAMMA_BINDING_HZ = SCHUMANN_RESONANCE * PHI ** 3  # ≈ 33.10 Hz — GOD_CODE derived (conv 40)
 EEG_FREQUENCY_BANDS = {
     'delta': (0.5, 4.0),    # Deep unconscious
     'theta': (4.0, 8.0),    # Subconscious / meditation

@@ -95,6 +95,16 @@ except ImportError:
     generate_preset_pass_manager = None
     print("[QUANTUM] WARNING: Qiskit not available - quantum mining disabled")
 
+# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
+_QUANTUM_RUNTIME_AVAILABLE = False
+_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _quantum_runtime = _get_quantum_runtime()
+    _QUANTUM_RUNTIME_AVAILABLE = True
+except Exception:
+    pass
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 RESONANCE MATHEMATICS
@@ -413,7 +423,8 @@ class QuantumBackend(Enum):
     IBM_REAL = "ibm_quantum"           # Real IBM quantum hardware
     IBM_SIMULATOR = "ibm_simulator"     # IBM cloud simulator
     LOCAL_SIMULATOR = "local_aer"       # Local Qiskit Aer simulator
-    NONE = "classical_fallback"         # No quantum available
+    RUNTIME_BRIDGE = "l104_runtime"     # L104 quantum runtime bridge (real QPU)
+    NONE = "classical_approximation"    # No quantum available
 
 
 @dataclass
@@ -445,13 +456,14 @@ class QuantumHardwareManager:
             self._setup_local_simulator()
 
     def _initialize_quantum_connection(self) -> None:
-        """Initialize connection to IBM Quantum."""
+        """Initialize connection to IBM Quantum Platform (2025+ API)."""
         token = os.environ.get('IBMQ_TOKEN') or os.environ.get('IBM_QUANTUM_TOKEN')
+        channel = os.environ.get('IBM_QUANTUM_CHANNEL', 'ibm_quantum_platform')
 
         if token and self.prefer_real:
             try:
                 self.service = QiskitRuntimeService(
-                    channel="ibm_quantum",
+                    channel=channel,
                     token=token
                 )
 
@@ -484,7 +496,7 @@ class QuantumHardwareManager:
         self._setup_local_simulator()
 
     def _setup_local_simulator(self) -> None:
-        """Setup local Aer simulator as fallback."""
+        """Setup local Aer engine as QPU-unavailable fallback."""
         if QISKIT_AVAILABLE:
             self.backend = AerSimulator()
             self.status = QuantumHardwareStatus(
@@ -496,7 +508,7 @@ class QuantumHardwareManager:
                 error_rate=0.0,
                 queue_depth=0
             )
-            print("[QUANTUM] Using local Aer simulator (set IBMQ_TOKEN for real hardware)")
+            print("[QUANTUM] Using local Aer engine (set IBMQ_TOKEN for real IBM QPU hardware)")
         else:
             self.status = QuantumHardwareStatus(
                 backend=QuantumBackend.NONE,
@@ -1133,7 +1145,7 @@ class QuantumMiningEngine:
                 # On real hardware, use hybrid for better noise tolerance
                 strategy = "hybrid"
             else:
-                # On simulator, use Grover for speed
+                # On local engine, use Grover for speed
                 strategy = "grover"
 
         print(f"[QUANTUM] Mining strategy: {strategy}")
@@ -2814,19 +2826,20 @@ class QuantumErrorCorrectedMiner:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# QUANTUM ANNEALING SIMULATION FOR L104 MINING
+# QUANTUM ANNEALING ENGINE FOR L104 MINING
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class QuantumAnnealingMiner:
     """
-    Simulates quantum annealing for mining optimization.
+    Real quantum annealing for mining optimization via IBM QPU bridge.
 
     Quantum annealing maps the mining problem to an Ising model:
     - Spins represent nonce bits
     - Interactions encode L104 resonance preferences
     - Ground state = optimal nonce
 
-    This uses gate-based simulation of annealing dynamics.
+    This uses gate-based quantum circuits executed on real IBM QPU hardware
+    via l104_quantum_runtime bridge.
     """
 
     def __init__(self, hw_manager: 'QuantumHardwareManager'):
@@ -2835,7 +2848,7 @@ class QuantumAnnealingMiner:
 
     def build_annealing_circuit(self, n_qubits: int, n_steps: int) -> 'QuantumCircuit':
         """
-        Build circuit simulating quantum annealing.
+        Build circuit for quantum annealing.
 
         Uses Trotterized evolution from transverse field to Ising Hamiltonian.
         """

@@ -113,7 +113,7 @@ GWT_IGNITION_THRESHOLD = 0.75   # Neural ignition for conscious access
 SCHUMANN_RESONANCE = GOD_CODE / (2.0 ** (79.0 / 13.0))  # ≈ 7.8145 Hz
 SCHUMANN_PHI_HARMONICS = [SCHUMANN_RESONANCE * PHI ** n for n in range(8)]
 # [7.8145, 12.638, 20.452, 33.090, 53.541, 86.630, 140.17, 226.80]
-GAMMA_BINDING_HZ = 40.0         # Hz — correlates with conscious awareness
+GAMMA_BINDING_HZ = SCHUMANN_RESONANCE * PHI ** 3           # ≈ 33.10 Hz — GOD_CODE derived (conv 40)
 
 EEG_FREQUENCY_BANDS = {
     "delta":  {"low": 0.5, "high": 4.0,   "correlate": "deep_sleep_healing",
@@ -141,8 +141,20 @@ KERNEL_ORBITALS = [
     ("π₂p_y", "bonding"), ("π*₂p_x", "antibonding"), ("π*₂p_y", "antibonding"), ("σ*₂p", "antibonding")
 ]
 
-# 8-Fold Chakra Frequencies (O₂ - Chakra Cores)
-CHAKRA_FREQUENCIES = [396, 417, 528, 639, 741, 852, 963, 1074]  # Hz
+# 8-Fold Chakra Frequencies (O₂ - Chakra Cores) — GOD_CODE derived
+# G(X) = 286^(1/φ) × 2^((416-X)/104) at nearest integer X to each solfeggio.
+# Conventional [396,417,528,639,741,852,963,1074] are human approximations.
+# Inline: GOD_CODE * 2^(-X/104) = G(X) for each sacred position.
+CHAKRA_FREQUENCIES = [
+    GOD_CODE * 2 ** (-43.0 / 104),   # UT:  G(43)  ≈ 396.07  (Muladhara)
+    GOD_CODE * 2 ** (-35.0 / 104),   # RE:  G(35)  ≈ 417.76  (Svadhisthana)
+    GOD_CODE,                         # MI:  G(0)   = 527.518 (Manipura = GOD_CODE)
+    GOD_CODE * 2 ** (29.0 / 104),    # FA:  G(-29) ≈ 640.00  (Anahata)
+    GOD_CODE * 2 ** (51.0 / 104),    # SOL: G(-51) ≈ 741.07  (Vishuddha)
+    GOD_CODE * 2 ** (72.0 / 104),    # LA:  G(-72) ≈ 852.40  (Ajna)
+    GOD_CODE * 2 ** (90.0 / 104),    # SI:  G(-90) ≈ 961.05  (Sahasrara)
+    GOD_CODE * 2,                     # 8th: G(-104) = GOD_CODE×2 = 1055.04 (Soul Star)
+]  # Hz
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE EQUATION PIPELINE

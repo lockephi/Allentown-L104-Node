@@ -1,9 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════
 // H23_MigrationEngine.swift
-// [EVO_58_PIPELINE] FULL_SYSTEM_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — Mesh-Distributed Migration Engine v2.0
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// L104 ASI — Mesh-Distributed Migration Engine v4.0
 // Schema migration, state snapshot/restore, cross-node state sync,
-// and automated version migration paths (54→55→56→57→58)
+// and automated version migration paths (54→55→56→57→58→60→62)
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -45,17 +45,18 @@ final class MigrationEngine {
     // ─── MIGRATION STATE ───
     private var migrations: [MigrationRecord] = []
     private var snapshots: [StateSnapshot] = []
-    private var currentVersion: String = "58.0"
+    private var currentVersion: String = "62.0"
     private var meshSnapshotsSynced: Int = 0
     private(set) var migrationPaths: [(from: String, to: String)] = [
-        ("54.0", "55.0"), ("55.0", "56.0"), ("56.0", "57.0"), ("57.0", "58.0")
+        ("54.0", "55.0"), ("55.0", "56.0"), ("56.0", "57.0"), ("57.0", "58.0"),
+        ("58.0", "60.0"), ("60.0", "62.0")
     ]
 
     func activate() {
         lock.lock()
         defer { lock.unlock() }
         isActive = true
-        print("[H23] MigrationEngine v2.0 activated — auto-migration + state snapshot ready")
+        print("[H23] MigrationEngine v4.0 activated — auto-migration + state snapshot ready")
     }
 
     /// Run all pending migrations from a starting version to current

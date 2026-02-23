@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H07_ASIEvolver.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — ASI Evolver (Autonomous Evolution Engine)
 //
 // Multi-phase evolution system: conceptual blending, analogies,
@@ -126,7 +126,8 @@ class ASIEvolver: NSObject {
             "evolvedParadoxes": Array(evolvedParadoxes.suffix(200)),
             "evolvedAnalogies": Array(evolvedAnalogies.suffix(200)),
             "evolvedNarratives": Array(evolvedNarratives.suffix(200)),
-            "ideaTemperature": ideaTemperature
+            "ideaTemperature": ideaTemperature,
+            "thoughts": Array(thoughts.suffix(50))
         ]
     }
 
@@ -156,6 +157,7 @@ class ASIEvolver: NSObject {
         evolvedAnalogies = dict["evolvedAnalogies"] as? [String] ?? []
         evolvedNarratives = dict["evolvedNarratives"] as? [String] ?? []
         ideaTemperature = dict["ideaTemperature"] as? Double ?? 0.7
+        thoughts = dict["thoughts"] as? [String] ?? []
     }
 
     func start() {

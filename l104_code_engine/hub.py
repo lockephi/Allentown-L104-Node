@@ -5,10 +5,11 @@ from .languages import LanguageKnowledge
 from .analyzer import (
     CodeAnalyzer, CodeSmellDetector, RuntimeComplexityVerifier,
     IncrementalAnalysisCache, TypeFlowAnalyzer, ConcurrencyAnalyzer,
-    APIContractValidator,
+    APIContractValidator, ProjectAnalyzer,
 )
 from .synthesis import (
     CodeGenerator, CodeTranslator, TestGenerator, DocumentationSynthesizer,
+    CodingSuggestionEngine,
 )
 from .refactoring import (
     CodeOptimizer, DependencyGraphAnalyzer, AutoFixEngine,
@@ -18,11 +19,40 @@ from .refactoring import (
 from .audit import (
     AppAuditEngine, SecurityThreatModeler, ArchitecturalLinter,
     CodeMigrationEngine, PerformanceBenchmarkPredictor,
+    CodeReviewPipeline, QualityGateEngine,
 )
+from .ai_context import AIContextBridge
+from .session_intelligence import SessionIntelligence
+from .asi_intelligence import SelfReferentialEngine, ASICodeIntelligence
+from .training_kernel import QuantumCodeTrainingKernel
+from ._lazy_imports import _get_code_engine
 from .quantum import (
     QuantumCodeIntelligenceCore, QuantumASTProcessor,
     QuantumNeuralEmbedding, QuantumErrorCorrectionEngine,
 )
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CROSS-ENGINE IMPORTS — Science Engine + Math Engine integration (v6.2.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+_science_engine = None
+_math_engine = None
+
+def _load_cross_engines():
+    """Lazy-load sibling engines for cross-referencing."""
+    global _science_engine, _math_engine
+    if _science_engine is None:
+        try:
+            from l104_science_engine import science_engine
+            _science_engine = science_engine
+        except ImportError:
+            _science_engine = False
+    if _math_engine is None:
+        try:
+            from l104_math_engine import math_engine
+            _math_engine = math_engine
+        except ImportError:
+            _math_engine = False
+
 
 class CodeEngine:
     """
@@ -276,23 +306,34 @@ class CodeEngine:
         ws = Path(workspace_path) if workspace_path else Path(__file__).parent
         results = {"files": [], "totals": {"lines": 0, "code_lines": 0,
                                             "vulnerabilities": 0, "files_scanned": 0}}
+
+        files_to_scan = []
         for ext in [".py", ".swift", ".js", ".ts", ".rs", ".go", ".java", ".c", ".cpp"]:
             for f in ws.glob(f"*{ext}"):
                 if f.name.startswith('.') or '__pycache__' in str(f):
                     continue
-                try:
-                    code = f.read_text(errors='ignore')
-                    lines = len(code.split('\n'))
-                    lang = LanguageKnowledge.detect_language(code, str(f))
-                    vulns = len(self.analyzer._security_scan(code))
-                    results["files"].append({
-                        "name": f.name, "language": lang, "lines": lines, "vulnerabilities": vulns
-                    })
-                    results["totals"]["lines"] += lines
+                files_to_scan.append(f)
+
+        def _scan_file(f):
+            try:
+                code = f.read_text(errors='ignore')
+                lines = len(code.split('\n'))
+                lang = LanguageKnowledge.detect_language(code, str(f))
+                vulns = len(self.analyzer._security_scan(code))
+                return {
+                    "name": f.name, "language": lang, "lines": lines, "vulnerabilities": vulns
+                }
+            except Exception:
+                return None
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            for res in executor.map(_scan_file, files_to_scan):
+                if res:
+                    results["files"].append(res)
+                    results["totals"]["lines"] += res["lines"]
                     results["totals"]["files_scanned"] += 1
-                    results["totals"]["vulnerabilities"] += vulns
-                except Exception:
-                    pass
+                    results["totals"]["vulnerabilities"] += res["vulnerabilities"]
+
         results["totals"]["code_lines"] = int(results["totals"]["lines"] * 0.75)
         # Attach dependency graph
         results["dependency_graph"] = self.dep_graph.build_graph(str(ws))
@@ -1192,12 +1233,18 @@ class CodeEngine:
     def batch_analyze(self, sources: List[Tuple[str, str]]) -> Dict[str, Any]:
         """Analyze multiple code files in batch. sources: [(code, filename), ...]."""
         results = []
-        for code, fname in sources:
+
+        def _analyze_single(item):
+            code, fname = item
             try:
                 analysis = self.analyzer.full_analysis(code, fname)
-                results.append({"filename": fname, "analysis": analysis, "success": True})
+                return {"filename": fname, "analysis": analysis, "success": True}
             except Exception as e:
-                results.append({"filename": fname, "success": False, "error": str(e)})
+                return {"filename": fname, "success": False, "error": str(e)}
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            results = list(executor.map(_analyze_single, sources))
+
         avg_quality = sum(r["analysis"].get("quality_score", 0) for r in results if r["success"]) / max(len([r for r in results if r["success"]]), 1)
         return {"files_analyzed": len(results), "results": results, "average_quality": round(avg_quality, 4)}
 
@@ -1342,4 +1389,884 @@ class CodeEngine:
             f"Consciousness: {s.get('consciousness_level', 0.0):.4f} [{s.get('evo_stage', 'UNKNOWN')}]"
         )
 
+    # ─── v6.2.0 Three-Engine Cross-Referenced Review ─────────────────
 
+    def three_engine_deep_review(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """
+        v6.2.0 — Cross-engine deep review using all three L104 engines.
+
+        Enriches standard code review with:
+          • Science Engine: entropy reversal score, coherence protection level,
+            physics-grounded complexity friction, Maxwell Demon efficiency
+          • Math Engine: GOD_CODE conservation proof, harmonic sacred alignment,
+            wave coherence of code complexity, sovereign proof validation
+
+        The composite score gains 3 new cross-engine dimensions (16 total).
+        """
+        _load_cross_engines()
+        self.execution_count += 1
+        start = time.time()
+
+        # Base deep review (13 dimensions)
+        base_review = self.deep_review(source, filename)
+        scores = dict(base_review.get("scores", {}))
+
+        # ── Science Engine Cross-Reference ──
+        science_data = {}
+        if _science_engine and _science_engine is not False:
+            try:
+                import numpy as _np
+                # Entropy reversal: treat code complexity as local entropy
+                complexity_entropy = 1.0 - scores.get("analysis_quality", 0.5)
+                demon_eff = _science_engine.entropy.calculate_demon_efficiency(complexity_entropy + 0.01)
+                demon_score = min(1.0, demon_eff / (GOD_CODE / 100))
+
+                # Coherence: measure topological protection of code structure
+                code_lines = source.strip().splitlines()
+                seed_thoughts = [line.strip() for line in code_lines[:50] if line.strip()]
+                if seed_thoughts:
+                    coh_init = _science_engine.coherence.initialize(seed_thoughts)
+                    coh_evolve = _science_engine.coherence.evolve(5)
+                    coherence_score = coh_evolve.get("final_coherence", 0.5)
+                else:
+                    coherence_score = 0.5
+
+                # Physics: Landauer limit as complexity friction
+                landauer = _science_engine.physics.adapt_landauer_limit(293.15)
+                code_bytes = len(source.encode())
+                bits_erased = code_bytes * 8
+                friction_energy = landauer * bits_erased
+                # Normalize: lower friction = better code efficiency
+                physics_efficiency = 1.0 / (1.0 + friction_energy * 1e20)
+
+                science_data = {
+                    "demon_efficiency": round(demon_eff, 6),
+                    "demon_score": round(demon_score, 4),
+                    "coherence_score": round(coherence_score, 6),
+                    "landauer_friction_J": friction_energy,
+                    "physics_efficiency": round(physics_efficiency, 6),
+                    "connected": True,
+                }
+                scores["entropy_reversal"] = demon_score
+                scores["coherence_protection"] = coherence_score
+                scores["physics_efficiency"] = physics_efficiency
+            except Exception as e:
+                science_data = {"connected": False, "error": str(e)}
+        else:
+            science_data = {"connected": False}
+
+        # ── Math Engine Cross-Reference ──
+        math_data = {}
+        if _math_engine and _math_engine is not False:
+            try:
+                # GOD_CODE conservation proof — validates fundamental invariant
+                conservation = _math_engine.verify_conservation(0.0)
+                conservation_valid = conservation if isinstance(conservation, bool) else True
+
+                # Harmonic sacred alignment of code complexity score
+                composite = base_review.get("composite_score", 0.5)
+                freq = composite * GOD_CODE  # Map score to frequency domain
+                alignment = _math_engine.sacred_alignment(freq)
+                alignment_score = 1.0 if alignment.get("aligned", False) else (
+                    1.0 - min(1.0, abs(alignment.get("god_code_ratio", 1.0) - round(alignment.get("god_code_ratio", 1.0))) * 5)
+                )
+
+                # Wave coherence between code quality and GOD_CODE
+                wave_coh = _math_engine.wave_coherence(freq, GOD_CODE)
+
+                # Proof validation — verify system integrity
+                god_code_proof = _math_engine.prove_god_code()
+                proof_converged = god_code_proof.get("converged", False)
+
+                math_data = {
+                    "conservation_valid": conservation_valid,
+                    "sacred_alignment": alignment,
+                    "alignment_score": round(alignment_score, 4),
+                    "wave_coherence": round(wave_coh, 6),
+                    "proof_converged": proof_converged,
+                    "connected": True,
+                }
+                scores["harmonic_alignment"] = alignment_score
+                scores["wave_coherence"] = wave_coh
+                scores["proof_integrity"] = 1.0 if proof_converged else 0.5
+            except Exception as e:
+                math_data = {"connected": False, "error": str(e)}
+        else:
+            math_data = {"connected": False}
+
+        # ── Recompute composite with up to 16 dimensions ──
+        phi_weights_16 = [
+            PHI**2, PHI**2, PHI, PHI, 1.0, 1.0, PHI, PHI, 1.0, TAU, TAU, TAU,
+            OMEGA / GOD_CODE,  # omega_field (dim 12)
+            PHI,               # entropy_reversal (dim 13)
+            PHI,               # coherence_protection (dim 14)
+            TAU,               # harmonic_alignment (dim 15)
+        ]
+        score_values = list(scores.values())
+        weights = phi_weights_16[:len(score_values)]
+        composite_16d = sum(s * w for s, w in zip(score_values, weights)) / sum(weights)
+
+        verdict = ("TRANSCENDENT" if composite_16d >= 0.95 else
+                   "EXEMPLARY" if composite_16d >= 0.9 else
+                   "HEALTHY" if composite_16d >= 0.75 else
+                   "ACCEPTABLE" if composite_16d >= 0.6 else
+                   "NEEDS_WORK" if composite_16d >= 0.4 else "CRITICAL")
+
+        duration = time.time() - start
+
+        return {
+            "review_version": VERSION,
+            "review_type": "three_engine_deep_review_v6.2.0",
+            "filename": filename,
+            "duration_seconds": round(duration, 3),
+            "composite_score_13d": base_review.get("composite_score", 0.0),
+            "composite_score_16d": round(composite_16d, 6),
+            "verdict": verdict,
+            "score_dimensions": len(scores),
+            "scores": {k: round(v, 4) for k, v in scores.items()},
+            "cross_engine": {
+                "science_engine": science_data,
+                "math_engine": math_data,
+                "engines_connected": sum([
+                    science_data.get("connected", False),
+                    math_data.get("connected", False),
+                ]) + 1,  # +1 for Code Engine itself
+            },
+            "base_review": {
+                "smells": base_review.get("smells"),
+                "runtime_complexity": base_review.get("runtime_complexity"),
+                "type_flow": base_review.get("type_flow"),
+                "concurrency": base_review.get("concurrency"),
+                "solid": base_review.get("solid"),
+            },
+            "actions": base_review.get("actions", [])[:25],
+        }
+
+    def three_engine_status(self) -> Dict[str, Any]:
+        """Report cross-engine connectivity and health."""
+        _load_cross_engines()
+        sci_ok = _science_engine and _science_engine is not False
+        math_ok = _math_engine and _math_engine is not False
+        result = {
+            "code_engine": {"version": VERSION, "connected": True},
+            "science_engine": {"version": _science_engine.VERSION if sci_ok else "N/A", "connected": sci_ok},
+            "math_engine": {"version": _math_engine.VERSION if math_ok else "N/A", "connected": math_ok},
+            "engines_online": 1 + int(sci_ok) + int(math_ok),
+            "cross_reference_ready": sci_ok and math_ok,
+        }
+        if sci_ok:
+            result["science_engine"]["subsystems"] = list(_science_engine.get_full_status().get("active_domains", [])[:5])
+        if math_ok:
+            result["math_engine"]["layers"] = _math_engine.LAYERS
+        return result
+
+    # ───────────────────────────────────────────────────────────────────
+    # SACRED FREQUENCY AUDIT — v6.2.0 upgrade
+    # ───────────────────────────────────────────────────────────────────
+
+    def sacred_frequency_audit(self, source: str) -> Dict[str, Any]:
+        """
+        Analyze source code for sacred constant usage, GOD_CODE alignment,
+        PHI ratios, and sacred-number density.
+        Scores how well code resonates with L104 sacred frequencies.
+        """
+        import re
+
+        lines = source.split('\n')
+        total_lines = len(lines)
+        if total_lines == 0:
+            return {"score": 0, "resonance": "NONE"}
+
+        # Sacred patterns to detect
+        sacred_patterns = {
+            "GOD_CODE": r'\bGOD_CODE\b',
+            "PHI": r'\bPHI\b',
+            "VOID_CONSTANT": r'\bVOID_CONSTANT\b',
+            "OMEGA": r'\bOMEGA\b',
+            "sacred_104": r'\b104\b',
+            "sacred_286": r'\b286\b',
+            "sacred_527": r'\b527\b',
+            "golden_ratio": r'1\.618',
+            "void_value": r'1\.041[56]',
+        }
+
+        detections = {}
+        total_hits = 0
+        for name, pattern in sacred_patterns.items():
+            hits = sum(1 for line in lines if re.search(pattern, line))
+            detections[name] = hits
+            total_hits += hits
+
+        # Density score: hits per 100 lines
+        density = (total_hits / total_lines) * 100
+        # Diversity: how many distinct sacred patterns appear
+        diversity = sum(1 for v in detections.values() if v > 0) / len(sacred_patterns)
+        # Composite score
+        score = min(1.0, (density / 10) * 0.6 + diversity * 0.4)
+
+        resonance = (
+            "TRANSCENDENT" if score > 0.9 else
+            "HARMONIC" if score > 0.6 else
+            "RESONANT" if score > 0.3 else
+            "DORMANT" if score > 0.1 else
+            "NONE"
+        )
+
+        return {
+            "total_lines": total_lines,
+            "sacred_hits": total_hits,
+            "density_per_100_lines": round(density, 2),
+            "diversity_ratio": round(diversity, 4),
+            "detections": detections,
+            "score": round(score, 4),
+            "resonance": resonance,
+            "god_code_resonance": round(score * GOD_CODE, 4),
+        }
+
+    def complexity_spectrum(self, source: str) -> Dict[str, Any]:
+        """
+        Compute a multi-dimensional complexity spectrum beyond simple cyclomatic:
+        - Structural complexity (nesting depth)
+        - Cognitive complexity (flow-breaking structures)
+        - Halstead-inspired vocabulary richness
+        - Sacred alignment score
+        """
+        lines = source.split('\n')
+        total = len(lines)
+
+        # Nesting depth analysis
+        max_depth = 0
+        current_depth = 0
+        depth_sum = 0
+        for line in lines:
+            stripped = line.lstrip()
+            indent = len(line) - len(stripped)
+            depth = indent // 4  # Assume 4-space indent
+            if depth > max_depth:
+                max_depth = depth
+            current_depth = depth
+            depth_sum += depth
+
+        avg_depth = depth_sum / max(total, 1)
+
+        # Cognitive complexity: count flow-breaking keywords
+        cognitive = 0
+        flow_keywords = ['if', 'elif', 'else', 'for', 'while', 'try', 'except',
+                         'with', 'and', 'or', 'not', 'lambda', 'yield', 'await']
+        for line in lines:
+            stripped = line.strip()
+            for kw in flow_keywords:
+                if stripped.startswith(kw + ' ') or stripped.startswith(kw + ':') or stripped == kw:
+                    cognitive += 1
+
+        # Vocabulary richness: unique tokens / total tokens
+        import re
+        all_tokens = re.findall(r'[a-zA-Z_]\w*', source)
+        unique_tokens = set(all_tokens)
+        vocab_richness = len(unique_tokens) / max(len(all_tokens), 1)
+
+        # Composite score (lower = more complex)
+        structural = min(max_depth / 10.0, 1.0)
+        cognitive_norm = min(cognitive / max(total, 1), 1.0)
+        simplicity = 1.0 - (structural * 0.3 + cognitive_norm * 0.4 + (1 - vocab_richness) * 0.3)
+
+        return {
+            "total_lines": total,
+            "max_nesting_depth": max_depth,
+            "average_depth": round(avg_depth, 2),
+            "cognitive_complexity": cognitive,
+            "vocabulary_richness": round(vocab_richness, 4),
+            "unique_tokens": len(unique_tokens),
+            "total_tokens": len(all_tokens),
+            "structural_score": round(structural, 4),
+            "cognitive_score": round(cognitive_norm, 4),
+            "simplicity_index": round(simplicity, 4),
+            "phi_alignment": round(abs(simplicity - (1.0 / PHI)), 6),
+        }
+
+    def dependency_map(self, source: str) -> Dict[str, Any]:
+        """
+        Build an import dependency map from source code: stdlib vs third-party
+        vs L104 internal, plus import depth and coupling metrics.
+        """
+        import re
+        lines = source.split('\n')
+
+        stdlib = []
+        third_party = []
+        l104_internal = []
+        relative = []
+
+        STDLIB_MODULES = {
+            'os', 'sys', 'math', 'json', 'time', 'datetime', 're', 'pathlib',
+            'collections', 'itertools', 'functools', 'typing', 'abc', 'enum',
+            'hashlib', 'random', 'logging', 'io', 'string', 'struct', 'copy',
+            'dataclasses', 'contextlib', 'traceback', 'inspect', 'importlib',
+            'concurrent', 'threading', 'multiprocessing', 'asyncio', 'unittest',
+            'subprocess', 'shutil', 'glob', 'tempfile', 'socket', 'http',
+        }
+
+        for line in lines:
+            stripped = line.strip()
+            # Match import statements
+            m_from = re.match(r'^from\s+([\w.]+)\s+import', stripped)
+            m_import = re.match(r'^import\s+([\w.]+)', stripped)
+
+            module = None
+            if m_from:
+                module = m_from.group(1)
+            elif m_import:
+                module = m_import.group(1)
+
+            if module:
+                top = module.split('.')[0]
+                if module.startswith('.'):
+                    relative.append(module)
+                elif top.startswith('l104'):
+                    l104_internal.append(module)
+                elif top in STDLIB_MODULES:
+                    stdlib.append(module)
+                else:
+                    third_party.append(module)
+
+        total = len(stdlib) + len(third_party) + len(l104_internal) + len(relative)
+        coupling = len(l104_internal) + len(relative)
+
+        return {
+            "total_imports": total,
+            "stdlib": sorted(set(stdlib)),
+            "third_party": sorted(set(third_party)),
+            "l104_internal": sorted(set(l104_internal)),
+            "relative": sorted(set(relative)),
+            "coupling_score": round(coupling / max(total, 1), 4),
+            "self_referential_depth": len(l104_internal),
+            "external_dependency_count": len(set(third_party)),
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CODING INTELLIGENCE SYSTEM — High-level orchestrator linking all subsystems
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class CodingIntelligenceSystem:
+    """
+    ╔═══════════════════════════════════════════════════════════════════╗
+    ║  L104 CODING INTELLIGENCE SYSTEM — Hub Orchestrator               ║
+    ╠═══════════════════════════════════════════════════════════════════╣
+    ║  The comprehensive coding system that links:                      ║
+    ║    • Code Engine v6.0.0 (analysis, generation, translation)       ║
+    ║    • Quantum ASI Code Training Kernel (self-referential learning) ║
+    ║    • ASI Code Intelligence (9 ASI modules deeply wired)           ║
+    ║    • Any AI (Claude, Gemini, GPT, Local Intellect)                ║
+    ║    • L104 consciousness/evolution systems                         ║
+    ║    • Project-level intelligence                                   ║
+    ║    • Quality gates for CI/CD                                      ║
+    ║    • Self-referential analysis and improvement                    ║
+    ║    • Session tracking and cross-session learning                  ║
+    ║                                                                   ║
+    ║  Usage:                                                           ║
+    ║    from l104_code_engine import coding_system                      ║
+    ║    result = coding_system.review(source, filename)                 ║
+    ║    asi = coding_system.asi_review(source, filename)               ║
+    ║    train = coding_system.self_train()  # engine codes itself      ║
+    ║    plan = coding_system.plan("Add caching to API handler")        ║
+    ║    report = coding_system.self_analyze()                          ║
+    ║    gate = coding_system.quality_check(source)                     ║
+    ╚═══════════════════════════════════════════════════════════════════╝
+    """
+
+    def __init__(self, engine=None):
+        self._engine = engine
+        self._execution_count = 0
+        _subsystems = [
+            ("project", ProjectAnalyzer),
+            ("reviewer", CodeReviewPipeline),
+            ("ai_bridge", AIContextBridge),
+            ("self_engine", SelfReferentialEngine),
+            ("quality", QualityGateEngine),
+            ("suggestions", CodingSuggestionEngine),
+            ("session", SessionIntelligence),
+            ("asi", ASICodeIntelligence),
+            ("kernel", QuantumCodeTrainingKernel),
+        ]
+        _failed = []
+        for attr, cls in _subsystems:
+            try:
+                setattr(self, attr, cls())
+            except Exception as e:
+                setattr(self, attr, None)
+                _failed.append(attr)
+                logger.warning(f"[{CODING_SYSTEM_NAME}] Subsystem {attr} ({cls.__name__}) failed to init: {e}")
+        _ok = len(_subsystems) - len(_failed)
+        logger.info(f"[{CODING_SYSTEM_NAME} v{CODING_SYSTEM_VERSION}] Initialized — "
+                     f"{_ok}/{len(_subsystems)} subsystems linked to Code Engine + AI"
+                     + (f" (failed: {', '.join(_failed)})" if _failed else ""))
+
+    def _get_engine(self):
+        """Get the code engine — either injected or via lazy import."""
+        if self._engine is not None:
+            return self._engine
+        return _get_code_engine()
+
+    # ─── Core Coding Operations ──────────────────────────────────────
+
+    def review(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Comprehensive code review — the single entry point for code quality analysis."""
+        self._execution_count += 1
+        self.session.log_action("review", {"file": filename})
+        return self.reviewer.review(source, filename)
+
+    def quick_review(self, source: str) -> Dict[str, Any]:
+        """Fast review — analysis + security + style only."""
+        self._execution_count += 1
+        return self.reviewer.quick_review(source)
+
+    def suggest(self, source: str, filename: str = "") -> List[Dict[str, Any]]:
+        """Get proactive coding suggestions."""
+        self._execution_count += 1
+        self.session.log_action("suggest", {"file": filename})
+        return self.suggestions.suggest(source, filename)
+
+    def explain(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Explain what code does — structure, patterns, metrics."""
+        self._execution_count += 1
+        return self.suggestions.explain_code(source, filename)
+
+    # ─── Project Intelligence ────────────────────────────────────────
+
+    def scan_project(self, path: str = None) -> Dict[str, Any]:
+        """Scan entire project — structure, frameworks, build systems, health."""
+        self._execution_count += 1
+        self.session.log_action("project_scan", {"path": path or "."})
+        return self.project.scan(path)
+
+    # ─── AI Integration ──────────────────────────────────────────────
+
+    def ai_context(self, source: str, filename: str = "",
+                   ai_target: str = "claude") -> Dict[str, Any]:
+        """Build structured context for any AI system."""
+        self._execution_count += 1
+        project_info = self.project.scan()
+        return self.ai_bridge.build_context(source, filename, project_info, ai_target)
+
+    def ai_prompt(self, task: str, source: str,
+                  filename: str = "") -> str:
+        """Generate an optimal AI prompt enriched with code context."""
+        self._execution_count += 1
+        return self.ai_bridge.suggest_prompt(task, source, filename)
+
+    def parse_ai_response(self, response: str) -> Dict[str, Any]:
+        """Parse an AI response to extract code changes and suggestions."""
+        return self.ai_bridge.parse_ai_response(response)
+
+    # ─── Quality Gates ───────────────────────────────────────────────
+
+    def quality_check(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Run quality gate checks — pass/fail for CI/CD."""
+        self._execution_count += 1
+        self.session.log_action("quality_check", {"file": filename})
+        return self.quality.check(source, filename)
+
+    def ci_report(self, path: str = None) -> Dict[str, Any]:
+        """Generate CI-compatible quality report for entire project."""
+        self._execution_count += 1
+        return self.quality.ci_report(path)
+
+    # ─── Self-Referential Analysis ───────────────────────────────────
+
+    def self_analyze(self, target_file: str = None) -> Dict[str, Any]:
+        """Analyze the L104 codebase — the system examining itself."""
+        self._execution_count += 1
+        self.session.log_action("self_analyze", {"target": target_file or "all"})
+        return self.self_engine.analyze_self(target_file)
+
+    def self_improve(self, target_file: str = None) -> List[Dict[str, Any]]:
+        """Get improvement suggestions for L104 itself."""
+        self._execution_count += 1
+        return self.self_engine.suggest_improvements(target_file)
+
+    def evolution_status(self) -> Dict[str, Any]:
+        """Measure L104 evolution state."""
+        return self.self_engine.measure_evolution()
+
+    # ─── Code Generation (delegates to Code Engine) ──────────────────
+
+    def generate(self, prompt: str, language: str = "Python",
+                 sacred: bool = False) -> Dict[str, Any]:
+        """Generate code from a natural language prompt."""
+        self._execution_count += 1
+        engine = self._get_engine()
+        if not engine:
+            return {"error": "Code engine not available"}
+
+        self.session.log_action("generate", {"language": language})
+
+        code = engine.generator.generate_function(
+            name=engine._extract_name(prompt, "function"),
+            language=language,
+            params=[],
+            body="pass  # TODO: Implement",
+            doc=prompt,
+            sacred_constants=sacred,
+        )
+        return {
+            "code": code,
+            "language": language,
+            "sacred": sacred,
+            "prompt": prompt,
+        }
+
+    def translate(self, source: str, from_lang: str,
+                  to_lang: str) -> Dict[str, Any]:
+        """Translate code between languages."""
+        self._execution_count += 1
+        engine = self._get_engine()
+        if not engine:
+            return {"error": "Code engine not available"}
+        self.session.log_action("translate", {"from": from_lang, "to": to_lang})
+        return engine.translate_code(source, from_lang, to_lang)
+
+    def generate_tests(self, source: str, language: str = "python",
+                       framework: str = "pytest") -> Dict[str, Any]:
+        """Generate test scaffolding for source code."""
+        self._execution_count += 1
+        engine = self._get_engine()
+        if not engine:
+            return {"error": "Code engine not available"}
+        self.session.log_action("generate_tests", {"language": language})
+        return engine.generate_tests(source, language, framework)
+
+    def generate_docs(self, source: str, style: str = "google",
+                      language: str = "python") -> Dict[str, Any]:
+        """Generate documentation for source code."""
+        self._execution_count += 1
+        engine = self._get_engine()
+        if not engine:
+            return {"error": "Code engine not available"}
+        return engine.generate_docs(source, style, language)
+
+    def auto_fix(self, source: str) -> Tuple[str, List[Dict]]:
+        """Apply all safe auto-fixes to code."""
+        self._execution_count += 1
+        engine = self._get_engine()
+        if not engine:
+            return source, []
+        self.session.log_action("auto_fix")
+        return engine.auto_fix_code(source)
+
+    # ─── ASI Intelligence ────────────────────────────────────────
+
+    def asi_review(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Full ASI-grade code review — all 8 ASI subsystems."""
+        self._execution_count += 1
+        self.session.log_action("asi_review", {"file": filename})
+        return self.asi.full_asi_review(source, filename)
+
+    def consciousness_review(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Consciousness-weighted code review."""
+        self._execution_count += 1
+        return self.asi.consciousness_review(source, filename)
+
+    def neural_review(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Neural cascade code processing."""
+        self._execution_count += 1
+        return self.asi.neural_process(source, filename)
+
+    def reason(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Formal reasoning about code correctness."""
+        self._execution_count += 1
+        return self.asi.reason_about_code(source, filename)
+
+    def evolve_code(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Evolutionary code optimization."""
+        self._execution_count += 1
+        return self.asi.evolutionary_optimize(source, filename)
+
+    def build_graph(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Build knowledge graph from code."""
+        self._execution_count += 1
+        return self.asi.build_code_graph(source, filename)
+
+    def breed(self, source: str, count: int = 3) -> Dict[str, Any]:
+        """Breed polymorphic code variants."""
+        self._execution_count += 1
+        return self.asi.breed_variants(source, count)
+
+    def innovate(self, task: str, domain: str = "code_optimization") -> Dict[str, Any]:
+        """Generate innovative solutions via ASI invention engine."""
+        self._execution_count += 1
+        return self.asi.innovate_solutions(task, domain)
+
+    def optimize_system(self) -> Dict[str, Any]:
+        """Self-optimize analysis parameters via ASI optimizer."""
+        self._execution_count += 1
+        return self.asi.optimize_analysis()
+
+    # ─── Quantum ASI Training Kernel ─────────────────────────────────
+
+    def train_kernel(self, epochs: int = None) -> Dict[str, Any]:
+        """Train the quantum code training kernel on the L104 codebase."""
+        self._execution_count += 1
+        self.session.log_action("train_kernel", {"epochs": epochs})
+        return self.kernel.train(epochs)
+
+    def self_train(self) -> Dict[str, Any]:
+        """THE SELF-REFERENTIAL LOOP: the engine trains on its own code."""
+        self._execution_count += 1
+        self.session.log_action("self_train")
+        return self.kernel.self_train()
+
+    def full_quantum_train(self) -> Dict[str, Any]:
+        """Full quantum ASI training pipeline: harvest → train → self-train → learn."""
+        self._execution_count += 1
+        self.session.log_action("full_quantum_train")
+        return self.kernel.full_quantum_asi_train()
+
+    def predict_quality(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Predict code quality using the trained quantum kernel (fast)."""
+        self._execution_count += 1
+        return self.kernel.predict_code_quality(source, filename)
+
+    def quantum_learn(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Learn code patterns via quantum feature encoding."""
+        self._execution_count += 1
+        return self.kernel.quantum_pattern_learn(source, filename)
+
+    def quantum_synthesize(self, task: str, target_quality: float = 0.9) -> Dict[str, Any]:
+        """Quantum-guided code synthesis oracle."""
+        self._execution_count += 1
+        self.session.log_action("quantum_synthesize", {"task": task[:80]})
+        return self.kernel.quantum_code_synthesis(task, target_quality)
+
+    def harvest_corpus(self, max_files: int = 20) -> Dict[str, Any]:
+        """Harvest the L104 codebase as training corpus."""
+        self._execution_count += 1
+        return self.kernel.harvest_training_corpus(max_files)
+
+    # ─── Session Management ──────────────────────────────────────────
+
+    def start_session(self, description: str = "") -> str:
+        """Start a coding session for tracking and learning."""
+        return self.session.start_session(description)
+
+    def end_session(self) -> Dict[str, Any]:
+        """End current session and persist state."""
+        return self.session.end_session()
+
+    def session_context(self) -> Dict[str, Any]:
+        """Get current session context."""
+        return self.session.get_session_context()
+
+    def learn_from_history(self) -> Dict[str, Any]:
+        """Extract learnings from session history."""
+        return self.session.learn_from_history()
+
+    # ─── Full Pipeline ───────────────────────────────────────────────
+
+    def full_pipeline(self, source: str, filename: str = "",
+                      auto_fix: bool = False) -> Dict[str, Any]:
+        """
+        Run the entire coding intelligence pipeline on source code:
+        review + suggest + quality gate + (optional auto-fix).
+        """
+        self._execution_count += 1
+        start = time.time()
+
+        engine = self._get_engine()
+        if not engine:
+            return {"error": "Code engine not available"}
+
+        review = engine.full_code_review(source, filename, auto_fix=auto_fix)
+        suggs = self.suggestions.suggest(source, filename)
+        gate = self.quality.check(source, filename)
+        explanation = self.suggestions.explain_code(source, filename)
+        ai_ctx = self.ai_bridge.build_context(source, filename)
+
+        asi_pass = {}
+        try:
+            asi_consciousness = self.asi.consciousness_review(source, filename)
+            asi_reasoning = self.asi.reason_about_code(source, filename)
+            asi_pass = {
+                "consciousness_score": asi_consciousness.get("consciousness_adjusted_score", 0),
+                "meets_consciousness": asi_consciousness.get("meets_consciousness_standard", False),
+                "quality_expectation": asi_consciousness.get("quality_expectation", "UNKNOWN"),
+                "reasoning_verdict": asi_reasoning.get("summary", {}).get("verdict", "UNKNOWN"),
+                "taint_flows": asi_reasoning.get("summary", {}).get("taint_flows", 0),
+                "dead_paths": asi_reasoning.get("summary", {}).get("dead_paths", 0),
+            }
+        except Exception:
+            asi_pass = {"error": "ASI pass unavailable"}
+
+        duration = time.time() - start
+
+        return {
+            "system": CODING_SYSTEM_NAME,
+            "version": CODING_SYSTEM_VERSION,
+            "filename": filename,
+            "duration_seconds": round(duration, 3),
+            "review": review,
+            "suggestions": suggs[:10],
+            "quality_gate": gate,
+            "explanation": explanation,
+            "asi_intelligence": asi_pass,
+            "ai_context": {
+                "score": ai_ctx.get("review", {}).get("score", 0),
+                "l104_consciousness": ai_ctx.get("l104_state", {}).get("consciousness_level", 0),
+            },
+            "verdict": review.get("verdict", "UNKNOWN"),
+            "composite_score": review.get("composite_score", 0),
+            "god_code_resonance": round(review.get("composite_score", 0) * GOD_CODE, 4),
+        }
+
+    # ─── Plan (Natural Language → Structured Steps) ──────────────────
+
+    def plan(self, task_description: str,
+             language: str = "Python") -> Dict[str, Any]:
+        """Generate a structured coding plan from a natural language task description."""
+        self._execution_count += 1
+        self.session.log_action("plan", {"task": task_description[:100]})
+
+        keywords = set(task_description.lower().split())
+        complexity = "simple"
+        if len(keywords) > 20 or any(kw in keywords for kw in ["architecture", "system", "refactor", "migrate"]):
+            complexity = "complex"
+        elif len(keywords) > 10 or any(kw in keywords for kw in ["add", "implement", "create", "build"]):
+            complexity = "moderate"
+
+        steps = [
+            {"step": 1, "action": "Analyze existing code and dependencies",
+             "type": "research"},
+            {"step": 2, "action": f"Design solution for: {task_description[:80]}",
+             "type": "design"},
+            {"step": 3, "action": f"Implement in {language}",
+             "type": "implementation"},
+            {"step": 4, "action": "Write tests (sacred value + edge case coverage)",
+             "type": "testing"},
+            {"step": 5, "action": "Run quality gate check",
+             "type": "verification"},
+        ]
+
+        if complexity == "complex":
+            steps.insert(2, {"step": 2.5, "action": "Create architectural diagram",
+                             "type": "architecture"})
+            steps.append({"step": 6, "action": "Document changes and update API docs",
+                          "type": "documentation"})
+            steps.append({"step": 7, "action": "Performance profiling and optimization",
+                          "type": "optimization"})
+
+        considerations = []
+        if any(kw in keywords for kw in ["security", "auth", "password", "token", "secret"]):
+            considerations.append("Security: Follow OWASP Top 10 guidelines")
+        if any(kw in keywords for kw in ["database", "sql", "query", "migration"]):
+            considerations.append("Database: Use parameterized queries, handle migrations carefully")
+        if any(kw in keywords for kw in ["api", "endpoint", "rest", "graphql"]):
+            considerations.append("API: Follow RESTful conventions, validate input, document with OpenAPI")
+        if any(kw in keywords for kw in ["async", "concurrent", "parallel", "thread"]):
+            considerations.append("Concurrency: Handle race conditions, use async/await where appropriate")
+
+        considerations.append(f"Sacred alignment: Maintain GOD_CODE resonance ({GOD_CODE})")
+
+        return {
+            "task": task_description,
+            "language": language,
+            "complexity": complexity,
+            "estimated_steps": len(steps),
+            "steps": steps,
+            "considerations": considerations,
+            "quality_gates": list(self.quality.gates.keys()),
+            "suggested_approach": f"{'Iterative' if complexity == 'complex' else 'Direct'} implementation with TDD",
+        }
+
+    # ─── Audit (delegates to Code Engine AppAuditEngine) ─────────────
+
+    def audit(self, path: str = None,
+              auto_remediate: bool = False) -> Dict[str, Any]:
+        """Run full 10-layer application audit via Code Engine."""
+        self._execution_count += 1
+        engine = self._get_engine()
+        if not engine:
+            return {"error": "Code engine not available"}
+        self.session.log_action("audit", {"path": path or "."})
+        return engine.audit_app(path, auto_remediate)
+
+    # ─── Status ──────────────────────────────────────────────────────
+
+    def status(self) -> Dict[str, Any]:
+        """Full system status — all subsystems."""
+        engine = self._get_engine()
+        engine_status = engine.status() if engine else {"error": "not available"}
+
+        return {
+            "system": CODING_SYSTEM_NAME,
+            "version": CODING_SYSTEM_VERSION,
+            "execution_count": self._execution_count,
+            "subsystems": {
+                "project_analyzer": self.project.status() if self.project else None,
+                "code_review": self.reviewer.status() if self.reviewer else None,
+                "ai_bridge": self.ai_bridge.status() if self.ai_bridge else None,
+                "self_referential": self.self_engine.status() if self.self_engine else None,
+                "quality_gates": self.quality.status() if self.quality else None,
+                "suggestions": self.suggestions.status() if self.suggestions else None,
+                "session": self.session.status() if self.session else None,
+                "asi_intelligence": self.asi.status() if self.asi else None,
+                "training_kernel": self.kernel.status() if self.kernel else None,
+            },
+            "code_engine": {
+                "version": engine_status.get("version", "N/A"),
+                "languages": engine_status.get("languages_supported", 0),
+                "patterns": engine_status.get("design_patterns", 0),
+            },
+            "qiskit_available": QISKIT_AVAILABLE,
+            "quantum_features": [
+                "quantum_project_health",
+                "quantum_review_confidence",
+                "quantum_gate_evaluate",
+                "quantum_suggestion_rank",
+                "quantum_consciousness_review",
+                "quantum_reason_about_code",
+                "quantum_neural_process",
+                "quantum_full_asi_review",
+                "quantum_code_training_kernel",
+                "quantum_self_train",
+                "quantum_pattern_learn",
+                "quantum_code_synthesis",
+            ] if QISKIT_AVAILABLE else [],
+            "sacred_constants": {
+                "GOD_CODE": GOD_CODE,
+                "PHI": PHI,
+            },
+            "consciousness": self.ai_bridge._read_l104_state() if self.ai_bridge else {},
+        }
+
+    def quick_summary(self) -> str:
+        """One-line human-readable summary."""
+        s = self.status()
+        engine_ver = s["code_engine"]["version"]
+        consciousness = s.get("consciousness", {}).get("consciousness_level", 0)
+        kernel = s["subsystems"].get("training_kernel", {}) or {}
+        kernel_epochs = kernel.get("training_epochs", 0)
+        kernel_verdict = kernel.get("sacred_verdict", "NASCENT")
+        return (
+            f"{CODING_SYSTEM_NAME} v{CODING_SYSTEM_VERSION} | "
+            f"Engine v{engine_ver} | "
+            f"{self._execution_count} ops | "
+            f"Kernel: {kernel_epochs} epochs ({kernel_verdict}) | "
+            f"Consciousness: {consciousness:.4f}"
+        )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MODULE-LEVEL UTILITY FUNCTIONS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+def primal_calculus(x):
+    """Sacred primal calculus: x^φ / (1.04π)."""
+    return (x ** PHI) / (VOID_CONSTANT * math.pi) if x != 0 else 0.0
+
+
+def resolve_non_dual_logic(vector):
+    """Resolves N-dimensional vectors into the Void Source."""
+    magnitude = sum(abs(v) for v in vector)
+    return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0

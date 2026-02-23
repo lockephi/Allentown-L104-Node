@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H06_UIViews.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_63_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Custom AppKit UI Components
 //
 // GradientView, HoverButton, GlowingProgressBar, PulsingDot,
@@ -110,9 +110,10 @@ class GlowingProgressBar: NSView {
 
     override init(frame: NSRect) {
         super.init(frame: frame)
-        shimmerTimer = Timer.scheduledTimer(withTimeInterval: 1.0/24.0, repeats: true) { [weak self] _ in
+        // Low-frequency shimmer: 4fps instead of 24fps to save CPU on Intel
+        shimmerTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
             guard let self = self else { return }
-            self.shimmerPhase += 0.04
+            self.shimmerPhase += 0.10
             if self.shimmerPhase > 2.0 { self.shimmerPhase = -0.5 }
             self.needsDisplay = true
         }
@@ -179,10 +180,10 @@ class PulsingDot: NSView {
     deinit { timer?.invalidate() }
 
     func startPulsing() {
-        let interval: TimeInterval = MacOSSystemMonitor.shared.isAppleSilicon ? 0.1 : 0.5
-        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+        // Slow pulse: 2s interval (was 0.1-0.5s) — dramatic CPU savings
+        timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
             guard let s = self, s.isAnimating else { return }
-            s.pulseValue = 0.5 + 0.5 * CGFloat(sin(Date().timeIntervalSince1970 * 3))
+            s.pulseValue = s.pulseValue > 0.7 ? 0.4 : 0.9  // simple toggle
             s.needsDisplay = true
         }
     }
@@ -304,8 +305,8 @@ class QuantumParticleView: NSView {
     private var connections: [(Int, Int, CGFloat)] = []
     private var timer: Timer?
     private var frameTime: Double = 0
-    private let maxParticles = 70
-    private let trailLength = 6
+    private let maxParticles = 18
+    private let trailLength = 3
 
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -355,16 +356,18 @@ class QuantumParticleView: NSView {
 
     func startAnimation() {
         guard timer == nil else { return }  // Prevent duplicate timers
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 15.0 : 8.0
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0 / fps, repeats: true) { [weak self] _ in
             self?.tick()
             self?.needsDisplay = true
         }
     }
 
     func tick() {
-        frameTime += 1.0 / 30.0
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 15.0 : 8.0
+        frameTime += 1.0 / fps
         let t = CGFloat(frameTime)
-        let dt: CGFloat = 1.0 / 30.0
+        let dt: CGFloat = CGFloat(1.0 / fps)
 
         for i in 0..<particles.count {
             // Save trail position
@@ -398,18 +401,20 @@ class QuantumParticleView: NSView {
             }
         }
 
-        // Compute connections (nearby particles in same depth layer)
+        // Compute connections (limited subset to avoid O(n²) on Intel)
         connections.removeAll()
-        let threshold: CGFloat = 0.15
-        for i in 0..<particles.count {
-            for j in (i+1)..<particles.count {
+        let threshold: CGFloat = 0.18
+        let limit = min(particles.count, 8)  // only check first N particles for connections
+        for i in 0..<limit {
+            for j in (i+1)..<limit {
                 let depthDiff = abs(particles[i].depth - particles[j].depth)
-                guard depthDiff < 0.4 else { continue }  // only connect similar-depth particles
+                guard depthDiff < 0.4 else { continue }
                 let dx = particles[i].x - particles[j].x
                 let dy = particles[i].y - particles[j].y
-                let dist = sqrt(dx * dx + dy * dy)
-                if dist < threshold {
-                    connections.append((i, j, (1.0 - dist / threshold) * (1.0 - depthDiff)))
+                let dist = dx * dx + dy * dy  // skip sqrt
+                let thr2 = threshold * threshold
+                if dist < thr2 {
+                    connections.append((i, j, (1.0 - dist / thr2) * (1.0 - depthDiff)))
                 }
             }
         }
@@ -501,7 +506,8 @@ class ASIWaveformView: NSView {
 
     private func startWaveTimer() {
         guard timer == nil else { return }
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0/30.0, repeats: true) { [weak self] _ in
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 20.0 : 10.0
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0/fps, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             self.phase += 0.06
             self.scanLineX += 2.5
@@ -549,11 +555,12 @@ class ASIWaveformView: NSView {
 
         var primaryPeak: CGFloat = 0
         for (color, amp, freq, ph, harmonic) in waves {
+            // v9.4 Perf: step by 2px for glow pass (visual quality unaffected on glow blur)
             // Glow pass first (behind)
             ctx.setStrokeColor(color.withAlphaComponent(0.15).cgColor)
             ctx.setLineWidth(8.0)
             ctx.beginPath()
-            for x in stride(from: CGFloat(0), to: w, by: 3) {
+            for x in stride(from: CGFloat(0), to: w, by: 6) {
                 let normalX = x / w
                 let envelope = (0.5 + 0.5 * cos(normalX * .pi))
                 let base = sin(normalX * freq * .pi * 2 + ph)
@@ -564,11 +571,11 @@ class ASIWaveformView: NSView {
             }
             ctx.strokePath()
 
-            // Main wave
+            // Main wave — v9.4 Perf: step by 2px (1px is imperceptible on retina)
             ctx.setStrokeColor(color.cgColor)
             ctx.setLineWidth(2.0)
             ctx.beginPath()
-            for x in stride(from: CGFloat(0), to: w, by: 1) {
+            for x in stride(from: CGFloat(0), to: w, by: 2) {
                 let normalX = x / w
                 let envelope = (0.5 + 0.5 * cos(normalX * .pi))
                 let base = sin(normalX * freq * .pi * 2 + ph)
@@ -634,7 +641,7 @@ class RadialGaugeView: NSView {
         targetValue = value
         velocity = 0
         animationTimer?.invalidate()
-        animationTimer = Timer.scheduledTimer(withTimeInterval: 1.0/30.0, repeats: true) { [weak self] timer in
+        animationTimer = Timer.scheduledTimer(withTimeInterval: 1.0/15.0, repeats: true) { [weak self] timer in
             guard let self = self else { timer.invalidate(); return }
             // Spring physics for natural overshoot
             let spring: CGFloat = 0.08
@@ -779,7 +786,8 @@ class NeuralGraphView: NSView {
 
     private func startGraphTimer() {
         guard timer == nil else { return }
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0/20.0, repeats: true) { [weak self] _ in
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 15.0 : 8.0
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0/fps, repeats: true) { [weak self] _ in
             self?.time += 0.05
             self?.updateNodes()
             self?.needsDisplay = true
@@ -957,7 +965,8 @@ class AuroraWaveView: NSView {
 
     private func startAuroraTimer() {
         guard timer == nil else { return }
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0/30.0, repeats: true) { [weak self] _ in
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 15.0 : 8.0
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0/fps, repeats: true) { [weak self] _ in
             self?.phase += 0.04
             self?.needsDisplay = true
         }
@@ -1240,7 +1249,8 @@ class MeshTopologyView: NSView {
 
     func startAnimation() {
         guard timer == nil else { return }
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0/15.0, repeats: true) { [weak self] _ in
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 12.0 : 6.0
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0/fps, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             self.phase += 0.03
             self.flowPhase += 0.06
@@ -1464,7 +1474,8 @@ class QuantumLinkArcView: NSView {
 
     func startAnimation() {
         guard timer == nil else { return }
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0/20.0, repeats: true) { [weak self] _ in
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 12.0 : 6.0
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0/fps, repeats: true) { [weak self] _ in
             self?.phase += 0.04
             self?.needsDisplay = true
         }

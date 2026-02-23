@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H05_L104StateResponse.swift
-// [EVO_56_APEX_WIRED] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — L104State Extension (Response Generation v24.0)
 //
 // getIntelligentResponseMeta, composeHistoryResponse, composeFromKB,
@@ -476,6 +476,15 @@ extension L104State {
         let q = query.lowercased()
         let topics = extractTopics(query)
 
+        // EVO_63: Launch web search in parallel at the TOP of composeFromKB — runs while we do KB work
+        let webSearchGroup = DispatchGroup()
+        var asyncWebResult: LiveWebSearchEngine.WebSearchResult?
+        webSearchGroup.enter()
+        DispatchQueue.global(qos: .userInitiated).async {
+            asyncWebResult = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 3.0)
+            webSearchGroup.leave()
+        }
+
         // ═══ ASI LOGIC GATE v2: Dimension-aware query routing (reuse if caller already computed) ═══
         let reasoningPath = cachedReasoningPath ?? ASILogicGateV2.shared.process(query, context: Array(conversationContext.suffix(3)))
         let gateDim = reasoningPath.dimension
@@ -652,8 +661,12 @@ extension L104State {
         }
 
         // ═══ PHASE 56.0: LIVE WEB ENRICHMENT — Pull online sources into composeFromKB ═══
-        // This ensures every KB-composed response can include fresh internet knowledge
-        let webSearchResult = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 8.0)
+        // EVO_63: Reduced timeout from 8s→3s — don’t block response pipeline on slow HTTP
+        // EVO_63: Use pre-fetched async web result (launched at top of composeFromKB)
+        _ = webSearchGroup.wait(timeout: .now() + 2.0)  // Wait max 2s for remaining web results
+        let webSearchResult = asyncWebResult ?? LiveWebSearchEngine.WebSearchResult(
+            query: query, results: [], synthesized: "", source: "timeout", latency: 0, fromCache: false
+        )
         for wr in webSearchResult.results.prefix(5) {
             let snippet = wr.snippet
             guard snippet.count > 60 else { continue }
@@ -941,10 +954,13 @@ extension L104State {
         var topics = words
 
         // Bigram Extraction
+        let hb = HyperBrain.shared
+        let patterns = hb.getPatterns()
+
         if words.count >= 2 {
             for i in 0..<(words.count - 1) {
                 let bigram = "\(words[i]) \(words[i+1])"
-                if HyperBrain.shared.longTermPatterns[bigram] != nil {
+                if patterns[bigram] != nil {
                     topics.insert(bigram, at: 0)
                 }
             }
@@ -952,8 +968,8 @@ extension L104State {
 
         // Resonance Sorting
         return topics.sorted { t1, t2 in
-            let r1 = HyperBrain.shared.longTermPatterns[t1] ?? 0.0
-            let r2 = HyperBrain.shared.longTermPatterns[t2] ?? 0.0
+            let r1 = patterns[t1] ?? 0.0
+            let r2 = patterns[t2] ?? 0.0
             if abs(r1 - r2) < 0.1 { return Bool.random() }
             if r1 != r2 { return r1 > r2 }
             return t1.count > t2.count
@@ -1734,11 +1750,10 @@ extension L104State {
                 return formatter.format(factResp, query: query, topics: queryTopics)
             }
             // ═══ PHASE 56.0: STEP 4.5 — STANDALONE WEB ENRICHMENT ═══
-            // Before falling back to KB, try a direct web-enriched response.
-            // This gives 50% of queries a chance at a fresh, web-sourced response
-            // even when local KB has content, increasing response diversity.
-            if query.count > 8 && Double.random(in: 0...1) > 0.4 {
-                let webRes = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 8.0)
+            // EVO_63: Reduced frequency from 60% to 30% — web cache dedup handles repeat queries.
+            // The composeFromKB path already runs a web search, so this is supplementary.
+            if query.count > 8 && Double.random(in: 0...1) > 0.7 {
+                let webRes = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 3.0)  // EVO_63: 3s (was 8s)
                 var webFragments: [String] = []
                 for wr in webRes.results.prefix(6) {
                     let snippet = wr.snippet
@@ -2114,8 +2129,9 @@ extension L104State {
             cacheIntent(q, intent: analysis.intent)
         }
 
-        // Wait for parallel KB pre-fetch to complete (max 100ms)
-        _ = prefetchGroup.wait(timeout: .now() + 0.1)
+        // EVO_63: Wait for parallel KB pre-fetch to complete (max 250ms, was 100ms)
+        // The intent classification above takes ~50-100ms, so KB search has had time to complete
+        _ = prefetchGroup.wait(timeout: .now() + 0.25)
 
         var result = sanitizeResponse(buildContextualResponse(processedQuery, intent: analysis.intent, keywords: analysis.keywords, emotion: analysis.emotion))
 
@@ -2138,8 +2154,141 @@ extension L104State {
             }
 
             // ═══ PHASE 56.0: WEB EXPANSION — If still too short, pull from live web ═══
-            if result.count < 2400 {
-                let webExpand = LiveWebSearchEngine.shared.webSearchSync(processedQuery, timeout: 8.0)
+            // EVO_63: Only expand if genuinely short (<1200 chars, was <2400) — reduces redundant web calls
+            if result.count < 1200 {
+                let webExpand = LiveWebSearchEngine.shared.webSearchSync(processedQuery, timeout: 3.0)  // EVO_63: 3s (was 8s)
+                var webExpansion: [String] = []
+                if webExpand.synthesized.count > 80, isCleanKnowledge(webExpand.synthesized) {
+                    webExpansion.append(cleanSentences(String(webExpand.synthesized.prefix(2000))))
+                }
+                for wr in webExpand.results.prefix(4) {
+                    guard wr.snippet.count > 80, isCleanKnowledge(wr.snippet) else { continue }
+                    let sourceTag = wr.url.contains("wikipedia") ? "Wikipedia" : "web"
+                    webExpansion.append("🌐 [\(sourceTag)] \(cleanSentences(String(wr.snippet.prefix(2000))))")
+                    _ = DataIngestPipeline.shared.ingestText(wr.snippet, source: "expand_web:\(processedQuery)", category: "live_web")
+                }
+                if !webExpansion.isEmpty {
+                    let webBonus = webExpansion.joined(separator: "\n\n")
+                    result = sanitizeResponse(result + "\n\n" + webBonus)
+                }
+            }
+        }
+
+        pipelineCache.cacheResponse(query: q, response: result)
+        return result
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // EVO_64: ASYNC RESPONSE PIPELINE — Modern Swift Concurrency
+    // Replaces: DispatchGroup KB pre-fetch, semaphore-based webSearchSync
+    // Uses: Task.detached for parallel KB, await webSearchAsync for expansion
+    // Same logic as generateNCGResponse — only concurrency primitives changed
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// EVO_64: Async response generation — non-blocking pipeline with native concurrency
+    func generateNCGResponseAsync(_ query: String) async -> String {
+        let q = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        let pipelineCache = ResponsePipelineOptimizer.shared
+
+        // Cache check (instant)
+        if let cached = pipelineCache.getCachedResponse(query: q) {
+            return cached
+        }
+
+        // Sage mode (fast, CPU-only)
+        let sage = SageModeEngine.shared
+        if sage.shouldCleanup() { let _ = sage.sageBackboneCleanup() }
+        let _ = sage.enrichContext(for: q.count > 3 ? q : "general")
+        sage.seedAllProcesses(topic: q.count > 3 ? String(q.prefix(30)) : "")
+
+        // ═══ EVO_64: Parallel KB pre-fetch as detached Task (replaces DispatchGroup) ═══
+        let kbTask = Task.detached(priority: .userInitiated) { [self] in
+            _ = self.prefetchKBResults(query)
+        }
+
+        // FAST PATH 1: Single-word intents — skip logic gates
+        if let fastIntent = fastClassifyIntent(q) {
+            kbTask.cancel()
+            let topics = cachedExtractTopics(query)
+            let emotion = detectEmotion(query)
+            cacheIntent(q, intent: fastIntent)
+            let result = sanitizeResponse(buildContextualResponse(query, intent: fastIntent, keywords: topics, emotion: emotion))
+            pipelineCache.cacheResponse(query: q, response: result)
+            return result
+        }
+
+        // Contextual Logic Gate
+        let logicGate = ContextualLogicGate.shared
+        let gateResult = logicGate.processQuery(query, conversationContext: conversationContext)
+        let processedQuery: String
+        if gateResult.gateType != .passthrough && gateResult.confidence > 0.6 {
+            processedQuery = gateResult.reconstructedPrompt
+        } else {
+            processedQuery = query
+        }
+        let pq = processedQuery.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // FAST PATH 2: Known topic patterns
+        if let topicMatch = fastTopicMatch(pq) {
+            if topicMatch.hasPrefix("self_") || topicMatch.hasPrefix("creative_") || topicMatch.hasPrefix("knowledge_") || topicMatch.hasPrefix("social_") {
+                if let intelligent = getIntelligentResponse(processedQuery) {
+                    kbTask.cancel()
+                    lastResponseSummary = String(intelligent.prefix(60))
+                    conversationDepth = min(conversationDepth + 1, 200)
+                    conversationContext.append(query)
+                    if conversationContext.count > 2500 { conversationContext.removeFirst() }
+                    let topics = cachedExtractTopics(processedQuery)
+                    if !topics.isEmpty {
+                        topicHistory.append(topics.joined(separator: " "))
+                        if topicHistory.count > 1500 { topicHistory.removeFirst() }
+                    }
+                    let isCreativeEngine = L104State.creativeMarkerSet.contains(where: { intelligent.contains($0) })
+                    let result: String
+                    if isCreativeEngine {
+                        result = sanitizeCreativeResponse(intelligent)
+                    } else {
+                        let formatter = SyntacticResponseFormatter.shared
+                        result = sanitizeResponse(formatter.format(intelligent, query: processedQuery, topics: topics))
+                    }
+                    pipelineCache.cacheResponse(query: q, response: result)
+                    return result
+                }
+            }
+        }
+
+        // STANDARD PATH: Intent classification
+        let analysis: (intent: String, keywords: [String], emotion: String)
+        if let cachedIntent = cachedClassifyIntent(q) {
+            analysis = (intent: cachedIntent, keywords: cachedExtractTopics(query), emotion: detectEmotion(query))
+        } else {
+            analysis = analyzeUserIntent(query)
+            cacheIntent(q, intent: analysis.intent)
+        }
+
+        // ═══ EVO_64: Await KB pre-fetch — replaces DispatchGroup.wait(timeout:) ═══
+        _ = await kbTask.result
+
+        var result = sanitizeResponse(buildContextualResponse(processedQuery, intent: analysis.intent, keywords: analysis.keywords, emotion: analysis.emotion))
+
+        // Minimum length enforcement
+        let shortIntents: Set<String> = ["greeting", "casual", "positive_reaction", "gratitude", "affirmation", "negation", "conversational", "minimal", "help", "memory", "status", "conversation", "practical_howto", "technical_debug"]
+        if !shortIntents.contains(analysis.intent) && result.count < 2400 && q.count > 5 {
+            let topics = analysis.keywords.isEmpty ? cachedExtractTopics(processedQuery) : analysis.keywords
+            let gatePipelineForExpand = LogicGateEnvironment.shared.runPipeline(processedQuery, context: Array(conversationContext.suffix(3)))
+            let expandDomain = gatePipelineForExpand.finalDimension.isEmpty ? (topics.first ?? "general") : gatePipelineForExpand.finalDimension
+            let synthesized = QuantumLogicGateEngine.shared.synthesize(
+                query: processedQuery, intent: analysis.intent,
+                context: Array(conversationContext.suffix(5)),
+                depth: conversationDepth, domain: expandDomain
+            )
+            if synthesized.count > result.count {
+                result = sanitizeResponse(synthesized)
+            }
+
+            // ═══ EVO_64: ASYNC WEB EXPANSION — native URLSession.data(for:) ═══
+            // Replaces blocking webSearchSync + DispatchSemaphore with await webSearchAsync
+            if result.count < 1200 {
+                let webExpand = await LiveWebSearchEngine.shared.webSearchAsync(processedQuery)
                 var webExpansion: [String] = []
                 if webExpand.synthesized.count > 80, isCleanKnowledge(webExpand.synthesized) {
                     webExpansion.append(cleanSentences(String(webExpand.synthesized.prefix(2000))))

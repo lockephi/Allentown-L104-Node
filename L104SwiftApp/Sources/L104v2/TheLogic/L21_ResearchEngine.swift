@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L21_ResearchEngine.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 Sovereign Intelligence — ASI Research Engine
 // Deep research, hypothesis generation, invention, and implementation
 // ═══════════════════════════════════════════════════════════════════
@@ -158,7 +158,7 @@ class ASIResearchEngine {
         // Step 2: Live Web Research — PRIORITY when KB results are weak
         let webEngine = LiveWebSearchEngine.shared
         let kbIsWeak = highRelevanceCount < 3  // Few high-relevance KB entries → rely heavily on web
-        let webTimeout = kbIsWeak ? 12.0 : 8.0  // More time for web when KB is weak
+        let webTimeout = kbIsWeak ? 5.0 : 3.0  // EVO_63: 5/3s (was 12/8) — don't stall research pipeline
         let webRes = webEngine.webSearchSync(topic, timeout: webTimeout)
         var webSourceCount = 0
         if !webRes.results.isEmpty {
@@ -185,7 +185,7 @@ class ASIResearchEngine {
             // If KB was weak, do a second web search with refined query
             if kbIsWeak {
                 let refined = "\(topic) explained overview guide"
-                let refinedRes = webEngine.webSearchSync(refined, timeout: 8.0)
+                let refinedRes = webEngine.webSearchSync(refined, timeout: 3.0)  // EVO_63: 3s (was 8s)
                 for wr in refinedRes.results where !isRedundant(wr.snippet) {
                     guard wr.snippet.count > 80 else { continue }
                     results.append("   🔗 [Web+] \(wr.title)")

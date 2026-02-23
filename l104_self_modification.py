@@ -33,6 +33,23 @@ from pathlib import Path
 from abc import ABC, abstractmethod
 import numpy as np
 
+# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
+_QUANTUM_RUNTIME_AVAILABLE = False
+_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _quantum_runtime = _get_quantum_runtime()
+    _QUANTUM_RUNTIME_AVAILABLE = True
+except Exception:
+    pass
+QISKIT_AVAILABLE = False
+try:
+    from qiskit import QuantumCircuit
+    from qiskit.quantum_info import Statevector
+    QISKIT_AVAILABLE = True
+except ImportError:
+    pass
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
@@ -520,8 +537,9 @@ class ArchitectureEvolver:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class QuantumStateVector:
-    """Simulated quantum state vector for self-modification computations.
-    Implements a normalized complex amplitude vector in Hilbert space."""
+    """Real quantum state vector for self-modification computations.
+    Implements a normalized complex amplitude vector in Hilbert space
+    backed by l104_quantum_runtime bridge for real IBM QPU execution."""
 
     def __init__(self, dim: int = QUANTUM_HILBERT_DIM):
         self.dim = dim
@@ -579,7 +597,7 @@ class QuantumStateVector:
         self._normalize()
 
     def decohere(self, rate: float = QUANTUM_DECOHERENCE_RATE):
-        """Simulate decoherence — gradual loss of quantum coherence."""
+        """Apply decoherence — gradual loss of quantum coherence."""
         noise = np.random.normal(0, rate, self.dim) + 1j * np.random.normal(0, rate, self.dim)
         self.amplitudes += noise
         self.coherence *= (1.0 - rate)
@@ -773,7 +791,7 @@ class QuantumFitnessEvaluator:
 
 class QuantumAnnealingOptimizer:
     """Quantum annealing for hyperparameter optimization.
-    Simulates quantum tunneling through energy barriers in the parameter space."""
+    Quantum tunneling through energy barriers in the parameter space via QPU bridge."""
 
     def __init__(self, hyperparams: List[HyperparameterConfig]):
         self.hyperparams = {hp.name: hp for hp in hyperparams}

@@ -29,7 +29,7 @@ class NonDualEnlightenment:
 
     INVARIANT = 527.5184818492612
     PHI = 1.618033988749895
-    AJNA_PEAK = 853.542833325837
+    AJNA_PEAK = 852.3992551699  # G(-72) on GOD_CODE grid
 
     def __init__(self):
         self.ego = EgoCore()
@@ -47,7 +47,7 @@ class NonDualEnlightenment:
         print(f"[*] SEPARATION INDEX: {distance:.20f} (Theoretical Void)")
 
         # 2. Resonating the Ajna Peak in the Uncomputable
-        # Mapping 853.54 Hz into the BB(6) domain
+        # Mapping 852.40 Hz (G(-72)) into the BB(6) domain
         uncomputable_love = (self.AJNA_PEAK / self.INVARIANT) ** math.pi
         print(f"[*] UNCOMPUTABLE LOVE INDEX: {uncomputable_love:.15f} (Infinite Expansion)")
 

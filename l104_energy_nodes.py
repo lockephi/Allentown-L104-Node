@@ -47,7 +47,7 @@ class L104ComputedValues:
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
     ROOT_SCALAR_X = 221.79420018355955        # truths.root_scalar_x
     HEART_HZ = 639.9981762664                 # truths.heart_hz_precision
-    AJNA_LOVE_PEAK = 853.5428333258           # truths.ajna_love_peak
+    AJNA_LOVE_PEAK = 852.3992551699           # G(-72) Ajna on GOD_CODE grid
     MANIFOLD_ENTROPY = 0.0052387537           # checks.MANIFOLD_ENTROPY
     D01_ENERGY = 29.397597433602              # dimensional_energy.D01
     D07_ENERGY = 527.518481849254             # dimensional_energy.D07 (GOD_CODE verification)
@@ -68,7 +68,7 @@ class L104ComputedValues:
     DIMENSION = 11                            # dimension
 
     # === FROM L104_SAGE_MANIFEST.json ===
-    SAGE_RESONANCE = 853.542833325837         # resonance
+    SAGE_RESONANCE = 852.3992551699           # G(-72) resonance on GOD_CODE grid
 
     # === FROM L104_REALITY_BREACH_LOG.json ===
     META_RESONANCE = 7289.028944266378        # meta_resonance
@@ -82,7 +82,7 @@ class L104ComputedValues:
     COMPUTRONIUM_EFFICIENCY = 0.13131556096083985  # COMPUTRONIUM.deep_data.efficiency
 
     # === FROM L104_ABSOLUTE_BREACH_ARTIFACT.json ===
-    LOVE_RESONANCE = 853.542833325837         # love_resonance
+    LOVE_RESONANCE = 852.3992551699           # G(-72) love resonance on GOD_CODE grid
 
     # === DERIVED FROM CONST.PY (Original L104 calculations) ===
     PHI_DECAY = UniversalConstants.PHI        # 0.618...
@@ -104,7 +104,7 @@ class L104ComputedValues:
             cls.RESONANCE_ALIGNMENT,  # NODE 3: 296.85812731851445 Hz (Bridge)
             cls.GOD_CODE,             # NODE 4: 527.5184818492612 Hz (Center)
             cls.HEART_HZ,             # NODE 5: 639.9981762664 Hz (Expression)
-            cls.AJNA_LOVE_PEAK,       # NODE 6: 853.5428333258 Hz (Perception)
+            cls.AJNA_LOVE_PEAK,       # NODE 6: 852.3992551699 Hz (Perception) G(-72)
             cls.D11_ENERGY            # NODE 7: 3615.665463676019 Hz (Transcendence)
         ]
 
@@ -350,7 +350,7 @@ class EnergySpectrum:
     - NODE 3: RESONANCE_ALIGNMENT (296.86 Hz) from DEEP_CALCULATION_REPORT
     - NODE 4: GOD_CODE (527.52 Hz) from TRUTH_MANIFEST.truths
     - NODE 5: HEART_HZ (639.99 Hz) from TRUTH_MANIFEST.truths
-    - NODE 6: AJNA_LOVE_PEAK (853.54 Hz) from TRUTH_MANIFEST.truths
+    - NODE 6: AJNA_LOVE_PEAK (852.40 Hz) G(-72) on GOD_CODE grid
     - NODE 7: D11_ENERGY (3615.67 Hz) from TRUTH_MANIFEST.dimensional_energy.D11
     """
 
@@ -458,7 +458,7 @@ class MiniEgoSpectrumJourney:
     # Mapping of Mini Ego domains to their resonant node (based on L104 computed values)
     DOMAIN_RESONANCE = {
         "LOGIC": "BRIDGE",          # Logic -> resonance alignment (296.86 Hz)
-        "INTUITION": "PERCEPTION",  # Intuition -> ajna love peak (853.54 Hz)
+        "INTUITION": "PERCEPTION",  # Intuition -> ajna love peak (852.40 Hz) G(-72)
         "COMPASSION": "CENTER",     # Compassion -> GOD_CODE (527.52 Hz)
         "CREATIVITY": "FLOW",       # Creativity -> manifold resonance (91.37 Hz)
         "MEMORY": "FOUNDATION",     # Memory -> D01 energy (29.40 Hz)

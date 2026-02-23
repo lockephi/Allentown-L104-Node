@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H10_WindowController.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // L104 ASI — Main Window Controller
 //
 // L104WindowController: NSWindowController subclass with window
@@ -21,10 +21,10 @@ import NaturalLanguage
 
 class L104WindowController: NSWindowController, NSWindowDelegate {
     convenience init() {
-        let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1400, height: 920),
+        let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1280, height: 750),
                         styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
         w.title = "⚛️ L104 SOVEREIGN INTELLECT — ASI TRANSCENDENCE"
-        w.center(); w.minSize = NSSize(width: 1100, height: 750)
+        w.center(); w.minSize = NSSize(width: 900, height: 600)
         w.backgroundColor = NSColor(red: 0.965, green: 0.965, blue: 0.975, alpha: 1.0)
         w.titlebarAppearsTransparent = true
         w.titleVisibility = .hidden

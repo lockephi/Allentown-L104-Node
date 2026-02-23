@@ -2,6 +2,23 @@
 from .constants import *
 from .languages import LanguageKnowledge
 
+# Additional imports for ProjectAnalyzer
+import os
+import re
+import json
+import time
+import math
+import ssl
+import hashlib
+import threading
+import urllib.request
+import urllib.parse
+import numpy as np
+from pathlib import Path
+from datetime import datetime
+from collections import Counter, defaultdict
+from typing import Dict, List, Any, Optional, Tuple, Set
+
 class CodeAnalyzer:
     """Deep code analysis using Python's ast module + custom metrics.
     Computes cyclomatic complexity, Halstead metrics, cognitive complexity,
@@ -171,7 +188,8 @@ class CodeAnalyzer:
         self.total_lines_analyzed = 0
         self.vulnerability_count = 0
         self.pattern_detections = Counter()
-        self._analysis_cache: Dict[str, Dict] = {}
+        self._analysis_cache: OrderedDict[str, Dict] = OrderedDict()
+        self._cache_lock = threading.Lock()
         # Pre-compile security & design pattern regex (avoids re-compilation per scan)
         self._compiled_security = {
             vtype: [re.compile(p, re.MULTILINE | re.IGNORECASE) for p in patterns]
@@ -186,13 +204,17 @@ class CodeAnalyzer:
         """Run comprehensive analysis on code: AST, complexity, quality, security, patterns."""
         # Content-hash cache: skip re-analysis for identical code
         _code_hash = hashlib.md5(code.encode()).hexdigest()
-        if _code_hash in self._analysis_cache:
-            self.analysis_count += 1
-            _cached = self._analysis_cache[_code_hash].copy()
-            _cached["metadata"] = _cached["metadata"].copy()
-            _cached["metadata"]["filename"] = filename
-            _cached["metadata"]["timestamp"] = datetime.now().isoformat()
-            return _cached
+
+        with self._cache_lock:
+            if _code_hash in self._analysis_cache:
+                self.analysis_count += 1
+                _cached = self._analysis_cache[_code_hash].copy()
+                _cached["metadata"] = _cached["metadata"].copy()
+                _cached["metadata"]["filename"] = filename
+                _cached["metadata"]["timestamp"] = datetime.now().isoformat()
+                self._analysis_cache.move_to_end(_code_hash)
+                return _cached
+
         self.analysis_count += 1
         lines = code.split('\n')
         self.total_lines_analyzed += len(lines)
@@ -242,11 +264,11 @@ class CodeAnalyzer:
         # Sacred constant alignment
         result["sacred_alignment"] = self._sacred_alignment(code, result)
 
-        # Cache result (max 64 entries, evict oldest on overflow)
-        if len(self._analysis_cache) >= 64:
-            _oldest = next(iter(self._analysis_cache))
-            del self._analysis_cache[_oldest]
-        self._analysis_cache[_code_hash] = result
+        # Cache result (max 256 entries, evict oldest on overflow)
+        with self._cache_lock:
+            if len(self._analysis_cache) >= 256:
+                self._analysis_cache.popitem(last=False)
+            self._analysis_cache[_code_hash] = result
 
         return result
 
@@ -2843,4 +2865,353 @@ class APIContractValidator:
 #   Measures code stability by tracking function-level change frequency,
 #   identifying hotspot churn, and computing stability metrics.
 # ═══════════════════════════════════════════════════════════════════════════════
+
+
+class ProjectAnalyzer:
+    """
+    Understands project structure, build systems, frameworks, and dependencies.
+    Provides project-level intelligence for any codebase — not just L104.
+    """
+
+    BUILD_SYSTEMS = {
+        "python": {
+            "files": ["setup.py", "pyproject.toml", "requirements.txt", "Pipfile",
+                       "setup.cfg", "poetry.lock", "pdm.lock", "uv.lock"],
+            "package_manager": "pip/poetry/pdm/uv",
+            "test_runners": ["pytest", "unittest", "nose2", "tox"],
+        },
+        "node": {
+            "files": ["package.json", "yarn.lock", "pnpm-lock.yaml",
+                       "package-lock.json", "bun.lockb"],
+            "package_manager": "npm/yarn/pnpm/bun",
+            "test_runners": ["jest", "mocha", "vitest", "ava"],
+        },
+        "rust": {
+            "files": ["Cargo.toml", "Cargo.lock"],
+            "package_manager": "cargo",
+            "test_runners": ["cargo test"],
+        },
+        "go": {
+            "files": ["go.mod", "go.sum"],
+            "package_manager": "go modules",
+            "test_runners": ["go test"],
+        },
+        "swift": {
+            "files": ["Package.swift", "*.xcodeproj", "*.xcworkspace"],
+            "package_manager": "SPM/CocoaPods",
+            "test_runners": ["XCTest", "swift test"],
+        },
+        "java": {
+            "files": ["pom.xml", "build.gradle", "build.gradle.kts"],
+            "package_manager": "maven/gradle",
+            "test_runners": ["junit", "testng"],
+        },
+        "dotnet": {
+            "files": ["*.csproj", "*.sln", "*.fsproj", "nuget.config"],
+            "package_manager": "nuget",
+            "test_runners": ["xunit", "nunit", "mstest"],
+        },
+        "ruby": {
+            "files": ["Gemfile", "Gemfile.lock", "*.gemspec"],
+            "package_manager": "bundler/gem",
+            "test_runners": ["rspec", "minitest"],
+        },
+    }
+
+    FRAMEWORK_INDICATORS = {
+        # Python
+        "fastapi": {"patterns": [r"from\s+fastapi", r"FastAPI\s*\("], "type": "web"},
+        "django": {"patterns": [r"from\s+django", r"INSTALLED_APPS"], "type": "web"},
+        "flask": {"patterns": [r"from\s+flask", r"Flask\s*\(__name__"], "type": "web"},
+        "streamlit": {"patterns": [r"import\s+streamlit", r"st\."], "type": "web"},
+        "pytorch": {"patterns": [r"import\s+torch", r"torch\.nn"], "type": "ml"},
+        "tensorflow": {"patterns": [r"import\s+tensorflow", r"tf\.keras"], "type": "ml"},
+        "pandas": {"patterns": [r"import\s+pandas", r"pd\.DataFrame"], "type": "data"},
+        # JavaScript/TypeScript
+        "react": {"patterns": [r'"react"', r"import\s+React"], "type": "frontend"},
+        "nextjs": {"patterns": [r'"next"', r"getServerSideProps", r"getStaticProps"], "type": "fullstack"},
+        "vue": {"patterns": [r'"vue"', r"createApp"], "type": "frontend"},
+        "express": {"patterns": [r'require\s*\(\s*["\']express', r"express\s*\(\s*\)"], "type": "backend"},
+        "nestjs": {"patterns": [r"@nestjs/core", r"@Controller"], "type": "backend"},
+        # Rust
+        "actix": {"patterns": [r"actix_web", r"HttpServer"], "type": "web"},
+        "tokio": {"patterns": [r"tokio::", r"#\[tokio::main\]"], "type": "async"},
+        # Go
+        "gin": {"patterns": [r'"github.com/gin-gonic/gin"'], "type": "web"},
+        "fiber": {"patterns": [r'"github.com/gofiber/fiber"'], "type": "web"},
+        # Swift
+        "swiftui": {"patterns": [r"import\s+SwiftUI", r"some\s+View"], "type": "ui"},
+        "vapor": {"patterns": [r"import\s+Vapor"], "type": "web"},
+    }
+
+    CONFIG_FILES = {
+        "docker": ["Dockerfile", "docker-compose.yml", "docker-compose.yaml", ".dockerignore"],
+        "ci_cd": [".github/workflows", ".gitlab-ci.yml", "Jenkinsfile", ".circleci",
+                   ".travis.yml", "azure-pipelines.yml", "bitbucket-pipelines.yml"],
+        "linting": [".eslintrc", ".pylintrc", ".flake8", "pyproject.toml",
+                     ".prettierrc", "rustfmt.toml", ".golangci.yml", ".rubocop.yml"],
+        "testing": ["pytest.ini", "jest.config.js", "vitest.config.ts",
+                     ".nycrc", "coverage.ini", "tox.ini"],
+        "type_checking": ["tsconfig.json", "mypy.ini", ".mypy.ini", "pyrightconfig.json"],
+    }
+
+    def __init__(self):
+        self.scans = 0
+
+    def scan(self, path: str = None) -> Dict[str, Any]:
+        """Full project structure scan with build system, framework, and dependency detection."""
+        self.scans += 1
+        ws = Path(path) if path else Path(__file__).parent
+        start = time.time()
+
+        structure = self._scan_structure(ws)
+        build = self._detect_build_systems(ws)
+        frameworks = self._detect_frameworks(ws)
+        configs = self._detect_configs(ws)
+        health = self._estimate_health(structure, build, frameworks, configs)
+
+        return {
+            "project_root": str(ws),
+            "scan_time": round(time.time() - start, 3),
+            "structure": structure,
+            "build_systems": build,
+            "frameworks": frameworks,
+            "configs": configs,
+            "health": health,
+            "phi_alignment": round(structure.get("total_files", 0) % 104 / 104.0, 4),
+        }
+
+    def _scan_structure(self, ws: Path) -> Dict[str, Any]:
+        """Scan file system structure."""
+        skip_dirs = {"__pycache__", ".git", ".venv", "node_modules", ".build",
+                      "build", "dist", ".tox", ".mypy_cache", "htmlcov", ".eggs",
+                      "venv", "env", ".next", ".nuxt", "target"}
+        lang_counts: Dict[str, int] = defaultdict(int)
+        ext_counts: Dict[str, int] = defaultdict(int)
+        total_files = 0
+        total_lines = 0
+        largest = ("", 0)
+        source_dirs: Set[str] = set()
+
+        ext_to_lang = {
+            ".py": "Python", ".swift": "Swift", ".js": "JavaScript",
+            ".ts": "TypeScript", ".rs": "Rust", ".go": "Go",
+            ".java": "Java", ".kt": "Kotlin", ".rb": "Ruby",
+            ".c": "C", ".cpp": "C++", ".cs": "C#", ".m": "Objective-C",
+            ".sh": "Shell", ".sql": "SQL", ".r": "R", ".jl": "Julia",
+            ".ex": "Elixir", ".dart": "Dart", ".php": "PHP",
+            ".scala": "Scala", ".hs": "Haskell", ".ml": "OCaml",
+            ".jsx": "React/JSX", ".tsx": "React/TSX", ".vue": "Vue",
+            ".svelte": "Svelte",
+        }
+
+        try:
+            for f in ws.rglob("*"):
+                if any(sd in f.parts for sd in skip_dirs):
+                    continue
+                if f.is_file() and not f.name.startswith('.'):
+                    ext = f.suffix.lower()
+                    if ext in ext_to_lang:
+                        lang_counts[ext_to_lang[ext]] += 1
+                        ext_counts[ext] += 1
+                        total_files += 1
+                        try:
+                            lines = len(f.read_text(errors='ignore').split('\n'))
+                            total_lines += lines
+                            if lines > largest[1]:
+                                largest = (f.name, lines)
+                        except Exception:
+                            pass
+                        # Track source directories
+                        rel = f.relative_to(ws)
+                        if len(rel.parts) > 1:
+                            source_dirs.add(str(rel.parts[0]))
+        except PermissionError:
+            pass
+
+        return {
+            "total_files": total_files,
+            "total_lines": total_lines,
+            "languages": dict(lang_counts),
+            "extensions": dict(ext_counts),
+            "primary_language": max(lang_counts, key=lang_counts.get) if lang_counts else "unknown",
+            "largest_file": {"name": largest[0], "lines": largest[1]},
+            "source_directories": sorted(source_dirs)[:20],
+            "is_monorepo": len(source_dirs) > 5,
+        }
+
+    def _detect_build_systems(self, ws: Path) -> List[Dict[str, Any]]:
+        """Detect build systems present in the project."""
+        detected = []
+        for system_name, info in self.BUILD_SYSTEMS.items():
+            found_files = []
+            for pattern in info["files"]:
+                if '*' in pattern:
+                    found_files.extend([f.name for f in ws.glob(pattern)])
+                elif (ws / pattern).exists():
+                    found_files.append(pattern)
+            if found_files:
+                detected.append({
+                    "system": system_name,
+                    "files": found_files,
+                    "package_manager": info["package_manager"],
+                    "test_runners": info["test_runners"],
+                })
+        return detected
+
+    def _detect_frameworks(self, ws: Path) -> List[Dict[str, Any]]:
+        """Detect frameworks used in the project by scanning source files."""
+        detected = []
+        # Read a sample of source files
+        sample_content = ""
+        for ext in [".py", ".js", ".ts", ".rs", ".go", ".swift", ".java", ".rb"]:
+            for f in list(ws.glob(f"*{ext}"))[:10]:
+                try:
+                    sample_content += f.read_text(errors='ignore')[:5000] + "\n"
+                except Exception:
+                    pass
+        # Also check package files
+        for pkg_file in ["package.json", "requirements.txt", "Cargo.toml", "go.mod", "Gemfile"]:
+            pf = ws / pkg_file
+            if pf.exists():
+                try:
+                    sample_content += pf.read_text(errors='ignore') + "\n"
+                except Exception:
+                    pass
+
+        for fw_name, fw_info in self.FRAMEWORK_INDICATORS.items():
+            for pattern in fw_info["patterns"]:
+                if re.search(pattern, sample_content):
+                    detected.append({
+                        "framework": fw_name,
+                        "type": fw_info["type"],
+                        "confidence": "HIGH",
+                    })
+                    break
+        return detected
+
+    def _detect_configs(self, ws: Path) -> Dict[str, List[str]]:
+        """Detect configuration files for CI/CD, linting, testing, etc."""
+        configs = {}
+        for category, patterns in self.CONFIG_FILES.items():
+            found = []
+            for pattern in patterns:
+                p = ws / pattern
+                if p.exists():
+                    found.append(pattern)
+            if found:
+                configs[category] = found
+        return configs
+
+    def _estimate_health(self, structure, build, frameworks, configs) -> Dict[str, Any]:
+        """Estimate project health based on detected features."""
+        score = 0.5  # baseline
+
+        # Build system presence
+        if build:
+            score += 0.1
+
+        # Framework presence (organized code)
+        if frameworks:
+            score += 0.05
+
+        # CI/CD presence
+        if "ci_cd" in configs:
+            score += 0.1
+
+        # Linting configured
+        if "linting" in configs:
+            score += 0.05
+
+        # Testing configured
+        if "testing" in configs:
+            score += 0.1
+
+        # Type checking
+        if "type_checking" in configs:
+            score += 0.05
+
+        # Docker (reproducible builds)
+        if "docker" in configs:
+            score += 0.05
+
+        return {
+            "score": round(min(1.0, score), 4),
+            "verdict": ("EXEMPLARY" if score >= 0.85 else "HEALTHY" if score >= 0.7
+                        else "ADEQUATE" if score >= 0.5 else "NEEDS_ATTENTION"),
+            "has_build_system": bool(build),
+            "has_ci_cd": "ci_cd" in configs,
+            "has_linting": "linting" in configs,
+            "has_testing": "testing" in configs,
+            "has_docker": "docker" in configs,
+        }
+
+    def status(self) -> Dict[str, Any]:
+        return {"scans": self.scans, "build_systems_known": len(self.BUILD_SYSTEMS),
+                "frameworks_known": len(self.FRAMEWORK_INDICATORS)}
+
+    def quantum_project_health(self, scan_result: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Quantum project health scoring using Qiskit 2.3.0.
+        Encodes project metrics (file count, language diversity, framework maturity,
+        build system presence) into a quantum state for holistic assessment.
+        """
+        files = scan_result.get("files", {})
+        total_files = sum(files.get("by_extension", {}).values()) if isinstance(files.get("by_extension"), dict) else scan_result.get("total_files", 1)
+        lang_count = len(files.get("by_extension", {})) if isinstance(files.get("by_extension"), dict) else 1
+        has_build = 1.0 if scan_result.get("build_system") else 0.0
+        framework_count = len(scan_result.get("frameworks", []))
+
+        # Normalize
+        file_score = min(total_files / 200, 1.0)
+        lang_diversity = min(lang_count / 10, 1.0)
+        framework_score = min(framework_count / 5, 1.0)
+
+        if not QISKIT_AVAILABLE:
+            health = (file_score * PHI + lang_diversity + has_build * PHI + framework_score) / (PHI + 1 + PHI + 1)
+            return {
+                "quantum": False,
+                "backend": "classical_phi_weighted",
+                "health": round(health, 6),
+                "dimensions": {"file_score": round(file_score, 4), "lang_diversity": round(lang_diversity, 4),
+                                "build_system": has_build, "framework_score": round(framework_score, 4)},
+            }
+
+        try:
+            amps = [
+                file_score * PHI + 0.1,
+                lang_diversity * PHI + 0.1,
+                has_build * PHI + 0.1,
+                framework_score * PHI + 0.1,
+            ]
+            norm = math.sqrt(sum(a * a for a in amps))
+            amps = [a / norm for a in amps] if norm > 1e-12 else [0.5] * 4
+
+            sv = Statevector(amps)
+            qc = QuantumCircuit(2)
+            qc.h(0)
+            qc.cx(0, 1)
+            qc.ry(file_score * math.pi * PHI, 0)
+            qc.ry(lang_diversity * math.pi * PHI, 1)
+            qc.rz(GOD_CODE / 1000 * math.pi, 0)
+
+            evolved = sv.evolve(Operator(qc))
+            dm = DensityMatrix(evolved)
+            health_entropy = float(q_entropy(dm, base=2))
+            probs = evolved.probabilities()
+            born_health = sum(p * (i + 1) / 4 for i, p in enumerate(probs))
+
+            return {
+                "quantum": True,
+                "backend": "Qiskit 2.3.0 Project Health",
+                "qubits": 2,
+                "health": round(born_health, 6),
+                "health_entropy": round(health_entropy, 6),
+                "dimensions": {"file_score": round(file_score, 4), "lang_diversity": round(lang_diversity, 4),
+                                "build_system": has_build, "framework_score": round(framework_score, 4)},
+                "circuit_depth": qc.depth(),
+                "god_code_alignment": round(born_health * GOD_CODE / 100, 4),
+            }
+        except Exception as e:
+            return {"quantum": False, "error": str(e)}
 

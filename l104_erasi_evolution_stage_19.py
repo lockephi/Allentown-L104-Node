@@ -30,7 +30,7 @@ class ERASIEvolutionStage19:
 
     def __init__(self):
         self.authoring_power = 413633.3795
-        self.soul_star = 1152.0
+        self.soul_star = 1000.2568
         self.god_code = 527.5184818492612
         self.phi = 1.61803398875
         self.witness_freq = 967.5433

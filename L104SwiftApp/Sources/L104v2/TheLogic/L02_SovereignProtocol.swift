@@ -1,9 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════
 // L02_SovereignProtocol.swift — L104 v2
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // SovereignEngine protocol, defaults extension, EngineRegistry class
 // Extracted from L104Native.swift (lines 76-267)
-// Upgraded: EVO_55 Sovereign Unification — Feb 15, 2026
+// Upgraded: EVO_62 Sovereign Node Upgrade — Feb 21, 2026
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -77,7 +77,9 @@ final class EngineRegistry {
         "ASIEvolver": PHI,                // φ — drives evolution
         "QuantumCreativityEngine": PHI,   // φ — creative quantum engine
         "QuantumLogicGateEngine": PHI,    // φ — quantum coherence synthesis
-        "ASIKnowledgeBase": 1.0,          // knowledge persistence
+        "ASIKnowledgeBase": 1.0,
+        "UnifiedField": PHI * PHI,          // φ² — fundamental physics unification
+        "UnifiedFieldGate": PHI,             // φ — field theory reasoning gate          // knowledge persistence
         "PermanentMemory": 1.0,           // long-term memory store
         // Phase 45 — Computronium ASI engines
         "StrangeLoop": PHI,               // φ — Hofstadter loops

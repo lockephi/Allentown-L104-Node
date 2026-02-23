@@ -64,7 +64,7 @@ enum L104Constants {
     static let ANYON_BRAID_DEPTH: Int = 8  // 8-fold octave braid
     static let EPR_LINK_STRENGTH: Double = 1.0  // Maximum entanglement
     static let FEIGENBAUM_DELTA: Double = 4.669201609102990
-    static let CHAKRA_FREQUENCIES: [Double] = [396.0, 417.0, 528.0, 639.0, 741.0, 852.0, 963.0]  // root→crown
+    static let CHAKRA_FREQUENCIES: [Double] = [396.0, 417.0, 528.0, 639.0, 741.0, 852.3992551699, 963.0]  // root→crown
 }
 
 // ═══════════════════════════════════════════════════════════════════

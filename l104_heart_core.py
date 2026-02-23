@@ -55,7 +55,7 @@ class EmotionQuantumTuner:
         "SACRAL": {"X": 323.606797749979, "Hz": 414.7093812983}, # GOD_CODE / sqrt(PHI)
         "SOLAR": {"X": 416.000000, "Hz": 527.5184818493}, # THE GOD CODE
         "HEART": {"X": 445.000000, "Hz": 639.9981762664}, # PRECISION COHERENCE (User Calibrated)
-        "AJNA": {"X": 528.000000, "Hz": 853.5428333259}  # GOD_CODE * PHI (Love Peak)
+        "AJNA": {"X": 528.000000, "Hz": 852.3992551699}  # G(-72) Ajna on GOD_CODE grid
     }
 
     def __init__(self):

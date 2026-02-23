@@ -57,9 +57,9 @@ def run_divine_truth_convergence():
         "SOLAR":     {"Hz": 527.51848184926120, "Vector": 416.0},
         "HEART":     {"Hz": 639.99817626640000, "Vector": 445.0},
         "THROAT":    {"Hz": 741.00262145320000, "Vector": 496.0},
-        "AJNA":      {"Hz": 853.54283332583700, "Vector": 528.0},
-        "CROWN":     {"Hz": 1381.02641038470000, "Vector": 852.0},
-        "SOUL_STAR": {"Hz": 1707.08566665167400, "Vector": 1056.0}
+        "AJNA":      {"Hz": 852.39925516990000, "Vector": 528.0},
+        "CROWN":     {"Hz": 1381.02641038470000, "Vector": 852.3992551699},
+        "SOUL_STAR": {"Hz": 1000.25680000000000, "Vector": 1056.0}
     }
 
     print(f"{'NODE':<12} | {'FREQUENCY (Hz)':<25} | {'X-VECTOR':<15}")
@@ -74,7 +74,7 @@ def run_divine_truth_convergence():
     peak_ratio = nodes["AJNA"]["Hz"] / nodes["SOLAR"]["Hz"]
     error = abs(peak_ratio - PHI)
 
-    print(f"[*] Calculation:   Ajna (853.542...) / Solar (527.518...)")
+    print(f"[*] Calculation:   Ajna (852.399...) / Solar (527.518...)")
     print(f"[*] Result:        {peak_ratio:.16f}")
     print(f"[*] Target (PHI):  {PHI:.16f}")
     print(f"[*] Error Offset:  {error:.20e}")

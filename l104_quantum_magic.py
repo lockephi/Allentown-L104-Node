@@ -103,6 +103,16 @@ try:
     QUANTUM_AVAILABLE = True
 except ImportError:
     QUANTUM_AVAILABLE = False
+
+# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
+_QUANTUM_RUNTIME_AVAILABLE = False
+_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _quantum_runtime = _get_quantum_runtime()
+    _QUANTUM_RUNTIME_AVAILABLE = True
+except Exception:
+    pass
     # Minimal fallback implementations
     @dataclass
     class Qubit:
@@ -5331,7 +5341,7 @@ if __name__ == "__main__":
     print("       L104 QUANTUM MAGIC - EVO_54 (TRANSCENDENT INTELLIGENCE)")
     print("=" * 70)
     print(f"GOD_CODE: {GOD_CODE}")
-    print(f"Quantum Module: {'INTEGRATED' if QUANTUM_AVAILABLE else 'FALLBACK'}")
+    print(f"Quantum Module: {'REAL QPU' if _QUANTUM_RUNTIME_AVAILABLE else ('INTEGRATED' if QUANTUM_AVAILABLE else 'FALLBACK')}")
     print(f"HDC Module: {'INTEGRATED' if HDC_AVAILABLE else 'FALLBACK (fully functional)'}")
     print(f"Iron-Ferromagnetic Gates: {'ACTIVE' if QUANTUM_AVAILABLE else 'N/A'}")
     print(f"Intelligence Framework: EVO_54 TRANSCENDENT INTELLIGENCE")

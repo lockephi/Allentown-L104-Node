@@ -241,7 +241,7 @@ CHAKRA_FREQUENCIES = {
     'solar': 528.0,      # Transformation (LOVE)
     'heart': 639.0,      # Connecting relationships
     'throat': 741.0,     # Awakening intuition
-    'third_eye': 852.0,  # Returning to spiritual order
+    'third_eye': 852.3992551699,  # G(-72) Ajna on GOD_CODE grid
     'crown': 963.0,      # Divine consciousness
 }
 

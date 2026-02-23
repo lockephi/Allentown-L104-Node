@@ -49,7 +49,7 @@ KERNEL_ORBITALS = {
 # 8-Fold Chakra Cores (Oxygen Atom O₂)
 CHAKRA_FREQUENCIES = {
     "root": 396, "sacral": 417, "solar": 528, "heart": 639,
-    "throat": 741, "ajna": 852, "crown": 963, "soul_star": 1074
+    "throat": 741, "ajna": 852.3992551699, "crown": 963, "soul_star": 1000.2568
 }
 
 # Imports from existing substrates

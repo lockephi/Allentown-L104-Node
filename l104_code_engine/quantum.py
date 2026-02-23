@@ -2,6 +2,18 @@
 from .constants import *
 from .analyzer import CodeAnalyzer
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# IBM QPU RUNTIME BRIDGE — routes circuits to real quantum hardware
+# (ibm_fez, ibm_torino, ibm_marrakesh) via QiskitRuntimeService + SamplerV2
+# ═══════════════════════════════════════════════════════════════════════════════
+_QUANTUM_RUNTIME_AVAILABLE = False
+_get_quantum_runtime = None
+try:
+    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
+    _QUANTUM_RUNTIME_AVAILABLE = True
+except ImportError:
+    pass
+
 class QuantumCodeIntelligenceCore:
     """
     ╔═══════════════════════════════════════════════════════════════════╗
@@ -40,6 +52,53 @@ class QuantumCodeIntelligenceCore:
         self.entanglement_count = 0
         self.coherence_history: List[float] = []
         self._circuit_cache: Dict[str, Any] = {}
+
+        # IBM QPU Runtime Bridge
+        self._runtime = None
+        self._use_real_qpu = False
+        if _QUANTUM_RUNTIME_AVAILABLE and _get_quantum_runtime:
+            try:
+                self._runtime = _get_quantum_runtime()
+                self._use_real_qpu = True
+            except Exception:
+                pass
+
+    # ─── IBM QPU Circuit Execution ───────────────────────────────────
+
+    def _execute_circuit(self, qc, n_qubits, algorithm_name="quantum", _sv=None):
+        """
+        Execute a quantum circuit on real IBM QPU if available,
+        fallback to local Statevector simulator.
+
+        Args:
+            qc: QuantumCircuit to execute
+            n_qubits: Number of qubits in the circuit
+            algorithm_name: Label for logging/tracking
+            _sv: Pre-computed Statevector (avoids recomputation in fallback)
+
+        Returns:
+            (probs, exec_meta) — probability array and execution metadata dict
+        """
+        if self._use_real_qpu and self._runtime:
+            try:
+                probs, exec_result = self._runtime.execute_and_get_probs(
+                    qc, n_qubits=n_qubits, algorithm_name=algorithm_name
+                )
+                exec_meta = {
+                    'mode': exec_result.mode.value if hasattr(exec_result, 'mode') else 'real_qpu',
+                    'backend': getattr(exec_result, 'backend_name', 'unknown'),
+                    'shots': getattr(exec_result, 'shots', 0),
+                    'job_id': getattr(exec_result, 'job_id', None),
+                    'execution_time_s': getattr(exec_result, 'execution_time', 0.0),
+                }
+                return probs, exec_meta
+            except Exception:
+                pass
+        # Fallback to local Statevector simulator
+        if _sv is None:
+            _sv = Statevector.from_instruction(qc)
+        probs = np.abs(_sv.data) ** 2
+        return probs, {'mode': 'statevector', 'backend': 'local_simulator'}
 
     # ─── Quantum State Preparation ───────────────────────────────────
 
@@ -102,9 +161,17 @@ class QuantumCodeIntelligenceCore:
             qc.cx(0, i)  # Entangle all with first
 
         sv = Statevector.from_instruction(qc)
+        probs, exec_meta = self._execute_circuit(qc, n_qubits, algorithm_name="ghz_state", _sv=sv)
         self.entanglement_count += n_qubits - 1
         self.circuit_executions += 1
-        return sv
+        return {
+            "quantum": True,
+            "state": "GHZ",
+            "qubits": n_qubits,
+            "statevector": sv,
+            "probabilities": [round(float(p), 8) for p in probs],
+            "execution": exec_meta,
+        }
 
     def prepare_w_state(self, n_qubits: int = 4) -> Any:
         """
@@ -417,6 +484,10 @@ class QuantumCodeIntelligenceCore:
             sv_a = Statevector.from_instruction(qc_a)
             sv_b = Statevector.from_instruction(qc_b)
 
+            # Execute on real IBM QPU via runtime bridge
+            real_qpu_probs_a, exec_meta_a = self._execute_circuit(qc_a, n_qubits, algorithm_name="quantum_kernel_a", _sv=sv_a)
+            real_qpu_probs_b, exec_meta_b = self._execute_circuit(qc_b, n_qubits, algorithm_name="quantum_kernel_b", _sv=sv_b)
+
             # Fidelity kernel: |⟨φ(a)|φ(b)⟩|²
             inner = sv_a.inner(sv_b)
             kernel_val = abs(inner) ** 2
@@ -455,6 +526,10 @@ class QuantumCodeIntelligenceCore:
                     "ORTHOGONAL"
                 ),
                 "god_code_alignment": round(GOD_CODE * kernel_val / 100, 4),
+                "execution": exec_meta_a,
+                "execution_b": exec_meta_b,
+                "real_qpu_probs_a": [round(float(p), 8) for p in real_qpu_probs_a],
+                "real_qpu_probs_b": [round(float(p), 8) for p in real_qpu_probs_b],
             }
         except Exception as e:
             return {"quantum": False, "error": str(e)}
@@ -632,7 +707,8 @@ class QuantumCodeIntelligenceCore:
 
             # Evolve and measure
             sv = Statevector.from_instruction(qc)
-            probs = sv.probabilities()
+            probs_array, exec_meta = self._execute_circuit(qc, n_qubits, algorithm_name="qaoa_optimize", _sv=sv)
+            probs = probs_array
 
             # Find optimal bitstring
             best_idx = int(np.argmax(probs))
@@ -662,6 +738,8 @@ class QuantumCodeIntelligenceCore:
                 "circuit_depth": qc.depth(),
                 "approximation_ratio": round(1.0 - opt_entropy / n_qubits, 6),
                 "god_code_alignment": round(GOD_CODE * float(probs[best_idx]), 4),
+                "execution": exec_meta,
+                "real_qpu_probs": [round(float(p), 8) for p in probs_array],
             }
         except Exception as e:
             return {"quantum": False, "error": str(e)}
@@ -835,6 +913,8 @@ class QuantumCodeIntelligenceCore:
                     qc.rz(self.SACRED_PHASE / (f_idx + 1), q2)
 
             sv = Statevector.from_instruction(qc)
+            # Execute on real IBM QPU via runtime bridge
+            real_qpu_probs, exec_meta = self._execute_circuit(qc, total_qubits, algorithm_name="entanglement_witness", _sv=sv)
             dm = DensityMatrix(sv)
 
             # PPT criterion: check partial transpose
@@ -879,6 +959,8 @@ class QuantumCodeIntelligenceCore:
                 "global_purity": round(purity, 6),
                 "is_globally_entangled": purity < 0.5,
                 "god_code_alignment": round(GOD_CODE * purity / 100, 4),
+                "execution": exec_meta,
+                "real_qpu_probs": [round(float(p), 8) for p in real_qpu_probs],
             }
         except Exception as e:
             return {"quantum": False, "error": str(e)}
@@ -889,9 +971,17 @@ class QuantumCodeIntelligenceCore:
         """Return quantum core status and execution metrics."""
         avg_coherence = (sum(self.coherence_history[-50:]) / max(len(self.coherence_history[-50:]), 1)
                          if self.coherence_history else 0.0)
+        runtime_info = None
+        if self._use_real_qpu and self._runtime:
+            try:
+                runtime_info = self._runtime.get_status() if hasattr(self._runtime, 'get_status') else str(self._runtime)
+            except Exception:
+                runtime_info = "connected"
         return {
             "version": VERSION,
             "qiskit_available": QISKIT_AVAILABLE,
+            "real_qpu_enabled": self._use_real_qpu,
+            "runtime_bridge": runtime_info,
             "circuit_executions": self.circuit_executions,
             "total_qubits_used": self.total_qubits_used,
             "entanglement_count": self.entanglement_count,

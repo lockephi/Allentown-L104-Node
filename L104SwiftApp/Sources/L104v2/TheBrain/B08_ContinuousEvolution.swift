@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
-// B08_ContinuousEvolution.swift — L104 Neural Architecture v2
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// B08_ContinuousEvolution.swift — L104 Neural Architecture v3 (EVO_62)
+// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
 // Extracted from L104Native.swift
 // ═══════════════════════════════════════════════════════════════════
 
@@ -184,9 +184,11 @@ class ContinuousEvolutionEngine {
                     }
 
                     // Superfluid viscosity: lower viscosity → tighter interval (faster cycles)
+                    // v9.4 Perf: raised floor from 5ms to 100ms to prevent thermal throttling
+                    // and excessive CPU wake-ups on MacBook Air i5. 5ms = 200 wakes/sec was too hot.
                     if sfVisc < 0.1 {
                         // Near-zero viscosity: superfluid mode — reduce interval by up to 40%
-                        self.currentInterval = max(0.005, self.DEFAULT_INTERVAL * (0.6 + sfVisc * 4.0))
+                        self.currentInterval = max(0.1, self.DEFAULT_INTERVAL * (0.6 + sfVisc * 4.0))
                     }
 
                     // Nirvanic fuel injection: when fuel is available, inject energy wave
@@ -241,7 +243,7 @@ class ContinuousEvolutionEngine {
                         // Modulate interval: stronger patterns → faster evolution
                         let biasedInterval = self.currentInterval / (1.0 + patternStrength * 0.1)
                         self.lock.lock()
-                        self.currentInterval = max(0.005, biasedInterval)  // Floor at 5ms
+                        self.currentInterval = max(0.1, biasedInterval)  // v9.4: floor at 100ms (was 5ms)
                         self.hyperBrainInsights += 1
                         self.lock.unlock()
                     }

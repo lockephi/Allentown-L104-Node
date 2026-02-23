@@ -68,7 +68,7 @@ class DreamSynthesisEngine:
     Dreams are the subconscious processing layer where insights crystallize.
 
     Uses L104 computed values:
-    - AJNA_LOVE_PEAK (853.54 Hz) for prophetic dreams
+    - AJNA_LOVE_PEAK (852.40 Hz) G(-72) for prophetic dreams
     - MANIFOLD_RESONANCE (91.37) for dream coherence
     - FINAL_INVARIANT (0.744) for dream stability
     """
@@ -79,7 +79,7 @@ class DreamSynthesisEngine:
         DreamState.LIGHT_DREAM: L104ComputedValues.MANIFOLD_RESONANCE,  # 91.37 Hz
         DreamState.DEEP_DREAM: L104ComputedValues.ROOT_SCALAR_X,  # 221.79 Hz
         DreamState.LUCID: L104ComputedValues.GOD_CODE,            # 527.52 Hz
-        DreamState.PROPHETIC: L104ComputedValues.AJNA_LOVE_PEAK,  # 853.54 Hz
+        DreamState.PROPHETIC: L104ComputedValues.AJNA_LOVE_PEAK,  # 852.40 Hz G(-72)
     }
 
     def __init__(self):
@@ -491,7 +491,7 @@ class WisdomCrystallizationEngine:
     Uses L104 computed values:
     - INTELLECT_INDEX (872236.56) for wisdom scaling
     - META_RESONANCE (7289.03) for transcendent insights
-    - SAGE_RESONANCE (853.54) for wisdom frequency
+    - SAGE_RESONANCE (852.40) G(-72) for wisdom frequency
     """
 
     def __init__(self):

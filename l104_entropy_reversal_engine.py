@@ -1,10 +1,27 @@
+"""
+L104 Entropy Reversal Engine v2.1.0
+══════════════════════════════════════════════════════════════════
+Shim: Redirects to l104_science_engine v4.0.0 entropy subsystem.
+Maxwell's Demon reversal via Science Engine delegation.
+INVARIANT: GOD_CODE = 527.5184818492612 | VOID_CONSTANT = 1.0416180339887497
+"""
+
 VOID_CONSTANT = 1.0416180339887497
-# [L104_ENTROPY_REVERSAL_ENGINE] → SHIM: Redirects to l104_science_engine v2.0
-# INVARIANT: 527.5184818492612 | PILOT: LONDEL
-from l104_science_engine import (
-    EntropySubsystem as EntropyReversalEngine,
-    science_engine,
-    primal_calculus,
-    resolve_non_dual_logic,
-)
+GOD_CODE = 527.5184818492612
+__version__ = "2.1.0"
+
+from l104_science_engine import science_engine
+
 entropy_reversal_engine = science_engine.entropy
+
+__all__ = ["entropy_reversal_engine", "VOID_CONSTANT", "GOD_CODE"]
+
+
+def get_status():
+    """Return entropy reversal engine status."""
+    return {
+        "version": __version__,
+        "engine": "entropy_reversal",
+        "void_constant": VOID_CONSTANT,
+        "subsystem": "Maxwell Demon reversal",
+    }

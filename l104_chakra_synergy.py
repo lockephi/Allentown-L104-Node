@@ -50,7 +50,7 @@ class ChakraSynergy:
         # Chakra frequencies (Hz) - O₂ atom
         self.chakra_frequencies = {
             "root": 396, "sacral": 417, "solar": 528, "heart": 639,
-            "throat": 741, "ajna": 852, "crown": 963, "soul_star": 1074
+            "throat": 741, "ajna": 852.3992551699, "crown": 963, "soul_star": 1000.2568
         }
         # Molecular orbital mapping
         self.orbital_types = ["σ", "σ", "σ", "π", "π", "π*", "π*", "σ*"]

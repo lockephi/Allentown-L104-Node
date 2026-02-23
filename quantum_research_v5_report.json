@@ -1,0 +1,107 @@
+{
+  "version": "5.0",
+  "total": 142,
+  "passed": 133,
+  "failed": 9,
+  "pass_rate": 93.66,
+  "discoveries": [
+    {
+      "title": "Invention Engine Cycle",
+      "detail": "Generated 1 inventions via automated hypothesis\u2192theorem\u2192experiment pipeline",
+      "severity": "HIGH"
+    },
+    {
+      "title": "Zero-Point Energy Extraction",
+      "detail": "Harvested ? J from vacuum modes",
+      "severity": "HIGH"
+    },
+    {
+      "title": "Calabi-Yau Manifold Bridge",
+      "detail": "6D extra-dimensional manifold bridge computed from state vector",
+      "severity": "CRITICAL"
+    },
+    {
+      "title": "Wheeler-DeWitt Universe",
+      "detail": "Quantum universe evolved 20 steps via WDW equation",
+      "severity": "CRITICAL"
+    },
+    {
+      "title": "Novel Theorem Discovery",
+      "detail": "ASI discovered theorem: Theorem(name='GOD-CODE-4', statement='GOD_CODE/PHI = 326.024351', proof_sketch='Direct computation from sacred constants",
+      "severity": "CRITICAL"
+    },
+    {
+      "title": "Entanglement Witness Protocol",
+      "detail": "Quantum entanglement verified via witness operator",
+      "severity": "HIGH"
+    },
+    {
+      "title": "Science Cross-Domain Synthesis",
+      "detail": "7 research domains synthesized with cross-engine validation",
+      "severity": "HIGH"
+    },
+    {
+      "title": "15-Engine Grand Pipeline",
+      "detail": "ZPE\u2192QG\u2192Math\u2192Science\u2192Invention\u2192Reasoning\u2192Consciousness fully connected",
+      "severity": "CRITICAL"
+    }
+  ],
+  "elapsed_seconds": 341.8,
+  "timestamp": "2026-02-22T21:12:59.476639",
+  "failures": [
+    {
+      "phase": "Phase 8",
+      "name": "Full Quantum Reason",
+      "engine": "QReasoning",
+      "detail": "ord() expected a character, but string of length 2 found"
+    },
+    {
+      "phase": "Phase 9",
+      "name": "Quantum Inference",
+      "engine": "QMagic",
+      "detail": "'QuantumInferenceEngine' object has no attribute 'evidence_log'"
+    },
+    {
+      "phase": "Phase 11",
+      "name": "G-Counter",
+      "engine": "Intellect",
+      "detail": "'L104CRDTReplicationMesh' object has no attribute 'g_counter_value'"
+    },
+    {
+      "phase": "Phase 12",
+      "name": "Predictive Patterns",
+      "engine": "Intellect",
+      "detail": "QuantumMemoryRecompiler.generate_predictive_patterns() missing 1 required positional argument: 'seed"
+    },
+    {
+      "phase": "Phase 13",
+      "name": "Quantum Annealing",
+      "engine": "SelfMod",
+      "detail": "QuantumAnnealingOptimizer.anneal() got an unexpected keyword argument 'initial_temp'"
+    },
+    {
+      "phase": "Phase 17",
+      "name": "MetaCognition",
+      "engine": "QMagic",
+      "detail": "'MetaCognition' object has no attribute 'performance_metrics'"
+    },
+    {
+      "phase": "Phase 17",
+      "name": "Abductive Reasoner",
+      "engine": "QMagic",
+      "detail": "AbductiveReasoner.set_coherence() missing 1 required positional argument: 'coherence'"
+    },
+    {
+      "phase": "Phase 17",
+      "name": "Contextual Memory",
+      "engine": "QMagic",
+      "detail": "unhashable type: 'Observation'"
+    },
+    {
+      "phase": "Phase 18",
+      "name": "Multi-Hop Reasoning",
+      "engine": "ASI",
+      "detail": "slice(None, 30, None)"
+    }
+  ]
+}

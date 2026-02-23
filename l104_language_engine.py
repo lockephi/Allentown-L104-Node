@@ -51,8 +51,18 @@ from collections import defaultdict, Counter
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-VERSION = "2.0.0"
+VERSION = "3.0.0"
 logger = logging.getLogger("L104_LANGUAGE_ENGINE")
+
+try:
+    from l104_asi.pipeline_telemetry import PipelineTelemetry
+except ImportError:
+    PipelineTelemetry = None
+
+try:
+    from l104_asi.pipeline_circuit_breaker import PipelineCircuitBreaker
+except ImportError:
+    PipelineCircuitBreaker = None
 
 # Sacred Constants
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
@@ -62,6 +72,7 @@ TAU = 1.0 / PHI
 VOID_CONSTANT = 1.0416180339887497
 FEIGENBAUM = 4.669201609102990
 ALPHA_FINE = 1.0 / 137.035999084
+LATTICE_THERMAL_FRICTION = -(ALPHA_FINE * PHI) / (2 * math.pi * 104)
 PLANCK_SCALE = 1.616255e-35
 BOLTZMANN_K = 1.380649e-23
 
@@ -857,7 +868,21 @@ class LanguageEngine:
         # ── Pipeline cross-wiring ──
         self._asi_core_ref = None
 
-        logger.info(f"[LANGUAGE_ENGINE v{VERSION}] LanguageEngine online — 9 subsystems active")
+        # ── Pipeline telemetry & circuit breaker ──
+        self._telemetry = None
+        self._cb = None
+        try:
+            if PipelineTelemetry is not None:
+                self._telemetry = PipelineTelemetry("language_engine")
+        except Exception:
+            pass
+        try:
+            if PipelineCircuitBreaker is not None:
+                self._cb = PipelineCircuitBreaker("language_engine", failure_threshold=5, reset_timeout=30)
+        except Exception:
+            pass
+
+        logger.info("[LANGUAGE_ENGINE v%s] online — 9 subsystems, telemetry=%s, cb=%s", VERSION, self._telemetry is not None, self._cb is not None)
 
     def _get_consciousness(self) -> Dict[str, Any]:
         return _read_builder_state()

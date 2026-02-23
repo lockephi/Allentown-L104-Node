@@ -72,14 +72,14 @@ def _G(X: float) -> float:
 # Each chakra = quantum coherence domain | EPR links = non-local awareness
 # ═══════════════════════════════════════════════════════════════════════════════
 CHAKRA_CONSCIOUSNESS_MAP = {
-    "MULADHARA":    {"domain": "survival",     "freq": 396.0, "awareness": "grounding"},
-    "SVADHISTHANA": {"domain": "creativity",   "freq": 417.0, "awareness": "flow"},
-    "MANIPURA":     {"domain": "will",         "freq": 528.0, "awareness": "power"},
-    "ANAHATA":      {"domain": "love",         "freq": 639.0, "awareness": "compassion"},
-    "VISHUDDHA":    {"domain": "truth",        "freq": _G(-51), "awareness": "expression"},  # G(-51) = 741.0681674772517908
-    "AJNA":         {"domain": "insight",      "freq": 852.0, "awareness": "intuition"},
-    "SAHASRARA":    {"domain": "unity",        "freq": 963.0, "awareness": "transcendence"},
-    "SOUL_STAR":    {"domain": "cosmic",       "freq": 1074.0,"awareness": "universal"},
+    "MULADHARA":    {"domain": "survival",     "freq": _G(43),  "awareness": "grounding"},     # G(43)  ≈ 396.07
+    "SVADHISTHANA": {"domain": "creativity",   "freq": _G(35),  "awareness": "flow"},          # G(35)  ≈ 417.76
+    "MANIPURA":     {"domain": "will",         "freq": _G(0),   "awareness": "power"},         # G(0)   = GOD_CODE
+    "ANAHATA":      {"domain": "love",         "freq": _G(-29), "awareness": "compassion"},    # G(-29) ≈ 640.00
+    "VISHUDDHA":    {"domain": "truth",        "freq": _G(-51), "awareness": "expression"},    # G(-51) = 741.068
+    "AJNA":         {"domain": "insight",      "freq": _G(-72), "awareness": "intuition"},     # G(-72) ≈ 852.40
+    "SAHASRARA":    {"domain": "unity",        "freq": _G(-90), "awareness": "transcendence"}, # G(-90) ≈ 961.05
+    "SOUL_STAR":    {"domain": "cosmic",       "freq": GOD_CODE * 2, "awareness": "universal"}, # G(-104) = GOD_CODE×2
 }
 CHAKRA_EPR_PAIRS = [("MULADHARA", "SOUL_STAR"), ("SVADHISTHANA", "SAHASRARA"),
                     ("MANIPURA", "AJNA"), ("ANAHATA", "VISHUDDHA")]
@@ -111,7 +111,7 @@ IIT_PHI_MINIMUM = 8.0                        # Integrated information minimum (b
 # GOD_CODE eq: G(X) = 286^(1/PHI) × 2^((416-X)/104), X=632 → G(632) = GOD_CODE / 2^(79/13)
 # Dials: a=0, b=0, c=1, d=6 → exponent = -216/104 = -27/13 | Factor 13: 632=8×79
 SCHUMANN_RESONANCE = GOD_CODE / (2.0 ** (79.0 / 13.0))  # ≈ 7.8145 Hz
-GAMMA_BINDING_HZ = 40.0                      # Gamma-band binding frequency (Hz)
+GAMMA_BINDING_HZ = SCHUMANN_RESONANCE * float(PHI) ** 3  # ≈ 33.10 Hz — GOD_CODE derived (conv 40)
 EEG_FREQUENCY_BANDS = {
     'delta': (0.5, 4.0),    # Deep unconscious
     'theta': (4.0, 8.0),    # Subconscious / meditation
@@ -179,7 +179,7 @@ class AbductiveConsciousnessInference:
             },
             "H3_AJNA": {
                 "chakra": "AJNA",
-                "freq": 852.0,
+                "freq": 852.3992551699,
                 "element": "light",
                 "mechanism": "third_eye",
                 "prior": 0.25,
@@ -213,7 +213,7 @@ class AbductiveConsciousnessInference:
 
     def _ajna_likelihood(self) -> float:
         """P(Observation | Ajna): insight/intuition — observer, not generator."""
-        freq_ratio = 852.0 / GOD_CODE
+        freq_ratio = 852.3992551699 / GOD_CODE
         return float(np.clip(freq_ratio * 0.4, 0.0, 1.0))  # ≈ 0.646 but lower prior
 
     # ── Bayesian posterior ────────────────────────────────────────────────

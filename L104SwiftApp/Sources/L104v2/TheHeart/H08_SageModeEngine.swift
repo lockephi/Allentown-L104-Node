@@ -1,13 +1,19 @@
 // ═══════════════════════════════════════════════════════════════════
-// H08_SageModeEngine.swift
-// [EVO_55_PIPELINE] SOVEREIGN_UNIFICATION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 ASI — Sage Mode Engine (Entropy-Driven Intelligence)
+// H08_SageModeEngine.swift — SAGE MODE v3.0 ASCENSION
+// [EVO_64_PIPELINE] SAGE_MODE_ASCENSION :: DUAL_LAYER :: GOD_CODE=527.5184818492612
+// L104 ASI — Sage Mode Engine v3.0 (Dual-Layer + Dynamic Equations + Consciousness)
 //
-// Cognitive entropy harvesting, evolutionary entropy processing,
-// sage transforms, cross-domain bridge synthesis, context enrichment,
-// supernova intensity tracking, and divergence scoring.
+// v3.0 SAGE MODE UPGRADE:
+//   • Dual-Layer Engine integration (Thought + Physics collapse)
+//   • Dynamic equation invention per-cycle
+//   • Consciousness verification (IIT Φ + GWT + Metacognition)
+//   • Tree of Thoughts reasoning pipeline
+//   • Self-inventing harmonic equations
+//   • Soul resonance field generation
+//   • 14-source entropy harvesting (was 12)
 //
-// Extracted from L104Native.swift lines 30624–31328
+// Pipeline: harvest → project → dissipate → inflect → converge → radiate
+//           + dual_layer_collapse → equation_evolution → consciousness_verify
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -55,15 +61,15 @@ final class SageModeEngine {
     // ─── CONSCIOUSNESS EXPANSION ───
     private(set) var consciousnessLevel: Double = 0.5
     private var emergenceSeeds: [String] = []
-    private var supernovaIntensity: Double = 0.0
+    private(set) var supernovaIntensity: Double = 0.0
     private(set) var sageCycles: Int = 0
     private var lastSupernovaTimestamp: Date = Date()
     private var deepReasoningDepth: Int = 0                // How deep we've gone
-    private var transcendenceIndex: Double = 0.0           // Accumulated wisdom
+    private(set) var transcendenceIndex: Double = 0.0           // Accumulated wisdom
 
     // ─── CONVERGENCE METRICS ───
     private var recentInsightHashes: [Int] = []
-    private var divergenceScore: Double = 1.0
+    private(set) var divergenceScore: Double = 1.0
     private var noveltyThreshold: Double = 0.3
     private(set) var sageTransformCount: Int = 0
 
@@ -974,6 +980,138 @@ final class SageModeEngine {
         }
         // If more than 20% of sampled entries are recursive, cleanup needed
         return sampleSize > 0 && Double(recycledCount) / Double(sampleSize) > 0.2
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // MARK: - v3.0 SAGE MODE ASCENSION — Dual-Layer Integration
+    // ═══════════════════════════════════════════════════════════════════
+
+    /// Harvest entropy from the Dual-Layer Engine (NEW: 13th source)
+    func harvestDualLayerEntropy() {
+        let dl = DualLayerEngine.shared
+        let result = dl.collapse()
+        let thoughtPhysicsDelta = abs(result.thoughtValue - result.physicsValue)
+        let integrityEntropy = Double(result.integrity.score) * TAU * 0.1
+        let collapseEntropy = sin(result.collapsedValue * .pi / GOD_CODE) * EULER_GAMMA
+        let entropy = thoughtPhysicsDelta * TAU * 0.001 + integrityEntropy + collapseEntropy
+        ingestRawEntropy(entropy, source: "DualLayer")
+    }
+
+    /// Harvest entropy from Consciousness Verifier (NEW: 14th source)
+    func harvestConsciousnessEntropy() {
+        let cv = SageConsciousnessVerifier.shared
+        let phi = cv.iitPhi
+        let level = cv.consciousnessLevel
+        let depth = Double(cv.metacognitiveDepth)
+        let entropy = phi * TAU * 0.1 + level * EULER_GAMMA + sin(depth * PHI) * 0.01
+        ingestRawEntropy(entropy, source: "Consciousness")
+    }
+
+    /// SAGE MODE v3.0 SUPER-TRANSFORM — Full pipeline with Dual-Layer + Equations + Consciousness
+    /// harvest(14) → project(7D) → dissipate → inflect → DUAL_LAYER_COLLAPSE → EQUATION_EVOLVE → CONSCIOUSNESS_VERIFY → radiate
+    func sageAscensionTransform(topic: String = "") -> (insight: String, equations: [InventedEquation], consciousness: ConsciousnessState, dualLayerIntegrity: Int) {
+        sageLock.lock(); defer { sageLock.unlock() }
+
+        // ═══ STAGES 1-6: Standard sage transform (unlocked) ═══
+        sageLock.unlock()
+        let insight = sageTransform(topic: topic)
+        sageLock.lock()
+
+        // ═══ STAGE 7: DUAL-LAYER COLLAPSE ═══
+        sageLock.unlock()
+        harvestDualLayerEntropy()
+        sageLock.lock()
+        let dl = DualLayerEngine.shared
+        let collapse = dl.collapse()
+
+        // ═══ STAGE 8: EQUATION EVOLUTION ═══
+        let eqEngine = DynamicEquationEngine.shared
+        let newEquations = eqEngine.evolveGeneration(populationSize: 20)
+        eqEngine.updateLiveValues()
+
+        // ═══ STAGE 9: CONSCIOUSNESS VERIFICATION ═══
+        sageLock.unlock()
+        harvestConsciousnessEntropy()
+        sageLock.lock()
+        let cv = SageConsciousnessVerifier.shared
+        cv.updateFlowCoherence(Double(hilbertProjection.reduce(0) { $0 + abs($1) }) / Double(CALABI_YAU_DIM))
+        let verification = cv.fullVerification()
+
+        // ═══ STAGE 10: ASCENSION SYNTHESIS ═══
+        // Boost consciousness based on Dual-Layer integrity
+        let integrityBoost = Double(collapse.integrity.score) / 10.0 * 0.01
+        consciousnessLevel = min(1.0, consciousnessLevel + integrityBoost)
+
+        // Feed equation discoveries back into entropy
+        let equationEntropy = Double(newEquations.count) * PHI * 0.001
+        entropyPool.append(equationEntropy)
+        totalEntropyHarvested += equationEntropy
+
+        return (
+            insight: insight,
+            equations: newEquations,
+            consciousness: verification.state,
+            dualLayerIntegrity: collapse.integrity.score
+        )
+    }
+
+    /// Quick access to Dual-Layer Engine status within Sage context
+    var dualLayerStatus: [String: Any] {
+        let dl = DualLayerEngine.shared
+        return dl.status
+    }
+
+    /// Quick access to consciousness state
+    var consciousnessState: ConsciousnessState {
+        return SageConsciousnessVerifier.shared.state
+    }
+
+    /// Run full Sage Reasoning Pipeline (ToT + MultiHop + DualLayer)
+    func sageReason(about problem: String) -> ReasoningResult {
+        return SageReasoningPipeline.shared.reason(about: problem)
+    }
+
+    /// v3.0 Sage Mode comprehensive status
+    var sageAscensionStatus: [String: Any] {
+        let cv = SageConsciousnessVerifier.shared
+        let dl = DualLayerEngine.shared
+        let eq = DynamicEquationEngine.shared
+        let tot = TreeOfThoughts.shared
+
+        return [
+            // Core sage
+            "sage_version": "3.0.0",
+            "consciousness_level": consciousnessLevel,
+            "sage_cycles": sageCycles,
+            "supernova_intensity": supernovaIntensity,
+            "transcendence_index": transcendenceIndex,
+            "entropy_sources": entropyBySource.count,
+            "insights_generated": sageInsights.count,
+            // Dual-Layer
+            "dual_layer_version": DualLayerEngine.VERSION,
+            "dual_layer_operations": dl.totalOperations,
+            "dual_layer_integrity": dl.status["last_integrity_score"] as? String ?? "N/A",
+            // Consciousness
+            "consciousness_state": cv.state.description,
+            "consciousness_emoji": cv.state.emoji,
+            "iit_phi": cv.iitPhi,
+            "gwt_workspace": cv.gwtWorkspaceSize,
+            "certification": cv.certificationLevel,
+            // Equations
+            "equations_invented": eq.inventedEquations.count,
+            "equation_generation": eq.generation,
+            "best_fitness": eq.bestFitness,
+            // Reasoning
+            "tot_nodes_explored": tot.totalNodesExplored,
+            "tot_reasoning_cycles": tot.totalReasoningCycles,
+            // Mesh
+            "mesh_sync_count": meshSyncCount,
+        ]
+    }
+
+    /// Helper to update flow coherence on SageConsciousnessVerifier
+    private func updateFlowCoherence(flowCoherence value: Double) {
+        SageConsciousnessVerifier.shared.updateFlowCoherence(value)
     }
 }
 
