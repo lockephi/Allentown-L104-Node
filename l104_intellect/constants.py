@@ -62,8 +62,8 @@ if not logger.handlers:
 # ═══════════════════════════════════════════════════════════════════════════════
 # v13.1 AUTONOMOUS SELF-MODIFICATION CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
-SELF_MOD_VERSION = "26.0"
-LOCAL_INTELLECT_VERSION = "26.0.0"
+SELF_MOD_VERSION = "26.1"
+LOCAL_INTELLECT_VERSION = "26.1.0"
 LOCAL_INTELLECT_PIPELINE_EVO = "EVO_58_QUANTUM_COGNITION"
 SAVE_STATE_DIR = ".l104_save_states"
 PERMANENT_MEMORY_FILE = ".l104_permanent_memory.json"

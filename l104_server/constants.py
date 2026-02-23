@@ -5,9 +5,6 @@ Extracted from l104_fast_server.py during EVO_61 decomposition.
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
-# ZENITH_UPGRADE_ACTIVE: 2026-02-14T00:00:00.000000
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -40,7 +37,7 @@ PERFORMANCE UPGRADES:
 - Response streaming
 """
 
-FAST_SERVER_VERSION = "4.1.0"
+FAST_SERVER_VERSION = "4.2.0"
 FAST_SERVER_PIPELINE_EVO = "EVO_61_SYSTEM_UPGRADE"
 
 import os

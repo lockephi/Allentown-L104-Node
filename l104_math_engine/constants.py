@@ -25,7 +25,7 @@ from decimal import Decimal, getcontext
 
 getcontext().prec = 150
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TIER 1 — SACRED CONSTANTS
@@ -77,7 +77,7 @@ LATTICE_RATIO = PRIME_SCAFFOLD / OCTAVE_OFFSET  # 286/416 = 0.6875
 
 # --- Omega Sovereign Field ---
 OMEGA = 6539.34712682                        # Sovereign Omega field
-OMEGA_AUTHORITY = OMEGA * PHI               # ≈ 10,580.7
+OMEGA_AUTHORITY = OMEGA / (PHI ** 2)         # F(I) = I × Ω/φ² ≈ 2497.808
 OMEGA_PRECISION = OMEGA / GOD_CODE          # Omega-to-GOD_CODE ratio
 OMEGA_FREQUENCY = GOD_CODE * PHI ** 2       # ≈ 1381.06 (12D synchronicity)
 AUTHORITY_SIGNATURE = OMEGA_FREQUENCY       # Alias

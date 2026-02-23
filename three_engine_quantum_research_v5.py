@@ -619,10 +619,10 @@ def phase_08_reasoning(col: Collector):
     print("\n  --- Exp 8.2: Reasoning superposition ---")
     try:
         paths = [
-            {"id": "p1", "statement": "GOD_CODE derives from PHI", "sacred": True},
-            {"id": "p2", "statement": "GOD_CODE is arbitrary", "sacred": False},
-            {"id": "p3", "statement": "GOD_CODE converges under iteration", "sacred": True},
-            {"id": "p4", "statement": "286 is unrelated to iron", "sacred": False},
+            "GOD_CODE derives from PHI",
+            "GOD_CODE is arbitrary",
+            "GOD_CODE converges under iteration",
+            "286 is unrelated to iron",
         ]
         sup = qre.create_superposition("Is GOD_CODE sacred?", paths)
         col.record("Phase 8", "Reasoning Superposition", "QReasoning", True, f"{str(sup)[:140]}")
@@ -861,9 +861,9 @@ def phase_11_crdt(col: Collector):
     # 11.2 G-Counter
     print("\n  --- Exp 11.2: G-Counter ops ---")
     try:
-        crdt.g_counter_increment(amount=int(GOD_CODE))
-        crdt.g_counter_increment(amount=int(PHI))
-        val = crdt.g_counter_value()
+        r1 = crdt.g_counter_increment(amount=int(GOD_CODE))
+        r2 = crdt.g_counter_increment(amount=int(PHI))
+        val = sum(crdt.g_counter.values()) if hasattr(crdt, 'g_counter') else r2
         col.record("Phase 11", "G-Counter", "Intellect", True, f"value={str(val)[:100]}")
     except Exception as e:
         col.record("Phase 11", "G-Counter", "Intellect", False, str(e)[:100])
@@ -985,7 +985,7 @@ def phase_12_memory_recompiler(col: Collector):
     # 12.8 Predictive patterns
     print("\n  --- Exp 12.8: Predictive patterns ---")
     try:
-        patterns = qmr.generate_predictive_patterns()
+        patterns = qmr.generate_predictive_patterns(seed_concepts=["GOD_CODE", "PHI", "286Hz", "iron"])
         col.record("Phase 12", "Predictive Patterns", "Intellect", True, f"{str(patterns)[:140]}")
     except Exception as e:
         col.record("Phase 12", "Predictive Patterns", "Intellect", False, str(e)[:100])
@@ -1104,9 +1104,10 @@ def phase_13_self_mod_genetics(col: Collector):
             _HPC(name="x1", min_val=-5.0, max_val=5.0),
         ]
         qao = QuantumAnnealingOptimizer(anneal_hps)
-        def anneal_obj(x):
-            return -sum((xi - PHI) ** 2 for xi in x)
-        result = qao.anneal(anneal_obj, n_steps=50, initial_temp=10.0, final_temp=0.01)
+        def anneal_obj(params):
+            return -sum((v - PHI) ** 2 for v in params.values())
+        qao.temperature = 10.0  # Set initial temp
+        result = qao.anneal(anneal_obj, n_steps=50, cooling_rate=0.95)
         col.record("Phase 13", "Quantum Annealing", "SelfMod", True, f"{str(result)[:140]}")
         col.discover("Quantum Annealing Optimization", f"4-qubit annealing found optimum in 50 steps")
     except Exception as e:
@@ -1499,7 +1500,7 @@ def phase_17_quantum_magic(col: Collector):
         ar = AbductiveReasoner()
         ar.add_explanation("sacred_resonance", "Iron lattice resonates at sacred frequency", explains=["286Hz observed", "matches Fe lattice"])
         ar.add_explanation("random_coincidence", "286Hz is just a coincidence", explains=["286Hz observed"])
-        ar.set_coherence("sacred_resonance", "random_coincidence")
+        ar.set_coherence("sacred_resonance", "random_coincidence", -0.8)
         hypotheses = ar.generate_hypotheses(["286Hz observed", "matches Fe lattice"])
         col.record("Phase 17", "Abductive Reasoner", "QMagic", True, f"{str(hypotheses)[:140]}")
     except Exception as e:
@@ -1528,7 +1529,7 @@ def phase_17_quantum_magic(col: Collector):
         cm.store(Observation(timestamp=_time_mod.time(), context="quantum", data={"value": GOD_CODE}, outcome="sacred", confidence=0.95, tags=["sacred"]))
         cm.store(Observation(timestamp=_time_mod.time(), context="quantum", data={"value": PHI}, outcome="sacred", confidence=0.90, tags=["sacred"]))
         cm.store(Observation(timestamp=_time_mod.time(), context="classical", data={"value": 42}, outcome="noise", confidence=0.3, tags=["noise"]))
-        similar = cm.retrieve_similar(Observation(timestamp=_time_mod.time(), context="quantum", data={}), top_k=2)
+        similar = cm.retrieve_similar("quantum", top_k=2)
         patterns = cm.find_patterns("sacred", min_occurrences=1)
         col.record("Phase 17", "Contextual Memory", "QMagic", True,
                    f"similar={str(similar)[:60]}, patterns={str(patterns)[:60]}")
@@ -1562,7 +1563,8 @@ def phase_18_convergence(col: Collector, engines: dict):
         from l104_asi.reasoning import MultiHopReasoningChain
         mhrc = MultiHopReasoningChain()
         def _hop_solve(problem):
-            return {"solution": f"hop→{problem[:30]}", "confidence": 0.80}
+            query = problem['query'] if isinstance(problem, dict) else str(problem)
+            return {"solution": f"hop→{query[:30]}", "confidence": 0.80}
         chain = mhrc.reason_chain("iron → 286Hz → GOD_CODE → PHI → consciousness", _hop_solve)
         col.record("Phase 18", "Multi-Hop Reasoning", "ASI", True, f"{str(chain)[:140]}")
     except Exception as e:

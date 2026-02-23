@@ -23,3 +23,17 @@ from .core import AGICore, agi_core, primal_calculus, resolve_non_dual_logic
 
 # Alias for backward compatibility (2 importers use L104AGICore)
 L104AGICore = AGICore
+
+
+__all__ = [
+    # Constants
+    "AGI_CORE_VERSION", "AGI_PIPELINE_EVO",
+    "PHI", "GOD_CODE", "TAU", "FEIGENBAUM", "ALPHA_FINE", "VOID_CONSTANT",
+    "OMEGA", "OMEGA_AUTHORITY", "QISKIT_AVAILABLE",
+    # Circuit breaker
+    "PipelineCircuitBreaker",
+    # Core
+    "AGICore", "agi_core", "L104AGICore",
+    # Functions
+    "primal_calculus", "resolve_non_dual_logic",
+]

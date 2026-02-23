@@ -1,5 +1,5 @@
 """
-L104 Code Engine v6.0.0 — Modularized Sovereign Intelligence Hub
+L104 Code Engine v6.3.0 — Modularized Sovereign Intelligence Hub
 
 Package structure (EVO_60):
   constants.py      — Sacred constants, shared imports, Qiskit flag
@@ -68,3 +68,27 @@ def soul_resonance(vector) -> float:
     magnitude = sum(abs(v) for v in vector)
     stability = magnitude * SOUL_STABILITY_NORM  # Normalize through Soul Star
     return stability * OMEGA_AUTHORITY / 1000.0
+
+
+__all__ = [
+    # Version / Constants
+    "VERSION", "PHI", "GOD_CODE", "TAU", "VOID_CONSTANT", "FEIGENBAUM",
+    "ALPHA_FINE", "PLANCK_SCALE", "BOLTZMANN_K", "EULER_GAMMA",
+    "APERY_CONSTANT", "SILVER_RATIO", "PLASTIC_NUMBER", "CONWAY_CONSTANT",
+    "KHINCHIN_CONSTANT", "OMEGA_CONSTANT", "CAHEN_CONSTANT",
+    "GLAISHER_CONSTANT", "MEISSEL_MERTENS", "QISKIT_AVAILABLE",
+    "OMEGA", "OMEGA_AUTHORITY", "SOUL_STABILITY_NORM",
+    "CODING_SYSTEM_NAME", "CODING_SYSTEM_VERSION",
+    # Engine singletons
+    "CodeEngine", "code_engine",
+    "CodingIntelligenceSystem", "coding_system",
+    # Functions
+    "primal_calculus", "resolve_non_dual_logic", "omega_field", "soul_resonance",
+    # Subsystems
+    "AIContextBridge", "SessionIntelligence",
+    "SelfReferentialEngine", "ASICodeIntelligence",
+    "DynamicCodeHarvester", "QuantumCodeTrainingKernel",
+    "CodingSuggestionEngine",
+    "CodeReviewPipeline", "QualityGateEngine",
+    "ProjectAnalyzer",
+]

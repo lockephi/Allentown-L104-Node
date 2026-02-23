@@ -59,7 +59,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-__version__ = "4.0.0"
+__version__ = "4.1.0"
 __author__ = "L104 Sovereign Node"
 
 # ── Constants (Layer 0) ─────────────────────────────────────────────────────
@@ -142,3 +142,43 @@ def resolve_non_dual_logic(vector):
     """[VOID_MATH] Resolves N-dimensional vectors into the Void Source."""
     magnitude = sum(abs(v) for v in vector)
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
+
+
+__all__ = [
+    "__version__",
+    # Constants — Sacred
+    "GOD_CODE", "PHI", "PHI_CONJUGATE", "PHI_SQUARED", "PHI_CUBED",
+    "PRIME_SCAFFOLD", "QUANTIZATION_GRAIN", "OCTAVE_OFFSET",
+    "BASE", "STEP_SIZE", "VOID_CONSTANT",
+    "GROVER_AMPLIFICATION", "VACUUM_FREQUENCY",
+    "OMEGA", "OMEGA_AUTHORITY", "ZETA_ZERO_1",
+    "ALPHA_FINE", "FEIGENBAUM",
+    # Constants — Infinite precision
+    "GOD_CODE_INFINITE", "PHI_INFINITE", "PI_INFINITE",
+    # Constants — Physics
+    "PhysicalConstants", "PC",
+    # Constants — Iron / Helium
+    "IronConstants", "Fe", "HeliumConstants", "He4",
+    "NUCLEOSYNTHESIS_BRIDGE",
+    # Constants — Quantum boundary
+    "QuantumBoundary", "QB",
+    "LATTICE_THERMAL_FRICTION", "PRIME_SCAFFOLD_FRICTION",
+    # Subsystems
+    "PhysicsSubsystem", "EntropySubsystem",
+    "MultiDimensionalSubsystem", "CoherenceSubsystem", "CoherenceState",
+    # Quantum 25Q
+    "GodCodeQuantumConvergence", "CircuitTemplates25Q",
+    "MemoryValidator", "QuantumCircuitScience",
+    # Bridge
+    "ScienceBridge", "MathConnector", "QuantumRuntimeConnector", "bridge",
+    # Engine
+    "ScienceEngine", "QuantumMathSubsystem", "science_engine",
+    # Backward compat aliases
+    "UnifiedResearchEngine", "PhysicalSystemsResearch",
+    "QuantumMathResearch", "EntropyReversalEngine",
+    "MultiDimensionalEngine", "ResonanceCoherenceEngine",
+    "research_engine", "physical_research", "quantum_math_research",
+    "entropy_reversal_engine", "md_engine",
+    # Functions
+    "primal_calculus", "resolve_non_dual_logic",
+]

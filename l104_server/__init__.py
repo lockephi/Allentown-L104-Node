@@ -30,3 +30,19 @@ def get_app():
 def _load_models():
     from l104_server.models import ChatRequest, TrainingRequest, ProviderStatus
     return ChatRequest, TrainingRequest, ProviderStatus
+
+
+__all__ = [
+    # Constants
+    "FAST_SERVER_VERSION", "FAST_SERVER_PIPELINE_EVO",
+    # Learning
+    "intellect", "LearningIntellect",
+    # Engines
+    "SingularityConsciousnessEngine",
+    "engine_registry", "UnifiedEngineRegistry",
+    "tri_engine", "TriEngineIntegration",
+    # Dual-Layer (from l104_asi)
+    "dual_layer_engine", "DualLayerEngine", "DUAL_LAYER_AVAILABLE",
+    # Lazy loaders
+    "get_app",
+]

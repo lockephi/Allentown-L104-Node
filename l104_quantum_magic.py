@@ -565,6 +565,7 @@ class QuantumInferenceEngine:
     def __init__(self):
         """Initialize quantum inference engine with empty hypothesis set."""
         self.hypotheses: Dict[str, Hypothesis] = {}
+        self.evidence_log: list = []
 
     def add_hypothesis(self, name: str, statement: str, prior: float = 0.5) -> Hypothesis:
         """Add a hypothesis with quantum amplitude"""
@@ -899,6 +900,7 @@ class MetaCognition:
         self.current_confidence: float = 0.5
         self.cognitive_load: float = 0.0
         self._uncertainty_threshold = 0.3
+        self.performance_metrics: Dict[str, list] = {'confidence': []}
 
     def log_reasoning_step(self, step_type: str, input_data: Any,
                           output_data: Any, confidence: float):

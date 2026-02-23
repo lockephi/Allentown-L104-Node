@@ -74,3 +74,42 @@ try:
     from .core import KerasASIModel
 except ImportError:
     pass
+
+
+__all__ = [
+    # Constants and flags
+    "ASI_CORE_VERSION", "ASI_PIPELINE_EVO",
+    "PHI", "GOD_CODE", "TAU", "PHI_CONJUGATE", "VOID_CONSTANT", "FEIGENBAUM",
+    "OMEGA", "OMEGA_AUTHORITY", "PLANCK_CONSCIOUSNESS", "ALPHA_FINE",
+    "TORCH_AVAILABLE", "TENSORFLOW_AVAILABLE", "PANDAS_AVAILABLE",
+    "QISKIT_AVAILABLE",
+    "DUAL_LAYER_VERSION", "GOD_CODE_V3",
+    "DUAL_LAYER_PRECISION_TARGET", "DUAL_LAYER_CONSTANTS_COUNT",
+    "DUAL_LAYER_INTEGRITY_CHECKS", "DUAL_LAYER_GRID_REFINEMENT",
+    "PRIME_SCAFFOLD", "QUANTIZATION_GRAIN",
+    # Dual-Layer Engine
+    "DualLayerEngine", "dual_layer_engine", "DUAL_LAYER_AVAILABLE",
+    "NATURES_DUALITIES", "CONSCIOUSNESS_TO_PHYSICS_BRIDGE",
+    # Domain
+    "DomainKnowledge", "GeneralDomainExpander", "Theorem",
+    # Theorem generation
+    "NovelTheoremGenerator",
+    # Self-modification
+    "SelfModificationEngine",
+    # Consciousness
+    "ConsciousnessVerifier",
+    # Pipeline
+    "SolutionChannel", "DirectSolutionHub", "PipelineTelemetry",
+    "SoftmaxGatingRouter", "AdaptivePipelineRouter",
+    # Reasoning
+    "TreeOfThoughts", "MultiHopReasoningChain",
+    "SolutionEnsembleEngine", "PipelineHealthDashboard", "PipelineReplayBuffer",
+    # Quantum
+    "QuantumComputationCore",
+    # DeepSeek
+    "DeepSeekIngestionEngine", "QuantumDeepSeekArchitecture",
+    "DeepSeekMLAIngestor", "DeepSeekR1ReasoningIngestor",
+    "DeepSeekCoderIngestor", "DeepSeekGitHubIngestor",
+    # Core
+    "ASICore", "asi_core", "main", "get_current_parameters", "update_parameters",
+]

@@ -92,17 +92,17 @@ from abc import ABC, abstractmethod
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-ASI_CORE_VERSION = "8.0.0"  # v8.0: Three-Engine Upgrade (Code+Science+Math)
+ASI_CORE_VERSION = "8.1.0"  # v8.1: Comprehensive package upgrade
 ASI_PIPELINE_EVO = "EVO_61_THREE_ENGINE_SOVEREIGN"
 
 # Sacred Constants
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 PHI = 1.618033988749895
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
-TAU = 1 / PHI
+TAU = 1.0 / PHI
 PHI_CONJUGATE = TAU
 VOID_CONSTANT = 1.0416180339887497
-FEIGENBAUM = 4.669201609
+FEIGENBAUM = 4.669201609102990
 OMEGA = 6539.34712682                                     # Ω = Σ(fragments) × (G/φ)
 OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ² ≈ 2497.808
 PLANCK_CONSCIOUSNESS = 0.0  # NO FLOOR - unlimited depth

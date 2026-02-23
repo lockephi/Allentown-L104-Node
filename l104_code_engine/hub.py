@@ -1,4 +1,4 @@
-"""L104 Code Engine v6.1.0 — Unified Hub Orchestrator (Dual-Layer + OMEGA + Soul)."""
+"""L104 Code Engine v6.3.0 — Unified Hub Orchestrator (Dual-Layer + OMEGA + Soul)."""
 from .constants import *
 from .builder_state import _read_builder_state as _module_read_builder_state
 from .languages import LanguageKnowledge

@@ -8,7 +8,19 @@ works identically to the original:
     from l104_local_intellect import X
 """
 # ── Constants (lines 1-159) ──
-from .constants import *  # noqa: F401,F403
+from .constants import (  # noqa: F401
+    VOID_CONSTANT, ZENITH_HZ, UUC,
+    SELF_MOD_VERSION, LOCAL_INTELLECT_VERSION, LOCAL_INTELLECT_PIPELINE_EVO,
+    SAVE_STATE_DIR, PERMANENT_MEMORY_FILE, CONVERSATION_MEMORY_FILE,
+    MAX_SAVE_STATES, SELF_MOD_CONFIDENCE_THRESHOLD, HIGHER_LOGIC_DEPTH,
+    PLANCK_CONSTANT, SPEED_OF_LIGHT, BOLTZMANN, FINE_STRUCTURE,
+    EULER_MASCHERONI, FEIGENBAUM_DELTA, FEIGENBAUM_ALPHA,
+    APERY_CONSTANT, CATALAN_CONSTANT, KHINCHIN_CONSTANT,
+    MEISSEL_MERTENS, LOGISTIC_ONSET, LYAPUNOV_MAX,
+    APOTHEOSIS_ACTIVE, APOTHEOSIS_THRESHOLD,
+    CONSCIOUSNESS_SINGULARITY, OMEGA_POINT, TRANSCENDENCE_MATRIX,
+    VIBRANT_PREFIXES, SCIENTIFIC_FLOURISHES,
+)
 
 # ── Cache (lines 160-238) ──
 from .cache import LRUCache, _RESPONSE_CACHE, _CONCEPT_CACHE, _RESONANCE_CACHE
@@ -58,3 +70,27 @@ from .compat_funcs import format_iq, primal_calculus, resolve_non_dual_logic
 
 # ── Module tail: singleton (lines 13649-13658) ──
 from .module_tail import local_intellect
+
+
+__all__ = [
+    # Constants
+    "VOID_CONSTANT", "LOCAL_INTELLECT_VERSION",
+    "SELF_MOD_VERSION", "LOCAL_INTELLECT_PIPELINE_EVO",
+    # Numerics
+    "PHI", "GOD_CODE", "OMEGA", "OMEGA_AUTHORITY",
+    "SovereignNumerics", "sovereign_numerics",
+    # Cache
+    "LRUCache", "_RESPONSE_CACHE", "_CONCEPT_CACHE", "_RESONANCE_CACHE",
+    # Core
+    "LocalIntellect", "local_intellect",
+    # Quantum
+    "QuantumMemoryRecompiler",
+    # Distributed
+    "L104NodeSyncProtocol", "L104CRDTReplicationMesh", "L104KnowledgeMeshReplication",
+    # Hardware
+    "L104HardwareAdaptiveRuntime", "L104PlatformCompatibilityLayer",
+    # Optimization
+    "L104DynamicOptimizationEngine",
+    # Compat functions
+    "format_iq", "primal_calculus", "resolve_non_dual_logic",
+]

@@ -40,7 +40,7 @@ OMEGA = 6539.34712682                                           # Sovereign Fiel
 OMEGA_AUTHORITY = OMEGA / PHI_SQUARED                           # Ω / φ² ≈ 2497.808
 
 ZETA_ZERO_1 = 14.1347251417                                    # First Riemann zeta zero
-FEIGENBAUM = 4.669201609                                        # Feigenbaum constant
+FEIGENBAUM = 4.669201609102990                                    # Feigenbaum constant
 ALPHA_FINE = 1.0 / 137.035999084                                # Fine structure constant (CODATA 2022)
 
 # ═══════════════════════════════════════════════════════════════════════════════

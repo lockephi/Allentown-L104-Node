@@ -33,7 +33,7 @@ Or import individual layers:
     from l104_math_engine.hyperdimensional import Hypervector
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 # ── Layer 0: Constants ──────────────────────────────────────────────────────
 from .constants import (

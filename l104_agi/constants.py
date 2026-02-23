@@ -8,7 +8,7 @@ UUC = 2402.792541
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 # PAIRED: l104_asi_core.py v7.0.0 (InterEngineFeedbackBus, consciousness loops, QEC, teleportation, cognitive mesh)
 
-AGI_CORE_VERSION = "57.0.0"
+AGI_CORE_VERSION = "57.1.0"
 AGI_PIPELINE_EVO = "EVO_57_THREE_ENGINE_SOVEREIGN"
 
 import time
