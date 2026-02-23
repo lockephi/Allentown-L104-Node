@@ -2,7 +2,7 @@
 
 **File:** `Sources/L104Native.swift` — **41,748 lines**
 **Generated:** Audit of full codebase for planned overhaul
-**Swift Version:** 5.9 | **Target:** macOS 13+
+**Swift Version:** 6.0 | **Target:** macOS 14+
 **Frameworks:** AppKit, Foundation, Accelerate (vDSP/BLAS/LAPACK), Metal, CoreML, Security, simd, NaturalLanguage
 
 ---
