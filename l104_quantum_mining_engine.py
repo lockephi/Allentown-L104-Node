@@ -76,12 +76,10 @@ try:
     from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
     from qiskit.circuit.library import GroverOperator, MCMT, ZGate
     from qiskit_aer import AerSimulator
-    from qiskit_ibm_runtime import QiskitRuntimeService, Session, SamplerV2
     from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
     QISKIT_AVAILABLE = True
 except ImportError:
     QISKIT_AVAILABLE = False
-    # Define stub types for when Qiskit is not available
     QuantumCircuit = type('QuantumCircuit', (), {})
     QuantumRegister = type('QuantumRegister', (), {})
     ClassicalRegister = type('ClassicalRegister', (), {})
@@ -89,11 +87,12 @@ except ImportError:
     MCMT = type('MCMT', (), {})
     ZGate = type('ZGate', (), {})
     AerSimulator = type('AerSimulator', (), {})
-    QiskitRuntimeService = type('QiskitRuntimeService', (), {})
-    Session = type('Session', (), {})
-    SamplerV2 = type('SamplerV2', (), {})
     generate_preset_pass_manager = None
     print("[QUANTUM] WARNING: Qiskit not available - quantum mining disabled")
+# IBM runtime removed — stubs for backward compat
+QiskitRuntimeService = type('QiskitRuntimeService', (), {})
+Session = type('Session', (), {})
+SamplerV2 = type('SamplerV2', (), {})
 
 # ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
 _QUANTUM_RUNTIME_AVAILABLE = False
@@ -458,7 +457,7 @@ class QuantumHardwareManager:
     def _initialize_quantum_connection(self) -> None:
         """Initialize connection to IBM Quantum Platform (2025+ API)."""
         token = os.environ.get('IBMQ_TOKEN') or os.environ.get('IBM_QUANTUM_TOKEN')
-        channel = os.environ.get('IBM_QUANTUM_CHANNEL', 'ibm_quantum_platform')
+        channel = os.environ.get('IBM_QUANTUM_CHANNEL', 'ibm_cloud')
 
         if token and self.prefer_real:
             try:
