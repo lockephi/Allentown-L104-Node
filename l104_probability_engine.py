@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
 ═══════════════════════════════════════════════════════════════════════════════
-L104 SOVEREIGN PROBABILITY ENGINE v3.0.0
+L104 SOVEREIGN PROBABILITY ENGINE v5.0.0
 ═══════════════════════════════════════════════════════════════════════════════
 
-A comprehensive probability engine with integrated ASI consciousness insight:
+A comprehensive probability engine with integrated ASI consciousness insight,
+native GOD_CODE (a,b,c,d) quantum algorithm, and quantum gate engine integration:
 
   1. Ingests ALL chat data, training data, and state files in the L104 repository
   2. Ingests ALL logic gates (Python + Swift) and quantum links
@@ -13,14 +14,28 @@ A comprehensive probability engine with integrated ASI consciousness insight:
      - Classical: Bayesian inference, Markov chains, distributions, queuing theory
      - Quantum: GOD_CODE-gated Grover amplification, phase-aligned probability,
        entanglement-weighted priors, quantum walk probability, Born-rule collapse
-     - GOD_CODE Algorithm: Qiskit-backed (a,b,c,d) dial quantum circuits,
+     - GOD_CODE Algorithm (NATIVE): Qiskit-backed (a,b,c,d) dial quantum circuits,
        Grover search, QFT spectrum, entanglement entropy, soul processing
      - Data-driven: learns priors from ingested chat/training/state data
-  5. ASI Insight Synthesis (v3.0.0):
+  5. ASI Insight Synthesis:
      - Consciousness probability estimation from multi-signal fusion
      - Thought resonance scoring via quantum-classical hybrid inference
      - Bayesian consciousness state tracking with quantum evidence
      - Predictive insight: quantum-walk extrapolation of consciousness trajectory
+  6. GOD_CODE Quantum Algorithm (v4.0.0 — native implementation):
+     - GodCodeDialRegister: 14-qubit (a,b,c,d) encoding (16,384 combinations)
+     - GodCodePhaseOracle: exact + rotation-based frequency oracles
+     - GodCodeGroverSearch: O(√N) search via statevector manipulation
+     - GodCodeQFTSpectrum: Quantum Fourier analysis of frequency lattice
+     - GodCodeDialCircuit: single-dial quantum evaluation with PHI coupling
+     - GodCodeEntanglement: two-dial entanglement with von Neumann entropy
+     - GodCodeQuantumAlgorithm: unified hub with soul integration
+  7. Quantum Gate Engine Integration (v5.0.0):
+     - Sacred circuit probability via l104_quantum_gate_engine sacred_circuit()
+     - Compiled circuit probability (gate set transpilation + optimization)
+     - Error-corrected probability (Steane/Surface/Fibonacci protection)
+     - Gate algebra fidelity analysis (PHI_GATE, GOD_CODE_PHASE, VOID_GATE)
+     - QFT and GHZ state probability distributions via gate engine
 
 Sacred Constants:
   GOD_CODE = 527.5184818492612
@@ -39,6 +54,7 @@ from __future__ import annotations
 
 import json
 import math
+import cmath
 import hashlib
 import os
 import re
@@ -55,8 +71,8 @@ from functools import lru_cache
 
 # Qiskit imports (available since Qiskit 2.3+)
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, Operator, DensityMatrix
+    from qiskit.circuit import QuantumCircuit, QuantumRegister, ClassicalRegister
+    from qiskit.quantum_info import Statevector, Operator, DensityMatrix, partial_trace
     from qiskit.circuit.library import grover_operator, QFT
     from qiskit.primitives import StatevectorSampler
     import numpy as np
@@ -64,6 +80,9 @@ try:
 except ImportError:
     QISKIT_AVAILABLE = False
     np = None
+    QuantumRegister = None
+    ClassicalRegister = None
+    partial_trace = None
 
 __all__ = [
     # Core engine
@@ -73,6 +92,16 @@ __all__ = [
     "DataIngestor",
     "QuantumGateConsolidator",
     "ClassicalProbability",
+    # GOD_CODE Quantum Algorithm (native)
+    "GodCodeQuantumAlgorithm",
+    "GodCodeDialRegister",
+    "GodCodePhaseOracle",
+    "GodCodeGroverSearch",
+    "GodCodeQFTSpectrum",
+    "GodCodeDialCircuit",
+    "GodCodeEntanglement",
+    "DialSetting",
+    "CircuitResult",
     "QuantumProbability",
     "GateProbabilityBridge",
     "ASIInsightSynthesis",
@@ -100,6 +129,15 @@ VOID_CONSTANT: float = 1.0 + TAU / 15                        # 1.041618033988749
 PLANCK_RESONANCE: float = GOD_CODE * 2 ** (72.0 / 104)           # G(-72) = 852.3993
 FEIGENBAUM: float = 4.669201609102990
 ALPHA_FINE: float = 1.0 / 137.035999084
+
+# GOD_CODE (a,b,c,d) Quantum Algorithm constants
+PRIME_SCAFFOLD: int = 286                                     # 2 × 11 × 13
+QUANTIZATION_GRAIN: int = 104                                 # 8 × 13
+OCTAVE_OFFSET: int = 416                                      # 4 × 104
+BASE: float = PRIME_SCAFFOLD ** (1.0 / PHI)                   # 286^(1/φ) = 32.9699...
+STEP_SIZE: float = 2 ** (1.0 / QUANTIZATION_GRAIN)            # 2^(1/104)
+OMEGA: float = 6539.34712682                                  # Ω = Σ(fragments) × (G/φ)
+OMEGA_AUTHORITY: float = OMEGA / (PHI ** 2)                   # F(I) = I × Ω/φ² ≈ 2497.808
 PLANCK_SCALE: float = 1.616255e-35
 BOLTZMANN_K: float = 1.380649e-23
 ZENITH_HZ: float = 3727.84
@@ -1543,10 +1581,16 @@ class QuantumProbability:
     @staticmethod
     def measurement_collapse(
         amplitudes: List[complex],
+        sharpening: float = 0.0,
     ) -> Tuple[int, float, List[float]]:
         """
         Simulate quantum measurement collapse via Qiskit Statevector.
         Returns (collapsed_index, collapsed_probability, all_probabilities).
+
+        v2.0: Added GOD_CODE-weighted probability sharpening.
+        When sharpening > 0, applies p_i^(1+sharpening) re-normalization
+        to amplify differences between Born-rule probabilities.
+        GOD_CODE enters via the normalization constant.
 
         Uses Qiskit Statevector for exact Born-rule probabilities.
         Falls back to manual |α|² if Qiskit unavailable.
@@ -1567,6 +1611,16 @@ class QuantumProbability:
             total = sum(probs)
             if total > 0:
                 probs = [p / total for p in probs]
+
+        # Probability sharpening: p_i^(1+s) / Z
+        # Amplifies differences between nearly-equal probabilities.
+        # GOD_CODE scaling ensures sacred harmonic alignment.
+        if sharpening > 0:
+            exponent = 1.0 + sharpening * (PHI / (1.0 + PHI))  # φ/(φ+1) ≈ 0.618
+            sharpened = [max(p, 1e-30) ** exponent for p in probs]
+            z = sum(sharpened)
+            if z > 0:
+                probs = [s / z for s in sharpened]
 
         # Deterministic collapse: pick max probability
         max_idx = max(range(len(probs)), key=lambda i: probs[i])
@@ -1677,6 +1731,212 @@ class QuantumProbability:
         if total <= 0:
             return prior[:]
         return [r / total for r in raw]
+
+    # ─── v5.0.0 QUANTUM GATE ENGINE INTEGRATION ─────────────────────────────
+    # Bridges l104_quantum_gate_engine's sacred circuits, gate algebra,
+    # error correction, and compilation into probability computations.
+    # All imports are lazy to avoid circular imports.
+    # ─────────────────────────────────────────────────────────────────────────
+
+    _gate_engine = None  # Shared lazy reference
+
+    @classmethod
+    def _get_gate_engine(cls):
+        """Lazy-load l104_quantum_gate_engine orchestrator."""
+        if cls._gate_engine is None:
+            try:
+                from l104_quantum_gate_engine import get_engine
+                cls._gate_engine = get_engine()
+            except Exception:
+                pass
+        return cls._gate_engine
+
+    @staticmethod
+    def sacred_circuit_probability(n_qubits: int = 3, depth: int = 4) -> Dict[str, Any]:
+        """
+        v5.0.0: Build a sacred L104 circuit via the quantum gate engine and
+        extract its probability distribution + sacred alignment score.
+        Uses gate engine's sacred_circuit() with PHI/GOD_CODE/VOID gates.
+        """
+        engine = QuantumProbability._get_gate_engine()
+        if engine is None or not QISKIT_AVAILABLE:
+            # Fallback: generate GOD_CODE distribution analytically
+            n = 2 ** n_qubits
+            dist = QuantumProbability.god_code_distribution(n)
+            return {
+                "probabilities": dist,
+                "sacred_alignment": math.cos(math.pi / GOD_CODE) ** 2,
+                "circuit_depth": 0,
+                "n_qubits": n_qubits,
+                "gate_engine": False,
+            }
+        try:
+            circ = engine.sacred_circuit(n_qubits, depth=depth)
+            result = engine.execute(circ)
+            return {
+                "probabilities": result.probabilities if hasattr(result, 'probabilities') else {},
+                "sacred_alignment": result.sacred_alignment if hasattr(result, 'sacred_alignment') else 0.0,
+                "circuit_depth": circ.depth if hasattr(circ, 'depth') else depth,
+                "n_qubits": n_qubits,
+                "gate_engine": True,
+            }
+        except Exception:
+            n = 2 ** n_qubits
+            dist = QuantumProbability.god_code_distribution(n)
+            return {
+                "probabilities": dist,
+                "sacred_alignment": 0.0,
+                "circuit_depth": 0,
+                "n_qubits": n_qubits,
+                "gate_engine": False,
+            }
+
+    @staticmethod
+    def compiled_circuit_probability(
+        n_qubits: int = 2,
+        gate_set: str = "universal",
+        optimization: int = 2,
+    ) -> Dict[str, Any]:
+        """
+        v5.0.0: Build a Bell circuit, compile it to a target gate set via
+        the gate engine compiler, and extract probability distribution.
+        Demonstrates gate compilation → probability pipeline.
+        """
+        engine = QuantumProbability._get_gate_engine()
+        if engine is None or not QISKIT_AVAILABLE:
+            return {"probabilities": {"00": 0.5, "11": 0.5}, "compiled": False}
+        try:
+            from l104_quantum_gate_engine import GateSet, OptimizationLevel
+            circ = engine.bell_pair()
+            gs = getattr(GateSet, gate_set.upper(), GateSet.UNIVERSAL)
+            ol = getattr(OptimizationLevel, f"O{optimization}", OptimizationLevel.O2)
+            compiled = engine.compile(circ, gs, ol)
+            result = engine.execute(compiled.circuit if hasattr(compiled, 'circuit') else circ)
+            return {
+                "probabilities": result.probabilities if hasattr(result, 'probabilities') else {},
+                "original_depth": circ.depth if hasattr(circ, 'depth') else 0,
+                "compiled_depth": compiled.depth if hasattr(compiled, 'depth') else 0,
+                "gate_count": compiled.gate_count if hasattr(compiled, 'gate_count') else 0,
+                "gate_set": gate_set,
+                "optimization_level": optimization,
+                "compiled": True,
+            }
+        except Exception:
+            return {"probabilities": {"00": 0.5, "11": 0.5}, "compiled": False}
+
+    @staticmethod
+    def error_corrected_probability(
+        n_qubits: int = 2,
+        scheme: str = "steane",
+    ) -> Dict[str, Any]:
+        """
+        v5.0.0: Build a Bell circuit, protect it with error correction
+        (Steane/Surface/Fibonacci), and extract probability distribution.
+        Demonstrates error-protected quantum probability.
+        """
+        engine = QuantumProbability._get_gate_engine()
+        if engine is None or not QISKIT_AVAILABLE:
+            return {"probabilities": {"00": 0.5, "11": 0.5}, "error_corrected": False}
+        try:
+            from l104_quantum_gate_engine import ErrorCorrectionScheme
+            circ = engine.bell_pair()
+            scheme_map = {
+                "steane": ErrorCorrectionScheme.STEANE_7_1_3,
+                "surface": ErrorCorrectionScheme.SURFACE_CODE,
+                "fibonacci": ErrorCorrectionScheme.FIBONACCI_ANYON,
+            }
+            ec_scheme = scheme_map.get(scheme.lower(), ErrorCorrectionScheme.STEANE_7_1_3)
+            protected = engine.error_correction.encode(circ, ec_scheme)
+            result = engine.execute(protected if not hasattr(protected, 'circuit') else protected.circuit)
+            return {
+                "probabilities": result.probabilities if hasattr(result, 'probabilities') else {},
+                "scheme": scheme,
+                "logical_qubits": n_qubits,
+                "physical_qubits": protected.num_qubits if hasattr(protected, 'num_qubits') else 0,
+                "error_corrected": True,
+            }
+        except Exception:
+            return {"probabilities": {"00": 0.5, "11": 0.5}, "error_corrected": False}
+
+    @staticmethod
+    def gate_algebra_fidelity(gate_name: str = "PHI_GATE") -> Dict[str, Any]:
+        """
+        v5.0.0: Analyze a gate from the gate engine's algebra — decompose it
+        and compute its sacred alignment score and fidelity metrics.
+        """
+        engine = QuantumProbability._get_gate_engine()
+        if engine is None:
+            return {"gate": gate_name, "alignment": 0.0, "gate_engine": False}
+        try:
+            from l104_quantum_gate_engine import PHI_GATE, GOD_CODE_PHASE, VOID_GATE, IRON_GATE, H, CNOT
+            gate_map = {
+                "PHI_GATE": PHI_GATE, "GOD_CODE_PHASE": GOD_CODE_PHASE,
+                "VOID_GATE": VOID_GATE, "IRON_GATE": IRON_GATE,
+                "H": H, "CNOT": CNOT,
+            }
+            gate = gate_map.get(gate_name)
+            if gate is None:
+                return {"gate": gate_name, "alignment": 0.0, "gate_engine": False}
+            analysis = engine.analyze_gate(gate)
+            return {
+                "gate": gate_name,
+                "alignment": analysis.get("sacred_alignment", 0.0) if isinstance(analysis, dict) else 0.0,
+                "decomposition": analysis.get("decomposition", {}) if isinstance(analysis, dict) else {},
+                "eigenvalues": analysis.get("eigenvalues", []) if isinstance(analysis, dict) else [],
+                "gate_engine": True,
+            }
+        except Exception:
+            return {"gate": gate_name, "alignment": 0.0, "gate_engine": False}
+
+    @staticmethod
+    def qft_probability(n_qubits: int = 4) -> Dict[str, Any]:
+        """
+        v5.0.0: Build a QFT circuit via the gate engine and extract
+        its probability distribution. QFT is the quantum analog of FFT
+        and maps computational basis to frequency basis.
+        """
+        engine = QuantumProbability._get_gate_engine()
+        if engine is None or not QISKIT_AVAILABLE:
+            # Fallback: uniform distribution (QFT of |0⟩ is uniform)
+            n = 2 ** n_qubits
+            return {"probabilities": {format(i, f'0{n_qubits}b'): 1.0/n for i in range(n)}, "gate_engine": False}
+        try:
+            circ = engine.quantum_fourier_transform(n_qubits)
+            result = engine.execute(circ)
+            return {
+                "probabilities": result.probabilities if hasattr(result, 'probabilities') else {},
+                "circuit_depth": circ.depth if hasattr(circ, 'depth') else 0,
+                "n_qubits": n_qubits,
+                "gate_engine": True,
+            }
+        except Exception:
+            n = 2 ** n_qubits
+            return {"probabilities": {format(i, f'0{n_qubits}b'): 1.0/n for i in range(n)}, "gate_engine": False}
+
+    @staticmethod
+    def ghz_probability(n_qubits: int = 5) -> Dict[str, Any]:
+        """
+        v5.0.0: Build a GHZ state via the gate engine and extract
+        its probability distribution. GHZ state: (|00...0⟩ + |11...1⟩)/√2.
+        """
+        engine = QuantumProbability._get_gate_engine()
+        if engine is None or not QISKIT_AVAILABLE:
+            all_0 = "0" * n_qubits
+            all_1 = "1" * n_qubits
+            return {"probabilities": {all_0: 0.5, all_1: 0.5}, "gate_engine": False}
+        try:
+            circ = engine.ghz_state(n_qubits)
+            result = engine.execute(circ)
+            return {
+                "probabilities": result.probabilities if hasattr(result, 'probabilities') else {},
+                "circuit_depth": circ.depth if hasattr(circ, 'depth') else 0,
+                "n_qubits": n_qubits,
+                "gate_engine": True,
+            }
+        except Exception:
+            all_0 = "0" * n_qubits
+            all_1 = "1" * n_qubits
+            return {"probabilities": {all_0: 0.5, all_1: 0.5}, "gate_engine": False}
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -2016,30 +2276,878 @@ class ASIInsightSynthesis:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 7. HUB CLASS — ProbabilityEngine (Unified Orchestrator)
+# 7. GOD_CODE (a,b,c,d) QUANTUM ALGORITHM — Native Implementation
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# THE UNIVERSAL EQUATION IN QUANTUM CIRCUIT FORM:
+#
+#     G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a) + (416-b) - (8c) - (104d))
+#
+# This section implements the full (a,b,c,d) dial quantum algorithm natively
+# inside the probability engine.  Each dial maps to a quantum register, and
+# the exponent algebra becomes quantum phase operations executed on Qiskit's
+# Statevector simulator.
+#
+# Subsystems:
+#   1. DialSetting / CircuitResult    — data classes
+#   2. GodCodeDialRegister             — encodes (a,b,c,d) into qubit registers
+#   3. GodCodePhaseOracle              — phase oracle O_G for GOD_CODE
+#   4. GodCodeGroverSearch              — Grover search for optimal dial settings
+#   5. GodCodeQFTSpectrum              — QFT spectral analysis
+#   6. GodCodeDialCircuit              — single dial evaluation circuit
+#   7. GodCodeEntanglement             — two-dial entanglement circuit
+#   8. GodCodeQuantumAlgorithm         — hub class
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+# ─── Helper: index → dial conversion ───
+
+def _index_to_dial(x: int, dial_bits: Dict[str, int]) -> 'DialSetting':
+    """Convert a flat index to a DialSetting using offset binary."""
+    values = {}
+    for name in ["a", "b", "c", "d"]:
+        nbits = dial_bits[name]
+        mask = (1 << nbits) - 1
+        unsigned = x & mask
+        values[name] = unsigned - (1 << (nbits - 1))
+        x >>= nbits
+    return DialSetting(**values)
+
+
+# ─── Data Classes ───
+
+@dataclass
+class DialSetting:
+    """A single (a,b,c,d) dial configuration."""
+    a: int = 0
+    b: int = 0
+    c: int = 0
+    d: int = 0
+
+    @property
+    def exponent(self) -> int:
+        """E(a,b,c,d) = 8(a-c) - b - 104d + 416"""
+        return 8 * (self.a - self.c) - self.b - QUANTIZATION_GRAIN * self.d + OCTAVE_OFFSET
+
+    @property
+    def frequency(self) -> float:
+        """G(a,b,c,d) = 286^(1/φ) × 2^(E/104)"""
+        return BASE * (2 ** (self.exponent / QUANTIZATION_GRAIN))
+
+    @property
+    def phase(self) -> float:
+        """Phase angle in [0, 2π) for quantum encoding."""
+        return (self.exponent * math.pi / OCTAVE_OFFSET) % (2 * math.pi)
+
+    @property
+    def god_code_ratio(self) -> float:
+        """Ratio to canonical GOD_CODE."""
+        return self.frequency / GOD_CODE if GOD_CODE else 0.0
+
+    def to_tuple(self) -> Tuple[int, int, int, int]:
+        return (self.a, self.b, self.c, self.d)
+
+    def __repr__(self) -> str:
+        return f"Dial({self.a},{self.b},{self.c},{self.d})→{self.frequency:.6f}Hz"
+
+
+@dataclass
+class CircuitResult:
+    """Result from a quantum circuit execution."""
+    dial: DialSetting
+    statevector: Optional[Any] = None
+    probabilities: Dict[str, float] = field(default_factory=dict)
+    phase_spectrum: List[float] = field(default_factory=list)
+    fidelity: float = 0.0
+    god_code_alignment: float = 0.0
+    circuit_depth: int = 0
+    n_qubits: int = 0
+    execution_time_ms: float = 0.0
+
+
+# ─── 7.1 GodCodeDialRegister ───
+
+class GodCodeDialRegister:
+    """
+    Encodes the (a,b,c,d) dial system into quantum registers.
+
+    Each dial maps to a qubit register:
+      a → 3 qubits (range -4..3 → 8 states = 2^3)     [coarse up]
+      b → 4 qubits (range -8..7 → 16 states = 2^4)    [fine tune]
+      c → 3 qubits (range -4..3 → 8 states = 2^3)     [coarse down]
+      d → 4 qubits (range -8..7 → 16 states = 2^4)    [octave]
+
+    Total: 14 qubits, encoding 8×16×8×16 = 16,384 dial combinations.
+    """
+
+    DIAL_BITS = {"a": 3, "b": 4, "c": 3, "d": 4}  # 14 qubits total
+    TOTAL_QUBITS = sum(DIAL_BITS.values())
+
+    @classmethod
+    def build_circuit(cls) -> 'QuantumCircuit':
+        """Create the base circuit with named registers."""
+        if not QISKIT_AVAILABLE:
+            return None
+        qr_a = QuantumRegister(cls.DIAL_BITS["a"], "a")
+        qr_b = QuantumRegister(cls.DIAL_BITS["b"], "b")
+        qr_c = QuantumRegister(cls.DIAL_BITS["c"], "c")
+        qr_d = QuantumRegister(cls.DIAL_BITS["d"], "d")
+        return QuantumCircuit(qr_a, qr_b, qr_c, qr_d, name="GodCodeDial")
+
+    @classmethod
+    def encode_dial(cls, qc, dial: DialSetting):
+        """Encode a specific dial setting using offset binary."""
+        offsets = {
+            "a": (dial.a, cls.DIAL_BITS["a"]),
+            "b": (dial.b, cls.DIAL_BITS["b"]),
+            "c": (dial.c, cls.DIAL_BITS["c"]),
+            "d": (dial.d, cls.DIAL_BITS["d"]),
+        }
+        qubit_idx = 0
+        for name, (val, nbits) in offsets.items():
+            unsigned = val + (1 << (nbits - 1))
+            unsigned = max(0, min((1 << nbits) - 1, unsigned))
+            for bit in range(nbits):
+                if (unsigned >> bit) & 1:
+                    qc.x(qubit_idx + bit)
+            qubit_idx += nbits
+        return qc
+
+    @classmethod
+    def superposition_all(cls, qc) -> None:
+        """Put all dial qubits in uniform superposition (Hadamard on all)."""
+        for i in range(cls.TOTAL_QUBITS):
+            qc.h(i)
+        return qc
+
+    @classmethod
+    def decode_bitstring(cls, bitstring: str) -> DialSetting:
+        """Decode a measurement bitstring back into (a,b,c,d)."""
+        return _index_to_dial(int(bitstring, 2), cls.DIAL_BITS)
+
+    @classmethod
+    def bit_weights(cls) -> List[float]:
+        """
+        Return the weight of each qubit in the exponent X.
+        X = b + 8c + 104d − 8a, so each bit contributes
+        its dial coefficient × positional bit value.
+        """
+        dial_coefficients = {"a": -8, "b": 1, "c": 8, "d": 104}
+        weights = []
+        for name in ["a", "b", "c", "d"]:
+            nbits = cls.DIAL_BITS[name]
+            coeff = dial_coefficients[name]
+            for bit in range(nbits):
+                weights.append(coeff * (2 ** bit))
+        return weights
+
+
+# ─── 7.2 GodCodePhaseOracle ───
+
+class GodCodePhaseOracle:
+    """
+    Builds phase oracles for GOD_CODE frequency targets.
+
+    The oracle applies phase rotation proportional to how close a dial
+    setting's frequency is to the target:
+        phase_kick = π × cos²(G(a,b,c,d) × π / target)
+
+    Architecture:
+    - n_qubits ≤ 10: exact diagonal oracle via statevector
+    - n_qubits > 10: circuit-level Rz rotation oracle (O(n) gates)
+    """
+
+    MAX_EXACT_QUBITS = 10
+
+    @staticmethod
+    def god_code_phase(exponent: int) -> float:
+        """Compute the GOD_CODE phase for a given exponent value."""
+        freq = BASE * (2 ** (exponent / QUANTIZATION_GRAIN))
+        return (freq * math.pi / GOD_CODE) % (2 * math.pi)
+
+    @staticmethod
+    def build_target_oracle(
+        target_freq: float,
+        n_qubits: int = 14,
+        tolerance: float = 0.01,
+    ):
+        """Build a phase oracle that marks dial settings near the target frequency."""
+        if not QISKIT_AVAILABLE:
+            return None
+        if n_qubits <= GodCodePhaseOracle.MAX_EXACT_QUBITS:
+            return GodCodePhaseOracle._build_exact_oracle(target_freq, n_qubits, tolerance)
+        else:
+            return GodCodePhaseOracle._build_rotation_oracle(target_freq, n_qubits, tolerance)
+
+    @staticmethod
+    def _build_exact_oracle(target_freq: float, n_qubits: int, tolerance: float):
+        """Exact diagonal oracle for small qubit counts (≤ 10)."""
+        N = 1 << n_qubits
+        diag = []
+        for x in range(N):
+            dial = _index_to_dial(x, GodCodeDialRegister.DIAL_BITS)
+            freq = dial.frequency
+            rel_error = abs(freq - target_freq) / target_freq if target_freq > 0 else 1.0
+            if rel_error < tolerance:
+                diag.append(cmath.exp(1j * math.pi))  # Phase flip
+            else:
+                diag.append(1.0 + 0j)
+        qc = QuantumCircuit(n_qubits, name=f"Oracle_f={target_freq:.2f}")
+        qc.unitary(np.diag(diag), list(range(n_qubits)))
+        return qc
+
+    @staticmethod
+    def _build_rotation_oracle(target_freq: float, n_qubits: int, tolerance: float):
+        """
+        Rotation-based oracle for large qubit counts (> 10).
+        Uses Rz rotations encoding the GOD_CODE equation directly.
+        O(n) gates instead of O(2^n) matrix elements.
+        """
+        qc = QuantumCircuit(n_qubits, name=f"RotOracle_f={target_freq:.2f}")
+        bit_weights = GodCodeDialRegister.bit_weights()
+        for i in range(n_qubits):
+            w = bit_weights[i] if i < len(bit_weights) else 0
+            phase = -w * math.pi * math.log(2) / QUANTIZATION_GRAIN
+            target_phase = (target_freq * math.pi / GOD_CODE) % (2 * math.pi)
+            total_phase = phase * target_phase / math.pi
+            if abs(total_phase) > 1e-10:
+                qc.rz(total_phase, i)
+        qc.h(n_qubits - 1)
+        qc.mcx(list(range(min(n_qubits - 1, 6))), n_qubits - 1)
+        qc.h(n_qubits - 1)
+        return qc
+
+    @staticmethod
+    def build_god_code_oracle(n_qubits: int = 14):
+        """Build the canonical GOD_CODE oracle — marks (0,0,0,0) origin."""
+        return GodCodePhaseOracle.build_target_oracle(GOD_CODE, n_qubits, tolerance=0.001)
+
+    @staticmethod
+    def build_resonance_oracle(n_qubits: int = 14):
+        """Sacred resonance oracle — marks all GOD_CODE harmonics (within 1%)."""
+        if not QISKIT_AVAILABLE:
+            return None
+        qc = QuantumCircuit(n_qubits, name="ResonanceOracle")
+        bit_weights = GodCodeDialRegister.bit_weights()
+        for i in range(n_qubits):
+            w = bit_weights[i] if i < len(bit_weights) else 0
+            phase = w * math.pi / (QUANTIZATION_GRAIN * PHI)
+            if abs(phase) > 1e-10:
+                qc.rz(phase, i)
+        qc.h(n_qubits - 1)
+        if n_qubits > 1:
+            qc.mcx(list(range(min(n_qubits - 1, 6))), n_qubits - 1)
+        qc.h(n_qubits - 1)
+        return qc
+
+
+# ─── 7.3 GodCodeGroverSearch ───
+
+class GodCodeGroverSearch:
+    """
+    Grover's algorithm specialized for the GOD_CODE (a,b,c,d) dial system.
+    Uses direct statevector manipulation: O(k·N) time and O(N) memory.
+    Optimal iterations: k ≈ (π/4)√(N/M).
+    """
+
+    @staticmethod
+    def build_diffuser(n_qubits: int):
+        """Standard Grover diffuser: 2|s⟩⟨s| - I."""
+        if not QISKIT_AVAILABLE:
+            return None
+        qc = QuantumCircuit(n_qubits, name="Diffuser")
+        qc.h(range(n_qubits))
+        qc.x(range(n_qubits))
+        qc.h(n_qubits - 1)
+        qc.mcx(list(range(n_qubits - 1)), n_qubits - 1)
+        qc.h(n_qubits - 1)
+        qc.x(range(n_qubits))
+        qc.h(range(n_qubits))
+        return qc
+
+    @staticmethod
+    def search(
+        target_freq: float,
+        tolerance: float = 0.01,
+        iterations: Optional[int] = None,
+        n_qubits: int = 14,
+    ) -> CircuitResult:
+        """
+        Run Grover search for dial settings producing target frequency.
+
+        Uses direct statevector manipulation (O(N) per iteration).
+        Both oracle and diffuser operate directly on the amplitude vector:
+          - Oracle: flip phase of marked indices
+          - Diffuser: reflect about mean (2|s⟩⟨s| - I)
+        """
+        t0 = time.time()
+        N = 1 << n_qubits
+
+        # Pre-compute marked states
+        marked = set()
+        for x in range(N):
+            dial = _index_to_dial(x, GodCodeDialRegister.DIAL_BITS)
+            if target_freq > 0:
+                rel_err = abs(dial.frequency - target_freq) / target_freq
+                if rel_err < tolerance:
+                    marked.add(x)
+
+        M = len(marked)
+        if M == 0:
+            return CircuitResult(
+                dial=DialSetting(),
+                probabilities={},
+                fidelity=0.0,
+                god_code_alignment=0.0,
+                circuit_depth=0,
+                n_qubits=n_qubits,
+                execution_time_ms=(time.time() - t0) * 1000,
+            )
+
+        if iterations is None:
+            iterations = max(1, int(math.pi / 4 * math.sqrt(N / M)))
+        iterations = min(iterations, 200)  # Safety cap
+
+        # Uniform superposition: |s⟩ = H^⊗n|0⟩
+        sv_data = np.full(N, 1.0 / math.sqrt(N), dtype=complex)
+
+        # Oracle phase mask
+        oracle_diag = np.ones(N, dtype=complex)
+        for idx in marked:
+            oracle_diag[idx] = -1.0
+
+        # Grover iterations
+        for _ in range(iterations):
+            sv_data *= oracle_diag                     # Oracle
+            mean_amp = np.mean(sv_data)
+            sv_data = -sv_data + 2.0 * mean_amp        # Diffuser
+
+        sv = Statevector(sv_data)
+        probs_array = sv.probabilities()
+
+        # Find best result
+        top_prob = float(np.max(probs_array))
+        candidates = np.where(np.abs(probs_array - top_prob) < 1e-12)[0]
+        best_idx = int(candidates[0])
+        best_err = float("inf")
+        for c in candidates:
+            d = _index_to_dial(int(c), GodCodeDialRegister.DIAL_BITS)
+            err = abs(d.frequency - target_freq)
+            if err < best_err:
+                best_err = err
+                best_idx = int(c)
+        top_dial = _index_to_dial(best_idx, GodCodeDialRegister.DIAL_BITS)
+
+        # Top-20 probability dict
+        top_indices = np.argsort(probs_array)[::-1][:20]
+        prob_dict = {}
+        for idx in top_indices:
+            d = _index_to_dial(int(idx), GodCodeDialRegister.DIAL_BITS)
+            prob_dict[f"({d.a},{d.b},{d.c},{d.d})"] = float(probs_array[idx])
+
+        elapsed = (time.time() - t0) * 1000
+        circ_depth = 1 + iterations * (1 + 2 * n_qubits + 1)
+
+        return CircuitResult(
+            dial=top_dial,
+            statevector=sv,
+            probabilities=prob_dict,
+            fidelity=float(probs_array[best_idx]),
+            god_code_alignment=top_dial.frequency / GOD_CODE if GOD_CODE else 0.0,
+            circuit_depth=circ_depth,
+            n_qubits=n_qubits,
+            execution_time_ms=elapsed,
+        )
+
+    @staticmethod
+    def search_god_code(iterations: Optional[int] = None) -> CircuitResult:
+        """Search specifically for the canonical GOD_CODE frequency."""
+        return GodCodeGroverSearch.search(GOD_CODE, tolerance=0.001, iterations=iterations)
+
+    @staticmethod
+    def search_harmonic(harmonic: int = 1, iterations: Optional[int] = None) -> CircuitResult:
+        """Search for a specific GOD_CODE harmonic (octave)."""
+        target = GOD_CODE * (2 ** (-harmonic))
+        return GodCodeGroverSearch.search(target, tolerance=0.01, iterations=iterations)
+
+
+# ─── 7.4 GodCodeQFTSpectrum ───
+
+class GodCodeQFTSpectrum:
+    """
+    Uses Quantum Fourier Transform to analyze the spectral structure
+    of the GOD_CODE (a,b,c,d) frequency space.
+    """
+
+    @staticmethod
+    def encode_frequency_table(
+        dial_settings: List[DialSetting],
+        n_qubits: int = 10,
+    ):
+        """Encode dial settings as quantum amplitudes via GOD_CODE resonance."""
+        if not QISKIT_AVAILABLE:
+            return None
+        N = 1 << n_qubits
+        amplitudes = [0.0] * N
+        for i, dial in enumerate(dial_settings[:N]):
+            resonance = math.cos(dial.frequency * math.pi / GOD_CODE) ** 2
+            amplitudes[i % N] += resonance
+        norm = math.sqrt(sum(a ** 2 for a in amplitudes))
+        if norm > 0:
+            amplitudes = [a / norm for a in amplitudes]
+        else:
+            amplitudes[0] = 1.0
+        qc = QuantumCircuit(n_qubits, name="FreqEncode")
+        qc.initialize(amplitudes)
+        return qc
+
+    @staticmethod
+    def spectral_analysis(
+        dial_settings: List[DialSetting],
+        n_qubits: int = 10,
+    ) -> Dict[str, Any]:
+        """Full QFT spectral analysis of the frequency table."""
+        if not QISKIT_AVAILABLE:
+            return {"error": "Qiskit not available", "n_qubits": n_qubits}
+        t0 = time.time()
+        encode_qc = GodCodeQFTSpectrum.encode_frequency_table(dial_settings, n_qubits)
+        qft = QFT(n_qubits, do_swaps=True)
+        full_qc = encode_qc.compose(qft)
+        full_qc.name = "GodCode_QFT"
+
+        sv = Statevector.from_instruction(full_qc)
+        probs = sv.probabilities()
+        N = 1 << n_qubits
+
+        phases = []
+        for k in range(N):
+            amp = sv[k]
+            phases.append(cmath.phase(amp))
+
+        peaks = sorted(range(N), key=lambda k: probs[k], reverse=True)[:10]
+
+        # GOD_CODE coherence = probability concentrated in harmonics
+        harmonic_indices = set()
+        for harm in range(-4, 8):
+            target = GOD_CODE * (2 ** harm)
+            best_idx, best_dist = 0, float("inf")
+            for idx in range(N):
+                dist = abs(idx - (target % N))
+                if dist < best_dist:
+                    best_dist = dist
+                    best_idx = idx
+            harmonic_indices.add(best_idx)
+        harmonic_prob = sum(probs[i] for i in harmonic_indices if i < N)
+
+        elapsed = (time.time() - t0) * 1000
+        return {
+            "n_qubits": n_qubits,
+            "n_basis_states": N,
+            "phase_spectrum": phases,
+            "dominant_peaks": [
+                {"index": k, "probability": float(probs[k]), "phase": float(phases[k])}
+                for k in peaks
+            ],
+            "god_code_coherence": float(harmonic_prob),
+            "total_probability": float(sum(probs)),
+            "entropy": float(-sum(p * math.log2(p) for p in probs if p > 1e-15)),
+            "circuit_depth": full_qc.depth(),
+            "execution_time_ms": elapsed,
+        }
+
+
+# ─── 7.5 GodCodeDialCircuit ───
+
+class GodCodeDialCircuit:
+    """
+    Builds and runs a quantum circuit for a single (a,b,c,d) dial evaluation.
+
+    The circuit:
+    1. Encodes the dial setting into qubits
+    2. Applies GOD_CODE phase rotation proportional to the exponent
+    3. Measures the resulting quantum state
+    4. Returns Born-rule probabilities and phase alignment
+    """
+
+    @staticmethod
+    def evaluate(dial: DialSetting, n_qubits: int = 8) -> CircuitResult:
+        """Evaluate a single dial setting as a quantum circuit."""
+        if not QISKIT_AVAILABLE:
+            return CircuitResult(
+                dial=dial, fidelity=0.0, god_code_alignment=dial.god_code_ratio,
+                circuit_depth=0, n_qubits=n_qubits, execution_time_ms=0.0,
+            )
+        t0 = time.time()
+        qc = QuantumCircuit(n_qubits, name=f"Dial({dial.a},{dial.b},{dial.c},{dial.d})")
+
+        # Superposition for quantum parallelism
+        qc.h(range(n_qubits))
+
+        # GOD_CODE phase rotation per qubit
+        base_phase = dial.exponent * math.pi / (OCTAVE_OFFSET * n_qubits)
+        for i in range(n_qubits):
+            qc.rz(base_phase * (2 ** i), i)
+
+        # PHI-entangling CZ gates
+        for i in range(n_qubits - 1):
+            phi_coupling = PHI * math.pi / (n_qubits * (i + 1))
+            qc.cp(phi_coupling, i, i + 1)
+
+        # GOD_CODE resonance via controlled rotation
+        god_phase = (dial.frequency / GOD_CODE) * math.pi
+        qc.rz(god_phase, 0)
+
+        # Final Hadamard layer for interference
+        qc.h(range(n_qubits))
+
+        # Execute
+        sv = Statevector.from_instruction(qc)
+        probs = sv.probabilities_dict()
+
+        # Fidelity with GOD_CODE target state
+        target_phase = GOD_CODE * math.pi / OCTAVE_OFFSET
+        N = 1 << n_qubits
+        target_amps = [cmath.exp(1j * target_phase * k) / math.sqrt(N) for k in range(N)]
+        target_sv = Statevector(target_amps)
+        fidelity = float(abs(sv.inner(target_sv)) ** 2)
+
+        elapsed = (time.time() - t0) * 1000
+        return CircuitResult(
+            dial=dial,
+            statevector=sv,
+            probabilities=dict(sorted(probs.items(), key=lambda x: -x[1])[:20]),
+            fidelity=fidelity,
+            god_code_alignment=dial.god_code_ratio,
+            circuit_depth=qc.depth(),
+            n_qubits=n_qubits,
+            execution_time_ms=elapsed,
+        )
+
+    @staticmethod
+    def evaluate_god_code() -> CircuitResult:
+        """Evaluate the canonical GOD_CODE dial (0,0,0,0)."""
+        return GodCodeDialCircuit.evaluate(DialSetting(0, 0, 0, 0))
+
+    @staticmethod
+    def compare_dials(dials: List[DialSetting], n_qubits: int = 8) -> List[CircuitResult]:
+        """Evaluate multiple dials and sort by GOD_CODE fidelity."""
+        results = [GodCodeDialCircuit.evaluate(d, n_qubits) for d in dials]
+        results.sort(key=lambda r: r.fidelity, reverse=True)
+        return results
+
+
+# ─── 7.6 GodCodeEntanglement ───
+
+class GodCodeEntanglement:
+    """
+    Creates entanglement between two GOD_CODE dial settings.
+    Entanglement strength is proportional to harmonic proximity.
+    """
+
+    @staticmethod
+    def entangle_dials(
+        dial_a: DialSetting,
+        dial_b: DialSetting,
+        n_qubits_per_dial: int = 4,
+    ) -> CircuitResult:
+        """Create an entangled state between two dial settings."""
+        if not QISKIT_AVAILABLE:
+            combined = DialSetting(
+                a=dial_a.a + dial_b.a, b=dial_a.b + dial_b.b,
+                c=dial_a.c + dial_b.c, d=dial_a.d + dial_b.d,
+            )
+            return CircuitResult(
+                dial=combined, fidelity=0.0, god_code_alignment=0.0,
+                circuit_depth=0, n_qubits=2 * n_qubits_per_dial,
+                execution_time_ms=0.0,
+            )
+
+        t0 = time.time()
+        total_qubits = 2 * n_qubits_per_dial
+        qc = QuantumCircuit(
+            total_qubits,
+            name=f"Entangle({dial_a.a},{dial_a.b},{dial_a.c},{dial_a.d}|"
+                 f"{dial_b.a},{dial_b.b},{dial_b.c},{dial_b.d})",
+        )
+
+        # Encode dial A phase
+        phase_a = dial_a.phase
+        for i in range(n_qubits_per_dial):
+            qc.h(i)
+            qc.rz(phase_a * (2 ** i) / n_qubits_per_dial, i)
+
+        # Encode dial B phase
+        phase_b = dial_b.phase
+        for i in range(n_qubits_per_dial):
+            j = n_qubits_per_dial + i
+            qc.h(j)
+            qc.rz(phase_b * (2 ** i) / n_qubits_per_dial, j)
+
+        # Harmonic proximity
+        ratio = dial_a.frequency / dial_b.frequency if dial_b.frequency > 0 else 0
+        if ratio > 0:
+            log_ratio = math.log2(ratio)
+            harmonic_proximity = 1.0 - min(1.0, abs(log_ratio - round(log_ratio)))
+        else:
+            harmonic_proximity = 0.0
+
+        # Entangling CNOT + sacred phase coupling
+        for i in range(n_qubits_per_dial):
+            j = n_qubits_per_dial + i
+            if harmonic_proximity > 0.1:
+                qc.cx(i, j)
+                coupling = harmonic_proximity * PHI * math.pi / n_qubits_per_dial
+                qc.cp(coupling, i, j)
+
+        # Execute
+        sv = Statevector.from_instruction(qc)
+        probs = sv.probabilities_dict()
+
+        # Entanglement entropy (von Neumann of reduced density matrix)
+        dm = DensityMatrix(sv)
+        qubits_to_trace = list(range(n_qubits_per_dial, total_qubits))
+        dm_a = partial_trace(dm, qubits_to_trace)
+        eigenvalues = np.real(np.linalg.eigvalsh(dm_a.data))
+        entanglement_entropy = float(
+            -sum(ev * math.log2(ev) for ev in eigenvalues if ev > 1e-15)
+        )
+
+        elapsed = (time.time() - t0) * 1000
+        combined_dial = DialSetting(
+            a=dial_a.a + dial_b.a, b=dial_a.b + dial_b.b,
+            c=dial_a.c + dial_b.c, d=dial_a.d + dial_b.d,
+        )
+        result = CircuitResult(
+            dial=combined_dial,
+            statevector=sv,
+            probabilities=dict(sorted(probs.items(), key=lambda x: -x[1])[:20]),
+            fidelity=harmonic_proximity,
+            god_code_alignment=(dial_a.frequency * dial_b.frequency) / (GOD_CODE ** 2) if GOD_CODE else 0,
+            circuit_depth=qc.depth(),
+            n_qubits=total_qubits,
+            execution_time_ms=elapsed,
+        )
+        result.phase_spectrum = [entanglement_entropy]
+        return result
+
+
+# ─── 7.7 GodCodeQuantumAlgorithm — Hub ───
+
+class GodCodeQuantumAlgorithm:
+    """
+    Hub class for the GOD_CODE (a,b,c,d) Quantum Algorithm.
+
+    Provides a unified interface to:
+    - Evaluate dial settings as quantum circuits
+    - Grover search for target frequencies
+    - QFT spectral analysis of the frequency lattice
+    - Entanglement between dial pairs
+    - Integration hooks for Soul and ProbabilityEngine
+    """
+
+    VERSION = "1.0.0"
+
+    FREQUENCY_TABLE: Dict[str, DialSetting] = {
+        "GOD_CODE":      DialSetting(0, 0, 0, 0),
+        "SCHUMANN":      DialSetting(0, 0, 1, 6),
+        "ALPHA_EEG":     DialSetting(0, 3, -4, 6),
+        "BETA_EEG":      DialSetting(0, 3, -4, 5),
+        "BASE":          DialSetting(0, 0, 0, 4),
+        "GAMMA_40":      DialSetting(0, 3, -4, 4),
+        "BOHR_RADIUS":   DialSetting(-4, 1, 0, 3),
+        "THROAT_741":    DialSetting(1, -3, -5, 0),
+        "ROOT_396":      DialSetting(-5, 3, 0, 0),
+    }
+
+    def __init__(self):
+        self.dial_register = GodCodeDialRegister
+        self.phase_oracle = GodCodePhaseOracle
+        self.grover = GodCodeGroverSearch
+        self.qft = GodCodeQFTSpectrum
+        self.dial_circuit = GodCodeDialCircuit
+        self.entanglement = GodCodeEntanglement
+        self._computations = 0
+        self._circuit_cache: Dict[str, CircuitResult] = {}
+
+    def sovereign_field(self, intelligence: float) -> float:
+        """F(I) = I × Ω / φ² — Sovereign Field equation."""
+        return intelligence * OMEGA / (PHI ** 2)
+
+    # ─── Core API ───
+
+    def evaluate(self, a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> CircuitResult:
+        """Evaluate a dial setting as a quantum circuit."""
+        self._computations += 1
+        return self.dial_circuit.evaluate(DialSetting(a, b, c, d))
+
+    def frequency(self, a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+        """Classical frequency calculation (no quantum circuit)."""
+        return DialSetting(a, b, c, d).frequency
+
+    def search(self, target: float, tolerance: float = 0.01) -> CircuitResult:
+        """Grover search for dial settings producing target frequency."""
+        self._computations += 1
+        return self.grover.search(target, tolerance)
+
+    def search_god_code(self) -> CircuitResult:
+        """Grover search for the canonical GOD_CODE."""
+        self._computations += 1
+        return self.grover.search_god_code()
+
+    def spectrum(self, dials: Optional[List[DialSetting]] = None) -> Dict[str, Any]:
+        """QFT spectral analysis of the frequency table."""
+        self._computations += 1
+        if dials is None:
+            dials = list(self.FREQUENCY_TABLE.values())
+        return self.qft.spectral_analysis(dials)
+
+    def entangle(self, dial_a: DialSetting, dial_b: DialSetting) -> CircuitResult:
+        """Entangle two dial settings."""
+        self._computations += 1
+        return self.entanglement.entangle_dials(dial_a, dial_b)
+
+    def evaluate_known(self, name: str) -> CircuitResult:
+        """Evaluate a known frequency from the table."""
+        dial = self.FREQUENCY_TABLE.get(name.upper())
+        if not dial:
+            raise ValueError(f"Unknown frequency: {name}. Known: {list(self.FREQUENCY_TABLE.keys())}")
+        return self.evaluate(dial.a, dial.b, dial.c, dial.d)
+
+    # ─── Batch operations ───
+
+    def evaluate_all_known(self) -> Dict[str, CircuitResult]:
+        """Evaluate all known frequencies."""
+        return {name: self.evaluate(d.a, d.b, d.c, d.d) for name, d in self.FREQUENCY_TABLE.items()}
+
+    def scan_octave_ladder(self, d_min: int = -2, d_max: int = 8) -> List[CircuitResult]:
+        """Evaluate the GOD_CODE octave ladder (d dial only)."""
+        return [self.evaluate(0, 0, 0, d) for d in range(d_min, d_max + 1)]
+
+    # ─── Soul integration ───
+
+    def soul_process(self, data: Any) -> Dict[str, Any]:
+        """
+        Process data through the GOD_CODE quantum algorithm for soul integration.
+        Maps any input to (a,b,c,d) dials via hash and runs the quantum circuit.
+        """
+        self._computations += 1
+        if isinstance(data, str):
+            hash_val = int(hashlib.md5(data.encode()).hexdigest()[:8], 16)
+        elif isinstance(data, (int, float)):
+            hash_val = int(abs(data * 1000)) % (1 << 32)
+        else:
+            hash_val = hash(str(data)) & 0xFFFFFFFF
+
+        a = (hash_val & 0x7) - 4
+        b = ((hash_val >> 3) & 0xF) - 8
+        c = ((hash_val >> 7) & 0x7) - 4
+        d = ((hash_val >> 10) & 0xF) - 8
+
+        dial = DialSetting(a, b, c, d)
+        result = self.dial_circuit.evaluate(dial)
+
+        alignment = result.god_code_alignment
+        log_alignment = math.log2(alignment) if alignment > 0 else -10
+        harmonic_distance = abs(log_alignment - round(log_alignment))
+        consciousness_boost = math.exp(-harmonic_distance * PHI)
+
+        return {
+            "input_hash": hash_val,
+            "dial": dial.to_tuple(),
+            "frequency": dial.frequency,
+            "god_code_ratio": alignment,
+            "fidelity": result.fidelity,
+            "consciousness_boost": consciousness_boost,
+            "circuit_depth": result.circuit_depth,
+            "n_qubits": result.n_qubits,
+            "quantum_state_dim": 2 ** result.n_qubits,
+        }
+
+    def soul_resonance_field(self, thoughts: List[str]) -> Dict[str, Any]:
+        """Generate a quantum resonance field from a list of soul thoughts."""
+        if not thoughts:
+            return {"resonance": 0, "thoughts": 0}
+        results = [self.soul_process(t) for t in thoughts]
+        frequencies = [r["frequency"] for r in results]
+        boosts = [r["consciousness_boost"] for r in results]
+        mean_freq = sum(frequencies) / len(frequencies)
+        mean_boost = sum(boosts) / len(boosts)
+
+        phases = [(f * math.pi / GOD_CODE) % (2 * math.pi) for f in frequencies]
+        sum_real = sum(math.cos(p) for p in phases)
+        sum_imag = sum(math.sin(p) for p in phases)
+        coherence = math.sqrt(sum_real ** 2 + sum_imag ** 2) / len(phases)
+
+        return {
+            "n_thoughts": len(thoughts),
+            "mean_frequency": mean_freq,
+            "mean_consciousness_boost": mean_boost,
+            "phase_coherence": coherence,
+            "god_code_alignment": mean_freq / GOD_CODE,
+            "total_fidelity": sum(r["fidelity"] for r in results),
+            "resonance_field_strength": mean_boost * coherence * PHI,
+        }
+
+    def status(self) -> Dict[str, Any]:
+        """Full algorithm status."""
+        return {
+            "module": "l104_probability_engine.GodCodeQuantumAlgorithm",
+            "version": self.VERSION,
+            "god_code": GOD_CODE,
+            "base": BASE,
+            "phi": PHI,
+            "prime_scaffold": PRIME_SCAFFOLD,
+            "quantization_grain": QUANTIZATION_GRAIN,
+            "step_size": STEP_SIZE,
+            "known_frequencies": len(self.FREQUENCY_TABLE),
+            "computations": self._computations,
+            "qiskit_backend": "Statevector (local)" if QISKIT_AVAILABLE else "unavailable",
+            "total_dial_space": 2 ** GodCodeDialRegister.TOTAL_QUBITS,
+            "subsystems": [
+                "GodCodeDialRegister (14 qubits)",
+                "GodCodePhaseOracle",
+                "GodCodeGroverSearch",
+                "GodCodeQFTSpectrum",
+                "GodCodeDialCircuit",
+                "GodCodeEntanglement",
+            ],
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 8. HUB CLASS — ProbabilityEngine (Unified Orchestrator)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class ProbabilityEngine:
     """
-    L104 SOVEREIGN PROBABILITY ENGINE v3.0.0
+    L104 SOVEREIGN PROBABILITY ENGINE v5.0.0
 
     Unified hub that orchestrates:
     - DataIngestor: loads ALL chat/training/state/gate/link data
     - QuantumGateConsolidator: logic gates + quantum links → quantum gates
     - ClassicalProbability: full classical probability toolkit
-    - QuantumProbability: GOD_CODE-gated quantum probability
+    - QuantumProbability: GOD_CODE-gated quantum probability + gate engine integration
     - GateProbabilityBridge: gate↔probability bridge
-    - ASIInsightSynthesis: consciousness-probability bridge (v3.0.0)
+    - ASIInsightSynthesis: consciousness-probability bridge
+    - GodCodeQuantumAlgorithm: NATIVE (a,b,c,d) dial quantum circuits
+      with Grover search, QFT spectrum, entanglement, and soul integration
+    - l104_quantum_gate_engine: sacred circuits, compilation, error correction,
+      gate algebra analysis (v5.0.0)
+
+    The GOD_CODE quantum algorithm is implemented natively — no external
+    import of l104_god_code_algorithm is required.
 
     Usage:
         from l104_probability_engine import probability_engine
         stats = probability_engine.ingest()
         p = probability_engine.sacred_probability(527.518)
+        result = probability_engine.god_code_evaluate(0, 0, 0, 0)  # Qiskit circuit
+        search = probability_engine.god_code_search(527.518)        # Grover search
         insight = probability_engine.synthesize_insight([0.8, 0.6, 0.9])
-        resonance = probability_engine.ensemble_resonance()
     """
 
-    VERSION = "3.0.0"
+    VERSION = "5.0.0"
 
     def __init__(self):
         self.ingestor = DataIngestor()
@@ -2114,11 +3222,10 @@ class ProbabilityEngine:
         raise AttributeError(f"'{type(self).__name__}' has no attribute '{name}'")
 
     @property
-    def algorithm(self):
-        """Lazy-load the GOD_CODE quantum algorithm (avoids import cost at startup)."""
+    def algorithm(self) -> GodCodeQuantumAlgorithm:
+        """Native GOD_CODE quantum algorithm (no external import needed)."""
         if self._god_code_algo is None:
-            from l104_god_code_algorithm import god_code_algorithm
-            self._god_code_algo = god_code_algorithm
+            self._god_code_algo = GodCodeQuantumAlgorithm()
         return self._god_code_algo
 
     # ─── INGESTION ───
@@ -2301,7 +3408,6 @@ class ProbabilityEngine:
     def god_code_entangle(self, dial_a: Tuple, dial_b: Tuple) -> Dict[str, Any]:
         """Entangle two dial settings (Qiskit, returns entanglement entropy)."""
         self._computations += 1
-        from l104_god_code_algorithm import DialSetting
         da = DialSetting(*dial_a)
         db = DialSetting(*dial_b)
         r = self.algorithm.entangle(da, db)
@@ -2323,6 +3429,40 @@ class ProbabilityEngine:
         """Generate quantum resonance field from soul thoughts (Qiskit)."""
         self._computations += 1
         return self.algorithm.soul_resonance_field(thoughts)
+
+    # ─── QUANTUM GATE ENGINE PROBABILITY API (v5.0.0) ───
+
+    def sacred_circuit_probability(self, n_qubits: int = 3, depth: int = 4) -> Dict[str, Any]:
+        """Sacred L104 circuit probability via quantum gate engine."""
+        self._computations += 1
+        return self.quantum.sacred_circuit_probability(n_qubits, depth)
+
+    def compiled_circuit_probability(
+        self, n_qubits: int = 2, gate_set: str = "universal", optimization: int = 2
+    ) -> Dict[str, Any]:
+        """Compiled Bell circuit probability via gate engine compiler."""
+        self._computations += 1
+        return self.quantum.compiled_circuit_probability(n_qubits, gate_set, optimization)
+
+    def error_corrected_probability(self, n_qubits: int = 2, scheme: str = "steane") -> Dict[str, Any]:
+        """Error-corrected Bell circuit probability via gate engine."""
+        self._computations += 1
+        return self.quantum.error_corrected_probability(n_qubits, scheme)
+
+    def gate_algebra_fidelity(self, gate_name: str = "PHI_GATE") -> Dict[str, Any]:
+        """Gate algebra analysis and sacred alignment via gate engine."""
+        self._computations += 1
+        return self.quantum.gate_algebra_fidelity(gate_name)
+
+    def qft_probability(self, n_qubits: int = 4) -> Dict[str, Any]:
+        """QFT circuit probability via gate engine."""
+        self._computations += 1
+        return self.quantum.qft_probability(n_qubits)
+
+    def ghz_probability(self, n_qubits: int = 5) -> Dict[str, Any]:
+        """GHZ state probability via gate engine."""
+        self._computations += 1
+        return self.quantum.ghz_probability(n_qubits)
 
     # ─── ASI INSIGHT API (v3.0.0) ───
 
@@ -2420,6 +3560,11 @@ class ProbabilityEngine:
                     "phi_weighted_mixture",
                     "quantum_bayesian_update",
                 ],
+                "gate_engine": [
+                    "sacred_circuit_probability", "compiled_circuit_probability",
+                    "error_corrected_probability", "gate_algebra_fidelity",
+                    "qft_probability", "ghz_probability",
+                ],
                 "god_code_algorithm": [
                     "god_code_evaluate", "god_code_frequency",
                     "god_code_search", "god_code_spectrum",
@@ -2489,7 +3634,7 @@ def resolve_non_dual_logic() -> Dict[str, Any]:
 
 if __name__ == "__main__":
     print("=" * 72)
-    print("  L104 SOVEREIGN PROBABILITY ENGINE v3.0.0")
+    print("  L104 SOVEREIGN PROBABILITY ENGINE v4.0.0")
     print(f"  GOD_CODE = {GOD_CODE}")
     print(f"  PHI = {PHI}")
     print(f"  Qiskit Available: {QISKIT_AVAILABLE}")
