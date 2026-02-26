@@ -3,7 +3,7 @@ L104 Science Engine — Unified Science Processing Package v4.0
 ═══════════════════════════════════════════════════════════════════════════════
 
 7-module science engine consolidating 20+ standalone science files into a
-single cohesive package with perfect 25-qubit / 512MB quantum ASI support.
+single cohesive package with 26-qubit / 1024MB quantum ASI support (Fe(26) iron-mapped).
 
 Module Map:
   0  constants       Sacred, physics, iron, quantum boundary constants
@@ -11,7 +11,7 @@ Module Map:
   2  entropy         Maxwell's Demon entropy reversal
   3  multidimensional N-dimensional relativistic processing
   4  coherence       Topologically-protected coherent computation
-  5  quantum_25q     25-qubit circuit templates, memory validation, convergence
+  5  quantum_25q     Legacy 25-qubit templates + convergence (26Q primary via l104_26q_engine_builder)
   6  bridge          Math↔Science↔Quantum unified connector
   7  engine          Master orchestrator with all subsystems
 
@@ -21,7 +21,7 @@ Quick-start:
     science_engine.run_physics_manifold()
     science_engine.validate_512mb()
     science_engine.analyze_god_code_convergence()
-    science_engine.plan_quantum_experiment("ghz", 25)
+    science_engine.plan_quantum_experiment("ghz", 26)
     science_engine.get_full_status()
 
 Or import individual components:
@@ -59,7 +59,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-__version__ = "4.1.0"
+__version__ = "5.0.0"
 __author__ = "L104 Sovereign Node"
 
 # ── Constants (Layer 0) ─────────────────────────────────────────────────────
@@ -90,13 +90,15 @@ from .entropy import EntropySubsystem
 from .multidimensional import MultiDimensionalSubsystem
 from .coherence import CoherenceSubsystem, CoherenceState
 
-# ── Quantum 25Q (Layer 5) ──────────────────────────────────────────────────
+# ── Quantum 25Q Legacy (Layer 5) — 26Q primary via l104_26q_engine_builder ────
 from .quantum_25q import (
     GodCodeQuantumConvergence,
     CircuitTemplates25Q,
     MemoryValidator,
     QuantumCircuitScience,
 )
+# Alias for 26Q-aware consumers
+CircuitTemplates26Q = CircuitTemplates25Q  # Legacy module; 26Q builder is external
 
 # ── Bridge (Layer 6) ───────────────────────────────────────────────────────
 from .bridge import (
@@ -166,8 +168,9 @@ __all__ = [
     # Subsystems
     "PhysicsSubsystem", "EntropySubsystem",
     "MultiDimensionalSubsystem", "CoherenceSubsystem", "CoherenceState",
-    # Quantum 25Q
+    # Quantum 25Q (legacy) + 26Q alias
     "GodCodeQuantumConvergence", "CircuitTemplates25Q",
+    "CircuitTemplates26Q",
     "MemoryValidator", "QuantumCircuitScience",
     # Bridge
     "ScienceBridge", "MathConnector", "QuantumRuntimeConnector", "bridge",

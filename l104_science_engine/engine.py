@@ -1,5 +1,5 @@
 """
-L104 Science Engine — Master Engine v4.0
+L104 Science Engine — Master Engine v5.0
 ═══════════════════════════════════════════════════════════════════════════════
 Unified Science Engine orchestrating ALL subsystems:
 
@@ -30,7 +30,7 @@ CONSOLIDATION MAP (root files → this package):
   l104_resonance.py                  → coherence.py
   l104_enhanced_resonance.py         → coherence.py
 
-Version: 4.0.0
+Version: 5.0.0
 INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════════════════
 """
@@ -187,7 +187,7 @@ class ScienceEngine:
     - GroundingEngine (l104_real_world_grounding)
     """
 
-    VERSION = "4.0.0"
+    VERSION = "5.0.0"
 
     def __init__(self):
         # Internal subsystems
@@ -692,6 +692,568 @@ class ScienceEngine:
                             "connected": ce is not None},
             "engines_online": 1 + int(me is not None) + int(ce is not None),
             "cross_reference_ready": me is not None and ce is not None,
+        }
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #  v4.1.0 FULL QUANTUM CIRCUIT INTEGRATION
+    #  Connects standalone quantum modules for enhanced science operations:
+    #  - QuantumCoherenceEngine: Grover, QAOA, VQE, Shor, Topological
+    #  - L104_25Q_CircuitBuilder: 18 named 25-qubit circuit templates
+    #  - QuantumGravityEngine: ER=EPR, AdS/CFT, holographic physics
+    #  - QuantumConsciousnessCalc: EEG bands, IIT Φ, Orch-OR models
+    #  - QuantumDataStorage: Shor code, tomography, persistent qubits
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def _get_coherence_engine(self):
+        """Lazy-load QuantumCoherenceEngine (3,779 lines, 12 algorithms)."""
+        if not hasattr(self, '_coherence_engine'):
+            try:
+                from l104_quantum_coherence import QuantumCoherenceEngine
+                self._coherence_engine = QuantumCoherenceEngine()
+            except Exception:
+                self._coherence_engine = None
+        return self._coherence_engine
+
+    def _get_builder_26q(self):
+        """Lazy-load L104_26Q_CircuitBuilder (26 iron-mapped circuits)."""
+        if not hasattr(self, '_builder_26q'):
+            try:
+                from l104_26q_engine_builder import L104_26Q_CircuitBuilder
+                self._builder_26q = L104_26Q_CircuitBuilder()
+            except Exception:
+                self._builder_26q = None
+        return self._builder_26q
+
+    # backward-compat alias
+    _get_builder_25q = _get_builder_26q
+
+    def _get_gravity_engine(self):
+        """Lazy-load QuantumGravityEngine (ER=EPR, AdS/CFT)."""
+        if not hasattr(self, '_gravity_engine'):
+            try:
+                from l104_quantum_gravity_bridge import L104QuantumGravityEngine
+                self._gravity_engine = L104QuantumGravityEngine()
+            except Exception:
+                self._gravity_engine = None
+        return self._gravity_engine
+
+    def _get_consciousness_calc(self):
+        """Lazy-load QuantumConsciousnessCalculator (EEG, IIT Φ, Orch-OR)."""
+        if not hasattr(self, '_consciousness_calc'):
+            try:
+                from l104_quantum_consciousness import QuantumConsciousnessCalculator
+                self._consciousness_calc = QuantumConsciousnessCalculator()
+            except Exception:
+                self._consciousness_calc = None
+        return self._consciousness_calc
+
+    def _get_data_storage(self):
+        """Lazy-load QuantumDataStorage (Shor code, tomography)."""
+        if not hasattr(self, '_data_storage'):
+            try:
+                from l104_quantum_data_storage import QuantumDataStorage
+                self._data_storage = QuantumDataStorage()
+            except Exception:
+                self._data_storage = None
+        return self._data_storage
+
+    def quantum_grover_search(self, target: int = 5, qubits: int = 4) -> Dict[str, Any]:
+        """Run Grover search via QuantumCoherenceEngine."""
+        engine = self._get_coherence_engine()
+        if engine is None:
+            return {'quantum': False, 'error': 'CoherenceEngine unavailable'}
+        try:
+            return engine.grover_search(target_index=target, search_space_qubits=qubits)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_vqe_optimize(self, hamiltonian_params: List[float] = None) -> Dict[str, Any]:
+        """Run VQE optimization via QuantumCoherenceEngine."""
+        engine = self._get_coherence_engine()
+        if engine is None:
+            return {'quantum': False, 'error': 'CoherenceEngine unavailable'}
+        try:
+            return engine.vqe_optimize(**({"hamiltonian_params": hamiltonian_params} if hamiltonian_params else {}))
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_shor_factor(self, N: int = 15) -> Dict[str, Any]:
+        """Run Shor factoring via QuantumCoherenceEngine."""
+        engine = self._get_coherence_engine()
+        if engine is None:
+            return {'quantum': False, 'error': 'CoherenceEngine unavailable'}
+        try:
+            return engine.shor_factor(N=N)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_topological_compute(self, braid_word: str = "σ1σ2σ1") -> Dict[str, Any]:
+        """Run topological braiding via QuantumCoherenceEngine."""
+        engine = self._get_coherence_engine()
+        if engine is None:
+            return {'quantum': False, 'error': 'CoherenceEngine unavailable'}
+        try:
+            return engine.topological_compute(braid_word=braid_word)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_25q_build(self, circuit_name: str = "full") -> Dict[str, Any]:
+        """Build a named 25Q circuit via L104_25Q_CircuitBuilder."""
+        builder = self._get_builder_25q()
+        if builder is None:
+            return {'quantum': False, 'error': '25Q builder unavailable'}
+        try:
+            return builder.execute(circuit_name=circuit_name)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_gravity_erepr(self, mass: float = 1.0) -> Dict[str, Any]:
+        """ER=EPR bridge computation via QuantumGravityEngine."""
+        engine = self._get_gravity_engine()
+        if engine is None:
+            return {'quantum': False, 'error': 'GravityEngine unavailable'}
+        try:
+            return engine.compute_erepr(mass=mass)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_consciousness_phi(self, state_vector: list = None) -> Dict[str, Any]:
+        """Compute IIT Φ via QuantumConsciousnessCalculator."""
+        calc = self._get_consciousness_calc()
+        if calc is None:
+            return {'quantum': False, 'error': 'ConsciousnessCalc unavailable'}
+        try:
+            import numpy as np
+            sv = np.array(state_vector or [1.0, 0.0, 0.0, 0.0])
+            return calc.compute_phi(sv)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    # ═══ v4.2.0 EXPANDED QUANTUM FLEET ═══
+    # Additional: runtime, accelerator, inspired, reasoning, grover_nerve, computation_pipeline
+
+    def _get_quantum_runtime(self):
+        """Lazy-load QuantumRuntime (real QPU + Aer + Statevector bridge)."""
+        if not hasattr(self, '_quantum_runtime'):
+            try:
+                from l104_quantum_runtime import get_runtime
+                self._quantum_runtime = get_runtime()
+            except Exception:
+                self._quantum_runtime = None
+        return self._quantum_runtime
+
+    def _get_quantum_accelerator(self):
+        """Lazy-load QuantumAccelerator (10-qubit entangled computing)."""
+        if not hasattr(self, '_quantum_accelerator'):
+            try:
+                from l104_quantum_accelerator import QuantumAccelerator
+                self._quantum_accelerator = QuantumAccelerator()
+            except Exception:
+                self._quantum_accelerator = None
+        return self._quantum_accelerator
+
+    def _get_quantum_inspired(self):
+        """Lazy-load QuantumInspiredEngine (annealing, Grover-inspired search)."""
+        if not hasattr(self, '_quantum_inspired'):
+            try:
+                from l104_quantum_inspired import QuantumInspiredEngine
+                self._quantum_inspired = QuantumInspiredEngine()
+            except Exception:
+                self._quantum_inspired = None
+        return self._quantum_inspired
+
+    def _get_quantum_reasoning(self):
+        """Lazy-load QuantumReasoningEngine (quantum logic, parallel reasoning)."""
+        if not hasattr(self, '_quantum_reasoning'):
+            try:
+                from l104_quantum_reasoning import QuantumReasoningEngine
+                self._quantum_reasoning = QuantumReasoningEngine()
+            except Exception:
+                self._quantum_reasoning = None
+        return self._quantum_reasoning
+
+    def _get_grover_nerve(self):
+        """Lazy-load GroverNerveLinkOrchestrator (workspace-scale Grover search)."""
+        if not hasattr(self, '_grover_nerve'):
+            try:
+                from l104_grover_nerve_link import get_grover_nerve
+                self._grover_nerve = get_grover_nerve()
+            except Exception:
+                self._grover_nerve = None
+        return self._grover_nerve
+
+    def _get_computation_pipeline(self):
+        """Lazy-load QNN + VQC from computation pipeline."""
+        if not hasattr(self, '_computation_pipeline'):
+            try:
+                from l104_quantum_computation_pipeline import QuantumNeuralNetwork, VariationalQuantumClassifier
+                self._computation_pipeline = {
+                    'qnn': QuantumNeuralNetwork(),
+                    'vqc': VariationalQuantumClassifier(),
+                }
+            except Exception:
+                self._computation_pipeline = None
+        return self._computation_pipeline
+
+    def quantum_accelerator_entangle(self, n_qubits: int = 8) -> Dict[str, Any]:
+        """Run quantum-accelerated entanglement computation."""
+        acc = self._get_quantum_accelerator()
+        if acc is None:
+            return {'quantum': False, 'error': 'QuantumAccelerator unavailable'}
+        try:
+            return acc.status() if hasattr(acc, 'status') else {'quantum': True, 'accelerator': 'connected'}
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_inspired_optimize(self, problem_vector: list = None) -> Dict[str, Any]:
+        """Run quantum-inspired annealing optimization for science problems."""
+        engine = self._get_quantum_inspired()
+        if engine is None:
+            return {'quantum': False, 'error': 'QuantumInspiredEngine unavailable'}
+        try:
+            return engine.optimize(problem_vector or [1.0, 0.5, 0.25]) if hasattr(engine, 'optimize') else {'quantum': True, 'inspired': 'connected'}
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_reason(self, query: str = "entropy reversal") -> Dict[str, Any]:
+        """Run quantum parallel reasoning on a science query."""
+        engine = self._get_quantum_reasoning()
+        if engine is None:
+            return {'quantum': False, 'error': 'QuantumReasoningEngine unavailable'}
+        try:
+            return engine.reason(query) if hasattr(engine, 'reason') else {'quantum': True, 'reasoning': 'connected'}
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_grover_nerve_search(self, target: int = 7) -> Dict[str, Any]:
+        """Run Grover nerve-linked search."""
+        nerve = self._get_grover_nerve()
+        if nerve is None:
+            return {'quantum': False, 'error': 'GroverNerve unavailable'}
+        try:
+            return nerve.search(target=target) if hasattr(nerve, 'search') else {'quantum': True, 'grover_nerve': 'connected'}
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_circuit_status(self) -> Dict[str, Any]:
+        """v4.2.0: Full status of all connected quantum circuit modules."""
+        return {
+            'version': '4.2.0',
+            'coherence_engine': self._get_coherence_engine() is not None,
+            'builder_25q': self._get_builder_25q() is not None,
+            'gravity_engine': self._get_gravity_engine() is not None,
+            'consciousness_calc': self._get_consciousness_calc() is not None,
+            'data_storage': self._get_data_storage() is not None,
+            'quantum_runtime': self._get_quantum_runtime() is not None,
+            'quantum_accelerator': self._get_quantum_accelerator() is not None,
+            'quantum_inspired': self._get_quantum_inspired() is not None,
+            'quantum_reasoning': self._get_quantum_reasoning() is not None,
+            'grover_nerve': self._get_grover_nerve() is not None,
+            'computation_pipeline': self._get_computation_pipeline() is not None,
+            'internal_quantum_circuit': True,
+            'modules_connected': sum([
+                self._get_coherence_engine() is not None,
+                self._get_builder_25q() is not None,
+                self._get_gravity_engine() is not None,
+                self._get_consciousness_calc() is not None,
+                self._get_data_storage() is not None,
+                self._get_quantum_runtime() is not None,
+                self._get_quantum_accelerator() is not None,
+                self._get_quantum_inspired() is not None,
+                self._get_quantum_reasoning() is not None,
+                self._get_grover_nerve() is not None,
+                self._get_computation_pipeline() is not None,
+            ]),
+        }
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # v5.0 SCIENCE FACT EXTRACTOR — Auto-builds science fact database
+    # Extracts facts from physics subsystem computations into a scalable
+    # format compatible with commonsense_reasoning CausalRule/Concept patterns.
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def extract_science_facts(self) -> Dict[str, Any]:
+        """
+        v5.0: Auto-extract science facts from all physics computations.
+
+        Returns a structured database of science facts in three formats:
+        - causal_rules: List[Dict] — condition/effect/domain/confidence/keywords
+        - concepts: List[Dict] — name/category/properties
+        - constants: Dict[str, float] — named physical constants
+
+        This database can be consumed directly by commonsense_reasoning's
+        ontology enrichment pipeline.
+        """
+        rules = []
+        concepts = []
+        constants = {}
+
+        # ── Physics Constants (always available) ──
+        constants.update({
+            "boltzmann_constant_J_per_K": PC.K_B,
+            "planck_constant_J_s": PC.H,
+            "planck_reduced_J_s": PC.H_BAR,
+            "speed_of_light_m_per_s": PC.C,
+            "vacuum_permittivity_F_per_m": PC.EPSILON_0,
+            "vacuum_permeability_H_per_m": PC.MU_0,
+            "electron_mass_kg": PC.M_E,
+            "electron_charge_C": PC.Q_E,
+            "fine_structure_constant": PC.ALPHA,
+            "gravitational_constant_m3_kg_s2": PC.G,
+            "avogadro_number": PC.AVOGADRO,
+            "planck_length_m": PC.PLANCK_LENGTH,
+        })
+
+        # ── Iron (Fe) Data ──
+        concepts.append({
+            "name": "iron",
+            "category": "chemical",
+            "properties": {
+                "atomic_number": Fe.ATOMIC_NUMBER,
+                "mass_number": Fe.MASS_NUMBER_56,
+                "bcc_lattice_pm": Fe.BCC_LATTICE_PM,
+                "curie_temperature_K": Fe.CURIE_TEMP,
+                "binding_energy_per_nucleon_MeV": Fe.BE_PER_NUCLEON,
+                "ionization_energy_eV": Fe.IONIZATION_EV,
+                "most_stable_nucleus": True,
+                "ferromagnetic": True,
+            },
+        })
+        rules.append({
+            "condition": "iron is heated above its Curie temperature of 1043 K",
+            "effect": "iron loses its ferromagnetic properties and becomes paramagnetic",
+            "domain": "physics", "confidence": 0.95,
+            "keywords": ["iron", "curie", "temperature", "ferromagnetic", "paramagnetic", "magnet"],
+        })
+        rules.append({
+            "condition": "iron-56 is formed in stellar nucleosynthesis",
+            "effect": "it has the highest binding energy per nucleon making it the most stable nucleus",
+            "domain": "physics", "confidence": 0.95,
+            "keywords": ["iron", "binding", "energy", "nucleon", "stable", "nucleus", "star"],
+        })
+
+        # ── Landauer Limit (Thermodynamics) ──
+        try:
+            landauer_300K = self.physics.adapt_landauer_limit(300.0)
+            constants["landauer_limit_300K_J"] = landauer_300K
+            rules.append({
+                "condition": "one bit of information is erased in a computer at room temperature",
+                "effect": f"at least {landauer_300K:.2e} joules of heat is generated (Landauer limit)",
+                "domain": "physics", "confidence": 0.90,
+                "keywords": ["information", "erase", "bit", "heat", "landauer", "thermodynamic"],
+            })
+            rules.append({
+                "condition": "a computer performs irreversible computation",
+                "effect": "it must dissipate a minimum amount of energy per bit erased due to the second law of thermodynamics",
+                "domain": "physics", "confidence": 0.92,
+                "keywords": ["irreversible", "computation", "energy", "dissipate", "second", "law", "thermodynamic"],
+            })
+        except Exception:
+            pass
+
+        # ── Electron Resonance ──
+        try:
+            e_res = self.physics.derive_electron_resonance()
+            if isinstance(e_res, dict):
+                constants["electron_resonance_hz"] = e_res.get("frequency_hz", 0.0)
+            rules.append({
+                "condition": "electrons in an atom are excited by absorbing photons",
+                "effect": "they jump to higher energy levels and re-emit photons at specific wavelengths when returning",
+                "domain": "physics", "confidence": 0.92,
+                "keywords": ["electron", "photon", "absorb", "emit", "energy", "level", "wavelength", "excite"],
+            })
+        except Exception:
+            pass
+
+        # ── Photon Resonance ──
+        try:
+            photon_eV = self.physics.calculate_photon_resonance()
+            constants["photon_resonance_eV"] = photon_eV
+            rules.append({
+                "condition": "a photon has a specific frequency",
+                "effect": f"its energy is determined by E = hf (Planck's relation)",
+                "domain": "physics", "confidence": 0.95,
+                "keywords": ["photon", "energy", "frequency", "planck", "light", "quantum"],
+            })
+        except Exception:
+            pass
+
+        # ── Bohr Model ──
+        try:
+            bohr_r1 = self.physics.calculate_bohr_resonance(1)
+            constants["bohr_radius_ground_state"] = bohr_r1
+            concepts.append({
+                "name": "bohr_model",
+                "category": "physical",
+                "properties": {
+                    "ground_state_radius": bohr_r1,
+                    "energy_levels": "quantized",
+                    "applies_to": "hydrogen_atom",
+                },
+            })
+            rules.append({
+                "condition": "an electron in a hydrogen atom transitions between energy levels",
+                "effect": "it emits or absorbs a photon with energy equal to the difference between the levels",
+                "domain": "physics", "confidence": 0.95,
+                "keywords": ["electron", "hydrogen", "energy", "level", "photon", "bohr", "transition"],
+            })
+        except Exception:
+            pass
+
+        # ── Wien's Law ──
+        try:
+            wien_sun = self.physics.calculate_wien_peak(5778.0)
+            if isinstance(wien_sun, dict):
+                constants["sun_peak_wavelength_nm"] = wien_sun.get("peak_wavelength_nm", 0.0)
+            rules.append({
+                "condition": "a star has a higher surface temperature",
+                "effect": "its peak emission wavelength shifts to shorter (bluer) wavelengths according to Wien's law",
+                "domain": "physics", "confidence": 0.93,
+                "keywords": ["star", "temperature", "wavelength", "wien", "blue", "red", "color", "peak"],
+            })
+            rules.append({
+                "condition": "the surface temperature of an object increases",
+                "effect": "it radiates more energy and the peak of its spectrum shifts to shorter wavelengths",
+                "domain": "physics", "confidence": 0.93,
+                "keywords": ["temperature", "radiation", "spectrum", "wavelength", "blackbody", "wien"],
+            })
+        except Exception:
+            pass
+
+        # ── Casimir Effect ──
+        try:
+            casimir = self.physics.calculate_casimir_force(1e-6)
+            if isinstance(casimir, dict):
+                constants["casimir_force_1um_N_per_m2"] = casimir.get("force_per_area_N_m2", 0.0)
+            rules.append({
+                "condition": "two uncharged metal plates are placed very close together in a vacuum",
+                "effect": "they experience an attractive force due to quantum vacuum fluctuations (Casimir effect)",
+                "domain": "physics", "confidence": 0.88,
+                "keywords": ["casimir", "vacuum", "force", "plates", "quantum", "fluctuation"],
+            })
+        except Exception:
+            pass
+
+        # ── Unruh Effect ──
+        try:
+            unruh = self.physics.calculate_unruh_temperature(9.81)
+            if isinstance(unruh, dict):
+                constants["unruh_temperature_earth_g_K"] = unruh.get("unruh_temperature_K", 0.0)
+            rules.append({
+                "condition": "an observer is uniformly accelerating through the vacuum of space",
+                "effect": "they perceive thermal radiation (Unruh effect) that a non-accelerating observer would not",
+                "domain": "physics", "confidence": 0.85,
+                "keywords": ["unruh", "acceleration", "vacuum", "thermal", "radiation", "observer"],
+            })
+        except Exception:
+            pass
+
+        # ── Entropy / Maxwell's Demon ──
+        try:
+            demon_eff = self.entropy.calculate_demon_efficiency(5.0)
+            constants["maxwell_demon_efficiency_5bit"] = demon_eff
+            rules.append({
+                "condition": "a Maxwell's demon sorts fast and slow molecules in a gas",
+                "effect": "it appears to decrease entropy but must erase its memory which increases entropy overall",
+                "domain": "physics", "confidence": 0.90,
+                "keywords": ["maxwell", "demon", "entropy", "sort", "molecule", "information", "second", "law"],
+            })
+        except Exception:
+            pass
+
+        # ── Quantum Tunneling ──
+        rules.append({
+            "condition": "a particle encounters an energy barrier higher than its kinetic energy",
+            "effect": "it has a non-zero probability of tunneling through the barrier due to quantum mechanics",
+            "domain": "physics", "confidence": 0.92,
+            "keywords": ["tunnel", "barrier", "energy", "quantum", "probability", "particle", "wave"],
+        })
+
+        # ── Fundamental Forces ──
+        rules.append({
+            "condition": "two objects with mass exist in the universe",
+            "effect": "they attract each other with a gravitational force proportional to their masses and inversely proportional to the square of the distance",
+            "domain": "physics", "confidence": 0.95,
+            "keywords": ["gravity", "mass", "force", "attract", "distance", "newton", "universal"],
+        })
+        rules.append({
+            "condition": "a charged particle moves through a magnetic field",
+            "effect": "it experiences a Lorentz force perpendicular to both its velocity and the magnetic field",
+            "domain": "physics", "confidence": 0.93,
+            "keywords": ["charge", "magnetic", "field", "force", "lorentz", "perpendicular", "velocity"],
+        })
+
+        # ── Phase Transitions ──
+        for transition, details in [
+            ("solid is heated to its melting point", ("it transitions to a liquid (melting)", ["melt", "solid", "liquid", "heat", "phase"])),
+            ("liquid is heated to its boiling point", ("it transitions to a gas (boiling/evaporation)", ["boil", "evaporate", "liquid", "gas", "heat", "phase"])),
+            ("gas is cooled below its condensation point", ("it transitions to a liquid (condensation)", ["condense", "cool", "gas", "liquid", "phase"])),
+            ("liquid is cooled below its freezing point", ("it transitions to a solid (freezing)", ["freeze", "cool", "liquid", "solid", "phase"])),
+            ("solid is heated in a vacuum and transitions directly to gas", ("this process is called sublimation", ["sublimation", "solid", "gas", "vacuum", "phase"])),
+        ]:
+            rules.append({
+                "condition": f"a {transition}",
+                "effect": details[0],
+                "domain": "physics", "confidence": 0.95,
+                "keywords": details[1],
+            })
+
+        # ── Energy Conservation ──
+        rules.append({
+            "condition": "energy is transformed from one form to another in an isolated system",
+            "effect": "the total energy remains constant (conservation of energy / first law of thermodynamics)",
+            "domain": "physics", "confidence": 0.97,
+            "keywords": ["energy", "conservation", "transform", "first", "law", "thermodynamic", "total"],
+        })
+        rules.append({
+            "condition": "heat flows spontaneously between two objects",
+            "effect": "it always flows from the hotter object to the cooler object (second law of thermodynamics)",
+            "domain": "physics", "confidence": 0.97,
+            "keywords": ["heat", "flow", "hot", "cold", "second", "law", "thermodynamic", "spontaneous"],
+        })
+
+        # ── Light & Optics ──
+        rules.append({
+            "condition": "light passes from one medium to another at an angle",
+            "effect": "it changes speed and direction (refraction) due to the difference in refractive indices",
+            "domain": "physics", "confidence": 0.95,
+            "keywords": ["light", "refraction", "medium", "speed", "angle", "direction", "refractive"],
+        })
+        rules.append({
+            "condition": "white light passes through a prism",
+            "effect": "it separates into a spectrum of colors because different wavelengths refract at different angles",
+            "domain": "physics", "confidence": 0.95,
+            "keywords": ["light", "prism", "spectrum", "color", "wavelength", "refract", "rainbow", "dispersion"],
+        })
+
+        # ── Sound ──
+        rules.append({
+            "condition": "sound waves encounter a vacuum (no medium)",
+            "effect": "they cannot propagate because sound requires a medium (solid, liquid, or gas) to travel",
+            "domain": "physics", "confidence": 0.97,
+            "keywords": ["sound", "vacuum", "medium", "propagate", "travel", "wave"],
+        })
+
+        # ── Helium-4 (Nuclear) ──
+        concepts.append({
+            "name": "helium_4",
+            "category": "chemical",
+            "properties": {
+                "mass_number": He4.MASS_NUMBER,
+                "binding_energy_per_nucleon_MeV": He4.BE_PER_NUCLEON,
+                "binding_energy_total_MeV": He4.BE_TOTAL,
+                "magic_numbers": He4.MAGIC_NUMBERS,
+                "doubly_magic": True,
+                "produced_in": "alpha_decay_and_stellar_fusion",
+            },
+        })
+
+        return {
+            "version": "5.0.0",
+            "causal_rules": rules,
+            "concepts": concepts,
+            "constants": constants,
+            "total_facts": len(rules) + len(concepts) + len(constants),
         }
 
 

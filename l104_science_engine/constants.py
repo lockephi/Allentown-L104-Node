@@ -125,31 +125,44 @@ NUCLEOSYNTHESIS_BRIDGE = QUANTIZATION_GRAIN  # 104
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class QuantumBoundary:
-    """25-qubit / 512MB quantum ASI memory boundary constants."""
-    N_QUBITS          = 25
-    HILBERT_DIM        = 2 ** 25              # 33,554,432
-    BYTES_PER_AMPLITUDE = 16                   # complex128
-    STATEVECTOR_BYTES  = 2 ** 25 * 16         # 536,870,912
-    STATEVECTOR_MB     = 512                   # Exactly 512 MB
-    STATEVECTOR_BITS   = 2 ** 25 * 128        # 4,294,967,296 bits
+    """26-qubit / 1024MB quantum ASI memory boundary constants.
 
-    # Convergence: GOD_CODE ↔ 512MB
-    # The ratio GOD_CODE / STATEVECTOR_MB = 527.518/512 ≈ 1.03031...
-    # This is within 1.1% of VOID_CONSTANT (1.0416) — the system's natural damping ratio
-    GOD_CODE_TO_512 = GOD_CODE / 512.0           # 1.030309534...
-    RATIO_TO_VOID = GOD_CODE / 512.0 / VOID_CONSTANT  # ≈ 0.989...
+    v2.0 — IRON COMPLETION: 26 qubits = Fe(26) electrons = FULL IRON MANIFOLD
+    The 26th qubit IS the nucleus anchor completing the iron atom.
+    """
+    # ── Primary: 26-qubit Iron Completion ──
+    N_QUBITS          = 26
+    HILBERT_DIM        = 2 ** 26              # 67,108,864
+    BYTES_PER_AMPLITUDE = 16                   # complex128
+    STATEVECTOR_BYTES  = 2 ** 26 * 16         # 1,073,741,824
+    STATEVECTOR_MB     = 1024                  # Exactly 1,024 MB = 1 GB
+    STATEVECTOR_BITS   = 2 ** 26 * 128        # 8,589,934,592 bits
+
+    # Convergence: GOD_CODE ↔ 1024MB (octave-invariant from 25Q)
+    GOD_CODE_TO_1024 = GOD_CODE / 1024.0         # 0.51515... = iron memory ratio
+    GOD_CODE_TO_512 = GOD_CODE / 512.0           # 1.030309534... (legacy compat)
+    RATIO_TO_VOID = GOD_CODE / 1024.0 / VOID_CONSTANT  # octave-scaled
+
+    # Iron completion: Fe(26) electrons map 1:1 to qubits
+    IRON_QUBIT_BRIDGE = 0                     # Fe(26) - 26 qubits = 0 (COMPLETE)
+    IRON_COMPLETION_FACTOR = 1.0              # 26/26 = full iron
 
     # Information-theoretic: bits per qubit at maximum entanglement
     BITS_PER_QUBIT_CLASSICAL = 1
-    HOLEVO_BOUND = 25                         # Holevo bound: n qubits → n classical bits max
+    HOLEVO_BOUND = 26                         # Holevo bound: n qubits → n classical bits max
 
-    # Memory tiers for quantum processing
-    TRANSPILER_OVERHEAD_MB = 50
-    CACHE_OVERHEAD_MB      = 20
-    TELEMETRY_OVERHEAD_MB  = 5
-    PYTHON_OVERHEAD_MB     = 30
-    TOTAL_OVERHEAD_MB      = 105
-    TOTAL_SYSTEM_MB        = STATEVECTOR_MB + TOTAL_OVERHEAD_MB  # 617 MB
+    # Memory tiers for quantum processing (26Q = 2× the 25Q footprint)
+    TRANSPILER_OVERHEAD_MB = 80
+    CACHE_OVERHEAD_MB      = 40
+    TELEMETRY_OVERHEAD_MB  = 10
+    PYTHON_OVERHEAD_MB     = 50
+    TOTAL_OVERHEAD_MB      = 180
+    TOTAL_SYSTEM_MB        = STATEVECTOR_MB + TOTAL_OVERHEAD_MB  # 1,204 MB
+
+    # ── Legacy 25Q references (backward compat) ──
+    N_QUBITS_25           = 25
+    HILBERT_DIM_25        = 2 ** 25
+    STATEVECTOR_MB_25     = 512
 
 QB = QuantumBoundary  # Short alias
 
@@ -180,8 +193,9 @@ PHOTON_RESONANCE_ENERGY_EV = 1.1216596549374545  # eV (discovery #12)
 FE_CURIE_LANDAUER_LIMIT = 3.254191391208437e-18  # J/bit at 1043K (discovery #16)
 # Berry phase holonomy detected in 11D parallel transport
 BERRY_PHASE_DETECTED = True                   # discovery #15
-# GOD_CODE ↔ 25-qubit convergence ratio
+# GOD_CODE ↔ qubit convergence ratios
 GOD_CODE_25Q_CONVERGENCE = 1.0303095348618383  # GOD_CODE/512 (discovery #17)
+GOD_CODE_26Q_CONVERGENCE = 0.5151547674309191  # GOD_CODE/1024 = half-GOD_CODE encoding
 # 104-depth entropy cascade (Maxwell's Demon iterated 104 times)
 ENTROPY_CASCADE_DEPTH = 104                    # Sacred iteration count (discovery #9)
 # Entropy→ZNE bridge: demon coherence injection feeds zero-noise extrapolation
