@@ -13,6 +13,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 """
 
 import math
+import json
 import time
 import hashlib
 import random
@@ -27,11 +28,11 @@ except ImportError:
     np = None
     NUMPY = False
 
-# ── Constants (inlined to avoid import cycles; canonical in l104_science_engine.constants) ──
+# ── Constants (canonical literals; source of truth: l104_science_engine.constants) ──
 PHI = (1 + math.sqrt(5)) / 2
 PHI_CONJUGATE = (math.sqrt(5) - 1) / 2
-GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))
-VOID_CONSTANT = 1.04 + PHI / 1000
+GOD_CODE = 527.5184818492612              # Canonical: 286^(1/φ) × 2^(416/104)
+VOID_CONSTANT = 1.0416180339887497        # Canonical: 1.04 + φ/1000
 OMEGA = 6539.34712682
 ZETA_ZERO_1 = 14.1347251417
 FEIGENBAUM = 4.669201609102990
@@ -79,6 +80,36 @@ class SearchResult:
     def top_match(self) -> Optional[Dict[str, Any]]:
         return self.matches[0] if self.matches else None
 
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialise to a JSON-safe dictionary."""
+        return {
+            "found": self.found,
+            "query": self.query,
+            "matches": self.matches,
+            "score": self.score,
+            "sacred_alignment": self.sacred_alignment,
+            "strategy": self.strategy,
+            "iterations": self.iterations,
+            "elapsed_ms": self.elapsed_ms,
+            "entropy_delta": self.entropy_delta,
+            "coherence": self.coherence,
+            "dimensions_searched": self.dimensions_searched,
+            "phi_quality": self.phi_quality,
+            "metadata": self.metadata,
+        }
+
+    def to_json(self, **kwargs) -> str:
+        """Serialise to a JSON string."""
+        return json.dumps(self.to_dict(), **kwargs)
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> 'SearchResult':
+        """Reconstruct a SearchResult from a dictionary."""
+        d = dict(d)
+        d.pop("phi_quality", None)  # computed property, not a field
+        return cls(**{k: v for k, v in d.items()
+                      if k in cls.__dataclass_fields__})
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  UTILITY: SACRED SCORING
@@ -124,7 +155,7 @@ def _vqpu_quantum_score(bridge, domain: str, fingerprint: float, nq: int = 4) ->
     if bridge is None:
         return {"vqpu_used": False, "vqpu_circuit_ms": 0.0}
     try:
-        from l104_vqpu_bridge import QuantumJob
+        from l104_vqpu import QuantumJob
         circuit_build_t0 = time.perf_counter()
         ops = []
         for q in range(nq):
@@ -255,9 +286,16 @@ class QuantumGroverSearch:
             mean = sum(amplitudes) / n
             amplitudes = [2 * mean - a for a in amplitudes]
 
-            # PHI-damping: prevent over-rotation
+            # PHI-damping: selectively damp non-target amplitudes to prevent
+            # over-rotation past the optimal Grover angle.  Uniform damping on
+            # ALL amplitudes is a no-op after normalization; instead, we reduce
+            # only the non-target component, pushing probability mass toward
+            # the targets.
             damping = 1.0 - (1.0 / (self.amplification * (step + 1)))
-            amplitudes = [a * damping for a in amplitudes]
+            amplitudes = [
+                a if i in targets else a * damping
+                for i, a in enumerate(amplitudes)
+            ]
 
         # Measure: probabilities = |amplitude|^2
         probs = [a * a for a in amplitudes]
@@ -1203,7 +1241,7 @@ class VQPUGroverSearch:
 
         # Cap qubits to bridge capacity
         try:
-            from l104_vqpu_bridge import VQPU_MAX_QUBITS
+            from l104_vqpu import VQPU_MAX_QUBITS
             max_q = self._max_qubits or VQPU_MAX_QUBITS
         except ImportError:
             max_q = self._max_qubits or 32
@@ -1241,7 +1279,7 @@ class VQPUGroverSearch:
 
         # Submit to VQPU
         try:
-            from l104_vqpu_bridge import QuantumJob
+            from l104_vqpu import QuantumJob
             job = QuantumJob(num_qubits=nq, operations=ops, shots=shots, adapt=True)
             vqpu_result = bridge.run_simulation(job, compile=self._compile,
                                                  error_correct=self._error_correct)
@@ -1357,7 +1395,7 @@ class VQPUDatabaseSearch:
             if self._bridge is not None and hasattr(self._bridge, 'db_researcher'):
                 self._researcher = self._bridge.db_researcher
             else:
-                from l104_vqpu_bridge import QuantumDBResearcher
+                from l104_vqpu import QuantumDBResearcher
                 self._researcher = QuantumDBResearcher(
                     project_root=self._project_root
                 )
@@ -1642,7 +1680,7 @@ class QuantumReservoirSearch:
         # Try VQPU bridge
         if self._bridge is not None:
             try:
-                from l104_vqpu_bridge import QuantumJob
+                from l104_vqpu import QuantumJob
                 job = QuantumJob(num_qubits=self.nq, operations=ops,
                                  shots=self.shots, adapt=True)
                 result = self._bridge.run_simulation(job, compile=True)

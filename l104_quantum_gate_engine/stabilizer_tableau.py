@@ -1139,6 +1139,15 @@ class HybridStabilizerSimulator:
                 skipped_gates += 1
                 skipped_names.add(op.gate.name)
 
+        # Log warning if significant gates were skipped
+        if skipped_gates > 0:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                f"Approximate Clifford: skipped {skipped_gates} non-Clifford gates "
+                f"({', '.join(sorted(skipped_names))}). Results are approximate."
+            )
+
         counts = tab.sample(shots)
         total = sum(counts.values())
         probs = {k: v / total for k, v in sorted(counts.items())}
@@ -1315,9 +1324,13 @@ class HybridStabilizerSimulator:
 
     @staticmethod
     def _estimate_speedup(n: int, gate_count: int) -> float:
-        """Estimate speedup of stabilizer over statevector."""
-        stab_ops = n * max(gate_count, 1)
+        """Estimate speedup of stabilizer over statevector.
+
+        Stabilizer (CHP): O(n²) per Clifford gate → total O(n² × gates)
+        Statevector:     O(2^n) per gate application → total O(2^n × gates)
+        """
+        stab_ops = (n ** 2) * max(gate_count, 1)  # O(n²) per gate
         if n <= 50:
-            sv_ops = (2 ** n) * max(gate_count, 1)
+            sv_ops = (2 ** n) * max(gate_count, 1)  # O(2^n) per gate
             return sv_ops / max(stab_ops, 1)
         return float('inf')

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  L104 Sovereign Node — Nano Daemon (Python AI Substrate) v1.0
+  ═════════════════════════════════════════════════════════════
+  AI-powered Python nano-level fault detection with statistical anomaly detection.
+  12 probes at 3s intervals (9 standard + 3 AI meta-probes):
+
+  Standard Probes:
+    • Sacred constant bit-exact verification (struct.pack ULP)
+    • Memory canary integrity (XOR-scrambled φ-sentinels)
+    • Numerical stability (Kahan summation, catastrophic cancellation)
+    • Phase drift accumulation (100K modular rotation)
+    • Entropy quality (os.urandom + chi-squared uniformity)
+    • Import health (7 L104 packages reimport timing)
+    • State file integrity (.l104_*.json freshness + schema)
+    • Cross-daemon heartbeat (verify C + Swift siblings alive)
+
+  AI Probes:
+    • Statistical Anomaly Detector (Z-score + IQR on rolling windows)
+    • AI Trend Predictor (linear regression, ticks-to-critical ETA)
+    • AI Anomaly Classifier (isolation-forest-inspired centroid scoring)
+    • AI Auto-Correlator (cross-daemon fault pattern detection)
+
+  IPC: /tmp/l104_bridge/nano/python_outbox (JSON reports)
+  Heartbeat: /tmp/l104_bridge/nano/python_heartbeat
+
+  Run:       .venv/bin/python -m l104_vqpu.nano_daemon --tick 3
+  Install:   cp config/com.l104.nano-daemon-python.plist ~/Library/LaunchAgents/
+             launchctl load ~/Library/LaunchAgents/com.l104.nano-daemon-python.plist
+  Self-test: .venv/bin/python -m l104_vqpu.nano_daemon --self-test
+
+  GOD_CODE=527.5184818492612 | PHI=1.618033988749895 | PILOT: LONDEL
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.l104.nano-daemon-python</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/.venv/bin/python</string>
+        <string>-m</string>
+        <string>l104_vqpu.nano_daemon</string>
+        <string>--tick</string>
+        <string>3</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>L104_ROOT</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>RESONANCE</key>
+        <string>527.5184818492612</string>
+        <key>L104_NANO_DAEMON</key>
+        <string>1</string>
+        <key>PYTHONPATH</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>PYTHONDONTWRITEBYTECODE</key>
+        <string>1</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+
+    <!-- Run immediately at login -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Always restart -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- 5s cooldown between restarts (AI probes need warmup) -->
+    <key>ThrottleInterval</key>
+    <integer>5</integer>
+
+    <key>ExitTimeOut</key>
+    <integer>15</integer>
+
+    <!-- Low priority — nano daemon is background work -->
+    <key>Nice</key>
+    <integer>10</integer>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>LowPriorityBackgroundIO</key>
+    <false/>
+    <key>LegacyTimers</key>
+    <true/>
+
+    <!-- Soft limits: 200MB RSS -->
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>MemoryLimit</key>
+        <integer>209715200</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/nano-daemon-python.stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/nano-daemon-python.stderr.log</string>
+</dict>
+</plist>

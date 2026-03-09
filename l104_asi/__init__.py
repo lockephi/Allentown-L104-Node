@@ -21,7 +21,7 @@ v12.0 Deep Upgrade Wave:
   - quantum.py v12.0: Entanglement fidelity bench, parameter-shift gradients, XEB, QV
   - self_mod.py v7.0: Lineage DAG, Grover-amplified selection, quantum tunneling, multi-file evolve
   - dual_layer.py v5.0: Gate-enhanced duality, three-engine synthesis, temporal tracking, resilient collapse
-  - pipeline.py v7.0: Priority queuing, circuit breaker, replay buffer, PipelineOrchestrator
+  - pipeline.py v9.0: Backpressure, speculative execution, cascade scoring, warmup analyzer, stage profiler, PipelineOrchestratorV2
 
 Re-exports ALL public symbols so that:
     from l104_asi import X
@@ -30,7 +30,7 @@ works identically to the original:
 """
 # Constants and flags
 from .constants import (
-    ASI_CORE_VERSION, ASI_PIPELINE_EVO,
+    ASI_CORE_VERSION, ASI_PIPELINE_EVO, PIPELINE_VERSION,
     PHI, GOD_CODE, TAU, PHI_CONJUGATE, VOID_CONSTANT, FEIGENBAUM,
     OMEGA, OMEGA_AUTHORITY, PLANCK_CONSCIOUSNESS, ALPHA_FINE,
     TORCH_AVAILABLE, TENSORFLOW_AVAILABLE, PANDAS_AVAILABLE,
@@ -72,7 +72,11 @@ from .consciousness import ConsciousnessVerifier
 # Pipeline
 from .pipeline import (SolutionChannel, DirectSolutionHub, PipelineTelemetry,
                        SoftmaxGatingRouter, AdaptivePipelineRouter,
-                       PipelineReplayBuffer, PipelineOrchestrator)
+                       PipelineReplayBuffer, PipelineOrchestrator,
+                       MLPipelineRouter,
+                       AdaptiveBackpressure, SpeculativeExecutor,
+                       PipelineCascadeScorer, PipelineWarmupAnalyzer,
+                       PipelineStageProfiler, PipelineOrchestratorV2)
 
 # Reasoning
 from .reasoning import (TreeOfThoughts, MultiHopReasoningChain,
@@ -156,7 +160,7 @@ except ImportError:
 
 __all__ = [
     # Constants and flags
-    "ASI_CORE_VERSION", "ASI_PIPELINE_EVO",
+    "ASI_CORE_VERSION", "ASI_PIPELINE_EVO", "PIPELINE_VERSION",
     "PHI", "GOD_CODE", "TAU", "PHI_CONJUGATE", "VOID_CONSTANT", "FEIGENBAUM",
     "OMEGA", "OMEGA_AUTHORITY", "PLANCK_CONSCIOUSNESS", "ALPHA_FINE",
     "TORCH_AVAILABLE", "TENSORFLOW_AVAILABLE", "PANDAS_AVAILABLE",
@@ -189,6 +193,11 @@ __all__ = [
     "SolutionChannel", "DirectSolutionHub", "PipelineTelemetry",
     "SoftmaxGatingRouter", "AdaptivePipelineRouter",
     "PipelineReplayBuffer", "PipelineOrchestrator",
+    "MLPipelineRouter",
+    # Pipeline v9.0
+    "AdaptiveBackpressure", "SpeculativeExecutor",
+    "PipelineCascadeScorer", "PipelineWarmupAnalyzer",
+    "PipelineStageProfiler", "PipelineOrchestratorV2",
     # Reasoning
     "TreeOfThoughts", "MultiHopReasoningChain",
     "SolutionEnsembleEngine", "PipelineHealthDashboard",

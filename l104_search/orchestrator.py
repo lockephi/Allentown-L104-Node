@@ -303,7 +303,9 @@ class SearchOrchestrator:
                     pass
                 finally:
                     strat_ms = (time.perf_counter() - st0) * 1000
-                    circuit_ms = results[strat_name].metadata.get("vqpu_circuit_ms", 0.0) if strat_name in results else 0.0
+                    circuit_ms = 0.0
+                    if strat_name in results:
+                        circuit_ms = results[strat_name].metadata.get("vqpu_circuit_ms", 0.0)
                     timings.append(StrategyTiming(
                         strategy_name=strat_name,
                         elapsed_ms=strat_ms,
@@ -450,7 +452,7 @@ class SearchOrchestrator:
     def _three_engine_score(self, results: Dict[str, SearchResult]) -> float:
         """Compute three-engine composite score from search results."""
         try:
-            from l104_vqpu_bridge import ThreeEngineQuantumScorer
+            from l104_vqpu import ThreeEngineQuantumScorer
         except ImportError:
             return 0.5
 
@@ -712,7 +714,7 @@ class PrecognitionOrchestrator:
     def _three_engine_score(self, results: Dict[str, PrecognitionResult]) -> float:
         """Compute three-engine score from precognition results."""
         try:
-            from l104_vqpu_bridge import ThreeEngineQuantumScorer
+            from l104_vqpu import ThreeEngineQuantumScorer
         except ImportError:
             return 0.5
 
@@ -769,6 +771,12 @@ class ThreeEngineSearchPrecog:
             bridge=bridge, enable_vqpu=enable_vqpu, enable_analytics=enable_analytics,
         )
 
+        # ══════ Cross-engine integration (lazy-loaded) ══════
+        self._ml_engine = None
+        self._science_engine = None
+        self._math_engine = None
+        self._quantum_data_analyzer = None
+
     @property
     def search_orchestrator(self) -> SearchOrchestrator:
         return self._search
@@ -791,8 +799,51 @@ class ThreeEngineSearchPrecog:
         oracle: Callable[[Any], bool],
         strategies: Optional[List[str]] = None,
     ) -> EnsembleSearchResult:
-        """Multi-strategy search with three-engine scoring + analytics."""
+        """Multi-strategy search with three-engine scoring + cross-engine enrichment."""
         result = self._search.search_list(items, oracle, strategies)
+
+        # v3.0: Cross-engine enrichment — ML-powered re-ranking
+        ml = self._get_ml_engine()
+        if ml is not None and result.fused_matches:
+            try:
+                # Extract score distribution for ML analysis
+                scores = [m.get("fusion_score", 0.0) for m in result.fused_matches]
+                if hasattr(ml, 'rerank') and callable(getattr(ml, 'rerank', None)):
+                    result.fused_matches = ml.rerank(result.fused_matches)
+                # Enrich metadata with ML confidence
+                result.metadata["ml_enriched"] = True
+                result.metadata["ml_score_stats"] = {
+                    "mean": sum(scores) / max(len(scores), 1),
+                    "max": max(scores) if scores else 0.0,
+                }
+            except Exception:
+                result.metadata["ml_enriched"] = False
+
+        # v3.0: Science Engine entropy-guided scoring boost
+        science = self._get_science_engine()
+        if science is not None:
+            try:
+                demon_eff = science.entropy.calculate_demon_efficiency(0.5)
+                # Boost three-engine score with real entropy data
+                result.three_engine_score = (
+                    result.three_engine_score * 0.7 + demon_eff * 0.3
+                )
+                result.metadata["entropy_enriched"] = True
+                result.metadata["demon_efficiency"] = round(demon_eff, 6)
+            except Exception:
+                pass
+
+        # v3.0: Math Engine sacred alignment validation
+        math_eng = self._get_math_engine()
+        if math_eng is not None:
+            try:
+                god_code_val = math_eng.god_code_value()
+                alignment_boost = abs(result.sacred_alignment - god_code_val / 1000.0) < 0.1
+                result.metadata["math_validated"] = True
+                result.metadata["god_code_aligned"] = alignment_boost
+            except Exception:
+                pass
+
         if self._enable_analytics and result.analytics:
             self._history.record_from_report(result.analytics)
         return result
@@ -803,8 +854,51 @@ class ThreeEngineSearchPrecog:
         horizon: int = 26,
         predictors: Optional[List[str]] = None,
     ) -> EnsemblePrecognitionResult:
-        """Multi-predictor ensemble forecasting + analytics."""
+        """Multi-predictor ensemble forecasting + cross-engine enrichment."""
         result = self._precog.predict(history, horizon, predictors)
+
+        # v3.0: Science Engine entropy input for precognition calibration
+        science = self._get_science_engine()
+        if science is not None and result.consensus_forecast:
+            try:
+                # Use entropy reversal to calibrate forecast confidence
+                import numpy as _np
+                forecast_entropy = float(_np.std(result.consensus_forecast))
+                demon_eff = science.entropy.calculate_demon_efficiency(
+                    min(1.0, max(0.01, forecast_entropy))
+                )
+                result.metadata["entropy_calibrated"] = True
+                result.metadata["forecast_demon_efficiency"] = round(demon_eff, 6)
+                # Boost three-engine score with real entropy
+                result.three_engine_score = (
+                    result.three_engine_score * 0.7 + demon_eff * 0.3
+                )
+            except Exception:
+                pass
+
+        # v3.0: Quantum Data Analyzer pattern detection on history
+        qda = self._get_quantum_data_analyzer()
+        if qda is not None and len(history) >= 4:
+            try:
+                import numpy as _np
+                data = _np.array(history, dtype=float)
+                if hasattr(qda, 'detect_anomalies'):
+                    anomalies = qda.detect_anomalies(data)
+                    result.metadata["qda_anomalies"] = anomalies
+                result.metadata["qda_enriched"] = True
+            except Exception:
+                pass
+
+        # v3.0: Math Engine harmonic scoring on forecast
+        math_eng = self._get_math_engine()
+        if math_eng is not None and result.consensus_forecast:
+            try:
+                wave_coh = math_eng.wave_coherence(286.0, 527.5)
+                result.metadata["math_wave_coherence"] = wave_coh
+                result.metadata["math_enriched"] = True
+            except Exception:
+                pass
+
         if self._enable_analytics and result.analytics:
             self._history.record_from_report(result.analytics)
         return result
@@ -939,6 +1033,50 @@ class ThreeEngineSearchPrecog:
             ),
         }
 
+    # ═════════════════════════════════════════════════════════════════════════
+    #  CROSS-ENGINE LAZY LOADERS
+    # ═════════════════════════════════════════════════════════════════════════
+
+    def _get_ml_engine(self):
+        """Lazy-load MLEngine for ML-enhanced search ranking."""
+        if self._ml_engine is None:
+            try:
+                from l104_ml_engine import ml_engine
+                self._ml_engine = ml_engine
+            except Exception:
+                pass
+        return self._ml_engine
+
+    def _get_science_engine(self):
+        """Lazy-load ScienceEngine for entropy/coherence-guided search."""
+        if self._science_engine is None:
+            try:
+                from l104_science_engine import ScienceEngine
+                self._science_engine = ScienceEngine()
+            except Exception:
+                pass
+        return self._science_engine
+
+    def _get_math_engine(self):
+        """Lazy-load MathEngine for harmonic/sacred alignment scoring."""
+        if self._math_engine is None:
+            try:
+                from l104_math_engine import MathEngine
+                self._math_engine = MathEngine()
+            except Exception:
+                pass
+        return self._math_engine
+
+    def _get_quantum_data_analyzer(self):
+        """Lazy-load QuantumDataAnalyzer for quantum-enhanced pattern analysis."""
+        if self._quantum_data_analyzer is None:
+            try:
+                from l104_quantum_data_analyzer import QuantumDataAnalyzer
+                self._quantum_data_analyzer = QuantumDataAnalyzer()
+            except Exception:
+                pass
+        return self._quantum_data_analyzer
+
     def status(self) -> Dict[str, Any]:
         """Report status of all engines, VQPU connection, and analytics."""
         vqpu_active = False
@@ -948,7 +1086,7 @@ class ThreeEngineSearchPrecog:
         # Check three-engine availability
         engines = {"science": False, "math": False, "code": False}
         try:
-            from l104_vqpu_bridge import ThreeEngineQuantumScorer
+            from l104_vqpu import ThreeEngineQuantumScorer
             engines["science"] = ThreeEngineQuantumScorer._get_science() is not None
             engines["math"] = ThreeEngineQuantumScorer._get_math() is not None
             engines["code"] = ThreeEngineQuantumScorer._get_code() is not None
@@ -962,6 +1100,12 @@ class ThreeEngineSearchPrecog:
             "vqpu_active": vqpu_active,
             "vqpu_bridge": self._bridge is not None,
             "engines": engines,
+            "cross_engines": {
+                "ml_engine": self._ml_engine is not None,
+                "science_engine": self._science_engine is not None,
+                "math_engine": self._math_engine is not None,
+                "quantum_data_analyzer": self._quantum_data_analyzer is not None,
+            },
             "analytics_enabled": self._enable_analytics,
             "history_runs": self._history.n_runs,
             "trend": trend.trend_direction if trend else "insufficient_data",

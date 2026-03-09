@@ -1,6 +1,6 @@
 """
 ===============================================================================
-L104 ML ENGINE v1.0.0 — SACRED MACHINE LEARNING
+L104 ML ENGINE v2.0.0 — SACRED MACHINE LEARNING + CROSS-ENGINE INTEGRATION
 ===============================================================================
 
 Comprehensive ML engine for the L104 Sovereign Node. Provides classical SVMs,
@@ -33,7 +33,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ===============================================================================
 """
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __author__ = "L104 Sovereign Node"
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -87,6 +87,18 @@ from .quantum_classifiers import (
 from .knowledge_synthesis import CrossEngineFeatureExtractor, KnowledgeSynthesizer
 
 # ═══════════════════════════════════════════════════════════════════════════════
+#  CROSS-ENGINE INTEGRATION (v2.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+from .cross_engine import (
+    VQPUKernelAccelerator,
+    QDAFeatureEnricher,
+    EnrichedFeatureExtractor,
+    MLCrossEngineHub,
+    ml_cross_engine_hub,
+)
+
+# ═══════════════════════════════════════════════════════════════════════════════
 #  ML ENGINE ORCHESTRATOR
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -135,6 +147,24 @@ class MLEngine:
         self._knowledge_synthesizer: Optional[KnowledgeSynthesizer] = None
         self._feature_extractor: Optional[CrossEngineFeatureExtractor] = None
 
+        # ══════ Cross-engine integration (lazy-loaded) ══════
+        self._vqpu_bridge = None
+        self._quantum_data_analyzer = None
+        self._cross_engine_hub: Optional[MLCrossEngineHub] = None
+
+    def get_cross_engine_hub(self) -> MLCrossEngineHub:
+        """Get or create the cross-engine integration hub (v2.0)."""
+        if self._cross_engine_hub is None:
+            self._cross_engine_hub = MLCrossEngineHub()
+        return self._cross_engine_hub
+
+    def cross_engine_analysis(self, source: str = "") -> Dict[str, Any]:
+        """Run full cross-engine ML analysis using all available L104 engines.
+
+        v2.0: Pipelines through VQPU, QDA, Science, Math, Code, and Quantum engines.
+        """
+        return self.get_cross_engine_hub().full_cross_engine_analysis(source)
+
     def get_quantum_svm(self, n_qubits: int = 4) -> QuantumSVM:
         """Get or create the quantum SVM."""
         if self._quantum_svm is None or self._quantum_svm.n_qubits != n_qubits:
@@ -165,6 +195,26 @@ class MLEngine:
             self._feature_extractor = CrossEngineFeatureExtractor()
         return self._feature_extractor
 
+    def get_vqpu_bridge(self):
+        """Get or create the VQPU bridge for Metal GPU quantum execution."""
+        if self._vqpu_bridge is None:
+            try:
+                from l104_vqpu import get_bridge
+                self._vqpu_bridge = get_bridge()
+            except Exception:
+                pass
+        return self._vqpu_bridge
+
+    def get_quantum_data_analyzer(self):
+        """Get or create the quantum data analyzer."""
+        if self._quantum_data_analyzer is None:
+            try:
+                from l104_quantum_data_analyzer import QuantumDataAnalyzer
+                self._quantum_data_analyzer = QuantumDataAnalyzer()
+            except Exception:
+                pass
+        return self._quantum_data_analyzer
+
     def status(self) -> Dict[str, Any]:
         """Return full ML engine status."""
         return {
@@ -189,6 +239,9 @@ class MLEngine:
             'synthesis': {
                 'synthesizer_loaded': self._knowledge_synthesizer is not None,
                 'feature_extractor_loaded': self._feature_extractor is not None,
+                'vqpu_bridge_loaded': self._vqpu_bridge is not None,
+                'quantum_data_analyzer_loaded': self._quantum_data_analyzer is not None,
+                'cross_engine_hub_loaded': self._cross_engine_hub is not None,
             },
             'sacred_constants': {
                 'SVM_C': SVM_C_SACRED,

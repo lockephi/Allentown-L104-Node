@@ -89,6 +89,27 @@ def _get_code_engine():
     except ImportError:
         return None
 
+def _get_vqpu_bridge():
+    try:
+        from l104_vqpu import get_bridge
+        return get_bridge()
+    except ImportError:
+        return None
+
+def _get_ml_engine():
+    try:
+        from l104_ml_engine import ml_engine
+        return ml_engine
+    except ImportError:
+        return None
+
+def _get_god_code_simulator():
+    try:
+        from l104_god_code_simulator import god_code_simulator
+        return god_code_simulator
+    except ImportError:
+        return None
+
 
 class QuantumDataAnalyzer:
     """
@@ -697,6 +718,11 @@ class QuantumDataAnalyzer:
             engines["math_engine"] = {"available": True, "version": "1.0.0"}
         except ImportError:
             engines["math_engine"] = {"available": False}
+
+        # Cross-engine bridges
+        engines["vqpu_bridge"] = {"available": _get_vqpu_bridge() is not None}
+        engines["ml_engine"] = {"available": _get_ml_engine() is not None}
+        engines["god_code_simulator"] = {"available": _get_god_code_simulator() is not None}
 
         try:
             qiskit_ver = 'removed'  # Qiskit removed — sovereign local

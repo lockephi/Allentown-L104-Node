@@ -214,7 +214,7 @@ from l104_quantum_engine import quantum_brain
 _VQPU_AVAILABLE = False
 _vqpu_bridge = None
 try:
-    from l104_vqpu_bridge import VQPUBridge, QuantumJob
+    from l104_vqpu import VQPUBridge, QuantumJob
     _VQPU_AVAILABLE = True
 except ImportError:
     pass

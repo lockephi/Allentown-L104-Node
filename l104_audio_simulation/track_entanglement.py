@@ -333,7 +333,7 @@ class TrackEntanglementManager:
     def vqpu(self):
         if self._vqpu is None:
             try:
-                from l104_vqpu_bridge import get_bridge
+                from l104_vqpu import get_bridge
                 self._vqpu = get_bridge()
             except ImportError:
                 pass
@@ -479,7 +479,7 @@ class TrackEntanglementManager:
             return
 
         try:
-            from l104_vqpu_bridge import QuantumJob, QuantumGate
+            from l104_vqpu import QuantumJob, QuantumGate
 
             for bond in self.bonds.values():
                 n = len(bond.track_ids)

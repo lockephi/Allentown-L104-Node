@@ -790,46 +790,40 @@ class VQEClusterer:
         return best_params, convergence
 
     def _evaluate_hamiltonian(self, params: np.ndarray, J: np.ndarray, h: np.ndarray, n_qubits: int) -> float:
-        """Evaluate Ising Hamiltonian expectation value for given parameters."""
-        # Simulate ansatz state
-        state = np.zeros(2 ** n_qubits, dtype=np.complex128)
+        """Evaluate Ising Hamiltonian expectation value for given parameters.
+
+        Uses vectorized numpy operations instead of Python loops over 2^n basis states.
+        """
+        dim = 2 ** n_qubits
+        state = np.zeros(dim, dtype=np.complex128)
         state[0] = 1.0
 
-        # Apply parametrized rotations
+        # Apply parametrized Ry rotations using vectorized operations
         for q in range(n_qubits):
             theta = params[q * 3] if q * 3 < len(params) else 0
-            phi_p = params[q * 3 + 1] if q * 3 + 1 < len(params) else 0
-            # Ry rotation
             c, s = math.cos(theta / 2), math.sin(theta / 2)
-            new_state = np.zeros_like(state)
-            for basis in range(2 ** n_qubits):
-                bit = (basis >> q) & 1
-                other_bits = basis ^ (bit << q)
-                if bit == 0:
-                    new_state[basis] += c * state[basis]
-                    new_state[basis | (1 << q)] += s * state[basis]
-                else:
-                    new_state[basis] += c * state[basis]
-                    new_state[basis ^ (1 << q)] += -s * state[basis]
-            state = new_state
+            # Build Ry gate and apply via tensor contraction
+            ry = np.array([[c, -s], [s, c]], dtype=np.complex128)
+            psi_t = state.reshape([2] * n_qubits)
+            psi_t = np.tensordot(ry, psi_t, axes=([1], [q]))
+            psi_t = np.moveaxis(psi_t, 0, q)
+            state = psi_t.reshape(dim)
 
-        # Compute ⟨H⟩ = Σ J_ij ⟨Z_i Z_j⟩ + Σ h_i ⟨Z_i⟩
+        # Compute ⟨H⟩ = Σ J_ij ⟨Z_i Z_j⟩ + Σ h_i ⟨Z_i⟩ using vectorized sign computation
+        probs = np.abs(state) ** 2  # |c_k|^2 for all basis states
+        basis_indices = np.arange(dim, dtype=np.int64)
+
         energy = 0.0
-        for i in range(min(n_qubits, J.shape[0])):
-            # ⟨Z_i⟩
-            z_i = 0.0
-            for basis in range(2 ** n_qubits):
-                sign = 1 - 2 * ((basis >> i) & 1)
-                z_i += sign * abs(state[basis]) ** 2
+        for i in range(min(n_qubits, h.shape[0])):
+            # ⟨Z_i⟩ = Σ_k (-1)^{bit_i(k)} |c_k|^2
+            signs_i = 1 - 2 * ((basis_indices >> i) & 1).astype(np.float64)
+            z_i = float(np.dot(signs_i, probs))
             energy += h[i] * z_i
 
             for j in range(i + 1, min(n_qubits, J.shape[1])):
-                # ⟨Z_i Z_j⟩
-                zz = 0.0
-                for basis in range(2 ** n_qubits):
-                    sign_i = 1 - 2 * ((basis >> i) & 1)
-                    sign_j = 1 - 2 * ((basis >> j) & 1)
-                    zz += sign_i * sign_j * abs(state[basis]) ** 2
+                # ⟨Z_i Z_j⟩ = Σ_k (-1)^{bit_i(k)+bit_j(k)} |c_k|^2
+                signs_j = 1 - 2 * ((basis_indices >> j) & 1).astype(np.float64)
+                zz = float(np.dot(signs_i * signs_j, probs))
                 energy += J[i, j] * zz
 
         return float(energy)
@@ -954,21 +948,16 @@ class QAOAOptimizer:
                         cost += Q[i, j] * bits[i] * bits[j]
                 state[basis] *= np.exp(-1j * gamma * cost)
 
-            # U_B(β): mixer unitary e^{-iβΣσ_x}
-            new_state = np.zeros_like(state)
+            # U_B(β): mixer unitary e^{-iβΣσ_x} = Π_q Rx(2β)_q
+            # Apply single-qubit X rotations sequentially (one qubit at a time)
+            cb = math.cos(beta)
+            sb = math.sin(beta)
             for q in range(n_qubits):
-                cb = math.cos(beta)
-                sb = math.sin(beta)
+                new_state = np.zeros_like(state)
                 for basis in range(N):
-                    bit = (basis >> q) & 1
                     flipped = basis ^ (1 << q)
-                    new_state[basis] += cb * state[basis] / n_qubits
-                    new_state[flipped] += -1j * sb * state[basis] / n_qubits
-            state = new_state
-            # Renormalize
-            norm = np.linalg.norm(state)
-            if norm > 0:
-                state /= norm
+                    new_state[basis] += cb * state[basis] - 1j * sb * state[flipped]
+                state = new_state
 
         return state
 

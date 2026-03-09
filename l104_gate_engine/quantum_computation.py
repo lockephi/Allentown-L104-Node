@@ -42,7 +42,7 @@ class QuantumGateComputationEngine:
             size <<= 1
         padded = list(values) + [0.0] * (size - n)
         result = list(padded)
-        # Walsh-Hadamard butterfly
+        # Walsh-Hadamard butterfly (unitarity-preserving)
         half = size
         while half >= 2:
             step = half // 2
@@ -50,10 +50,13 @@ class QuantumGateComputationEngine:
                 for j in range(step):
                     a = result[i + j]
                     b = result[i + j + step]
-                    phi_phase = math.cos(PHI * (i + j) * math.pi / size) * TAU * 0.01
-                    result[i + j] = (a + b) / math.sqrt(2) + phi_phase
-                    result[i + j + step] = (a - b) / math.sqrt(2) - phi_phase
+                    result[i + j] = (a + b) / math.sqrt(2)
+                    result[i + j + step] = (a - b) / math.sqrt(2)
             half = step
+        # Apply sacred phase modulation as post-processing (preserves norm)
+        for i in range(len(result)):
+            phi_phase = math.cos(PHI * i * math.pi / size) * TAU * 0.01
+            result[i] *= math.cos(phi_phase)  # multiplicative, not additive
         return result[:n]
 
     # ─── CNOT Gate (Controlled-NOT) ───
@@ -161,13 +164,13 @@ class QuantumGateComputationEngine:
             phi_phase = PHI * math.pi * step / steps
             cos_h = math.cos(math.pi / 4 + phi_phase * TAU * 0.01)
             sin_h = math.sin(math.pi / 4 + phi_phase * TAU * 0.01)
-            for pos in range(1, positions - 1):
+            for pos in range(positions):
                 u = psi_up[pos]
                 d = psi_down[pos]
                 coin_up = cos_h * u + sin_h * d
                 coin_down = sin_h * u - cos_h * d
-                new_up[pos + 1] += coin_up
-                new_down[pos - 1] += coin_down
+                new_up[(pos + 1) % positions] += coin_up
+                new_down[(pos - 1) % positions] += coin_down
             psi_up, psi_down = new_up, new_down
         probs = []
         for i in range(positions):
@@ -204,12 +207,13 @@ class QuantumGateComputationEngine:
         if norm < 1e-15:
             return {"measurements": {}, "shots": num_shots, "entropy": 0}
         amplitudes = [v / norm for v in gate_values]
+        # Born rule: P(x) = |⟨x|ψ⟩|² — unmodified physical probabilities
         probabilities = [a ** 2 for a in amplitudes]
-        for i in range(n):
-            phi_weight = math.cos(i * PHI * math.pi / n) ** 2
-            probabilities[i] *= (1.0 + phi_weight * TAU * 0.1)
         total_p = sum(probabilities)
-        probabilities = [p / total_p for p in probabilities]
+        if total_p > 0:
+            probabilities = [p / total_p for p in probabilities]
+        # Sacred alignment computed separately (not mixed into Born rule)
+        sacred_weights = [math.cos(i * PHI * math.pi / n) ** 2 for i in range(n)]
         counts: Dict[int, int] = {}
         cumulative = []
         running = 0.0
@@ -239,6 +243,7 @@ class QuantumGateComputationEngine:
             "god_code_resonance": god_code_resonance,
             "phi_alignment": math.cos(entropy * PHI) ** 2,
             "probabilities": {str(i): round(p, 6) for i, p in enumerate(probabilities)},
+            "sacred_alignment": {str(i): round(w, 6) for i, w in enumerate(sacred_weights)},
         }
         self.measurement_history.append(result)
         return result

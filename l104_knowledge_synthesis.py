@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.500409
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:54.572831
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -61,15 +61,15 @@ except ImportError:
             return (self._harvest() + _std_random.random()) / 2
 
         def chaos_gauss(self, mu=0, sigma=1, context=""):
-            u1 = max(1e-10, self.chaos_float(context))
-            u2 = self.chaos_float(context)
+            u1 = max(1e-10, self.chaos_float(context=context))
+            u2 = self.chaos_float(context=context)
             z = math.sqrt(-2 * math.log(u1)) * math.cos(2 * math.pi * u2)
             return mu + sigma * z
 
         def chaos_choice(self, seq, context=""):
             if not seq:
                 raise IndexError("Cannot choose from empty sequence")
-            idx = int(self.chaos_float(context) * len(seq)) % len(seq)
+            idx = int(self.chaos_float(context=context) * len(seq)) % len(seq)
             return seq[idx]
 
     chaos = _FallbackChaos()

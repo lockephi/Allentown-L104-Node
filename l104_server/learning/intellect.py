@@ -4071,7 +4071,7 @@ class LearningIntellect:
 
         # Skip embedding similarity for speed - use knowledge graph only
         novelty = 1.0 - known_ratio
-        novelty = max(0.2, min(0.9, novelty))
+        novelty = max(0.2, novelty)
 
         # Cache result
         self.novelty_scores[query_hash] = novelty

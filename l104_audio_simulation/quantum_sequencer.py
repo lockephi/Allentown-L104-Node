@@ -611,7 +611,7 @@ class ProbabilisticSequencer:
         """Lazy-load VQPU bridge."""
         if self._vqpu is None and self.vqpu_enabled:
             try:
-                from l104_vqpu_bridge import get_bridge
+                from l104_vqpu import get_bridge
                 self._vqpu = get_bridge()
             except ImportError:
                 logger.warning("VQPU bridge not available — falling back to classical RNG")
@@ -682,7 +682,7 @@ class ProbabilisticSequencer:
             return step
 
         try:
-            from l104_vqpu_bridge import QuantumJob, QuantumGate
+            from l104_vqpu import QuantumJob, QuantumGate
 
             # Build a sacred circuit for this step
             n_q = min(step.n_qubits, 8)  # Cap for VQPU performance
@@ -740,7 +740,7 @@ class ProbabilisticSequencer:
             return pattern.collapse_all(rng=self.rng)
 
         try:
-            from l104_vqpu_bridge import QuantumJob, QuantumGate
+            from l104_vqpu import QuantumJob, QuantumGate
 
             jobs = []
             for step in pattern.steps:

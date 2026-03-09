@@ -25,7 +25,7 @@ from pathlib import Path
 from collections import deque, OrderedDict
 from typing import Dict, List, Any, Optional, Callable, Tuple
 
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:23.110425
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:49.563594
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 

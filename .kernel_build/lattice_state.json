@@ -11,16 +11,16 @@
     "machine": "x86_64",
     "node": "Carols-Air.ht.home",
     "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node",
-    "pid": "16086",
+    "pid": "520",
     "cwd": "/Users/carolalvarez/Applications/Allentown-L104-Node",
     "disk_total_gb": "112.6",
-    "disk_free_gb": "32.4",
-    "disk_used_pct": "71.3",
-    "memory_peak_mb": "674.4",
-    "workspace_size_mb": "9098.1"
+    "disk_free_gb": "36.4",
+    "disk_used_pct": "67.7",
+    "memory_peak_mb": "543.2",
+    "workspace_size_mb": "9237.4"
   },
-  "elapsed_s": 262.742,
-  "timestamp": "2026-03-07T05:44:54.148845",
+  "elapsed_s": 329.892,
+  "timestamp": "2026-03-09T13:48:35.058029",
   "subsystems": [
     {
       "name": "GOD_CODE Invariant",
@@ -42,7 +42,7 @@
       "name": "Sacred Constants",
       "available": true,
       "version": "",
-      "latency_ms": 0.2541542053222656,
+      "latency_ms": 6.537914276123047,
       "error": "",
       "details": {
         "classes": [
@@ -67,7 +67,7 @@
       "name": "Kernel Bootstrap",
       "available": true,
       "version": "",
-      "latency_ms": 26.65877342224121,
+      "latency_ms": 548.1770038604736,
       "error": "",
       "details": {
         "classes": [
@@ -83,7 +83,7 @@
       "name": "Fast Intelligence Server",
       "available": true,
       "version": "",
-      "latency_ms": 0.11491775512695312,
+      "latency_ms": 6.789207458496094,
       "error": "",
       "details": {
         "classes": [
@@ -106,7 +106,7 @@
       "name": "MacBook Integration",
       "available": true,
       "version": "",
-      "latency_ms": 113.01922798156738,
+      "latency_ms": 943.5720443725586,
       "error": "",
       "details": {
         "classes": [
@@ -140,7 +140,7 @@
       "name": "API Gateway",
       "available": true,
       "version": "",
-      "latency_ms": 38.19584846496582,
+      "latency_ms": 153.4268856048584,
       "error": "",
       "details": {
         "classes": [
@@ -174,7 +174,7 @@
       "name": "Workflow Stabilizer",
       "available": true,
       "version": "",
-      "latency_ms": 15.829086303710938,
+      "latency_ms": 129.20689582824707,
       "error": "",
       "details": {
         "classes": [
@@ -204,7 +204,7 @@
       "name": "External API",
       "available": true,
       "version": "",
-      "latency_ms": 107.29122161865234,
+      "latency_ms": 611.0930442810059,
       "error": "",
       "details": {
         "classes": [
@@ -238,7 +238,7 @@
       "name": "Unified Intelligence API",
       "available": true,
       "version": "",
-      "latency_ms": 0.13184547424316406,
+      "latency_ms": 0.04482269287109375,
       "error": "",
       "details": {
         "classes": [
@@ -272,7 +272,7 @@
       "name": "DB: l104_intellect_memory.db",
       "available": true,
       "version": "",
-      "latency_ms": 203424.8399734497,
+      "latency_ms": 270151.1480808258,
       "error": "",
       "details": {
         "tables": [
@@ -301,7 +301,7 @@
       "name": "DB: l104_asi_nexus.db",
       "available": true,
       "version": "",
-      "latency_ms": 264.4648551940918,
+      "latency_ms": 648.8170623779297,
       "error": "",
       "details": {
         "tables": [
@@ -316,7 +316,7 @@
           "sqlite_sequence"
         ],
         "table_count": 9,
-        "size_mb": 4.25
+        "size_mb": 5.07
       }
     },
     {
@@ -331,7 +331,7 @@
       "name": "DB: lattice_v2.db",
       "available": true,
       "version": "",
-      "latency_ms": 35243.15810203552,
+      "latency_ms": 32087.527990341187,
       "error": "",
       "details": {
         "tables": [
@@ -340,14 +340,14 @@
           "lattice_history"
         ],
         "table_count": 3,
-        "size_mb": 3170.89
+        "size_mb": 3228.71
       }
     },
     {
       "name": "DB: api_keys.db",
       "available": true,
       "version": "",
-      "latency_ms": 4.74095344543457,
+      "latency_ms": 13.953924179077148,
       "error": "",
       "details": {
         "tables": [
@@ -364,7 +364,7 @@
       "name": "DB: wallet_keys.db",
       "available": true,
       "version": "",
-      "latency_ms": 4.720926284790039,
+      "latency_ms": 7.923126220703125,
       "error": "",
       "details": {
         "tables": [
@@ -433,7 +433,7 @@
       "name": "Port: Fast Server (:8081)",
       "available": true,
       "version": "",
-      "latency_ms": 3.9839744567871094,
+      "latency_ms": 34.9268913269043,
       "error": "",
       "details": {}
     },
@@ -441,7 +441,7 @@
       "name": "Port: External API (:8082)",
       "available": false,
       "version": "",
-      "latency_ms": 0.1010894775390625,
+      "latency_ms": 0.23698806762695312,
       "error": "Not listening",
       "details": {}
     },
@@ -449,7 +449,7 @@
       "name": "Port: API Gateway (:8080)",
       "available": false,
       "version": "",
-      "latency_ms": 300.3568649291992,
+      "latency_ms": 0.14591217041015625,
       "error": "Not listening",
       "details": {}
     },
@@ -462,7 +462,7 @@
       "details": {
         "package_swift": true,
         "build_dir_exists": true,
-        "swift_files": 120
+        "swift_files": 122
       }
     }
   ],

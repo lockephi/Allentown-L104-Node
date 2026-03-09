@@ -138,6 +138,7 @@ class L104KMeans:
             )
 
         self._model.fit(X_scaled)
+        self._X_scaled = X_scaled  # Store for silhouette_score in cluster_coherence()
         self._fitted = True
         return self
 
@@ -159,13 +160,10 @@ class L104KMeans:
         labels = self._model.labels_
         if len(set(labels)) < 2:
             return 0.0
-        X_scaled = self._scaler.transform(
-            self._scaler.inverse_transform(self._model.cluster_centers_)
-        )
-        # Use training data labels for silhouette (approximate via centers)
+        # Use actual training data and cluster labels (not centers)
         sil = silhouette_score(
-            self._model.cluster_centers_,
-            np.arange(self.n_clusters),
+            self._X_scaled,
+            labels,
         ) if self.n_clusters > 1 else 0.0
         # Normalize to [0, 1] range
         return max(0.0, min(1.0, (sil + 1.0) / 2.0))

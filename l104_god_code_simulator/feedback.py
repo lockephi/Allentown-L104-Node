@@ -190,9 +190,22 @@ class FeedbackLoopEngine:
 
     # ── Dimension-Specific Feedback ─────────────────────────────────────────
 
+    # Dimensions where 0.0 means "metric not produced by this sim" —
+    # average only non-zero contributors to avoid dilution.
+    _SPARSE_DIMS = frozenset({"qfi", "topo_entropy", "loschmidt", "information", "concurrence"})
+
     def score_by_dimension(self, sim_results: List[SimulationResult]) -> Dict[str, float]:
         """
         Score simulation results across 15 quality dimensions.
+
+        v4.1 UPGRADES:
+          - Contributor-only averaging for sparse VQPU dimensions (QFI,
+            topo_entropy, Loschmidt, mutual information, concurrence).
+            Only simulations that actually produce a given metric are
+            included in that dimension's average — avoids dilution from
+            sims that default to 0.0.
+          - Loschmidt formula: exp(-decay_rate/2) maps echo fidelity
+            onto [0,1] with correct physics: low decay → high score.
 
         v4.0 (VQPU upgrade): Expanded from 11D to 15D.
         New dimensions from VQPU v8.0 findings:
@@ -232,13 +245,24 @@ class FeedbackLoopEngine:
             dims["decoherence_resilience"].append(
                 r.decoherence_fidelity if r.decoherence_fidelity else r.fidelity
             )
-            # v4.0 VQPU-derived dimensions
-            dims["qfi"].append(min(1.0, r.qfi / (4.0 * max(r.n_qubits, 1))) if r.qfi else 0.0)
-            dims["topo_entropy"].append(min(1.0, r.topo_entropy) if r.topo_entropy else 0.0)
+            # v4.1 VQPU-derived dimensions (improved formulas)
+            dims["qfi"].append(min(1.0, r.qfi / (4.0 * max(r.num_qubits, 1))) if r.qfi else 0.0)
+            dims["topo_entropy"].append(min(1.0, abs(r.topo_entropy)) if r.topo_entropy else 0.0)
             dims["trotter_quality"].append(1.0 - min(1.0, r.trotter_error or 0.0))
-            dims["loschmidt"].append(min(1.0, r.decay_rate or 0.0) if r.decay_rate is not None else 0.0)
+            # Loschmidt: echo fidelity = exp(-decay/2). Low decay → high score.
+            dims["loschmidt"].append(math.exp(-r.decay_rate / 2.0) if r.decay_rate > 0 else 0.0)
 
-        return {k: round(float(np.mean(v)), 4) if v else 0.0 for k, v in dims.items()}
+        # Average: dense dims use all values; sparse dims average only contributors
+        result: Dict[str, float] = {}
+        for k, vals in dims.items():
+            if not vals:
+                result[k] = 0.0
+            elif k in self._SPARSE_DIMS:
+                contributors = [v for v in vals if v > 0]
+                result[k] = round(float(np.mean(contributors)), 4) if contributors else 0.0
+            else:
+                result[k] = round(float(np.mean(vals)), 4)
+        return result
 
     # ── Internal Computation ────────────────────────────────────────────────
 
@@ -343,12 +367,17 @@ class FeedbackLoopEngine:
         n = len(self.loop_history)
 
         # Convergence detection with adaptive window
-        # v3.0: Window shrinks as variance decreases (faster convergence detection)
+        # v4.2: Window adapts to available iterations (min 2); variance
+        #   threshold relaxed from 1e-4 to PHI^-5 ≈ 0.0090 so that
+        #   heterogeneous simulation sets can converge.
         converging = False
-        if len(score_series) >= self._convergence_window:
-            window = score_series[-self._convergence_window:]
+        effective_window = min(self._convergence_window, len(score_series))
+        if effective_window >= 2:
+            window = score_series[-effective_window:]
             variance = float(np.var(window))
-            converging = variance < 1e-4 and float(np.mean(window)) > 0.5
+            # PHI^-5 ≈ 0.0090 — sacred threshold for score consistency
+            _CONVERGENCE_VAR_THRESHOLD = (PHI - 1.0) ** 5  # ≈ 0.009017
+            converging = variance < _CONVERGENCE_VAR_THRESHOLD and float(np.mean(window)) > 0.5
             # Adaptive: shrink window if variance is very low
             if variance < 1e-6 and self._convergence_window > 3:
                 self._convergence_window = max(3, self._convergence_window - 1)

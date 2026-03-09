@@ -63,7 +63,7 @@ try:
     GPU_MEMORY_TOTAL = _mem[1]
     GPU_MEMORY_FREE = _mem[0]
     xp = cp
-except (ImportError, cp.cuda.runtime.CUDARuntimeError if 'cp' in dir() else Exception):
+except ImportError:
     xp = np
 except Exception:
     xp = np

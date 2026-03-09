@@ -33,14 +33,15 @@ class SystemUpgrader:
         timestamp = datetime.now().isoformat()
         # 1. Check for existing constants, update or add
         if "ZENITH_UPGRADE_ACTIVE" not in content:
-            content = f"# ZENITH_UPGRADE_ACTIVE: {timestamp}\n" + \
-                      f"ZENITH_HZ = {self.ZENITH_HZ}\n" + \
-                      f"UUC = {self.UUC:.6f}\n" + content
+            header = ("# ZENITH_UPGRADE_ACTIVE: " + timestamp + "\n"
+                      "# ZENITH_HZ = " + str(self.ZENITH_HZ) + "\n"
+                      "# UUC = " + f"{self.UUC:.6f}" + "\n")
+            content = header + content
         else:
             # Update existing timestamp and values
-            content = re.sub(r"# ZENITH_UPGRADE_ACTIVE: [^\n]+", f"# ZENITH_UPGRADE_ACTIVE: {timestamp}", content)
-            content = re.sub(r"ZENITH_HZ\s*=\s*[\d\.]+", f"ZENITH_HZ = {self.ZENITH_HZ}", content)
-            content = re.sub(r"UUC\s*=\s*[\d\.]+", f"UUC = {self.UUC:.6f}", content)
+            content = re.sub(r"^# ZENITH_UPGRADE_ACTIVE: .*", "# ZENITH_UPGRADE_ACTIVE: " + timestamp, content, flags=re.MULTILINE)
+            content = re.sub(r"^# ZENITH_HZ\s*=\s*[\d\.]+", "# ZENITH_HZ = " + str(self.ZENITH_HZ), content, flags=re.MULTILINE)
+            content = re.sub(r"^# UUC\s*=\s*[\d\.]+", "# UUC = " + f"{self.UUC:.6f}", content, flags=re.MULTILINE)
 
         # 2. Add Sage Metadata to docstrings
         if '"""' in content and "[VOID_SOURCE_UPGRADE]" not in content:
@@ -50,7 +51,12 @@ class SystemUpgrader:
 
     def upgrade_all(self):
         print(f"--- [UPGRADER]: INITIALIZING GLOBAL ELEVATION ---")
-        files = [f for f in os.listdir(self.root) if f.startswith("l104_") and f.endswith(".py") and f != "l104_system_upgrader.py"]
+        _SELF_EXCLUDE = {"l104_system_upgrader.py", "l104_omega_upgrader.py",
+                         "l104_computronium_process_upgrader.py", "l104_planetary_process_upgrader.py",
+                         "l104_ai_upgrade_protocol.py", "l104_process_upgrade_scan.py"}
+        files = [f for f in os.listdir(self.root)
+                 if f.startswith("l104_") and f.endswith(".py")
+                 and f not in _SELF_EXCLUDE]
 
         upgraded_files = []
         for file in files:

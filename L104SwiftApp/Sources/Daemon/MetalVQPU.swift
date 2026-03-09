@@ -699,6 +699,12 @@ final class MetalVQPU {
     private static let threeEngineWeightHarmonic: Double = 0.40
     private static let threeEngineWeightWave: Double = 0.25
 
+    /// v6.2: Pre-computed constant trig values for computeSacredAlignment.
+    /// These are pure mathematical constants — computing them on every circuit execution was wasteful.
+    private static let waveCoherence104: Double = abs(cos(2.0 * .pi * 104.0 / GOD_CODE))
+    private static let wcPhiConst: Double = abs(cos(2.0 * .pi * PHI / GOD_CODE))
+    private static let wcVoidConst: Double = abs(cos(2.0 * .pi * (VOID_CONSTANT * 1000.0) / GOD_CODE))
+
     /// Compute PHI/GOD_CODE resonance + three-engine scores for a probability distribution.
     private func computeSacredAlignment(
         _ probs: [String: Double], numQubits: Int
@@ -746,17 +752,12 @@ final class MetalVQPU {
         // Harmonic Resonance (Math Engine: GOD_CODE alignment + 104 Hz wave coherence)
         // Sacred alignment of GOD_CODE: validates the constant is harmonically aligned
         let godCodeAligned = gcAlignment > 0.5 ? 1.0 : 0.0
-        // Wave coherence at 104 Hz (L104 signature frequency)
-        let freq104 = 104.0
-        let waveCoherence104 = abs(cos(2.0 * .pi * freq104 / GOD_CODE))
-        let harmonicResonance = godCodeAligned * 0.6 + waveCoherence104 * 0.4
+        // Wave coherence at 104 Hz (L104 signature frequency) — pre-computed constant
+        let harmonicResonance = godCodeAligned * 0.6 + Self.waveCoherence104 * 0.4
 
         // Wave Coherence (Math Engine: PHI-harmonic phase-lock)
-        // Coherence between PHI carrier and GOD_CODE
-        let wcPhi = abs(cos(2.0 * .pi * PHI / GOD_CODE))
-        // Coherence between VOID_CONSTANT×1000 carrier and GOD_CODE
-        let wcVoid = abs(cos(2.0 * .pi * (VOID_CONSTANT * 1000.0) / GOD_CODE))
-        let waveCoherence = (wcPhi + wcVoid) / 2.0
+        // Coherence between PHI / VOID_CONSTANT carriers and GOD_CODE — pre-computed constants
+        let waveCoherence = (Self.wcPhiConst + Self.wcVoidConst) / 2.0
 
         // Three-Engine Composite
         let threeEngineComposite =

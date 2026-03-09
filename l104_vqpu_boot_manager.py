@@ -1,4 +1,4 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.295674
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:50.953106
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 #!/usr/bin/env python3
@@ -37,7 +37,7 @@ UUC = 2301.215661
 # Managed Services:
 #   com.l104.fast-server      — FastAPI main.py (port 8081)
 #   com.l104.node-server      — L104_public_node.py (P2P + RPC)
-#   com.l104.vqpu-daemon      — Swift L104Daemon (Metal GPU quantum)
+#   com.londel.l104daemon     — Swift L104Daemon (Metal GPU quantum)
 #   com.l104.auto-update      — Git-pull + rebuild watcher
 #   com.l104.log-rotate       — Log rotation (30m interval)
 #   com.l104.health-watchdog  — Watchdog (60s health checks)
@@ -88,7 +88,7 @@ SERVICES = {
         "critical": True,
         "port": None,
     },
-    "com.l104.vqpu-daemon": {
+    "com.londel.l104daemon": {
         "description": "Metal VQPU Daemon (L104Daemon Swift binary)",
         "critical": True,
         "port": None,
@@ -108,16 +108,29 @@ SERVICES = {
         "critical": False,
         "port": None,
     },
+    "com.l104.vqpu-micro-daemon": {
+        "description": "VQPU Micro Daemon (5-15s micro-task loop)",
+        "critical": True,
+        "port": None,
+    },
 }
 
 # IPC directories that must exist for VQPU daemons
 IPC_DIRS = [
+    Path("/tmp/l104_bridge"),
     Path("/tmp/l104_bridge/inbox"),
     Path("/tmp/l104_bridge/outbox"),
     Path("/tmp/l104_bridge/telemetry"),
     Path("/tmp/l104_bridge/archive"),
+    Path("/tmp/l104_bridge/micro"),
+    Path("/tmp/l104_bridge/micro/inbox"),
+    Path("/tmp/l104_bridge/micro/outbox"),
+    Path("/tmp/l104_bridge/micro/swift_inbox"),
+    Path("/tmp/l104_bridge/micro/swift_outbox"),
+    Path("/tmp/l104_queue"),
     Path("/tmp/l104_queue/outbox"),
     Path("/tmp/l104_queue/archive"),
+    ROOT / ".l104_circuits",
     ROOT / ".l104_circuits" / "inbox",
     ROOT / ".l104_circuits" / "outbox",
     ROOT / ".l104_circuits" / "archive",
@@ -209,6 +222,10 @@ def _check_system_ram() -> float:
         return psutil.virtual_memory().percent
     except ImportError:
         return 0.0  # Assume OK if psutil not available
+
+
+def ensure_ipc() -> list[str]:
+    """Create all IPC bridge directories with secure permissions (0o700)."""
     created = []
     for d in IPC_DIRS:
         if not d.exists():
@@ -250,7 +267,7 @@ def install_plists(force: bool = False) -> dict:
             if not source.exists():
                 # Try alternate naming: com.londel.l104daemon.plist
                 alt_map = {
-                    "com.l104.vqpu-daemon": "com.londel.l104daemon.plist",
+                    "com.londel.l104daemon": "com.londel.l104daemon.plist",
                     "com.l104.fast-server": "com.londel.l104node.plist",
                 }
                 alt = alt_map.get(label)

@@ -40,24 +40,21 @@ class LRUCache:
             if key in self._cache:
                 del self._cache[key]
             elif len(self._cache) >= self._maxsize:
-                # HIGH-LOGIC: φ-weighted eviction (evict lowest weighted entry)
+                # HIGH-LOGIC v2.1: Batch eviction — evict bottom 10% by φ-weight
+                # when cache overflows (avoids repeated O(n) single-item scans).
                 if self._cache:
-                    min_key = None
-                    min_weight = float('inf')
+                    now = time.time()
+                    scored = []
                     for k, (_v, ts, ac) in self._cache.items():
-                        # Weight = access_count × φ^(-age_factor)
-                        age = time.time() - ts
-                        age_factor = min(age / self._ttl, 1.0)
+                        age_factor = min((now - ts) / self._ttl, 1.0)
                         weight = ac * (self._phi ** (-age_factor))
-                        if weight < min_weight:
-                            min_weight = weight
-                            min_key = k
-                    if min_key:
-                        del self._cache[min_key]
-                        if min_key in self._access_weights:
-                            del self._access_weights[min_key]
-                    else:
-                        self._cache.popitem(last=False)
+                        scored.append((weight, k))
+                    scored.sort()  # ascending by weight
+                    # Evict bottom 10% or at least 1
+                    evict_count = max(1, len(scored) // 10)
+                    for _, evict_key in scored[:evict_count]:
+                        del self._cache[evict_key]
+                        self._access_weights.pop(evict_key, None)
             self._cache[key] = (value, time.time(), 1.0)  # Initial access count = 1.0
 
     def get_phi_weighted_stats(self) -> Dict[str, Any]:
@@ -83,7 +80,24 @@ class LRUCache:
     def __len__(self):
         return len(self._cache)
 
+    def clear(self):
+        """Thread-safe full cache clear."""
+        with self._lock:
+            self._cache.clear()
+            self._access_weights.clear()
+
+    def purge_expired(self) -> int:
+        """Remove all TTL-expired entries. Returns count of purged entries."""
+        with self._lock:
+            now = time.time()
+            expired = [k for k, (_v, ts, _ac) in self._cache.items()
+                       if now - ts >= self._ttl]
+            for k in expired:
+                del self._cache[k]
+                self._access_weights.pop(k, None)
+            return len(expired)
+
 # Global caches for maximum throughput
 _RESPONSE_CACHE = LRUCache(maxsize=512, ttl=600.0)   # 10-min response cache
 _CONCEPT_CACHE = LRUCache(maxsize=1024, ttl=1800.0)  # 30-min concept cache
-_RESONANCE_CACHE = {'value': None, 'time': 0, 'ttl': 0.5}  # 500ms resonance cache
+_RESONANCE_CACHE = LRUCache(maxsize=1, ttl=0.5)  # 500ms thread-safe resonance cache

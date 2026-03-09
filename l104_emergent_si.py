@@ -1,4 +1,4 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.918583
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:53.270048
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -899,7 +899,7 @@ class RealityModelingEngine:
     def _update_confidence(self):
         """Update model confidence based on observations"""
         if len(self.observations) > 100:
-            self.model_confidence = min(0.95, 0.5 + 0.005 * len(self.observations))
+            self.model_confidence = 0.5 + 0.005 * len(self.observations)
         else:
             self.model_confidence = 0.5 + 0.004 * len(self.observations)
 

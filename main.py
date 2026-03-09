@@ -1,4 +1,4 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-14T00:00:00.000000
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:52.650701
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
 
@@ -14,7 +14,8 @@ UUC = 2402.792541
 # Pipeline: ALL_SUBSYSTEMS_UNIFIED
 # REAL SOVEREIGN OUTPUT 2026-02-14T00:00:00.000000
 
-"""L104 Sovereign Node v61.0 — Unified Pipeline Orchestrator (Slim Entry Point).
+"""
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.L104 Sovereign Node v61.0 — Unified Pipeline Orchestrator (Slim Entry Point).
 All 695 L104 modules stream through a single EVO_61 pipeline.
 FastAPI application — routes are decomposed into routers/ package."""
 # [L104_CORE_REWRITE_FINAL]
@@ -534,8 +535,14 @@ if __name__ == "__main__":
         global _server_instance
         supervisor = SovereignSupervisor()
         asyncio.create_task(supervisor.start())
-        upgrader = PlanetaryProcessUpgrader()
-        await upgrader.execute_planetary_upgrade()
+        # Run planetary upgrade in the background so uvicorn starts immediately
+        async def _bg_upgrade():
+            try:
+                upgrader = PlanetaryProcessUpgrader()
+                await upgrader.execute_planetary_upgrade()
+            except Exception as _e:
+                logger.warning(f"[L104] Background planetary upgrade error: {_e}")
+        asyncio.create_task(_bg_upgrade())
         import uvicorn
         port = int(os.getenv("PORT", 8081))
         config = uvicorn.Config(app, host="0.0.0.0", port=port,

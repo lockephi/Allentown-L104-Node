@@ -281,20 +281,28 @@ class ChunkedStatevector:
             self.state = full
 
     def get_probabilities(self, threshold: float = 1e-12) -> Dict[str, float]:
-        """Compute measurement probabilities."""
+        """Compute measurement probabilities.
+
+        Uses numpy masking to avoid Python-level iteration over all 2^n
+        basis states. Only observed states (p > threshold) are converted
+        to bitstrings, which is typically a tiny fraction of 2^n.
+        """
         full = self.state
         xp = gpu.xp if self.use_gpu else np
         probs = xp.abs(full) ** 2
         if self.use_gpu:
             probs = gpu.to_host(probs)
 
-        result = {}
+        # Vectorized: find indices above threshold, then format only those
+        mask = probs > threshold
+        indices = np.flatnonzero(mask)
+        if len(indices) == 0:
+            return {}
         n = self.n_qubits
-        for i in range(len(probs)):
-            p = float(probs[i])
-            if p > threshold:
-                result[format(i, f'0{n}b')] = p
-        return result
+        prob_vals = probs[indices]
+        fmt = f'0{n}b'
+        return {format(int(idx), fmt): float(p)
+                for idx, p in zip(indices, prob_vals)}
 
     def get_statevector(self) -> np.ndarray:
         """Return the full statevector as a NumPy array on CPU."""

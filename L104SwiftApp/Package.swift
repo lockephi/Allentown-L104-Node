@@ -24,6 +24,7 @@ let package = Package(
     products: [
         .executable(name: "L104", targets: ["L104"]),
         .executable(name: "L104Daemon", targets: ["L104Daemon"]),
+        .executable(name: "L104NanoDaemon", targets: ["L104NanoDaemon"]),
     ],
     dependencies: [],
     targets: [
@@ -39,6 +40,7 @@ let package = Package(
                 "apply_changes.py",
                 "apply_dynamic_transform.py",
                 "Daemon",               // Daemon has its own target
+                "NanoDaemon",           // NanoDaemon has its own target
             ],
             swiftSettings: [
                 .define("RELEASE", .when(configuration: .release)),
@@ -86,6 +88,36 @@ let package = Package(
                 .linkedFramework("Foundation"),
                 .linkedFramework("Accelerate"),
                 .linkedFramework("Metal"),
+            ]
+        ),
+        // ── Nano Fault Detection Daemon v1.0 — Sub-Micro Granularity ──
+        // 10 nano-level probes running on 3s GCD timer intervals:
+        //   • Sacred constant ULP drift (Double.bitPattern verification)
+        //   • Memory canary integrity (φ-scrambled XOR sentinels)
+        //   • FPU control register (NaN, subnormal, associativity)
+        //   • Accelerate numerical audit (vDSP-verified φ-recurrence)
+        //   • Thread health (Mach thread_info CPU counters)
+        //   • Entropy quality (SecRandomCopyBytes chi-squared)
+        //   • Phase drift accumulation (100K modular rotations)
+        //   • IPC bridge health (directory + staleness checks)
+        //   • Memory pressure (Mach vm_statistics64)
+        //   • Cross-daemon heartbeat (C + Python sibling checks)
+        // IPC: /tmp/l104_bridge/nano/swift_outbox/
+        // Heartbeat: /tmp/l104_bridge/nano/swift_heartbeat
+        // Part of the Tri-Nano-Daemon triad (C + Swift + Python AI)
+        .executableTarget(
+            name: "L104NanoDaemon",
+            dependencies: [],
+            path: "Sources/NanoDaemon",
+            swiftSettings: [
+                .define("RELEASE", .when(configuration: .release)),
+                .define("DEBUG", .when(configuration: .debug)),
+                .unsafeFlags(["-O", "-whole-module-optimization"], .when(configuration: .release)),
+            ],
+            linkerSettings: [
+                .linkedFramework("Foundation"),
+                .linkedFramework("Accelerate"),
+                .linkedFramework("Security"),
             ]
         ),
         .testTarget(

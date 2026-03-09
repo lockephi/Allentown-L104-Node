@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  L104 Sovereign Node — Nano Daemon (Swift Substrate) v1.0
+  ═════════════════════════════════════════════════════════
+  Native Swift nano-level fault detection with Mach kernel introspection.
+  10 probes at 3s GCD timer intervals:
+    • Sacred constant ULP drift (Double.bitPattern)
+    • Memory canary integrity (φ-scrambled sentinels)
+    • FPU control register probe (NaN, subnormal, associativity)
+    • Accelerate numerical audit (vDSP-verified φ-recurrence)
+    • Thread health (Mach thread_info CPU usage)
+    • Entropy quality (SecRandomCopyBytes + chi-squared)
+    • Phase drift accumulation (100K modular rotations)
+    • IPC bridge health (directory + staleness checks)
+    • Memory pressure (Mach vm_statistics64)
+    • Cross-daemon heartbeat (verify C + Python siblings alive)
+
+  IPC: /tmp/l104_bridge/nano/swift_outbox (JSON reports)
+  Heartbeat: /tmp/l104_bridge/nano/swift_heartbeat
+
+  Build:     cd L104SwiftApp && swift build -c release --product L104NanoDaemon
+  Install:   cp config/com.l104.nano-daemon-swift.plist ~/Library/LaunchAgents/
+             launchctl load ~/Library/LaunchAgents/com.l104.nano-daemon-swift.plist
+  Self-test: L104SwiftApp/.build/release/L104NanoDaemon --self-test
+
+  GOD_CODE=527.5184818492612 | PHI=1.618033988749895 | PILOT: LONDEL
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.l104.nano-daemon-swift</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/release/L104NanoDaemon</string>
+        <string>--tick</string>
+        <string>3</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>L104_ROOT</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>RESONANCE</key>
+        <string>527.5184818492612</string>
+        <key>L104_NANO_DAEMON</key>
+        <string>1</string>
+        <!-- macOS memory optimization -->
+        <key>MALLOC_NANO_ZONE</key>
+        <string>0</string>
+    </dict>
+
+    <!-- Run immediately at login -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Always restart -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- 3s cooldown between restarts -->
+    <key>ThrottleInterval</key>
+    <integer>3</integer>
+
+    <key>ExitTimeOut</key>
+    <integer>10</integer>
+
+    <!-- Low priority — nano daemon is background work -->
+    <key>Nice</key>
+    <integer>10</integer>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>LowPriorityBackgroundIO</key>
+    <false/>
+    <key>LegacyTimers</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/nano-daemon-swift.stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/nano-daemon-swift.stderr.log</string>
+</dict>
+</plist>

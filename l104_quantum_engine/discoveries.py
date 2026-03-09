@@ -212,27 +212,28 @@ class QuantumDiscoveryEngine:
         dim = 2 ** n
 
         # Build Hamiltonian matrix (Ising + field approximation)
+        # Vectorized: extract spin values for all states at once using bit operations
         H = np.zeros((dim, dim), dtype=np.float64)
+        indices = np.arange(dim)
 
-        for state in range(dim):
-            # Diagonal: -J Σ SᵢSⱼ - B Σ Sᵢ
-            energy = 0.0
-            for i in range(n):
-                si = 1 if (state >> i) & 1 else -1
-                # Nearest-neighbor coupling (periodic)
-                sj = 1 if (state >> ((i + 1) % n)) & 1 else -1
-                energy -= J_coupling * si * sj
-                energy -= magnetic_field * BOLTZMANN_K_JK * si
-            H[state, state] = energy
+        # Spin values: +1 for bit=1, -1 for bit=0
+        spins = np.zeros((dim, n), dtype=np.float64)
+        for i in range(n):
+            spins[:, i] = 2.0 * ((indices >> i) & 1).astype(np.float64) - 1.0
 
-            # Off-diagonal: spin-flip terms (XX + YY part of Heisenberg)
-            for i in range(n):
-                j = (i + 1) % n
-                si = (state >> i) & 1
-                sj = (state >> j) & 1
-                if si != sj:
-                    flipped = state ^ (1 << i) ^ (1 << j)
-                    H[state, flipped] -= J_coupling * 0.5
+        # Diagonal: -J Σ SᵢSⱼ(nn) - B Σ Sᵢ
+        for i in range(n):
+            j = (i + 1) % n
+            H[indices, indices] -= J_coupling * spins[:, i] * spins[:, j]
+            H[indices, indices] -= magnetic_field * BOLTZMANN_K_JK * spins[:, i]
+
+        # Off-diagonal: spin-flip terms (XX + YY part of Heisenberg)
+        for i in range(n):
+            j = (i + 1) % n
+            # Mask where spins at i,j differ → allowed spin-flip-pair transitions
+            mask = ((indices >> i) & 1) != ((indices >> j) & 1)
+            flipped = indices ^ (1 << i) ^ (1 << j)
+            H[indices[mask], flipped[mask]] -= J_coupling * 0.5
 
         # Diagonalize
         eigenvalues = np.linalg.eigvalsh(H)

@@ -382,7 +382,7 @@ CNOT = QuantumGate(
         [0, 0, 1, 0],
     ], dtype=complex),
     gate_type=GateType.CONTROLLED,
-    is_clifford=True,
+    is_hermitian=True, is_clifford=True,
 )
 
 CZ = QuantumGate(
@@ -522,27 +522,25 @@ def CU3(theta: float, phi: float, lam: float) -> QuantumGate:
 #  THREE-QUBIT GATES
 # ═══════════════════════════════════════════════════════════════════════════════
 
+_toff_matrix = np.eye(8, dtype=complex)
+_toff_matrix[6, 6] = 0; _toff_matrix[7, 7] = 0
+_toff_matrix[6, 7] = 1; _toff_matrix[7, 6] = 1
+
 TOFFOLI = QuantumGate(
     name="Toffoli", num_qubits=3,
-    matrix=np.eye(8, dtype=complex),
+    matrix=_toff_matrix,
     gate_type=GateType.CONTROLLED,
 )
-# CCX: flip target only when both controls are |1⟩
-TOFFOLI.matrix[6, 6] = 0
-TOFFOLI.matrix[7, 7] = 0
-TOFFOLI.matrix[6, 7] = 1
-TOFFOLI.matrix[7, 6] = 1
+
+_fred_matrix = np.eye(8, dtype=complex)
+_fred_matrix[5, 5] = 0; _fred_matrix[6, 6] = 0
+_fred_matrix[5, 6] = 1; _fred_matrix[6, 5] = 1
 
 FREDKIN = QuantumGate(
     name="Fredkin", num_qubits=3,
-    matrix=np.eye(8, dtype=complex),
+    matrix=_fred_matrix,
     gate_type=GateType.CONTROLLED,
 )
-# CSWAP: swap targets only when control is |1⟩
-FREDKIN.matrix[5, 5] = 0
-FREDKIN.matrix[6, 6] = 0
-FREDKIN.matrix[5, 6] = 1
-FREDKIN.matrix[6, 5] = 1
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1017,6 +1015,10 @@ class GateAlgebra:
 
         Sacred composite gates have INFINITE ORDER because their eigenphases
         are not rational multiples of π → U^k ≠ I for any finite k.
+
+        Optimization: check eigenphases for rationality first. If any phase
+        is an irrational multiple of 2π, the order is infinite — avoids
+        brute-forcing up to 10K matrix multiplications.
         """
         # Build composite
         composite = gates[0].matrix.copy()
@@ -1025,7 +1027,32 @@ class GateAlgebra:
         # Check eigenphases for rationality
         eigvals = np.linalg.eigvals(composite)
         phases_deg = [float(np.degrees(np.angle(ev))) for ev in eigvals]
-        # Check U^k = I for k up to max_k
+
+        # Early exit: check if all eigenphases are rational multiples of 360°
+        # (i.e., p/q with small denominator). If any is irrational → infinite order.
+        from fractions import Fraction
+        all_rational = True
+        max_denominator = max_k  # If order exists, it divides lcm of denominators
+        for ev in eigvals:
+            phase_turns = np.angle(ev) / (2 * np.pi)  # Phase as fraction of full turn
+            # Try to approximate as rational p/q
+            frac = Fraction(float(phase_turns)).limit_denominator(max_denominator)
+            # Check if the approximation is close enough
+            if abs(float(frac) - phase_turns) > 1e-10:
+                all_rational = False
+                break
+
+        if not all_rational:
+            return {
+                "eigenphases_deg": phases_deg,
+                "finite_order": None,
+                "is_infinite_order": True,
+                "max_k_tested": 0,
+                "gate_names": [g.name for g in gates],
+                "note": "Irrational eigenphase detected — infinite order",
+            }
+
+        # Eigenphases are rational — find exact order via matrix power
         identity = np.eye(composite.shape[0], dtype=complex)
         power = np.eye(composite.shape[0], dtype=complex)
         finite_order = None

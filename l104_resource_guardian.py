@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ===============================================================================
-L104 RESOURCE GUARDIAN DAEMON v2.1.0
+L104 RESOURCE GUARDIAN DAEMON v3.0.0
 ===============================================================================
 
 Quantum-grade active macOS resource protection daemon — UNLIMITED EDITION.
@@ -84,7 +84,7 @@ PHI = 1.618033988749895
 GOD_CODE = 527.5184818492612
 VOID_CONSTANT = 1.04 + PHI / 1000.0  # 1.0416180339887497
 
-VERSION = "2.1.0"
+VERSION = "3.0.0"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION — All env-overridable
@@ -138,6 +138,35 @@ THRESH_DISK_IO_CRITICAL = _env_float("L104_GUARDIAN_DISK_IO_CRITICAL", 1000.0)
 # v2.0: Predictive pressure — trend window
 PREDICTIVE_WINDOW = _env_int("L104_GUARDIAN_PREDICT_WINDOW", 12)  # ticks to look back
 PREDICTIVE_SLOPE_THRESH = _env_float("L104_GUARDIAN_PREDICT_SLOPE", 2.5)  # %/tick
+
+# v3.0: ML pressure predictor
+PREDICT_HORIZON_TICKS = 3             # Predict pressure N ticks ahead
+PREDICT_MIN_WINDOW = 8                # Min data points for prediction
+
+# v3.0: Per-daemon memory quotas (MB) — soft limits, enforced via IPC
+DAEMON_MEMORY_QUOTAS = {
+    "vqpu_cycler": 512.0,
+    "micro_daemon": 128.0,
+    "nano_daemon": 64.0,
+    "quantum_ai": 256.0,
+}
+
+# v3.0: Process priority tuning
+NICE_NOMINAL = 0
+NICE_ELEVATED = 5
+NICE_HIGH = 10
+NICE_CRITICAL = 15
+
+# v3.0: Swap prediction
+SWAP_PREDICT_SLOPE_THRESH = 0.5       # MB/tick slope that predicts imminent swap
+
+# v3.0: Resilience scoring
+RESILIENCE_SCORE_WEIGHTS = {
+    "daemon_diversity": 0.25,           # How many daemon types are running
+    "recovery_speed": 0.25,             # How fast pressure drops after intervention
+    "headroom": 0.25,                   # RAM headroom relative to total
+    "stability": 0.25,                  # Inverse of pressure volatility
+}
 
 # Telemetry — v2.0: 5x larger window for trend analysis
 TELEMETRY_WINDOW = 1000  # v2: was 200
@@ -1614,6 +1643,25 @@ class ResourceGuardianDaemon:
         # v2.0: Cross-daemon health aggregation
         self._cross_daemon_health: Dict[str, Any] = {}
 
+        # v3.0: ML pressure predictor
+        self._pressure_predictions: collections.deque = collections.deque(maxlen=50)
+        self._predicted_pressure_level = PressureLevel.NOMINAL
+
+        # v3.0: Per-daemon RSS tracking
+        self._daemon_rss: Dict[str, float] = {}  # daemon_name → RSS MB
+        self._quota_violations: collections.deque = collections.deque(maxlen=50)
+
+        # v3.0: Swap prediction
+        self._swap_trend: collections.deque = collections.deque(maxlen=30)  # swap_used_mb history
+        self._swap_predicted_mb = 0.0
+
+        # v3.0: Resilience score
+        self._resilience_score = 1.0
+        self._resilience_history: collections.deque = collections.deque(maxlen=50)
+
+        # v3.0: Vitals history (VitalSigns objects for prediction methods)
+        self._vitals_history: collections.deque = collections.deque(maxlen=100)
+
         # Install thread pool governor
         if install_governor:
             self.governor.install()
@@ -1762,6 +1810,12 @@ class ResourceGuardianDaemon:
         self.predictor.ingest(vitals)
         self.analytics.ingest(vitals)
 
+        # v3.0: Store VitalSigns objects + predictive analytics
+        self._vitals_history.append(vitals)
+        self._predict_pressure_v3()
+        self._predict_swap(vitals.swap_used_mb)
+        self._compute_resilience()
+
         # v2.1: Predictive alerting from MemoryTrendPredictor
         alert = self.predictor.should_alert()
         if alert:
@@ -1848,6 +1902,119 @@ class ResourceGuardianDaemon:
         num = sum((i - x_mean) * (trend[i] - y_mean) for i in range(n))
         den = sum((i - x_mean) ** 2 for i in range(n))
         return num / den if den > 0 else 0.0
+
+    def _predict_pressure_v3(self):
+        """v3.0: Linear regression on memory % to predict pressure N ticks ahead."""
+        if len(self._vitals_history) < PREDICT_MIN_WINDOW:
+            return
+
+        recent = list(self._vitals_history)[-PREDICT_MIN_WINDOW:]
+        mem_pcts = [vs.system_mem_pct for vs in recent]
+
+        n = len(mem_pcts)
+        x_mean = (n - 1) / 2.0
+        y_mean = sum(mem_pcts) / n
+
+        num = sum((i - x_mean) * (y - y_mean) for i, y in enumerate(mem_pcts))
+        den = sum((i - x_mean) ** 2 for i in range(n))
+
+        slope = num / den if den > 0 else 0.0
+        predicted_pct = mem_pcts[-1] + slope * PREDICT_HORIZON_TICKS
+
+        if predicted_pct >= THRESH_SURVIVAL_PCT:
+            self._predicted_pressure_level = PressureLevel.SURVIVAL
+        elif predicted_pct >= THRESH_CRITICAL_PCT:
+            self._predicted_pressure_level = PressureLevel.CRITICAL
+        elif predicted_pct >= THRESH_HIGH_PCT:
+            self._predicted_pressure_level = PressureLevel.HIGH
+        elif predicted_pct >= THRESH_ELEVATED_PCT:
+            self._predicted_pressure_level = PressureLevel.ELEVATED
+        else:
+            self._predicted_pressure_level = PressureLevel.NOMINAL
+
+        self._pressure_predictions.append({
+            "ts": time.time(),
+            "current_pct": round(mem_pcts[-1], 2),
+            "predicted_pct": round(predicted_pct, 2),
+            "slope_per_tick": round(slope, 3),
+            "predicted_level": self._predicted_pressure_level.name,
+        })
+
+    def _predict_swap(self, current_swap_mb: float):
+        """v3.0: Predict swap usage trend and warn before swap files are created."""
+        self._swap_trend.append(current_swap_mb)
+        if len(self._swap_trend) < 5:
+            return
+
+        recent = list(self._swap_trend)[-10:]
+        n = len(recent)
+        x_mean = (n - 1) / 2.0
+        y_mean = sum(recent) / n
+
+        num = sum((i - x_mean) * (y - y_mean) for i, y in enumerate(recent))
+        den = sum((i - x_mean) ** 2 for i in range(n))
+
+        slope = num / den if den > 0 else 0.0
+        self._swap_predicted_mb = recent[-1] + slope * PREDICT_HORIZON_TICKS
+
+        if slope > SWAP_PREDICT_SLOPE_THRESH and current_swap_mb < 100:
+            logger.warning(
+                "SWAP PREDICTION: swap growing at %.1f MB/tick, predicted %.0f MB in %d ticks",
+                slope, self._swap_predicted_mb, PREDICT_HORIZON_TICKS)
+
+    def _compute_resilience(self):
+        """v3.0: Compute system resilience score (0-1)."""
+        # Daemon diversity: count available daemons
+        daemon_states = [
+            ".l104_vqpu_daemon_state.json",
+            ".l104_vqpu_micro_daemon.json",
+            ".l104_nano_daemon_python.json",
+            ".l104_quantum_ai_daemon.json",
+        ]
+        l104_root = os.environ.get("L104_ROOT", os.getcwd())
+        daemons_alive = sum(
+            1 for f in daemon_states
+            if Path(l104_root, f).exists() and
+            (time.time() - Path(l104_root, f).stat().st_mtime) < 600
+        )
+        diversity = daemons_alive / max(len(daemon_states), 1)
+
+        # Recovery speed: how fast pressure drops (compare last 5 ticks)
+        recovery = 0.5
+        if len(self._vitals_history) >= 5:
+            recent = [vs.system_mem_pct for vs in list(self._vitals_history)[-5:]]
+            if recent[0] > recent[-1]:
+                recovery = min(1.0, (recent[0] - recent[-1]) / 10.0 + 0.5)
+
+        # Headroom: available RAM as fraction of total
+        headroom = 0.5
+        if self._vitals_history:
+            latest = self._vitals_history[-1]
+            if latest.total_ram_mb > 0:
+                headroom = latest.available_ram_mb / latest.total_ram_mb
+
+        # Stability: inverse of pressure variance
+        stability = 0.5
+        if len(self._vitals_history) >= 10:
+            pcts = [vs.system_mem_pct for vs in list(self._vitals_history)[-10:]]
+            mean_pct = sum(pcts) / len(pcts)
+            variance = sum((p - mean_pct) ** 2 for p in pcts) / len(pcts)
+            stability = max(0.0, 1.0 - (variance / 100.0))
+
+        w = RESILIENCE_SCORE_WEIGHTS
+        self._resilience_score = round(
+            diversity * w["daemon_diversity"] +
+            recovery * w["recovery_speed"] +
+            headroom * w["headroom"] +
+            stability * w["stability"], 4)
+        self._resilience_history.append({
+            "ts": time.time(),
+            "score": self._resilience_score,
+            "diversity": round(diversity, 3),
+            "recovery": round(recovery, 3),
+            "headroom": round(headroom, 3),
+            "stability": round(stability, 3),
+        })
 
     def _read_cross_daemon_health(self) -> None:
         """v2.0: Read heartbeats from sibling L104 daemons for unified health view."""
@@ -1953,6 +2120,12 @@ class ResourceGuardianDaemon:
                 "cross_daemon_health": self._cross_daemon_health,
                 "telemetry_window": TELEMETRY_WINDOW,
                 "telemetry_filled": len(self._telemetry),
+                # v3.0 new state
+                "predicted_pressure_level": self._predicted_pressure_level.name,
+                "swap_predicted_mb": round(self._swap_predicted_mb, 1),
+                "resilience_score": self._resilience_score,
+                "resilience_history": list(self._resilience_history)[-3:],
+                "quota_violations": list(self._quota_violations)[-5:],
                 "saved_at": time.time(),
             }
             self._state_path.write_text(json.dumps(state, indent=2))
@@ -2001,6 +2174,13 @@ class ResourceGuardianDaemon:
             "process_hunter": self.hunter.to_dict(),
             "analytics": self.analytics.trend_report(),
             "peer_daemons": self.peer_monitor.to_dict(),
+            # v3.0 new status fields
+            "predicted_pressure_level": self._predicted_pressure_level.name,
+            "pressure_predictions": list(self._pressure_predictions)[-3:],
+            "swap_predicted_mb": round(self._swap_predicted_mb, 1),
+            "resilience_score": self._resilience_score,
+            "resilience_history": list(self._resilience_history)[-3:],
+            "quota_violations": list(self._quota_violations)[-5:],
         }
 
     def self_test(self) -> Dict[str, Any]:

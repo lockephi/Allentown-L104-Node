@@ -202,16 +202,34 @@ final class CircuitWatcher {
     // ═══════════════════════════════════════════════════════════════
 
     func getStatus() -> [String: Any] {
-        let fm = FileManager.default
-        let pending = (try? fm.contentsOfDirectory(atPath: inboxDir))?
-            .filter { $0.hasSuffix(".json") && !$0.hasPrefix(".") }.count ?? 0
-        let completed = (try? fm.contentsOfDirectory(atPath: outboxDir))?.count ?? 0
-        let avgMs = circuitsProcessed > 0
-            ? totalExecutionMs / Double(circuitsProcessed) : 0
+        // v4.0.1: Skip expensive filesystem scan when watcher is not active
+        let pending: Int
+        let completed: Int
+        if isActive {
+            let fm = FileManager.default
+            pending = (try? fm.contentsOfDirectory(atPath: inboxDir))?
+                .filter { $0.hasSuffix(".json") && !$0.hasPrefix(".") }.count ?? 0
+            completed = (try? fm.contentsOfDirectory(atPath: outboxDir))?.count ?? 0
+        } else {
+            pending = 0
+            completed = 0
+        }
 
-        // v2.0: Per-backend telemetry
-        var backendStats: [String: Any] = [:]
+        // v6.0.2 FIX: Read all stats under lock to prevent data races
         statsLock.lock()
+        let localProcessed = circuitsProcessed
+        let localFailed = circuitsFailed
+        let localTotalMs = totalExecutionMs
+        let localGPU = gpuExecutions
+        let localCPU = cpuExecutions
+        let localMPS = mpsExecutions
+        let localStabilizer = stabilizerExecutions
+        let localChunked = chunkedCPUExecutions
+        let localPeak = peakConcurrent
+        let localBatches = batchesProcessed
+        let localFastLane = fastLaneCount
+        // Per-backend telemetry
+        var backendStats: [String: Any] = [:]
         for (backend, timing) in backendTimings where timing.count > 0 {
             backendStats[backend] = [
                 "count": timing.count,
@@ -221,6 +239,9 @@ final class CircuitWatcher {
         }
         statsLock.unlock()
 
+        let avgMs = localProcessed > 0
+            ? localTotalMs / Double(localProcessed) : 0
+
         return [
             "version": "4.0.0",
             "active": isActive,
@@ -228,26 +249,27 @@ final class CircuitWatcher {
             "outbox": outboxDir,
             "pending": pending,
             "completed": completed,
-            "circuits_processed": circuitsProcessed,
-            "circuits_failed": circuitsFailed,
-            "gpu_executions": gpuExecutions,
-            "cpu_executions": cpuExecutions,
-            "mps_executions": mpsExecutions,
-            "stabilizer_executions": stabilizerExecutions,
-            "chunked_cpu_executions": chunkedCPUExecutions,
-            "total_execution_ms": totalExecutionMs,
+            "circuits_processed": localProcessed,
+            "circuits_failed": localFailed,
+            "gpu_executions": localGPU,
+            "cpu_executions": localCPU,
+            "mps_executions": localMPS,
+            "stabilizer_executions": localStabilizer,
+            "chunked_cpu_executions": localChunked,
+            "total_execution_ms": localTotalMs,
             "avg_execution_ms": avgMs,
             "is_throttled": isThrottled,
             "throttle_count": throttleCount,
             "max_concurrent": maxConcurrent,
-            "peak_concurrent": peakConcurrent,
-            "batches_processed": batchesProcessed,
-            "fast_lane_count": fastLaneCount,
+            "peak_concurrent": localPeak,
+            "batches_processed": localBatches,
+            "fast_lane_count": localFastLane,
             "uptime_seconds": Date().timeIntervalSince(startTime),
-            "throughput_hz": circuitsProcessed > 0 && Date().timeIntervalSince(startTime) > 0
-                ? Double(circuitsProcessed) / Date().timeIntervalSince(startTime) : 0,
+            "throughput_hz": localProcessed > 0 && Date().timeIntervalSince(startTime) > 0
+                ? Double(localProcessed) / Date().timeIntervalSince(startTime) : 0,
             "backend_telemetry": backendStats,
-            "vqpu": vqpu.getStatus(),
+            // v6.2: Skip heavy MetalVQPU.getStatus() when watcher is inactive
+            "vqpu": isActive ? vqpu.getStatus() : ["note": "watcher_inactive"] as [String: Any],
             "features": [
                 "concurrent_processing_unlimited",
                 "priority_scheduling",
@@ -470,17 +492,23 @@ final class CircuitWatcher {
     /// v2.0: Sort files by priority (higher priority first).
     /// Reads priority from the JSON payload if possible, falls back to FIFO.
     private func sortByPriority(files: [String]) -> [String] {
-        // Quick-parse priority field without loading entire JSON
+        // v4.0.1: Skip sort for 0-1 files (common case)
+        guard files.count > 1 else { return files }
+
+        // Quick-parse priority field without loading entire JSON.
+        // v4.0.1: Use Data API (cheaper than FileHandle ObjC alloc per file)
         var prioritized: [(file: String, priority: Int)] = []
+        prioritized.reserveCapacity(files.count)
 
         for file in files {
             let path = "\(inboxDir)/\(file)"
             var priority = 1  // default priority
 
             // Read first 512 bytes for quick priority extraction
-            if let handle = FileHandle(forReadingAtPath: path) {
-                let snippet = handle.readData(ofLength: 512)
-                handle.closeFile()
+            if let url = URL(fileURLWithPath: path) as URL?,
+               let data = try? Data(contentsOf: url, options: [.uncached, .mappedIfSafe]),
+               data.count > 0 {
+                let snippet = data.prefix(min(512, data.count))
                 if let text = String(data: snippet, encoding: .utf8),
                    let range = text.range(of: "\"priority\":") {
                     let after = text[range.upperBound...].trimmingCharacters(in: .whitespaces)
@@ -502,14 +530,20 @@ final class CircuitWatcher {
         let inPath = "\(inboxDir)/\(filename)"
         let start = CFAbsoluteTimeGetCurrent()
 
-        // v5.0: Use memory pool for circuit payload
-        let buffer = circuitBufferPool.acquire()
+        // v5.0.1: Properly use memory pool - read into pooled buffer via FileHandle
+        var buffer = circuitBufferPool.acquire()
         defer { circuitBufferPool.release(buffer) }
 
         do {
-            // v5.0: Direct buffer read for better performance
-            let data = try Data(contentsOf: URL(fileURLWithPath: inPath))
-            guard let payload = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            // v5.0.1: Read file content into pooled buffer for reduced allocations
+            guard let handle = FileHandle(forReadingAtPath: inPath) else {
+                throw CircuitError.invalidPayload("Cannot open file: \(filename)")
+            }
+            let fileData = handle.readDataToEndOfFile()
+            handle.closeFile()
+            buffer.append(fileData)  // Reuse pooled buffer
+
+            guard let payload = try JSONSerialization.jsonObject(with: buffer) as? [String: Any] else {
                 throw CircuitError.invalidPayload("Not a JSON object")
             }
 
@@ -615,12 +649,20 @@ final class CircuitWatcher {
             daemonLog("✗ \(filename): \(error.localizedDescription)")
 
             // Archive failed file with error details
-            let failName = filename.replacingOccurrences(of: ".json", with: "_VALIDATION_FAILED.json")
-            let errorDetails = ["error": error.localizedDescription, "timestamp": cachedISO8601Formatter.string(from: Date())]
+            // v6.0.2 FIX: Write error JSON to a separate path to avoid moveItem collision
+            //   that left failed files in inbox causing infinite reprocess loops.
+            let errorName = filename.replacingOccurrences(of: ".json", with: "_VALIDATION_ERROR.json")
+            let archiveName = filename.replacingOccurrences(of: ".json", with: "_VALIDATION_FAILED.json")
+            let errorDetails: [String: Any] = ["error": error.localizedDescription, "timestamp": cachedISO8601Formatter.string(from: Date()), "original_file": filename]
             if let errorData = try? JSONSerialization.data(withJSONObject: errorDetails) {
-                try? errorData.write(to: URL(fileURLWithPath: "\(archiveDir)/\(failName)"))
+                try? errorData.write(to: URL(fileURLWithPath: "\(archiveDir)/\(errorName)"))
             }
-            try? FileManager.default.moveItem(atPath: inPath, toPath: "\(archiveDir)/\(failName)")
+            // Move original to archive (unique name to avoid collision)
+            let archivePath = "\(archiveDir)/\(archiveName)"
+            if FileManager.default.fileExists(atPath: archivePath) {
+                try? FileManager.default.removeItem(atPath: archivePath)
+            }
+            try? FileManager.default.moveItem(atPath: inPath, toPath: archivePath)
 
         } catch {
             statsLock.lock()
@@ -629,27 +671,39 @@ final class CircuitWatcher {
             daemonLog("✗ \(filename): \(error)")
 
             // Archive failed file
+            // v6.0.2 FIX: Remove existing archive to prevent moveItem failure + infinite reprocess
             let failName = filename.replacingOccurrences(of: ".json", with: "_FAILED.json")
+            let failPath = "\(archiveDir)/\(failName)"
+            if FileManager.default.fileExists(atPath: failPath) {
+                try? FileManager.default.removeItem(atPath: failPath)
+            }
             try? FileManager.default.moveItem(
-                atPath: inPath, toPath: "\(archiveDir)/\(failName)")
+                atPath: inPath, toPath: failPath)
         }
     }
 
     /// Calculate entanglement ratio for a circuit payload (v5.0).
-    private func calculateEntanglementRatio(_ payload: [String: Any]) -> Double {
-        guard let gates = payload["gates"] as? [[String: Any]] else { return 0.0 }
+    /// v6.0.2 FIX: Check both "operations" (primary) and "gates" (legacy) keys.
+    /// v6.2: entanglingGateNames is now a static let — was re-created on every call.
+    private static let entanglingGateNames: Set<String> = ["cnot", "cx", "cz", "swap", "fredkin", "toffoli", "ccx", "cy", "ecr", "iswap"]
 
-        var entanglingGates = 0
-        let entanglingGateNames = ["cnot", "cx", "cz", "swap", "fredkin", "toffoli", "ccx"]
+    private func calculateEntanglementRatio(_ payload: [String: Any]) -> Double {
+        // v6.0.2: Primary key is "operations" (matches validateCircuit), fallback to "gates"
+        let ops = (payload["operations"] as? [[String: Any]])
+            ?? (payload["gates"] as? [[String: Any]])
+        guard let gates = ops else { return 0.0 }
+
+        var entanglingGateCount = 0
 
         for gate in gates {
-            if let name = gate["name"] as? String,
-               entanglingGateNames.contains(name.lowercased()) {
-                entanglingGates += 1
+            // Check both "gate" (from operations) and "name" (from gates) keys
+            let gateName = (gate["gate"] as? String) ?? (gate["name"] as? String) ?? ""
+            if Self.entanglingGateNames.contains(gateName.lowercased()) {
+                entanglingGateCount += 1
             }
         }
 
-        return Double(entanglingGates) / Double(max(1, gates.count))
+        return Double(entanglingGateCount) / Double(max(1, gates.count))
     }
 
     /// Build a JSON-serializable result dictionary from VQPUResult (v5.0: complexity-enriched).

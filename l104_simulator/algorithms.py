@@ -156,30 +156,35 @@ class GroverSearch:
         )
 
     def _oracle(self, qc: QuantumCircuit, target: int, n: int):
-        """Phase oracle: flip sign of |target⟩ using diagonal N-qubit gate."""
+        """Phase oracle: flip sign of |target⟩ using diagonal N-qubit gate.
+
+        Stores the diagonal vector (1D) instead of a dense 2^n × 2^n matrix,
+        reducing memory from O(4^n) to O(2^n). The simulator detects 1D gate
+        arrays and applies them as element-wise multiplication.
+        """
         dim = 2 ** n
         diag = np.ones(dim, dtype=complex)
         diag[target] = -1.0
-        oracle_matrix = np.diag(diag)
-        qc.apply("oracle", oracle_matrix, list(range(n)))
+        qc.apply("oracle", diag, list(range(n)))
 
     def _standard_diffusion(self, qc: QuantumCircuit, n: int):
         """Standard Grover diffusion: 2|s⟩⟨s| − I."""
         qc.h_all()
-        # Flip sign of |0...0⟩
+        # Flip sign of |0...0⟩ — pass diagonal vector (1D) to avoid dense matrix
         dim = 2 ** n
         diag = np.ones(dim, dtype=complex)
         diag[0] = -1.0
-        qc.apply("diffusion_phase", np.diag(diag), list(range(n)))
+        qc.apply("diffusion_phase", diag, list(range(n)))
         qc.h_all()
 
     def _sacred_diffusion(self, qc: QuantumCircuit, n: int):
         """Sacred diffusion: adds GOD_CODE_PHASE to diffusion operator."""
         qc.h_all()
+        # 1D diagonal vector — same element-wise multiply optimization
         dim = 2 ** n
         diag = np.ones(dim, dtype=complex)
         diag[0] = -1.0
-        qc.apply("diffusion_phase", np.diag(diag), list(range(n)))
+        qc.apply("diffusion_phase", diag, list(range(n)))
         qc.god_code_phase(0)
         qc.h_all()
 

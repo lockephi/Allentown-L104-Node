@@ -1,0 +1,25 @@
+{
+  "daemon": "l104_nano_python",
+  "version": "2.0.0",
+  "tick_count": 290,
+  "total_faults": 28,
+  "health_trend": 0.9991511143087327,
+  "health_slope": -8.3e-05,
+  "causal_chains_count": 0,
+  "fault_clusters_count": 1,
+  "hw_platform": "intel_x86",
+  "probes": [
+    "constant_drift",
+    "memory_canary",
+    "numerical_stability",
+    "phase_drift",
+    "stat_anomaly",
+    "entropy_quality",
+    "import_health",
+    "state_files",
+    "cross_daemon",
+    "ai_trend",
+    "ai_anomaly",
+    "ai_correlator"
+  ]
+}

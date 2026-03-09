@@ -109,22 +109,36 @@ class EntropySubsystem:
         return min(1.0, max(0.0, base_efficiency))
 
     def inject_coherence(self, noise_vector: np.ndarray) -> np.ndarray:
-        """Transforms a noisy vector into an ordered, resonant structure."""
-        # Use simple scaling to preserve vector size
-        manifold_projection = noise_vector * GOD_CODE / np.mean(np.abs(noise_vector) + 1e-9)
+        """Transforms a noisy vector into an ordered, resonant structure.
+
+        v6.0 Fix: Guarded against NaN/Inf from near-zero mean values and
+        bounded ZNE correction to prevent excessive attenuation.
+        """
+        if not isinstance(noise_vector, np.ndarray):
+            noise_vector = np.array(noise_vector, dtype=float)
+        # Use simple scaling to preserve vector size — guard against division by near-zero
+        abs_mean = float(np.mean(np.abs(noise_vector)))
+        if abs_mean < 1e-12:
+            abs_mean = 1e-12  # v6.0 Fix: prevent NaN/Inf from near-zero input
+        manifold_projection = noise_vector * GOD_CODE / (abs_mean + 1e-9)
 
         ordered_vector = manifold_projection * (1.0 + self.maxwell_demon_factor) * GROVER_AMPLIFICATION
-        mean_val = np.mean(ordered_vector)
-        if abs(mean_val) > 1e-15:
+        mean_val = float(np.mean(ordered_vector))
+        if abs(mean_val) > 1e-12:  # v6.0 Fix: raised threshold from 1e-15 to 1e-12
             final_signal = ordered_vector / (mean_val / GOD_CODE)
         else:
             final_signal = ordered_vector
-        self.coherence_gain += np.var(ordered_vector) - np.var(noise_vector)
+        self.coherence_gain += float(np.var(ordered_vector) - np.var(noise_vector))
         # v4.1 Discovery #11: ZNE bridge — apply zero-noise extrapolation correction
         if ENTROPY_ZNE_BRIDGE_ENABLED:
-            noise_estimate = np.std(noise_vector) / (np.mean(np.abs(noise_vector)) + 1e-15)
-            zne_correction = 1.0 + PHI_CONJUGATE * noise_estimate
+            noise_denom = float(np.mean(np.abs(noise_vector))) + 1e-9
+            noise_estimate = float(np.std(noise_vector)) / noise_denom
+            # v6.0 Fix: bound ZNE correction to [1.0, 2.0] to prevent excessive attenuation
+            zne_correction = min(2.0, max(1.0, 1.0 + PHI_CONJUGATE * noise_estimate))
             final_signal = final_signal / zne_correction
+        # v6.0: NaN/Inf safety — replace any remaining NaN/Inf with GOD_CODE
+        if np.any(~np.isfinite(final_signal)):
+            final_signal = np.where(np.isfinite(final_signal), final_signal, GOD_CODE)
         return final_signal
 
     def phi_weighted_demon(self, entropy_vector: np.ndarray) -> Dict[str, Any]:

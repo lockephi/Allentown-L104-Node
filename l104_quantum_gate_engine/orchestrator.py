@@ -72,6 +72,7 @@ class ExecutionTarget(Enum):
     ASI_QUANTUM = auto()          # l104_asi/quantum computation core
     SCIENCE_ENGINE = auto()       # l104_science_engine quantum circuit
     MANIFOLD = auto()             # l104_quantum_logic manifold
+    IBM_QPU = auto()              # ★ Real IBM Quantum hardware (ibm_torino, Heron r2)
 
 
 @dataclass
@@ -740,6 +741,8 @@ class CrossSystemOrchestrator:
             result = self._execute_science(circuit)
         elif target == ExecutionTarget.MANIFOLD:
             result = self._execute_manifold(circuit)
+        elif target == ExecutionTarget.IBM_QPU:
+            result = self._execute_ibm_qpu(circuit, shots)
         else:
             result = self._execute_26q_iron(circuit, shots)  # Default: 26Q iron
 
@@ -1177,7 +1180,7 @@ class CrossSystemOrchestrator:
         state_out[q0] = g_o0
         state_out[q1] = g_o1
         # Gate indices: [g_o0, g_o1, q0_in, q1_in]
-        letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN'
+        letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
         gate_str = ''.join(letters[i] for i in [g_o0, g_o1, q0, q1])
         in_str = ''.join(letters[i] for i in state_in)
         out_str = ''.join(letters[i] for i in state_out)
@@ -1187,7 +1190,7 @@ class CrossSystemOrchestrator:
     def _apply_general_gate_einsum(gate_kd: np.ndarray, psi: np.ndarray,
                                     qubits: list, n: int, k: int) -> np.ndarray:
         """Apply a k-qubit gate via einsum to an n-qubit state tensor."""
-        letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN'
+        letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
         state_in = list(range(n))
         state_out = list(range(n))
         gate_out_indices = []
@@ -1297,23 +1300,53 @@ class CrossSystemOrchestrator:
             n = circuit.num_qubits
             stats = circuit.statistics()
 
+            # Execute via ASI's quantum computation engine
+            # Convert circuit to gate stream and run through ASI pipeline
+            gate_stream = []
+            for op in circuit.operations:
+                if op.label == "BARRIER":
+                    continue
+                gate_dict = {
+                    "gate": op.gate.name,
+                    "qubits": list(op.qubits),
+                }
+                if op.gate.parameters:
+                    gate_dict["parameters"] = op.gate.parameters
+                gate_stream.append(gate_dict)
+
+            # Try to execute via ASI quantum computation
+            asi_result = {}
+            if hasattr(self.asi_quantum, 'execute_gate_stream'):
+                asi_result = self.asi_quantum.execute_gate_stream(gate_stream, n)
+            elif hasattr(self.asi_quantum, 'run_circuit'):
+                asi_result = self.asi_quantum.run_circuit(gate_stream, num_qubits=n)
+
+            probabilities = asi_result.get("probabilities", {})
+
+            # Fall back to local execution if ASI doesn't return probabilities
+            if not probabilities:
+                local_result = self._execute_local(circuit)
+                probabilities = local_result.probabilities or {}
+
             result_data = {
                 "circuit_stats": stats,
                 "asi_quantum_version": getattr(self.asi_quantum, 'VERSION', 'unknown'),
+                "asi_result": {k: v for k, v in asi_result.items() if k != 'probabilities'},
             }
 
             return ExecutionResult(
                 target=ExecutionTarget.ASI_QUANTUM,
+                probabilities=probabilities,
                 metadata={
                     "engine": "l104_asi/quantum",
                     "result": result_data,
                 },
             )
         except Exception as e:
-            return ExecutionResult(
-                target=ExecutionTarget.ASI_QUANTUM,
-                metadata={"error": str(e)},
-            )
+            # Fallback to local execution on ASI failure
+            import logging
+            logging.getLogger(__name__).warning(f"ASI execution failed, falling back to local: {e}")
+            return self._execute_local(circuit)
 
     def _execute_science(self, circuit: GateCircuit) -> ExecutionResult:
         """Execute through the L104 Science Engine — physics-informed quantum simulation.
@@ -1431,6 +1464,54 @@ class CrossSystemOrchestrator:
                 metadata={"error": str(e)},
             )
 
+    def _execute_ibm_qpu(self, circuit: GateCircuit, shots: int) -> ExecutionResult:
+        """Execute circuit on real IBM Quantum hardware via IBMQuantumRunner.
+
+        Requires IBMQ_TOKEN / IBM_QUANTUM_TOKEN env var and qiskit-ibm-runtime.
+        Uses the IBMQuantumRunner singleton from trajectory.py.
+        Default backend: ibm_torino (133Q Heron r2).
+        """
+        import os
+        from .trajectory import IBMQuantumRunner
+
+        runner = IBMQuantumRunner.get_instance()
+
+        # Auto-configure if not yet configured
+        if not runner._configured:
+            token = os.environ.get("IBMQ_TOKEN") or os.environ.get("IBM_QUANTUM_TOKEN")
+            if not token:
+                return ExecutionResult(
+                    target=ExecutionTarget.IBM_QPU,
+                    metadata={"error": "No IBM Quantum token. Set IBMQ_TOKEN or IBM_QUANTUM_TOKEN."},
+                )
+            if not runner.configure(token=token):
+                return ExecutionResult(
+                    target=ExecutionTarget.IBM_QPU,
+                    metadata={"error": "IBM Quantum configuration failed."},
+                )
+
+        backend_name = os.environ.get("IBM_QPU_BACKEND", "ibm_torino")
+        result_data = runner.run_on_real_qpu(circuit, backend_name=backend_name, shots=shots)
+
+        if "error" in result_data:
+            return ExecutionResult(
+                target=ExecutionTarget.IBM_QPU,
+                metadata={"error": result_data["error"], "real_qpu": True, "backend": backend_name},
+            )
+
+        return ExecutionResult(
+            target=ExecutionTarget.IBM_QPU,
+            probabilities=result_data.get("probabilities"),
+            counts=result_data.get("counts"),
+            shots=result_data.get("shots", shots),
+            metadata={
+                "real_qpu": True,
+                "backend": backend_name,
+                "job_id": result_data.get("job_id", ""),
+                "engine": "ibm_quantum_runtime",
+            },
+        )
+
     # ═══════════════════════════════════════════════════════════════════════════
     #  FULL PIPELINE: Build → Compile → Protect → Execute
     # ═══════════════════════════════════════════════════════════════════════════
@@ -1473,10 +1554,37 @@ class CrossSystemOrchestrator:
         results["execution"] = execution.to_dict()
         results["probabilities"] = execution.probabilities
 
-        # Step 4: Sacred alignment analysis
+        # Step 4: Fidelity estimation — compare ideal vs protected execution
+        if error_correction != ErrorCorrectionScheme.NONE and execution.probabilities:
+            try:
+                ideal_result = self.execute(circuit, ExecutionTarget.LOCAL_STATEVECTOR)
+                ideal_probs = ideal_result.probabilities or {}
+                protected_probs = execution.probabilities or {}
+                # Classical fidelity: F = (Σ √(p_i · q_i))²
+                all_keys = set(list(ideal_probs.keys()) + list(protected_probs.keys()))
+                sqrt_overlap = sum(
+                    math.sqrt(ideal_probs.get(k, 0) * protected_probs.get(k, 0))
+                    for k in all_keys
+                )
+                classical_fidelity = sqrt_overlap ** 2
+                # Hellinger distance: H² = 1 - F_Bhattacharyya
+                hellinger_sq = 1.0 - sqrt_overlap
+                # Total variation distance bound: H² ≤ TV ≤ √(2H²)
+                tv_bound = math.sqrt(2.0 * max(0, hellinger_sq))
+                results["fidelity_analysis"] = {
+                    "classical_fidelity": round(classical_fidelity, 8),
+                    "hellinger_distance": round(math.sqrt(max(0, hellinger_sq)), 8),
+                    "total_variation_bound": round(tv_bound, 8),
+                    "error_correction_effective": classical_fidelity > 0.9,
+                    "fidelity_vs_unprotected": "improved" if classical_fidelity > 0.95 else "degraded",
+                }
+            except Exception:
+                results["fidelity_analysis"] = {"error": "fidelity_estimation_failed"}
+
+        # Step 5: Sacred alignment analysis
         results["sacred_alignment"] = self._compute_sacred_alignment(circuit)
 
-        # Step 5: Pipeline metrics
+        # Step 6: Pipeline metrics
         results["pipeline_time_ms"] = (time.time() - pipeline_start) * 1000
         results["metrics"] = dict(self._metrics)
 
@@ -1565,9 +1673,8 @@ class CrossSystemOrchestrator:
             "qpu_verification": {
                 "backend": "ibm_torino",
                 "processor": "Heron r2",
-                "mean_fidelity": 0.975,
-                "circuits_verified": 6,
-                "all_pass": True,
+                "note": "Calibration data not live — connect to QPU for real fidelity",
+                "circuits_verified": 0,
             },
             "subsystems": {
                 "runtime": self._subsystem_loaded("runtime"),

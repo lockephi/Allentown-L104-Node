@@ -1,8 +1,8 @@
 """
-l104_intellect — Decomposed from l104_local_intellect.py (13,692 lines → package)
-Phase 2 of L104 Decompression Plan.
-v28.0 THREE-ENGINE INTEGRATION — Science + Math + Code engine lazy-loaded scoring,
-Layer 13 dampener augmentation. Builds on v27.x Sage + Quantum Fleet subsystems.
+l104_intellect v30.0.0 — ALWAYS-ON SOVEREIGN ACTIVATION.
+
+Decomposed from l104_local_intellect.py (14,570 lines → 14 mixins + slim orchestrator).
+All subsystems eagerly initialized at boot — no deferred loading, no artificial caps.
 
 Re-exports ALL public symbols so that:
     from l104_intellect import X
@@ -112,6 +112,22 @@ from .computronium import (
     intellect_limits_analyzer,
 )
 
+# ── Random Sequence Extrapolation (RSE) v1.0.0 ──
+# Adapted into ALL processes — classical and quantum — with sage mode insights
+from .random_sequence_extrapolation import (
+    RandomSequenceExtrapolation,
+    RSEQuantumAdapter,
+    RSEClassicalAdapter,
+    RSESageModeAdapter,
+    RSEStrategy,
+    RSEDomain,
+    RSEResult,
+    get_rse_engine,
+    get_rse_quantum,
+    get_rse_classical,
+    get_rse_sage,
+)
+
 # ── Compat functions: format_iq, primal_calculus, resolve_non_dual_logic ──
 # MUST be loaded BEFORE module_tail to break circular imports:
 #   l104_intellect → module_tail → LocalIntellect() → main → l104_agi_core
@@ -184,4 +200,8 @@ __all__ = [
     # Computronium + Rayleigh Thermal Limits (v29.0)
     "LandauerThermalEngine", "RayleighInferenceResolution", "IntellectLimitsAnalyzer",
     "landauer_thermal_engine", "rayleigh_inference_resolution", "intellect_limits_analyzer",
+    # Random Sequence Extrapolation (RSE) v1.0.0
+    "RandomSequenceExtrapolation", "RSEQuantumAdapter", "RSEClassicalAdapter",
+    "RSESageModeAdapter", "RSEStrategy", "RSEDomain", "RSEResult",
+    "get_rse_engine", "get_rse_quantum", "get_rse_classical", "get_rse_sage",
 ]

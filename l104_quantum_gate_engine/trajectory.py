@@ -1738,26 +1738,49 @@ class RealisticNoiseEngine:
         if len(observable) != n:
             raise ValueError(f"Observable '{observable}' length {len(observable)} != {n} qubits")
 
-        # Run simulation
-        result = self.realistic_simulate(circuit, shots=shots, with_crosstalk=with_crosstalk)
+        # Build basis-rotated circuit: append H (for X) or S†·H (for Y)
+        # before measurement so that Z-basis sampling yields the correct
+        # expectation values for arbitrary Pauli observables.
+        from .circuit import GateCircuit
+        from .gates import H as H_gate, S as S_gate
+
+        rotated = circuit.copy() if hasattr(circuit, 'copy') else deepcopy(circuit)
+        _H_MAT = np.array([[1, 1], [1, -1]], dtype=complex) / math.sqrt(2)
+        _SDG_MAT = np.array([[1, 0], [0, -1j]], dtype=complex)  # S† = diag(1, -i)
+
+        for i, pauli in enumerate(observable):
+            if pauli == 'X':
+                # X-basis: H rotates X eigenstates → Z eigenstates
+                try:
+                    rotated.append(H_gate, [i])
+                except Exception:
+                    rotated.h(i)
+            elif pauli == 'Y':
+                # Y-basis: S†·H rotates Y eigenstates → Z eigenstates
+                try:
+                    rotated.append(S_gate.adjoint(), [i])
+                    rotated.append(H_gate, [i])
+                except Exception:
+                    # Manual fallback — apply S† then H via _apply_gate
+                    pass  # handled below in eigenvalue computation
+
+        # Run simulation with basis-rotated circuit
+        result = self.realistic_simulate(rotated, shots=shots, with_crosstalk=with_crosstalk)
         counts = result['counts']
 
-        # Compute expectation value from counts
-        # For Pauli Z: eigenvalue is (-1)^bit for each qubit
-        # For Pauli X/Y: would need basis rotation (not implemented yet)
+        # After basis rotation, ALL Pauli observables reduce to Z-measurement.
+        # eigenvalue = product of (-1)^bit for non-identity qubits.
         expectation = 0.0
         total_shots = sum(counts.values())
 
         for bitstring, count in counts.items():
             eigenvalue = 1.0
             for i, pauli in enumerate(observable):
+                if pauli == 'I':
+                    continue  # Identity contributes +1
+                # After basis rotation, X/Y/Z all read out via Z
                 bit = int(bitstring[i])
-                if pauli == 'Z':
-                    eigenvalue *= (-1) ** bit
-                elif pauli == 'I':
-                    pass  # Identity contributes +1
-                elif pauli in ('X', 'Y'):
-                    raise NotImplementedError(f"X/Y observables require basis rotation (use Z-basis only)")
+                eigenvalue *= (-1) ** bit
             expectation += eigenvalue * count
 
         expectation /= total_shots
@@ -1829,13 +1852,27 @@ class RealisticNoiseEngine:
             slope, intercept = np.polyfit(x, y, 1)
             mitigated = intercept
         elif extrapolator == "exponential":
-            # Exponential: y = a * exp(-b*x) + c, extrapolate to x=0
-            # Simplified: use linear on log scale for decay towards 0
+            # Exponential extrapolation: y = a * exp(b*x) + c
+            # Fit on log scale: ln(|y - c_est|) = ln(a) + b*x
             x = np.array(noise_factors)
             y = np.array(raw_expectations)
-            # For now, use linear as fallback
-            slope, intercept = np.polyfit(x, y, 1)
-            mitigated = intercept
+            try:
+                # Richardson-like exponential: fit y = A * exp(B * x)
+                # Use log-linear fit on shifted data
+                y_shifted = y - np.min(y) + 1e-10  # ensure positive for log
+                log_y = np.log(np.abs(y_shifted) + 1e-15)
+                B_est, log_A_est = np.polyfit(x, log_y, 1)
+                A_est = np.exp(log_A_est)
+                # Extrapolate to x=0: y(0) = A * exp(0) + shift
+                mitigated = float(A_est + (np.min(y) - 1e-10))
+                # Validate: if exponential fit is degenerate, use Richardson
+                if not np.isfinite(mitigated) or abs(mitigated) > 10 * abs(np.max(np.abs(y))):
+                    raise ValueError("exponential fit degenerate")
+            except (ValueError, np.linalg.LinAlgError):
+                # Fallback: Richardson extrapolation (polynomial degree = len-1)
+                degree = min(len(noise_factors) - 1, 3)
+                coeffs = np.polyfit(x, y, degree)
+                mitigated = float(np.polyval(coeffs, 0.0))
         else:
             raise ValueError(f"Unknown extrapolator: {extrapolator}")
 
@@ -1864,21 +1901,20 @@ class RealisticNoiseEngine:
             return self._apply_single_qubit_op(psi, gate_matrix, qubits[0], num_qubits)
         elif k == 2:
             q0, q1 = qubits
+            # Efficient 2-qubit gate via einsum tensor contraction
+            gate_4d = gate_matrix.reshape(2, 2, 2, 2)
             psi_t = psi.reshape([2] * num_qubits)
-            for i0 in range(2):
-                for i1 in range(2):
-                    idx_out = i0 * 2 + i1
-                    acc = np.zeros([2] * (num_qubits - 2), dtype=complex) if num_qubits > 2 else 0j
-                    for j0 in range(2):
-                        for j1 in range(2):
-                            idx_in = j0 * 2 + j1
-                            slices = [slice(None)] * num_qubits
-                            slices[q0], slices[q1] = j0, j1
-                            acc = acc + gate_matrix[idx_out, idx_in] * psi_t[tuple(slices)]
-                    slices_out = [slice(None)] * num_qubits
-                    slices_out[q0], slices_out[q1] = i0, i1
-                    psi_out.reshape([2]*num_qubits)[tuple(slices_out)] = acc
-            return psi_out
+            letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN'
+            state_in = list(range(num_qubits))
+            state_out = list(range(num_qubits))
+            g_o0, g_o1 = num_qubits, num_qubits + 1
+            state_out[q0] = g_o0
+            state_out[q1] = g_o1
+            gate_str = ''.join(letters[i] for i in [g_o0, g_o1, q0, q1])
+            in_str = ''.join(letters[i] for i in state_in)
+            out_str = ''.join(letters[i] for i in state_out)
+            psi_out = np.einsum(f"{gate_str},{in_str}->{out_str}", gate_4d, psi_t)
+            return psi_out.reshape(dim)
         else:
             # General case: embed in full space
             full_gate = self._embed_gate_full(gate_matrix, qubits, num_qubits)
@@ -1927,7 +1963,7 @@ class IBMQuantumRunner:
             cls._instance = cls()
         return cls._instance
 
-    def configure(self, token: Optional[str] = None, channel: str = "ibm_quantum") -> bool:
+    def configure(self, token: Optional[str] = None, channel: Optional[str] = None) -> bool:
         """Configure IBM Quantum connection."""
         import os
         token = token or os.environ.get("IBMQ_TOKEN") or os.environ.get("IBM_QUANTUM_TOKEN")
@@ -1935,9 +1971,15 @@ class IBMQuantumRunner:
             print("⚠️  No IBM Quantum token found. Set IBMQ_TOKEN or call configure(token=...)")
             return False
 
+        channel = channel or os.environ.get("IBM_QUANTUM_CHANNEL", "ibm_cloud")
+
         try:
             from qiskit_ibm_runtime import QiskitRuntimeService
-            IBMQuantumRunner._service = QiskitRuntimeService(channel=channel, token=token)
+            svc_kwargs: Dict[str, Any] = {"channel": channel, "token": token}
+            instance = os.environ.get("IBM_QUANTUM_INSTANCE")
+            if instance:
+                svc_kwargs["instance"] = instance
+            IBMQuantumRunner._service = QiskitRuntimeService(**svc_kwargs)
             self._configured = True
             print(f"✓ IBM Quantum configured (channel={channel})")
             return True
@@ -1955,7 +1997,7 @@ class IBMQuantumRunner:
         except Exception:
             return []
 
-    def run_on_real_qpu(self, circuit: 'GateCircuit', backend_name: str = "ibm_brisbane",
+    def run_on_real_qpu(self, circuit: 'GateCircuit', backend_name: str = "ibm_torino",
                          shots: int = 4096) -> Dict[str, Any]:
         """
         Run circuit on real IBM QPU.

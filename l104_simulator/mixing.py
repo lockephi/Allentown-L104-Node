@@ -164,7 +164,8 @@ class MixingMatrices:
         U: mixing matrix (unitary)
         """
         H_mass = np.diag(E_vector.astype(float))
-        H_flavor = np.real(U @ H_mass @ U.conj().T)
+        # Hermitian matrix — do NOT apply np.real() (preserves CP-violating phases)
+        H_flavor = U @ H_mass @ U.conj().T
 
         # Extract transition amplitudes (off-diagonal elements)
         labels_map = {

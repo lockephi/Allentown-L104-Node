@@ -1,0 +1,8 @@
+    def _lazy_vqpu(self):
+        if not hasattr(self, '_vqpu_bridge'):
+            self._vqpu_bridge = None
+        if self._vqpu_bridge is None:
+                from l104_vqpu import get_bridge
+                self._vqpu_bridge = get_bridge()
+                self._vqpu_bridge = False
+        return self._vqpu_bridge if self._vqpu_bridge is not False else None

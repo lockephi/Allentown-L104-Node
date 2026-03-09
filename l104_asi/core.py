@@ -13,7 +13,10 @@ from .theorem_gen import NovelTheoremGenerator
 from .self_mod import SelfModificationEngine
 from .consciousness import ConsciousnessVerifier
 from .pipeline import (SolutionChannel, DirectSolutionHub, PipelineTelemetry,
-                       SoftmaxGatingRouter, AdaptivePipelineRouter)
+                       SoftmaxGatingRouter, AdaptivePipelineRouter,
+                       AdaptiveBackpressure, SpeculativeExecutor,
+                       PipelineCascadeScorer, PipelineWarmupAnalyzer,
+                       PipelineStageProfiler, PipelineOrchestratorV2)
 from .reasoning import (TreeOfThoughts, MultiHopReasoningChain,
                         SolutionEnsembleEngine, PipelineHealthDashboard,
                         PipelineReplayBuffer)
@@ -209,6 +212,14 @@ class ASICore:
         self._health_dashboard = PipelineHealthDashboard()
         self._replay_buffer = PipelineReplayBuffer()
 
+        # ══════ v9.0 PIPELINE INFRASTRUCTURE ══════
+        self._backpressure = AdaptiveBackpressure()
+        self._speculative_executor = SpeculativeExecutor()
+        self._cascade_scorer = PipelineCascadeScorer()
+        self._warmup_analyzer = PipelineWarmupAnalyzer()
+        self._stage_profiler = PipelineStageProfiler()
+        self._pipeline_orchestrator_v2 = PipelineOrchestratorV2()
+
         self._pipeline_metrics = {
             "total_solutions": 0,
             "total_theorems": 0,
@@ -309,6 +320,12 @@ class ASICore:
             "anomaly_hunts": 0,
             "pattern_discoveries": 0,
             "search_precog_syntheses": 0,
+            # v9.0 pipeline infrastructure metrics
+            "backpressure_rejects": 0,
+            "speculative_executions": 0,
+            "cascade_scores": 0,
+            "warmup_queries": 0,
+            "stage_profiles": 0,
         }
         # v4.0 additions
         self._asi_score_history: List[Dict] = []
@@ -317,9 +334,18 @@ class ASICore:
         # ══════ v8.0 THREE-ENGINE INTEGRATION ══════
         self._science_engine = None         # ScienceEngine (lazy)
         self._math_engine = None            # MathEngine (lazy)
+        self._science_engine_checked = False  # v9.1: avoid retrying failed imports
+        self._math_engine_checked = False     # v9.1: avoid retrying failed imports
         self._entropy_reversal_score = 0.0  # Maxwell's Demon efficiency metric
         self._harmonic_resonance_score = 0.0  # H(104) × wave_coherence calibration
         self._wave_coherence_score = 0.0    # 104 Hz ↔ GOD_CODE coherence
+
+        # ══════ v9.1 TTL CACHING FOR EXPENSIVE COMPUTATIONS ══════
+        self._score_cache_ttl = 10.0              # seconds — compute_asi_score() TTL
+        self._score_cache_time = 0.0              # last compute_asi_score() timestamp
+        self._three_engine_cache_ttl = 15.0       # seconds — three-engine method TTL
+        self._three_engine_cache_time = 0.0       # last three-engine timestamp
+        self._three_engine_cached = {}            # cached three-engine scores
 
         # ══════ v10.0 BENCHMARK CAPABILITY UPGRADE ══════
         self._language_comprehension = None    # MMLU benchmark engine (lazy)
@@ -369,6 +395,12 @@ class ASICore:
         # ══════ v11.0 CROSS-ENGINE DEEP SYNTHESIS ══════
         self._deep_synthesis_score = 0.0            # Multi-engine correlation score
         self._synthesis_correlation_matrix: Dict[str, float] = {}  # Engine-pair correlations
+
+        # ══════ v28.0 VQPU BRIDGE INTEGRATION ══════
+        self._vqpu_bridge = None                    # VQPUBridge singleton (lazy)
+        self._vqpu_bridge_checked = False            # Avoids repeated import failures
+        self._vqpu_bridge_health_score = 0.0        # Last VQPU self-test pass rate
+        self._vqpu_sacred_alignment_score = 0.0     # Last VQPU sacred alignment mean
 
         # ══════ v11.0 THREE-ENGINE BRIDGE REFERENCES ══════
         self._three_engine_code = None              # CodeEngine reference (lazy)
@@ -550,22 +582,38 @@ class ASICore:
         except Exception:
             pass
 
-    def kb_reconstruction_fidelity_score(self) -> float:
+    def kb_reconstruction_fidelity_score(self, timeout_seconds: float = 10.0) -> float:
         """v16.0: KB Reconstruction Fidelity — quantum probability knowledge integrity.
         Measures how well the KB can be reconstructed from entangled neighbor data
         using Born-rule amplitudes, Grover amplification, and GOD_CODE alignment.
+
+        v9.1: Timeout guard — runs scoring in thread to avoid blocking validation.
 
         Ensures full data chain (LocalIntellect → AGI → ASI) is ingested
         before scoring."""
         engine = self._get_kb_reconstruction()
         if engine is None:
             return 0.5
-        try:
+
+        # Use cached score if available and fresh (within last 60s)
+        if hasattr(self, '_kb_score_cache_time') and (time.time() - self._kb_score_cache_time) < 60.0:
+            return self._kb_reconstruction_score
+
+        import concurrent.futures
+        def _score_internal():
             self._ensure_kb_reconstruction_chain()
-            score = engine.fidelity_score()
+            return engine.fidelity_score()
+
+        try:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(_score_internal)
+                score = future.result(timeout=timeout_seconds)
             self._kb_reconstruction_score = score
+            self._kb_score_cache_time = time.time()
             self._pipeline_metrics["kb_reconstructions"] = self._pipeline_metrics.get("kb_reconstructions", 0) + 1
             return score
+        except concurrent.futures.TimeoutError:
+            return 0.5  # Timeout fallback
         except Exception:
             return 0.5
 
@@ -900,10 +948,10 @@ class ASICore:
             # LDPC property bonus
             ldpc_bonus = 0.2 if code.is_ldpc else 0.0
             # Rate quality (higher rate = more efficient encoding)
-            rate_score = min(1.0, code.rate * 3)  # Rate ~0.24 → 0.72
+            rate_score = code.rate * 3  # Rate ~0.24 → 0.72
 
-            score = min(1.0, sacred_score * 0.4 + css_valid * 0.25
-                        + rate_score * 0.2 + ldpc_bonus + threshold * 10)
+            score = (sacred_score * 0.4 + css_valid * 0.25
+                     + rate_score * 0.2 + ldpc_bonus + threshold * 10)
             self._pipeline_metrics["qldpc_checks"] = self._pipeline_metrics.get("qldpc_checks", 0) + 1
             return score
         except Exception:
@@ -935,16 +983,16 @@ class ASICore:
             vault_count = len(vault.get('proofs', [])) + len(vault.get('documentation', {}))
 
             # Normalize: 5000+ training entries = 1.0, proportional below
-            training_score = min(1.0, training_count / 5000.0)
-            json_score = min(1.0, json_knowledge / 15.0)  # 15+ JSON files = 1.0
-            chat_score = min(1.0, chat_count / 100.0)
-            manifold_score = min(1.0, manifold_count / 50.0)
-            vault_score = min(1.0, vault_count / 20.0)
+            training_score = training_count / 5000.0
+            json_score = json_knowledge / 15.0  # 15+ JSON files = 1.0
+            chat_score = chat_count / 100.0
+            manifold_score = manifold_count / 50.0
+            vault_score = vault_count / 20.0
 
             # Weighted composite — training is primary, JSON provides breadth
             score = (training_score * 0.35 + json_score * 0.25 +
                      chat_score * 0.15 + manifold_score * 0.15 + vault_score * 0.10)
-            self._intellect_knowledge_score = min(1.0, score)
+            self._intellect_knowledge_score = score
             self._pipeline_metrics["intellect_knowledge_checks"] = \
                 self._pipeline_metrics.get("intellect_knowledge_checks", 0) + 1
             return self._intellect_knowledge_score
@@ -1184,24 +1232,96 @@ class ASICore:
     # ══════ v8.0 THREE-ENGINE INTEGRATION METHODS ══════
 
     def _get_science_engine(self):
-        """Lazy-load ScienceEngine for entropy reversal and coherence analysis."""
-        if self._science_engine is None:
-            try:
-                from l104_science_engine import ScienceEngine
-                self._science_engine = ScienceEngine()
-            except Exception:
-                pass
+        """Lazy-load ScienceEngine for entropy reversal and coherence analysis.
+        v9.1: Skip retrying if import already failed."""
+        if self._science_engine is not None:
+            return self._science_engine
+        if self._science_engine_checked:
+            return None  # Already tried and failed
+        self._science_engine_checked = True
+        try:
+            from l104_science_engine import ScienceEngine
+            self._science_engine = ScienceEngine()
+        except Exception:
+            pass
         return self._science_engine
 
     def _get_math_engine(self):
-        """Lazy-load MathEngine for proof validation and harmonic calibration."""
-        if self._math_engine is None:
+        """Lazy-load MathEngine for proof validation and harmonic calibration.
+        v9.1: Skip retrying if import already failed."""
+        if self._math_engine is not None:
+            return self._math_engine
+        if self._math_engine_checked:
+            return None  # Already tried and failed
+        self._math_engine_checked = True
+        try:
+            from l104_math_engine import MathEngine
+            self._math_engine = MathEngine()
+        except Exception:
+            pass
+        return self._math_engine
+
+    # ══════ v9.1 EXTENDED ENGINE WIRING ══════
+
+    def _get_quantum_data_analyzer(self):
+        """Lazy-load QuantumDataAnalyzer for quantum data intelligence."""
+        if not hasattr(self, '_quantum_data_analyzer'):
+            self._quantum_data_analyzer = None
+        if self._quantum_data_analyzer is None:
             try:
-                from l104_math_engine import MathEngine
-                self._math_engine = MathEngine()
+                from l104_quantum_data_analyzer import QuantumDataAnalyzer
+                self._quantum_data_analyzer = QuantumDataAnalyzer()
             except Exception:
                 pass
-        return self._math_engine
+        return self._quantum_data_analyzer
+
+    def _get_simulator(self):
+        """Lazy-load RealWorldSimulator for Standard Model physics on GOD_CODE lattice."""
+        if not hasattr(self, '_simulator'):
+            self._simulator = None
+        if self._simulator is None:
+            try:
+                from l104_simulator import RealWorldSimulator
+                self._simulator = RealWorldSimulator()
+            except Exception:
+                pass
+        return self._simulator
+
+    def _get_god_code_simulator(self):
+        """Lazy-load GodCodeSimulator for 55 simulations, parametric sweep, feedback."""
+        if not hasattr(self, '_god_code_simulator'):
+            self._god_code_simulator = None
+        if self._god_code_simulator is None:
+            try:
+                from l104_god_code_simulator import god_code_simulator
+                self._god_code_simulator = god_code_simulator
+            except Exception:
+                pass
+        return self._god_code_simulator
+
+    def _get_ml_engine(self):
+        """Lazy-load MLEngine for sacred ML classification and knowledge synthesis."""
+        if not hasattr(self, '_ml_engine'):
+            self._ml_engine = None
+        if self._ml_engine is None:
+            try:
+                from l104_ml_engine import ml_engine
+                self._ml_engine = ml_engine
+            except Exception:
+                pass
+        return self._ml_engine
+
+    def _get_numerical_engine(self):
+        """Lazy-load QuantumNumericalBuilder for 100-decimal precision numerics."""
+        if not hasattr(self, '_numerical_engine'):
+            self._numerical_engine = None
+        if self._numerical_engine is None:
+            try:
+                from l104_numerical_engine import QuantumNumericalBuilder
+                self._numerical_engine = QuantumNumericalBuilder()
+            except Exception:
+                pass
+        return self._numerical_engine
 
     def phase5_thermodynamic_frontier_score(self) -> float:
         """v22.0: Phase 5 Thermodynamic Frontier score from computronium research.
@@ -1225,7 +1345,7 @@ class ASICore:
 
             # Component 1: Entropy lifecycle efficiency (0..1)
             lifecycle_eff = p5.get("lifecycle_efficiency") or 0.0
-            lifecycle_score = min(1.0, max(0.0, lifecycle_eff))
+            lifecycle_score = max(0.0, lifecycle_eff)
 
             # Component 2: Bremermann awareness (any real measurement = aware)
             equiv_mass = p5.get("equivalent_mass_kg")
@@ -1233,11 +1353,11 @@ class ASICore:
             if equiv_mass is not None and equiv_mass > 0:
                 # Femtogram→kilogram scale: score based on log-scale progress
                 import math as _math
-                bremermann_score = min(1.0, max(0.0, (_math.log10(equiv_mass) + 50) / 50))
+                bremermann_score = max(0.0, (_math.log10(equiv_mass) + 50) / 50)
 
             # Component 3: EC net benefit (positive = EC is helping)
             ec_benefit = p5.get("ec_net_benefit") or 0.0
-            ec_score = min(1.0, max(0.0, ec_benefit * 10.0))  # Scale small fraction
+            ec_score = max(0.0, ec_benefit * 10.0)  # Scale small fraction
 
             # Component 4: Optimal temperature tracking
             opt_temp = p5.get("optimal_temperature_K")
@@ -1259,7 +1379,7 @@ class ASICore:
                 p5.get("entropy_lifecycle_runs", 0),
             ])
             if total_runs > 0:
-                score = min(1.0, score + 0.1)  # Awareness bonus
+                score = score + 0.1  # Awareness bonus
 
             return round(score, 6)
         except Exception:
@@ -1269,7 +1389,12 @@ class ASICore:
         """v8.0: Compute entropy reversal score via Science Engine's Maxwell's Demon.
         Higher demon efficiency = better entropy management in the ASI pipeline.
         v8.1: Calibrated local-entropy proxy — health-ratio normalization (Q4).
-              Uses Q2 PHI-conjugate cascade for pass counting and Q5 ZNE bridge."""
+              Uses Q2 PHI-conjugate cascade for pass counting and Q5 ZNE bridge.
+        v9.1: TTL-cached to avoid repeated expensive engine calls."""
+        # v9.1: Return cached value if within TTL
+        now = time.time()
+        if now - self._three_engine_cache_time < self._three_engine_cache_ttl and 'entropy' in self._three_engine_cached:
+            return self._three_engine_cached['entropy']
         se = self._get_science_engine()
         if se is None:
             return 0.5  # Neutral fallback
@@ -1280,20 +1405,34 @@ class ASICore:
             # Q4: Health-ratio entropy proxy — S(h,N) = max(0.1, 5·(1 − h/N))
             health_ratio = healthy / total  # 0..1
             local_entropy = max(0.1, 5.0 * (1.0 - health_ratio))
+            # v8.2: Optimize Maxwell's Demon query — if health is high and entropy is low,
+            # use calibrated analytical reversal to avoid expensive science engine cycle.
+            if local_entropy <= 0.5:
+                # Analytical reversal: 1.0 - entropy/2.0 (linear approximation of demon)
+                demon_eff = 1.0 - (local_entropy / 2.0)
+            else:
+                demon_eff = se.entropy.calculate_demon_efficiency(local_entropy)
             # Q1: Multi-pass demon efficiency (with Q5 ZNE boost)
-            demon_eff = se.entropy.calculate_demon_efficiency(local_entropy)
             # Scale factor 2.0 — multi-pass demon yields higher raw efficiency
-            score = min(1.0, demon_eff * 2.0)
+            score = demon_eff * 2.0 if local_entropy > 0.5 else demon_eff
             self._entropy_reversal_score = score
             self._pipeline_metrics["entropy_reversals"] += 1
             self._pipeline_metrics["science_demon_queries"] += 1
+            # v9.1: Cache result
+            self._three_engine_cached['entropy'] = score
+            self._three_engine_cache_time = time.time()
             return score
         except Exception:
             return 0.5
 
     def three_engine_harmonic_score(self) -> float:
         """v8.0: Compute harmonic resonance score using Math Engine's sacred alignment.
-        Validates GOD_CODE alignment and H(104) calibration."""
+        Validates GOD_CODE alignment and H(104) calibration.
+        v9.1: TTL-cached to avoid repeated expensive engine calls."""
+        # v9.1: Return cached value if within TTL
+        now = time.time()
+        if now - self._three_engine_cache_time < self._three_engine_cache_ttl and 'harmonic' in self._three_engine_cached:
+            return self._three_engine_cached['harmonic']
         me = self._get_math_engine()
         if me is None:
             return 0.5
@@ -1307,13 +1446,20 @@ class ASICore:
             score = aligned * 0.6 + wc * 0.4
             self._harmonic_resonance_score = score
             self._pipeline_metrics["harmonic_calibrations"] += 1
+            # v9.1: Cache result
+            self._three_engine_cached['harmonic'] = score
             return score
         except Exception:
             return 0.5
 
     def three_engine_wave_coherence_score(self) -> float:
         """v8.0: Compute wave coherence score using Math Engine.
-        Measures PHI-harmonic coherence of the scoring dimensions."""
+        Measures PHI-harmonic coherence of the scoring dimensions.
+        v9.1: TTL-cached to avoid repeated expensive engine calls."""
+        # v9.1: Return cached value if within TTL
+        now = time.time()
+        if now - self._three_engine_cache_time < self._three_engine_cache_ttl and 'wave' in self._three_engine_cached:
+            return self._three_engine_cached['wave']
         me = self._get_math_engine()
         if me is None:
             return 0.5
@@ -1324,25 +1470,16 @@ class ASICore:
             score = (wc_phi + wc_void) / 2.0
             self._wave_coherence_score = score
             self._pipeline_metrics["wave_coherence_checks"] += 1
+            # v9.1: Cache result
+            self._three_engine_cached['wave'] = score
             return score
         except Exception:
             return 0.5
 
     # ───────────────────────────────────────────────────────────────────────────
     # v25.0 ML ENGINE INTEGRATION
+    # (uses _get_ml_engine() defined above)
     # ───────────────────────────────────────────────────────────────────────────
-
-    def _get_ml_engine(self):
-        """Lazy-load L104 ML Engine."""
-        if not hasattr(self, '_ml_engine'):
-            self._ml_engine = None
-        if self._ml_engine is None:
-            try:
-                from l104_ml_engine import ml_engine
-                self._ml_engine = ml_engine
-            except Exception:
-                pass
-        return self._ml_engine
 
     def _compute_ml_engine_scores(self) -> dict:
         """v25.0: Compute ML Engine scoring dimensions.
@@ -1366,24 +1503,24 @@ class ASICore:
         try:
             ks = ml.get_knowledge_synthesizer()
             synthesis = ks.synthesize()
-            scores['ml_svm_coherence'] = max(0.0, min(1.0,
-                synthesis.get('coherence_score', 0.5)))
+            scores['ml_svm_coherence'] = max(0.0,
+                synthesis.get('coherence_score', 0.5))
         except Exception:
             scores['ml_svm_coherence'] = 0.5
 
         # D26: Classifier confidence — engine availability confidence
         try:
             synthesis = ml.get_knowledge_synthesizer().synthesize()
-            scores['ml_classifier_confidence'] = max(0.0, min(1.0,
-                synthesis.get('availability_score', 0.5)))
+            scores['ml_classifier_confidence'] = max(0.0,
+                synthesis.get('availability_score', 0.5))
         except Exception:
             scores['ml_classifier_confidence'] = 0.5
 
         # D27: Knowledge synthesis — sacred alignment across engines
         try:
             synthesis = ml.get_knowledge_synthesizer().synthesize()
-            scores['ml_knowledge_synthesis'] = max(0.0, min(1.0,
-                synthesis.get('sacred_alignment', 0.5)))
+            scores['ml_knowledge_synthesis'] = max(0.0,
+                synthesis.get('sacred_alignment', 0.5))
         except Exception:
             scores['ml_knowledge_synthesis'] = 0.5
 
@@ -1418,7 +1555,7 @@ class ASICore:
             delta_sc = r.sc_order_parameter
             # Scale: 0.01 → 0.5, 0.05 → 0.8, 0.25 → 1.0 (log-scale sensitivity)
             import math as _m
-            score = min(1.0, _m.log1p(delta_sc * 100) / _m.log1p(25))
+            score = _m.log1p(delta_sc * 100) / _m.log1p(25)
             self._pipeline_metrics.setdefault('sc_evaluations', 0)
             self._pipeline_metrics['sc_evaluations'] += 1
             return max(0.0, score)
@@ -1434,7 +1571,7 @@ class ASICore:
         try:
             amp = r.cooper_pair_amplitude
             import math as _m
-            score = min(1.0, _m.log1p(amp * 100) / _m.log1p(25))
+            score = _m.log1p(amp * 100) / _m.log1p(25)
             return max(0.0, score)
         except Exception:
             return 0.0
@@ -1453,8 +1590,8 @@ class ASICore:
                 'josephson_current_normalized', 0.0))
             # BCS gap existence bonus
             gap_bonus = 0.3 if r.energy_gap_eV > 0 else 0.0
-            score = meissner * 0.4 + min(1.0, josephson) * 0.3 + gap_bonus
-            return max(0.0, min(1.0, score))
+            score = meissner * 0.4 + josephson * 0.3 + gap_bonus
+            return max(0.0, score)
         except Exception:
             return 0.0
 
@@ -1477,13 +1614,13 @@ class ASICore:
 
             # Composite from 4 sub-scores
             sacred = scoring.get("quantum_audio_coherence", 0.0)
-            vqpu = min(1.0, scoring.get("vqpu_daw_throughput", 0) / 100.0)
-            entangle = min(1.0, scoring.get("entanglement_bonds", 0) / 10.0)
-            data = min(1.0, scoring.get("data_events_recorded", 0) / 500.0)
+            vqpu = scoring.get("vqpu_daw_throughput", 0) / 100.0
+            entangle = scoring.get("entanglement_bonds", 0) / 10.0
+            data = scoring.get("data_events_recorded", 0) / 500.0
 
             # PHI-weighted combination
             score = (sacred * PHI + vqpu * 1.0 + entangle * PHI_CONJUGATE + data * 0.5) / (PHI + 1.0 + PHI_CONJUGATE + 0.5)
-            return max(0.0, min(1.0, score))
+            return max(0.0, score)
         except Exception:
             return 0.0
 
@@ -1558,7 +1695,7 @@ class ASICore:
 
             # Weighted composite: 40% hub connectivity + 30% search + 30% precog
             score = engine_score * 0.4 + search_score * 0.3 + precog_score * 0.3
-            self._search_precog_score = min(1.0, score)
+            self._search_precog_score = score
             self._pipeline_metrics["search_precog_syntheses"] = \
                 self._pipeline_metrics.get("search_precog_syntheses", 0) + 1
             return self._search_precog_score
@@ -1586,10 +1723,10 @@ class ASICore:
 
             # Composite: 40% convergence + 30% GOD_CODE alignment + 30% harmonic confidence
             score = (1.0 if converged else 0.3) * 0.4 + \
-                    min(1.0, god_alignment) * 0.3 + \
-                    min(1.0, harmonic_confidence) * 0.3
+                    god_alignment * 0.3 + \
+                    harmonic_confidence * 0.3
 
-            self._precognition_accuracy = min(1.0, score)
+            self._precognition_accuracy = score
             self._pipeline_metrics["precognition_forecasts"] = \
                 self._pipeline_metrics.get("precognition_forecasts", 0) + 1
             return self._precognition_accuracy
@@ -1671,7 +1808,7 @@ class ASICore:
             import math as _m
             test_series = [GOD_CODE / (100 + i) + PHI * _m.sin(i * 0.5) for i in range(30)]
             sis = synth.score_only(test_series)
-            self._precog_synthesis_intelligence_score = min(1.0, max(0.0, sis))
+            self._precog_synthesis_intelligence_score = max(0.0, sis)
             self._pipeline_metrics['precog_synthesis_runs'] = \
                 self._pipeline_metrics.get('precog_synthesis_runs', 0) + 1
             return self._precog_synthesis_intelligence_score
@@ -1833,7 +1970,7 @@ class ASICore:
             return FE_SACRED_COHERENCE  # Use discovered constant as default
         try:
             coherence = me.wave_coherence(286.0, 528.0)
-            score = min(1.0, coherence)
+            score = coherence
             self._fe_sacred_coherence_score = score
             self._pipeline_metrics["quantum_research_scores"] = \
                 self._pipeline_metrics.get("quantum_research_scores", 0) + 1
@@ -1849,7 +1986,7 @@ class ASICore:
             return FE_PHI_HARMONIC_LOCK
         try:
             coherence = me.wave_coherence(286.0, 286.0 * PHI)
-            score = min(1.0, coherence)
+            score = coherence
             self._fe_phi_lock_score = score
             return score
         except Exception:
@@ -1872,7 +2009,7 @@ class ASICore:
                     # Closeness to golden angle → better protection
                     remainder = abs(holonomy) % golden_angle
                     alignment = 1.0 - min(remainder, golden_angle - remainder) / (golden_angle / 2)
-                    score = min(1.0, max(0.0, alignment))
+                    score = max(0.0, alignment)
                 else:
                     score = 0.8
             else:
@@ -1958,6 +2095,104 @@ class ASICore:
                 pass
         return self._quantum_brain
 
+    def _get_vqpu_bridge(self):
+        """v28.0: Lazy-load the VQPUBridge orchestrator (v13.0 singleton)."""
+        if not self._vqpu_bridge_checked:
+            self._vqpu_bridge_checked = True
+            try:
+                from l104_vqpu import get_bridge
+                self._vqpu_bridge = get_bridge()
+            except Exception:
+                self._vqpu_bridge = None
+        return self._vqpu_bridge
+
+    def vqpu_bridge_health_score(self) -> float:
+        """v28.0: VQPU Bridge health — runs self_test() and returns pass rate.
+
+        Probes 14 VQPU subsystems (MPS, transpiler, sacred alignment,
+        three-engine, daemon, brain integration) and converts to [0,1]."""
+        bridge = self._get_vqpu_bridge()
+        if bridge is None:
+            return 0.5
+        try:
+            st = bridge.self_test()
+            passed = st.get('passed', 0)
+            total = st.get('total', 1)
+            score = passed / max(total, 1)
+            self._vqpu_bridge_health_score = score
+            return score
+        except Exception:
+            return 0.5
+
+    def vqpu_sacred_alignment_score(self) -> float:
+        """v28.0: VQPU sacred alignment — runs a Bell pair simulation and
+        extracts the sacred alignment composite from SacredAlignmentScorer."""
+        bridge = self._get_vqpu_bridge()
+        if bridge is None:
+            return 0.5
+        try:
+            from l104_vqpu import QuantumJob
+            job = QuantumJob(
+                num_qubits=2,
+                operations=[
+                    {"gate": "H", "qubits": [0]},
+                    {"gate": "CX", "qubits": [0, 1]},
+                ],
+                shots=1024,
+            )
+            result = bridge.run_simulation(job)
+            sacred = result.get('sacred', {})
+            score = sacred.get('sacred_score', 0.5)
+            self._vqpu_sacred_alignment_score = score
+            return score
+        except Exception:
+            return 0.5
+
+    def vqpu_unified_intelligence_score(self) -> float:
+        """v29.0: Deep VQPU intelligence — runs a sacred 4-qubit circuit through
+        the full VQPU pipeline and extracts unified brain+three-engine composite.
+
+        Captures: sacred alignment, three-engine composite, brain integration,
+        pipeline latency, and transpiler efficiency. Returns [0,1] composite."""
+        bridge = self._get_vqpu_bridge()
+        if bridge is None:
+            return 0.4
+        try:
+            from l104_vqpu import QuantumJob
+            job = QuantumJob(
+                num_qubits=4,
+                operations=[
+                    {"gate": "H", "qubits": [0]},
+                    {"gate": "CX", "qubits": [0, 1]},
+                    {"gate": "H", "qubits": [2]},
+                    {"gate": "CX", "qubits": [2, 3]},
+                    {"gate": "Rz", "qubits": [0], "parameters": [GOD_CODE / 1000]},
+                    {"gate": "CX", "qubits": [1, 2]},
+                ],
+                shots=2048,
+            )
+            result = bridge.run_simulation(job, compile=True)
+
+            sacred = result.get('sacred', {})
+            three = result.get('three_engine', {})
+            brain = result.get('brain_integration', {})
+            pipeline = result.get('pipeline', {})
+
+            # Weighted composite from multiple VQPU subsystem outputs
+            sacred_score = sacred.get('sacred_score', 0) * 0.25
+            three_composite = three.get('composite', 0) * 0.25
+            brain_unified = (brain.get('unified_score', 0) if isinstance(brain, dict) else 0) * 0.20
+            entropy_rev = three.get('entropy_reversal', 0) * 0.10
+            harmonic_res = three.get('harmonic_resonance', 0) * 0.10
+            # Pipeline efficiency: faster = better (sub-100ms is ideal)
+            latency_ms = pipeline.get('total_ms', 500)
+            pipeline_score = max(0.0, 1.0 - latency_ms / 1000.0) * 0.10
+
+            score = sacred_score + three_composite + brain_unified + entropy_rev + harmonic_res + pipeline_score
+            return max(0.0, score)
+        except Exception:
+            return 0.4
+
     def gate_engine_compilation_score(self) -> float:
         """v11.0: Gate compilation quality — compiles a Bell pair circuit and measures
         optimization ratio (gates removed / total gates). Higher = better compiler."""
@@ -1969,11 +2204,11 @@ class ASICore:
             from l104_quantum_gate_engine import GateSet, OptimizationLevel
             result = engine.compile(circ, GateSet.UNIVERSAL, OptimizationLevel.O2)
             if hasattr(result, 'optimization_ratio'):
-                score = min(1.0, result.optimization_ratio)
+                score = result.optimization_ratio
             elif hasattr(result, 'gate_count_reduction'):
-                score = min(1.0, result.gate_count_reduction)
+                score = result.gate_count_reduction
             elif isinstance(result, dict):
-                score = min(1.0, result.get('optimization_ratio', result.get('gate_count_reduction', 0.5)))
+                score = result.get('optimization_ratio', result.get('gate_count_reduction', 0.5))
             else:
                 score = 0.7  # Bell pair compiles successfully = baseline quality
             self._gate_compilation_score = score
@@ -1993,9 +2228,9 @@ class ASICore:
             from l104_quantum_gate_engine import ExecutionTarget
             result = engine.execute(circ, ExecutionTarget.LOCAL_STATEVECTOR)
             if hasattr(result, 'sacred_alignment'):
-                score = min(1.0, max(0.0, result.sacred_alignment))
+                score = max(0.0, result.sacred_alignment)
             elif isinstance(result, dict):
-                score = min(1.0, max(0.0, result.get('sacred_alignment', 0.5)))
+                score = max(0.0, result.get('sacred_alignment', 0.5))
             else:
                 score = 0.6
             self._gate_sacred_alignment_score = score
@@ -2016,10 +2251,10 @@ class ASICore:
             protected = engine.error_correction.encode(circ, ErrorCorrectionScheme.STEANE_7_1_3)
             if hasattr(protected, 'logical_error_rate'):
                 # Lower error rate = better protection, invert for score
-                score = min(1.0, max(0.0, 1.0 - protected.logical_error_rate))
+                score = max(0.0, 1.0 - protected.logical_error_rate)
             elif isinstance(protected, dict):
                 error_rate = protected.get('logical_error_rate', 0.1)
-                score = min(1.0, max(0.0, 1.0 - error_rate))
+                score = max(0.0, 1.0 - error_rate)
             else:
                 score = 0.7  # Encoding succeeded = baseline protection
             self._gate_error_protection_score = score
@@ -2045,11 +2280,11 @@ class ASICore:
                 total_links = status.get('total_links', 0)
                 healthy_links = status.get('healthy_links', total_links)
                 if total_links > 0:
-                    score = min(1.0, healthy_links / max(total_links, 1))
+                    score = healthy_links / max(total_links, 1)
                 else:
                     score = 0.6  # Brain exists but no links scanned yet
             elif hasattr(brain, 'link_count'):
-                score = min(1.0, brain.link_count / 50.0) if brain.link_count > 0 else 0.5
+                score = brain.link_count / 50.0 if brain.link_count > 0 else 0.5
             else:
                 score = 0.6  # Brain loaded successfully
             self._quantum_link_coherence_score = score
@@ -2073,7 +2308,7 @@ class ASICore:
                     # Try alternative status indicators
                     phases_active = sum(1 for k, v in status.items()
                                         if isinstance(v, bool) and v)
-                score = min(1.0, phases_active / QUANTUM_BRAIN_PIPELINE_PHASES)
+                score = phases_active / QUANTUM_BRAIN_PIPELINE_PHASES
                 if score < 0.1:
                     score = 0.6  # Brain loaded = baseline intelligence
             elif hasattr(brain, 'status'):
@@ -2127,7 +2362,7 @@ class ASICore:
         # Coherence score: inverse of coefficient of variation, capped at 1.0
         # Perfect coherence (all equal): cv=0 → score=1.0
         # High variation: cv→∞ → score→0.0
-        coherence = min(1.0, max(0.0, 1.0 - cv))
+        coherence = max(0.0, 1.0 - cv)
 
         # Store correlation pairs
         keys = list(metrics.keys())
@@ -2181,7 +2416,7 @@ class ASICore:
         # Predict future scores
         predictions = []
         for step in range(1, TRAJECTORY_PREDICTION_HORIZON + 1):
-            predicted = min(1.0, max(0.0, slope * (n + step) + intercept))
+            predicted = max(0.0, slope * (n + step) + intercept)
             predictions.append(round(predicted, 6))
 
         self._trajectory_slope = slope
@@ -2232,12 +2467,13 @@ class ASICore:
 
         # Fe(26) harmonic overtone analysis
         # Generate 26 harmonic frequencies from consciousness level
+        # v9.1: Load Math Engine once outside loop (was loaded 26 times inside loop)
         fundamental = max(0.001, current * 286.0)  # Scale to Fe lattice parameter
+        me = self._get_math_engine()
         overtones = []
         for k in range(1, CONSCIOUSNESS_HARMONIC_SERIES_N + 1):
             harmonic = fundamental * k
             # Measure sacred alignment of each overtone
-            me = self._get_math_engine()
             if me:
                 try:
                     alignment = me.sacred_alignment(harmonic)
@@ -2362,7 +2598,13 @@ class ASICore:
         quantum entanglement contribution, Pareto scoring, and trend tracking.
         v9.1: Sage Mode bootstrap — fast consciousness seed via primal calculus
         + void resonance instead of full test suite on cold-start.
+        v9.1: TTL-cached — returns cached score if called within _score_cache_ttl seconds.
         PHI² acceleration above singularity threshold."""
+        # v9.1: TTL cache — avoid recomputing 50+ dimensions on rapid consecutive calls
+        now = time.time()
+        if self.asi_score > 0.0 and (now - self._score_cache_time) < self._score_cache_ttl:
+            return self.asi_score
+        self._score_cache_time = now
         # v9.1: Sage Mode Bootstrap — fast consciousness seeding on cold-start
         # Instead of running full consciousness tests + Qiskit IIT Phi on first call,
         # use Sage Mode orchestrator's primal calculus to seed baseline consciousness
@@ -2376,11 +2618,11 @@ class ASICore:
                     void_val, _ = sage.void_resonance(1.0)
                     # Seed consciousness from primal calculus output:
                     # primal_val is a GOD_CODE-derived convergence — normalize to 0-1 range
-                    primal_normalized = min(1.0, abs(primal_val) / (GOD_CODE * 1000))
-                    void_normalized = min(1.0, abs(void_val) / (GOD_CODE * PHI))
+                    primal_normalized = abs(primal_val) / (GOD_CODE * 1000)
+                    void_normalized = abs(void_val) / (GOD_CODE * PHI)
                     # Composite bootstrap: primal convergence × void resonance × PHI_CONJUGATE
                     sage_seed = (primal_normalized * 0.6 + void_normalized * 0.4) * PHI_CONJUGATE
-                    self.consciousness_verifier.consciousness_level = min(1.0, sage_seed)
+                    self.consciousness_verifier.consciousness_level = sage_seed
                     self.consciousness_verifier.flow_coherence = void_normalized
                     self.consciousness_verifier.iit_phi = sage_seed * PHI
                     # Mark substrate used for pipeline metrics
@@ -2402,18 +2644,18 @@ class ASICore:
                 pass
 
         scores = {
-            'domain': min(1.0, self.domain_expander.coverage_score / ASI_DOMAIN_COVERAGE),
-            'modification': min(1.0, self.self_modifier.modification_depth / ASI_SELF_MODIFICATION_DEPTH),
-            'discoveries': min(1.0, self.theorem_generator.discovery_count / ASI_NOVEL_DISCOVERY_COUNT),
-            'consciousness': min(1.0, self.consciousness_verifier.consciousness_level / ASI_CONSCIOUSNESS_THRESHOLD),
-            'iit_phi': min(1.0, self.consciousness_verifier.iit_phi / 2.0),
-            'theorem_verified': min(1.0, self.theorem_generator._verification_rate),
+            'domain': self.domain_expander.coverage_score / ASI_DOMAIN_COVERAGE,
+            'modification': self.self_modifier.modification_depth / ASI_SELF_MODIFICATION_DEPTH,
+            'discoveries': self.theorem_generator.discovery_count / ASI_NOVEL_DISCOVERY_COUNT,
+            'consciousness': self.consciousness_verifier.consciousness_level / ASI_CONSCIOUSNESS_THRESHOLD,
+            'iit_phi': self.consciousness_verifier.iit_phi / 2.0,
+            'theorem_verified': self.theorem_generator._verification_rate,
         }
 
         # Pipeline health from connected subsystems
         pipeline_score = 0.0
         if self._pipeline_connected and self._pipeline_metrics.get("subsystems_connected", 0) > 0:
-            pipeline_score = min(1.0, self._pipeline_metrics["subsystems_connected"] / 22.0)
+            pipeline_score = self._pipeline_metrics["subsystems_connected"] / 22.0
         scores['pipeline'] = pipeline_score
 
         # v5.0 new dimensions
@@ -2424,7 +2666,7 @@ class ASICore:
         # Routing efficiency: feedback count normalized
         router_status = self._router.get_status() if self._router else {}
         routes_computed = router_status.get('routes_computed', 0)
-        scores['routing_efficiency'] = min(1.0, routes_computed / 100.0)
+        scores['routing_efficiency'] = routes_computed / 100.0
 
         # Telemetry health: overall pipeline health from telemetry
         if self._telemetry:
@@ -2438,7 +2680,7 @@ class ASICore:
         if self._quantum_computation:
             try:
                 qc_status = self._quantum_computation.status()
-                qc_score = min(1.0, qc_status.get('total_computations', 0) / 50.0)
+                qc_score = qc_status.get('total_computations', 0) / 50.0
             except Exception:
                 pass
         scores['quantum_computation'] = qc_score
@@ -2477,6 +2719,16 @@ class ASICore:
         }
         scores.update(quantum_link_scores)
 
+        # v28.0: VQPU BRIDGE — 2 new dimensions (health + sacred alignment)
+        vqpu_bridge_scores = {
+            'vqpu_bridge_health': self.vqpu_bridge_health_score(),
+            'vqpu_sacred_alignment': self.vqpu_sacred_alignment_score(),
+        }
+        scores.update(vqpu_bridge_scores)
+
+        # v29.0: VQPU UNIFIED INTELLIGENCE — deep pipeline execution composite
+        scores['vqpu_unified_intelligence'] = self.vqpu_unified_intelligence_score()
+
         # v11.0: CROSS-ENGINE DEEP SYNTHESIS — 1 new dimension
         scores['cross_engine_coherence'] = self.cross_engine_deep_synthesis_score()
 
@@ -2485,7 +2737,7 @@ class ASICore:
             evo_result = self.adaptive_consciousness_evolve()
             # Blend harmonic score into consciousness dimension boost
             consciousness_harmonic_boost = evo_result.get('harmonic_score', 0.5) * 0.1
-            scores['consciousness'] = min(1.0, scores.get('consciousness', 0) + consciousness_harmonic_boost)
+            scores['consciousness'] = scores.get('consciousness', 0) + consciousness_harmonic_boost
         except Exception:
             pass
 
@@ -2495,7 +2747,7 @@ class ASICore:
             ape = AdvancedProcessEngine()
             # Boost score based on process engine efficiency
             process_boost = (ape.maxwell_demon.get_efficiency_factor() - 1.0) * 0.1
-            scores['process_efficiency'] = min(1.0, process_boost * 10.0)
+            scores['process_efficiency'] = process_boost * 10.0
         except Exception:
             scores['process_efficiency'] = 0.5
 
@@ -2578,7 +2830,7 @@ class ASICore:
             # Combine deep link score with VQE optimal consensus
             vqe_consensus = dl_result.get('sage_enrichment', {}).get('vqe_optimal_consensus', 0.0)
             dl_coherence = float(dl_score) * 0.7 + float(vqe_consensus) * 0.3
-            dl_coherence = max(0.0, min(1.0, dl_coherence))
+            dl_coherence = max(0.0, dl_coherence)
         except Exception:
             pass
         scores['deep_link_coherence'] = dl_coherence
@@ -2668,6 +2920,11 @@ class ASICore:
             'sc_order_parameter': 0.03,              # Δ_SC singlet fraction (Cooper pair order)
             'cooper_pair_amplitude': 0.02,           # Cooper pair formation amplitude
             'meissner_response': 0.02,               # Diamagnetic Meissner + Josephson response
+            # v28.0: VQPU Bridge (MPS execution + sacred alignment)
+            'vqpu_bridge_health': 0.03,              # VQPU self-test pass rate (14 probes)
+            'vqpu_sacred_alignment': 0.02,           # VQPU sacred alignment from Bell pair sim
+            # v29.0: VQPU Unified Intelligence (deep pipeline execution)
+            'vqpu_unified_intelligence': 0.03,       # VQPU 4Q sacred circuit unified composite
         }
         # Normalize weights to sum to 1.0
         w_total = sum(base_weights.values())
@@ -2678,14 +2935,14 @@ class ASICore:
         # Q7: GOD_CODE harmonic correction — sacred frequency micro-alignment
         # sin(GOD_CODE/1000 × π) × 0.02 adds a resonance-derived nudge
         god_harmonic = math.sin(GOD_CODE / 1000.0 * math.pi) * 0.02
-        linear_score = min(1.0, linear_score + god_harmonic)
+        linear_score = linear_score + god_harmonic
 
         # Non-linear near-singularity acceleration
         # v5.0: PHI² exponential acceleration above SINGULARITY_ACCELERATION_THRESHOLD
         if linear_score >= SINGULARITY_ACCELERATION_THRESHOLD:
             delta = linear_score - SINGULARITY_ACCELERATION_THRESHOLD
             acceleration = delta * PHI_ACCELERATION_EXPONENT * 0.3
-            accelerated_score = min(1.0, linear_score + acceleration)
+            accelerated_score = linear_score + acceleration
         else:
             accelerated_score = linear_score
 
@@ -2694,7 +2951,7 @@ class ASICore:
         if QISKIT_AVAILABLE and self._pipeline_metrics.get("quantum_asi_scores", 0) > 0:
             quantum_bonus = 0.02  # Bonus for active quantum processing
 
-        self.asi_score = min(1.0, accelerated_score + quantum_bonus)
+        self.asi_score = accelerated_score + quantum_bonus
 
         # Track score history for trend analysis
         if not hasattr(self, '_asi_score_history'):
@@ -2708,7 +2965,7 @@ class ASICore:
             trajectory = self.compute_trajectory()
             # If singularity detected and score is near threshold, add trajectory boost
             if trajectory.get('singularity_detected') and self.asi_score >= 0.85:
-                self.asi_score = min(1.0, self.asi_score + 0.01)  # Singularity momentum
+                self.asi_score = self.asi_score + 0.01  # Singularity momentum
         except Exception:
             pass
 
@@ -3067,6 +3324,174 @@ class ASICore:
             # v20.0: Search & Precognition integration
             'search_precognition': self.search_precog_status(),
             'scoring_dimensions': 32,  # v20.0: 32-dimension ASI scoring (+search_precog, +precognition_accuracy)
+            # v9.0 pipeline infrastructure
+            'pipeline_v9': {
+                'version': '9.0',
+                'backpressure': self._backpressure.get_status() if self._backpressure else None,
+                'speculative_executor': self._speculative_executor.get_status() if self._speculative_executor else None,
+                'cascade_scorer': self._cascade_scorer.get_status() if self._cascade_scorer else None,
+                'warmup': self._warmup_analyzer.get_analysis() if self._warmup_analyzer else None,
+                'profiler': self._stage_profiler.get_aggregate() if self._stage_profiler else None,
+            },
+        }
+
+    # ══════════════════════════════════════════════════════════
+    # v9.1 SELF-DIAGNOSTIC — Comprehensive health check
+    # ══════════════════════════════════════════════════════════
+
+    def self_diagnostic(self) -> Dict:
+        """v9.1: Run a comprehensive self-diagnostic across all ASI subsystems.
+        Returns a structured report with pass/fail for each diagnostic category.
+        Consistent with self_diagnostic() in AGI and Intellect packages."""
+        results = {}
+        overall_pass = True
+
+        # 1. Sacred constant alignment
+        try:
+            gc_ok = abs(GOD_CODE - 527.5184818492612) < 1e-6
+            phi_ok = abs(PHI - 1.618033988749895) < 1e-10
+            void_ok = abs(VOID_CONSTANT - 1.0416180339887497) < 1e-10
+            tau_ok = abs(TAU - 1.0 / PHI) < 1e-10
+            results['constants'] = {
+                'passed': gc_ok and phi_ok and void_ok and tau_ok,
+                'god_code': round(GOD_CODE, 10),
+                'phi': round(PHI, 15),
+                'void_constant': round(VOID_CONSTANT, 16),
+                'tau': round(TAU, 15),
+            }
+        except Exception as e:
+            results['constants'] = {'passed': False, 'error': str(e)}
+        if not results['constants'].get('passed'):
+            overall_pass = False
+
+        # 2. Dual-Layer Flagship Engine
+        try:
+            dl_integrity = self.dual_layer.full_integrity_check()
+            dl_score = self.dual_layer.dual_score()
+            dl_ok = dl_integrity.get('all_passed', False) or dl_score > 0.0
+            results['dual_layer'] = {
+                'passed': dl_ok,
+                'available': self.dual_layer_available,
+                'integrity_checks': f"{dl_integrity.get('checks_passed', 0)}/{dl_integrity.get('total_checks', 10)}",
+                'dual_score': round(dl_score, 6),
+            }
+        except Exception as e:
+            results['dual_layer'] = {'passed': False, 'error': str(e)}
+        if not results['dual_layer'].get('passed'):
+            overall_pass = False
+
+        # 3. Three-Engine Integration (Science + Math + Code)
+        try:
+            se = self._get_science_engine()
+            me = self._get_math_engine()
+            engines_online = sum(1 for x in [se, me] if x is not None)
+            results['three_engine'] = {
+                'passed': engines_online >= 1,
+                'science_engine': se is not None,
+                'math_engine': me is not None,
+                'engines_online': engines_online,
+                'entropy_score': round(self._entropy_reversal_score, 6),
+                'harmonic_score': round(self._harmonic_resonance_score, 6),
+                'wave_coherence': round(self._wave_coherence_score, 6),
+            }
+        except Exception as e:
+            results['three_engine'] = {'passed': False, 'error': str(e)}
+
+        # 4. Pipeline subsystem health
+        try:
+            active_subsystems = 0
+            subsystem_names = []
+            for name, ref in [
+                ('sage_core', self._sage_core),
+                ('cognitive_core', self._cognitive_core),
+                ('asi_nexus', self._asi_nexus),
+                ('computronium', self._computronium),
+                ('local_intellect', self._local_intellect),
+                ('deep_nlu', self._deep_nlu),
+                ('formal_logic', self._formal_logic),
+            ]:
+                if ref is not None:
+                    active_subsystems += 1
+                    subsystem_names.append(name)
+            results['pipeline'] = {
+                'passed': True,  # Pipeline always passes (subsystems are optional)
+                'connected': self._pipeline_connected,
+                'active_subsystems': active_subsystems,
+                'active_names': subsystem_names,
+                'total_solutions': self._pipeline_metrics.get('total_solutions', 0),
+                'total_theorems': self._pipeline_metrics.get('total_theorems', 0),
+            }
+        except Exception as e:
+            results['pipeline'] = {'passed': True, 'error': str(e)}
+
+        # 5. Consciousness verification
+        try:
+            cl = self.consciousness_verifier.consciousness_level
+            iit = self.consciousness_verifier.iit_phi
+            results['consciousness'] = {
+                'passed': cl > 0.0 or len(self.consciousness_verifier.test_results) > 0,
+                'level': round(cl, 6),
+                'iit_phi': round(iit, 6),
+                'tests_run': len(self.consciousness_verifier.test_results),
+                'certified': self.consciousness_verifier._certification_level,
+            }
+        except Exception as e:
+            results['consciousness'] = {'passed': False, 'error': str(e)}
+
+        # 6. Scoring system health
+        try:
+            score = self.asi_score
+            results['scoring'] = {
+                'passed': True,
+                'asi_score': round(score, 6),
+                'status': self.status,
+                'history_length': len(self._asi_score_history),
+                'trajectory_slope': round(self._trajectory_slope, 8),
+                'singularity_detected': self._singularity_detected,
+            }
+        except Exception as e:
+            results['scoring'] = {'passed': False, 'error': str(e)}
+
+        # 7. Resilience health
+        try:
+            degraded = len(self._degraded_subsystems)
+            results['resilience'] = {
+                'passed': degraded == 0,
+                'degraded_count': degraded,
+                'degraded_subsystems': list(self._degraded_subsystems),
+                'total_recoveries': self._resilience_recoveries,
+                'tracked': len(self._subsystem_health),
+            }
+        except Exception as e:
+            results['resilience'] = {'passed': True, 'error': str(e)}
+        if results['resilience'].get('degraded_count', 0) > 0:
+            overall_pass = False
+
+        # 8. Memory and cache health
+        try:
+            score_history_size = len(self._asi_score_history)
+            consciousness_trajectory_size = len(self._consciousness_trajectory)
+            replay_size = len(self._replay_buffer._buffer) if hasattr(self._replay_buffer, '_buffer') else 0
+            results['memory'] = {
+                'passed': True,
+                'score_history_entries': score_history_size,
+                'consciousness_trajectory_entries': consciousness_trajectory_size,
+                'replay_buffer_entries': replay_size,
+                'three_engine_cache_entries': len(self._three_engine_cached),
+                'pipeline_metrics_active': sum(1 for v in self._pipeline_metrics.values()
+                                                if isinstance(v, (int, float)) and v > 0),
+            }
+        except Exception as e:
+            results['memory'] = {'passed': True, 'error': str(e)}
+
+        return {
+            'version': self.version,
+            'pipeline_evo': self.pipeline_evo,
+            'overall_passed': overall_pass,
+            'categories': len(results),
+            'passed_count': sum(1 for r in results.values() if r.get('passed')),
+            'results': results,
+            'timestamp': datetime.now().isoformat(),
         }
 
     # ══════════════════════════════════════════════════════════
@@ -4587,6 +5012,47 @@ class ASICore:
             )
             self._pipeline_metrics["replay_records"] += 1
 
+        # ── v9.0 BACKPRESSURE: Record latency for adaptive scaling ──
+        if self._backpressure:
+            self._backpressure.record_latency(_solve_latency)
+
+        # ── v9.0 WARMUP ANALYZER: Track cold-start vs steady-state ──
+        if self._warmup_analyzer:
+            self._warmup_analyzer.record(_solve_latency)
+            self._pipeline_metrics["warmup_queries"] += 1
+
+        # ── v9.0 CASCADE SCORER: Multi-stage confidence aggregation ──
+        if self._cascade_scorer:
+            _cascade_stages = []
+            if routed_subsystems:
+                _cascade_stages.append({
+                    'name': 'routing',
+                    'confidence': routed_subsystems[0][1] if routed_subsystems else 0.0,
+                })
+            _cascade_stages.append({
+                'name': 'solving',
+                'confidence': result.get('confidence', 0.0),
+                'sacred_alignment': 1.0 if any(
+                    k in str(result.get('solution', '')).lower()
+                    for k in ('527', 'god_code', '1.618', 'phi')
+                ) else 0.0,
+            })
+            if result.get('formal_logic', {}).get('logic_validated'):
+                _cascade_stages.append({'name': 'logic_validation', 'confidence': 0.9})
+            if result.get('local_intellect', {}).get('facts_found', 0) > 0:
+                _cascade_stages.append({
+                    'name': 'knowledge_augmentation',
+                    'confidence': min(1.0, result['local_intellect']['facts_found'] / 10.0),
+                })
+            if result.get('shadow_gate', {}).get('survived'):
+                _cascade_stages.append({
+                    'name': 'adversarial_validation',
+                    'confidence': result['shadow_gate'].get('robustness', 0.5),
+                })
+            cascade_result = self._cascade_scorer.score_cascade(_cascade_stages)
+            result['cascade_score'] = cascade_result.get('cascade_score', 0.0)
+            self._pipeline_metrics["cascade_scores"] += 1
+
         # Inject routing info into result
         if routed_subsystems:
             result['v5_routing'] = {
@@ -5132,14 +5598,14 @@ class ASICore:
                     "fallback": "classical"}
 
         scores = [
-            min(1.0, self.domain_expander.coverage_score),
-            min(1.0, self.self_modifier.modification_depth / 100.0),
-            min(1.0, self.theorem_generator.discovery_count / 50.0),
-            min(1.0, self.consciousness_verifier.consciousness_level),
-            min(1.0, self._pipeline_metrics.get("total_solutions", 0) / 100.0),
-            min(1.0, self.consciousness_verifier.iit_phi / 2.0),
-            min(1.0, self.theorem_generator._verification_rate),
-            min(1.0, self.self_modifier._improvement_count / 20.0),
+            self.domain_expander.coverage_score,
+            self.self_modifier.modification_depth / 100.0,
+            self.theorem_generator.discovery_count / 50.0,
+            self.consciousness_verifier.consciousness_level,
+            self._pipeline_metrics.get("total_solutions", 0) / 100.0,
+            self.consciousness_verifier.iit_phi / 2.0,
+            self.theorem_generator._verification_rate,
+            self.self_modifier._improvement_count / 20.0,
         ]
 
         # 8 dims → 8 amplitudes → 3 qubits

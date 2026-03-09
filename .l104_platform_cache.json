@@ -1,0 +1,20 @@
+{
+  "arch": "x86_64",
+  "processor": "i386",
+  "system": "Darwin",
+  "mac_ver": "12.7.6",
+  "is_apple_silicon": false,
+  "is_intel": true,
+  "metal_family": 1,
+  "metal_compute_capable": true,
+  "gpu_class": "intel_igpu",
+  "simd": [
+    "SSE4.2",
+    "AVX",
+    "AVX2",
+    "FMA3",
+    "F16C"
+  ],
+  "has_amx": false,
+  "has_neural_engine": false
+}

@@ -37,6 +37,58 @@ QPU_VERIFIED: bool = True
 QPU_TIMESTAMP: str = "2026-03-04T05:45:12Z"
 QPU_SHOTS: int = 4096
 
+# ═══════════════════════════════════════════════════════════════════════════════
+#  MULTI-RUN VERIFICATION LOG
+# ═══════════════════════════════════════════════════════════════════════════════
+
+QPU_RUNS: List[Dict[str, Any]] = [
+    {
+        "run_id": 1,
+        "timestamp": "2026-03-04T05:45:12Z",
+        "backend": "ibm_torino",
+        "processor": "Heron r2",
+        "shots": 4096,
+        "mean_fidelity": 0.97475930,
+        "circuits": 6,
+        "job_ids": {
+            "1Q_GOD_CODE": "d6k0q6cmmeis739s49s0",
+            "1Q_DECOMPOSED": "d6k0q6sgmsgc73bvml20",
+            "3Q_SACRED": "d6k0q7060irc739553g0",
+            "DIAL_ORIGIN": "d6k0q7cgmsgc73bvml40",
+            "CONSERVATION": "d6k0q7o60irc739553i0",
+            "QPE_4BIT": "d6k0q8633pjc73dmjseg",
+        },
+        "fidelities": {
+            "1Q_GOD_CODE": 0.99993872, "1Q_DECOMPOSED": 0.99986806,
+            "3Q_SACRED": 0.96674026, "DIAL_ORIGIN": 0.96777344,
+            "CONSERVATION": 0.98020431, "QPE_4BIT": 0.93403102,
+        },
+    },
+    {
+        "run_id": 2,
+        "timestamp": "2026-03-08T02:15:00Z",
+        "backend": "ibm_torino",
+        "processor": "Heron r2",
+        "shots": 4096,
+        "mean_fidelity": 0.98875375,
+        "circuits": 4,
+        "job_ids": {"batch": "d6mstdu9td6c73andqvg"},
+        "fidelities": {
+            "bell_state": 0.9824527564, "1q_god_code": 0.9991189320,
+            "ghz_3q": 0.9736277709, "phi_interference": 0.9998155389,
+        },
+        "distributions": {
+            "bell_state": {"00": 0.5356, "11": 0.4487, "10": 0.0098, "01": 0.0059},
+            "1q_god_code": {"1": 0.9866, "0": 0.0134},
+            "ghz_3q": {"000": 0.5220, "111": 0.4529, "110": 0.0073, "001": 0.0071},
+            "phi_interference": {"1": 0.8594, "0": 0.1406},
+        },
+    },
+]
+
+QPU_BEST_MEAN_FIDELITY: float = max(r["mean_fidelity"] for r in QPU_RUNS)
+QPU_TOTAL_RUNS: int = len(QPU_RUNS)
+
 # Native basis gates — verified {rz, sx, cz} on Heron r2
 HERON_BASIS: List[str] = ["rz", "sx", "cz", "x"]
 HERON_COUPLING_5Q: List[List[int]] = [
@@ -140,18 +192,23 @@ def depolarizing_channel_1q(p: float, sv: np.ndarray, qubit: int,
 
 def amplitude_damping_channel(gamma: float, sv: np.ndarray, qubit: int,
                                n_qubits: int) -> np.ndarray:
-    """Apply amplitude damping (T1 decay) to a qubit in a statevector."""
-    from .quantum_primitives import make_gate, apply_single_gate
-    # Kraus operators: K0 = [[1,0],[0,sqrt(1-gamma)]], K1 = [[0,sqrt(gamma)],[0,0]]
-    # Approximation: deterministic damping of |1⟩ amplitude
-    dim = 2 ** n_qubits
-    new_sv = sv.copy()
-    for i in range(dim):
-        if (i >> qubit) & 1:
-            partner = i ^ (1 << qubit)  # |0⟩ state
-            amp_1 = new_sv[i]
-            new_sv[partner] += np.sqrt(gamma) * amp_1
-            new_sv[i] *= np.sqrt(1 - gamma)
+    """Apply amplitude damping (T1 decay) to a qubit in a statevector.
+
+    Vectorized: reshapes sv so the qubit axis is explicit, then applies
+    the Kraus-operator transformation in bulk via numpy slicing.
+    """
+    # Reshape so axis 1 is the target qubit: (2^a, 2, 2^b)
+    a = qubit
+    b = n_qubits - qubit - 1
+    shape = (2**a, 2, 2**b)
+    psi = sv.copy().reshape(shape)
+    # psi[:, 0, :] = |0⟩ subspace, psi[:, 1, :] = |1⟩ subspace
+    amp_0 = psi[:, 0, :].copy()
+    amp_1 = psi[:, 1, :].copy()
+    # K0|ψ⟩: |0⟩→|0⟩, |1⟩→√(1-γ)|1⟩;  K1|ψ⟩: |1⟩→√γ|0⟩
+    psi[:, 0, :] = amp_0 + np.sqrt(gamma) * amp_1
+    psi[:, 1, :] = np.sqrt(1 - gamma) * amp_1
+    new_sv = psi.reshape(-1)
     # Renormalize
     norm = np.linalg.norm(new_sv)
     if norm > 1e-15:
@@ -161,19 +218,43 @@ def amplitude_damping_channel(gamma: float, sv: np.ndarray, qubit: int,
 
 def apply_readout_noise(probs: Dict[str, float], p10: float = 0.008,
                          p01: float = 0.012) -> Dict[str, float]:
-    """Apply classical readout errors to probability distribution."""
+    """Apply classical readout errors to probability distribution.
+
+    For each bitstring, redistribute probability to single-bit-flipped
+    neighbors. Each bit independently flips with probability p10 (0→1)
+    or p01 (1→0). This correctly transfers probability mass to flipped
+    bitstrings rather than merely scaling the original.
+    """
     n_bits = len(next(iter(probs)))
     new_probs: Dict[str, float] = {}
+
     for bitstring, prob in probs.items():
-        # For each bit, flip with probability p10 (0→1) or p01 (1→0)
-        # Effective: multiply assignment probs
-        effective = prob
-        for bit_idx, bit in enumerate(bitstring):
-            if bit == '0':
-                effective *= (1 - p10)
+        # Compute the probability of the bitstring surviving un-flipped,
+        # and the probability of each single-bit-flip variant.
+        # Multi-bit flips are O(p²) ≈ 10⁻⁴ and are neglected.
+        survive_prob = 1.0
+        flip_probs = []  # (flipped_bitstring, flip_probability)
+        bits = list(bitstring)
+        for bit_idx in range(n_bits):
+            if bits[bit_idx] == '0':
+                p_flip = p10
             else:
-                effective *= (1 - p01)
-        new_probs[bitstring] = new_probs.get(bitstring, 0) + effective
+                p_flip = p01
+            survive_prob *= (1 - p_flip)
+            # Single-bit flip variant
+            flipped = bits.copy()
+            flipped[bit_idx] = '1' if bits[bit_idx] == '0' else '0'
+            flip_probs.append((''.join(flipped), p_flip))
+
+        # Original bitstring keeps survive_prob fraction
+        new_probs[bitstring] = new_probs.get(bitstring, 0) + prob * survive_prob
+        # Each single-flip neighbor gets its fraction
+        # (approximate: each flip is independent, treat as p_flip × ∏(1-p_other))
+        for flipped_bs, p_flip in flip_probs:
+            # Probability of exactly this one bit flipping
+            single_flip_p = prob * p_flip * survive_prob / (1 - p_flip) if p_flip < 1 else prob
+            new_probs[flipped_bs] = new_probs.get(flipped_bs, 0) + single_flip_p
+
     # Normalize
     total = sum(new_probs.values())
     if total > 0:
@@ -273,11 +354,11 @@ def compare_to_qpu(sim_probs: Dict[str, float], circuit_name: str) -> Dict[str, 
     if not qpu_dist:
         return {"error": f"No QPU data for circuit: {circuit_name}"}
 
-    all_states = set(list(sim_probs.keys()) + list(qpu_dist.keys()))
-    bc_sum = sum(
-        math.sqrt(sim_probs.get(s, 0.0) * qpu_dist.get(s, 0.0))
-        for s in all_states
-    )
+    all_states = sorted(set(list(sim_probs.keys()) + list(qpu_dist.keys())))
+    # Vectorized Bhattacharyya coefficient
+    sim_arr = np.array([sim_probs.get(s, 0.0) for s in all_states])
+    qpu_arr = np.array([qpu_dist.get(s, 0.0) for s in all_states])
+    bc_sum = float(np.sum(np.sqrt(sim_arr * qpu_arr)))
     fid = bc_sum ** 2
 
     comparison = {}
@@ -296,6 +377,21 @@ def compare_to_qpu(sim_probs: Dict[str, float], circuit_name: str) -> Dict[str, 
     }
 
 
+def get_latest_qpu_run() -> Dict[str, Any]:
+    """Return the most recent QPU verification run."""
+    return QPU_RUNS[-1]
+
+
+def get_all_qpu_runs() -> List[Dict[str, Any]]:
+    """Return all QPU verification runs."""
+    return list(QPU_RUNS)
+
+
+def get_qpu_fidelity_trend() -> List[float]:
+    """Return mean fidelities across all runs (chronological)."""
+    return [r["mean_fidelity"] for r in QPU_RUNS]
+
+
 __all__ = [
     # Constants
     "QPU_BACKEND", "QPU_PROCESSOR", "QPU_QUBITS", "QPU_VERIFIED",
@@ -303,9 +399,12 @@ __all__ = [
     "QPU_JOB_IDS", "QPU_FIDELITIES", "QPU_DISTRIBUTIONS",
     "QPU_HW_DEPTHS", "QPU_HW_GATE_COUNTS", "QPE_PHASE_EXTRACTION",
     "HERON_BASIS", "HERON_COUPLING_5Q", "HERON_NOISE_PARAMS",
+    # Multi-run tracking
+    "QPU_RUNS", "QPU_BEST_MEAN_FIDELITY", "QPU_TOTAL_RUNS",
     # Noise model
     "depolarizing_channel_1q", "amplitude_damping_channel",
     "apply_readout_noise", "simulate_with_noise",
     # Data access
     "get_qpu_verification_data", "compare_to_qpu",
+    "get_latest_qpu_run", "get_all_qpu_runs", "get_qpu_fidelity_trend",
 ]

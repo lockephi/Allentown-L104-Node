@@ -100,9 +100,10 @@ class VariationalQuantumClassifier:
 
         class_probs = np.zeros(self.n_classes)
         n_states = 2 ** self.n_qubits
+        output_mask = (1 << n_output) - 1  # bitmask for output qubits
         for state_idx in range(min(n_states, len(probs))):
-            # Extract output qubit bits
-            class_idx = state_idx % self.n_classes
+            # Map via LSB output qubits, clamped to valid class range
+            class_idx = min(state_idx & output_mask, self.n_classes - 1)
             class_probs[class_idx] += probs[state_idx]
 
         # Normalize
@@ -112,11 +113,20 @@ class VariationalQuantumClassifier:
         return class_probs
 
     def fit(self, X: np.ndarray, y: np.ndarray,
-            max_iterations: int = 50) -> Dict[str, Any]:
+            max_iterations: int = 50,
+            patience: int = 8) -> Dict[str, Any]:
         """Train the VQC.
 
         Uses a simple gradient-free optimization (coordinate descent)
         to minimize classification loss.
+
+        Parameters
+        ----------
+        max_iterations : int
+            Maximum number of SPSA update steps.
+        patience : int
+            Stop early if best loss does not improve for this many
+            consecutive iterations (default: 8).
 
         Returns training metrics.
         """
@@ -143,6 +153,7 @@ class VariationalQuantumClassifier:
         best_params = params.copy()
         lr = 0.1
         self._training_history = []
+        stagnant = 0  # early-stopping counter
 
         for iteration in range(max_iterations):
             # Compute loss
@@ -155,14 +166,23 @@ class VariationalQuantumClassifier:
             loss /= len(X)
             self._training_history.append(float(loss))
 
-            if loss < best_loss:
+            if loss < best_loss - 1e-6:
                 best_loss = loss
                 best_params = params.copy()
+                stagnant = 0
+            else:
+                stagnant += 1
 
-            # Stochastic perturbation update (SPSA-inspired)
+            # Early stopping: halt if no improvement for `patience` iterations
+            if stagnant >= patience:
+                break
+
+            # Stochastic perturbation update (SPSA)
             delta = rng.choice([-1, 1], size=n_params).astype(float)
-            params_plus = params + lr * delta
-            params_minus = params - lr * delta
+            # Separate perturbation size (ck) from step size (lr)
+            ck = 0.1 / (iteration + 1) ** (1.0 / 6.0)
+            params_plus = params + ck * delta
+            params_minus = params - ck * delta
 
             loss_plus = 0.0
             loss_minus = 0.0
@@ -176,7 +196,7 @@ class VariationalQuantumClassifier:
             loss_plus /= len(X)
             loss_minus /= len(X)
 
-            grad_estimate = (loss_plus - loss_minus) / (2 * lr * delta + 1e-10)
+            grad_estimate = (loss_plus - loss_minus) / (2 * ck * delta)
             params -= lr * grad_estimate
 
             # Decay learning rate
@@ -189,11 +209,14 @@ class VariationalQuantumClassifier:
         preds = self._predict_internal(X, y_mapped)
         accuracy = float(np.mean(preds == y_mapped))
 
+        actual_iters = len(self._training_history)
         return {
             'final_loss': float(best_loss),
             'accuracy': accuracy,
             'n_parameters': n_params,
-            'n_iterations': max_iterations,
+            'n_iterations': actual_iters,
+            'max_iterations': max_iterations,
+            'early_stopped': actual_iters < max_iterations,
             'ansatz': self.ansatz_type,
             'n_qubits': self.n_qubits,
         }

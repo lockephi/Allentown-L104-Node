@@ -1,6 +1,8 @@
 """Fix ZENITH_HZ/UUC assignments that appear before 'from __future__' imports."""
 import os
 
+future_line = "from __future__ import annotations\n"
+
 files = [
     "l104_data_precognition.py",
     "l104_deepseek_ingestion.py",
@@ -15,7 +17,6 @@ files = [
 for f in files:
     content = open(f).read()
     old_block = "ZENITH_HZ = 3887.8\nUUC = 2301.215661\n"
-    future_line = "from __future__ import annotations\n"
 
     if old_block in content and future_line in content:
         z_pos = content.find(old_block)

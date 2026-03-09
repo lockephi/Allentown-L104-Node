@@ -1,23 +1,26 @@
 #!/usr/bin/env python3
 """
-L104 VQPU Debug Suite v2.0
+L104 VQPU Debug Suite v3.0
 ═══════════════════════════════════════════════════════════════════
 Comprehensive diagnostics for the Virtual Quantum Processing Unit.
 
+v3.0: Imports from decomposed l104_vqpu package (not monolith shim).
+      Adds v13.0 brain integration, LRU eviction, and field-alias tests.
+
 Phases:
-  1. Import & Platform Detection
-  2. Constants & Capacity Verification
-  3. Core Subsystem Self-Tests (Transpiler, MPS, Noise, Entanglement)
-  4. Sacred Alignment + Three-Engine Scoring
-  5. v8.0 Advanced Quantum Equations (QI Metrics, Tomography, Hamiltonian)
-  6. Scoring Cache Performance
-  7. VQPU Findings Simulations (God Code Simulator bridge)
-  8. Full run_simulation Pipeline
-  9. Boot Manager & Daemon Status
-  10. v12.0 Parallel Batch Execution (NEW)
-  11. v12.0 Daemon Error Logging (NEW)
-  12. v12.0 LRU Parametric Cache (NEW)
-  13. v12.0 Performance Profiling (NEW)
+  1.  Import & Platform Detection
+  2.  Constants & Capacity Verification
+  3.  Core Subsystem Self-Tests (Transpiler, MPS, Noise, Entanglement)
+  4.  Sacred Alignment + Three-Engine Scoring
+  5.  v8.0 Advanced Quantum Equations (QI Metrics, Tomography, Hamiltonian)
+  6.  Scoring Cache Performance (v13.0 LRU Eviction)
+  7.  VQPU Findings Simulations (God Code Simulator bridge)
+  8.  Full run_simulation Pipeline
+  9.  Boot Manager & Daemon Status
+  10. v12.0 Parallel Batch Execution
+  11. v12.0 Daemon Error Logging
+  12. v12.0 LRU Parametric Cache
+  13. v13.0 Performance Profiling + MPS Rank-1 Fast Path
 
 INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════
@@ -84,26 +87,27 @@ phase_header(1, "Import & Platform Detection")
 t0 = time.monotonic()
 
 try:
-    from l104_vqpu_bridge import (
+    from l104_vqpu import (
         VQPUBridge, QuantumJob, QuantumGate, VQPUResult,
         CircuitTranspiler, CircuitAnalyzer, ExactMPSHybridEngine,
         SacredAlignmentScorer, NoiseModel, EntanglementQuantifier,
         QuantumInformationMetrics, QuantumStateTomography,
         HamiltonianSimulator, ScoringCache, VariationalQuantumEngine,
-        ThreeEngineQuantumScorer, EngineIntegration,
+        ThreeEngineQuantumScorer, EngineIntegration, BrainIntegration,
         QuantumErrorMitigation, CircuitCache,
         GOD_CODE as VQPU_GOD_CODE, PHI as VQPU_PHI, VOID_CONSTANT as VQPU_VOID,
         VQPU_MAX_QUBITS, VQPU_BATCH_LIMIT, VQPU_PIPELINE_WORKERS,
         VQPU_MPS_MAX_BOND_HIGH, VQPU_ADAPTIVE_SHOTS_MAX,
         _PLATFORM, _IS_INTEL, _IS_APPLE_SILICON, _HAS_METAL_COMPUTE, _GPU_CLASS,
         _HW_RAM_GB, _HW_CORES,
+        DAEMON_MAX_ERROR_LOG, DAEMON_ERROR_THRESHOLD,
     )
     import_ms = round((time.monotonic() - t0) * 1000, 1)
-    log_pass(f"l104_vqpu_bridge imported ({import_ms}ms)")
+    log_pass(f"l104_vqpu package imported ({import_ms}ms)")
 except Exception as e:
-    log_fail(f"l104_vqpu_bridge import FAILED: {e}")
+    log_fail(f"l104_vqpu package import FAILED: {e}")
     traceback.print_exc()
-    print("\n[FATAL] Cannot continue without VQPU bridge. Exiting.")
+    print("\n[FATAL] Cannot continue without VQPU package. Exiting.")
     sys.exit(1)
 
 # Platform info
@@ -468,15 +472,16 @@ except Exception as e:
 # PHASE 6: SCORING CACHE PERFORMANCE
 # ═══════════════════════════════════════════════════════════════════
 
-phase_header(6, "Scoring Cache Performance")
+phase_header(6, "Scoring Cache Performance (v13.0 LRU)")
 
 try:
+    from collections import OrderedDict
     ScoringCache._harmonic_cached = None
     ScoringCache._wave_cached = None
     ScoringCache._entropy_cache.clear()
-    ScoringCache._asi_cache.clear()
-    ScoringCache._agi_cache.clear()
-    ScoringCache._stats = {"hits": 0, "misses": 0, "harmonic_hits": 0, "wave_hits": 0}
+    ScoringCache._asi_cache = OrderedDict()
+    ScoringCache._agi_cache = OrderedDict()
+    ScoringCache._stats = {"hits": 0, "misses": 0, "harmonic_hits": 0, "wave_hits": 0, "sc_hits": 0}
 
     # First call: miss
     h1 = ScoringCache.get_harmonic(lambda: 0.85)
@@ -507,6 +512,47 @@ try:
         log_pass(f"Entropy bucket isolation: 1.0→{e1}, 1.1→{e3}")
     else:
         log_warn(f"Entropy buckets not isolated: e1={e1}, e3={e3}")
+
+    # v13.0: ASI/AGI LRU eviction test
+    print()
+    print("  [v13.0 ASI/AGI LRU Eviction]")
+    ScoringCache._asi_cache = OrderedDict()
+    old_max = ScoringCache._ASI_AGI_MAX
+    ScoringCache._ASI_AGI_MAX = 3  # Temporarily shrink for test
+
+    # Fill cache to capacity
+    for i in range(3):
+        ScoringCache.get_asi_score({}, num_qubits=i, entropy_bucket=0.5,
+                                    scorer_fn=lambda p, nq: {"score": nq})
+
+    if len(ScoringCache._asi_cache) == 3:
+        log_pass(f"ASI cache filled to capacity (3)")
+    else:
+        log_fail(f"ASI cache expected 3, got {len(ScoringCache._asi_cache)}")
+
+    # Add one more — should evict oldest (nq=0)
+    ScoringCache.get_asi_score({}, num_qubits=99, entropy_bucket=0.5,
+                                scorer_fn=lambda p, nq: {"score": nq})
+
+    if len(ScoringCache._asi_cache) == 3:
+        log_pass("ASI LRU eviction: size stayed at 3 after overflow")
+    else:
+        log_fail(f"ASI LRU eviction: expected 3, got {len(ScoringCache._asi_cache)}")
+
+    # Oldest key (0, 0.5) should be evicted
+    if (0, 0.5) not in ScoringCache._asi_cache:
+        log_pass("ASI LRU: oldest entry (nq=0) correctly evicted")
+    else:
+        log_fail("ASI LRU: oldest entry (nq=0) NOT evicted")
+
+    if (99, 0.5) in ScoringCache._asi_cache:
+        log_pass("ASI LRU: newest entry (nq=99) present")
+    else:
+        log_fail("ASI LRU: newest entry (nq=99) missing")
+
+    ScoringCache._ASI_AGI_MAX = old_max  # Restore
+    ScoringCache._asi_cache = OrderedDict()
+    ScoringCache._agi_cache = OrderedDict()
 
     stats = ScoringCache.stats()
     log_info(f"Cache stats: {stats}")
@@ -720,18 +766,12 @@ try:
     bridge = VQPUBridge()
     bridge.start()
 
-    # Create 4 Bell-pair jobs for parallel batch
+    # Create 4 larger jobs for parallel batch (increased complexity for meaningful parallel speedup)
     batch_jobs = []
     for i in range(4):
-        job = QuantumJob(
-            num_qubits=2,
-            operations=[
-                {"gate": "H", "qubits": [0]},
-                {"gate": "CX", "qubits": [0, 1]},
-            ],
-            shots=512,
-        )
-        batch_jobs.append(job)
+        # Use QFT-5 circuit with substantial shots for meaningful parallel computation
+        qft_job = bridge.qft_circuit(5, shots=4096)  # 5 qubits, 4096 shots - substantial but not too large
+        batch_jobs.append(qft_job)
 
     t_batch = time.monotonic()
     batch_results = bridge.run_simulation_batch(batch_jobs)
@@ -760,7 +800,7 @@ try:
     if speedup > 1.0:
         log_pass(f"Parallel batch is faster ({speedup:.2f}x speedup)")
     else:
-        log_warn(f"Parallel batch not faster (might be IO-bound or single-threaded)")
+        log_warn(f"Parallel batch not faster (ProcessPoolExecutor working but initialization overhead may exceed job complexity)")
 
 except Exception as e:
     log_fail(f"Parallel batch test error: {e}")
@@ -774,7 +814,7 @@ except Exception as e:
 phase_header(11, "v12.0 Daemon Error Logging")
 
 try:
-    from l104_vqpu_bridge import DAEMON_MAX_ERROR_LOG, DAEMON_ERROR_THRESHOLD
+    # DAEMON_MAX_ERROR_LOG and DAEMON_ERROR_THRESHOLD already imported from l104_vqpu
 
     log_pass(f"DAEMON_MAX_ERROR_LOG = {DAEMON_MAX_ERROR_LOG}")
     log_pass(f"DAEMON_ERROR_THRESHOLD = {DAEMON_ERROR_THRESHOLD}")
@@ -858,9 +898,43 @@ except Exception as e:
 # PHASE 13: v12.0 PERFORMANCE PROFILING
 # ═══════════════════════════════════════════════════════════════════
 
-phase_header(13, "v12.0 Performance Profiling")
+phase_header(13, "v13.0 Performance Profiling + MPS Rank-1 Fast Path")
 
 try:
+    # v13.0: Verify MPS rank-1 fast path produces correct results
+    print()
+    print("  [MPS Rank-1 Fast Path Validation]")
+    # CX|10⟩ → |11⟩ (product state → product state, rank-1)
+    mps_r1 = ExactMPSHybridEngine(2)
+    X_gate = np.array([[0, 1], [1, 0]], dtype=np.complex128)
+    mps_r1.apply_single_gate(0, X_gate)  # |10⟩
+    CX = np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]], dtype=np.complex128).reshape(2,2,2,2)
+    mps_r1._apply_adjacent_two_gate(0, 1, CX)
+    probs_r1 = mps_r1.sample(4096)
+    if "11" in probs_r1 and probs_r1.get("11", 0) > 0.95:
+        log_pass(f"Rank-1 fast path: CX|10⟩=|11⟩ (p={probs_r1.get('11', 0):.4f})")
+        # Verify bond dim stayed at 1
+        bond_a = mps_r1.tensors[0].shape[2]
+        if bond_a == 1:
+            log_pass("Rank-1: bond dim stayed at 1 (SVD skipped)")
+        else:
+            log_warn(f"Rank-1: bond dim = {bond_a} (expected 1)")
+    else:
+        log_fail(f"Rank-1 fast path: CX|10⟩ wrong: {probs_r1}")
+
+    # CX|+0⟩ → Bell (product → entangled, rank-2, falls back to SVD)
+    mps_r2 = ExactMPSHybridEngine(2)
+    H_gate_mat = np.array([[1, 1], [1, -1]], dtype=np.complex128) / np.sqrt(2)
+    mps_r2.apply_single_gate(0, H_gate_mat)  # |+0⟩
+    mps_r2._apply_adjacent_two_gate(0, 1, CX)
+    probs_r2 = mps_r2.sample(4096)
+    p00 = probs_r2.get("00", 0)
+    p11 = probs_r2.get("11", 0)
+    if abs(p00 - 0.5) < 0.05 and abs(p11 - 0.5) < 0.05:
+        log_pass(f"Rank-2 fallback: Bell state correct (p00={p00:.3f}, p11={p11:.3f})")
+    else:
+        log_fail(f"Rank-2 fallback: unexpected {probs_r2}")
+
     # Benchmark MPS product-state fast path
     print()
     print("  [MPS Product-State Fast Path]")
@@ -905,7 +979,7 @@ try:
 
     t_trans = time.monotonic()
     for _ in range(100):
-        CircuitTranspiler.transpile(complex_ops, 3)
+        CircuitTranspiler.transpile(complex_ops)
     trans_ms = round((time.monotonic() - t_trans) * 1000, 2)
     log_info(f"100 × transpile(50 ops): {trans_ms}ms ({trans_ms/100:.2f}ms/transpile)")
 
@@ -937,7 +1011,7 @@ try:
         failed_tests = [t["test"] for t in test_result.get("tests", []) if not t.get("pass")]
         log_fail(f"self_test() failures: {', '.join(failed_tests)}")
 
-    log_pass("v12.0 performance profiling complete")
+    log_pass("v13.0 performance profiling complete")
 
 except Exception as e:
     log_fail(f"Performance profiling error: {e}")
@@ -950,7 +1024,7 @@ except Exception as e:
 
 print()
 print("═" * 65)
-print("  L104 VQPU DEBUG SUITE v2.0 — SUMMARY")
+print("  L104 VQPU DEBUG SUITE v3.0 — SUMMARY")
 print("═" * 65)
 print(f"  PASS: {PASS}")
 print(f"  FAIL: {FAIL}")

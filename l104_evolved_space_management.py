@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.833370
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:52.887387
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -511,7 +511,7 @@ class IntelligentSpaceAnalyzer:
         predicted_usage = current_usage + (growth_rate * horizon_days)
 
         # Calculate confidence based on data quality
-        confidence = min(0.9, len(self.space_history) / 10) if self.space_history else 0.1
+        confidence = (len(self.space_history) / 10) if self.space_history else 0.1
 
         # Determine critical threshold
         disk_info = self._get_disk_info()

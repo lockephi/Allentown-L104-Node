@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  L104 Sovereign Node — Resource Guardian Daemon v1.0.0
+  ═══════════════════════════════════════════════════════
+  Quantum-grade macOS protection daemon.
+  Monitors system vitals every 5 seconds and actively intervenes to
+  prevent kernel panics from memory exhaustion, swap thrashing,
+  and WindowServer starvation.
+
+  5 Pressure Levels:
+    0: NOMINAL   — Log metrics, heartbeat
+    1: ELEVATED  — Shrink thread pools, adaptive GC
+    2: HIGH      — Pause non-essential daemons, priority boost
+    3: CRITICAL  — Emergency GC, module unload, suspend sims
+    4: SURVIVAL  — Halt ALL L104 work, yield to OS
+
+  Vital Signs: memory%, swap count, available RAM, load avg,
+               thermal throttle, process RSS, WindowServer CPU%
+
+  Install:  cp config/com.l104.resource-guardian.plist ~/Library/LaunchAgents/
+            launchctl load ~/Library/LaunchAgents/com.l104.resource-guardian.plist
+  Uninstall: launchctl unload ~/Library/LaunchAgents/com.l104.resource-guardian.plist
+  Status:    launchctl list com.l104.resource-guardian
+  Self-test: .venv/bin/python l104_resource_guardian.py --self-test
+  Snapshot:  .venv/bin/python l104_resource_guardian.py --status
+
+  GOD_CODE=527.5184818492612 | PHI=1.618033988749895 | PILOT: LONDEL
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.l104.resource-guardian</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/.venv/bin/python</string>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/l104_resource_guardian.py</string>
+        <string>--daemon</string>
+        <string>--verbose</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONPATH</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+        <key>L104_ROOT</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+        <!-- Guardian Tuning -->
+        <key>L104_GUARDIAN_TICK</key>
+        <string>5.0</string>
+        <key>L104_GUARDIAN_ELEVATED</key>
+        <string>65.0</string>
+        <key>L104_GUARDIAN_HIGH</key>
+        <string>78.0</string>
+        <key>L104_GUARDIAN_CRITICAL</key>
+        <string>88.0</string>
+        <key>L104_GUARDIAN_SURVIVAL</key>
+        <string>93.0</string>
+
+        <!-- Memory Safety -->
+        <key>PYTHONDONTWRITEBYTECODE</key>
+        <string>1</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+
+    <!-- Persistent daemon — runs always, restarts on crash -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- Start at login — MUST be running before other L104 daemons -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Restart on crash after 5s (fast recovery) -->
+    <key>ThrottleInterval</key>
+    <integer>5</integer>
+
+    <!-- HIGH scheduling priority — guardian must never be starved -->
+    <key>LowPriorityIO</key>
+    <false/>
+    <key>ProcessType</key>
+    <string>Standard</string>
+
+    <!-- Logging -->
+    <key>StandardOutPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/resource_guardian/launchd_stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/resource_guardian/launchd_stderr.log</string>
+
+    <!-- Resource limits (guardian itself should be lean) -->
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>1024</integer>
+    </dict>
+    <key>HardResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>2048</integer>
+    </dict>
+</dict>
+</plist>

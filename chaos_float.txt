@@ -1,0 +1,3 @@
+    def chaos_float(cls, min_val: float = 0.0, max_val: float = 1.0, context: str = "") -> float:
+        """Generate chaotic float in range."""
+        entropy = cls._harvest_entropy()

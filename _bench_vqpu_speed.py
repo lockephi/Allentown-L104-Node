@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
 ═══════════════════════════════════════════════════════════════════
- L104 VQPU SPEED BENCHMARK v1.0
+ L104 VQPU SPEED BENCHMARK v2.0
  GOD_CODE=527.5184818492612 | PHI=1.618033988749895
 ═══════════════════════════════════════════════════════════════════
  Comprehensive speed benchmark for the VQPU Bridge subsystems:
 
   1. MPS Engine — single/two-qubit gate throughput, SVD scaling
-  2. Transpiler — 8-pass optimization pipeline timing
+  2. Transpiler — 10-pass optimization pipeline timing
   3. Circuit Analyzer — routing intelligence latency
   4. Simulation Pipeline — full 6-stage run_simulation()
   5. Sacred Alignment Scorer — scoring throughput
@@ -16,6 +16,14 @@
   8. Cache Performance — parametric gate cache hit rates
   9. Noise Simulation — ZNE mitigation overhead
   10. Entanglement Quantification — von Neumann + concurrence
+  11. v12.0 Parallel Batch — ThreadPoolExecutor throughput (NEW)
+  12. v12.0 Self-Test — self_test() diagnostic speed (NEW)
+
+ v2.0 Features:
+  - --compare flag: compare against previous run for regression detection
+  - 12 benchmark categories (was 10)
+  - Parallel batch throughput measurement
+  - Self-test diagnostic performance
 
  Reports per-subsystem latencies, throughput (circuits/sec),
  scaling coefficients, and identifies bottlenecks.
@@ -37,7 +45,7 @@ PHI = 1.618033988749895
 VOID_CONSTANT = 1.0416180339887497
 
 # ── Imports ──────────────────────────────────────────────────────────────────
-from l104_vqpu_bridge import (
+from l104_vqpu import (
     VQPUBridge, QuantumJob, QuantumGate, VQPUResult,
     CircuitTranspiler, CircuitAnalyzer, ExactMPSHybridEngine,
     SacredAlignmentScorer, ThreeEngineQuantumScorer,
@@ -751,6 +759,88 @@ def main():
     all_results["noise"] = bench_noise()
     all_results["entanglement"] = bench_entanglement()
 
+    # v12.0 NEW: Parallel batch benchmark
+    _header("11 · PARALLEL BATCH THROUGHPUT (v12.0)")
+    try:
+        bridge = VQPUBridge()
+        bridge.start()
+
+        # Benchmark parallel batch vs sequential
+        batch_jobs = [
+            QuantumJob(num_qubits=2, operations=_build_bell_ops(), shots=256)
+            for _ in range(8)
+        ]
+
+        # Parallel
+        timer_par = BenchTimer("parallel_batch_8")
+        for _ in range(5):
+            with timer_par:
+                bridge.run_simulation_batch(batch_jobs)
+
+        # Sequential
+        timer_seq = BenchTimer("sequential_8")
+        for _ in range(5):
+            with timer_seq:
+                for job in batch_jobs:
+                    bridge.run_simulation(job)
+
+        speedup = timer_seq.mean_ms / max(timer_par.mean_ms, 0.01)
+        print(f"  Parallel 8-job batch:  {timer_par.mean_ms:.2f} ms (avg)")
+        print(f"  Sequential 8 jobs:     {timer_seq.mean_ms:.2f} ms (avg)")
+        print(f"  Speedup:               {speedup:.2f}x")
+
+        # Larger batch
+        batch_16 = [
+            QuantumJob(num_qubits=3, operations=_build_ghz_ops(3), shots=256)
+            for _ in range(16)
+        ]
+        timer_16 = BenchTimer("parallel_batch_16")
+        for _ in range(3):
+            with timer_16:
+                bridge.run_simulation_batch(batch_16)
+
+        print(f"  Parallel 16-job batch: {timer_16.mean_ms:.2f} ms (avg)")
+        print(f"  Throughput:            {16000 / max(timer_16.mean_ms, 0.01):.0f} sims/s")
+
+        all_results["parallel_batch"] = {
+            "parallel_8_ms": round(timer_par.mean_ms, 4),
+            "sequential_8_ms": round(timer_seq.mean_ms, 4),
+            "speedup": round(speedup, 3),
+            "parallel_16_ms": round(timer_16.mean_ms, 4),
+            "throughput_hz": round(16000 / max(timer_16.mean_ms, 0.01), 2),
+        }
+    except Exception as e:
+        print(f"  ERROR: {e}")
+        all_results["parallel_batch"] = {"error": str(e)}
+
+    # v12.0 NEW: Self-test diagnostic speed
+    _header("12 · SELF-TEST DIAGNOSTIC SPEED (v12.0)")
+    try:
+        bridge = VQPUBridge()
+        bridge.start()
+
+        timer_st = BenchTimer("self_test")
+        test_result = None
+        for _ in range(3):
+            with timer_st:
+                test_result = bridge.self_test()
+
+        passed = test_result.get("passed", 0) if test_result else 0
+        total = test_result.get("total", 0) if test_result else 0
+        print(f"  self_test() avg:       {timer_st.mean_ms:.2f} ms")
+        print(f"  Tests:                 {passed}/{total} passed")
+        print(f"  Throughput:            {1000 / max(timer_st.mean_ms, 0.01):.1f} runs/s")
+
+        all_results["self_test"] = {
+            "mean_ms": round(timer_st.mean_ms, 4),
+            "passed": passed,
+            "total": total,
+            "all_pass": test_result.get("all_pass", False) if test_result else False,
+        }
+    except Exception as e:
+        print(f"  ERROR: {e}")
+        all_results["self_test"] = {"error": str(e)}
+
     total_elapsed = time.perf_counter() - total_start
 
     # ── Summary ──
@@ -802,9 +892,70 @@ def main():
         json.dump(all_results, f, indent=2)
     print(f"\n  Report saved: {os.path.basename(report_path)}")
 
+    # ── Regression detection (--compare) ──
+    if "--compare" in sys.argv:
+        _header("REGRESSION DETECTION")
+        prev_path = report_path.replace("_results.json", "_results_prev.json")
+        if not os.path.exists(prev_path):
+            # First run with --compare: rename old as baseline
+            old_path = report_path
+            if os.path.exists(old_path):
+                print(f"  No previous baseline found.")
+                print(f"  Tip: Copy current results to {os.path.basename(prev_path)} as baseline.")
+            else:
+                print(f"  No previous results to compare against.")
+        else:
+            with open(prev_path) as f:
+                prev = json.load(f)
+
+            regression_count = 0
+            improvement_count = 0
+            compare_keys = [
+                ("mps_engine", "single_gate_ms", 1.15),
+                ("mps_engine", "two_gate_ms", 1.15),
+                ("mps_engine", "bell_ms", 1.15),
+                ("transpiler", "bell_transpile_ms", 1.20),
+                ("simulation_pipeline", "sim_bell_ms", 1.20),
+                ("simulation_pipeline", "sim_ghz5_ms", 1.20),
+                ("cache", "cache_speedup", 0.85),  # lower is worse for speedup
+                ("parallel_batch", "parallel_8_ms", 1.20),
+            ]
+
+            for section, key, threshold in compare_keys:
+                old_val = prev.get(section, {}).get(key)
+                new_val = all_results.get(section, {}).get(key)
+                if old_val is None or new_val is None:
+                    continue
+
+                if key == "cache_speedup":
+                    # For speedup metrics, lower new value = regression
+                    if new_val < old_val * threshold:
+                        print(f"  ⚠ REGRESSION: {section}.{key}: {old_val:.4f} → {new_val:.4f} "
+                              f"({(new_val/old_val - 1)*100:+.1f}%)")
+                        regression_count += 1
+                    elif new_val > old_val * 1.05:
+                        print(f"  ✓ IMPROVED:   {section}.{key}: {old_val:.4f} → {new_val:.4f} "
+                              f"({(new_val/old_val - 1)*100:+.1f}%)")
+                        improvement_count += 1
+                else:
+                    # For latency metrics, higher new value = regression
+                    if new_val > old_val * threshold:
+                        print(f"  ⚠ REGRESSION: {section}.{key}: {old_val:.4f} → {new_val:.4f} "
+                              f"({(new_val/old_val - 1)*100:+.1f}%)")
+                        regression_count += 1
+                    elif new_val < old_val * 0.95:
+                        print(f"  ✓ IMPROVED:   {section}.{key}: {old_val:.4f} → {new_val:.4f} "
+                              f"({(new_val/old_val - 1)*100:+.1f}%)")
+                        improvement_count += 1
+
+            if regression_count == 0:
+                print(f"\n  ✓ No regressions detected ({improvement_count} improvements)")
+            else:
+                print(f"\n  ⚠ {regression_count} regression(s), {improvement_count} improvement(s)")
+
     print()
     print("═" * 65)
-    print(f"  VQPU SPEED BENCHMARK COMPLETE — {total_elapsed:.2f}s")
+    print(f"  VQPU SPEED BENCHMARK v2.0 COMPLETE — {total_elapsed:.2f}s")
     print(f"  INVARIANT: {GOD_CODE} | PILOT: LONDEL")
     print("═" * 65)
 

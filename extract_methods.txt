@@ -1,0 +1,6 @@
+116:    def extract_science_features(self) -> np.ndarray:
+149:    def extract_math_features(self) -> np.ndarray:
+191:    def extract_code_features(self, source: str = "") -> np.ndarray:
+220:    def extract_quantum_features(self) -> np.ndarray:
+249:    def extract_asi_features(self) -> np.ndarray:
+272:    def extract_all(self, source: str = "") -> np.ndarray:

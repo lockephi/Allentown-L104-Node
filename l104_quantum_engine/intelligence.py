@@ -43,14 +43,6 @@ def _lset(link, key, value):
         setattr(link, key, value)
 
 
-def _lset(link, key, value):
-    """Set attribute on a link (works with both dict and dataclass objects)."""
-    if isinstance(link, dict):
-        link[key] = value
-    else:
-        setattr(link, key, value)
-
-
 #   Maintains continuity with the broader L104 evolution index.
 #   Records grade progression, link counts, and score trajectories.
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -127,6 +119,26 @@ class EvolutionTracker:
                 "from": prev_stage,
                 "to": self.link_evo_stage,
             })
+
+        # ★ v12.0: VQPU bridge health tracking
+        try:
+            from l104_vqpu import get_bridge
+            vb = get_bridge()
+            if vb is not None:
+                vst = vb.status() if hasattr(vb, 'status') else {}
+                vqpu_health = vst.get("health", vst.get("sacred_alignment", 0.0))
+                if isinstance(vqpu_health, (int, float)) and vqpu_health > 0.8:
+                    events.append({
+                        "type": "VQPU_COHERENCE_HIGH",
+                        "health": round(float(vqpu_health), 4),
+                    })
+                elif isinstance(vqpu_health, (int, float)) and vqpu_health < 0.3:
+                    events.append({
+                        "type": "VQPU_COHERENCE_LOW",
+                        "health": round(float(vqpu_health), 4),
+                    })
+        except Exception:
+            pass  # VQPU not available — no event
 
         self.events.extend(events)
 
@@ -1577,6 +1589,7 @@ class QuantumLinkSelfHealer:
         self.strategies_used: Dict[str, int] = {
             "phi_realign": 0, "godcode_recalib": 0,
             "entropy_inject": 0, "topo_shield": 0,
+            "vqpu_realign": 0,
         }
 
     def diagnose(self, links: List[Dict]) -> List[Dict]:
@@ -1628,6 +1641,16 @@ class QuantumLinkSelfHealer:
         fid = _lget(link, "fidelity", 1.0)
         stren = _lget(link, "strength", 1.0)
 
+        # ★ v12.0: VQPU-guided healing when bridge is active
+        if fid < self.FIDELITY_THRESHOLD and fid > 0.2:
+            try:
+                from l104_vqpu import get_bridge
+                vb = get_bridge()
+                if vb is not None:
+                    return "vqpu_realign"
+            except Exception:
+                pass
+
         if fid < 0.3:
             return "godcode_recalib"
         elif stren < 0.3:
@@ -1656,6 +1679,27 @@ class QuantumLinkSelfHealer:
             # Topological stabilization
             _lset(link, "fidelity", min(1.0, _lget(link, "fidelity", 0.6) + FEIGENBAUM_DELTA * 0.02))
             _lset(link, "strength", min(1.0, _lget(link, "strength", 0.6) + PHI * 0.03))
+        elif strategy == "vqpu_realign":
+            # ★ v12.0: VQPU sacred alignment guided healing
+            try:
+                from l104_vqpu import get_bridge, QuantumJob
+                vb = get_bridge()
+                if vb is not None:
+                    job = QuantumJob(
+                        circuit_spec={"type": "bell_pair", "qubits": 2},
+                        n_qubits=2, shots=1024, compile=True,
+                        metadata={"origin": "self_healer", "link_id": str(_lget(link, "link_id", ""))}
+                    )
+                    result = vb.execute(job)
+                    sacred = getattr(result, "sacred_alignment", 0.5) if result else 0.5
+                    boost = float(sacred) * PHI * 0.15  # Sacred-scaled PHI boost
+                    _lset(link, "fidelity", min(1.0, _lget(link, "fidelity", 0.5) + boost))
+                    _lset(link, "strength", min(1.0, _lget(link, "strength", 0.5) + boost * 0.6))
+                else:
+                    # Fallback to phi_realign if bridge disappeared
+                    _lset(link, "fidelity", min(1.0, _lget(link, "fidelity", 0.5) + PHI * 0.1))
+            except Exception:
+                _lset(link, "fidelity", min(1.0, _lget(link, "fidelity", 0.5) + PHI * 0.1))
 
     def status(self) -> Dict[str, Any]:
         """Return self-healer status."""

@@ -429,7 +429,7 @@
 | `l104_agi/core.py:957-1023` | `_grover_amplified_route()` | ✅ ACTIVE | Grover-amplified subsystem routing (3-qubit, 8 states) |
 | `l104_intellect/local_intellect_core.py:1075` | `grover_amplified_search()` | ✅ ACTIVE | Grover-amplified KB concept search |
 | `l104_asi/quantum.py:40-45` | `_GROVER_NERVE_AVAILABLE` | ⚠️ OPTIONAL | Grover Nerve Link import (may not be installed) |
-| `l104_asi/language_comprehension.py:9565-9581` | KB fact Grover search | ✅ ACTIVE | Grover oracle over KB facts for knowledge retrieval |
+| `l104_asi/language_comprehension/mcq_solver.py` | KB fact Grover search | ✅ ACTIVE | Grover oracle over KB facts for knowledge retrieval |
 
 ### Quantum Search Stubs That Could Use Grover But Don't
 

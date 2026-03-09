@@ -1,0 +1,28 @@
+{
+  "adaptive_interval_s" : 3,
+  "daemon" : "VQPUMicroDaemon-Swift",
+  "error_count" : 50,
+  "god_code" : 527.51848184926121,
+  "health_score" : 0.99050000000000005,
+  "last_persist" : 1773085279.8590131,
+  "pass_rate" : 0.94670426506873462,
+  "registered_tasks" : [
+    "heartbeat",
+    "ipc_poll",
+    "score_check",
+    "fidelity_probe",
+    "memory_probe",
+    "cpu_probe",
+    "noise_floor",
+    "health_ping",
+    "cache_evict",
+    "memory_pulse"
+  ],
+  "telemetry_count" : 200,
+  "tick" : 4540,
+  "total_elapsed_ms" : 711639.84999999998,
+  "total_tasks_failed" : 756,
+  "total_tasks_passed" : 13429,
+  "total_tasks_run" : 14185,
+  "version" : "1.0.0"
+}

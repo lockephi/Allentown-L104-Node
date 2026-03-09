@@ -142,37 +142,43 @@ class NumpyCircuit:
         return counts
 
     def unitary(self) -> np.ndarray:
-        """Compute the full unitary matrix via statevector simulation."""
+        """Compute the full unitary matrix via vectorized gate application.
+
+        v1.0.1: Apply each gate to ALL columns simultaneously using
+        einsum on the reshaped unitary, instead of looping per-column.
+        This reduces O(dim²) per gate to O(dim) via tensor contraction.
+        """
         dim = 2 ** self.n_qubits
         U = np.eye(dim, dtype=np.complex128)
 
         for op, params in self._ops:
             if op == "H":
                 qubit = params
-                for col in range(dim):
-                    sv = U[:, col].copy()
-                    U[:, col] = _apply_single_gate_vec(sv, H_GATE, qubit, self.n_qubits)
+                # Reshape U columns: (dim, 2^q, 2, 2^(n-q-1)) → apply H on axis 2
+                shape = (dim, 2 ** qubit, 2, 2 ** (self.n_qubits - qubit - 1))
+                Ur = U.T.reshape(shape)
+                U = np.einsum('ij,dajb->daib', H_GATE, Ur).reshape(dim, dim).T
             elif op == "Rz":
                 theta, qubit = params
                 gate = make_gate([[np.exp(-1j * theta / 2), 0],
                                   [0, np.exp(1j * theta / 2)]])
-                for col in range(dim):
-                    sv = U[:, col].copy()
-                    U[:, col] = _apply_single_gate_vec(sv, gate, qubit, self.n_qubits)
+                shape = (dim, 2 ** qubit, 2, 2 ** (self.n_qubits - qubit - 1))
+                Ur = U.T.reshape(shape)
+                U = np.einsum('ij,dajb->daib', gate, Ur).reshape(dim, dim).T
             elif op == "Ry":
                 theta, qubit = params
                 c, s = np.cos(theta / 2), np.sin(theta / 2)
                 gate = make_gate([[c, -s], [s, c]])
-                for col in range(dim):
-                    sv = U[:, col].copy()
-                    U[:, col] = _apply_single_gate_vec(sv, gate, qubit, self.n_qubits)
+                shape = (dim, 2 ** qubit, 2, 2 ** (self.n_qubits - qubit - 1))
+                Ur = U.T.reshape(shape)
+                U = np.einsum('ij,dajb->daib', gate, Ur).reshape(dim, dim).T
             elif op == "Rx":
                 theta, qubit = params
                 c, s = np.cos(theta / 2), np.sin(theta / 2)
                 gate = make_gate([[c, -1j * s], [-1j * s, c]])
-                for col in range(dim):
-                    sv = U[:, col].copy()
-                    U[:, col] = _apply_single_gate_vec(sv, gate, qubit, self.n_qubits)
+                shape = (dim, 2 ** qubit, 2, 2 ** (self.n_qubits - qubit - 1))
+                Ur = U.T.reshape(shape)
+                U = np.einsum('ij,dajb->daib', gate, Ur).reshape(dim, dim).T
             elif op == "CX":
                 control, target = params
                 for col in range(dim):
@@ -185,9 +191,12 @@ class NumpyCircuit:
                     U[:, col] = _apply_cz_vec(sv, control, target, self.n_qubits)
             elif op == "CP":
                 theta, control, target = params
-                for col in range(dim):
-                    sv = U[:, col].copy()
-                    U[:, col] = _apply_cp_vec(sv, theta, control, target, self.n_qubits)
+                # v1.0.2: Vectorize CP with corrected bit ordering (big-endian)
+                indices = np.arange(dim, dtype=np.intp)
+                ctrl_bit = self.n_qubits - 1 - control
+                tgt_bit = self.n_qubits - 1 - target
+                mask = ((indices >> ctrl_bit) & 1).astype(bool) & ((indices >> tgt_bit) & 1).astype(bool)
+                U[mask, :] *= np.exp(1j * theta)
 
         return U
 
@@ -208,12 +217,17 @@ def _apply_cz_vec(sv: np.ndarray, control: int, target: int, n_qubits: int) -> n
 
 
 def _apply_cp_vec(sv: np.ndarray, theta: float, control: int, target: int, n_qubits: int) -> np.ndarray:
-    """Apply controlled-phase gate to a state vector."""
+    """Apply controlled-phase gate to a state vector.
+
+    v1.0.2: Fixed bit ordering to match big-endian convention.
+    """
     dim = 2 ** n_qubits
     new_sv = sv.copy()
-    for i in range(dim):
-        if (i >> control) & 1 and (i >> target) & 1:
-            new_sv[i] *= np.exp(1j * theta)
+    indices = np.arange(dim, dtype=np.intp)
+    ctrl_bit = n_qubits - 1 - control
+    tgt_bit = n_qubits - 1 - target
+    mask = ((indices >> ctrl_bit) & 1).astype(bool) & ((indices >> tgt_bit) & 1).astype(bool)
+    new_sv[mask] *= np.exp(1j * theta)
     return new_sv
 
 

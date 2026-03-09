@@ -1191,6 +1191,15 @@ class TensorNetworkSimulator:
         """
         start_time = time.time()
 
+        # Memory pre-check: verify MPS simulation is feasible
+        mem_est = self.estimate_memory(circuit.num_qubits)
+        if not mem_est["feasible_mps"]:
+            import logging
+            logging.getLogger(__name__).warning(
+                f"MPS simulation for {circuit.num_qubits} qubits requires "
+                f"{mem_est['mps_memory_mb']:.1f} MB — exceeds 4GB limit"
+            )
+
         # Initialize MPS in |00...0⟩
         mps = MPSState(
             num_qubits=circuit.num_qubits,
@@ -1225,8 +1234,10 @@ class TensorNetworkSimulator:
             total = sum(counts.values())
             result.probabilities = {k: v / total for k, v in counts.items()}
 
-        # Statevector conversion (small circuits)
-        if return_statevector and circuit.num_qubits <= 25:
+        # Statevector conversion (dynamically check feasibility based on memory)
+        # 2^n * 16 bytes < 4GB → n ≤ ~28 qubits
+        sv_feasible = circuit.num_qubits <= 28 and (2 ** circuit.num_qubits * 16) < 4 * 1024**3
+        if return_statevector and sv_feasible:
             try:
                 result.statevector = mps.to_statevector()
             except Exception:
@@ -1339,11 +1350,18 @@ class TensorNetworkSimulator:
         except Exception:
             pass
 
-        # Sacred gate density
-        sacred_count = sum(1 for op_item in circuit.operations
-                          if hasattr(op_item, 'gate') and
-                          hasattr(op_item.gate, 'gate_type') and
-                          str(op_item.gate.gate_type) == 'GateType.SACRED')
+        # Sacred gate density — use enum comparison instead of fragile string matching
+        try:
+            from .gates import GateType
+            sacred_count = sum(1 for op_item in circuit.operations
+                              if hasattr(op_item, 'gate') and
+                              hasattr(op_item.gate, 'gate_type') and
+                              op_item.gate.gate_type == GateType.SACRED)
+        except (ImportError, AttributeError):
+            sacred_count = sum(1 for op_item in circuit.operations
+                              if hasattr(op_item, 'gate') and
+                              hasattr(op_item.gate, 'gate_type') and
+                              'SACRED' in str(op_item.gate.gate_type))
 
         if circuit.num_operations > 0:
             scores["phi_alignment"] = min(1.0, sacred_count / max(1, circuit.num_operations) * PHI)

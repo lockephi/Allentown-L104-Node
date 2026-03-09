@@ -1,105 +1,85 @@
 {
-  "version": "9.0.0",
+  "version": "15.3.0",
   "daemon_cycler": "VQPUDaemonCycler",
-  "last_persist": 1772786475.060534,
-  "cycles_completed": 28,
-  "total_sims_run": 308,
-  "total_sims_passed": 308,
-  "total_sims_failed": 0,
-  "pass_rate": 1.0,
-  "total_elapsed_ms": 425222.89,
-  "avg_cycle_ms": 15186.53,
-  "last_cycle_ms": 14154.97,
-  "sc_history_count": 13,
+  "last_persist": 1773084267.364785,
+  "cycles_completed": 25,
+  "total_sims_run": 179,
+  "total_sims_passed": 162,
+  "total_sims_failed": 17,
+  "pass_rate": 0.905,
+  "total_elapsed_ms": 777076.06,
+  "avg_cycle_ms": 31083.04,
+  "last_cycle_ms": 41941.67,
+  "health_score": 0.8668,
+  "consecutive_failures": 0,
+  "watchdog_restarts": 0,
+  "quarantined_sims": {},
+  "sim_failure_counts": {},
+  "cycle_fidelity_avg": [
+    0.750789,
+    0.750789,
+    0.750789,
+    0.750274,
+    0.750274
+  ],
+  "cycle_alignment_avg": [
+    0.519448,
+    0.519448,
+    0.519448,
+    0.689869,
+    0.689869
+  ],
+  "total_leaked_threads": 0,
+  "sc_history_count": 2,
   "sc_latest": {
-    "cycle": 27,
-    "ts": 1772786475.047938,
-    "cooper_pair": 0.014982,
-    "order_param": 0.014982,
+    "cycle": 24,
+    "ts": 1773084266.7085388,
+    "cooper_pair": 0.017253,
+    "order_param": 0.017253,
     "energy_gap_eV": 0.0,
     "meissner": 0.0,
     "pairing": "s\u00b1"
   },
   "health_history": [
     {
-      "cycle": 19,
-      "ts": 1772783501.311299,
-      "passed": 11,
-      "total": 11,
-      "pass_rate": 1.0,
-      "elapsed_ms": 6116.63
-    },
-    {
-      "cycle": 20,
-      "ts": 1772783819.2410061,
-      "passed": 11,
-      "total": 11,
-      "pass_rate": 1.0,
-      "elapsed_ms": 17504.61
-    },
-    {
       "cycle": 21,
-      "ts": 1772784137.2821681,
-      "passed": 11,
-      "total": 11,
+      "ts": 1773078691.9993,
+      "passed": 5,
+      "total": 5,
       "pass_rate": 1.0,
-      "elapsed_ms": 17700.02
+      "elapsed_ms": 31948.59
     },
     {
       "cycle": 22,
-      "ts": 1772784457.507828,
-      "passed": 11,
-      "total": 11,
+      "ts": 1773078867.7573109,
+      "passed": 5,
+      "total": 5,
       "pass_rate": 1.0,
-      "elapsed_ms": 17867.7
+      "elapsed_ms": 707.45
     },
     {
       "cycle": 23,
-      "ts": 1772784786.389889,
-      "passed": 11,
-      "total": 11,
+      "ts": 1773079117.0471702,
+      "passed": 5,
+      "total": 5,
       "pass_rate": 1.0,
-      "elapsed_ms": 27288.19
+      "elapsed_ms": 1685.83
     },
     {
       "cycle": 24,
-      "ts": 1772785100.9610188,
+      "ts": 1773079771.305355,
       "passed": 11,
       "total": 11,
       "pass_rate": 1.0,
-      "elapsed_ms": 13832.64
+      "elapsed_ms": 24253.9
     },
     {
       "cycle": 25,
-      "ts": 1772785474.301208,
+      "ts": 1773084267.062291,
       "passed": 11,
       "total": 11,
       "pass_rate": 1.0,
-      "elapsed_ms": 70442.77
-    },
-    {
-      "cycle": 26,
-      "ts": 1772785845.5741591,
-      "passed": 11,
-      "total": 11,
-      "pass_rate": 1.0,
-      "elapsed_ms": 69835.15
-    },
-    {
-      "cycle": 27,
-      "ts": 1772786160.373012,
-      "passed": 11,
-      "total": 11,
-      "pass_rate": 1.0,
-      "elapsed_ms": 14187.72
-    },
-    {
-      "cycle": 28,
-      "ts": 1772786475.06032,
-      "passed": 11,
-      "total": 11,
-      "pass_rate": 1.0,
-      "elapsed_ms": 14154.97
+      "elapsed_ms": 41941.67
     }
   ],
   "god_code": 527.5184818492612

@@ -1,4 +1,4 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.347725
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:54.329513
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 VOID_CONSTANT = 1.0416180339887497
@@ -984,7 +984,7 @@ class MeaningEmergence:
         self.pattern_activations[pattern_id] += 1.0
 
         # Binding strength based on activation history
-        return min(1.0, self.pattern_activations[pattern_id] / 10)
+        return self.pattern_activations[pattern_id] / 10
 
     def emergent_meaning(
         self,

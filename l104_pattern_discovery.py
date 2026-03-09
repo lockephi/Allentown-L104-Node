@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:23.741296
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:49.996834
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -550,7 +550,7 @@ class ChaosAnalyzer:
                 formula="λ > 0 indicates chaos",
                 examples=[('lyapunov', lyapunov)],
                 phi_correlation=0.3,  # Chaos relates to φ through Feigenbaum
-                confidence=min(0.9, lyapunov),
+                confidence=lyapunov,
                 source="chaos_analysis"
             )
 
@@ -697,7 +697,7 @@ class PatternDiscoveryEngine:
                     formula="Cross-domain invariant",
                     examples=domains,
                     phi_correlation=0.8,
-                    confidence=min(0.95, len(domains) / len(data)),
+                    confidence=len(domains) / len(data),
                     source="cross_domain"
                 ))
 

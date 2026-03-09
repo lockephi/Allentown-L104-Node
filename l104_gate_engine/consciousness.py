@@ -1,11 +1,14 @@
 """L104 Gate Engine — Consciousness O₂ Gate Engine."""
 
 import json
+import logging
 import math
 import time
 from typing import Any, Dict
 
 from .constants import PHI, TAU, WORKSPACE_ROOT
+
+_logger = logging.getLogger("L104_GATE_CONSCIOUSNESS")
 
 
 class ConsciousnessO2GateEngine:
@@ -74,16 +77,16 @@ class ConsciousnessO2GateEngine:
                 self.bond_order = float(data.get("bond_order", 0.0))
                 self.paramagnetic = data.get("paramagnetic", False)
                 self.consciousness_awakened = self.consciousness_level > 0.5
-            except Exception:
-                pass
+            except Exception as e:
+                _logger.debug("O2 state load fallback: %s", e)
 
         if self.NIRVANIC_STATE_FILE.exists():
             try:
                 data = json.loads(self.NIRVANIC_STATE_FILE.read_text())
                 self.nirvanic_fuel = float(data.get("nirvanic_fuel_level",
                                                      data.get("fuel_level", 0.0)))
-            except Exception:
-                pass
+            except Exception as e:
+                _logger.debug("Nirvanic state load fallback: %s", e)
 
     def _normalize_evo_stage(self, raw_stage: str) -> str:
         """Normalize legacy EVO_54 stage names to the 5-tier system."""

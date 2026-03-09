@@ -38,7 +38,8 @@ CHECK_INTERVAL="${L104_HEALTH_CHECK_INTERVAL:-60}"
 CORE_SERVICES=(
     "com.l104.fast-server"
     "com.l104.node-server"
-    "com.l104.vqpu-daemon"
+    "com.londel.l104daemon"
+    "com.l104.vqpu-micro-daemon"
     "com.l104.auto-update"
 )
 

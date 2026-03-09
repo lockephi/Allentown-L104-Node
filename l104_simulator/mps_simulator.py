@@ -364,35 +364,19 @@ class MPSState:
         """Compute the norm of the MPS state via transfer matrix contraction.
 
         O(n × chi³) — much cheaper than full statevector for large n.
+
+        v1.0.1: Removed dead code loop; fixed einsum 'aa' → 'aA' for correct
+        transfer-matrix contraction (the old index traced over the bra/ket
+        bond dimensions instead of contracting them properly).
         """
-        # Transfer matrix: start with identity
-        T = np.ones((1, 1), dtype=complex)  # (chi_l, chi_l)
-
-        for i in range(self.n):
-            A = self.tensors[i]  # (chi_l, 2, chi_r)
-            # T_new[a, b] = sum_s T[a', b'] * A[a', s, a] * conj(A[b', s, b])
-            # = sum_s (T @ A[:, s, :]) * conj_l (A[:, s, :])
-            chi_r = A.shape[2]
-            T_new = np.zeros((chi_r, chi_r), dtype=complex)
-            for s in range(2):
-                A_s = A[:, s, :]  # (chi_l, chi_r)
-                T_new += (T @ A_s).conj().T @ (T @ A_s)
-            # Simplify: T_new = sum_s A_s†  T† T A_s
-            # Actually: T_new[a,b] = sum_{a'b's} conj(A[b',s,b]) * T[a',b'] * T conj * ...
-            # Let's use the proper transfer matrix:
-            # E_i[a,a',b,b'] = sum_s A_i[a,s,b] * conj(A_i[a',s,b'])
-            pass
-
-        # Simpler: compute via einsum
         T = np.eye(1, dtype=complex)
         for i in range(self.n):
             A = self.tensors[i]  # (chi_l, 2, chi_r)
-            # Transfer: T[a, a'] @ E_i → T_new[b, b']
-            # E_i[a, a', b, b'] = sum_s A[a, s, b] * conj(A[a', s, b'])
-            T_new = np.einsum('aa,asb,ASB->bB', T, A, A.conj())
-            T = T_new
+            # Transfer: T[a, A] @ E_i → T_new[b, B]
+            # E_i[a, A, b, B] = sum_s A[a, s, b] * conj(A[A, s, B])
+            T = np.einsum('aA,asb,AsB->bB', T, A, A.conj())
 
-        return float(np.sqrt(np.abs(T[0, 0])))  # Should be scalar for (1,1) boundary
+        return float(np.sqrt(np.abs(T[0, 0])))
 
 
 class MPSSimulator:
@@ -455,12 +439,24 @@ class MPSSimulator:
         elif n <= 20:
             sv = mps.to_statevector()
         else:
-            # For large circuits, create synthetic statevector from probabilities
+            # For large circuits, create synthetic statevector from probabilities.
+            # v1.0.1: Cap at 2**20 but log a warning when truncating.
             probs = mps.get_probabilities()
-            sv = np.zeros(min(2**n, 2**20), dtype=complex)  # Capped synthetic SV
+            sv_dim = 2 ** n
+            cap = 2 ** 20
+            if sv_dim > cap:
+                import warnings
+                warnings.warn(
+                    f"MPS synthetic statevector capped at 2^20 = {cap} amplitudes "
+                    f"(full Hilbert space is 2^{n} = {sv_dim}). "
+                    f"Use return_full_sv=True with n<=25 for exact statevector.",
+                    stacklevel=2,
+                )
+                sv_dim = cap
+            sv = np.zeros(sv_dim, dtype=complex)
             for bitstr, p in probs.items():
                 idx = int(bitstr, 2)
-                if idx < len(sv):
+                if idx < sv_dim:
                     sv[idx] = np.sqrt(p)  # Amplitudes (phases not recoverable)
 
         return SimulationResult(

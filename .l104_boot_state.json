@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-07T01:25:51",
-  "boot_sequence": "l104_vqpu_boot_manager v2.0",
+  "timestamp": "2026-03-09T15:41:53",
+  "boot_sequence": "l104_vqpu_boot_manager v3.0",
   "god_code": 527.5184818492612,
   "phases": {
     "1_ipc": {
@@ -10,26 +10,54 @@
     "2_plists": {
       "com.l104.fast-server": "exists",
       "com.l104.node-server": "exists",
-      "com.l104.vqpu-daemon": "exists",
+      "com.londel.l104daemon": "exists",
       "com.l104.auto-update": "exists",
       "com.l104.log-rotate": "exists",
-      "com.l104.health-watchdog": "exists"
+      "com.l104.health-watchdog": "exists",
+      "com.l104.vqpu-micro-daemon": "exists"
     },
     "3_resurrect": {
-      "timestamp": "2026-03-07T01:25:52",
+      "timestamp": "2026-03-09T15:41:54",
       "actions": [],
       "resurrected": 0
     },
     "4_verify": {
-      "timestamp": "2026-03-07T01:25:53",
+      "timestamp": "2026-03-09T15:41:57",
       "verified": true,
       "issues": [],
-      "services_loaded": 6,
-      "services_total": 6,
+      "services_loaded": 7,
+      "services_total": 7,
       "overall": "healthy"
-    }
+    },
+    "5_renice": [
+      {
+        "service": "com.l104.fast-server",
+        "pid": 520,
+        "reniced": false
+      },
+      {
+        "service": "com.londel.l104daemon",
+        "pid": 5514,
+        "reniced": true
+      },
+      {
+        "service": "com.l104.node-server",
+        "pid": 7162,
+        "reniced": true
+      },
+      {
+        "service": "com.l104.vqpu-micro-daemon",
+        "pid": 5522,
+        "reniced": false
+      }
+    ]
   },
   "success": true,
-  "services_loaded": 6,
-  "services_total": 6
+  "services_loaded": 7,
+  "services_total": 7,
+  "platform": {
+    "arch": "x86_64",
+    "mac_ver": "12.7.6",
+    "is_apple_silicon": false
+  }
 }

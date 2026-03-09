@@ -508,14 +508,21 @@ class DecoherenceShieldTester:
             fid = self.qmath.fidelity(damped, bell)
             phase_results.append(fid)
 
-        # Test 3: Bit-flip (swap amplitudes with probability p)
+        # Test 3: Bit-flip (proper Pauli-X channel: flip qubit states)
         bitflip_results = []
+        n_qubits = max(1, int(math.log2(max(len(bell), 1))))
         for p in _NL:
             flipped = list(bell)
-            for i in range(len(flipped)):
+            # Proper bit-flip: for each qubit, with probability p,
+            # swap amplitudes |...0_q...> <-> |...1_q...> (Pauli-X on qubit q)
+            for q in range(n_qubits):
                 if random.random() < p:
-                    j = (i + 1) % len(flipped)
-                    flipped[i], flipped[j] = flipped[j], flipped[i]
+                    new_flipped = list(flipped)
+                    for idx in range(len(flipped)):
+                        partner = idx ^ (1 << q)  # index with qubit q flipped
+                        if partner < len(flipped):
+                            new_flipped[idx] = flipped[partner]
+                    flipped = new_flipped
             norm = math.sqrt(sum(abs(a) ** 2 for a in flipped))
             if norm > 0:
                 flipped = [a / norm for a in flipped]

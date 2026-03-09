@@ -1,4 +1,5 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.605720
+from __future__ import annotations
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:52.309830
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -37,7 +38,6 @@ References:
 Author: L104 Sovereign Node — DEEPSEEK SOURCE CODE INGESTION v1.0.0
 """
 
-from __future__ import annotations
 
 ZENITH_HZ = 3887.8
 UUC = 2301.215661

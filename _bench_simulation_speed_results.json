@@ -1,0 +1,166 @@
+{
+  "reconstruct_density_matrix": {
+    "2q": {
+      "ms": 0.259,
+      "purity": 1.0,
+      "is_pure": true
+    },
+    "3q": {
+      "ms": 0.715,
+      "purity": 1.0,
+      "is_pure": true
+    },
+    "4q": {
+      "ms": 0.207,
+      "purity": 1.0,
+      "is_pure": true
+    },
+    "5q": {
+      "ms": 0.315,
+      "purity": 1.0,
+      "is_pure": true
+    }
+  },
+  "trotter_evolution": {
+    "3sites_10steps": {
+      "ms": 8.67,
+      "energy": 1.055037,
+      "magnetization": 0.0
+    },
+    "3sites_20steps": {
+      "ms": 11.482,
+      "energy": 1.055037,
+      "magnetization": -0.0
+    },
+    "4sites_10steps": {
+      "ms": 22.053,
+      "energy": 1.582555,
+      "magnetization": 0.0
+    },
+    "4sites_20steps": {
+      "ms": 15.533,
+      "energy": 1.582555,
+      "magnetization": -0.0
+    },
+    "5sites_10steps": {
+      "ms": 51.938,
+      "energy": 2.110074,
+      "magnetization": 0.0
+    },
+    "5sites_20steps": {
+      "ms": 35.916,
+      "energy": 2.110074,
+      "magnetization": -0.0
+    }
+  },
+  "topological_entropy": {
+    "3q": {
+      "ms": 0.603,
+      "gamma": 0.0
+    },
+    "4q": {
+      "ms": 0.899,
+      "gamma": 0.0
+    },
+    "6q": {
+      "ms": 0.569,
+      "gamma": 0.0
+    },
+    "8q": {
+      "ms": 0.613,
+      "gamma": 0.0
+    }
+  },
+  "singlet_projection": {
+    "4q": {
+      "ms": 0.21,
+      "avg_singlet": 0.0
+    },
+    "6q": {
+      "ms": 0.264,
+      "avg_singlet": 0.0
+    },
+    "8q": {
+      "ms": 0.429,
+      "avg_singlet": 0.0
+    }
+  },
+  "build_unitary": {
+    "3q": {
+      "ms": 0.898,
+      "is_unitary": true,
+      "dim": 8
+    },
+    "4q": {
+      "ms": 1.069,
+      "is_unitary": true,
+      "dim": 16
+    },
+    "5q": {
+      "ms": 2.042,
+      "is_unitary": true,
+      "dim": 32
+    }
+  },
+  "apply_cnot_cached": {
+    "4q": {
+      "ms": 0.0442
+    },
+    "6q": {
+      "ms": 0.0415
+    },
+    "8q": {
+      "ms": 0.0536
+    },
+    "10q": {
+      "ms": 0.0573
+    }
+  },
+  "expm_approx": {
+    "4x4": {
+      "ms": 0.408
+    },
+    "8x8": {
+      "ms": 0.388
+    },
+    "16x16": {
+      "ms": 0.709
+    },
+    "32x32": {
+      "ms": 5.414
+    }
+  },
+  "simulator_prob": {
+    "6q": {
+      "prob_ms": 0.207,
+      "cond_prob_ms": 0.055
+    },
+    "8q": {
+      "prob_ms": 0.353,
+      "cond_prob_ms": 0.07
+    },
+    "10q": {
+      "prob_ms": 0.687,
+      "cond_prob_ms": 0.085
+    },
+    "12q": {
+      "prob_ms": 2.151,
+      "cond_prob_ms": 0.128
+    }
+  },
+  "meissner_susceptibility": {
+    "ms": 66.2,
+    "chi": 0.0,
+    "field_points": 3
+  },
+  "phase_sweep_parallel": {
+    "ms": 73.9,
+    "points": 104
+  },
+  "god_code_run_all": {
+    "ms": 3798.3,
+    "passed": 62,
+    "total": 62,
+    "pass_rate": 1.0
+  }
+}

@@ -144,16 +144,30 @@ class TannerGraph:
         return graph
 
     def _compute_girth(self, max_depth: int = 20) -> int:
-        """Compute girth (shortest cycle) via BFS from each variable node.
-        Returns 0 if no cycle found within max_depth."""
+        """Compute girth (shortest cycle) via BFS from sampled variable nodes.
+
+        v11.0.1: Uses collections.deque for O(1) popleft (was O(n) list.pop(0)).
+        Samples nodes randomly (not sequential first-50) and scales sample size
+        with sqrt(n_variable) for better coverage of large codes.
+        Returns 0 if no cycle found within max_depth.
+        """
+        from collections import deque as _deque
+        import random as _rng
+
         min_cycle = max_depth + 1
-        for v_start in range(min(self.n_variable, 50)):  # Sample for speed
+        sample_size = min(self.n_variable, max(50, int(self.n_variable ** 0.5)))
+        if self.n_variable <= sample_size:
+            sample_nodes = list(range(self.n_variable))
+        else:
+            sample_nodes = _rng.sample(range(self.n_variable), sample_size)
+
+        for v_start in sample_nodes:
             # BFS in bipartite graph: v → c → v → c → ...
             visited_v = {v_start: 0}
             visited_c: Dict[int, int] = {}
-            queue: List[Tuple[str, int, int]] = [("v", v_start, 0)]  # (type, node, depth)
+            queue = _deque([("v", v_start, 0)])  # (type, node, depth)
             while queue:
-                ntype, node, depth = queue.pop(0)
+                ntype, node, depth = queue.popleft()
                 if depth >= max_depth:
                     break
                 if ntype == "v":

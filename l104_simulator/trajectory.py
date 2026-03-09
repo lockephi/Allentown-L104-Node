@@ -197,25 +197,26 @@ class TrajectorySimulator:
     @staticmethod
     def _qubit_prob(state: np.ndarray, qubit: int, n: int,
                     value: int = 1) -> float:
-        """Marginal probability of a single qubit being |value⟩."""
+        """Marginal probability of a single qubit being |value⟩.
+
+        v1.0.1: Vectorized via reshape + slice instead of Python for-loop.
+        """
         probs = np.abs(state) ** 2
-        total = 0.0
-        for i in range(len(probs)):
-            bit = (i >> (n - qubit - 1)) & 1
-            if bit == value:
-                total += probs[i]
-        return total
+        shape = (2 ** qubit, 2, 2 ** (n - qubit - 1))
+        return float(probs.reshape(shape)[:, value, :].sum())
 
     @staticmethod
     def _project_qubit(state: np.ndarray, qubit: int, n: int,
                        target: int) -> np.ndarray:
-        """Project qubit to |target⟩ by zeroing the other component."""
+        """Project qubit to |target⟩ by zeroing the other component.
+
+        v1.0.1: Vectorized via reshape + in-place zero.
+        """
         result = state.copy()
-        for i in range(len(result)):
-            bit = (i >> (n - qubit - 1)) & 1
-            if bit != target:
-                result[i] = 0.0
-        return result
+        shape = (2 ** qubit, 2, 2 ** (n - qubit - 1))
+        r = result.reshape(shape)
+        r[:, 1 - target, :] = 0.0
+        return r.reshape(-1)
 
     @staticmethod
     def _damp_qubit(state: np.ndarray, qubit: int, n: int,
@@ -235,7 +236,9 @@ class TrajectorySimulator:
         shape = (2 ** qubit, 2, 2 ** (n - qubit - 1))
         r = result.reshape(shape)
         if pauli == 'X':
-            r[:, 0, :], r[:, 1, :] = r[:, 1, :].copy(), r[:, 0, :].copy()
+            # v1.0.1: Use np.flip to swap qubit components — one temp instead of two
+            r_flipped = np.flip(r, axis=1).copy()
+            r[:] = r_flipped
         elif pauli == 'Y':
             temp0 = r[:, 0, :].copy()
             temp1 = r[:, 1, :].copy()

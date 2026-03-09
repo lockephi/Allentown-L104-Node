@@ -1,0 +1,5 @@
+        def chaos_float(self, context=""):
+            u1 = max(1e-10, self.chaos_float(context=context))
+            u2 = self.chaos_float(context=context)
+            idx = int(self.chaos_float(context=context) * len(seq)) % len(seq)
+        return resonance + chaos.chaos_float(context=f"phi_resonance_{name}") * 0.2

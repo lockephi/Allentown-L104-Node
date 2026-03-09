@@ -279,8 +279,10 @@ def sim_qec_bit_flip(nq: int = 3) -> SimulationResult:
     sv = apply_cnot(sv, 0, 1, n)
     sv = apply_cnot(sv, 0, 2, n)
 
-    # Save reference data-qubit amplitudes (ancillas in |00⟩ → indices 0..7)
-    data_reference = sv[0:8].copy()
+    # Save reference data-qubit amplitudes (ancillas q3=0, q4=0)
+    # Big-endian: idx = q0*16 + q1*8 + q2*4 + q3*2 + q4
+    # Ancilla |00⟩: q3=0, q4=0 → last 2 bits = 00 → indices d*4 for d in 0..7
+    data_reference = np.array([sv[d * 4] for d in range(8)])
     ref_norm = np.linalg.norm(data_reference)
 
     # INJECT ERROR: Single bit-flip on data qubit 1
@@ -298,9 +300,8 @@ def sim_qec_bit_flip(nq: int = 3) -> SimulationResult:
     sv = apply_mcx(sv, [3, 4], 1, n)
 
     # After correction, data qubits are restored; ancillas are in |11⟩
-    # (syndrome = q3=1, q4=1 → ancilla index 3 → offset 8*3 = 24)
-    # Extract data-qubit amplitudes for ancilla state |11⟩
-    data_corrected = sv[24:32].copy()
+    # Big-endian: ancilla |11⟩ → q3=1, q4=1 → last 2 bits = 11 → indices d*4 + 3
+    data_corrected = np.array([sv[d * 4 + 3] for d in range(8)])
     cor_norm = np.linalg.norm(data_corrected)
 
     # Compute data-qubit recovery fidelity
@@ -353,7 +354,10 @@ def sim_teleportation(nq: int = 3) -> SimulationResult:
     rx = make_gate([[math.cos(rx_angle / 2), -1j * math.sin(rx_angle / 2)],
                     [-1j * math.sin(rx_angle / 2), math.cos(rx_angle / 2)]])
     sv = apply_single_gate(sv, rx, 0, 3)
-    initial_state = sv[:2].copy() / np.linalg.norm(sv[:2])
+    # Extract initial single-qubit state (avoid 3Q index assumptions)
+    sv_1q = init_sv(1)
+    sv_1q = apply_single_gate(sv_1q, rx, 0, 1)
+    initial_state = sv_1q.copy()
 
     # Step 2: Create Bell pair on q1-q2
     sv = apply_single_gate(sv, H_GATE, 1, 3)
@@ -364,18 +368,16 @@ def sim_teleportation(nq: int = 3) -> SimulationResult:
     sv = apply_single_gate(sv, H_GATE, 0, 3)
 
     # Step 4: Simulate all 4 classical outcomes and apply corrections
-    # After Bell measurement, state decomposes as:
-    #   1/2 Σ_{m0,m1} |m0⟩|m1⟩ ⊗ (X^m1 Z^m0 |ψ⟩)
-    # With bit-ordering index = q0 + 2*q1 + 4*q2, extract Bob's qubit (q2)
-    # for each Alice measurement outcome (m0 on q0, m1 on q1).
+    # Big-endian bit ordering: idx = q0*4 + q1*2 + q2
+    # Alice measures q0 (m0) and q1 (m1), Bob receives q2.
     total_fidelity = 0.0
     outcome_fidelities = []
 
     for m0 in range(2):
         for m1 in range(2):
-            # Bob's qubit amplitudes: sv[m0 + 2*m1 + 4*q2] for q2 ∈ {0,1}
-            idx_base = m0 + 2 * m1
-            bob_state = np.array([sv[idx_base], sv[idx_base + 4]])
+            # Bob's qubit amplitudes for Alice outcome (m0, m1)
+            idx_base = m0 * 4 + m1 * 2
+            bob_state = np.array([sv[idx_base], sv[idx_base + 1]])
             prob_outcome = np.linalg.norm(bob_state) ** 2
             if prob_outcome < 1e-15:
                 outcome_fidelities.append(0.0)

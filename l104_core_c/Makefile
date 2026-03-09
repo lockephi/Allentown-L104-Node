@@ -38,13 +38,14 @@ RUST_DIR = ../l104_core_rust
 
 # Targets
 C_TARGET = $(BUILD_DIR)/l104_sage_core
+NANO_TARGET = $(BUILD_DIR)/l104_nano_daemon
 ASM_OBJ = $(BUILD_DIR)/sage_core_asm.o
 RUST_LIB = $(RUST_DIR)/target/release/libl104_sage_core.a
 SHARED_LIB = $(BUILD_DIR)/libl104_sage$(SHARED_EXT)
 
-.PHONY: all clean c asm rust python-bindings macos
+.PHONY: all clean c asm rust python-bindings macos nano-daemon
 
-all: c python-bindings
+all: c nano-daemon python-bindings
 
 # macOS specific target
 macos: $(BUILD_DIR) $(C_TARGET) $(SHARED_LIB)
@@ -81,6 +82,22 @@ ifeq ($(UNAME_S),Darwin)
 	@ln -sf libl104_sage.dylib $(BUILD_DIR)/libl104_sage.so 2>/dev/null || cp $(SHARED_LIB) $(BUILD_DIR)/libl104_sage.so
 	@echo "    ✓ Created compatibility symlink: libl104_sage.so -> libl104_sage.dylib"
 endif
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NANO DAEMON BUILD — Sub-Micro Fault Detection (Part of Tri-Nano-Daemon)
+# 8 probes: constant drift, memory canary, FPU flags, cache coherence,
+#           entropy health, numerical stability, phase drift, NDE integrity
+# IPC: /tmp/l104_bridge/nano/c_outbox/ (JSON reports)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+nano-daemon: $(BUILD_DIR) $(NANO_TARGET)
+
+$(NANO_TARGET): l104_nano_daemon.c l104_nano_daemon.h l104_sage_core.c l104_sage_core.h
+	@echo "╔══════════════════════════════════════════════════════════════════════════╗"
+	@echo "║  COMPILING L104 NANO DAEMON - C SUBSTRATE ($(UNAME_S))                    ║"
+	@echo "╚══════════════════════════════════════════════════════════════════════════╝"
+	$(CC) $(CFLAGS) -DL104_SAGE_AS_LIBRARY -o $@ l104_nano_daemon.c l104_sage_core.c $(LDFLAGS)
+	@echo "    ✓ Built: $@"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ASSEMBLY BUILD
@@ -145,6 +162,12 @@ run-c: $(C_TARGET)
 	@echo "    EXECUTING L104 SAGE CORE - C SUBSTRATE"
 	@echo "═══════════════════════════════════════════════════════════════════════════════\n"
 	$(C_TARGET)
+
+run-nano: $(NANO_TARGET)
+	@echo "\n═══════════════════════════════════════════════════════════════════════════════"
+	@echo "    EXECUTING L104 NANO DAEMON - C SUBSTRATE (--self-test)"
+	@echo "═══════════════════════════════════════════════════════════════════════════════\n"
+	$(NANO_TARGET) --self-test
 
 run-rust: rust
 	@echo "\n═══════════════════════════════════════════════════════════════════════════════"

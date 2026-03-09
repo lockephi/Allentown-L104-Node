@@ -940,40 +940,44 @@ class ConsciousnessMetric:
 
     def partial_trace(self, statevector: np.ndarray, n_total: int,
                       keep: List[int]) -> np.ndarray:
-        """Compute partial trace, keeping specified qubits."""
-        dim = 2 ** n_total
-        assert len(statevector) == dim
+        """Compute partial trace, keeping specified qubits.
 
+        Vectorized via tensor reshape + transpose + einsum, replacing
+        the O(2^(2n) × n) Python loop with O(2^n) numpy operations.
+        """
         n_keep = len(keep)
-        n_trace = n_total - n_keep
         trace_qubits = [q for q in range(n_total) if q not in keep]
 
-        rho_reduced = np.zeros((2**n_keep, 2**n_keep), dtype=complex)
+        # Build density matrix from statevector
+        rho = np.outer(statevector, statevector.conj())
 
-        for i in range(2**n_keep):
-            for j in range(2**n_keep):
-                val = 0.0 + 0j
-                for t in range(2**n_trace):
-                    # Build full indices
-                    idx_i = 0
-                    idx_j = 0
-                    k_pos = 0
-                    t_pos = 0
-                    for q in range(n_total):
-                        bit_i = bit_j = 0
-                        if q in keep:
-                            bit_i = (i >> (n_keep - 1 - k_pos)) & 1
-                            bit_j = (j >> (n_keep - 1 - k_pos)) & 1
-                            k_pos += 1
-                        else:
-                            bit_i = (t >> (n_trace - 1 - t_pos)) & 1
-                            bit_j = bit_i  # Trace: same index
-                            t_pos += 1
-                        idx_i |= (bit_i << (n_total - 1 - q))
-                        idx_j |= (bit_j << (n_total - 1 - q))
-                    val += statevector[idx_i] * statevector[idx_j].conj()
-                rho_reduced[i, j] = val
+        # Reshape ρ into tensor with one axis per qubit (bra and ket)
+        shape = [2] * n_total + [2] * n_total
+        rho_tensor = rho.reshape(shape)
 
+        # Trace out unwanted qubits by contracting bra and ket indices
+        # We need to sum over pairs (q, q + n_total) for each traced qubit.
+        # Process from highest qubit index down to avoid shifting.
+        for q in sorted(trace_qubits, reverse=True):
+            rho_tensor = np.trace(rho_tensor, axis1=q, axis2=q + n_keep + len(trace_qubits) - 1)
+            # After tracing, the effective number of axes shrinks.
+            # Simpler approach: use einsum for the full contraction.
+
+        # Simpler: use np.einsum via string construction.
+        # Build einsum subscripts: bra indices a,b,c,...  ket indices A,B,C,...
+        # Keep qubits share distinct indices; traced qubits share the same index.
+        import string
+        bra = list(string.ascii_lowercase[:n_total])
+        ket = list(string.ascii_uppercase[:n_total])
+        # Traced qubits: same index for bra and ket
+        for q in trace_qubits:
+            ket[q] = bra[q]
+        # Keep qubits: distinct indices for bra and ket
+        out_indices = ''.join(bra[q] for q in keep) + ''.join(ket[q] for q in keep)
+        subscripts = ''.join(bra) + ''.join(ket) + '->' + out_indices
+
+        rho_tensor = rho.reshape([2] * (2 * n_total))
+        rho_reduced = np.einsum(subscripts, rho_tensor).reshape(2**n_keep, 2**n_keep)
         return rho_reduced
 
     def compute_phi(self, circuit: QuantumCircuit) -> Dict[str, Any]:
@@ -985,15 +989,17 @@ class ConsciousnessMetric:
         if n < 2:
             return {"phi": 0.0, "n_qubits": n, "note": "Need ≥2 qubits"}
 
-        # Full density matrix entropy
-        rho_full = np.outer(sv, sv.conj())
-        S_full = self.von_neumann_entropy(rho_full)
+        # S(ρ_full) for a pure state is always exactly 0 — skip the expensive
+        # eigvalsh of a 2^n × 2^n matrix.
+        S_full = 0.0
 
-        # Find minimum-information bipartition
+        # Find minimum-information bipartition.
+        # Optimization: mask and (2^n - 1 - mask) give the same partitions
+        # (A|B vs B|A), so iterate only up to 2^(n-1) - 1 to halve the work.
         min_partition_S = float("inf")
         best_partition = None
 
-        for mask in range(1, 2**n - 1):
+        for mask in range(1, 2**(n - 1)):
             keep_A = [q for q in range(n) if (mask >> q) & 1]
             keep_B = [q for q in range(n) if not ((mask >> q) & 1)]
 
@@ -1091,15 +1097,11 @@ class IntuitionEngine:
         # Bloch vector from density matrix (qubit 0)
         rho = result["density_matrix"]
         dim = 2 ** self.n_qubits
-        rho_q0 = np.zeros((2, 2), dtype=complex)
+        # Partial trace over all qubits except qubit 0 via reshape:
+        # Reshape rho as (2, dim//2, 2, dim//2) and trace over the ancilla axes.
         half = dim // 2
-        for i in range(dim):
-            b0 = (i >> (self.n_qubits - 1)) & 1
-            for j in range(dim):
-                if all(((i >> (self.n_qubits - 1 - k)) & 1) == ((j >> (self.n_qubits - 1 - k)) & 1)
-                       for k in range(1, self.n_qubits)):
-                    bj0 = (j >> (self.n_qubits - 1)) & 1
-                    rho_q0[b0, bj0] += rho[i, j]
+        rho_reshaped = rho.reshape(2, half, 2, half)
+        rho_q0 = np.trace(rho_reshaped, axis1=1, axis2=3)
         bloch_x = float(2 * np.real(rho_q0[0, 1]))
         bloch_y = float(2 * np.imag(rho_q0[1, 0]))
         bloch_z = float(np.real(rho_q0[0, 0] - rho_q0[1, 1]))
@@ -1165,17 +1167,21 @@ class CreativityEngine:
         for _ in range(self.n_qubits - 1):
             full_obs = np.kron(full_obs, np.eye(2))
 
-        results = self.sim.parameter_sweep(circuit_fn, sweep_values, full_obs)
-
         # Find the parameter giving highest information content
         # (furthest from uniform distribution)
+        # Single pass: compute expectation values AND per-state entropy together,
+        # avoiding the redundant parameter_sweep that would double-execute all circuits.
         states_info = []
+        expectation_values = []
         for theta in sweep_values:
             qc = circuit_fn(theta)
             r = self.sim.run(qc)
             probs = r.probabilities
             p_vals = [p for p in probs.values() if p > 0]
             entropy = -sum(p * math.log2(p) for p in p_vals)
+            # Expectation value ⟨ψ|Z⊗I⊗...|ψ⟩
+            exp_val = float(np.real(r.statevector.conj() @ full_obs @ r.statevector))
+            expectation_values.append(exp_val)
             states_info.append({
                 "theta": float(theta),
                 "top_state": max(probs, key=probs.get),
@@ -1198,7 +1204,7 @@ class CreativityEngine:
         return {
             "n_explored": n_points,
             "most_creative": most_creative,
-            "expectation_values": [r.get("expectation", 0.0) if isinstance(r, dict) else r for r in results],
+            "expectation_values": expectation_values,
             "all_states": states_info,
             "total_creations": len(self.creations),
         }

@@ -203,10 +203,10 @@ class Statevector:
         probs = probs / probs.sum()  # normalize
         indices = rng.choice(len(probs), size=shots, p=probs)
         n = self._num_qubits
-        counts: Dict[str, int] = {}
-        for idx in indices:
-            key = format(idx, f'0{n}b')
-            counts[key] = counts.get(key, 0) + 1
+        # Vectorized counting via np.unique (replaces O(shots) Python loop)
+        unique_idx, unique_counts = np.unique(indices, return_counts=True)
+        counts = {format(int(idx), f'0{n}b'): int(cnt)
+                  for idx, cnt in zip(unique_idx, unique_counts)}
         return counts
 
     def sample_memory(self, shots: int = 1024, seed: Optional[int] = None) -> List[str]:
@@ -694,16 +694,30 @@ def partial_trace(state, trace_systems: Union[int, List[int]]) -> DensityMatrix:
     keep = sorted(set(range(n)) - set(trace_systems))
     n_keep = len(keep)
 
-    # Build trace by contracting bra and ket indices for traced qubits
-    for q in sorted(trace_systems, reverse=True):
-        # Trace over qubit q: contract axis q (ket) with axis q+n (bra)
-        # After reshape, ket indices are 0..n-1, bra indices are n..2n-1
-        current_n = rho_tensor.ndim // 2
-        bra_idx = current_n + q
-        rho_tensor = np.trace(rho_tensor, axis1=q, axis2=bra_idx)
-        # After trace, remaining axes shift — we need to adjust
-        # np.trace removes both axes and appends the trace result at the end?
-        # Actually np.trace with axis1/axis2 contracts those axes
+    # Use einsum to trace out all specified qubits in one step (correct for
+    # arbitrary qubit subsets, unlike iterative np.trace which mis-tracks axes)
+    keep = sorted(keep)  # ensure sorted for consistent ordering
+    # Build einsum subscripts: ket indices 0..n-1, bra indices n..2n-1
+    # For traced qubits, ket and bra share the same index (contraction)
+    # For kept qubits, ket and bra get distinct output indices
+    ket_indices = list(range(2 * n))[:n]  # 0..n-1
+    bra_indices = list(range(n, 2 * n))   # n..2n-1
+    # Map: traced qubits share bra=ket index; kept qubits get separate output
+    out_ket = []
+    out_bra = []
+    next_idx = 2 * n  # start new indices after input indices
+    subscript_map_bra = {}
+    for q in range(n):
+        if q in trace_systems:
+            # Contract: bra index = ket index
+            subscript_map_bra[q] = ket_indices[q]
+        else:
+            subscript_map_bra[q] = bra_indices[q]
+            out_ket.append(ket_indices[q])
+            out_bra.append(bra_indices[q])
+    input_indices = ket_indices + [subscript_map_bra[q] for q in range(n)]
+    output_indices = out_ket + out_bra
+    rho_tensor = np.einsum(rho_tensor, input_indices, output_indices)
 
     # Reshape back to matrix
     dim_keep = 2 ** n_keep

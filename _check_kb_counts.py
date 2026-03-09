@@ -1,27 +1,35 @@
 #!/usr/bin/env python3
-"""Quick check of KB facts count — in file vs after import."""
+"""Quick check of KB facts count — per-category breakdown via the knowledge_data package."""
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
-# Check raw file
-raw = open("l104_asi/knowledge_data.py").read()
-node_count = raw.count('"concept": "')
-fact_lines = raw.count('            "')  # fact indentation
-print(f"In raw file: ~{node_count} nodes, ~{fact_lines} fact lines")
+from l104_asi.knowledge_data import (
+    KNOWLEDGE_NODES, CROSS_SUBJECT_RELATIONS,
+    STEM_NODES, HUMANITIES_NODES, SOCIAL_SCIENCES_NODES, OTHER_NODES,
+    summary,
+)
 
-# Check after import
-from l104_asi import knowledge_data
-nodes = knowledge_data.KNOWLEDGE_NODES
-total_facts = sum(len(n.get("facts", [])) for n in nodes)
-print(f"After import: {len(nodes)} nodes, {total_facts} facts")
+print("═" * 60)
+print("  L104 Knowledge Base — Counts Check")
+print("═" * 60)
 
-# Check if __init__ modifies it
-import importlib
-# Reload without side effects
-spec = importlib.util.spec_from_file_location("kd_raw", "l104_asi/knowledge_data.py")
-mod = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(mod)
-raw_nodes = mod.KNOWLEDGE_NODES
-raw_facts = sum(len(n.get("facts", [])) for n in raw_nodes)
-print(f"Direct load (no __init__): {len(raw_nodes)} nodes, {raw_facts} facts")
+# Per-category counts
+for label, nodes in [("STEM", STEM_NODES), ("Humanities", HUMANITIES_NODES),
+                     ("Social Sciences", SOCIAL_SCIENCES_NODES), ("Other", OTHER_NODES)]:
+    facts = sum(len(n.get("facts", [])) for n in nodes)
+    print(f"  {label:20s}: {len(nodes):4d} nodes, {facts:6d} facts")
+
+# Totals
+total_facts = sum(len(n.get("facts", [])) for n in KNOWLEDGE_NODES)
+print(f"  {'TOTAL':20s}: {len(KNOWLEDGE_NODES):4d} nodes, {total_facts:6d} facts")
+print(f"  Cross-subject relations: {len(CROSS_SUBJECT_RELATIONS)}")
+
+# Verify assembled list == sum of parts
+parts = len(STEM_NODES) + len(HUMANITIES_NODES) + len(SOCIAL_SCIENCES_NODES) + len(OTHER_NODES)
+assert parts == len(KNOWLEDGE_NODES), f"Assembly mismatch: {parts} != {len(KNOWLEDGE_NODES)}"
+
+# Registry summary
+s = summary()
+print(f"\nRegistry summary: {s['total_nodes']} nodes, {s['total_facts']} facts, {s['total_relations']} relations")
+print("✅ All counts verified")

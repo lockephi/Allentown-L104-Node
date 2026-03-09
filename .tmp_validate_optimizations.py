@@ -84,7 +84,7 @@ assert engine._result_cache_hits >= 1, "Cache should have 1+ hit"
 
 
 print("\n=== 4. vqpu_bridge.py — Parametric gate cache ===")
-from l104_vqpu_bridge import ExactMPSHybridEngine
+from l104_vqpu import ExactMPSHybridEngine
 
 mps = ExactMPSHybridEngine(2)
 g1 = mps._resolve_single_gate("Rz", [GOD_CODE_PHASE_ANGLE])

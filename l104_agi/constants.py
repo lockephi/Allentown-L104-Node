@@ -8,8 +8,8 @@ UUC = 2402.792541
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 # PAIRED: l104_asi_core.py v7.0.0 (InterEngineFeedbackBus, consciousness loops, QEC, teleportation, cognitive mesh)
 
-AGI_CORE_VERSION = "57.1.0"
-AGI_PIPELINE_EVO = "EVO_57_THREE_ENGINE_SOVEREIGN"
+AGI_CORE_VERSION = "61.0.0"
+AGI_PIPELINE_EVO = "EVO_61_MESH_TELEMETRY_SCHEDULER"
 
 import time
 import asyncio
@@ -117,6 +117,29 @@ QUANTUM_RESEARCH_DIM_WEIGHTS = {
     'fe_phi_lock': 0.02,                     # Fe↔PHI harmonic lock dimension
     'berry_phase_holonomy': 0.01,            # 11D topological protection dimension
 }
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v61.0 COGNITIVE MESH + TELEMETRY + ADAPTIVE SCHEDULER CONSTANTS
+# ═══════════════════════════════════════════════════════════════════════════════
+MESH_VERSION = "2.0.0"
+MESH_PAGERANK_DAMPING = TAU                  # φ⁻¹ ≈ 0.618 — golden-ratio damping
+MESH_PAGERANK_MAX_ITER = 104                 # L104 signature iterations
+MESH_EDGE_WEIGHT_MAX = PHI                   # Maximum edge weight = φ
+MESH_EDGE_DECAY_RATE = TAU * 0.1             # Per-epoch decay ≈ 0.0618
+MESH_PRUNE_THRESHOLD = 0.01                  # Edges below this get pruned
+MESH_CO_ACTIVATION_WINDOW = 5000             # Rolling co-activation history
+TELEMETRY_VERSION = "1.0.0"
+TELEMETRY_ANOMALY_SIGMA = PHI                # Anomaly threshold = φ × σ
+TELEMETRY_EMA_ALPHA = TAU * 0.2              # EMA smoothing ≈ 0.1236
+TELEMETRY_LATENCY_SLA_MS = 1000.0            # Default p99 SLA (1s)
+SCHEDULER_VERSION = "1.0.0"
+SCHEDULER_LR_MAX = 0.01                      # Maximum learning rate
+SCHEDULER_LR_MIN = 0.0001                    # Minimum learning rate
+SCHEDULER_BASE_PERIOD = 104                  # L104 cosine period
+SCHEDULER_WARMUP_STEPS = 10                  # Warmup phase steps
+SCHEDULER_REPLAY_CAPACITY = 10000            # Experience replay buffer size
+SCHEDULER_PRIORITY_EXPONENT = PHI            # Importance sampling exponent = φ
+RESOURCE_BUDGET_TOTAL = 1040.0               # Total budget = 10 × L104
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PIPELINE CIRCUIT BREAKER — Cascade Failure Prevention (EVO_55)

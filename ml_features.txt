@@ -1,0 +1,2 @@
+l104_ml_engine/constants.py:KNOWLEDGE_TOTAL_FEATURES = 50                              # 5 engines × 10 features
+l104_ml_engine/knowledge_synthesis.py:    KNOWLEDGE_N_FEATURES_PER_ENGINE, KNOWLEDGE_TOTAL_FEATURES,

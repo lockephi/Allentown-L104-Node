@@ -76,13 +76,8 @@ class GenerationStructure:
 
     def _transition_matrix(self, names: List[str]) -> np.ndarray:
         """Build N×N transition matrix: M_ij = E(name_i) - E(name_j)."""
-        n = len(names)
-        Es = [self.lattice.E(name) for name in names]
-        M = np.zeros((n, n), dtype=int)
-        for i in range(n):
-            for j in range(n):
-                M[i, j] = Es[i] - Es[j]
-        return M
+        Es = np.array([self.lattice.E(name) for name in names])
+        return np.subtract.outer(Es, Es).astype(int)
 
     def lepton_transition_matrix(self) -> np.ndarray:
         """3×3 lepton transition matrix ΔE_ij (e, μ, τ)."""

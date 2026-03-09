@@ -33,7 +33,7 @@ Or import individual layers:
     from l104_math_engine.hyperdimensional import Hypervector
 """
 
-__version__ = "1.1.0"
+__version__ = "2.0.0"
 
 # ── Layer 0: Constants ──────────────────────────────────────────────────────
 from .constants import (
@@ -161,6 +161,14 @@ from .berry_geometry import (
 # ── Facade ──────────────────────────────────────────────────────────────────
 from .engine import MathEngine, math_engine
 
+# ── Layer 13: Cross-Engine Integration (v2.0) ──────────────────────────────
+from .cross_engine import (
+    MathCrossEngineHub, math_cross_engine_hub,
+    QuantumGateBerryBridge, VQPUAccelerator,
+    ScienceValidation, MLHyperdimensionalBridge,
+    SimulatorBridge,
+)
+
 
 __all__ = [
     # Version
@@ -244,4 +252,9 @@ __all__ = [
     "BlochSphereGeometry", "bloch_sphere",
     # Facade
     "MathEngine", "math_engine",
+    # Cross-Engine Integration (v2.0)
+    "MathCrossEngineHub", "math_cross_engine_hub",
+    "QuantumGateBerryBridge", "VQPUAccelerator",
+    "ScienceValidation", "MLHyperdimensionalBridge",
+    "SimulatorBridge",
 ]

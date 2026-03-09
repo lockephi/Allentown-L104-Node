@@ -314,7 +314,7 @@ class QuantumInterferenceMixer:
     def vqpu(self):
         if self._vqpu is None:
             try:
-                from l104_vqpu_bridge import get_bridge
+                from l104_vqpu import get_bridge
                 self._vqpu = get_bridge()
             except ImportError:
                 pass
@@ -452,7 +452,7 @@ class QuantumInterferenceMixer:
             return default
 
         try:
-            from l104_vqpu_bridge import QuantumJob, QuantumGate
+            from l104_vqpu import QuantumJob, QuantumGate
             n_q = min(n_tracks, 10)
             ops = []
             # GHZ state: H on q0, then CNOT chain

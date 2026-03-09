@@ -619,6 +619,7 @@ l104_quantum_walk_t l104_quantum_walk(int graph_size, int steps, double query_re
     return r;
 }
 
+#ifndef L104_SAGE_AS_LIBRARY
 int main(int argc, char *argv[]) {
     (void)argc; (void)argv;
     printf("L104 Sage Core C Substrate Initialized (v5.0 NDE + Deep Link + VQE + QWalk Active)\n");
@@ -645,3 +646,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+#endif /* L104_SAGE_AS_LIBRARY */

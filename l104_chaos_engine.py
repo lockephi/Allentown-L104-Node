@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.017444
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:50.359098
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -143,7 +143,7 @@ class ChaoticRandom:
             return chaos
 
     @classmethod
-    def chaos_float(cls, min_val: float = 0.0, max_val: float = 1.0) -> float:
+    def chaos_float(cls, min_val: float = 0.0, max_val: float = 1.0, context: str = "") -> float:
         """Generate chaotic float in range."""
         entropy = cls._harvest_entropy()
         with cls._lock:
@@ -155,13 +155,13 @@ class ChaoticRandom:
         return min_val + (wave * (max_val - min_val))
 
     @classmethod
-    def chaos_int(cls, min_val: int, max_val: int) -> int:
-        """Generate chaotic integer in range [min_val, max_val] inclusive."""
+    def chaos_int(cls, min_val: int, max_val: int, context: str = "") -> int:
+        """Generate chaotic integer in range [min, max]."""
         if min_val >= max_val:
             return min_val
-        chaos = cls.chaos_float()
+        val = cls.chaos_float(context=context)
         range_size = max_val - min_val + 1
-        return min_val + int(chaos * range_size) % range_size
+        return min_val + int(val * range_size) % range_size
 
     @classmethod
     def chaos_choice(cls, items: List[T], context: str = "default", avoid_recent: int = 3) -> Optional[T]:
@@ -170,6 +170,9 @@ class ChaoticRandom:
             return None
         if len(items) == 1:
             return items[0]
+
+        # First generate chaos float without lock (as it has its own lock)
+        chaos_val = cls.chaos_float(context=context)
 
         with cls._lock:
             if context not in cls._selection_memory:
@@ -181,8 +184,7 @@ class ChaoticRandom:
                 available = list(range(len(items)))
                 cls._selection_memory[context] = []
 
-            chaos = cls.chaos_float()
-            idx = available[int(chaos * len(available)) % len(available)]
+            idx = available[int(chaos_val * len(available)) % len(available)]
 
             cls._selection_memory[context].append(idx)
             if len(cls._selection_memory[context]) > cls.MEMORY_DEPTH:

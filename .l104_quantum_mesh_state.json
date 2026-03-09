@@ -1,0 +1,35 @@
+{
+  "version": "1.1.0",
+  "vqpu_version": "15.0.0",
+  "timestamp": 1773080726.171384,
+  "node_ids": [
+    "micro-2d3122ae"
+  ],
+  "qubits_per_node": 4,
+  "channels": {},
+  "total_teleportations": 0,
+  "total_purifications": 0,
+  "health": {
+    "version": "1.1.0",
+    "nodes": 1,
+    "active_channels": 0,
+    "total_channels": 0,
+    "avg_fidelity": 0.0,
+    "min_fidelity": 0.0,
+    "max_fidelity": 0.0,
+    "connectivity": 0.0,
+    "sacred_alignment": 1.0,
+    "network_score": 0.19098301,
+    "total_teleportations": 0,
+    "total_purifications": 0,
+    "register_health": {
+      "micro-2d3122ae": {
+        "avg_fidelity": 0.98855195,
+        "degraded_qubits": 0,
+        "total_gates": 20
+      }
+    },
+    "god_code": 527.5184818492612,
+    "qpu_mean_fidelity": 0.9747593
+  }
+}

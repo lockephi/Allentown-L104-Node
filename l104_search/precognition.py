@@ -182,7 +182,7 @@ def _vqpu_quantum_score(bridge, domain: str, fingerprint: float, nq: int = 4) ->
     if bridge is None:
         return {"vqpu_used": False, "vqpu_circuit_ms": 0.0}
     try:
-        from l104_vqpu_bridge import QuantumJob
+        from l104_vqpu import QuantumJob
         circuit_build_t0 = time.perf_counter()
         ops = []
         for q in range(nq):
@@ -1152,7 +1152,7 @@ class QuantumReservoirPredictor:
         # Try VQPU bridge
         if self._bridge is not None:
             try:
-                from l104_vqpu_bridge import QuantumJob
+                from l104_vqpu import QuantumJob
                 job = QuantumJob(num_qubits=self.nq, operations=full_ops,
                                  shots=self.shots, adapt=True)
                 result = self._bridge.run_simulation(job, compile=True)
@@ -1424,7 +1424,7 @@ class VQPUVariationalForecaster:
         # Try VQPU
         if self._bridge is not None:
             try:
-                from l104_vqpu_bridge import QuantumJob
+                from l104_vqpu import QuantumJob
                 job = QuantumJob(num_qubits=self.nq, operations=ops,
                                  shots=self.shots)
                 result = self._bridge.run_simulation(job, compile=True)

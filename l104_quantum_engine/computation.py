@@ -1435,6 +1435,8 @@ class QuantumLinkComputationEngine:
         self.computation_count = 0
         self._gate_engine_cache = None
         self._gate_engine_checked = False
+        self._vqpu_bridge_cache = None
+        self._vqpu_bridge_checked = False
 
     def _inc(self):
         self.computation_count += 1
@@ -1445,6 +1447,17 @@ class QuantumLinkComputationEngine:
             self._gate_engine_checked = True
             self._gate_engine_cache = _get_gate_engine()
         return self._gate_engine_cache
+
+    def _get_vqpu_bridge_cached(self):
+        """Lazy-load VQPUBridge for VQPU-enhanced quantum computation."""
+        if not self._vqpu_bridge_checked:
+            self._vqpu_bridge_checked = True
+            try:
+                from l104_vqpu import get_bridge
+                self._vqpu_bridge_cache = get_bridge()
+            except Exception:
+                self._vqpu_bridge_cache = None
+        return self._vqpu_bridge_cache
 
     # ─── 1. Quantum Error Correction (Surface Code + Steane) ───
 
@@ -1606,33 +1619,36 @@ class QuantumLinkComputationEngine:
         if isinstance(num_qubits, (list, tuple)):
             num_qubits = len(num_qubits)
         num_qubits = int(num_qubits)
-        random.seed(int(GOD_CODE * 1000) % (2**31))
+        # Use cryptographically secure randomness for QKD (not deterministic seed)
+        import os
+        rng = random.Random()
+        rng.seed(int.from_bytes(os.urandom(8), 'big'))
 
         # Alice's choices
-        alice_bits = [random.randint(0, 1) for _ in range(num_qubits)]
-        alice_bases = [random.randint(0, 1) for _ in range(num_qubits)]  # 0=Z, 1=X
+        alice_bits = [rng.randint(0, 1) for _ in range(num_qubits)]
+        alice_bases = [rng.randint(0, 1) for _ in range(num_qubits)]  # 0=Z, 1=X
 
         # Eve's interception (if any)
-        eve_bases = [random.randint(0, 1) for _ in range(num_qubits)]
+        eve_bases = [rng.randint(0, 1) for _ in range(num_qubits)]
         intercepted_bits = []
         for i in range(num_qubits):
-            if random.random() < eavesdrop_rate:
+            if rng.random() < eavesdrop_rate:
                 # Eve measures, potentially disturbing state
                 if eve_bases[i] == alice_bases[i]:
                     intercepted_bits.append(alice_bits[i])
                 else:
-                    intercepted_bits.append(random.randint(0, 1))
+                    intercepted_bits.append(rng.randint(0, 1))
             else:
                 intercepted_bits.append(alice_bits[i])
 
         # Bob's measurement
-        bob_bases = [random.randint(0, 1) for _ in range(num_qubits)]
+        bob_bases = [rng.randint(0, 1) for _ in range(num_qubits)]
         bob_bits = []
         for i in range(num_qubits):
             if bob_bases[i] == alice_bases[i]:
                 bob_bits.append(intercepted_bits[i])
             else:
-                bob_bits.append(random.randint(0, 1))
+                bob_bits.append(rng.randint(0, 1))
 
         # Basis reconciliation (sifted key)
         sifted_alice = []
@@ -2302,7 +2318,7 @@ class QuantumLinkComputationEngine:
             "reservoir_size": n_res,
             "time_series_length": n_steps,
             "washout": washout,
-            "training_samples": n_train if 'n_train' in dir() else 0,
+            "training_samples": n_train if len(reservoir_states) > 1 and 'n_train' in dir() else 0,
             "rmse": rmse,
             "correlation": correlation,
             "prediction_quality": "excellent" if correlation > 0.9 else "good" if correlation > 0.7 else "moderate",
@@ -2827,7 +2843,109 @@ class QuantumLinkComputationEngine:
         results["total_computations"] = self.computation_count
         results["elapsed_seconds"] = round(elapsed, 4)
 
+        # ★ v5.0: VQPU Bridge Enhanced Computations
+        vb = self._get_vqpu_bridge_cached()
+        if vb is not None:
+            vqpu_computations = [
+                ("vqpu_bell_fidelity", lambda: self._vqpu_bell_fidelity(vb)),
+                ("vqpu_sacred_circuit", lambda: self._vqpu_sacred_circuit(vb, link_fidelities)),
+                ("vqpu_vqe_ground_energy", lambda: self._vqpu_vqe_ground_energy(vb, link_fidelities)),
+            ]
+            for name, fn in vqpu_computations:
+                try:
+                    results["computations"][name] = fn()
+                except Exception as e:
+                    results["computations"][name] = {"error": str(e)}
+            results["vqpu_bridge_active"] = True
+        else:
+            results["vqpu_bridge_active"] = False
+
         return results
+
+    # ─── VQPU Bridge Enhanced Computations (v5.0) ───
+
+    def _vqpu_bell_fidelity(self, vb) -> Dict:
+        """Run Bell pair through VQPU pipeline and measure fidelity."""
+        self._inc()
+        try:
+            from l104_vqpu import QuantumJob
+            job = QuantumJob(
+                circuit_spec={"type": "bell_pair", "qubits": 2},
+                n_qubits=2, shots=2048, compile=True,
+                metadata={"origin": "computation_engine", "test": "bell_fidelity"}
+            )
+            result = vb.execute(job)
+            probs = getattr(result, "probabilities", {}) if result else {}
+            bell_fidelity = probs.get("00", 0.0) + probs.get("11", 0.0)
+            sacred = getattr(result, "sacred_alignment", 0.0) if result else 0.0
+            return {
+                "bell_fidelity": round(bell_fidelity, 6),
+                "sacred_alignment": round(float(sacred), 6),
+                "coherence": round(bell_fidelity * PHI / 2, 6),
+            }
+        except Exception as e:
+            return {"error": str(e), "bell_fidelity": 0.5}
+
+    def _vqpu_sacred_circuit(self, vb, link_fidelities: Optional[List[float]] = None) -> Dict:
+        """Run 4-qubit sacred circuit through VQPU, correlate with link fidelities."""
+        self._inc()
+        try:
+            from l104_vqpu import QuantumJob
+            depth = max(3, min(8, len(link_fidelities))) if link_fidelities else 4
+            job = QuantumJob(
+                circuit_spec={
+                    "type": "sacred_circuit", "qubits": 4, "depth": depth,
+                    "gates": ["H", "CX", "Rz_phi", "CX", "H", "CX"],
+                },
+                n_qubits=4, shots=4096, compile=True,
+                metadata={"origin": "computation_engine", "depth": depth}
+            )
+            result = vb.execute(job)
+            sacred = getattr(result, "sacred_alignment", 0.0) if result else 0.0
+            three_eng = getattr(result, "three_engine_score", 0.0) if result else 0.0
+            brain_sc = getattr(result, "brain_score", 0.0) if result else 0.0
+            link_mean = statistics.mean(link_fidelities) if link_fidelities else 0.5
+            composite = (
+                float(sacred) * 0.30
+                + float(three_eng) * 0.25
+                + float(brain_sc) * 0.20
+                + link_mean * 0.25
+            )
+            return {
+                "sacred_alignment": round(float(sacred), 6),
+                "three_engine_score": round(float(three_eng), 6),
+                "brain_score": round(float(brain_sc), 6),
+                "link_correlation": round(link_mean, 6),
+                "composite": round(composite, 6),
+            }
+        except Exception as e:
+            return {"error": str(e), "composite": 0.4}
+
+    def _vqpu_vqe_ground_energy(self, vb, link_fidelities: Optional[List[float]] = None) -> Dict:
+        """Variational eigensolver via VQPU to estimate ground energy of link Hamiltonian."""
+        self._inc()
+        try:
+            from l104_vqpu.variational import VariationalVQPUEngine
+            n_q = max(2, min(6, len(link_fidelities))) if link_fidelities else 3
+            coeffs = link_fidelities[:n_q] if link_fidelities else [0.5] * n_q
+            hamiltonian = []
+            for i, c in enumerate(coeffs):
+                hamiltonian.append({"pauli": f"Z{i}", "coeff": -c * GOD_CODE / 1000})
+                if i < n_q - 1:
+                    hamiltonian.append({"pauli": f"Z{i}Z{i+1}", "coeff": -PHI * c / 10})
+            result = VariationalVQPUEngine.run_vqe(
+                n_qubits=n_q, hamiltonian=hamiltonian, layers=2
+            )
+            ground = result.get("ground_energy", 0.0) if isinstance(result, dict) else 0.0
+            convergence = result.get("convergence", 0.0) if isinstance(result, dict) else 0.0
+            return {
+                "ground_energy": round(float(ground), 8),
+                "convergence": round(float(convergence), 6),
+                "n_qubits": n_q,
+                "hamiltonian_terms": len(hamiltonian),
+            }
+        except Exception as e:
+            return {"error": str(e), "ground_energy": 0.0}
 
     # ─── Gate Engine Enhanced Computations (v7.0) ───
 
@@ -3481,7 +3599,26 @@ class QuantumLinkComputationEngine:
                 site_occupations[i] += (target_occ_i - occ_i) * PHI_INV * 0.1
                 site_occupations[i] = max(0.01, min(0.99, site_occupations[i]))
 
-            energy_density = sweep_energy / n
+            # Right-to-left sweep (critical for DMRG convergence)
+            for i in range(n - 2, -1, -1):
+                occ_i = site_occupations[i]
+                occ_j = site_occupations[i + 1]
+                J = J_couplings[i]
+                h_i = h_fields[i]
+                h_j = h_fields[i + 1]
+                v_j = void_fields[i + 1]
+
+                spin_i = 2 * occ_i - 1
+                spin_j = 2 * occ_j - 1
+                local_energy = -J * spin_i * spin_j - h_i * occ_i - h_j * occ_j + v_j
+                sweep_energy += local_energy
+
+                # Update right site toward ground state
+                target_occ_j = 0.5 + 0.5 * h_j / max(abs(h_j) + abs(J), 1e-10)
+                site_occupations[i + 1] += (target_occ_j - occ_j) * PHI_INV * 0.1
+                site_occupations[i + 1] = max(0.01, min(0.99, site_occupations[i + 1]))
+
+            energy_density = sweep_energy / (2 * n)  # Averaged over both sweep directions
             energy_history.append(energy_density)
             truncation_errors.append(sweep_trunc / max(1, n - 1))
 
@@ -3590,6 +3727,8 @@ class QuantumLinkComputationEngine:
         training_data = [1 if f > 0.5 else 0 for f in link_fidelities[:nv]]
 
         # CD-k training with φ-momentum
+        # CD-k (k>1) improves gradient estimates for better convergence
+        cd_k = min(3, max(1, training_steps // 100 + 1))  # Adaptive CD-k
         momentum_W = [[0.0] * nh for _ in range(nv)]
         momentum_a = [0.0] * nv
         momentum_b = [0.0] * nh
@@ -3601,9 +3740,12 @@ class QuantumLinkComputationEngine:
             v_data = training_data
             h_data = sample_hidden(v_data)
 
-            # Negative phase: Gibbs sampling (CD-1)
+            # Negative phase: CD-k Gibbs sampling (k steps)
             v_recon = sample_visible(h_data)
             h_recon = sample_hidden(v_recon)
+            for _cd_step in range(cd_k - 1):
+                v_recon = sample_visible(h_recon)
+                h_recon = sample_hidden(v_recon)
 
             # Compute gradients
             for i in range(nv):

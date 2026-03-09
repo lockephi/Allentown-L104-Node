@@ -164,7 +164,7 @@ class VQPUDawEngine:
         """Lazy-load VQPU bridge."""
         if self._bridge is None:
             try:
-                from l104_vqpu_bridge import get_bridge
+                from l104_vqpu import get_bridge
                 self._bridge = get_bridge()
                 self._available = True
             except ImportError:
@@ -227,7 +227,7 @@ class VQPUDawEngine:
     def _build_ops(self, purpose: CircuitPurpose, n_qubits: int, **params):
         """Build circuit operations for a given purpose."""
         try:
-            from l104_vqpu_bridge import QuantumGate
+            from l104_vqpu import QuantumGate
         except ImportError:
             return []
 
@@ -360,7 +360,7 @@ class VQPUDawEngine:
 
         t0 = time.time()
         try:
-            from l104_vqpu_bridge import QuantumJob
+            from l104_vqpu import QuantumJob
 
             ops = self._build_ops(purpose, n_qubits, **params)
             req.operations = ops
@@ -416,7 +416,7 @@ class VQPUDawEngine:
             return batch
 
         try:
-            from l104_vqpu_bridge import QuantumJob
+            from l104_vqpu import QuantumJob
 
             jobs = []
             for req in requests:
@@ -485,7 +485,7 @@ class VQPUDawEngine:
             return {"error": "VQPU not available", "fallback": True}
 
         try:
-            from l104_vqpu_bridge import QuantumJob
+            from l104_vqpu import QuantumJob
             ops = self._build_ops(purpose, n_qubits, **params)
             job = QuantumJob(
                 circuit_id=f"daw_sim_{purpose.name.lower()}_{uuid.uuid4().hex[:6]}",
@@ -520,7 +520,7 @@ class VQPUDawEngine:
             return {"concurrence": 0.0, "vne": 0.0, "fallback": True}
 
         try:
-            from l104_vqpu_bridge import QuantumJob, QuantumGate
+            from l104_vqpu import QuantumJob, QuantumGate
             ops = [
                 QuantumGate("H", [0]),
                 QuantumGate("CNOT", [0, 1]),

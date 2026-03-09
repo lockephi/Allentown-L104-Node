@@ -95,8 +95,8 @@ from abc import ABC, abstractmethod
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-ASI_CORE_VERSION = "9.0.0"  # v9.0: Comprehensive ASI upgrade — Gate Engine + Adaptive Consciousness + Deep Synthesis
-ASI_PIPELINE_EVO = "EVO_62_UNIVERSAL_GATE_SOVEREIGN"
+ASI_CORE_VERSION = "9.1.0"  # v9.1: Self-diagnostic, TTL caching, consciousness optimization, resilience
+ASI_PIPELINE_EVO = "EVO_63_RESILIENT_SOVEREIGN"
 
 # Sacred Constants
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
@@ -469,3 +469,15 @@ RESILIENCE_BACKOFF_BASE = PHI                  # φ-based exponential backoff
 RESILIENCE_DEGRADATION_WINDOW = 60.0           # Seconds to track degradation
 RESILIENCE_RECOVERY_THRESHOLD = 0.5            # Min success rate to leave degraded state
 ACTIVATION_STEPS_V11 = 22                      # v11.0 activation sequence steps (was 18)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v9.0 PIPELINE v9.0 — Backpressure, Speculative Execution, Cascade Scoring
+# ═══════════════════════════════════════════════════════════════════════════════
+PIPELINE_VERSION = "9.0.0"                     # Pipeline infrastructure version
+BACKPRESSURE_CAPACITY = 104                    # Token bucket capacity (L104 signature)
+BACKPRESSURE_REFILL_RATE = 104.0 / PHI         # ~64.3 tokens/sec (sacred-tuned)
+SPECULATIVE_MAX_PARALLEL = max(2, int(PHI * 2))  # 3 concurrent speculative paths
+SPECULATIVE_TIMEOUT_S = PHI                    # ~1.618 seconds per speculative path
+CASCADE_GATE_THRESHOLD = 0.1                   # Min confidence for stage inclusion
+WARMUP_CV_THRESHOLD = TAU * 0.5                # ~0.309 coefficient of variation for warmup detection
+PROFILER_MAX_SAMPLES = 5000                    # Max latency samples per stage

@@ -137,8 +137,26 @@ class L104SVM:
         return X
 
     def _compute_kernel(self, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
-        """Compute sacred kernel Gram matrix."""
-        return self._kernel_fn(X, Y)
+        """Compute sacred kernel Gram matrix with PSD correction.
+
+        Some custom kernels (e.g. harmonic_kernel) may produce Gram
+        matrices that are slightly non-PSD due to numerical issues or
+        kernel design.  When X is Y (training), we clip negative
+        eigenvalues to ensure sklearn SVC/SVR can fit without failure.
+        """
+        K = self._kernel_fn(X, Y)
+        # PSD correction only needed for square (training) Gram matrices
+        if K.shape[0] == K.shape[1] and X is Y or (X.shape == Y.shape and np.allclose(X, Y)):
+            # Symmetrise (eliminate floating-point asymmetry)
+            K = (K + K.T) / 2.0
+            # Clip negative eigenvalues
+            eigvals, eigvecs = np.linalg.eigh(K)
+            if eigvals[0] < -1e-10:
+                eigvals = np.maximum(eigvals, 0.0)
+                K = (eigvecs * eigvals) @ eigvecs.T
+                # Re-symmetrise after reconstruction
+                K = (K + K.T) / 2.0
+        return K
 
     def fit(self, X: np.ndarray, y: Optional[np.ndarray] = None) -> 'L104SVM':
         """Fit the SVM model.

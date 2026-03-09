@@ -65,6 +65,7 @@ class ResearchMemoryBank:
         """Initialize research memory bank with persistent history."""
         self.history: List[Dict] = []
         self.strategy_scores: Dict[str, float] = {}
+        self.learned_insights: Dict = {}
         self._load()
 
     def _load(self):

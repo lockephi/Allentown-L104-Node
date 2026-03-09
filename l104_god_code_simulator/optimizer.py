@@ -231,28 +231,28 @@ def _apply_combined_noise(sv: np.ndarray, nq: int, noise_level: float) -> np.nda
 
 def _apply_depolarizing(sv: np.ndarray, nq: int, noise_level: float) -> np.ndarray:
     """
-    Apply depolarizing channel to all qubits.
+    Apply depolarizing channel to all qubits via Monte Carlo trajectory.
 
     Depolarizing noise: ρ → (1-p)ρ + (p/3)(XρX + YρY + ZρZ).
-    For pure states, this is approximated by randomly applying X, Y, Z
-    weighted by noise level. In the Kraus representation, this reduces
-    off-diagonal AND diagonal elements symmetrically.
+
+    v1.0.1: Corrected from physically wrong linear combination of
+    statevectors to stochastic Pauli sampling (quantum trajectory method).
+    For each qubit, randomly apply I (prob 1-p) or one of X/Y/Z (each p/3).
+    This produces a single trajectory consistent with the depolarizing channel.
     """
     p = min(noise_level * 0.5, 0.25)  # Cap at 25% depolarization
     for q in range(nq):
-        # Apply weighted Pauli errors
-        # X component
-        x_weight = p / 3
-        sv_x = apply_single_gate(sv.copy(), X_GATE, q, nq)
-        # Y component
-        sv_y = apply_single_gate(sv.copy(), Y_GATE, q, nq)
-        # Z component
-        sv_z = apply_single_gate(sv.copy(), Z_GATE, q, nq)
-        # Weighted mixture (Kraus operator sum)
-        sv = math.sqrt(1 - p) * sv + math.sqrt(x_weight) * (sv_x + sv_y + sv_z) / math.sqrt(3)
-        norm = np.linalg.norm(sv)
-        if norm > 0:
-            sv /= norm
+        r = np.random.random()
+        if r < p / 3:
+            # Apply X
+            sv = apply_single_gate(sv, X_GATE, q, nq)
+        elif r < 2 * p / 3:
+            # Apply Y
+            sv = apply_single_gate(sv, Y_GATE, q, nq)
+        elif r < p:
+            # Apply Z
+            sv = apply_single_gate(sv, Z_GATE, q, nq)
+        # else: apply I (do nothing) with probability 1-p
     return sv
 
 

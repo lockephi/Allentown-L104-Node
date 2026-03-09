@@ -1,5 +1,5 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.556569
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:54.704394
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -897,7 +897,7 @@ try:
             scored = []
             for i, algo in enumerate(algorithms):
                 if i < len(probs):
-                    algo.resonance = round(min(1.0, algo.resonance * (1 + probs[i])), 6)
+                    algo.resonance = round(algo.resonance * (1 + probs[i]), 6)
                 scored.append(algo)
 
             scored.sort(key=lambda a: a.resonance, reverse=True)

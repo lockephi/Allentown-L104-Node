@@ -59,7 +59,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-__version__ = "5.1.0"
+__version__ = "6.0.0"
 __author__ = "L104 Sovereign Node"
 
 # ── Constants (Layer 0) ─────────────────────────────────────────────────────
@@ -128,6 +128,16 @@ from .engine import (
     ScienceEngine,
     QuantumMathSubsystem,
     science_engine,
+)
+
+# ── Cross-Engine Integration Hub (Layer 8 — v6.0) ─────────────────────────
+from .cross_engine import (
+    CrossEngineHub,
+    VQPUIntegration,
+    MLIntegration,
+    QuantumGateIntegration,
+    QuantumDataIntegration,
+    cross_engine_hub,
 )
 
 # ── Canonical GOD_CODE Qubit (bridge from god_code_simulator) ──────────────
@@ -220,4 +230,8 @@ __all__ = [
     "primal_calculus", "resolve_non_dual_logic",
     # Canonical GOD_CODE Qubit (bridge from god_code_simulator)
     "GodCodeQubit", "GOD_CODE_QUBIT",
+    # Cross-Engine Integration Hub (v6.0)
+    "CrossEngineHub", "VQPUIntegration", "MLIntegration",
+    "QuantumGateIntegration", "QuantumDataIntegration",
+    "cross_engine_hub",
 ]

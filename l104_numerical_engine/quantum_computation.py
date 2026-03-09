@@ -460,13 +460,14 @@ class QuantumNumericalComputationEngine:
             cos_h = decimal_cos(pi_d / D(4) + phase * tau_d * D("0.01"))
             sin_h = decimal_sin(pi_d / D(4) + phase * tau_d * D("0.01"))
 
-            for pos in range(1, positions - 1):
+            for pos in range(positions):
                 u = psi_up[pos]
                 d = psi_down[pos]
-                coin_up = (cos_h * u + sin_h * d) / sqrt2
-                coin_down = (sin_h * u - cos_h * d) / sqrt2
-                new_up[pos + 1] += coin_up
-                new_down[pos - 1] += coin_down
+                # Coin matrix [[cos,sin],[sin,-cos]] is unitary (no /sqrt2)
+                coin_up = cos_h * u + sin_h * d
+                coin_down = sin_h * u - cos_h * d
+                new_up[(pos + 1) % positions] += coin_up
+                new_down[(pos - 1) % positions] += coin_down
 
             psi_up, psi_down = new_up, new_down
 

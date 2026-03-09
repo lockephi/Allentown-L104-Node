@@ -641,55 +641,24 @@ class BerryGatesEngine:
         """
         gates = {}
 
-        # Abelian gates
-        for name, gate in [
-            ("Berry-Z", self.abelian.berry_z_gate()),
-            ("Berry-S", self.abelian.berry_s_gate()),
-            ("Berry-T", self.abelian.berry_t_gate()),
-            ("Berry-PHI", self.abelian.berry_phi_gate()),
-            ("Berry-GOD", self.abelian.berry_god_code_gate()),
-        ]:
-            gates[name] = {
-                "matrix_shape": list(gate.matrix.shape),
-                "is_unitary": gate.is_unitary,
-                "type": "abelian_berry",
-                "berry_phase": gate.parameters.get("berry_phase", None),
-            }
-
-        # Non-Abelian gates
-        for name, gate in [
-            ("Holo-H", self.non_abelian.holonomic_hadamard()),
-            ("Holo-X", self.non_abelian.holonomic_pauli_x()),
-            ("Holo-Y", self.non_abelian.holonomic_pauli_y()),
-            ("Holo-CNOT", self.non_abelian.holonomic_cnot()),
-            ("Holo-Toffoli", self.non_abelian.holonomic_toffoli()),
-        ]:
-            gates[name] = {
+        # Build gate instances once (reused by verify_all_unitarity)
+        all_gates = self._get_all_gates()
+        for name, gate in all_gates:
+            info = {
                 "matrix_shape": list(gate.matrix.shape),
                 "is_unitary": gate.is_unitary,
                 "num_qubits": gate.num_qubits,
-                "type": "non_abelian_holonomic",
             }
-
-        # Topological gates
-        for name, gate in [
-            ("Z2-Topo", self.topological.z2_topological_gate()),
-            ("Kramers-Berry", self.topological.kramers_pair_gate()),
-        ]:
-            gates[name] = {
-                "matrix_shape": list(gate.matrix.shape),
-                "is_unitary": gate.is_unitary,
-                "type": "topological_berry",
-            }
-
-        # Sacred gates
-        sacred_set = self.sacred.sacred_universal_set()
-        for name, gate in sacred_set.items():
-            gates[f"Sacred-{name}"] = {
-                "matrix_shape": list(gate.matrix.shape),
-                "is_unitary": gate.is_unitary,
-                "type": "sacred_berry",
-            }
+            if "Berry-" in name:
+                info["type"] = "abelian_berry"
+                info["berry_phase"] = gate.parameters.get("berry_phase", None)
+            elif "Holo-" in name:
+                info["type"] = "non_abelian_holonomic"
+            elif "Topo" in name or "Kramers" in name:
+                info["type"] = "topological_berry"
+            elif "Sacred-" in name:
+                info["type"] = "sacred_berry"
+            gates[name] = info
 
         return {
             "total_gates": len(gates),
@@ -703,9 +672,8 @@ class BerryGatesEngine:
             ],
         }
 
-    def verify_all_unitarity(self) -> Dict[str, bool]:
-        """Verify that all gates in the catalog are unitary."""
-        results = {}
+    def _get_all_gates(self) -> list:
+        """Build all gate instances once. Shared by catalog and verification."""
         all_gates = [
             ("Berry-Z", self.abelian.berry_z_gate()),
             ("Berry-S", self.abelian.berry_s_gate()),
@@ -718,17 +686,16 @@ class BerryGatesEngine:
             ("Holo-CNOT", self.non_abelian.holonomic_cnot()),
             ("Holo-Toffoli", self.non_abelian.holonomic_toffoli()),
             ("Z2-Topo", self.topological.z2_topological_gate()),
-            ("Kramers", self.topological.kramers_pair_gate()),
+            ("Kramers-Berry", self.topological.kramers_pair_gate()),
         ]
-
-        for name, gate in all_gates:
-            results[name] = gate.is_unitary
-
         sacred = self.sacred.sacred_universal_set()
         for name, gate in sacred.items():
-            results[f"Sacred-{name}"] = gate.is_unitary
+            all_gates.append((f"Sacred-{name}", gate))
+        return all_gates
 
-        return results
+    def verify_all_unitarity(self) -> Dict[str, bool]:
+        """Verify that all gates in the catalog are unitary."""
+        return {name: gate.is_unitary for name, gate in self._get_all_gates()}
 
     def robustness_analysis(self) -> Dict[str, Any]:
         """Analyze noise robustness of geometric vs dynamic gates."""

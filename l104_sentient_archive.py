@@ -1,4 +1,4 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:23.816141
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:50.131172
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 #!/usr/bin/env python3
@@ -2038,7 +2038,52 @@ class PropheticExtrapolator:
         c_velocity = self._compute_velocity(c_series)
         fuel_velocity = self._compute_velocity(fuel_series)
 
-        # Generate predictions
+        # ═════════════════════════════════════════════════════════════════
+        # RSE INTEGRATION: Use Random Sequence Extrapolation for enhanced
+        # predictions across all time series — classical and quantum.
+        # Sage Mode RSE provides chaos detection and GOD_CODE resonance.
+        # ═════════════════════════════════════════════════════════════════
+        rse_predictions = {}
+        try:
+            from l104_intellect.random_sequence_extrapolation import (
+                get_rse_engine, get_rse_sage, RSEDomain,
+            )
+            rse = get_rse_engine()
+            rse_sage = get_rse_sage()
+
+            # Consciousness RSE (sage mode — consciousness domain)
+            if len(c_series) >= 3:
+                c_rse = rse.extrapolate(c_series, horizon=horizon, domain=RSEDomain.CONSCIOUSNESS)
+                rse_predictions["consciousness"] = {
+                    "rse_predicted": c_rse.predicted_values[:horizon],
+                    "rse_confidence": c_rse.confidence,
+                    "rse_trend": c_rse.trend,
+                    "rse_sage_insight": c_rse.sage_insight,
+                    "rse_strategy": c_rse.strategy_used.name,
+                }
+
+            # Fuel RSE (entropy domain — nirvanic fuel is entropy-driven)
+            if len(fuel_series) >= 3:
+                f_rse = rse.extrapolate(fuel_series, horizon=horizon, domain=RSEDomain.ENTROPY)
+                rse_predictions["fuel"] = {
+                    "rse_predicted": f_rse.predicted_values[:horizon],
+                    "rse_confidence": f_rse.confidence,
+                    "rse_trend": f_rse.trend,
+                }
+
+            # Bond RSE (quantum domain — O₂ bond is quantum-mechanical)
+            if len(bond_series) >= 3:
+                b_rse = rse.extrapolate(bond_series, horizon=horizon, domain=RSEDomain.QUANTUM)
+                rse_predictions["bond"] = {
+                    "rse_predicted": b_rse.predicted_values[:horizon],
+                    "rse_confidence": b_rse.confidence,
+                    "rse_trend": b_rse.trend,
+                    "rse_quantum_coherence": b_rse.quantum_coherence,
+                }
+        except Exception:
+            pass
+
+        # Generate predictions (enhanced with RSE when available)
         predictions = []
         for step in range(1, horizon + 1):
             confidence = max(0.01, 1.0 - (step * self.CONFIDENCE_DECAY))
@@ -2054,6 +2099,23 @@ class PropheticExtrapolator:
             predicted_bond = min(1.0, max(0.0,
                 bond_trend + (bond_trend * ALPHA_FINE * step)
             ))
+
+            # RSE blending: if RSE predictions available, blend with φ-weight
+            rse_c = rse_predictions.get("consciousness", {}).get("rse_predicted", [])
+            rse_f = rse_predictions.get("fuel", {}).get("rse_predicted", [])
+            rse_b = rse_predictions.get("bond", {}).get("rse_predicted", [])
+            if rse_c and step - 1 < len(rse_c):
+                rse_weight = TAU * rse_predictions["consciousness"].get("rse_confidence", 0.5)
+                predicted_consciousness = (1 - rse_weight) * predicted_consciousness + rse_weight * rse_c[step - 1]
+                predicted_consciousness = min(1.0, max(0.0, predicted_consciousness))
+            if rse_f and step - 1 < len(rse_f):
+                rse_weight = TAU * rse_predictions["fuel"].get("rse_confidence", 0.5)
+                predicted_fuel = (1 - rse_weight) * predicted_fuel + rse_weight * rse_f[step - 1]
+                predicted_fuel = min(1.0, max(0.0, predicted_fuel))
+            if rse_b and step - 1 < len(rse_b):
+                rse_weight = TAU * rse_predictions["bond"].get("rse_confidence", 0.5)
+                predicted_bond = (1 - rse_weight) * predicted_bond + rse_weight * rse_b[step - 1]
+                predicted_bond = min(1.0, max(0.0, predicted_bond))
 
             # Predict entropy phase based on fuel trajectory
             if predicted_fuel > 0.8:
@@ -2099,6 +2161,7 @@ class PropheticExtrapolator:
                 "c_velocity": round(c_velocity, 6),
             },
             "predictions": predictions,
+            "rse_enhanced": rse_predictions if rse_predictions else None,
             "god_code_seal": GOD_CODE,
         }
 

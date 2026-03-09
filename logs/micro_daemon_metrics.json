@@ -1,0 +1,69 @@
+{
+  "version": "3.0.0",
+  "dumped_at": 1773068742.99016,
+  "tick": 963,
+  "health_score": 0.9852999999999998,
+  "tick_metrics": [
+    {
+      "tick": 961,
+      "timestamp": 1773068738.7686331,
+      "builtin_tasks_ms": 1.4,
+      "pending_tasks_ms": 0.0,
+      "custom_tasks_ms": 0.0,
+      "ipc_poll_ms": 0.0,
+      "telemetry_ms": 0.0,
+      "total_ms": 1.44,
+      "task_count": 2,
+      "slowest_task": "ipc_poll",
+      "slowest_ms": 1.33
+    },
+    {
+      "tick": 963,
+      "timestamp": 1773068741.777039,
+      "builtin_tasks_ms": 0.51,
+      "pending_tasks_ms": 0.01,
+      "custom_tasks_ms": 0.0,
+      "ipc_poll_ms": 0.0,
+      "telemetry_ms": 0.0,
+      "total_ms": 0.55,
+      "task_count": 2,
+      "slowest_task": "ipc_poll",
+      "slowest_ms": 0.45
+    }
+  ],
+  "recent_telemetry": [
+    {
+      "tick": 961,
+      "timestamp": 1773068738.768574,
+      "tasks_run": 2,
+      "tasks_passed": 2,
+      "tasks_failed": 0,
+      "tick_elapsed_ms": 1.44,
+      "health_score": 0.9789999999999999,
+      "sacred_alignment": 6.01410135,
+      "memory_mb": 0.0,
+      "cpu_percent": 0.0,
+      "scoring_cache_hits": 0,
+      "circuit_cache_size": 0,
+      "bridge_jobs_total": 0,
+      "daemon_cycler_alive": false
+    },
+    {
+      "tick": 963,
+      "timestamp": 1773068741.7769809,
+      "tasks_run": 2,
+      "tasks_passed": 2,
+      "tasks_failed": 0,
+      "tick_elapsed_ms": 0.55,
+      "health_score": 0.9852999999999998,
+      "sacred_alignment": 6.01410135,
+      "memory_mb": 0.0,
+      "cpu_percent": 0.0,
+      "scoring_cache_hits": 0,
+      "circuit_cache_size": 0,
+      "bridge_jobs_total": 0,
+      "daemon_cycler_alive": false
+    }
+  ],
+  "god_code": 527.5184818492612
+}

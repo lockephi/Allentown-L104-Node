@@ -1,0 +1,15 @@
+-rw-r--r--  1 carolalvarez  staff    326 Mar  8 03:37 _test_lsa_tmp.py
+-rw-r--r--  1 carolalvarez  staff   1143 Mar  8 03:29 _test_lsa_fix.py
+-rw-r--r--  1 carolalvarez  staff  13792 Mar  7 17:35 _test_rse_integration.py
+-rw-r--r--  1 carolalvarez  staff   6445 Mar  7 16:03 _test_v132.py
+-rw-r--r--  1 carolalvarez  staff   6204 Mar  7 15:30 _test_agi_v61.py
+-rw-r--r--  1 carolalvarez  staff   9037 Mar  7 15:22 _test_round3_improvements.py
+-rw-r--r--  1 carolalvarez  staff   5907 Mar  7 13:33 _test_vqpu_improvements.py
+-rw-r--r--  1 carolalvarez  staff   9290 Mar  7 13:19 _test_vqpu_v8.py
+-rw-r--r--  1 carolalvarez  staff   1404 Mar  7 01:38 _test_intellect_timeouts.py
+-rw-r--r--  1 carolalvarez  staff   4674 Mar  6 23:50 l104_test_synergy.py
+-rw-r--r--  1 carolalvarez  staff  32477 Mar  6 23:50 l104_test_builder_suite.py
+-rw-r--r--  1 carolalvarez  staff  13702 Mar  6 23:50 l104_stress_test.py
+-rw-r--r--  1 carolalvarez  staff   5419 Mar  6 23:50 l104_unified_connection_test.py
+-rw-r--r--  1 carolalvarez  staff   2987 Mar  6 23:50 l104_omniscience_test.py
+-rw-r--r--  1 carolalvarez  staff   1805 Mar  6 23:50 l104_test.py

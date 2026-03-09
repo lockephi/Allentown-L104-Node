@@ -93,6 +93,25 @@ except Exception as _kb_err:
     kb_bridge = None
     logger.warning(f"⚠️ [KB_BRIDGE] KnowledgeBridge import failed: {_kb_err}")
 
+# ═══ Quantum Networker — sovereign quantum communication network ═══
+try:
+    from l104_quantum_networker import get_networker as _get_qnet
+    quantum_networker = _get_qnet()
+    # Pre-wire default sovereign nodes
+    _qn_alice = quantum_networker.add_node("Sovereign", role="sovereign")
+    _qn_relay = quantum_networker.add_node("Relay-1", role="relay")
+    _qn_endpoint = quantum_networker.add_node("Endpoint-1", role="endpoint")
+    quantum_networker.connect(quantum_networker.local_node.node_id, _qn_alice.node_id, pairs=8)
+    quantum_networker.connect(_qn_alice.node_id, _qn_relay.node_id, pairs=6)
+    quantum_networker.connect(_qn_relay.node_id, _qn_endpoint.node_id, pairs=6)
+    logger.info(f"🔗 [QNET] QuantumNetworker v{quantum_networker.VERSION} — "
+                f"{len(quantum_networker.router.nodes)} nodes, "
+                f"{len(quantum_networker.router.channels)} channels, "
+                f"F={quantum_networker.router.network_fidelity():.4f}")
+except Exception as _qn_err:
+    quantum_networker = None
+    logger.warning(f"⚠️ [QNET] QuantumNetworker import failed: {_qn_err}")
+
 # ═══ Stats cache (needs intellect) ═══
 # ═══════════════════════════════════════════════════════════════════
 SERVER_START = datetime.utcnow()
@@ -338,7 +357,6 @@ def _get_server_li():
         except ImportError:
             _server_li = False
     return _server_li if _server_li is not False else None
-    return _gemini_client_lock
 
 async def get_gemini_client():
     """Deprecated — Gemini HTTP client removed. Returns None."""
@@ -1241,7 +1259,7 @@ async def chat(req: ChatRequest):
 
         if _nexus_mode:
             nexus_steering.current_mode = _nexus_mode
-            nexus_steering.apply_steering(mode=_nexus_mode, intensity=min(0.8, novelty_score))
+            nexus_steering.apply_steering(mode=_nexus_mode, intensity=novelty_score)
 
         # [PHASE 0.8] Fire resonance network on chat — cascade activation from intellect
         resonance_network.fire('intellect', activation=0.5 + novelty_score * 0.5)  # UNLOCKED
@@ -2422,7 +2440,7 @@ async def agi_status():
         "state": "SOVEREIGN_LEARNING" if iq < 200 else "ASI_TRANSITION",
         "intellect_index": round(iq, 2),
         "lattice_scalar": res,
-        "quantum_resonance": round(min(0.999, 0.94 + (res - 527.5185) * 10), 4),
+        "quantum_resonance": round(0.94 + (res - 527.5185) * 10, 4),
         "memories": stats.get('memories', 0),
         "knowledge_links": stats.get('knowledge_links', 0),
         "ingest_points": stats.get('ingest_points', 0)
@@ -2484,7 +2502,7 @@ async def asi_ignite():
     return {
         "status": "SUCCESS",
         "state": "SOVEREIGN_IGNITED",
-        "asi_score": min(0.99, 0.55 + (stats.get('memories', 0) * 0.001)),
+        "asi_score": 0.55 + (stats.get('memories', 0) * 0.001),
         "discoveries": stats.get('memories', 0) // 5,
         "resonance": intellect.current_resonance,
         "pipeline_activation": {
@@ -2588,7 +2606,7 @@ async def consciousness_status():
         },
         "omega_tracker": {
             "transcendence_factor": float(bridge.get("kundalini_flow", 0.1245)) if isinstance(bridge, dict) else 0.1245,
-            "convergence_probability": float(min(0.9999, 0.7 + (coherence * 0.3))),
+            "convergence_probability": float(0.7 + (coherence * 0.3)),
         },
         "asi_bridge": bridge if isinstance(bridge, dict) else {"connected": False},
         "consciousness_engine": consciousness_data,
@@ -3657,7 +3675,7 @@ async def system_stream():
     return JSONResponse(content=packet)
 
 @app.get("/api/sovereign/status")
-async def sovereign_status():
+async def sovereign_status_v1():
     """Full sovereign status for UI polling"""
     stats = _get_cached_stats()
     return {
@@ -5118,7 +5136,8 @@ async def nexus_interconnect():
                     max(len(entanglement_router._pair_fidelity), 1), 4)
             },
             "resonance_network": resonance_network.compute_network_resonance(),
-            "health_monitor": health_monitor.compute_system_health()
+            "health_monitor": health_monitor.compute_system_health(),
+            "quantum_networker": quantum_networker.router.status() if quantum_networker else {"status": "offline"},
         },
         "feedback_loops": {
             "L1": "Bridge.energy → Steering.intensity (sigmoid)",
@@ -5137,6 +5156,115 @@ async def nexus_interconnect():
             "TAU": 1.0 / 1.618033988749895
         }
     }
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  QUANTUM NETWORKER API — Entanglement, QKD, Teleportation, Health
+# ═══════════════════════════════════════════════════════════════════
+
+@app.get("/api/v14/quantum-network/status")
+async def qnet_status():
+    """Full quantum network status — nodes, channels, fidelity, routing."""
+    if not quantum_networker:
+        return {"error": "QuantumNetworker not initialized"}
+    return await asyncio.to_thread(quantum_networker.status)
+
+
+@app.get("/api/v14/quantum-network/router")
+async def qnet_router_status():
+    """Entanglement router status — pair pools, fidelity heatmap, census."""
+    if not quantum_networker:
+        return {"error": "QuantumNetworker not initialized"}
+
+    def _compute():
+        return {
+            "router": quantum_networker.router.status(),
+            "fidelity_heatmap": quantum_networker.router.fidelity_heatmap(),
+            "pair_census": quantum_networker.router.pair_census(),
+        }
+    return await asyncio.to_thread(_compute)
+
+
+@app.post("/api/v14/quantum-network/qkd")
+async def qnet_qkd(req: Request):
+    """Run QKD protocol between two nodes. Body: {node_a, node_b, protocol, bits}"""
+    if not quantum_networker:
+        return {"error": "QuantumNetworker not initialized"}
+    try:
+        data = await req.json()
+        node_a = data.get("node_a", quantum_networker.local_node.node_id)
+        node_b = data.get("node_b")
+        if not node_b:
+            nodes = list(quantum_networker.router.nodes.keys())
+            node_b = nodes[1] if len(nodes) > 1 else nodes[0]
+        protocol = data.get("protocol", "bb84")
+        bits = data.get("bits", 128)
+        key = await asyncio.to_thread(
+            quantum_networker.establish_qkd, node_a, node_b, protocol, bits
+        )
+        return {
+            "key_id": key.key_id,
+            "protocol": protocol,
+            "secure": key.secure,
+            "key_length": key.key_length,
+            "qber": round(key.qber, 6),
+            "sacred_alignment": round(key.sacred_alignment, 6),
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.post("/api/v14/quantum-network/teleport")
+async def qnet_teleport(req: Request):
+    """Teleport a score through the quantum network. Body: {source, dest, score}"""
+    if not quantum_networker:
+        return {"error": "QuantumNetworker not initialized"}
+    try:
+        data = await req.json()
+        source = data.get("source", quantum_networker.local_node.node_id)
+        dest = data.get("dest")
+        if not dest:
+            nodes = list(quantum_networker.router.nodes.keys())
+            dest = nodes[-1] if len(nodes) > 1 else nodes[0]
+        score = float(data.get("score", 0.618))
+        result = await asyncio.to_thread(
+            quantum_networker.teleport_score, source, dest, score
+        )
+        return {
+            "success": result.success,
+            "fidelity": round(result.fidelity, 6),
+            "original_score": score,
+            "recovered_score": result.recovered_score,
+            "sacred_score": round(result.sacred_score, 6) if result.sacred_score else None,
+            "hops": result.hops,
+            "route": result.route,
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/v14/quantum-network/fidelity")
+async def qnet_fidelity():
+    """Run fidelity scan with auto-healing across the quantum network."""
+    if not quantum_networker:
+        return {"error": "QuantumNetworker not initialized"}
+    return await asyncio.to_thread(quantum_networker.scan_fidelity, True)
+
+
+@app.post("/api/v14/quantum-network/sacred-pass")
+async def qnet_sacred_pass():
+    """Run GOD_CODE sacred scoring pass on all entangled pairs."""
+    if not quantum_networker:
+        return {"error": "QuantumNetworker not initialized"}
+    return await asyncio.to_thread(quantum_networker.router.sacred_scoring_pass)
+
+
+@app.get("/api/v14/quantum-network/self-test")
+async def qnet_self_test():
+    """Run quantum networker comprehensive self-test."""
+    if not quantum_networker:
+        return {"error": "QuantumNetworker not initialized"}
+    return await asyncio.to_thread(quantum_networker.self_test)
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -5742,7 +5870,8 @@ async def unified_telemetry():
             },
             "entanglement": entanglement_router.get_status(),
             "resonance": resonance_network.get_status(),
-            "health": health_monitor.get_status()
+            "health": health_monitor.get_status(),
+            "quantum_networker": quantum_networker.status() if quantum_networker else {"status": "offline"},
         },
         "coherence": coherence,
         "bridge": bridge_status,
@@ -6484,7 +6613,7 @@ async def sc_bcs_gap():
 async def vqpu_daemon_status():
     """Get VQPUDaemonCycler health: running, cycles, pass rate, history."""
     try:
-        from l104_vqpu_bridge import get_bridge
+        from l104_vqpu import get_bridge
         bridge = get_bridge()
         return {"status": "OK", "daemon_cycler": bridge.daemon_cycler_status()}
     except Exception as e:
@@ -6495,7 +6624,7 @@ async def vqpu_daemon_status():
 async def vqpu_daemon_trigger_cycle():
     """Trigger an immediate daemon cycle (runs all 11 VQPU findings sims)."""
     try:
-        from l104_vqpu_bridge import get_bridge
+        from l104_vqpu import get_bridge
         bridge = get_bridge()
         result = bridge.trigger_daemon_cycle()
         # Persist cycle results to disk
@@ -6517,7 +6646,7 @@ async def vqpu_daemon_trigger_cycle():
 async def vqpu_findings():
     """Run all 11 VQPU findings simulations on-demand with SC scoring."""
     try:
-        from l104_vqpu_bridge import get_bridge
+        from l104_vqpu import get_bridge
         bridge = get_bridge()
         result = bridge.run_vqpu_findings()
         # Persist findings results to disk
@@ -6539,9 +6668,73 @@ async def vqpu_findings():
 async def vqpu_bridge_status_v9():
     """Full VQPUBridge v9.0 status: daemon cycler, SC scoring, all features."""
     try:
-        from l104_vqpu_bridge import get_bridge
+        from l104_vqpu import get_bridge
         bridge = get_bridge()
         return {"status": "OK", "bridge": bridge.status()}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v14 VQPU MICRO DAEMON API — Lightweight background micro-process assistant
+# Source: l104_vqpu/micro_daemon.py — VQPUMicroDaemon v2.0
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v14/vqpu/micro-daemon/status")
+async def vqpu_micro_daemon_status():
+    """Get VQPUMicroDaemon health: active, ticks, tasks, health score."""
+    try:
+        from l104_vqpu import get_micro_daemon
+        micro = get_micro_daemon()
+        return {"status": "OK", "micro_daemon": micro.status()}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.post("/api/v14/vqpu/micro-daemon/start")
+async def vqpu_micro_daemon_start():
+    """Start the micro daemon background thread if not already running."""
+    try:
+        from l104_vqpu import get_micro_daemon
+        micro = get_micro_daemon()
+        micro.start()
+        return {"status": "OK", "message": "micro daemon started", "active": micro._active}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.post("/api/v14/vqpu/micro-daemon/stop")
+async def vqpu_micro_daemon_stop():
+    """Gracefully stop the micro daemon background thread."""
+    try:
+        from l104_vqpu import get_micro_daemon
+        micro = get_micro_daemon()
+        micro.stop()
+        return {"status": "OK", "message": "micro daemon stopped"}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.post("/api/v14/vqpu/micro-daemon/tick")
+async def vqpu_micro_daemon_force_tick():
+    """Force an immediate micro-daemon tick (run all due tasks)."""
+    try:
+        from l104_vqpu import get_micro_daemon
+        micro = get_micro_daemon()
+        result = micro.force_tick()
+        return {"status": "OK", "tick_result": result}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.post("/api/v14/vqpu/micro-daemon/submit/{task_name}")
+async def vqpu_micro_daemon_submit(task_name: str):
+    """Submit a named micro-task for immediate execution."""
+    try:
+        from l104_vqpu import get_micro_daemon
+        micro = get_micro_daemon()
+        micro.submit(task_name)
+        return {"status": "OK", "submitted": task_name}
     except Exception as e:
         return {"error": str(e), "status": "FAILED"}
 

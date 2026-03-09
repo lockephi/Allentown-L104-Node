@@ -155,13 +155,28 @@ class Hamiltonian:
         return H
 
     def sparse_matrix(self):
-        """Construct sparse CSR Hamiltonian (for larger systems)."""
+        """Construct sparse CSR Hamiltonian (for larger systems).
+
+        v1.0.1: Builds Pauli-string matrices directly in sparse form
+        using scipy.sparse.kron on 2×2 sparse Paulis, avoiding dense
+        2^n × 2^n intermediaries that defeat the purpose of sparse.
+        """
         from scipy import sparse
         dim = 2 ** self.num_qubits
+        _PAULI_SPARSE = {
+            "I": sparse.eye(2, dtype=complex, format='csr'),
+            "X": sparse.csr_matrix(np.array([[0, 1], [1, 0]], dtype=complex)),
+            "Y": sparse.csr_matrix(np.array([[0, -1j], [1j, 0]], dtype=complex)),
+            "Z": sparse.csr_matrix(np.array([[1, 0], [0, -1]], dtype=complex)),
+        }
         H = sparse.csr_matrix((dim, dim), dtype=complex)
         for term in self.terms:
-            mat = term.coefficient * _pauli_string_matrix(term.paulis, self.num_qubits)
-            H += sparse.csr_matrix(mat)
+            pauli_map = {q: p for q, p in term.paulis}
+            mat = sparse.csr_matrix(np.array([[1.0]], dtype=complex))
+            for q in range(self.num_qubits):
+                p_label = pauli_map.get(q, "I")
+                mat = sparse.kron(mat, _PAULI_SPARSE.get(p_label, _PAULI_SPARSE["I"]), format='csr')
+            H += term.coefficient * mat
         return H
 
     def eigenspectrum(self, k: Optional[int] = None) -> Tuple[np.ndarray, np.ndarray]:
@@ -286,6 +301,21 @@ _PAULI = {
     "Z": np.array([[1, 0], [0, -1]], dtype=complex),
 }
 
+# LRU-cached Pauli string matrix builder — avoids recomputation in hot loops
+# (Trotter steps, VQE iterations, parametric sweeps)
+from functools import lru_cache as _lru_cache
+
+
+@_lru_cache(maxsize=512)
+def _pauli_string_matrix_cached(pauli_key: tuple, num_qubits: int) -> np.ndarray:
+    """Cached version keyed by hashable Pauli signature."""
+    pauli_map = dict(pauli_key)
+    result = np.array([[1.0]], dtype=complex)
+    for q in range(num_qubits):
+        mat = _PAULI.get(pauli_map.get(q, "I"), _PAULI["I"])
+        result = np.kron(result, mat)
+    return result
+
 
 def _pauli_string_matrix(paulis: List[Tuple[int, str]], num_qubits: int) -> np.ndarray:
     """
@@ -297,13 +327,11 @@ def _pauli_string_matrix(paulis: List[Tuple[int, str]], num_qubits: int) -> np.n
 
     Returns:
         Tensor product matrix with Paulis placed on specified qubits, I elsewhere.
+
+    v1.0.1: Backed by @lru_cache for repeated calls (Trotter loops, VQE).
     """
-    pauli_map = {q: p for q, p in paulis}
-    result = np.array([[1.0]], dtype=complex)
-    for q in range(num_qubits):
-        mat = _PAULI.get(pauli_map.get(q, "I"), _PAULI["I"])
-        result = np.kron(result, mat)
-    return result
+    pauli_key = tuple(sorted(paulis)) if not isinstance(paulis, tuple) else paulis
+    return _pauli_string_matrix_cached(pauli_key, num_qubits).copy()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -461,6 +489,143 @@ class HamiltonianBuilder:
             hamiltonian_type=HamiltonianType.HUBBARD,
             label=f"Hubbard_1D(t={t_hop}, U={U}, n={n})",
             metadata={"t_hop": t_hop, "U": U},
+        )
+
+    @staticmethod
+    def hubbard_1d_spinful(num_sites: int, t_hop: float = 1.0,
+                           U: float = 2.0, periodic: bool = False) -> Hamiltonian:
+        """
+        1D spinful Fermi-Hubbard model via Jordan-Wigner transformation.
+
+            H = -t Σ_σ Σ_i (c†_{i,σ} c_{i+1,σ} + h.c.) + U Σ_i n_{i,↑} n_{i,↓}
+
+        Uses 2 qubits per site: qubit 2i = spin-↑ at site i,
+                                  qubit 2i+1 = spin-↓ at site i.
+
+        Jordan-Wigner encoding:
+          c†_{j} c_{j+1} → ½(X_j X_{j+1} + Y_j Y_{j+1})  (adjacent in JW order)
+          n_{i,↑} n_{i,↓} = ¼(I - Z_{2i})(I - Z_{2i+1})
+                           = ¼(I - Z_{2i} - Z_{2i+1} + Z_{2i} Z_{2i+1})
+
+        This captures the full metal-insulator (Mott) transition at half-filling
+        driven by the competition between kinetic energy t and on-site repulsion U.
+
+        Args:
+            num_sites: Number of physical lattice sites (total qubits = 2 × num_sites)
+            t_hop:     Hopping amplitude t
+            U:         On-site Coulomb repulsion
+            periodic:  Periodic boundary conditions
+
+        Returns:
+            Hamiltonian with 2*num_sites qubits
+        """
+        n = num_sites
+        nq = 2 * n  # total qubits
+        terms = []
+
+        n_bonds = n if periodic else (n - 1)
+
+        # --- Spin-↑ hopping: -t Σ_i ½(X_{2i} X_{2(i+1)} + Y_{2i} Y_{2(i+1)}) ---
+        # For adjacent sites in JW order, spin-↑ qubits 2i and 2(i+1) are NOT
+        # adjacent — there's a spin-↓ qubit (2i+1) in between. The JW string
+        # introduces a Z on qubit 2i+1:
+        #   c†_{2i} c_{2(i+1)} = ½(X_{2i} Z_{2i+1} X_{2(i+1)} + Y_{2i} Z_{2i+1} Y_{2(i+1)})
+        for bond in range(n_bonds):
+            j = (bond + 1) % n
+            q_from = 2 * bond      # spin-↑ at site bond
+            q_to = 2 * j            # spin-↑ at site j
+            q_between = 2 * bond + 1  # spin-↓ at site bond (JW string)
+
+            if j == bond + 1:  # non-periodic: adjacent, JW string through one qubit
+                for pauli in ["X", "Y"]:
+                    terms.append(HamiltonianTerm(
+                        coefficient=-t_hop / 2.0,
+                        paulis=[(q_from, pauli), (q_between, "Z"), (q_to, pauli)],
+                        label=f"hop_up_{pauli}({bond},{j})",
+                    ))
+            else:
+                # Periodic wrap: JW string through all intermediate qubits
+                jw_paulis_x = [(q_from, "X")]
+                jw_paulis_y = [(q_from, "Y")]
+                for k in range(q_from + 1, nq):
+                    if k == q_to:
+                        break
+                    jw_paulis_x.append((k, "Z"))
+                    jw_paulis_y.append((k, "Z"))
+                jw_paulis_x.append((q_to, "X"))
+                jw_paulis_y.append((q_to, "Y"))
+                terms.append(HamiltonianTerm(
+                    coefficient=-t_hop / 2.0, paulis=jw_paulis_x,
+                    label=f"hop_up_X({bond},{j})",
+                ))
+                terms.append(HamiltonianTerm(
+                    coefficient=-t_hop / 2.0, paulis=jw_paulis_y,
+                    label=f"hop_up_Y({bond},{j})",
+                ))
+
+        # --- Spin-↓ hopping: qubits 2i+1 and 2(i+1)+1 ---
+        for bond in range(n_bonds):
+            j = (bond + 1) % n
+            q_from = 2 * bond + 1    # spin-↓ at site bond
+            q_to = 2 * j + 1          # spin-↓ at site j
+
+            if j == bond + 1:  # adjacent in JW order (no intermediate)
+                for pauli in ["X", "Y"]:
+                    terms.append(HamiltonianTerm(
+                        coefficient=-t_hop / 2.0,
+                        paulis=[(q_from, pauli), (q_to, pauli)],
+                        label=f"hop_dn_{pauli}({bond},{j})",
+                    ))
+            else:
+                jw_paulis_x = [(q_from, "X")]
+                jw_paulis_y = [(q_from, "Y")]
+                for k in range(q_from + 1, nq):
+                    if k == q_to:
+                        break
+                    jw_paulis_x.append((k, "Z"))
+                    jw_paulis_y.append((k, "Z"))
+                jw_paulis_x.append((q_to, "X"))
+                jw_paulis_y.append((q_to, "Y"))
+                terms.append(HamiltonianTerm(
+                    coefficient=-t_hop / 2.0, paulis=jw_paulis_x,
+                    label=f"hop_dn_X({bond},{j})",
+                ))
+                terms.append(HamiltonianTerm(
+                    coefficient=-t_hop / 2.0, paulis=jw_paulis_y,
+                    label=f"hop_dn_Y({bond},{j})",
+                ))
+
+        # --- On-site interaction: U Σ_i n_{i,↑} n_{i,↓} ---
+        # n_{i,↑} n_{i,↓} = ¼(I - Z_{2i} - Z_{2i+1} + Z_{2i}Z_{2i+1})
+        # The identity shift is a constant energy offset (dropped).
+        for i in range(n):
+            q_up = 2 * i
+            q_dn = 2 * i + 1
+            # -U/4 Z_{2i}
+            terms.append(HamiltonianTerm(
+                coefficient=-U / 4.0,
+                paulis=[(q_up, "Z")],
+                label=f"onsite_Zup({i})",
+            ))
+            # -U/4 Z_{2i+1}
+            terms.append(HamiltonianTerm(
+                coefficient=-U / 4.0,
+                paulis=[(q_dn, "Z")],
+                label=f"onsite_Zdn({i})",
+            ))
+            # +U/4 Z_{2i}Z_{2i+1}
+            terms.append(HamiltonianTerm(
+                coefficient=U / 4.0,
+                paulis=[(q_up, "Z"), (q_dn, "Z")],
+                label=f"onsite_ZZ({i})",
+            ))
+
+        return Hamiltonian(
+            num_qubits=nq, terms=terms,
+            hamiltonian_type=HamiltonianType.HUBBARD,
+            label=f"Hubbard_1D_spinful(t={t_hop}, U={U}, n={n})",
+            metadata={"t_hop": t_hop, "U": U, "num_sites": n,
+                      "spinful": True, "periodic": periodic},
         )
 
     @staticmethod

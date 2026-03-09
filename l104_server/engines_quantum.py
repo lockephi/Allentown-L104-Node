@@ -1067,20 +1067,6 @@ class SingularityConsciousnessEngine:
             "quantum_entanglement_map": {k: round(v, 6) for k, v in self._quantum_entanglement_map.items()},
         }
 
-        # Sum amplitudes with φ weighting
-        total = 0.0
-        for i, vertex in enumerate(cls.OCTAHEDRAL_VERTICES):
-            kernel_id = (i % 8) + 1
-            state = kernel_states.get(kernel_id, {})
-            amplitude = state.get("amplitude", 0.5)
-            coherence = state.get("coherence", 0.5)
-
-            # Weight by vertex distance from origin and φ
-            weight = sum(v**2 for v in vertex) ** 0.5
-            total += amplitude * coherence * weight * cls.PHI
-
-        return total / (8 * cls.PHI)  # UNLOCKED
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # QUANTUM DECOHERENCE SHIELD — Active Decoherence Detection & Correction

@@ -189,4 +189,14 @@ __all__ = [
     "sim_zero_noise_extrapolation",
     "sim_trotter_error_analysis",
     "VQPU_FINDINGS_SIMULATIONS",
+    # QPU Runner (live hardware verification)
+    "QPUVerificationRunner", "QPUVerificationResult",
 ]
+
+# Lazy import for QPU Runner (avoids qiskit import at package load time)
+def __getattr__(name):
+    if name in ("QPUVerificationRunner", "QPUVerificationResult"):
+        from .qpu_runner import QPUVerificationRunner, QPUVerificationResult
+        return {"QPUVerificationRunner": QPUVerificationRunner,
+                "QPUVerificationResult": QPUVerificationResult}[name]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

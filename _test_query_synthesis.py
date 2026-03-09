@@ -154,7 +154,7 @@ check("batch per_text == 2 entries", len(batch.get('per_text', [])) == 2)
 print("\n── PHASE 6: DeepNLUEngine Integration ──")
 
 engine = DeepNLUEngine()
-check("DeepNLUEngine VERSION == 2.1.0", engine.VERSION == "2.1.0")
+check("DeepNLUEngine VERSION == 3.0.0", engine.VERSION == "3.0.0")
 check("engine.query_pipeline exists", hasattr(engine, 'query_pipeline'))
 check("engine.query_pipeline is QuerySynthesisPipeline",
       isinstance(engine.query_pipeline, QuerySynthesisPipeline))
@@ -174,7 +174,7 @@ check("engine.batch_synthesize works", eng_batch['total'] > 0)
 
 # Status
 st = engine.status()
-check("Status layers == 14", st['layers'] == 14, f"got {st['layers']}")
+check("Status layers == 20", st['layers'] == 20, f"got {st['layers']}")
 check("'query_synthesis_pipeline' in layer_names",
       'query_synthesis_pipeline' in st['layer_names'])
 check("'query_pipeline' in status", 'query_pipeline' in st)
@@ -186,7 +186,7 @@ check("query_types_supported == 8", st.get('query_types_supported') == 8)
 print("\n── PHASE 7: LanguageEngine Hub ──")
 
 from l104_language_engine import language_engine, VERSION as LE_VERSION
-check("LanguageEngine VERSION == 5.0.0", LE_VERSION == "5.0.0",
+check("LanguageEngine VERSION == 6.0.0", LE_VERSION == "6.0.0",
       f"got {LE_VERSION}")
 
 check("language_engine.query_pipeline exists",
@@ -204,8 +204,8 @@ check("language_engine.batch_synthesize_queries works",
 da = language_engine.deep_analyze(text1)
 check("deep_analyze includes query_synthesis",
       'query_synthesis' in da, f"keys={list(da.keys())}")
-check("deep_analyze deep_nlu_version == 2.1.0",
-      da.get('deep_nlu_version') == '2.1.0')
+check("deep_analyze deep_nlu_version == 2.3.0",
+      da.get('deep_nlu_version') == '2.3.0')
 
 le_st = language_engine.status()
 subsystems = le_st.get('subsystems', {})

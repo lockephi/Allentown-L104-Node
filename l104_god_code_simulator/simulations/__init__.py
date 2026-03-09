@@ -2,7 +2,7 @@
 L104 God Code Simulator — Simulations Subpackage
 ═══════════════════════════════════════════════════════════════════════════════
 
-Re-exports all 55 simulations across 8 categories and the combined registry
+Re-exports all 61 simulations across 9 categories and the combined registry
 list used by GodCodeSimulator._register_builtins().
 
 Categories:
@@ -15,6 +15,7 @@ Categories:
   research       — Shor, chaos, braiding, holographic, threshold, supremacy, SYK, fractal     (8)
   vqpu_findings  — QFI, Loschmidt, tomography, relative entropy, Kitaev-Preskill,             (11)
                    QAOA, Heisenberg chain, SWAP test, ZNE, Trotter, Superconductivity
+  black_hole     — Schwarzschild, Hawking, information paradox, Penrose, scrambling, thermo   (6)
 
 ═══════════════════════════════════════════════════════════════════════════════
 """
@@ -99,6 +100,15 @@ from .vqpu_findings import (
     sim_trotter_error_analysis,
     sim_superconductivity_heisenberg,
 )
+from .black_hole import (
+    BLACK_HOLE_SIMULATIONS,
+    sim_schwarzschild_geometry,
+    sim_hawking_radiation,
+    sim_information_paradox,
+    sim_penrose_process,
+    sim_horizon_scrambling,
+    sim_bh_thermodynamics,
+)
 
 # Combined registry for GodCodeSimulator._register_builtins()
 ALL_SIMULATIONS = (
@@ -110,6 +120,7 @@ ALL_SIMULATIONS = (
     + CIRCUIT_SIMULATIONS
     + RESEARCH_SIMULATIONS
     + VQPU_FINDINGS_SIMULATIONS
+    + BLACK_HOLE_SIMULATIONS
 )
 
 __all__ = [
@@ -142,8 +153,13 @@ __all__ = [
     "sim_heisenberg_iron_chain", "sim_swap_test_fidelity",
     "sim_zero_noise_extrapolation", "sim_trotter_error_analysis",
     "sim_superconductivity_heisenberg",
+    # Black Hole
+    "sim_schwarzschild_geometry", "sim_hawking_radiation",
+    "sim_information_paradox", "sim_penrose_process",
+    "sim_horizon_scrambling", "sim_bh_thermodynamics",
     # Registries
     "CORE_SIMULATIONS", "QUANTUM_SIMULATIONS", "ADVANCED_SIMULATIONS",
     "DISCOVERY_SIMULATIONS", "TRANSPILER_SIMULATIONS", "CIRCUIT_SIMULATIONS",
-    "RESEARCH_SIMULATIONS", "VQPU_FINDINGS_SIMULATIONS", "ALL_SIMULATIONS",
+    "RESEARCH_SIMULATIONS", "VQPU_FINDINGS_SIMULATIONS",
+    "BLACK_HOLE_SIMULATIONS", "ALL_SIMULATIONS",
 ]

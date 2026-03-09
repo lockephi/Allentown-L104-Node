@@ -1,0 +1,129 @@
+{
+  "avg_execution_ms" : 0,
+  "backend_telemetry" : {
+
+  },
+  "chunked_cpu_executions" : 0,
+  "circuit_validation" : {
+    "complexity_analysis" : true,
+    "enabled" : true,
+    "memory_pooling" : true,
+    "performance_profiling" : true
+  },
+  "circuits_failed" : 0,
+  "circuits_processed" : 0,
+  "cpu_executions" : 0,
+  "god_code" : 527.51848184926121,
+  "gpu_executions" : 0,
+  "max_concurrent" : 16,
+  "mps_executions" : 0,
+  "session_end" : "2026-03-08T16:26:57.917Z",
+  "stabilizer_executions" : 0,
+  "three_engine" : {
+    "integrated" : true,
+    "scoring_dimensions" : [
+      "entropy_reversal",
+      "harmonic_resonance",
+      "wave_coherence"
+    ],
+    "weight_entropy" : 0.34999999999999998,
+    "weight_harmonic" : 0.40000000000000002,
+    "weight_wave" : 0.25
+  },
+  "throttle_count" : 0,
+  "total_execution_ms" : 0,
+  "uptime_seconds" : 0.076606035232543945,
+  "version" : "5.0.0",
+  "vqpu" : {
+    "avg_execution_ms" : 0,
+    "backends" : [
+      "stabilizer_chp",
+      "cpu_statevector",
+      "metal_gpu",
+      "tensor_network_mps",
+      "chunked_cpu",
+      "double_precision_cpu",
+      "simd_turbo_cpu"
+    ],
+    "capacity" : {
+      "batch_limit" : 512,
+      "max_qubits" : 64,
+      "mps_max_bond_high" : 2048,
+      "mps_max_bond_low" : 512,
+      "mps_max_bond_med" : 1024
+    },
+    "chunked_cpu_dispatches" : 0,
+    "circuits_executed" : 0,
+    "cpu_dispatches" : 0,
+    "double_precision_dispatches" : 0,
+    "features" : [
+      "sacred_alignment_scoring",
+      "three_engine_entropy_reversal",
+      "three_engine_harmonic_resonance",
+      "three_engine_wave_coherence",
+      "concurrent_batch_dispatch",
+      "all_2q_gates_gpu_accelerated",
+      "phi_god_code_gates",
+      "env_driven_limits",
+      "double_buffered_command_queue",
+      "parallel_sampling",
+      "512_gate_batch_limit",
+      "mps_bond_dim_2048_max",
+      "adaptive_thread_groups",
+      "6_gpu_compute_kernels",
+      "async_write_pipeline",
+      "unlimited_resource_mode"
+    ],
+    "gates_supported" : [
+      "H",
+      "X",
+      "Y",
+      "Z",
+      "S",
+      "SDG",
+      "T",
+      "TDG",
+      "SX",
+      "SXDG",
+      "Rx",
+      "Ry",
+      "Rz",
+      "CX",
+      "CZ",
+      "CY",
+      "SWAP",
+      "ISWAP",
+      "ECR",
+      "PHI_GATE",
+      "GOD_CODE_PHASE",
+      "I"
+    ],
+    "god_code" : 527.51848184926121,
+    "gpu_available" : true,
+    "gpu_crossover_qubits" : 16,
+    "gpu_dispatches" : 0,
+    "gpu_kernels" : [
+      "apply_gate",
+      "apply_cnot",
+      "apply_cz",
+      "apply_swap",
+      "apply_controlled_u",
+      "apply_iswap"
+    ],
+    "gpu_max_qubits" : 25,
+    "gpu_memory_mb" : 1536,
+    "gpu_name" : "Intel(R) Iris(TM) Graphics 6000",
+    "mps_dispatches" : 0,
+    "peak_throughput_hz" : 0,
+    "router" : "7-backend-asi-v5",
+    "simd_turbo_dispatches" : 0,
+    "stabilizer_dispatches" : 0,
+    "three_engine" : {
+      "weight_entropy" : 0.34999999999999998,
+      "weight_harmonic" : 0.40000000000000002,
+      "weight_wave" : 0.25
+    },
+    "total_execution_ms" : 0,
+    "version" : "5.0.0"
+  }
+}

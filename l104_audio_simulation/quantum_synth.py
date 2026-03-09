@@ -259,13 +259,13 @@ class QuantumOscillator:
         """
         if self._vqpu is None:
             try:
-                from l104_vqpu_bridge import get_bridge
+                from l104_vqpu import get_bridge
                 self._vqpu = get_bridge()
             except ImportError:
                 return
 
         try:
-            from l104_vqpu_bridge import QuantumJob, QuantumGate
+            from l104_vqpu import QuantumJob, QuantumGate
             n_q = min(self.n_qubits, 6)
             ops = []
 
@@ -688,7 +688,7 @@ class QuantumSynthEngine:
     def vqpu(self):
         if self._vqpu is None:
             try:
-                from l104_vqpu_bridge import get_bridge
+                from l104_vqpu import get_bridge
                 self._vqpu = get_bridge()
             except ImportError:
                 pass
@@ -768,7 +768,7 @@ class QuantumSynthEngine:
         # Update FM operators from entanglement measurements
         if self.vqpu and self.fm_operators:
             try:
-                from l104_vqpu_bridge import QuantumJob, QuantumGate
+                from l104_vqpu import QuantumJob, QuantumGate
                 # Bell pair for entanglement measurement
                 ops = [
                     QuantumGate("H", [0]),

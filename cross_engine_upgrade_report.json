@@ -1,0 +1,613 @@
+{
+    "report_title": "L104 Cross-Engine Integration Upgrade Report",
+    "report_date": "2026-03-08",
+    "packages_analyzed": 6,
+    "total_missing_integrations": 31,
+    "packages": {
+        "l104_science_engine": {
+            "version": "5.1.0",
+            "modules": [
+                "constants.py",
+                "physics.py",
+                "entropy.py",
+                "coherence.py",
+                "multidimensional.py",
+                "quantum_25q.py",
+                "berry_phase.py",
+                "computronium.py",
+                "bridge.py",
+                "engine.py"
+            ],
+            "key_classes": [
+                "ScienceEngine (orchestrator)",
+                "EntropySubsystem",
+                "CoherenceSubsystem",
+                "PhysicsSubsystem",
+                "MultiDimensionalSubsystem",
+                "BerryPhaseSubsystem",
+                "ComputroniumSubsystem",
+                "ScienceBridge",
+                "MathConnector",
+                "QuantumRuntimeConnector"
+            ],
+            "existing_cross_engine_hooks": {
+                "l104_math_engine": "MathConnector in bridge.py — connects math engine for high-precision ops, god_code_hp(), phi_hp(), verify_conservation()",
+                "l104_hyper_math": "Optional import in entropy.py and engine.py (legacy HyperMath/RealMath)",
+                "l104_god_code_simulator": "god_code_qubit import for GOD_CODE_PHASE constants; god_code_simulator in engine.py",
+                "l104_quantum_data_storage": "Single reference in engine.py line 1026 (data storage)",
+                "l104_zero_point_engine": "Optional import in engine.py",
+                "l104_anyon_research": "Optional import in engine.py",
+                "l104_knowledge_sources": "Optional import in engine.py"
+            },
+            "missing_cross_engine_integrations": [
+                {
+                    "target_package": "l104_vqpu",
+                    "description": "No VQPU bridge integration. EntropySubsystem and CoherenceSubsystem could submit circuits to Metal GPU for quantum-enhanced demon efficiency and coherence braiding.",
+                    "integration_point": "EntropySubsystem.calculate_demon_efficiency() — submit VQPU scoring circuit for quantum-enhanced efficiency",
+                    "priority": "HIGH"
+                },
+                {
+                    "target_package": "l104_ml_engine",
+                    "description": "No ML engine connection. Entropy cascade trajectories and coherence evolution could feed ML classifiers for pattern recognition.",
+                    "integration_point": "CoherenceSubsystem.evolve() — feed evolution trajectory to MLEngine for coherence prediction; EntropySubsystem.entropy_cascade() — use ML to predict convergence point",
+                    "priority": "HIGH"
+                },
+                {
+                    "target_package": "l104_quantum_gate_engine",
+                    "description": "No quantum gate engine connection. Berry phase calculations in berry_phase.py and coherence braiding in coherence.py could use real gate algebra instead of manual matrix math.",
+                    "integration_point": "CoherenceSubsystem._execute_braid() — use GateAlgebra for braiding; BerryPhaseSubsystem — use GateCircuit for phase circuits",
+                    "priority": "MEDIUM"
+                },
+                {
+                    "target_package": "l104_quantum_data_analyzer",
+                    "description": "No quantum data analyzer integration. Physics and entropy data could be analyzed using QFT spectral analysis and anomaly detection.",
+                    "integration_point": "ScienceEngine research cycle — pipe physics data to QuantumDataAnalyzer.spectral_analysis()",
+                    "priority": "MEDIUM"
+                },
+                {
+                    "target_package": "l104_search",
+                    "description": "No search engine integration. Science engine data (entropy fields, coherence states) could be searchable via entropy-guided and coherence-field strategies.",
+                    "integration_point": "ScienceEngine — expose data for ThreeEngineSearchPrecog indexing",
+                    "priority": "LOW"
+                },
+                {
+                    "target_package": "l104_audio_simulation",
+                    "description": "No direct audio integration (audio imports science engine, but not vice versa). Could map coherence field to audio feedback.",
+                    "integration_point": "CoherenceSubsystem — sonification hook for real-time coherence monitoring",
+                    "priority": "LOW"
+                }
+            ],
+            "bugs_found": [
+                {
+                    "location": "entropy.py: EntropySubsystem.inject_coherence()",
+                    "severity": "MEDIUM",
+                    "description": "inject_coherence() can produce NaN/Inf when noise_vector contains zeros. The line `manifold_projection = noise_vector * GOD_CODE / np.mean(np.abs(noise_vector) + 1e-9)` is safe, but `final_signal = ordered_vector / (mean_val / GOD_CODE)` can blow up when mean_val is very small (near 1e-15 threshold). The guard `abs(mean_val) > 1e-15` is brittle — values just above the threshold produce extreme scaling.",
+                    "fix": "Use a safer normalization: clamp (mean_val / GOD_CODE) to [1e-10, inf] before division, or apply np.clip to final_signal."
+                },
+                {
+                    "location": "entropy.py: EntropySubsystem.inject_coherence()",
+                    "severity": "LOW",
+                    "description": "The ZNE correction divides final_signal by zne_correction which can be > 1.0, effectively reducing signal strength when ENTROPY_ZNE_BRIDGE_ENABLED=True. The correction magnitude is unvalidated — noise_estimate can be arbitrarily large for noisy inputs, leading to excessive attenuation.",
+                    "fix": "Clamp zne_correction to a bounded range, e.g., [1.0, 1.0 + PHI_CONJUGATE]."
+                }
+            ],
+            "method_signatures_for_upgrade": [
+                "EntropySubsystem.calculate_demon_efficiency(local_entropy: float) -> float — add vqpu_bridge parameter for quantum scoring",
+                "EntropySubsystem.inject_coherence(noise_vector: np.ndarray) -> np.ndarray — add ml_denoise: bool parameter to apply ML denoising pre-processing",
+                "CoherenceSubsystem.evolve(steps: int) -> Dict — add vqpu_bridge parameter for real quantum braiding",
+                "CoherenceSubsystem.ingest_simulation_result(sim_result: Dict) -> Dict — add ml_scoring for ML-based correction factor",
+                "BerryPhaseSubsystem — add quantum_gate_engine parameter for real circuit execution",
+                "ScienceEngine — add connect_vqpu(bridge), connect_ml(ml_engine), connect_quantum_data(analyzer) methods"
+            ]
+        },
+        "l104_math_engine": {
+            "version": "1.1.0",
+            "modules": [
+                "constants.py",
+                "pure_math.py",
+                "god_code.py",
+                "harmonic.py",
+                "dimensional.py",
+                "manifold.py",
+                "void_math.py",
+                "abstract_algebra.py",
+                "ontological.py",
+                "proofs.py",
+                "hyperdimensional.py",
+                "computronium.py",
+                "berry_geometry.py",
+                "engine.py"
+            ],
+            "key_classes": [
+                "MathEngine (orchestrator)",
+                "PureMath",
+                "GodCodeEquation",
+                "HarmonicProcess / HarmonicAnalysis",
+                "WavePhysics",
+                "BerryGeometry",
+                "FiberBundle",
+                "ConnectionForm",
+                "ParallelTransport",
+                "HolonomyGroup",
+                "ChernWeilTheory",
+                "DiracMonopole",
+                "BlochSphereGeometry",
+                "HyperdimensionalCompute",
+                "SovereignProofs",
+                "ManifoldMath",
+                "ComputroniumMath / RayleighMath"
+            ],
+            "existing_cross_engine_hooks": {
+                "l104_god_code_simulator": "constants.py imports GOD_CODE_PHASE, PHI_PHASE, VOID_PHASE, IRON_PHASE from l104_god_code_simulator.god_code_qubit (with fallback)"
+            },
+            "missing_cross_engine_integrations": [
+                {
+                    "target_package": "l104_vqpu",
+                    "description": "No VQPU bridge. BerryGeometry and HyperdimensionalCompute could submit quantum circuits for geometric phase computation and HD vector superposition.",
+                    "integration_point": "BerryGeometry.parallel_transport() — execute transport circuit on VQPU; HyperdimensionalCompute — quantum HD vector encoding via VQPU",
+                    "priority": "HIGH"
+                },
+                {
+                    "target_package": "l104_quantum_gate_engine",
+                    "description": "No quantum gate engine connection despite BerryGeometry implementing full fiber bundle/connection/holonomy math. Real gate circuits would validate the mathematical Berry phase computations.",
+                    "integration_point": "BerryGeometry — verify holonomy with GateCircuit execution; BlochSphereGeometry — map to real qubit ops; ConnectionForm.curvature_2form() — compute from real gate decomposition",
+                    "priority": "HIGH"
+                },
+                {
+                    "target_package": "l104_ml_engine",
+                    "description": "No ML engine integration. Hyperdimensional vectors could be classified via sacred ML classifiers. Proof verification could use ML pattern matching.",
+                    "integration_point": "HyperdimensionalCompute — pipe HD vectors to MLEngine.svm for classification; MathEngine.prove_all() — ML-assisted proof search",
+                    "priority": "MEDIUM"
+                },
+                {
+                    "target_package": "l104_science_engine",
+                    "description": "Math engine doesn't import science engine (only science→math bridge exists). Berry geometry should cross-validate with science engine's BerryPhaseSubsystem.",
+                    "integration_point": "BerryGeometry ↔ BerryPhaseSubsystem cross-validation; HarmonicProcess ↔ CoherenceSubsystem wave coherence",
+                    "priority": "MEDIUM"
+                },
+                {
+                    "target_package": "l104_quantum_data_analyzer",
+                    "description": "No quantum data analyzer integration. Math proofs and harmonic analysis could feed quantum spectral analysis.",
+                    "integration_point": "HarmonicProcess.resonance_spectrum() → QuantumFourierAnalyzer; GodCodeEquation outputs → GodCodeResonanceAligner",
+                    "priority": "LOW"
+                },
+                {
+                    "target_package": "l104_search",
+                    "description": "No search integration. Hyperdimensional vectors and proof databases could be searchable.",
+                    "integration_point": "HyperdimensionalCompute.search() — integrate with HyperdimensionalSearch strategy",
+                    "priority": "LOW"
+                }
+            ],
+            "bugs_found": [],
+            "method_signatures_for_upgrade": [
+                "BerryGeometry — add connect_quantum_gate_engine(engine) for real circuit verification",
+                "BerryGeometry — add connect_vqpu(bridge) for Metal GPU execution of geometric phases",
+                "FiberBundle.first_chern_class_integral() — add quantum_verify parameter for VQPU verification",
+                "HyperdimensionalCompute — add connect_ml(ml_engine) for HD vector classification",
+                "MathEngine — add connect_vqpu(bridge), connect_quantum_gate(engine), connect_ml(ml_engine) methods",
+                "BlochSphereGeometry — add to_quantum_gate(gate_engine) for real qubit mapping"
+            ]
+        },
+        "l104_ml_engine": {
+            "version": "1.0.0",
+            "modules": [
+                "constants.py",
+                "sacred_kernels.py",
+                "svm.py",
+                "classifiers.py",
+                "clustering.py",
+                "quantum_svm.py",
+                "quantum_classifiers.py",
+                "knowledge_synthesis.py"
+            ],
+            "key_classes": [
+                "MLEngine (singleton orchestrator)",
+                "L104SVM / SVMEnsemble",
+                "L104RandomForest",
+                "L104GradientBoosting",
+                "L104AdaBoost",
+                "L104EnsembleClassifier",
+                "L104KMeans / L104DBSCAN / L104SpectralClustering",
+                "SacredKernelLibrary",
+                "QuantumSVM / QuantumSVMFeatureMap",
+                "VariationalQuantumClassifier",
+                "QuantumNearestNeighbor",
+                "QuantumEnsembleClassifier",
+                "CrossEngineFeatureExtractor",
+                "KnowledgeSynthesizer"
+            ],
+            "existing_cross_engine_hooks": {
+                "l104_science_engine": "constants.py imports all base constants from l104_science_engine.constants; CrossEngineFeatureExtractor lazy-loads ScienceEngine for feature extraction",
+                "l104_math_engine": "CrossEngineFeatureExtractor lazy-loads MathEngine for Fibonacci and prime features",
+                "l104_code_engine": "CrossEngineFeatureExtractor lazy-loads code_engine for code analysis features",
+                "l104_quantum_gate_engine": "CrossEngineFeatureExtractor lazy-loads get_engine() for bell pair metrics",
+                "l104_asi": "CrossEngineFeatureExtractor lazy-loads asi_core for ASI features",
+                "l104_vqpu": "MLEngine has get_vqpu_bridge() lazy loader; CrossEngineFeatureExtractor has _lazy_vqpu()",
+                "l104_quantum_data_analyzer": "MLEngine has get_quantum_data_analyzer() lazy loader; CrossEngineFeatureExtractor has _lazy_quantum_data_analyzer()"
+            },
+            "missing_cross_engine_integrations": [
+                {
+                    "target_package": "l104_vqpu (active use)",
+                    "description": "VQPU bridge is lazy-loaded but NEVER USED in any classifier/clustering logic. The bridge is stored but no classifier actually submits quantum circuits through it.",
+                    "integration_point": "QuantumSVM.fit() — use VQPU bridge for kernel matrix computation on Metal GPU; QuantumEnsembleClassifier — execute voting circuits via VQPU",
+                    "priority": "HIGH"
+                },
+                {
+                    "target_package": "l104_quantum_data_analyzer (active use)",
+                    "description": "QuantumDataAnalyzer is lazy-loaded but no method routes data through it. Feature extraction should use quantum spectral features.",
+                    "integration_point": "CrossEngineFeatureExtractor.extract_all() — add extract_quantum_data_features() using QFT spectral analysis; KnowledgeSynthesizer.synthesize() — route through QuantumDataAnalyzer.full_analysis()",
+                    "priority": "HIGH"
+                },
+                {
+                    "target_package": "l104_search",
+                    "description": "No search engine integration. ML classifiers could enhance search ranking quality.",
+                    "integration_point": "MLEngine — add search_rank(items, query) method that feeds ThreeEngineSearchPrecog with ML-scored results",
+                    "priority": "MEDIUM"
+                },
+                {
+                    "target_package": "l104_audio_simulation",
+                    "description": "No audio integration. ML classifiers could classify audio patterns; sacred clustering could group audio segments.",
+                    "integration_point": "MLEngine — add audio_classify(waveform) using QuantumSVM; L104KMeans — cluster audio spectral features",
+                    "priority": "LOW"
+                },
+                {
+                    "target_package": "l104_science_engine (active use)",
+                    "description": "CrossEngineFeatureExtractor extracts science features but only uses static constants. Should use dynamic entropy/coherence measurements.",
+                    "integration_point": "extract_science_features() — call se.entropy.calculate_demon_efficiency() with actual data; extract coherence evolution metrics",
+                    "priority": "MEDIUM"
+                }
+            ],
+            "bugs_found": [
+                {
+                    "location": "knowledge_synthesis.py: CrossEngineFeatureExtractor.extract_science_features()",
+                    "severity": "LOW",
+                    "description": "Science features are mostly static constant values (PHI_CONJUGATE, GOD_CODE/1000, VOID_CONSTANT) rather than dynamic engine measurements. Features [1]-[8] don't actually query the science engine's subsystems, making the feature extraction superficial.",
+                    "fix": "Call se.entropy.calculate_demon_efficiency() with variable inputs, se.coherence measures, and se.physics resonance to produce dynamic features."
+                }
+            ],
+            "method_signatures_for_upgrade": [
+                "MLEngine.get_vqpu_bridge() → actually wire to QuantumSVM/VQC for circuit execution",
+                "MLEngine.get_quantum_data_analyzer() → pipe data through QFT analysis before classification",
+                "CrossEngineFeatureExtractor.extract_science_features() → use dynamic engine measurements",
+                "CrossEngineFeatureExtractor — add extract_vqpu_features() submitting probe circuits",
+                "CrossEngineFeatureExtractor — add extract_quantum_data_features() using QFT spectral",
+                "KnowledgeSynthesizer.synthesize() — add quantum_enhance: bool parameter for VQPU scoring",
+                "MLEngine — add connect_search(search_precog) for ML-enhanced search ranking"
+            ]
+        },
+        "l104_search": {
+            "version": "2.3.0",
+            "modules": [
+                "search_algorithms.py",
+                "precognition.py",
+                "orchestrator.py",
+                "analytics.py"
+            ],
+            "key_classes": [
+                "ThreeEngineSearchPrecog (unified hub)",
+                "SearchOrchestrator",
+                "PrecognitionOrchestrator",
+                "PerformanceAnalyzer / RunHistory / PerformanceReport",
+                "QuantumGroverSearch",
+                "EntropyGuidedSearch",
+                "HyperdimensionalSearch",
+                "CoherenceFieldSearch",
+                "HarmonicResonanceSearch",
+                "ManifoldGeodesicSearch",
+                "SacredAlignmentSearch",
+                "VQPUGroverSearch / VQPUDatabaseSearch / QuantumReservoirSearch",
+                "EntropyCascadePredictor through VQPUVariationalForecaster (8 predictors)",
+                "SearchResult / EnsembleSearchResult",
+                "PrecognitionResult / EnsemblePrecognitionResult"
+            ],
+            "existing_cross_engine_hooks": {
+                "l104_vqpu": "VQPUBridge used throughout all 10 search strategies and 8 predictors via bridge parameter",
+                "l104_ml_engine": "ThreeEngineSearchPrecog._get_ml_engine() lazy loader (orchestrator.py:958) — imported but NOT actively used in search logic",
+                "l104_science_engine": "ThreeEngineSearchPrecog._get_science_engine() lazy loader — imported but NOT actively used in search logic",
+                "l104_math_engine": "ThreeEngineSearchPrecog._get_math_engine() lazy loader — imported but NOT actively used in search logic",
+                "l104_quantum_data_analyzer": "ThreeEngineSearchPrecog._get_quantum_data_analyzer() lazy loader (orchestrator.py:988) — imported but NOT used"
+            },
+            "missing_cross_engine_integrations": [
+                {
+                    "target_package": "l104_ml_engine (active use)",
+                    "description": "MLEngine is lazy-loaded but NEVER CALLED in any search/predict method. ML ranking should enhance search result fusion.",
+                    "integration_point": "SearchOrchestrator — use ml_engine.svm.predict() for result re-ranking; PrecognitionOrchestrator — use ML ensemble for forecast regression",
+                    "priority": "HIGH"
+                },
+                {
+                    "target_package": "l104_science_engine (active use)",
+                    "description": "ScienceEngine is lazy-loaded but never used. Should provide real entropy/coherence scoring to EntropyGuidedSearch and CoherenceFieldSearch.",
+                    "integration_point": "EntropyGuidedSearch — use se.entropy.calculate_demon_efficiency() for actual scoring; CoherenceFieldSearch — use se.coherence for real field evolution",
+                    "priority": "HIGH"
+                },
+                {
+                    "target_package": "l104_math_engine (active use)",
+                    "description": "MathEngine is lazy-loaded but never used. Should provide real harmonic/HD scoring.",
+                    "integration_point": "HyperdimensionalSearch — use me.hd_vector() for real HD encoding; HarmonicResonanceSearch — use me.harmonic.resonance_spectrum(); SacredAlignmentSearch — use me.sacred_alignment()",
+                    "priority": "HIGH"
+                },
+                {
+                    "target_package": "l104_quantum_data_analyzer (active use)",
+                    "description": "QuantumDataAnalyzer is lazy-loaded but never used. Could provide quantum spectral analysis of search results.",
+                    "integration_point": "ThreeEngineSearchPrecog.analyze() — pipe time series through QuantumDataAnalyzer.spectral_analysis() before search",
+                    "priority": "MEDIUM"
+                },
+                {
+                    "target_package": "l104_audio_simulation",
+                    "description": "No audio integration. Could enable sonified search — audio pattern matching.",
+                    "integration_point": "Add AudioPatternSearch strategy using quantum audio spectral matching",
+                    "priority": "LOW"
+                }
+            ],
+            "bugs_found": [
+                {
+                    "location": "search_algorithms.py",
+                    "severity": "LOW",
+                    "description": "Constants are duplicated as literals (PHI, GOD_CODE, VOID_CONSTANT, OMEGA, ZETA_ZERO_1, FEIGENBAUM) rather than imported from l104_science_engine.constants. Same issue in orchestrator.py. Values are correct but violate single-source-of-truth principle.",
+                    "fix": "Import from l104_science_engine.constants instead of redefining."
+                },
+                {
+                    "location": "orchestrator.py: ThreeEngineSearchPrecog",
+                    "severity": "MEDIUM",
+                    "description": "Four lazy-loaded cross-engine references (_ml_engine, _science_engine, _math_engine, _quantum_data_analyzer) are defined but never used in any method. The loaders exist but no method calls _get_ml_engine() etc. This is dead code (or incomplete integration).",
+                    "fix": "Wire the lazy loaders into search(), predict(), research(), and analyze() methods for actual cross-engine scoring."
+                }
+            ],
+            "method_signatures_for_upgrade": [
+                "ThreeEngineSearchPrecog.search() — add ml_rerank: bool to use MLEngine for result re-ranking",
+                "ThreeEngineSearchPrecog.predict() — add ml_forecast: bool for ML ensemble regression",
+                "ThreeEngineSearchPrecog.analyze() — add quantum_spectral: bool for QDA spectral pre-analysis",
+                "SearchOrchestrator.search_list() — accept science_engine + math_engine for real scoring",
+                "EntropyGuidedSearch — accept entropy_subsystem for real demon efficiency",
+                "CoherenceFieldSearch — accept coherence_subsystem for real field evolution",
+                "HyperdimensionalSearch — accept hd_compute for real HD vector math"
+            ]
+        },
+        "l104_audio_simulation": {
+            "version": "2.4.0",
+            "modules": [
+                "constants.py",
+                "god_code_equation.py",
+                "metal_gpu.py",
+                "ionq_stabilizer.py",
+                "synthesis.py",
+                "envelopes.py",
+                "quantum_modulation.py",
+                "engine_integration.py",
+                "tone_generator.py",
+                "decoherence.py",
+                "pipeline.py",
+                "cli.py",
+                "quantum_sequencer.py",
+                "quantum_mixer.py",
+                "quantum_synth.py",
+                "track_entanglement.py",
+                "vqpu_daw_engine.py",
+                "data_recorder.py",
+                "daw_session.py"
+            ],
+            "key_classes": [
+                "AudioSimulationPipeline (orchestrator)",
+                "QuantumDAWSession (DAW orchestrator)",
+                "QuantumPureToneGenerator",
+                "ProbabilisticSequencer",
+                "QuantumInterferenceMixer",
+                "QuantumSynthEngine",
+                "TrackEntanglementManager",
+                "VQPUDawEngine",
+                "DataRecorder / FeatureExtractor",
+                "EngineState / QubitState / VQPUState"
+            ],
+            "existing_cross_engine_hooks": {
+                "l104_math_engine": "god_code_equation.py imports GodCodeEquation, ChaosResilience, and constants; pipeline.py imports MathEngine and ChaosResilience",
+                "l104_science_engine": "pipeline.py imports ScienceEngine for beauty enhancement (line 188)",
+                "l104_vqpu": "quantum_mixer.py, quantum_sequencer.py, track_entanglement.py, vqpu_daw_engine.py — all use l104_vqpu for circuit execution",
+                "l104_quantum_gate_engine": "decoherence.py imports get_engine() and RealisticNoiseEngine; pipeline.py imports GOD_CODE_PHASE_ANGLE"
+            },
+            "missing_cross_engine_integrations": [
+                {
+                    "target_package": "l104_ml_engine",
+                    "description": "DataRecorder collects telemetry and ML training data but NEVER connects to MLEngine. Feature extraction in data_recorder.py should feed ML classifiers for audio quality prediction.",
+                    "integration_point": "DataRecorder/FeatureExtractor — pipe extracted features to MLEngine classifiers; QuantumDAWSession — use ML to predict optimal synthesis parameters",
+                    "priority": "HIGH"
+                },
+                {
+                    "target_package": "l104_quantum_data_analyzer",
+                    "description": "No quantum data analysis of audio signals. QFT spectral analysis and anomaly detection could analyze audio waveforms.",
+                    "integration_point": "QuantumSynthEngine — use QuantumFourierAnalyzer for spectral quality assessment; QuantumInterferenceMixer — use anomaly detection for distortion alerts",
+                    "priority": "MEDIUM"
+                },
+                {
+                    "target_package": "l104_search",
+                    "description": "No search integration for audio pattern retrieval. Audio samples could be searchable via HyperdimensionalSearch or HarmonicResonanceSearch.",
+                    "integration_point": "QuantumDAWSession — add search_pattern(sample) method using ThreeEngineSearchPrecog",
+                    "priority": "LOW"
+                },
+                {
+                    "target_package": "l104_science_engine (deeper)",
+                    "description": "Only pipeline.py uses ScienceEngine for beauty enhancement. Entropy reversal could denoise audio signals; coherence subsystem could stabilize synthesis.",
+                    "integration_point": "QuantumSynthEngine — use EntropySubsystem.inject_coherence() for noise-to-signal conversion; pipeline — use CoherenceSubsystem for synthesis stabilization",
+                    "priority": "MEDIUM"
+                }
+            ],
+            "bugs_found": [],
+            "method_signatures_for_upgrade": [
+                "DataRecorder — add connect_ml(ml_engine) for ML training pipeline",
+                "FeatureExtractor — add classify(features) using MLEngine.classifier",
+                "QuantumDAWSession — add connect_quantum_data_analyzer(analyzer) for spectral QFT",
+                "QuantumSynthEngine — add entropy_denoise(signal) using ScienceEngine.entropy.inject_coherence()",
+                "AudioSimulationPipeline — add connect_search(search_precog) for audio pattern retrieval",
+                "QuantumInterferenceMixer — add anomaly_detect() using QuantumAnomalyDetector"
+            ]
+        },
+        "l104_quantum_data_analyzer": {
+            "version": "1.0.0",
+            "modules": [
+                "constants.py",
+                "algorithms.py",
+                "feature_extraction.py",
+                "pattern_recognition.py",
+                "denoising.py",
+                "orchestrator.py",
+                "computronium.py"
+            ],
+            "key_classes": [
+                "QuantumDataAnalyzer (orchestrator)",
+                "QuantumFourierAnalyzer",
+                "GroverPatternSearch",
+                "QuantumPCA",
+                "VQEClusterer",
+                "QAOAOptimizer",
+                "QuantumKernelEstimator",
+                "QuantumPhaseEstimator",
+                "HHLSolver",
+                "QuantumAmplitudeEstimator",
+                "QuantumFeatureMap / QuantumStateEncoder / EntanglementFeatureExtractor / QuantumEmbedding",
+                "QuantumAnomalyDetector",
+                "EntanglementCorrelationAnalyzer",
+                "QuantumWalkGraphAnalyzer",
+                "TopologicalDataMiner",
+                "GodCodeResonanceAligner",
+                "EntropyReversalDenoiser",
+                "QuantumErrorMitigatedCleaner",
+                "CoherenceFieldSmoother",
+                "ComputroniumDataBounds / RayleighSpectralBounds / QuantumInformationBridge"
+            ],
+            "existing_cross_engine_hooks": {
+                "l104_quantum_gate_engine": "pattern_recognition.py and feature_extraction.py import get_engine(), GateCircuit, Statevector; orchestrator.py lazy-loads at line 695",
+                "l104_science_engine": "pattern_recognition.py imports ScienceEngine (line 55); feature_extraction.py imports ScienceEngine (line 52); orchestrator.py lazy-loads at line 709",
+                "l104_math_engine": "pattern_recognition.py imports MathEngine (line 62); feature_extraction.py imports MathEngine (line 45); orchestrator.py lazy-loads at line 716",
+                "l104_code_engine": "orchestrator.py _get_code_engine() lazy loader at line 87",
+                "l104_vqpu": "orchestrator.py _get_vqpu_bridge() lazy loader at line 94",
+                "l104_intellect": "orchestrator.py _get_intellect() imports format_iq",
+                "l104_ml_engine": "orchestrator.py _get_ml_engine() lazy loader at line 101",
+                "l104_god_code_simulator": "orchestrator.py _get_god_code_simulator() lazy loader"
+            },
+            "missing_cross_engine_integrations": [
+                {
+                    "target_package": "l104_ml_engine (active use)",
+                    "description": "MLEngine is lazy-loaded but investigation needed to confirm if it's actively used in analysis pipelines. The analysis pipeline (full_analysis) doesn't appear to call _get_ml_engine().",
+                    "integration_point": "QuantumDataAnalyzer.full_analysis() — use ML classifiers post-PCA for supervised classification; feed extracted features to KnowledgeSynthesizer",
+                    "priority": "MEDIUM"
+                },
+                {
+                    "target_package": "l104_search",
+                    "description": "No search integration. Quantum data analysis results could be indexed and searched.",
+                    "integration_point": "QuantumDataAnalyzer — add search_similar(data) using ThreeEngineSearchPrecog quantum strategies",
+                    "priority": "LOW"
+                },
+                {
+                    "target_package": "l104_audio_simulation",
+                    "description": "No audio integration. Audio waveforms are a natural fit for QFT spectral analysis.",
+                    "integration_point": "QuantumFourierAnalyzer — add analyze_audio(waveform, sample_rate) specialized method; QuantumAnomalyDetector — add detect_audio_artifacts()",
+                    "priority": "LOW"
+                },
+                {
+                    "target_package": "l104_vqpu (active use)",
+                    "description": "VQPU bridge is lazy-loaded but investigation needed to confirm active circuit submission in core algorithms.",
+                    "integration_point": "Core algorithms (QFT, Grover, VQE, QAOA) — ensure they route circuits through VQPU bridge when available for Metal GPU acceleration",
+                    "priority": "HIGH"
+                }
+            ],
+            "bugs_found": [],
+            "method_signatures_for_upgrade": [
+                "QuantumDataAnalyzer.full_analysis() — add ml_classify: bool to use ML post-PCA",
+                "QuantumDataAnalyzer — add connect_ml(ml_engine) for ML-enhanced analysis",
+                "QuantumDataAnalyzer — add connect_search(search_precog) for result indexing",
+                "QuantumFourierAnalyzer — add analyze_audio(waveform, sample_rate) for audio-specific spectral analysis",
+                "All core algorithms — add ensure_vqpu_routing() to always try VQPU bridge first"
+            ]
+        }
+    },
+    "cross_engine_integration_matrix": {
+        "description": "Shows which package-to-package integrations exist (✓), are lazy-loaded but unused (⚠), or are completely missing (✗)",
+        "matrix": {
+            "l104_science_engine": {
+                "→ l104_vqpu": "✗ MISSING",
+                "→ l104_ml_engine": "✗ MISSING",
+                "→ l104_quantum_gate_engine": "✗ MISSING",
+                "→ l104_quantum_data_analyzer": "✗ MISSING",
+                "→ l104_search": "✗ MISSING",
+                "→ l104_audio_simulation": "✗ MISSING",
+                "→ l104_math_engine": "✓ via bridge.py MathConnector"
+            },
+            "l104_math_engine": {
+                "→ l104_vqpu": "✗ MISSING",
+                "→ l104_ml_engine": "✗ MISSING",
+                "→ l104_quantum_gate_engine": "✗ MISSING",
+                "→ l104_quantum_data_analyzer": "✗ MISSING",
+                "→ l104_search": "✗ MISSING",
+                "→ l104_audio_simulation": "✗ MISSING",
+                "→ l104_science_engine": "✗ MISSING (only science→math exists)"
+            },
+            "l104_ml_engine": {
+                "→ l104_vqpu": "⚠ LAZY-LOADED, UNUSED in classifiers",
+                "→ l104_quantum_data_analyzer": "⚠ LAZY-LOADED, UNUSED in pipelines",
+                "→ l104_science_engine": "✓ constants import + feature extraction (superficial)",
+                "→ l104_math_engine": "✓ feature extraction via lazy load",
+                "→ l104_quantum_gate_engine": "✓ feature extraction via lazy load",
+                "→ l104_search": "✗ MISSING",
+                "→ l104_audio_simulation": "✗ MISSING"
+            },
+            "l104_search": {
+                "→ l104_vqpu": "✓ ACTIVE — all strategies use bridge",
+                "→ l104_ml_engine": "⚠ LAZY-LOADED, NEVER CALLED",
+                "→ l104_science_engine": "⚠ LAZY-LOADED, NEVER CALLED",
+                "→ l104_math_engine": "⚠ LAZY-LOADED, NEVER CALLED",
+                "→ l104_quantum_data_analyzer": "⚠ LAZY-LOADED, NEVER CALLED",
+                "→ l104_audio_simulation": "✗ MISSING"
+            },
+            "l104_audio_simulation": {
+                "→ l104_vqpu": "✓ ACTIVE — DAW engine, mixer, sequencer, entanglement",
+                "→ l104_quantum_gate_engine": "✓ ACTIVE — decoherence noise engine",
+                "→ l104_math_engine": "✓ ACTIVE — god_code_equation, pipeline",
+                "→ l104_science_engine": "✓ PARTIAL — pipeline beauty enhancement only",
+                "→ l104_ml_engine": "✗ MISSING",
+                "→ l104_quantum_data_analyzer": "✗ MISSING",
+                "→ l104_search": "✗ MISSING"
+            },
+            "l104_quantum_data_analyzer": {
+                "→ l104_vqpu": "⚠ LAZY-LOADED, partially used",
+                "→ l104_quantum_gate_engine": "✓ ACTIVE — pattern recognition, feature extraction",
+                "→ l104_science_engine": "✓ ACTIVE — pattern recognition, denoising",
+                "→ l104_math_engine": "✓ ACTIVE — pattern recognition, feature extraction",
+                "→ l104_code_engine": "⚠ LAZY-LOADED, minimal use",
+                "→ l104_ml_engine": "⚠ LAZY-LOADED, minimal use",
+                "→ l104_search": "✗ MISSING",
+                "→ l104_audio_simulation": "✗ MISSING"
+            }
+        }
+    },
+    "priority_summary": {
+        "HIGH_priority_upgrades": [
+            "l104_search: Wire 4 lazy-loaded engines (ML, Science, Math, QDA) into actual search/predict methods",
+            "l104_science_engine: Add VQPU bridge to EntropySubsystem and CoherenceSubsystem",
+            "l104_science_engine: Add ML engine connection for entropy/coherence ML-enhanced analysis",
+            "l104_math_engine: Connect BerryGeometry to l104_quantum_gate_engine for real gate verification",
+            "l104_math_engine: Add VQPU bridge for geometric phase circuit execution",
+            "l104_ml_engine: Wire VQPU bridge into QuantumSVM/VQC for actual Metal GPU kernel computation",
+            "l104_ml_engine: Wire QuantumDataAnalyzer into feature extraction pipeline",
+            "l104_audio_simulation: Connect DataRecorder/FeatureExtractor to MLEngine for training",
+            "l104_quantum_data_analyzer: Ensure all core algorithms route through VQPU when available"
+        ],
+        "MEDIUM_priority_upgrades": [
+            "l104_science_engine: Connect to quantum_gate_engine for real gate algebra in coherence braiding",
+            "l104_science_engine: Connect to quantum_data_analyzer for physics data spectral analysis",
+            "l104_math_engine: Connect to ML engine for HD vector classification and proof search",
+            "l104_math_engine: Cross-validate BerryGeometry ↔ BerryPhaseSubsystem with science engine",
+            "l104_ml_engine: Make science feature extraction dynamic (not just constants)",
+            "l104_ml_engine: Add search engine integration for ML-enhanced ranking",
+            "l104_search: Route time series through QuantumDataAnalyzer before analysis",
+            "l104_audio_simulation: Use quantum data analyzer for spectral QFT on audio",
+            "l104_audio_simulation: Deep science integration (entropy denoising, coherence stabilization)",
+            "l104_quantum_data_analyzer: ML classifiers post-PCA in full_analysis pipeline"
+        ],
+        "bugs_to_fix": [
+            "l104_science_engine/entropy.py: inject_coherence() NaN/Inf risk when mean_val near threshold",
+            "l104_science_engine/entropy.py: inject_coherence() unbounded ZNE correction attenuation",
+            "l104_search/search_algorithms.py: Constants duplicated as literals instead of imported",
+            "l104_search/orchestrator.py: 4 dead lazy-loaders never called in any method",
+            "l104_ml_engine/knowledge_synthesis.py: Science features are static constants, not dynamic"
+        ]
+    }
+}

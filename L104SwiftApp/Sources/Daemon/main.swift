@@ -87,7 +87,7 @@ let configDaemonVersion     = envStr("L104_DAEMON_VERSION", default: "2.0")
 
 /// v6.0: Auto-scaling and memory management
 let configAutoScaleEnabled  = envInt("L104_AUTO_SCALE", default: 1) != 0
-let configMemoryPoolSize    = envInt("L104_MEMORY_POOL_SIZE", default: 1024)
+let configMemoryPoolSize    = envInt("L104_MEMORY_POOL_SIZE", default: 128)  // v6.0.2: Reduced from 1024 (64MB idle) to 128 (8MB)
 let configCircuitValidation = envInt("L104_CIRCUIT_VALIDATION", default: 1) != 0
 let configPerfProfiling     = envInt("L104_PERF_PROFILING", default: 1) != 0
 let configMemoryPressureThreshold = envInt("L104_MEMORY_PRESSURE_THRESHOLD", default: 80) // %
@@ -96,31 +96,41 @@ let configMemoryPressureThreshold = envInt("L104_MEMORY_PRESSURE_THRESHOLD", def
 // MARK: - MEMORY POOLING SYSTEM (v6.0)
 // ═══════════════════════════════════════════════════════════════════
 
-/// v6.0: Circuit payload buffer pool to reduce allocations
+/// v6.0.1: Circuit payload buffer pool to reduce allocations (fixed buffer reuse)
 class CircuitBufferPool {
     private let poolSize: Int
     private var availableBuffers: [Data] = []
-    private let lock = NSLock()
-    private let maxBufferSize = 1024 * 1024 // 1MB max per buffer
+    private var _lock = os_unfair_lock()  // v6.0.1: os_unfair_lock for efficiency
+    private let maxBufferSize = 1024 * 1024  // 1MB max per buffer
+    private let defaultCapacity = 64 * 1024  // 64KB initial
 
     init(size: Int) {
         self.poolSize = size
-        // Pre-allocate buffers
+        // Pre-allocate buffers with reserved capacity
+        availableBuffers.reserveCapacity(size)
         for _ in 0..<size {
-            availableBuffers.append(Data(capacity: 64 * 1024)) // 64KB initial
+            var buf = Data()
+            buf.reserveCapacity(defaultCapacity)
+            availableBuffers.append(buf)
         }
     }
 
     func acquire() -> Data {
-        lock.lock()
-        defer { lock.unlock() }
-        return availableBuffers.popLast() ?? Data(capacity: 64 * 1024)
+        os_unfair_lock_lock(&_lock)
+        defer { os_unfair_lock_unlock(&_lock) }
+        if var buf = availableBuffers.popLast() {
+            buf.removeAll(keepingCapacity: true)  // v6.0.1: Clear but keep capacity
+            return buf
+        }
+        var newBuf = Data()
+        newBuf.reserveCapacity(defaultCapacity)
+        return newBuf
     }
 
     func release(_ buffer: Data) {
-        guard buffer.count <= maxBufferSize else { return } // Don't pool oversized buffers
-        lock.lock()
-        defer { lock.unlock() }
+        guard buffer.count <= maxBufferSize else { return }  // Don't pool oversized buffers
+        os_unfair_lock_lock(&_lock)
+        defer { os_unfair_lock_unlock(&_lock) }
         if availableBuffers.count < poolSize {
             availableBuffers.append(buffer)
         }
@@ -134,45 +144,43 @@ let circuitBufferPool = CircuitBufferPool(size: configMemoryPoolSize)
 // MARK: - PERFORMANCE PROFILING (v6.0)
 // ═══════════════════════════════════════════════════════════════════
 
-/// v6.0: Real-time performance profiler
+/// v6.0.1: Real-time performance profiler (os_unfair_lock for efficiency)
 class DaemonProfiler {
     private var startTimes: [String: CFAbsoluteTime] = [:]
     private var metrics: [String: [String: Double]] = [:]
-    private let lock = NSLock()
+    private var _lock = os_unfair_lock()  // v6.0.1: os_unfair_lock for efficiency
 
     func startTiming(_ key: String) {
-        lock.lock()
+        os_unfair_lock_lock(&_lock)
         startTimes[key] = CFAbsoluteTimeGetCurrent()
-        lock.unlock()
+        os_unfair_lock_unlock(&_lock)
     }
 
     @discardableResult
     func endTiming(_ key: String) -> Double {
-        lock.lock()
-        defer { lock.unlock() }
+        os_unfair_lock_lock(&_lock)
+        defer { os_unfair_lock_unlock(&_lock) }
         guard let start = startTimes.removeValue(forKey: key) else { return 0 }
         let elapsed = CFAbsoluteTimeGetCurrent() - start
         return elapsed * 1000 // ms
     }
 
     func recordMetric(_ category: String, _ key: String, _ value: Double) {
-        lock.lock()
-        defer { lock.unlock() }
-        if metrics[category] == nil {
-            metrics[category] = [:]
-        }
-        metrics[category]![key] = value
+        os_unfair_lock_lock(&_lock)
+        defer { os_unfair_lock_unlock(&_lock) }
+        // v6.2: Use subscript default to avoid nil-check branch + dict alloc on every call
+        metrics[category, default: [:]][key] = value
     }
 
     func getMetrics() -> [String: [String: Double]] {
-        lock.lock()
-        defer { lock.unlock() }
+        os_unfair_lock_lock(&_lock)
+        defer { os_unfair_lock_unlock(&_lock) }
         return metrics
     }
 
     func reset() {
-        lock.lock()
-        defer { lock.unlock() }
+        os_unfair_lock_lock(&_lock)
+        defer { os_unfair_lock_unlock(&_lock) }
         startTimes.removeAll()
         metrics.removeAll()
     }
@@ -185,35 +193,46 @@ let daemonProfiler = DaemonProfiler()
 // MARK: - AUTO-SCALING SYSTEM (v6.0)
 // ═══════════════════════════════════════════════════════════════════
 
-/// v6.0: Auto-scaling concurrency manager
+/// v6.0.1: Auto-scaling concurrency manager (os_unfair_lock for efficiency)
+/// v6.1.1: Circular buffer replaces Array removeFirst() — O(1) vs O(n) per update
 class AutoScaler {
-    private var systemLoadHistory: [Double] = []
+    private var systemLoadRing: [Double]
+    private var ringIndex: Int = 0
+    private var ringCount: Int = 0
     private let maxHistorySize = 10
     private var currentScaleFactor: Double = 1.0
-    private let lock = NSLock()
+    private var cachedAvgLoad: Double = 0.0
+    private var _lock = os_unfair_lock()  // v6.0.1: os_unfair_lock for efficiency
+
+    init() {
+        systemLoadRing = [Double](repeating: 0.0, count: maxHistorySize)
+    }
 
     func updateLoad(_ load: Double) {
-        lock.lock()
-        defer { lock.unlock() }
-        systemLoadHistory.append(load)
-        if systemLoadHistory.count > maxHistorySize {
-            systemLoadHistory.removeFirst()
-        }
+        os_unfair_lock_lock(&_lock)
+        defer { os_unfair_lock_unlock(&_lock) }
+        // O(1) circular buffer write
+        systemLoadRing[ringIndex] = load
+        ringIndex = (ringIndex + 1) % maxHistorySize
+        if ringCount < maxHistorySize { ringCount += 1 }
+        // Compute average over filled portion
+        var sum = 0.0
+        for i in 0..<ringCount { sum += systemLoadRing[i] }
+        cachedAvgLoad = sum / Double(ringCount)
         // Simple EMA-based scaling
-        let avgLoad = systemLoadHistory.reduce(0, +) / Double(systemLoadHistory.count)
-        currentScaleFactor = max(0.5, min(2.0, 1.0 / (1.0 + avgLoad)))
+        currentScaleFactor = max(0.5, min(2.0, 1.0 / (1.0 + cachedAvgLoad)))
     }
 
     func getScaleFactor() -> Double {
-        lock.lock()
-        defer { lock.unlock() }
+        os_unfair_lock_lock(&_lock)
+        defer { os_unfair_lock_unlock(&_lock) }
         return currentScaleFactor
     }
 
     func getAverageLoad() -> Double {
-        lock.lock()
-        defer { lock.unlock() }
-        return systemLoadHistory.isEmpty ? 0 : systemLoadHistory.reduce(0, +) / Double(systemLoadHistory.count)
+        os_unfair_lock_lock(&_lock)
+        defer { os_unfair_lock_unlock(&_lock) }
+        return cachedAvgLoad
     }
 }
 
@@ -231,11 +250,7 @@ let healthQueue = DispatchQueue(label: "com.l104.daemon.health")
 /// Global health timer
 var healthTimer: DispatchSourceTimer?
 
-/// v5.0: Async write-back queue for non-blocking result writes.
-let writeBackQueue = DispatchQueue(
-    label: "com.l104.daemon.writeback",
-    qos: .userInitiated,
-    attributes: .concurrent)
+// v6.0.2: Removed unused global writeBackQueue — CircuitWatcher uses its own writeQueue
 
 /// v5.0: Cached timestamp formatter (allocated once, thread-safe).
 let cachedISO8601Formatter: ISO8601DateFormatter = {
@@ -252,8 +267,13 @@ let cachedISO8601Formatter: ISO8601DateFormatter = {
 /// (safer than raw signal() in a RunLoop-based process).
 let signalQueue = DispatchQueue(label: "com.l104.daemon.signals")
 
-/// Global shutdown flag
-var shutdownRequested = false
+/// Global shutdown flag (atomic for thread safety)
+private var _shutdownLock = os_unfair_lock()
+private var _shutdownFlag = false
+var shutdownRequested: Bool {
+    get { os_unfair_lock_lock(&_shutdownLock); defer { os_unfair_lock_unlock(&_shutdownLock) }; return _shutdownFlag }
+    set { os_unfair_lock_lock(&_shutdownLock); _shutdownFlag = newValue; os_unfair_lock_unlock(&_shutdownLock) }
+}
 
 func installSignalHandlers() {
     // Ignore default SIGTERM/SIGHUP/SIGUSR1 so GCD sources catch them
@@ -308,6 +328,35 @@ func log(_ msg: String) {
     fflush(stdout)
 }
 
+/// Kill any previous daemon instance tracked by the PID file.
+/// Prevents duplicate daemons competing on the same IPC dirs.
+func killPreviousInstance() {
+    guard let pidStr = try? String(contentsOfFile: pidFilePath, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines),
+          let oldPid = Int32(pidStr) else { return }
+    let myPid = ProcessInfo.processInfo.processIdentifier
+    guard oldPid != myPid, oldPid > 0 else { return }
+    // Check if the old process is still alive
+    if kill(oldPid, 0) == 0 {
+        log("Killing stale daemon instance (PID \(oldPid))")
+        kill(oldPid, SIGTERM)
+        // Give it 2 seconds to drain gracefully
+        var waited = 0
+        while waited < 20 {
+            usleep(100_000) // 100ms
+            waited += 1
+            if kill(oldPid, 0) != 0 { break }
+        }
+        if kill(oldPid, 0) == 0 {
+            log("Stale daemon PID \(oldPid) did not exit — sending SIGKILL")
+            kill(oldPid, SIGKILL)
+            usleep(200_000)
+        }
+        log("Previous daemon PID \(oldPid) terminated")
+    } else {
+        log("Previous PID \(oldPid) already exited — cleaning up stale PID file")
+    }
+}
+
 func writePID() {
     let pid = ProcessInfo.processInfo.processIdentifier
     do {
@@ -351,12 +400,13 @@ func validateConfiguration() -> Bool {
         isValid = false
     }
 
-    // Check directories exist
+    // v6.0.1: Verify directories were created (ensureDirectories runs before this)
+    // If directories still don't exist, it means creation failed (permissions issue)
     let fm = FileManager.default
     let requiredDirs = [sharedQueueDir, "\(bridgeDir)/inbox", localBaseDir]
     for dir in requiredDirs {
         if !fm.fileExists(atPath: dir) {
-            log("ERROR: Required directory missing: \(dir)")
+            log("ERROR: Required directory could not be created: \(dir) — check permissions")
             isValid = false
         }
     }
@@ -387,6 +437,23 @@ func startWatchers() {
 }
 
 /// v6.0: Enhanced health check with memory/CPU monitoring and auto-scaling
+/// v6.1.1: Cache system metrics across health timer + dumpStatus to avoid
+/// redundant Mach task_info/task_threads syscalls. CPU usage iterates ALL
+/// process threads — expensive; caching saves ~2ms per health tick.
+private var _cachedMemMB: Double = 0.0
+private var _cachedMemPercent: Double = 0.0
+private var _cachedCPU: Double = 0.0
+private var _cachedLoad: Double = 0.0
+private var _lastMetricsUpdate: CFAbsoluteTime = 0.0
+
+func updateSystemMetrics() {
+    _cachedMemMB = getMemoryUsageMB()
+    _cachedMemPercent = getMemoryUsage()
+    _cachedCPU = getCPUUsage()
+    _cachedLoad = getSystemLoad()
+    _lastMetricsUpdate = CFAbsoluteTimeGetCurrent()
+}
+
 func startHealthTimer() {
     let interval = Double(configHealthInterval)
     let timer = DispatchSource.makeTimerSource(queue: healthQueue)
@@ -404,10 +471,11 @@ func startHealthTimer() {
         let avgMs = totalProcessed > 0
             ? String(format: "%.1f", totalMs / Double(totalProcessed)) : "0"
 
-        // v6.0: System resource monitoring
-        let memoryUsage = getMemoryUsage()
-        let cpuUsage = getCPUUsage()
-        let systemLoad = getSystemLoad()
+        // v6.1.1: Single system metrics collection (cached for dumpStatus reuse)
+        updateSystemMetrics()
+        let memoryUsage = _cachedMemPercent
+        let cpuUsage = _cachedCPU
+        let systemLoad = _cachedLoad
 
         // v6.0: Auto-scaling based on system load
         if let scaler = autoScaler {
@@ -419,8 +487,9 @@ func startHealthTimer() {
         let kernels = vqpuStatus["gpu_kernels"] as? [String] ?? []
 
         // v6.0: Enhanced logging with resource metrics
+        let memMB = _cachedMemMB
         log("Health: processed=\(totalProcessed) failed=\(totalFailed) " +
-            "avg=\(avgMs)ms mem=\(String(format: "%.1f", memoryUsage))% " +
+            "avg=\(avgMs)ms mem=\(String(format: "%.1f", memMB))MB(\(String(format: "%.2f", memoryUsage))%) " +
             "cpu=\(String(format: "%.1f", cpuUsage))% load=\(String(format: "%.2f", systemLoad)) " +
             "gpu=\(gpuName) kernels=\(kernels.count)")
 
@@ -489,16 +558,20 @@ func shutdown() {
     log("Shutting down — draining in-flight circuits...")
     healthTimer?.cancel()
     healthTimer = nil
-    stopWatchers()
-    removePID()
-    // Log final aggregate stats
+    // v6.1: Stop micro daemon
+    VQPUMicroDaemon.shared.stop()
+    // Capture stats BEFORE nilling the watchers
     let totalProcessed = (sharedWatcher?.circuitsProcessed ?? 0)
         + (bridgeWatcher?.circuitsProcessed ?? 0)
         + (localWatcher?.circuitsProcessed ?? 0)
     let totalFailed = (sharedWatcher?.circuitsFailed ?? 0)
         + (bridgeWatcher?.circuitsFailed ?? 0)
         + (localWatcher?.circuitsFailed ?? 0)
-    log("Final stats: processed=\(totalProcessed) failed=\(totalFailed)")
+    // v6.2: Read tick directly instead of building entire status dict
+    let microTick = VQPUMicroDaemon.shared.isAlive ? "active" : "stopped"
+    stopWatchers()
+    removePID()
+    log("Final stats: processed=\(totalProcessed) failed=\(totalFailed) micro=\(microTick)")
     log("Shutdown complete — exiting")
     exit(0)
 }
@@ -538,22 +611,32 @@ func dumpPerformanceProfile() {
 // MARK: - SYSTEM MONITORING (v6.0)
 // ═══════════════════════════════════════════════════════════════════
 
-/// Get current memory usage percentage
-func getMemoryUsage() -> Double {
+/// Get current process memory usage in MB (resident size)
+func getMemoryUsageMB() -> Double {
     var info = mach_task_basic_info()
-    var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size) / 4
+    var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size / MemoryLayout<natural_t>.size)
     let kerr = withUnsafeMutablePointer(to: &info) {
-        $0.withMemoryRebound(to: integer_t.self, capacity: 1) {
+        $0.withMemoryRebound(to: integer_t.self, capacity: Int(count)) {
             task_info(mach_task_self_, task_flavor_t(MACH_TASK_BASIC_INFO), $0, &count)
         }
     }
     if kerr == KERN_SUCCESS {
-        let used = Double(info.resident_size) / 1_048_576.0 // MB
-        // Estimate total system memory (rough approximation)
-        let total = 16.0 * 1024.0 // Assume 16GB system
-        return min(100.0, (used / total) * 100.0)
+        return Double(info.resident_size) / 1_048_576.0 // bytes → MB
     }
     return 0.0
+}
+
+/// Get total physical memory in MB
+func getTotalMemoryMB() -> Double {
+    return Double(ProcessInfo.processInfo.physicalMemory) / 1_048_576.0
+}
+
+/// Get memory usage as percentage of total system RAM
+func getMemoryUsage() -> Double {
+    let used = getMemoryUsageMB()
+    let total = getTotalMemoryMB()
+    guard total > 0 else { return 0.0 }
+    return min(100.0, (used / total) * 100.0)
 }
 
 /// Get current CPU usage percentage
@@ -562,32 +645,35 @@ func getCPUUsage() -> Double {
     var threadCount = mach_msg_type_number_t()
     let kerr = task_threads(mach_task_self_, &threads, &threadCount)
     if kerr != KERN_SUCCESS { return 0.0 }
+    guard let threadList = threads else { return 0.0 }
 
     var totalUsage: Double = 0.0
     for i in 0..<Int(threadCount) {
         var info = thread_basic_info()
-        var count = mach_msg_type_number_t(MemoryLayout<thread_basic_info>.size) / 4
+        var count = mach_msg_type_number_t(MemoryLayout<thread_basic_info>.size / MemoryLayout<natural_t>.size)
         let kerr2 = withUnsafeMutablePointer(to: &info) {
-            $0.withMemoryRebound(to: integer_t.self, capacity: 1) {
-                thread_info(threads![i], thread_flavor_t(THREAD_BASIC_INFO), $0, &count)
+            $0.withMemoryRebound(to: integer_t.self, capacity: Int(count)) {
+                thread_info(threadList[i], thread_flavor_t(THREAD_BASIC_INFO), $0, &count)
             }
         }
-        if kerr2 == KERN_SUCCESS {
+        if kerr2 == KERN_SUCCESS && (info.flags & TH_FLAGS_IDLE) == 0 {
             totalUsage += Double(info.cpu_usage) / Double(TH_USAGE_SCALE)
         }
     }
-    vm_deallocate(mach_task_self_, vm_address_t(bitPattern: threads), vm_size_t(threadCount * UInt32(MemoryLayout<thread_act_t>.size)))
+    let size = vm_size_t(Int(threadCount) * MemoryLayout<thread_act_t>.size)
+    vm_deallocate(mach_task_self_, vm_address_t(bitPattern: threadList), size)
     return min(100.0, totalUsage * 100.0)
 }
 
-/// Get system load average
+/// Get system load average (stack-allocated — no heap alloc per call)
 func getSystemLoad() -> Double {
-    let loadavg = UnsafeMutablePointer<Double>.allocate(capacity: 3)
-    defer { loadavg.deallocate() }
-    if getloadavg(loadavg, 3) == 3 {
-        return loadavg[0] // 1-minute load average
+    var load: (Double, Double, Double) = (0.0, 0.0, 0.0)
+    let count = withUnsafeMutablePointer(to: &load) { ptr in
+        ptr.withMemoryRebound(to: Double.self, capacity: 3) { buf in
+            getloadavg(buf, 3)
+        }
     }
-    return 0.0
+    return count == 3 ? load.0 : 0.0
 }
 
 func dumpStatus() {
@@ -612,6 +698,7 @@ func dumpStatus() {
         "bridge_watcher": bridge,
         "local_watcher": local,
         "vqpu": MetalVQPU.shared.getStatus(),
+        "micro_daemon": VQPUMicroDaemon.shared.getStatus(),
         "l104_root": l104Root,
         "performance_profile": configPerfProfiling ? daemonProfiler.getMetrics() : [:],
         "auto_scaling": autoScaler != nil ? [
@@ -667,22 +754,34 @@ log("  Pipeline: depth=\(configPipelineDepth) timeout=\(configBridgeTimeoutMs)ms
 log("  Health:   every \(configHealthInterval)s")
 log("  Memory:   pool=\(configMemoryPoolSize) validation=\(configCircuitValidation)")
 log("  Scaling:  auto=\(configAutoScaleEnabled) profiling=\(configPerfProfiling)")
-log("  vQPU:     \(MetalVQPU.shared.getStatus()["gpu_name"] ?? "initializing")")
+// v6.2: Cache vQPU status at startup instead of calling getStatus() twice
+let vqpuStartupStatus = MetalVQPU.shared.getStatus()
+log("  vQPU:     \(vqpuStartupStatus["gpu_name"] ?? "initializing")")
 
-// v6.0: Configuration validation
+// v6.0.1: Ensure directories exist BEFORE configuration validation
+// Fix: /tmp directories are cleared on reboot — must create them first
+ensureDirectories()
+
+// v6.0: Configuration validation (now runs after directories are ensured)
 if !validateConfiguration() {
     log("ERROR: Configuration validation failed — exiting")
     exit(1)
 }
 
 installSignalHandlers()
+killPreviousInstance()
 writePID()
-ensureDirectories()
 startWatchers()
 
-let vqpuStatus = MetalVQPU.shared.getStatus()
-let maxQ = vqpuStatus["capacity"] as? [String: Int]
-log("Daemon v6.0 ACTIVE — MetalVQPU v4.0 (6 GPU kernels, \(maxQ?["max_qubits"] ?? 64)Q max) — \(configBridgeConcurrency)x bridge — 1ms inter-job — MEMORY POOLED — AUTO-SCALING")
+// v6.1: Start VQPU Micro Daemon — lightweight background process assistant
+let microDaemonEnabled = envInt("L104_MICRO_DAEMON", default: 1) != 0
+if microDaemonEnabled {
+    VQPUMicroDaemon.shared.start()
+    log("  Micro:    VQPUMicroDaemon v2.1 — 11 micro-tasks, bridge wiring, GCD timer, IPC at /tmp/l104_bridge/micro/swift_inbox")
+}
+
+let maxQ = vqpuStartupStatus["capacity"] as? [String: Int]
+log("Daemon v6.0 ACTIVE — MetalVQPU v4.0 (6 GPU kernels, \(maxQ?["max_qubits"] ?? 64)Q max) — \(configBridgeConcurrency)x bridge — 1ms inter-job — MEMORY POOLED — AUTO-SCALING — MICRO-DAEMON")
 
 // Keep alive via RunLoop (zero overhead when no events)
 RunLoop.main.run()

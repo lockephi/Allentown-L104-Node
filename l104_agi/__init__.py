@@ -2,6 +2,8 @@
 l104_agi — Decomposed from l104_agi_core.py (3,161 lines → package)
 Phase 3B of L104 Decompression Plan.
 
+v61.0: Cognitive Mesh v2.0, Telemetry Pipeline, Adaptive Scheduler
+
 Re-exports ALL public symbols so that:
     from l104_agi import X
 works identically to the original:
@@ -13,6 +15,14 @@ from .constants import (
     PHI, GOD_CODE, TAU, FEIGENBAUM, ALPHA_FINE, VOID_CONSTANT,
     OMEGA, OMEGA_AUTHORITY,
     QISKIT_AVAILABLE,
+    # v61.0 constants
+    MESH_VERSION, MESH_PAGERANK_DAMPING, MESH_PAGERANK_MAX_ITER,
+    MESH_EDGE_WEIGHT_MAX, MESH_EDGE_DECAY_RATE, MESH_PRUNE_THRESHOLD,
+    TELEMETRY_VERSION, TELEMETRY_ANOMALY_SIGMA, TELEMETRY_EMA_ALPHA,
+    TELEMETRY_LATENCY_SLA_MS,
+    SCHEDULER_VERSION, SCHEDULER_LR_MAX, SCHEDULER_LR_MIN,
+    SCHEDULER_BASE_PERIOD, SCHEDULER_REPLAY_CAPACITY,
+    RESOURCE_BUDGET_TOTAL,
 )
 
 # Circuit breaker
@@ -23,6 +33,26 @@ from .identity_boundary import (
     AGIIdentityBoundary,
     L104_AGI_IS, L104_AGI_IS_NOT,
     AGI_CAPABILITY_MAP,
+)
+
+# v61.0: Cognitive Mesh Network v2.0
+from .cognitive_mesh import CognitiveMeshNetwork
+
+# v61.0: Telemetry Pipeline
+from .telemetry_pipeline import (
+    TelemetryAggregator,
+    TelemetryAnomalyDetector,
+    LatencyPercentileTracker,
+    ThroughputTracker,
+    PipelineHealthDashboard,
+)
+
+# v61.0: Adaptive Scheduler
+from .adaptive_scheduler import (
+    PhiLearningScheduler,
+    ExperienceReplayBuffer,
+    PredictivePipelineScheduler,
+    ResourceBudgetAllocator,
 )
 
 # Core + singleton + module-level functions
@@ -49,12 +79,29 @@ __all__ = [
     "AGI_CORE_VERSION", "AGI_PIPELINE_EVO",
     "PHI", "GOD_CODE", "TAU", "FEIGENBAUM", "ALPHA_FINE", "VOID_CONSTANT",
     "OMEGA", "OMEGA_AUTHORITY", "QISKIT_AVAILABLE",
+    # v61.0 constants
+    "MESH_VERSION", "MESH_PAGERANK_DAMPING", "MESH_PAGERANK_MAX_ITER",
+    "MESH_EDGE_WEIGHT_MAX", "MESH_EDGE_DECAY_RATE", "MESH_PRUNE_THRESHOLD",
+    "TELEMETRY_VERSION", "TELEMETRY_ANOMALY_SIGMA", "TELEMETRY_EMA_ALPHA",
+    "TELEMETRY_LATENCY_SLA_MS",
+    "SCHEDULER_VERSION", "SCHEDULER_LR_MAX", "SCHEDULER_LR_MIN",
+    "SCHEDULER_BASE_PERIOD", "SCHEDULER_REPLAY_CAPACITY",
+    "RESOURCE_BUDGET_TOTAL",
     # Circuit breaker
     "PipelineCircuitBreaker", "BreakerState",
     # Identity Boundary
     "AGIIdentityBoundary",
     "L104_AGI_IS", "L104_AGI_IS_NOT",
     "AGI_CAPABILITY_MAP",
+    # v61.0: Cognitive Mesh
+    "CognitiveMeshNetwork",
+    # v61.0: Telemetry Pipeline
+    "TelemetryAggregator", "TelemetryAnomalyDetector",
+    "LatencyPercentileTracker", "ThroughputTracker",
+    "PipelineHealthDashboard",
+    # v61.0: Adaptive Scheduler
+    "PhiLearningScheduler", "ExperienceReplayBuffer",
+    "PredictivePipelineScheduler", "ResourceBudgetAllocator",
     # Core
     "AGICore", "agi_core", "L104AGICore",
     # Computronium + Rayleigh (v59.0)

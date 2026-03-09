@@ -1,5 +1,5 @@
 """
-L104 Quantum Engine v11.0.0 — Decomposed Sovereign Quantum Intelligence Package
+L104 Quantum Engine v12.0.0 — Decomposed Sovereign Quantum Intelligence Package
 ═══════════════════════════════════════════════════════════════════════════════
 
 Decomposed from l104_quantum_link_builder.py v5.0.0 monolith (10,893 lines, 44 classes)
@@ -21,7 +21,14 @@ Package Structure:
                               network, predictive oracle)
   Layer 5  dynamism.py      LinkDynamismEngine (Min/Max), LinkOuroborosNirvanicEngine
            intelligence.py  10 evolution/consciousness/self-healing classes
-  Layer 6  brain.py         L104QuantumBrain — master orchestrator (22-phase pipeline)
+  Layer 6  brain.py         L104QuantumBrain — master orchestrator (23-phase pipeline)
+
+v12.0.0 Upgrade:
+  - VQPU Bridge Integration: Bidirectional Brain↔VQPU scoring (Phase 23)
+  - Brain self_test(): l104_debug.py compatible diagnostics (14 probes)
+  - Sacred circuit simulation through VQPU full pipeline
+  - VQPU link fidelity boost via three-engine composite feedback
+  - CLI commands: vqpu, selftest
 
 v11.0.0 Upgrade:
   - QuantumManifoldLearner: kernel PCA, geodesic distances, Ricci curvature, PHI-fractal dim
@@ -29,7 +36,7 @@ v11.0.0 Upgrade:
   - QuantumPredictiveOracle: reservoir-enhanced prediction, phase transitions, auto-intervention
   - Phase 21: Quantum Manifold Learning in brain pipeline
   - Phase 22: Multipartite Entanglement + Predictive Oracle in brain pipeline
-  - 26 total processing subsystems in L104QuantumBrain
+  - 27 total processing subsystems in L104QuantumBrain
 
 Quick Start:
     from l104_quantum_engine import quantum_brain, QuantumMathCore
@@ -53,7 +60,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-__version__ = "11.0.0"
+__version__ = "12.0.0"
 __author__ = "L104 Sovereign Node"
 
 # ═══════════════════════════════════════════════════════════════════════════════

@@ -181,46 +181,34 @@ def sim_quantum_walk(nq: int = 7) -> SimulationResult:
     steps = max(20, nq * 3)
     position_entropy_trace = []
     for _ in range(steps):
-        # Step 1: Coin flip on each position
-        new_sv = np.zeros_like(sv)
-        for pos in range(n_positions):
-            c0 = sv[pos * 2 + 0]
-            c1 = sv[pos * 2 + 1]
-            # Apply coin
-            new_c0 = coin[0, 0] * c0 + coin[0, 1] * c1
-            new_c1 = coin[1, 0] * c0 + coin[1, 1] * c1
-            sv[pos * 2 + 0] = new_c0
-            sv[pos * 2 + 1] = new_c1
+        # Step 1: Coin flip — vectorized over all positions
+        c0 = sv[0::2].copy()
+        c1 = sv[1::2].copy()
+        sv[0::2] = coin[0, 0] * c0 + coin[0, 1] * c1
+        sv[1::2] = coin[1, 0] * c0 + coin[1, 1] * c1
 
-        # Step 2: Conditional shift
+        # Step 2: Conditional shift — vectorized with np.roll
         shifted = np.zeros_like(sv)
-        for pos in range(n_positions):
-            left = (pos - 1) % n_positions
-            right = (pos + 1) % n_positions
-            shifted[left * 2 + 0] += sv[pos * 2 + 0]   # coin=0 → move left
-            shifted[right * 2 + 1] += sv[pos * 2 + 1]   # coin=1 → move right
+        shifted[0::2] = np.roll(sv[0::2], 1)   # coin=0 → move left (index -1 ≡ roll +1)
+        shifted[1::2] = np.roll(sv[1::2], -1)  # coin=1 → move right (index +1 ≡ roll -1)
 
-        norm = np.linalg.norm(shifted)
-        if norm > 0:
-            shifted /= norm
         sv = shifted
 
-        # Track position probability distribution entropy
-        pos_probs = np.array([abs(sv[p * 2]) ** 2 + abs(sv[p * 2 + 1]) ** 2
-                              for p in range(n_positions)])
-        pos_probs = pos_probs[pos_probs > 1e-15]
-        pos_entropy = float(-np.sum(pos_probs * np.log2(pos_probs + 1e-30)))
+        # Track position probability distribution entropy — vectorized
+        pos_probs = np.abs(sv[0::2]) ** 2 + np.abs(sv[1::2]) ** 2
+        nz = pos_probs[pos_probs > 1e-15]
+        pos_entropy = float(-np.sum(nz * np.log2(nz + 1e-30)))
         position_entropy_trace.append(pos_entropy)
 
-    # Final position distribution
+    # Final position distribution — vectorized
+    all_pos_probs = np.abs(sv[0::2]) ** 2 + np.abs(sv[1::2]) ** 2
     final_pos_probs = {}
-    for p in range(n_positions):
-        pp = abs(sv[p * 2]) ** 2 + abs(sv[p * 2 + 1]) ** 2
-        if pp > 1e-10:
-            final_pos_probs[format(p, f"0{nq}b")] = round(pp, 6)
+    nz_mask = all_pos_probs > 1e-10
+    nz_indices = np.nonzero(nz_mask)[0]
+    for idx in nz_indices:
+        final_pos_probs[format(idx, f"0{nq}b")] = round(float(all_pos_probs[idx]), 6)
 
-    spread = float(np.std([abs(sv[p * 2]) ** 2 + abs(sv[p * 2 + 1]) ** 2
-                           for p in range(n_positions)]))
+    spread = float(np.std(all_pos_probs))
     elapsed = (time.time() - t0) * 1000
     return SimulationResult(
         name="quantum_walk", category="discovery", passed=True,

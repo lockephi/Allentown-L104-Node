@@ -161,9 +161,11 @@ def zne_sweep(
             simulator, circuit, observable, scales, method
         )
 
-    # Recommend the method with smallest correction (most stable)
-    corrections = {m: abs(r["improvement"]) for m, r in results.items()}
-    best = min(corrections, key=corrections.get)
+    # Recommend the method closest to the median prediction (consensus-based)
+    mitigated_vals = {m: r["mitigated_value"] for m, r in results.items()}
+    median_val = float(np.median(list(mitigated_vals.values())))
+    deviations = {m: abs(v - median_val) for m, v in mitigated_vals.items()}
+    best = min(deviations, key=deviations.get)
 
     return {
         "results": results,

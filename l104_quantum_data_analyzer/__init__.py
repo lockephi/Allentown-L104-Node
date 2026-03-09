@@ -1,6 +1,6 @@
 """
 ===============================================================================
-L104 QUANTUM DATA ANALYZER v1.0.0 — SOVEREIGN QUANTUM DATA INTELLIGENCE
+L104 QUANTUM DATA ANALYZER v2.0.0 — SOVEREIGN QUANTUM DATA INTELLIGENCE
 ===============================================================================
 
 Full-stack quantum data analysis engine integrating ALL L104 subsystems:
@@ -55,7 +55,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ===============================================================================
 """
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __author__ = "L104 Sovereign Node"
 
 from .algorithms import (
@@ -103,6 +103,17 @@ from .computronium import (
     quantum_information_bridge,
 )
 
+# v2.0: Cross-Engine Integration
+from .cross_engine import (
+    VQPUCircuitAccelerator,
+    MLHybridAnalyzer,
+    SearchIntegration,
+    AudioSpectralBridge,
+    GodCodeFeedbackBridge,
+    QDACrossEngineHub,
+    qda_cross_engine_hub,
+)
+
 __all__ = [
     # Core orchestrator
     "QuantumDataAnalyzer",
@@ -138,4 +149,12 @@ __all__ = [
     "computronium_data_bounds",
     "rayleigh_spectral_bounds",
     "quantum_information_bridge",
+    # Cross-Engine Integration (v2.0)
+    "VQPUCircuitAccelerator",
+    "MLHybridAnalyzer",
+    "SearchIntegration",
+    "AudioSpectralBridge",
+    "GodCodeFeedbackBridge",
+    "QDACrossEngineHub",
+    "qda_cross_engine_hub",
 ]

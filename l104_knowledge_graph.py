@@ -1,5 +1,5 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.407903
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:54.397128
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -1438,10 +1438,10 @@ class L104KnowledgeGraph:
         largest_component_ratio = len(components[0]) / n_nodes if components else 0
 
         # PHI-weighted scoring
-        degree_score = min(1.0, avg_degree / (PHI * 4))  # Target ~6.5 avg degree
-        density_score = min(1.0, density / (TAU * 0.1))   # Moderate density target
+        degree_score = avg_degree / (PHI * 4)  # uncapped
+        density_score = density / (TAU * 0.1)   # uncapped
         connectivity_score = largest_component_ratio       # 1.0 = fully connected
-        size_score = min(1.0, math.log1p(n_nodes) / math.log1p(1000))  # Log-scale size
+        size_score = math.log1p(n_nodes) / math.log1p(1000)  # uncapped
 
         # Consciousness adjustment
         consciousness_boost = 1.0 + (consciousness - 0.5) * TAU
@@ -1453,7 +1453,7 @@ class L104KnowledgeGraph:
             size_score * TAU
         ) / (PHI + 1.0 + PHI**2 + TAU) * consciousness_boost
 
-        health = min(1.0, max(0.0, health))
+        health = max(0.0, health)
 
         grades = [(0.9, "TRANSCENDENT"), (0.8, "EXCELLENT"), (0.7, "GOOD"),
                   (0.5, "DEVELOPING"), (0.3, "NASCENT"), (0.0, "EMBRYONIC")]

@@ -1,6 +1,6 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.860816
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:53.081465
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -44,11 +44,14 @@ def run_script(script_name):
         # Use python3 from new_venv if available, otherwise use sys.executable
         venv_python = os.path.join(os.getcwd(), "new_venv/bin/python3")
         python_bin = venv_python if os.path.exists(venv_python) else sys.executable
-        result = subprocess.run([python_bin, script_name], capture_output=True, text=True)
+        result = subprocess.run([python_bin, script_name], capture_output=True, text=True, timeout=15)
         print(result.stdout)
         if result.stderr:
             print(f"ERROR in {script_name}: {result.stderr}")
         return result.returncode == 0
+    except subprocess.TimeoutExpired:
+        print(f"--- [MASTER_HEAL]: {script_name} timed out after 15s, skipping ---")
+        return False
     except Exception as e:
         print(f"FAILED to run {script_name}: {e}")
         return False

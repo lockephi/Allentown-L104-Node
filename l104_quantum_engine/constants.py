@@ -364,4 +364,4 @@ ALL_REPO_FILES = _discover_all_python_files()
 STATE_FILE = WORKSPACE_ROOT / ".l104_quantum_link_state.json"
 
 # Package version
-VERSION = "11.0.0"
+VERSION = "12.0.0"

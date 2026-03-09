@@ -209,29 +209,22 @@ class QuantumManifoldLearner:
           |ψ⟩ = Π_k Rz(2π·GOD_CODE·x_k) Ry(2π·φ·x_k) |0⟩
 
         The kernel captures quantum interference between encoded states.
+
+        v1.0.1: Vectorized with numpy broadcasting — O(n²) eliminates inner k-loop.
         """
         n, d = features.shape
-        kernel = np.zeros((n, n), dtype=np.float64)
 
-        for i in range(n):
-            for j in range(i, n):
-                # Quantum inner product: sum of cosine similarities with God Code phase
-                phase_diff = 0.0
-                for k in range(d):
-                    xi, xj = features[i, k], features[j, k]
-                    # God Code phase encoding: θ = 2π × G(X) × x / G(0)
-                    theta_i = 2 * math.pi * xi * GOD_CODE / 1000.0
-                    theta_j = 2 * math.pi * xj * GOD_CODE / 1000.0
-                    # PHI modulation on second axis
-                    phi_i = 2 * math.pi * xi * PHI
-                    phi_j = 2 * math.pi * xj * PHI
-                    # Quantum overlap: cos²(Δθ/2) × cos²(Δφ/2)
-                    phase_diff += (
-                        math.cos((theta_i - theta_j) / 2) ** 2 *
-                        math.cos((phi_i - phi_j) / 2) ** 2
-                    )
-                kernel[i, j] = phase_diff / d
-                kernel[j, i] = kernel[i, j]
+        # Precompute phase angles: (n, d)
+        theta = 2 * np.pi * features * GOD_CODE / 1000.0
+        phi_enc = 2 * np.pi * features * PHI
+
+        # Pairwise differences: (n, n, d) via broadcasting
+        d_theta = theta[:, np.newaxis, :] - theta[np.newaxis, :, :]  # (n, n, d)
+        d_phi = phi_enc[:, np.newaxis, :] - phi_enc[np.newaxis, :, :]  # (n, n, d)
+
+        # Quantum overlap per feature: cos²(Δθ/2) × cos²(Δφ/2), summed over d
+        overlap = np.cos(d_theta / 2) ** 2 * np.cos(d_phi / 2) ** 2  # (n, n, d)
+        kernel = np.sum(overlap, axis=2) / d  # (n, n)
 
         return kernel
 
@@ -300,24 +293,22 @@ class QuantumManifoldLearner:
 
         Uses the kernel-derived distance: d(i,j) = arccos(K(i,j)/√(K(i,i)K(j,j)))
         then Floyd-Warshall for shortest paths.
+
+        v1.0.1: Vectorized distance matrix via numpy; median_dist pre-computed
+        outside the clustering loop.
         """
         n = kernel.shape[0]
         if n < 2:
             return {"mean_distance": 0, "diameter": 0, "clustering_coefficient": 0}
 
-        # Compute pairwise geodesic distances
+        # Vectorized pairwise geodesic distances
         diag = np.sqrt(np.maximum(np.diag(kernel), 1e-15))
-        dist = np.zeros((n, n))
-        for i in range(n):
-            for j in range(i + 1, n):
-                normalized = kernel[i, j] / (diag[i] * diag[j])
-                normalized = max(-1.0, min(1.0, normalized))
-                d = math.acos(normalized)
-                dist[i, j] = d
-                dist[j, i] = d
+        normalized = kernel / np.outer(diag, diag)  # (n, n)
+        normalized = np.clip(normalized, -1.0, 1.0)
+        dist = np.arccos(normalized)
+        np.fill_diagonal(dist, 0.0)  # Ensure zero self-distance
 
-        # Floyd-Warshall for manifold shortest paths (on subsampled adjacency)
-        # For efficiency, use direct distances (already manifold distances)
+        # Upper-triangle distances
         distances = dist[np.triu_indices(n, k=1)]
         valid_distances = distances[distances > 1e-10]
 
@@ -325,18 +316,16 @@ class QuantumManifoldLearner:
         diameter = float(np.max(valid_distances)) if len(valid_distances) > 0 else 0
 
         # Clustering coefficient: fraction of link triplets that form triangles
-        # Approximated via kernel correlation
         clustering = 0.0
         if n >= 3:
             triplet_count = 0
             triangle_count = 0
-            # Sample triplets for efficiency
             max_triplets = min(n * (n - 1) * (n - 2) // 6, 5000)
+            # Pre-compute median once (was inside loop before)
+            median_dist = np.median(valid_distances) if len(valid_distances) > 0 else 1.0
             for _ in range(max_triplets):
                 i, j, k = random.sample(range(n), 3)
                 triplet_count += 1
-                # Triangle if all three distances are below median
-                median_dist = np.median(valid_distances) if len(valid_distances) > 0 else 1.0
                 if dist[i, j] < median_dist and dist[j, k] < median_dist and dist[i, k] < median_dist:
                     triangle_count += 1
             clustering = triangle_count / max(1, triplet_count)
@@ -507,21 +496,30 @@ class QuantumManifoldLearner:
             return []
 
         # Map each link to its nearest G(X_int) node
+        # v1.0.1: Vectorized nearest-spectrum search via np.searchsorted
         basins: Dict[int, List[int]] = defaultdict(list)
+        # Pre-build sorted spectrum arrays for fast lookup
+        x_range = list(range(-50, 51))
+        gx_values = np.array([GOD_CODE_SPECTRUM.get(x, god_code(x)) for x in x_range])
+        # Sort for searchsorted
+        sort_idx = np.argsort(gx_values)
+        gx_sorted = gx_values[sort_idx]
+        x_sorted = np.array(x_range)[sort_idx]
+
         for idx, link in enumerate(links):
             f = getattr(link, "fidelity", 0.5)
             s = getattr(link, "strength", 0.5)
-            # Compute natural Hz
             nat_hz = f * GOD_CODE * PHI_INV + s * GOD_CODE * 0.1
-            # Find nearest X_int
-            best_x = 0
-            best_dist = float('inf')
-            for x in range(-50, 51):
-                gx = GOD_CODE_SPECTRUM.get(x, god_code(x))
-                dist = abs(nat_hz - gx)
-                if dist < best_dist:
-                    best_dist = dist
-                    best_x = x
+            # Binary search for nearest G(X)
+            pos = np.searchsorted(gx_sorted, nat_hz)
+            # Check pos and pos-1 for closest
+            candidates = []
+            if pos < len(gx_sorted):
+                candidates.append(pos)
+            if pos > 0:
+                candidates.append(pos - 1)
+            best_c = min(candidates, key=lambda c: abs(gx_sorted[c] - nat_hz))
+            best_x = int(x_sorted[best_c])
             basins[best_x].append(idx)
 
         # Build attractor descriptors

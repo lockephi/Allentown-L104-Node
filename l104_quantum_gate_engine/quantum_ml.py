@@ -1011,6 +1011,36 @@ class QNNTrainer:
                 g_hat = (f_plus - f_minus) / (2 * ck * delta)
                 params -= ak * g_hat
 
+            elif self.optimizer == OptimizerType.COBYLA:
+                # COBYLA: gradient-free constrained optimisation via scipy.
+                # Runs scipy.optimize.minimize in a single step (outer loop
+                # handles only the final result, so we break after one pass).
+                from scipy.optimize import minimize as _scipy_minimize
+
+                eval_count = [0]
+
+                def _cost_fn(p):
+                    eval_count[0] += 1
+                    return float(sign * circuit.expectation(p, observable))
+
+                res = _scipy_minimize(
+                    _cost_fn, params,
+                    method='COBYLA',
+                    options={
+                        'maxiter': max_iterations - it,
+                        'rhobeg': 0.5,
+                        'catol': convergence_threshold,
+                    },
+                )
+                params = res.x
+                self._circuit_evals += eval_count[0]
+                # Record the final cost from COBYLA and break
+                final_cobyla_cost = float(circuit.expectation(params, observable))
+                self._circuit_evals += 1
+                cost_history.append(final_cobyla_cost)
+                converged = res.success
+                break
+
         # Final cost
         final_cost = circuit.expectation(params, observable)
         self._circuit_evals += 1
@@ -1263,9 +1293,14 @@ class VariationalEigensolver:
         if ansatz is None:
             ansatz = AnsatzLibrary.hardware_efficient(num_qubits, depth=3)
 
-        # Exact ground energy for comparison
-        eigenvalues = np.linalg.eigvalsh(hamiltonian_matrix)
-        exact_E0 = float(eigenvalues[0])
+        # Exact ground energy for comparison (only for small systems to avoid O(N³))
+        exact_E0 = None
+        if num_qubits <= 16:  # 2^16 = 65536 — feasible for eigvalsh
+            try:
+                eigenvalues = np.linalg.eigvalsh(hamiltonian_matrix)
+                exact_E0 = float(eigenvalues[0])
+            except np.linalg.LinAlgError:
+                exact_E0 = None
 
         # Run training
         trainer = QNNTrainer(learning_rate=self.learning_rate, optimizer=self.optimizer)
@@ -1286,13 +1321,14 @@ class VariationalEigensolver:
             energy_history=result.cost_history,
             num_iterations=result.num_iterations,
             exact_ground_energy=exact_E0,
-            energy_error=abs(result.optimal_cost - exact_E0),
+            energy_error=abs(result.optimal_cost - exact_E0) if exact_E0 is not None else None,
             training_time_ms=elapsed,
             metadata={
                 "optimizer": self.optimizer.name,
                 "ansatz": ansatz.name,
                 "num_parameters": ansatz.num_parameters,
                 "converged": result.converged,
+                "exact_comparison_available": exact_E0 is not None,
                 "god_code": GOD_CODE,
             },
         )
@@ -1330,6 +1366,49 @@ class VariationalEigensolver:
             energies[i] = ansatz.expectation(params, hamiltonian_matrix)
 
         return angles, energies
+
+    def energy_landscape_2d(
+        self,
+        hamiltonian_matrix: np.ndarray,
+        ansatz: ParameterisedCircuit,
+        param_index_x: int = 0,
+        param_index_y: int = 1,
+        base_params: Optional[np.ndarray] = None,
+        n_points: int = 25,
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        2D energy landscape scan: vary two parameters, fix the rest.
+
+        Useful for visualizing parameter correlations and identifying
+        local minima in the variational landscape.
+
+        Args:
+            hamiltonian_matrix: Hamiltonian
+            ansatz: Parameterised circuit
+            param_index_x: First parameter to sweep (x-axis)
+            param_index_y: Second parameter to sweep (y-axis)
+            base_params: Base parameter values (others fixed here)
+            n_points: Points per axis (total evaluations = n_points²)
+
+        Returns:
+            (angles_x, angles_y, energies) — angles are 1D (n_points,),
+            energies is 2D (n_points, n_points)
+        """
+        if base_params is None:
+            base_params = np.zeros(ansatz.num_parameters)
+
+        angles_x = np.linspace(0, 2 * math.pi, n_points)
+        angles_y = np.linspace(0, 2 * math.pi, n_points)
+        energies = np.zeros((n_points, n_points))
+
+        for ix, ax in enumerate(angles_x):
+            for iy, ay in enumerate(angles_y):
+                params = base_params.copy()
+                params[param_index_x] = ax
+                params[param_index_y] = ay
+                energies[ix, iy] = ansatz.expectation(params, hamiltonian_matrix)
+
+        return angles_x, angles_y, energies
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

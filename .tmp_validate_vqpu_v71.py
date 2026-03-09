@@ -11,7 +11,7 @@ print("=" * 65)
 
 # ── 1. Platform Detection ──
 print("\n=== 1. Platform Detection ===")
-from l104_vqpu_bridge import (
+from l104_vqpu import (
     _PLATFORM, _IS_INTEL, _IS_APPLE_SILICON, _HAS_METAL_COMPUTE, _GPU_CLASS,
     VQPU_GPU_CROSSOVER, VQPU_MPS_FALLBACK_TARGET, VQPU_MAX_QUBITS,
     VQPU_BATCH_LIMIT, VQPU_MPS_MAX_BOND_HIGH,
@@ -71,7 +71,7 @@ if _IS_INTEL:
 
 # ── 4. Backend Routing ──
 print("\n=== 4. Backend Routing ===")
-from l104_vqpu_bridge import CircuitAnalyzer
+from l104_vqpu import CircuitAnalyzer
 
 # Small circuit → cpu_statevector
 r1 = CircuitAnalyzer._recommend_backend(4, False, 0.5, 2)
@@ -116,7 +116,7 @@ print("  [OK] All routing paths verified")
 
 # ── 5. VQPUBridge Boot + Status ──
 print("\n=== 5. VQPUBridge Boot + Status ===")
-from l104_vqpu_bridge import VQPUBridge, QuantumJob
+from l104_vqpu import VQPUBridge, QuantumJob
 
 bridge = VQPUBridge()
 bridge.start()

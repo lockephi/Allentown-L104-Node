@@ -66,6 +66,11 @@ class HyperASILogicGateEnvironment:
         # ★ v6.0 Inter-Builder Feedback Bus
         self.feedback_bus = InterBuilderFeedbackBus("gate_builder")
 
+        # ══════ Cross-engine integration (lazy-loaded) ══════
+        self._quantum_gate_engine = None
+        self._vqpu_bridge = None
+        self._numerical_engine = None
+
         self.all_gates: List[LogicGate] = []
         self.all_links: List[GateLink] = []
         self.test_results: List[Dict[str, Any]] = []
@@ -543,6 +548,36 @@ class HyperASILogicGateEnvironment:
 
     # ─── STATUS ──────────────────────────────────────────────────────
 
+    def _get_quantum_gate_engine(self):
+        """Lazy-load QuantumGateEngine for gate algebra and circuit compilation."""
+        if self._quantum_gate_engine is None:
+            try:
+                from l104_quantum_gate_engine import get_engine
+                self._quantum_gate_engine = get_engine()
+            except Exception:
+                pass
+        return self._quantum_gate_engine
+
+    def _get_vqpu_bridge(self):
+        """Lazy-load VQPUBridge for Metal GPU quantum circuit execution."""
+        if self._vqpu_bridge is None:
+            try:
+                from l104_vqpu import get_bridge
+                self._vqpu_bridge = get_bridge()
+            except Exception:
+                pass
+        return self._vqpu_bridge
+
+    def _get_numerical_engine(self):
+        """Lazy-load QuantumNumericalBuilder for cross-pollination."""
+        if self._numerical_engine is None:
+            try:
+                from l104_numerical_engine import QuantumNumericalBuilder
+                self._numerical_engine = QuantumNumericalBuilder()
+            except Exception:
+                pass
+        return self._numerical_engine
+
     def status(self) -> Dict[str, Any]:
         """Get full environment status."""
         dyn_status = self.dynamism_engine.status(self.all_gates)
@@ -578,6 +613,11 @@ class HyperASILogicGateEnvironment:
                 "FINE_STRUCTURE": FINE_STRUCTURE,
             },
             "dynamism": dyn_status,
+            "cross_engines": {
+                "quantum_gate_engine": self._quantum_gate_engine is not None,
+                "vqpu_bridge": self._vqpu_bridge is not None,
+                "numerical_engine": self._numerical_engine is not None,
+            },
         }
 
     def export_cross_pollination_data(self) -> Dict:

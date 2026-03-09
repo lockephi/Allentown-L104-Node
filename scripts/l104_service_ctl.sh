@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 # ═══════════════════════════════════════════════════════════════════
-# L104 Sovereign Node — macOS Persistent Service Manager v3.0
+# L104 Sovereign Node — macOS Persistent Service Manager v3.1
 # ═══════════════════════════════════════════════════════════════════
-# Manages five launchd LaunchAgents that keep L104 services running
+# Manages launchd LaunchAgents that keep L104 services running
 # permanently on macOS, auto-restarting on crash and surviving reboot.
 #
 # Services:
-#   com.l104.fast-server    — FastAPI server (main.py, port 8081)
-#   com.l104.node-server    — Public node (L104_public_node.py)
-#   com.l104.vqpu-daemon    — Metal VQPU daemon (L104Daemon Swift binary)
-#   com.l104.auto-update    — Auto-update watcher (git pull + rebuild)
-#   com.l104.log-rotate     — Automatic log rotation (every 30m)
+#   com.l104.fast-server        — FastAPI server (main.py, port 8081)
+#   com.l104.node-server        — Public node (L104_public_node.py)
+#   com.l104.vqpu-daemon        — Metal VQPU daemon (L104Daemon Swift binary)
+#   com.l104.vqpu-micro-daemon  — VQPU micro daemon (5-15s micro-task loop)
+#   com.l104.auto-update        — Auto-update watcher (git pull + rebuild)
+#   com.l104.log-rotate         — Automatic log rotation (every 30m)
+#   com.l104.health-watchdog    — Health watchdog (60s checks)
+#   com.l104.boot-manager       — Boot manager (restart-on-boot supervisor)
 #
+# v3.1: Added vqpu-micro-daemon service, micro IPC directories
 # v3.0: Added log-rotate service, health command, bridge diagnostics,
 #   session uptime tracking, improved status with version + priority.
 #
@@ -40,6 +44,7 @@ SERVICES=(
     "com.l104.fast-server"
     "com.l104.node-server"
     "com.l104.vqpu-daemon"
+    "com.l104.vqpu-micro-daemon"
     "com.l104.auto-update"
     "com.l104.log-rotate"
     "com.l104.health-watchdog"
@@ -51,6 +56,8 @@ ensure_ipc_dirs() {
     mkdir -p "$ROOT/.l104_circuits/inbox" "$ROOT/.l104_circuits/outbox" "$ROOT/.l104_circuits/archive"
     mkdir -p /tmp/l104_queue/outbox /tmp/l104_queue/archive
     mkdir -p /tmp/l104_bridge/inbox /tmp/l104_bridge/outbox /tmp/l104_bridge/telemetry /tmp/l104_bridge/archive
+    mkdir -p /tmp/l104_bridge/micro/inbox /tmp/l104_bridge/micro/outbox
+    mkdir -p /tmp/l104_bridge/micro/swift_inbox /tmp/l104_bridge/micro/swift_outbox
     mkdir -p "$LOG_DIR"
 }
 

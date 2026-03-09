@@ -3,7 +3,7 @@
 import time, sys
 
 try:
-    from l104_vqpu_bridge import (
+    from l104_vqpu import (
         VQPUBridge, QuantumJob, CircuitTranspiler, CircuitAnalyzer,
         ExactMPSHybridEngine, HardwareGovernor, CircuitCache,
         VQPU_MAX_QUBITS, VQPU_BATCH_LIMIT, VQPU_PIPELINE_WORKERS,

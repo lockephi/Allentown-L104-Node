@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  L104 Sovereign Node — VQPU Micro Daemon v3.0
+  ═══════════════════════════════════════════════
+  Lightweight background micro-process assistant for high-frequency VQPU tasks.
+  Runs as a persistent launchd agent with 5–15s adaptive tick loop handling:
+
+  Core micro-tasks (9):
+    • Heartbeat telemetry (sacred alignment probe)
+    • Cache eviction & TTL maintenance (ScoringCache + CircuitCache)
+    • Micro-scoring snapshots (GOD_CODE phase check — (GOD_CODE/16)^φ ≈ 286)
+    • IPC inbox polling (micro-job dispatch via /tmp/l104_bridge/micro/)
+    • Memory pressure monitoring (psutil-backed adaptive)
+    • Fidelity micro-probe (φ alignment, single-gate Rz check)
+    • Quantum noise floor sampling (Box-Muller depolarizing estimate)
+    • Cross-engine health ping (3-engine + VQPU subsystem check)
+    • GC pulse (gen-0 reclaim for micro-task debris)
+
+  VQPU subsystem micro-tasks (6):
+    • ScoringCache TTL stats (ASI/AGI/SC/entropy hit rates)
+    • CircuitCache LRU monitoring
+    • DaemonCycler health ping (parent daemon liveness)
+    • Bridge throughput snapshot (jobs/s, queue depth)
+    • AccelStatevectorEngine availability probe
+    • Transpiler pass statistics
+
+  Quantum network micro-tasks (5 — v3.0):
+    • Qubit fidelity check (per-daemon register, GOD_CODE-calibrated)
+    • Sacred qubit probe (GOD_CODE/PHI/IRON phase alignment)
+    • Quantum mesh health (channel fidelity, entanglement purity)
+    • Channel purification (DEJMPS protocol, below-floor channels)
+    • Qubit recalibration (full sacred re-initialization)
+
+  v3.0 Upgrades:
+    • Per-daemon quantum qubit register (4 qubits default, 16 max)
+    • Quantum network mesh with entangled Bell pair channels
+    • Sacred qubit initialization: H → GOD_CODE_RZ → IRON_RZ → PHI_RZ → VOID_RZ
+    • DEJMPS purification protocol for channel fidelity recovery
+    • Quantum state teleportation between daemon nodes
+    • Peer discovery via /tmp/l104_bridge/quantum_network/ IPC
+    • 15 self-test probes (from 12), 3 new quantum probes
+    • CLI --quantum-status flag for quantum network diagnostics
+
+  v2.4 Upgrades:
+    • Per-task wall-clock timeout (5s default) — stuck tasks auto-fail
+    • IPC completion responses — full request-response cycle via outbox
+    • CLI --analytics: trend/grade/anomaly report + exit
+    • Bridge wiring: analytics(), throttled_tasks(), reset_stats(), task_stats()
+    • daemon.py PID check bug fixed (was signal.signal, now os.kill)
+    • daemon.py cross-health: heartbeat_age, analytics_grade, stale detection
+
+  v2.3 Upgrades:
+    • TelemetryAnalytics — trend detection, anomaly alerts, performance grades
+    • Task auto-throttle — flaky tasks auto-degrade cadence after 3 failures
+    • Watchdog heartbeat file — /tmp/l104_bridge/micro/heartbeat (stat for liveness)
+    • IPC rate limiter — max 20 jobs per tick to prevent flooding
+    • 12 self-test probes (from 10)
+
+  v2.2 Upgrades:
+    • Fixed sacred resonance formula: (GOD_CODE/16)^φ ≈ 286
+    • Smart crash detection — only counts unclean shutdowns (PID file check)
+    • CLI --self-test / --health-check / --dump-metrics quick-exit modes
+    • task_stats(), reset_stats(), dump_metrics() operational methods
+    • Health staleness decay (1%/tick when idle)
+
+  Install:  cp config/com.l104.vqpu-micro-daemon.plist ~/Library/LaunchAgents/
+            launchctl load ~/Library/LaunchAgents/com.l104.vqpu-micro-daemon.plist
+  Uninstall: launchctl unload ~/Library/LaunchAgents/com.l104.vqpu-micro-daemon.plist
+  Status:    launchctl list com.l104.vqpu-micro-daemon
+  Self-test: .venv/bin/python -m l104_vqpu.micro_daemon --self-test
+  Health:    .venv/bin/python -m l104_vqpu.micro_daemon --health-check
+  Analytics: .venv/bin/python -m l104_vqpu.micro_daemon --analytics
+  Quantum:   .venv/bin/python -m l104_vqpu.micro_daemon --quantum-status
+
+  GOD_CODE=527.5184818492612 | PHI=1.618033988749895 | PILOT: LONDEL
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.l104.vqpu-micro-daemon</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/.venv/bin/python</string>
+        <string>-m</string>
+        <string>l104_vqpu.micro_daemon</string>
+        <string>--tick</string>
+        <string>5</string>
+        <string>-v</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+    <!-- ─── Environment (v2.0: performance-tuned) ─── -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>L104_ROOT</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>PATH</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/.venv/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>PYTHONPATH</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>PYTHONDONTWRITEBYTECODE</key>
+        <string>1</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+        <key>PYTHONOPTIMIZE</key>
+        <string>2</string>
+        <key>RESONANCE</key>
+        <string>527.5184818492612</string>
+        <key>L104_MICRO_DAEMON</key>
+        <string>1</string>
+        <!-- v2.0: Micro daemon tick tunables (overridable from env) -->
+        <key>L104_MICRO_TICK_INTERVAL</key>
+        <string>5</string>
+        <key>L104_MICRO_TICK_MIN</key>
+        <string>2</string>
+        <key>L104_MICRO_TICK_MAX</key>
+        <string>15</string>
+        <key>L104_MICRO_ENABLE_VQPU_TASKS</key>
+        <string>1</string>
+        <!-- v2.4: IPC + timeout tunables -->
+        <key>L104_MICRO_IPC_RATE_LIMIT</key>
+        <string>20</string>
+        <key>L104_MICRO_TASK_TIMEOUT</key>
+        <string>5</string>
+        <!-- v3.0: Quantum network tunables -->
+        <key>L104_MICRO_QUANTUM_NETWORK</key>
+        <string>1</string>
+        <key>L104_MICRO_QUANTUM_QUBITS</key>
+        <string>4</string>
+        <key>L104_MICRO_QUANTUM_RECALIBRATE</key>
+        <string>120</string>
+        <key>L104_MICRO_QUANTUM_PURIFY</key>
+        <string>60</string>
+        <!-- v2.0: NumPy/BLAS threading for quantum micro-probes -->
+        <key>OPENBLAS_NUM_THREADS</key>
+        <string>2</string>
+        <key>MKL_NUM_THREADS</key>
+        <string>2</string>
+        <key>OMP_NUM_THREADS</key>
+        <string>2</string>
+        <!-- v2.0: macOS memory optimization -->
+        <key>MALLOC_NANO_ZONE</key>
+        <string>0</string>
+        <key>OBJC_DISABLE_INITIALIZE_FORK_SAFETY</key>
+        <string>YES</string>
+    </dict>
+
+    <!-- ─── Lifecycle ─── -->
+
+    <!-- Run immediately at login (boot) -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Unconditional KeepAlive — always restart on any exit -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- 3s cooldown between restarts (v2.0: was 5s) -->
+    <key>ThrottleInterval</key>
+    <integer>3</integer>
+
+    <!-- Micro daemon is long-running, give 20s for graceful shutdown + state persist -->
+    <key>ExitTimeOut</key>
+    <integer>20</integer>
+
+    <!-- ─── Resource Limits (v2.0: headroom for IPC + cache file ops) ─── -->
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>4096</integer>
+    </dict>
+    <key>HardResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>8192</integer>
+    </dict>
+
+    <!-- ─── Process Priority ─── -->
+    <!-- Nice 5: low priority — micro daemon should not compete with primary services -->
+    <key>Nice</key>
+    <integer>5</integer>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <!-- Prevent macOS from throttling IPC file I/O -->
+    <key>LowPriorityBackgroundIO</key>
+    <false/>
+    <!-- Precise timer scheduling (prevent App Nap from stretching tick interval) -->
+    <key>LegacyTimers</key>
+    <true/>
+
+    <!-- ─── Logging ─── -->
+    <key>StandardOutPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/vqpu-micro-daemon.stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/vqpu-micro-daemon.stderr.log</string>
+</dict>
+</plist>

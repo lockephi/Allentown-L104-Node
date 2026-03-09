@@ -161,8 +161,58 @@ class QuantumNumericalBuilder:
         self.run_count = 0
         self.history: List[Dict] = []
 
+        # ══════ Cross-engine integration (lazy-loaded) ══════
+        self._science_engine = None
+        self._math_engine = None
+        self._quantum_gate_engine = None
+        self._vqpu_bridge = None
+
         # Load persisted state
         self._load_state()
+
+    # ═════════════════════════════════════════════════════════════════════════
+    #  CROSS-ENGINE LAZY LOADERS
+    # ═════════════════════════════════════════════════════════════════════════
+
+    def _get_science_engine(self):
+        """Lazy-load ScienceEngine for entropy/coherence cross-pollination."""
+        if self._science_engine is None:
+            try:
+                from l104_science_engine import ScienceEngine
+                self._science_engine = ScienceEngine()
+            except Exception:
+                pass
+        return self._science_engine
+
+    def _get_math_engine(self):
+        """Lazy-load MathEngine for harmonic/proof cross-validation."""
+        if self._math_engine is None:
+            try:
+                from l104_math_engine import MathEngine
+                self._math_engine = MathEngine()
+            except Exception:
+                pass
+        return self._math_engine
+
+    def _get_quantum_gate_engine(self):
+        """Lazy-load QuantumGateEngine for gate algebra integration."""
+        if self._quantum_gate_engine is None:
+            try:
+                from l104_quantum_gate_engine import get_engine
+                self._quantum_gate_engine = get_engine()
+            except Exception:
+                pass
+        return self._quantum_gate_engine
+
+    def _get_vqpu_bridge(self):
+        """Lazy-load VQPUBridge for Metal GPU quantum execution."""
+        if self._vqpu_bridge is None:
+            try:
+                from l104_vqpu import get_bridge
+                self._vqpu_bridge = get_bridge()
+            except Exception:
+                pass
+        return self._vqpu_bridge
 
     def full_pipeline(self) -> Dict:
         """Run the complete quantum numerical pipeline."""

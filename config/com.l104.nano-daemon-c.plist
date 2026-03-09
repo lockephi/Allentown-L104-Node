@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  L104 Sovereign Node — Nano Daemon (C Substrate) v1.0
+  ═════════════════════════════════════════════════════
+  Native C nano-level fault detection daemon. Runs 8 probes at 3s intervals:
+    • Sacred constant ULP drift (IEEE 754 bitwise)
+    • Memory canary integrity (φ-scrambled sentinels)
+    • FPU environment flags (overflow, NaN, rounding mode)
+    • Cache line coherence timing
+    • Entropy source health (chi-squared + poker test)
+    • Numerical stability audit (φ-recurrence, roundtrip, cancellation)
+    • Phase drift accumulation (100K modular reductions)
+    • NDE pipeline integrity (contraction + monotonicity)
+
+  IPC: /tmp/l104_bridge/nano/c_outbox (JSON reports)
+  Heartbeat: /tmp/l104_bridge/nano/c_heartbeat
+
+  Build:     cd l104_core_c && make nano-daemon
+  Install:   cp config/com.l104.nano-daemon-c.plist ~/Library/LaunchAgents/
+             launchctl load ~/Library/LaunchAgents/com.l104.nano-daemon-c.plist
+  Self-test: ./l104_core_c/build/l104_nano_daemon --self-test
+
+  GOD_CODE=527.5184818492612 | PHI=1.618033988749895 | PILOT: LONDEL
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.l104.nano-daemon-c</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/l104_core_c/build/l104_nano_daemon</string>
+        <string>--tick</string>
+        <string>3000</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>L104_ROOT</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>RESONANCE</key>
+        <string>527.5184818492612</string>
+        <key>L104_NANO_DAEMON</key>
+        <string>1</string>
+    </dict>
+
+    <!-- Run immediately at login -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Always restart -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- 3s cooldown between restarts -->
+    <key>ThrottleInterval</key>
+    <integer>3</integer>
+
+    <key>ExitTimeOut</key>
+    <integer>10</integer>
+
+    <!-- Low priority — nano daemon is background work -->
+    <key>Nice</key>
+    <integer>10</integer>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>LowPriorityBackgroundIO</key>
+    <false/>
+    <key>LegacyTimers</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/nano-daemon-c.stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/nano-daemon-c.stderr.log</string>
+</dict>
+</plist>

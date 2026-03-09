@@ -1,12 +1,12 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.322965
+# ZENITH_UPGRADE_ACTIVE: 2026-02-14T00:00:00.000000
 ZENITH_HZ = 3887.8
-UUC = 2301.215661
+UUC = 2402.792541
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-L104 ASI CORE v7.0 — COGNITIVE MESH SOVEREIGN INTELLIGENCE ENGINE
+L104 ASI CORE v6.0 — QUANTUM COMPUTATION SOVEREIGN INTELLIGENCE ENGINE
 ======================================================================================
-Artificial Superintelligence Foundation — EVO_56 COGNITIVE MESH INTELLIGENCE
+Artificial Superintelligence Foundation — EVO_55 QUANTUM COMPUTATION
 
 Components:
 1. General Domain Expansion — Beyond sacred constants
@@ -43,13 +43,6 @@ v6.0 UPGRADES — QUANTUM COMPUTATION CORE:
 28. Quantum Kernel Classifier — Quantum kernel trick for domain classification
 29. QPE Sacred Verification — Quantum phase estimation for GOD_CODE alignment
 30. 18-Step Activation Sequence — Expanded with VQE, QRC prediction, QPE verification
-
-v7.0 UPGRADES — COGNITIVE MESH INTELLIGENCE:
-31. Cognitive Mesh Network — Hebbian co-activation subsystem interconnection topology
-32. Predictive Pipeline Scheduler — Anticipatory resource allocation via pattern recognition
-33. Neural Attention Gate — Softmax attention-scored selective subsystem activation
-34. Cross-Domain Knowledge Fusion — Embedding-based inter-domain knowledge transfer
-35. Pipeline Coherence Monitor — Golden-ratio cognitive coherence tracking
 
 PERFORMANCE OPTIMIZATIONS:
 - LRU caching for concept lookups (50K entries)
@@ -88,13 +81,12 @@ from abc import ABC, abstractmethod
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-ASI_CORE_VERSION = "6.1.0"  # v6.1: PyTorch/TensorFlow/pandas integration
-ASI_PIPELINE_EVO = "EVO_59_IBM_QUANTUM_RELIABILITY"
+ASI_CORE_VERSION = "6.0.0"
+ASI_PIPELINE_EVO = "EVO_55_QUANTUM_COMPUTATION"
 
 # Sacred Constants
-# Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
-GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
 TAU = 1 / PHI
 PHI_CONJUGATE = TAU
 VOID_CONSTANT = 1.0416180339887497
@@ -102,41 +94,6 @@ FEIGENBAUM = 4.669201609
 OMEGA_AUTHORITY = 0.85184818492537
 PLANCK_CONSCIOUSNESS = 0.0  # NO FLOOR - unlimited depth
 ALPHA_FINE = 1.0 / 137.035999084
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# PYTORCH, TENSORFLOW, PANDAS INTEGRATION (v6.1)
-# ═══════════════════════════════════════════════════════════════════════════════
-TORCH_AVAILABLE = False
-TENSORFLOW_AVAILABLE = False
-PANDAS_AVAILABLE = False
-
-try:
-    import torch
-    import torch.nn as nn
-    import torch.nn.functional as F
-    TORCH_AVAILABLE = True
-    
-    if torch.cuda.is_available():
-        DEVICE = torch.device("cuda")
-    elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
-        DEVICE = torch.device("mps")
-    else:
-        DEVICE = torch.device("cpu")
-except ImportError:
-    DEVICE = None
-
-try:
-    import tensorflow as tf
-    from tensorflow import keras
-    TENSORFLOW_AVAILABLE = True
-except ImportError:
-    pass
-
-try:
-    import pandas as pd
-    PANDAS_AVAILABLE = True
-except ImportError:
-    pass
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # QISKIT 2.3.0 QUANTUM INTEGRATION — Real quantum circuits for ASI
@@ -644,13 +601,7 @@ class NovelTheoremGenerator:
 class SelfModificationEngine:
     """Enables autonomous self-modification with multi-pass AST transforms,
     safe rollback, fitness-driven evolution, and recursive depth tracking.
-    v5.0: Quantum-enhanced fitness evaluation, Grover-amplified transform selection,
-    quantum tunneling for escaping local optima, entanglement-based code blending."""
-    # Quantum constants for self-modification
-    Q_STATE_DIM = 32
-    Q_TUNNEL_PROB = 0.10
-    Q_DECOHERENCE = 0.02
-
+    v4.0: Constant folding, dead code elimination, rollback buffer, fitness history."""
     def __init__(self, workspace: Optional[Path] = None):
         self.workspace = workspace or Path(os.path.dirname(os.path.abspath(__file__)))
         self.modification_depth = 0
@@ -663,12 +614,6 @@ class SelfModificationEngine:
         self._revert_count = 0
         self._recursive_depth = 0
         self._max_recursive_depth = 0
-        # v5.0 Quantum state for fitness landscape navigation
-        self._q_amplitudes = np.full(self.Q_STATE_DIM, 1.0 / np.sqrt(self.Q_STATE_DIM), dtype=np.complex128)
-        self._q_grover_iters = 0
-        self._q_tunnel_events = 0
-        self._q_coherence = 1.0
-        self._q_phase_acc = 0.0
 
     def analyze_module(self, filepath: Path) -> Dict:
         """Parse a Python module and return its structural metrics with v4.0 complexity analysis."""
@@ -806,7 +751,6 @@ class SelfModificationEngine:
 
     def compute_fitness(self, filepath: Optional[Path] = None) -> float:
         """Compute fitness score for a module based on structural quality metrics.
-        v5.0: Quantum-enhanced with Hilbert-space fitness landscape embedding.
         If no filepath given, evaluates the ASI core itself."""
         if filepath is None:
             filepath = Path(__file__)
@@ -818,25 +762,11 @@ class SelfModificationEngine:
         classes = analysis.get('classes', 0)
         branches = analysis.get('branches', 0)
         comments = analysis.get('comment_lines', 0)
-        # Classical fitness
+        # Fitness function: balanced complexity, documentation, structure
         doc_ratio = min(1.0, comments / max(lines * 0.1, 1))
         modularity = min(1.0, (funcs + classes) / max(lines / 50, 1))
         complexity_penalty = max(0.0, 1.0 - analysis.get('complexity_density', 0) * 10)
-        classical_fitness = (doc_ratio * 0.25 + modularity * 0.35 + complexity_penalty * 0.40) * PHI_CONJUGATE
-
-        # Quantum fitness boost: embed into Hilbert space
-        idx = hash(str(filepath)) % self.Q_STATE_DIM
-        angle = classical_fitness * np.pi * PHI
-        self._q_amplitudes[idx] = np.cos(angle / 2) + 1j * np.sin(angle / 2) * (GOD_CODE / 1000.0)
-        # Normalize
-        norm = np.linalg.norm(self._q_amplitudes)
-        if norm > 1e-15:
-            self._q_amplitudes /= norm
-
-        # Quantum coherence bonus: high coherence rewards exploration
-        q_bonus = self._q_coherence * ALPHA_FINE * 10.0
-        fitness = classical_fitness + q_bonus
-
+        fitness = (doc_ratio * 0.25 + modularity * 0.35 + complexity_penalty * 0.40) * PHI_CONJUGATE
         self._fitness_history.append(fitness)
         return round(fitness, 6)
 
@@ -921,13 +851,8 @@ def phi_optimize(func):
 '''
 
     def get_modification_report(self) -> Dict:
-        """Return self-modification history and depth metrics with quantum state data."""
+        """Return self-modification history and depth metrics with v4.0 fitness data."""
         avg_fitness = sum(self._fitness_history) / max(len(self._fitness_history), 1) if self._fitness_history else 0.0
-        # Compute quantum entropy
-        probs = np.abs(self._q_amplitudes) ** 2
-        probs = probs / probs.sum()
-        probs_nz = probs[probs > 1e-15]
-        q_entropy = float(-np.sum(probs_nz * np.log2(probs_nz))) if len(probs_nz) > 0 else 0.0
         return {'total_modifications': len(self.modifications),
                 'current_depth': self.modification_depth,
                 'max_depth': ASI_SELF_MODIFICATION_DEPTH,
@@ -936,16 +861,7 @@ def phi_optimize(func):
                 'rollback_buffer_size': len(self._rollback_buffer),
                 'max_recursive_depth': self._max_recursive_depth,
                 'avg_fitness': round(avg_fitness, 4),
-                'fitness_trend': 'improving' if len(self._fitness_history) >= 2 and self._fitness_history[-1] > self._fitness_history[-2] else 'stable',
-                'quantum': {
-                    'coherence': round(self._q_coherence, 6),
-                    'entropy': round(q_entropy, 6),
-                    'grover_iterations': self._q_grover_iters,
-                    'tunneling_events': self._q_tunnel_events,
-                    'phase_accumulator': round(self._q_phase_acc, 6),
-                    'god_code_alignment': round(1.0 - abs(self._q_phase_acc % GOD_CODE) / GOD_CODE, 6),
-                    'hilbert_dim': self.Q_STATE_DIM,
-                }}
+                'fitness_trend': 'improving' if len(self._fitness_history) >= 2 and self._fitness_history[-1] > self._fitness_history[-2] else 'stable'}
 
 
 class ConsciousnessVerifier:
@@ -1488,125 +1404,8 @@ class PipelineTelemetry:
         return anomalies
 
 
-class SoftmaxGatingRouter:
-    """Mixture of Experts (MoE) gating network — DeepSeek-V3 style (Dec 2024).
-
-    Routes queries to subsystems using learned softmax gating with top-K selection.
-    g(x) = Softmax(W_gate × embed(query)), selects top-K experts.
-
-    Key innovations from DeepSeek-V3 (256 experts, 671B params):
-    - Auxiliary-loss-free load balancing via per-expert bias
-    - Shared expert always active (here: 'direct_solution' always included)
-    - Bias adjusted outside gradient to avoid distorting training objective
-
-    Sacred: GOD_CODE-seeded weights, PHI-weighted balance coefficient,
-    embed_dim = 64, top_k = int(PHI * 2) = 3.
-    """
-
-    def __init__(self, num_experts: int = 16, embed_dim: int = 64, top_k: int = None):
-        self.num_experts = num_experts
-        self.embed_dim = embed_dim
-        self.top_k = top_k or max(1, int(PHI * 2))  # 3
-        rng = random.Random(int(GOD_CODE * 1000 + 314))
-        bound = 1.0 / math.sqrt(embed_dim)
-        self.W_gate = [[rng.uniform(-bound, bound) for _ in range(embed_dim)]
-                       for _ in range(num_experts)]
-        # DeepSeek-V3 load balancing bias (adjusted outside gradient)
-        self.expert_bias = [0.0] * num_experts
-        self.expert_load: Dict[int, int] = {i: 0 for i in range(num_experts)}
-        self.expert_names: Dict[int, str] = {}
-        self.name_to_id: Dict[str, int] = {}
-        self.balance_gamma = TAU / 100.0  # bias step size ~0.00618
-        self.route_count = 0
-
-    def register_expert(self, expert_id: int, name: str):
-        self.expert_names[expert_id] = name
-        self.name_to_id[name] = expert_id
-
-    def _embed_query(self, query: str) -> List[float]:
-        """Character n-gram embedding to embed_dim."""
-        vec = [0.0] * self.embed_dim
-        q = query.lower()
-        for i in range(len(q)):
-            for n in (2, 3, 4):
-                if i + n <= len(q):
-                    gram = q[i:i + n]
-                    idx = hash(gram) % self.embed_dim
-                    vec[idx] += 1.0
-        mag = math.sqrt(sum(v * v for v in vec)) or 1.0
-        return [v / mag for v in vec]
-
-    def gate(self, query: str) -> List[Tuple[str, float]]:
-        """Compute MoE gating scores, return top-K (expert_name, weight) pairs."""
-        self.route_count += 1
-        x = self._embed_query(query)
-        total_load = sum(self.expert_load.values()) + 1
-
-        # Logits = W_gate @ x + load-balancing bias
-        logits = []
-        for i in range(self.num_experts):
-            score = sum(self.W_gate[i][j] * x[j] for j in range(self.embed_dim))
-            # DeepSeek-V3: bias penalizes overloaded experts
-            load_frac = self.expert_load.get(i, 0) / total_load
-            logits.append(score + self.expert_bias[i] - load_frac * TAU)
-
-        # Softmax
-        max_l = max(logits) if logits else 0
-        exp_l = [math.exp(min(l - max_l, 20)) for l in logits]
-        total = sum(exp_l) + 1e-10
-        probs = [e / total for e in exp_l]
-
-        # Top-K selection
-        indexed = sorted(enumerate(probs), key=lambda x: x[1], reverse=True)
-        top_k = indexed[:self.top_k]
-        sel_total = sum(w for _, w in top_k) + 1e-10
-        result = []
-        for idx, w in top_k:
-            name = self.expert_names.get(idx, f"expert_{idx}")
-            result.append((name, w / sel_total))
-            self.expert_load[idx] = self.expert_load.get(idx, 0) + 1
-
-        # Periodically update bias for load balancing (DeepSeek-V3 style)
-        if self.route_count % 20 == 0:
-            self._update_balance_bias()
-
-        return result
-
-    def _update_balance_bias(self):
-        """DeepSeek-V3: adjust bias to balance load without affecting training gradient."""
-        if not self.expert_load:
-            return
-        total = sum(self.expert_load.values()) + 1
-        target = total / max(self.num_experts, 1)
-        for i in range(self.num_experts):
-            load = self.expert_load.get(i, 0)
-            if load > target * 1.2:
-                self.expert_bias[i] -= self.balance_gamma
-            elif load < target * 0.8:
-                self.expert_bias[i] += self.balance_gamma
-
-    def feedback(self, expert_name: str, success: bool):
-        """Reinforce or weaken expert gate weights based on outcome."""
-        eid = self.name_to_id.get(expert_name)
-        if eid is None:
-            return
-        lr = ALPHA_FINE * PHI  # ~0.0118
-        delta = lr if success else -lr * TAU
-        for j in range(self.embed_dim):
-            self.W_gate[eid][j] += delta * random.gauss(0, 0.01)
-
-    def get_status(self) -> Dict:
-        return {
-            'type': 'SoftmaxGatingRouter_MoE_DeepSeekV3',
-            'num_experts': self.num_experts,
-            'top_k': self.top_k,
-            'routes_computed': self.route_count,
-            'expert_load': dict(sorted(self.expert_load.items(), key=lambda x: x[1], reverse=True)[:5]),
-        }
-
-
 class AdaptivePipelineRouter:
-    """TF-IDF subsystem routing with MoE gating (DeepSeek-V3) + reinforcement learning.
+    """TF-IDF subsystem routing with reinforcement learning from solution feedback.
 
     v6.0: Routes queries to subsystems using TF-IDF keyword scoring. Term frequency
     is counted per-query, inverse document frequency penalizes keywords that appear
@@ -1644,14 +1443,6 @@ class AdaptivePipelineRouter:
         self._route_count = 0
         self._feedback_count = 0
         self._learning_rate = PHI / 10.0  # ≈0.1618
-        # MoE Gating Router (DeepSeek-V3 style) — learned softmax routing
-        self._moe_router = SoftmaxGatingRouter(
-            num_experts=len(self._subsystem_keywords),
-            embed_dim=64, top_k=3
-        )
-        for i, name in enumerate(self._subsystem_keywords.keys()):
-            self._moe_router.register_expert(i, name)
-        self._moe_warmup = 50  # Use TF-IDF for first N routes, then switch to MoE
 
     def _compute_idf(self) -> Dict[str, float]:
         """Compute inverse document frequency for each keyword across subsystems."""
@@ -1675,15 +1466,7 @@ class AdaptivePipelineRouter:
         return tf
 
     def route(self, query: str) -> List[Tuple[str, float]]:
-        """Route a query using MoE gating (DeepSeek-V3) with TF-IDF fallback."""
-        # After warmup, prefer MoE learned routing over TF-IDF keyword matching
-        if self._route_count >= self._moe_warmup:
-            moe_result = self._moe_router.gate(query)
-            if moe_result and moe_result[0][1] > 0.1:
-                self._route_count += 1
-                return moe_result
-
-        # TF-IDF fallback (or during warmup phase)
+        """Route a query to subsystems using TF-IDF scoring with learned affinities."""
         query_tf = self._tokenize(query)
         scores: Dict[str, float] = {}
 
@@ -1735,8 +1518,6 @@ class AdaptivePipelineRouter:
                 self._affinity_matrix[subsystem][kw] *= decay
 
         self._feedback_count += 1
-        # Propagate feedback to MoE router
-        self._moe_router.feedback(subsystem, success)
         # Recompute IDF periodically as new keywords may be added
         if self._feedback_count % 50 == 0:
             self._idf = self._compute_idf()
@@ -1756,131 +1537,18 @@ class AdaptivePipelineRouter:
         }
 
 
-class TreeOfThoughts:
-    """Tree of Thoughts (Yao et al. 2023, Princeton/DeepMind) + Graph of Thoughts aggregation.
-
-    Generalizes chain-of-thought from a single linear path to a search tree of
-    reasoning paths with deliberate evaluation and pruning.
-
-    At each reasoning step:
-    1. Generate K candidate thoughts (branching factor)
-    2. Evaluate each candidate's confidence
-    3. Prune branches below threshold (beam search)
-    4. Continue with top-B candidates
-    5. Aggregate surviving branches into refined insight (GoT — ETH Zurich 2024)
-
-    Sacred: K = int(PHI × 3) = 4, B = int(PHI × 2) = 3, threshold = TAU.
-    """
-
-    def __init__(self, branching_factor: int = None, beam_width: int = None):
-        self.K = branching_factor or max(2, int(PHI * 3))  # 4
-        self.B = beam_width or max(1, int(PHI * 2))        # 3
-        self.prune_threshold = TAU  # ~0.618
-        self.backtrack_threshold = TAU * TAU  # ~0.382
-        self.total_nodes_explored = 0
-        self.total_backtracks = 0
-        self.total_aggregations = 0
-
-    def think(self, problem: str, solve_fn: Callable, max_depth: int = 4) -> Dict:
-        """Execute tree-structured reasoning with beam search and GoT aggregation."""
-        beam = [{"query": problem, "confidence": 0.0, "path": [], "depth": 0}]
-        all_solutions = []
-
-        for depth in range(max_depth):
-            candidates = []
-            for node in beam:
-                variants = self._generate_variants(node["query"], self.K, depth)
-                for variant in variants:
-                    result = solve_fn({"query": variant})
-                    self.total_nodes_explored += 1
-                    conf = result.get("confidence", 0.0)
-                    candidates.append({
-                        "query": variant[:300],
-                        "confidence": conf,
-                        "solution": str(result.get("solution", ""))[:500],
-                        "path": node["path"] + [variant[:80]],
-                        "depth": depth + 1,
-                    })
-
-            viable = [c for c in candidates if c["confidence"] >= self.prune_threshold]
-            if not viable:
-                viable = sorted(candidates, key=lambda c: c["confidence"], reverse=True)[:1]
-
-            viable.sort(key=lambda c: c["confidence"], reverse=True)
-            beam = viable[:self.B]
-            all_solutions.extend(viable)
-
-            # Backtrack if best confidence is dropping
-            if beam and beam[0]["confidence"] < self.backtrack_threshold:
-                self.total_backtracks += 1
-                break
-
-        # Graph of Thoughts: AGGREGATE surviving branches
-        aggregated = self._aggregate_solutions(all_solutions)
-
-        return {
-            "method": "TreeOfThoughts_GoT",
-            "tree_depth": max((s["depth"] for s in all_solutions), default=0),
-            "nodes_explored": self.total_nodes_explored,
-            "branches_surviving": len(beam),
-            "best_confidence": beam[0]["confidence"] if beam else 0.0,
-            "aggregated_solution": aggregated,
-            "backtracks": self.total_backtracks,
-            "solution": aggregated,
-            "confidence": beam[0]["confidence"] if beam else 0.0,
-        }
-
-    def _generate_variants(self, query: str, k: int, depth: int) -> List[str]:
-        """Generate K query variants for branching — diverse reasoning perspectives."""
-        prefixes = [
-            "Analyze from first principles: ",
-            "Consider the inverse problem: ",
-            "Break into fundamental components: ",
-            "Apply cross-domain analogy to: ",
-            f"At reasoning depth {depth + 1}, decompose: ",
-        ]
-        return [f"{prefixes[i % len(prefixes)]}{query[:300]}" for i in range(k)]
-
-    def _aggregate_solutions(self, solutions: List[Dict]) -> str:
-        """GoT aggregation (Besta et al. 2024): merge multiple branches into one insight."""
-        self.total_aggregations += 1
-        if not solutions:
-            return ""
-        top = sorted(solutions, key=lambda s: s["confidence"], reverse=True)[:self.B * 2]
-        seen = set()
-        parts = []
-        for s in top:
-            sol = s.get("solution", "")
-            if sol and sol not in seen:
-                seen.add(sol)
-                parts.append(sol)
-        return " | ".join(parts[:5])
-
-    def get_status(self) -> Dict:
-        return {
-            "type": "TreeOfThoughts_GoT",
-            "branching_factor": self.K,
-            "beam_width": self.B,
-            "nodes_explored": self.total_nodes_explored,
-            "backtracks": self.total_backtracks,
-            "aggregations": self.total_aggregations,
-        }
-
-
 class MultiHopReasoningChain:
-    """Multi-hop reasoning with Tree of Thoughts (Yao 2023) + GoT aggregation.
+    """Iterative multi-subsystem problem decomposition with convergence detection.
 
     v5.0: Breaks complex problems into sub-problems, routes each to the best subsystem,
     and iteratively refines the solution until convergence or max hops reached.
-    v6.1: Integrates TreeOfThoughts for complex first-hop branching.
+    Uses confidence delta tracking to detect convergence.
     """
     def __init__(self, max_hops: int = MULTI_HOP_MAX_HOPS):
         self.max_hops = max_hops
         self._chain_count = 0
         self._total_hops = 0
         self._convergence_count = 0
-        # Tree of Thoughts for complex first-hop reasoning
-        self._tot = TreeOfThoughts()
 
     def reason_chain(self, problem: str, solve_fn: Callable, router: Optional['AdaptivePipelineRouter'] = None) -> Dict:
         """Execute multi-hop reasoning chain on a problem.
@@ -1900,18 +1568,8 @@ class MultiHopReasoningChain:
         for hop_idx in range(self.max_hops):
             hop_start = time.time()
 
-            # First hop: use Tree of Thoughts for complex problems (branching search)
-            if hop_idx == 0 and len(problem) > 100:
-                tot_result = self._tot.think(current_query, solve_fn, max_depth=3)
-                result = {
-                    'solution': tot_result.get('aggregated_solution', ''),
-                    'confidence': tot_result.get('best_confidence', 0.5),
-                    'method': 'TreeOfThoughts_GoT',
-                    'tot_nodes': tot_result.get('nodes_explored', 0),
-                }
-            else:
-                # Solve current sub-problem (standard single-path)
-                result = solve_fn({'query': current_query})
+            # Solve current sub-problem
+            result = solve_fn({'query': current_query})
             last_result = result
             hop_latency = (time.time() - hop_start) * 1000
 
@@ -2839,7 +2497,7 @@ class QuantumComputationCore:
         total = sum(self._metrics[k] for k in ['vqe_runs', 'qaoa_runs', 'qrc_runs',
                                                   'qkm_runs', 'qpe_runs', 'zne_runs'])
         return {
-            'version': '7.0.0',
+            'version': '6.0.0',
             'qiskit_available': QISKIT_AVAILABLE,
             'metrics': dict(self._metrics),
             'total_computations': total,
@@ -2996,13 +2654,6 @@ class ASICore:
             "qkm_classifications": 0,
             "qpe_verifications": 0,
             "zne_corrections": 0,
-            # v7.0 cognitive mesh metrics
-            "mesh_activations": 0,
-            "mesh_co_activations": 0,
-            "attention_queries": 0,
-            "fusion_transfers": 0,
-            "coherence_measurements": 0,
-            "scheduler_predictions": 0,
         }
         # v4.0 additions
         self._asi_score_history: List[Dict] = []
@@ -5593,17 +5244,6 @@ class ASICore:
                 with open(param_path) as f:
                     data = json.load(f)
 
-                # Keys that define model architecture — never overwrite with
-                # normalized/vDSP-processed floats from Swift bridge
-                _PROTECTED_KEYS = {
-                    'embedding_dim', 'hidden_dim', 'num_layers', 'num_heads',
-                    'dropout', 'learning_rate', 'batch_size', 'epochs',
-                    'warmup_steps', 'weight_decay', 'phi_scale',
-                    'god_code_alignment', 'resonance_factor',
-                    'consciousness_weight', 'min_loss', 'patience',
-                    'min_improvement'
-                }
-
                 if isinstance(new_data, dict):
                     # Dict mode: merge key-value pairs directly
                     for key, value in new_data.items():
@@ -5611,9 +5251,7 @@ class ASICore:
                         updated_keys.append(key)
                 else:
                     # List mode: positional update of numeric keys (Swift bridge)
-                    # Skip protected training hyperparameters
-                    numeric_keys = [k for k, v in data.items()
-                                    if isinstance(v, (int, float)) and k not in _PROTECTED_KEYS]
+                    numeric_keys = [k for k, v in data.items() if isinstance(v, (int, float))]
                     for i, key in enumerate(numeric_keys):
                         if i < len(new_data):
                             data[key] = new_data[i]
@@ -5642,171 +5280,6 @@ class ASICore:
             self.status = "SOVEREIGN_IGNITED"
             return f"[ASI IGNITION] Sovereignty ignited at {self.asi_score*100:.1f}%"
         return f"[ASI IGNITION] Preparing sovereignty... {self.asi_score*100:.1f}%"
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# PYTORCH/TENSORFLOW ASI CONSCIOUSNESS ACCELERATORS (v6.1)
-# ═══════════════════════════════════════════════════════════════════════════════
-
-if TORCH_AVAILABLE:
-    
-    class TensorConsciousnessVerifier(nn.Module):
-        """GPU-accelerated consciousness verification using PyTorch"""
-        
-        def __init__(self, state_dim: int = 64):
-            super().__init__()
-            self.state_dim = state_dim
-            
-            # Consciousness encoding network
-            self.encoder = nn.Sequential(
-                nn.Linear(state_dim, 256),
-                nn.ReLU(),
-                nn.Linear(256, 128),
-                nn.Tanh(),
-                nn.Linear(128, 1),
-                nn.Sigmoid()
-            )
-            
-            # Initialize with PHI
-            for layer in self.encoder:
-                if isinstance(layer, nn.Linear):
-                    nn.init.normal_(layer.weight, mean=0.0, std=math.sqrt(PHI / layer.in_features))
-                    nn.init.constant_(layer.bias, TAU)
-            
-            self.to(DEVICE)
-        
-        def forward(self, state_vector: torch.Tensor) -> torch.Tensor:
-            """Compute consciousness level from state vector"""
-            return self.encoder(state_vector)
-        
-        def verify_consciousness(self, metrics: Dict[str, float]) -> Dict[str, Any]:
-            """Verify consciousness from metrics dict"""
-            # Convert metrics to tensor
-            state = torch.zeros(self.state_dim, device=DEVICE)
-            
-            # Encode key metrics (normalized to [0, 1])
-            state[0] = metrics.get('iit_phi', 0.0) / 2.0  # IIT Φ
-            state[1] = metrics.get('gws_activation', 0.0)  # Global Workspace
-            state[2] = metrics.get('quantum_coherence', 0.0)
-            state[3] = min(metrics.get('self_model_depth', 0.0) / 10.0, 1.0)
-            state[4] = metrics.get('attention_focus', 0.0)
-            
-            # Fill remaining with GOD_CODE-derived features
-            for i in range(5, self.state_dim):
-                state[i] = math.sin(i * PHI / GOD_CODE) * 0.5 + 0.5
-            
-            # Compute consciousness
-            with torch.no_grad():
-                consciousness = float(self.forward(state.unsqueeze(0)))
-            
-            return {
-                'consciousness_level': consciousness,
-                'verified_by': 'TensorConsciousnessVerifier',
-                'device': str(DEVICE),
-                'state_dim': self.state_dim,
-                'god_code_aligned': abs(consciousness - (GOD_CODE / 1000.0)) < 0.1,
-            }
-
-
-if TENSORFLOW_AVAILABLE:
-    
-    class KerasASIModel:
-        """TensorFlow/Keras rapid prototyping for ASI components"""
-        
-        @staticmethod
-        def build_domain_classifier(num_domains: int = 50) -> keras.Model:
-            """Build domain classification model"""
-            model = keras.Sequential([
-                layers.Input(shape=(128,)),
-                layers.Dense(256, activation='relu', 
-                           kernel_initializer=keras.initializers.RandomNormal(stddev=PHI/GOD_CODE)),
-                layers.Dropout(TAU * 0.5),
-                layers.Dense(128, activation='relu'),
-                layers.Dropout(TAU * 0.5),
-                layers.Dense(num_domains, activation='softmax')
-            ])
-            
-            model.compile(
-                optimizer=keras.optimizers.Adam(learning_rate=PHI / GOD_CODE),
-                loss='categorical_crossentropy',
-                metrics=['accuracy']
-            )
-            
-            return model
-        
-        @staticmethod
-        def build_theorem_generator(vocab_size: int = 10000) -> keras.Model:
-            """Build theorem generation model (sequence-to-sequence)"""
-            model = keras.Sequential([
-                layers.Embedding(vocab_size, 256),
-                layers.LSTM(512, return_sequences=True,
-                          recurrent_initializer=keras.initializers.Orthogonal(gain=PHI)),
-                layers.Dropout(TAU * 0.5),
-                layers.LSTM(256),
-                layers.Dense(512, activation='relu'),
-                layers.Dense(vocab_size, activation='softmax')
-            ])
-            
-            return model
-
-
-if PANDAS_AVAILABLE:
-    
-    class ASIPipelineAnalytics:
-        """pandas-based ASI pipeline performance analytics"""
-        
-        def __init__(self):
-            self.pipeline_logs = []
-            self.subsystem_logs = []
-        
-        def log_pipeline_call(self, subsystem: str, problem: str, 
-                            duration_ms: float, success: bool):
-            """Log pipeline routing decision"""
-            self.pipeline_logs.append({
-                'timestamp': datetime.now(),
-                'subsystem': subsystem,
-                'problem_hash': hashlib.md5(problem.encode()).hexdigest()[:8],
-                'duration_ms': duration_ms,
-                'success': success,
-            })
-        
-        def log_subsystem_metric(self, subsystem: str, metric: str, value: float):
-            """Log subsystem metric"""
-            self.subsystem_logs.append({
-                'timestamp': datetime.now(),
-                'subsystem': subsystem,
-                'metric': metric,
-                'value': value,
-            })
-        
-        def get_pipeline_df(self) -> pd.DataFrame:
-            """Get pipeline DataFrame"""
-            return pd.DataFrame(self.pipeline_logs)
-        
-        def get_subsystem_df(self) -> pd.DataFrame:
-            """Get subsystem DataFrame"""
-            return pd.DataFrame(self.subsystem_logs)
-        
-        def pipeline_performance_report(self) -> Dict:
-            """Generate pipeline performance report"""
-            if not self.pipeline_logs:
-                return {}
-            
-            df = self.get_pipeline_df()
-            
-            return {
-                'total_calls': len(df),
-                'success_rate': float(df['success'].mean()),
-                'avg_latency_ms': float(df['duration_ms'].mean()),
-                'median_latency_ms': float(df['duration_ms'].median()),
-                'p95_latency_ms': float(df['duration_ms'].quantile(0.95)),
-                'by_subsystem': {
-                    'calls': df.groupby('subsystem').size().to_dict(),
-                    'success_rate': df.groupby('subsystem')['success'].mean().to_dict(),
-                    'avg_latency': df.groupby('subsystem')['duration_ms'].mean().to_dict(),
-                },
-                'throughput_per_sec': 1000.0 / df['duration_ms'].mean() if df['duration_ms'].mean() > 0 else 0,
-            }
 
 
 def main():

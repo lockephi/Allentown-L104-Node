@@ -1,5 +1,5 @@
 """
-L104 Search & Data Precognition Engine v2.3 — Analytical Upgrade
+L104 Search & Data Precognition Engine v3.0 — Cross-Engine Integration
 ═══════════════════════════════════════════════════════════════════════════════
 Three-Engine + VQPU integrated search algorithms + predictive data precognition.
 VQPU quantum scoring is applied to EVERY operation — all 10 search strategies
@@ -69,11 +69,11 @@ Analytics:
     - PerformanceReport        — Full analytical report dataclass
     - RunHistory               — Cross-run accumulator for trend detection
 
-Version: 2.3.0  |  INVARIANT: 527.5184818492612  |  PILOT: LONDEL
+Version: 3.0.0  |  INVARIANT: 527.5184818492612  |  PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-__version__ = "2.3.0"
+__version__ = "3.0.0"
 
 from .search_algorithms import (
     QuantumGroverSearch,

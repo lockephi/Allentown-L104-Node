@@ -1,0 +1,259 @@
+{
+  "test_suite": "quantum_network_integration",
+  "version": "1.0.0",
+  "timestamp": 1773067473.3614972,
+  "total": 48,
+  "passed": 48,
+  "failed": 0,
+  "all_pass": true,
+  "elapsed_ms": 8296.52,
+  "tests": [
+    {
+      "test": "qubit_initialization",
+      "pass": true,
+      "elapsed_ms": 0.04
+    },
+    {
+      "test": "qubit_hadamard_gate",
+      "pass": true,
+      "elapsed_ms": 0.15
+    },
+    {
+      "test": "qubit_normalization",
+      "pass": true,
+      "elapsed_ms": 0.58
+    },
+    {
+      "test": "qubit_fidelity_measurement",
+      "pass": true,
+      "elapsed_ms": 0.04
+    },
+    {
+      "test": "qubit_sacred_score",
+      "pass": true,
+      "elapsed_ms": 0.02
+    },
+    {
+      "test": "qubit_to_dict",
+      "pass": true,
+      "elapsed_ms": 0.03
+    },
+    {
+      "test": "register_creation",
+      "pass": true,
+      "elapsed_ms": 0.06
+    },
+    {
+      "test": "register_max_qubits_cap",
+      "pass": true,
+      "elapsed_ms": 0.09
+    },
+    {
+      "test": "sacred_initialization",
+      "pass": true,
+      "elapsed_ms": 0.75
+    },
+    {
+      "test": "register_fidelity_check",
+      "pass": true,
+      "elapsed_ms": 0.45
+    },
+    {
+      "test": "register_recalibrate_if_needed",
+      "pass": true,
+      "elapsed_ms": 0.44
+    },
+    {
+      "test": "register_entangled_pair",
+      "pass": true,
+      "elapsed_ms": 0.3
+    },
+    {
+      "test": "register_get_qubit",
+      "pass": true,
+      "elapsed_ms": 0.03
+    },
+    {
+      "test": "channel_creation",
+      "pass": true,
+      "elapsed_ms": 0.03
+    },
+    {
+      "test": "channel_establishment",
+      "pass": true,
+      "elapsed_ms": 0.76
+    },
+    {
+      "test": "channel_god_code_phase",
+      "pass": true,
+      "elapsed_ms": 0.41
+    },
+    {
+      "test": "channel_purification",
+      "pass": true,
+      "elapsed_ms": 0.66
+    },
+    {
+      "test": "channel_teleportation",
+      "pass": true,
+      "elapsed_ms": 0.45
+    },
+    {
+      "test": "channel_decoherence",
+      "pass": true,
+      "elapsed_ms": 0.47
+    },
+    {
+      "test": "channel_to_dict",
+      "pass": true,
+      "elapsed_ms": 0.27
+    },
+    {
+      "test": "mesh_creation",
+      "pass": true,
+      "elapsed_ms": 0.01
+    },
+    {
+      "test": "mesh_add_nodes",
+      "pass": true,
+      "elapsed_ms": 1.59
+    },
+    {
+      "test": "mesh_add_duplicate_node",
+      "pass": true,
+      "elapsed_ms": 0.64
+    },
+    {
+      "test": "mesh_complete_graph_topology",
+      "pass": true,
+      "elapsed_ms": 5.72
+    },
+    {
+      "test": "mesh_remove_node",
+      "pass": true,
+      "elapsed_ms": 8.81
+    },
+    {
+      "test": "mesh_health_report",
+      "pass": true,
+      "elapsed_ms": 2.67
+    },
+    {
+      "test": "mesh_teleport",
+      "pass": true,
+      "elapsed_ms": 4.87
+    },
+    {
+      "test": "mesh_purify_all",
+      "pass": true,
+      "elapsed_ms": 3.45
+    },
+    {
+      "test": "mesh_decoherence_cycle",
+      "pass": true,
+      "elapsed_ms": 2.15
+    },
+    {
+      "test": "mesh_quick_status",
+      "pass": true,
+      "elapsed_ms": 1.78
+    },
+    {
+      "test": "mesh_persist_state",
+      "pass": true,
+      "elapsed_ms": 153.12
+    },
+    {
+      "test": "mesh_get_channel",
+      "pass": true,
+      "elapsed_ms": 1.89
+    },
+    {
+      "test": "god_code_resonance_286",
+      "pass": true,
+      "elapsed_ms": 0.01
+    },
+    {
+      "test": "void_constant_formula",
+      "pass": true,
+      "elapsed_ms": 0.0
+    },
+    {
+      "test": "fidelity_floor_derivation",
+      "pass": true,
+      "elapsed_ms": 0.0
+    },
+    {
+      "test": "god_code_phase_angle",
+      "pass": true,
+      "elapsed_ms": 0.0
+    },
+    {
+      "test": "iron_phase_angle_pi_over_2",
+      "pass": true,
+      "elapsed_ms": 0.0
+    },
+    {
+      "test": "micro_daemon_v3_import",
+      "pass": true,
+      "elapsed_ms": 0.01
+    },
+    {
+      "test": "micro_daemon_quantum_config",
+      "pass": true,
+      "elapsed_ms": 0.01
+    },
+    {
+      "test": "quantum_micro_tasks_callable",
+      "pass": true,
+      "elapsed_ms": 0.01
+    },
+    {
+      "test": "micro_daemon_quantum_init",
+      "pass": true,
+      "elapsed_ms": 351.81
+    },
+    {
+      "test": "micro_daemon_quantum_status",
+      "pass": true,
+      "elapsed_ms": 320.19
+    },
+    {
+      "test": "micro_daemon_self_test_15_probes",
+      "pass": true,
+      "elapsed_ms": 5528.73
+    },
+    {
+      "test": "micro_daemon_repr_quantum_tag",
+      "pass": true,
+      "elapsed_ms": 0.23
+    },
+    {
+      "test": "micro_daemon_force_tick_quantum",
+      "pass": true,
+      "elapsed_ms": 1902.78
+    },
+    {
+      "test": "package_level_exports",
+      "pass": true,
+      "elapsed_ms": 0.01
+    },
+    {
+      "test": "quantum_network_constants",
+      "pass": true,
+      "elapsed_ms": 0.0
+    },
+    {
+      "test": "fidelity_threshold_order",
+      "pass": true,
+      "elapsed_ms": 0.0
+    }
+  ],
+  "constants": {
+    "GOD_CODE": 527.5184818492612,
+    "PHI": 1.618033988749895,
+    "VOID_CONSTANT": 1.04161803398875,
+    "QPU_MEAN_FIDELITY": 0.9747593,
+    "FIDELITY_FLOOR": 0.6024343782500553
+  }
+}

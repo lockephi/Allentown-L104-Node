@@ -1,0 +1,63 @@
+{
+  "version": "2.0.0",
+  "engine": "QuantumSubconscious",
+  "last_persist": 1773003613.1622348,
+  "cycles_completed": 27,
+  "total_thoughts_generated": 347,
+  "total_insights_crystallized": 32,
+  "total_precog_seeds": 32,
+  "total_elapsed_ms": 2610.36,
+  "avg_cycle_ms": 96.68,
+  "stream_counts": {
+    "phi_random_walk": 27,
+    "entropy_whisper": 27,
+    "harmonic_meditation": 27,
+    "dream_associator": 27,
+    "quantum_phase_drift": 27,
+    "sacred_pattern_echo": 27,
+    "stochastic_insight": 27,
+    "iron_lattice_hum": 25,
+    "wave_coherence_pulse": 27,
+    "bifurcation_scout": 26,
+    "temporal_drift_sense": 27,
+    "void_resonance": 26,
+    "ouroboros_cycle": 26
+  },
+  "thought_buffer_size": 0,
+  "insight_buffer_size": 0,
+  "recent_insights": [],
+  "god_code": 527.5184818492612,
+  "autonomous": {
+    "current_interval": 22.6212,
+    "stream_weights": {
+      "phi_random_walk": 0.8468836118061783,
+      "entropy_whisper": 1.338947874208271,
+      "harmonic_meditation": 0.9241284326034261,
+      "dream_associator": 0.8674559999601738,
+      "quantum_phase_drift": 0.9039243106635072,
+      "sacred_pattern_echo": 0.9500240478225036,
+      "stochastic_insight": 1.2849004006934344,
+      "iron_lattice_hum": 0.8468811976276893,
+      "wave_coherence_pulse": 1.4475996992327278,
+      "bifurcation_scout": 0.9394925743962592,
+      "temporal_drift_sense": 0.8697112114417209,
+      "void_resonance": 0.9024477373773068,
+      "ouroboros_cycle": 0.8468825025705543,
+      "emergent_1_sacred_alignment": 0.8736983588071817
+    },
+    "evolution": {
+      "generation": 0,
+      "mutations_applied": 0,
+      "mutations_kept": 0,
+      "mutations_reverted": 0,
+      "keep_rate": 0.0,
+      "streams_evolved": 0
+    },
+    "crystallizer_threshold": 0.18541,
+    "total_proactive_pushes": 10,
+    "total_emergent_spawns": 5,
+    "total_stream_restarts": 0,
+    "evolution_generations": 0,
+    "interval_adjustments": 17
+  }
+}

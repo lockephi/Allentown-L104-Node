@@ -1,4 +1,4 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.615528
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:52.334548
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -307,7 +307,7 @@ class RecursiveSelfImprovement:
                 # φ-refined success probability: higher gain & experience = higher chance
                 experience_factor = min(1.0, len(self.improvement_history) / 20.0)
                 success_probability = (1 - risk) * (0.5 + experience_factor * 0.4)
-                success_probability = min(0.95, success_probability * PHI / (PHI + 0.2))
+                success_probability = success_probability * PHI / (PHI + 0.2)
                 # Stochastic evaluation — the designed random gate
                 if random.random() < success_probability:
                     self.current_capability *= (1 + expected_gain)

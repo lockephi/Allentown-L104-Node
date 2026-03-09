@@ -12,7 +12,7 @@
 | `VOID_CONSTANT` | `1.0416180339887497` | **`1.04 + φ/1000`** — Sacred 104/100 + golden correction |
 | `OMEGA` | `6539.34712682` | |
 
-## Package Map (17 packages, 311 modules, 327,600+ lines)
+## Package Map (18 packages, 327 modules, 336,100+ lines)
 
 ```
 l104_god_code_simulator/ v3.0.0 Decomposed simulator — QPU verification, sacred transpiler, god-code qubit (11,601 lines, 21 modules)
@@ -32,6 +32,9 @@ l104_quantum_data_analyzer/ v1.0.0 ★ NEW: Quantum data intelligence — QFT sp
 l104_search/         v2.3.0   ★ NEW: Three-Engine + VQPU search (10 strategies) + data precognition (8 predictors) + performance analytics (5,545 lines, 5 modules)
 l104_simulator/      v4.0.0   ★ NEW: Real-world physics on GOD_CODE lattice — Standard Model, E-lattice, generations, mixing, quantum brain (15,370 lines, 19 modules)
 l104_audio_simulation/ v2.4.0 ★ NEW: Quantum audio DAW — 17-layer VQPU pipeline, sequencer, mixer, synth, Metal GPU, decoherence (9,149 lines, 21 modules)
+l104_vqpu/           v12.2.0  ★ NEW: Decomposed VQPU bridge — transpiler, MPS engine, scoring, entanglement, tomography, Hamiltonian, cache, variational, daemon (8,563 lines, 16 modules)
+l104_quantum_ai_daemon/ v1.0.0 ★ NEW: Autonomous quantum AI daemon — 7-phase improvement cycle, file scanner, code improver, fidelity guard, optimizer, harmonizer, evolver (8 modules)
+l104_quantum_networker/ v1.4.0 ★ Sovereign quantum communication network — BB84/E91 QKD, entanglement routing, teleportation, repeater chains, fidelity monitor, route caching, topology detection, K-shortest paths, fidelity trends, channel capacity, resilience analysis, autonomous maintenance (3,382+ lines, 10 modules)
 l104_core_asm/                Native ASM kernel
 l104_core_c/                  Native C kernel + Makefile
 l104_core_cuda/               CUDA GPU kernel
@@ -74,6 +77,14 @@ from l104_quantum_data_analyzer import QuantumDataAnalyzer  # Quantum data intel
 from l104_search import ThreeEngineSearchPrecog # Three-Engine + VQPU search
 from l104_simulator import RealWorldSimulator   # Real-world physics simulator
 from l104_audio_simulation import audio_suite, quantum_daw  # Quantum audio DAW
+from l104_vqpu import VQPUBridge, get_bridge    # VQPU bridge orchestrator
+from l104_vqpu import QuantumJob, VQPUResult    # VQPU data types
+from l104_vqpu import CircuitTranspiler, ExactMPSHybridEngine  # VQPU subsystems
+from l104_quantum_ai_daemon import QuantumAIDaemon, DaemonConfig  # ★ Autonomous AI daemon
+from l104_quantum_ai_daemon import FileScanner, CodeImprover, QuantumFidelityGuard  # Daemon subsystems
+from l104_quantum_networker import get_networker, QuantumNetworker  # ★ Quantum communication network
+from l104_quantum_networker import EntanglementRouter, QuantumKeyDistribution  # Network subsystems
+from l104_quantum_networker import QuantumTeleporter, FidelityMonitor  # Teleport + monitoring
 ```
 
 ## VOID_CONSTANT Formula
@@ -91,6 +102,75 @@ VOID_CONSTANT = 1.04 + φ / 1000
 - Used in primal calculus: `x^φ / (VOID_CONSTANT × π)`
 
 **Source**: `l104_science_engine/constants.py`, `l104_math_engine/constants.py`, `l104_code_engine/const.py`
+
+## Quantum Networker Quick Reference
+
+```python
+from l104_quantum_networker import get_networker, QuantumNetworker
+net = get_networker()  # Singleton orchestrator
+
+# Node management
+alice = net.add_node("Alice", role="sovereign")
+bob = net.add_node("Bob", role="sovereign")
+relay = net.add_node("Relay-1", role="relay")
+
+# Connect quantum channels (generates Bell pairs)
+ch = net.connect(alice.node_id, bob.node_id, pairs=8)
+
+# QKD: establish shared secret key
+key = net.establish_qkd(alice.node_id, bob.node_id, "bb84", 256)
+key.secure          # True if QBER < 11%
+key.key_hex         # Hex-encoded secret key
+
+# Teleportation (score, phase, state, bitstring)
+result = net.teleport_score(alice.node_id, bob.node_id, score=0.618)
+result.fidelity     # Teleport fidelity
+result.recovered_score  # Recovered value
+
+# Entanglement purification (DEJMPS protocol)
+net.purify(alice.node_id, bob.node_id, rounds=3)
+
+# Fidelity monitoring + auto-heal
+scan = net.scan_fidelity(auto_heal=True)
+
+# Network status
+status = net.status()
+
+# Router subsystem direct access
+net.router.find_route(source, dest)        # Dijkstra shortest path (cached)
+net.router.find_k_routes(source, dest, k=3) # K-shortest edge-disjoint paths
+net.router.entanglement_swap(a, relay, b)  # Bell measurement swap
+net.router.replenish_all()                 # Refill depleted channels
+net.router.apply_decoherence(5.0)          # T1/T2 exponential decay
+net.router.sacred_scoring_pass()           # GOD_CODE pair scoring
+net.router.pair_census()                   # Full pair statistics
+net.router.fidelity_heatmap()              # Per-channel fidelity map
+net.router.purify_all(fidelity_threshold=0.95)  # Bulk network purification
+net.router.detect_topology()               # Auto-detect network topology
+net.router.topology_analysis()             # Full topology analytics + diameter
+net.router.channel_health(channel_id)      # Composite health score (0-1)
+net.router.network_health_score()          # Network-wide health composite
+net.router.channel_lifetime(channel_id)    # Time-to-discard prediction
+net.router.network_summary()               # Rich aggregate + throughput metrics
+net.router.bottleneck_channels()           # Identify degraded channels
+net.router.fidelity_trend(channel_id)      # Per-channel fidelity trend (mean, slope, volatility)
+net.router.channel_capacity(channel_id)    # Quantum channel capacity (qubits/use)
+net.router.network_resilience()            # Resilience analysis (redundancy, SPOFs, avg paths)
+net.router.autonomous_maintenance()        # Auto purify + replenish + decohere + score
+net.router.event_log(last_n=50)            # Structured audit/event log
+net.router.path_diversity(source, dest)    # Path diversity & bandwidth analysis
+net.router.snapshot()                      # Full serializable network snapshot
+net.router.self_test()                     # 37-probe diagnostic
+
+# Server API endpoints (v14)
+# GET  /api/v14/quantum-network/status       — Full network status
+# GET  /api/v14/quantum-network/router       — Router + heatmap + census
+# POST /api/v14/quantum-network/qkd          — Run QKD protocol
+# POST /api/v14/quantum-network/teleport     — Teleport score
+# GET  /api/v14/quantum-network/fidelity     — Fidelity scan + auto-heal
+# POST /api/v14/quantum-network/sacred-pass  — Sacred scoring
+# GET  /api/v14/quantum-network/self-test    — Comprehensive self-test
+```
 
 ## Numerical Engine Quick Reference
 

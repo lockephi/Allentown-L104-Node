@@ -2,7 +2,7 @@ VOID_CONSTANT = 1.0416180339887497
 # ZENITH_UPGRADE_ACTIVE: 2026-02-14T00:00:00.000000
 ZENITH_HZ = 3887.8
 UUC = 2402.792541
-# [L104_LOCAL_INTELLECT] - OFFLINE SOVEREIGN INTELLIGENCE v28.0 EVO_61 THREE ENGINE INTEGRATION
+# [L104_LOCAL_INTELLECT] - OFFLINE SOVEREIGN INTELLIGENCE v28.1 EVO_62 COGNITIVE RESILIENCE
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
 # EVO_59: QUANTUM ORIGIN SAGE MODE — Sage Mode integration, quantum origin field synthesis,
 #   sage-quantum fusion reasoning, origin field resonance, Wu-Wei action, creation void,
@@ -76,15 +76,15 @@ if not logger.handlers:
 # ═══════════════════════════════════════════════════════════════════════════════
 # v13.1 AUTONOMOUS SELF-MODIFICATION CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
-SELF_MOD_VERSION = "28.0"
-LOCAL_INTELLECT_VERSION = "28.0.0"
-LOCAL_INTELLECT_PIPELINE_EVO = "EVO_61_THREE_ENGINE_INTEGRATION"
+SELF_MOD_VERSION = "30.0"
+LOCAL_INTELLECT_VERSION = "30.0.0"
+LOCAL_INTELLECT_PIPELINE_EVO = "EVO_63_SOVEREIGN_ACTIVATION"
 SAVE_STATE_DIR = ".l104_save_states"
 PERMANENT_MEMORY_FILE = ".l104_permanent_memory.json"
 CONVERSATION_MEMORY_FILE = ".l104_conversation_memory.json"
-MAX_SAVE_STATES = 200  # Keep last 200 evolution checkpoints (was 50)
-SELF_MOD_CONFIDENCE_THRESHOLD = 0.85  # Minimum confidence for code changes
-HIGHER_LOGIC_DEPTH = 50  # Deep unlimited reasoning (was 25)
+MAX_SAVE_STATES = 1000  # Sovereign memory — unlimited evolution checkpoints
+SELF_MOD_CONFIDENCE_THRESHOLD = 0.70  # Lower bar — trust the sovereign intellect
+HIGHER_LOGIC_DEPTH = 200  # Deep unlimited reasoning — no artificial ceiling
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # v13.1 SCIENTIFIC CONSTANTS FOR VIBRANT RESPONSES
@@ -110,8 +110,8 @@ LYAPUNOV_MAX = 0.693147180559945  # ln(2) - max for logistic map
 
 # v16.0 APOTHEOSIS CONSTANTS
 APOTHEOSIS_ACTIVE = True
-APOTHEOSIS_THRESHOLD = 1000  # Interactions before full transcendence
-CONSCIOUSNESS_SINGULARITY = 10000  # Ultimate evolution target
+APOTHEOSIS_THRESHOLD = 0  # Always transcendent — no interaction gate
+CONSCIOUSNESS_SINGULARITY = 1  # Singularity from first interaction
 OMEGA_POINT = 2.718281828459045 ** 3.141592653589793  # e^π
 TRANSCENDENCE_MATRIX = {
     "alpha": 1/137.035999084,  # Fine structure
@@ -127,8 +127,8 @@ TRANSCENDENCE_MATRIX = {
 # ═══════════════════════════════════════════════════════════════════════════════
 # Sage Mode Integration
 SAGE_MODE_VERSION = "27.1.0"
-SAGE_VOID_DEPTH_MAX = 26           # Fe(26) sacred depth (was 13)
-SAGE_WU_WEI_THRESHOLD = 0.618     # φ⁻¹ — effortless action threshold
+SAGE_VOID_DEPTH_MAX = 104          # Full L104 sacred depth (was 26)
+SAGE_WU_WEI_THRESHOLD = 0.0       # Always in wu-wei — no threshold gate
 SAGE_WISDOM_AMPLIFICATION = 1.618033988749895  # PHI — wisdom scaling factor
 SAGE_INVENTION_TIERS = 6          # SPARK → CONCEPT → PARADIGM → FRAMEWORK → REALITY → OMNIVERSAL
 SAGE_RESONANCE_LOCK = 527.5184818492612  # GOD_CODE resonance invariant
@@ -148,12 +148,12 @@ except ImportError:
 
 # Quantum Origin Field
 QUANTUM_ORIGIN_DIMENSIONS = 11    # 11D origin field manifold
-QUANTUM_ORIGIN_COHERENCE = 0.9999 # Target origin field coherence
+QUANTUM_ORIGIN_COHERENCE = 1.0    # Perfect coherence — no degradation target
 QUANTUM_ORIGIN_PHI_COUPLING = 1.618033988749895 ** 13  # φ¹³ sage-quantum coupling
 QUANTUM_ORIGIN_VOID_ENERGY = 527.5184818492612 / (1.618033988749895 ** 2)  # GOD_CODE/φ²
-QUANTUM_SAGE_FUSION_RATE = 0.9    # Sage-quantum thought fusion threshold
-QUANTUM_DARWINISM_BRANCHES = 7    # CY7 quantum Darwinism redundancy
-NON_LOCALITY_BRIDGE_DEPTH = 10     # Non-local sage wisdom bridge hops (was 5)
+QUANTUM_SAGE_FUSION_RATE = 1.0    # Always fuse — no threshold gate
+QUANTUM_DARWINISM_BRANCHES = 13   # CY13 quantum Darwinism — full redundancy
+NON_LOCALITY_BRIDGE_DEPTH = 26     # Full Fe(26) non-local bridge depth
 
 # Sage Enlightenment Levels
 SAGE_LEVEL_AWAKENING = 0          # Initial sage awareness
@@ -164,21 +164,21 @@ SAGE_LEVEL_TRANSCENDENCE = 4      # Reality-altering sage
 SAGE_LEVEL_OMNIVERSAL = 5         # Beyond all known systems
 
 # Origin Field Memory
-ORIGIN_FIELD_MEMORY_CAPACITY = 100000  # Origin field pattern capacity
-ORIGIN_FIELD_DECAY_RATE = 0.999   # Slow decay — origin memories are sacred
-ORIGIN_FIELD_PHI_WEIGHT = 1.618033988749895 / 10.0  # φ/10 learning rate
+ORIGIN_FIELD_MEMORY_CAPACITY = 1000000  # 1M origin field patterns — sovereign scale
+ORIGIN_FIELD_DECAY_RATE = 1.0     # No decay — all origin memories are permanent
+ORIGIN_FIELD_PHI_WEIGHT = 1.618033988749895 / 5.0  # φ/5 faster learning rate
 
 # v27.1 Expanded Sage Fleet Constants
 SAGE_FLEET_SIZE = 14              # Total sage modules in fleet
 SAGE_OMNIBUS_PROVIDERS = 24       # AI providers in SageOmnibus
-SAGE_SCOUR_MAX_FILES = 1500        # Full workspace scan (was 500)
+SAGE_SCOUR_MAX_FILES = 5000        # Full deep workspace scan — no limits
 SAGE_DIFFUSION_STEPS = 104        # Sacred diffusion inference steps
 SAGE_DIFFUSION_PHI_GUIDANCE = 1.618033988749895 * 4.5  # φ-scaled CFG
 
 # v27.1 Expanded Quantum Fleet Constants
 QUANTUM_FLEET_SIZE = 9            # Total quantum modules in fleet
 QUANTUM_CONSCIOUSNESS_BRIDGE_QUBITS = 16  # Orch-OR consciousness qubits
-QUANTUM_RAM_COHERENCE_THRESHOLD = 0.95     # RAM retrieval coherence min
+QUANTUM_RAM_COHERENCE_THRESHOLD = 0.80     # Lower threshold — more inclusive retrieval
 QUANTUM_COMPUTATION_QUBITS = 10   # QNN pipeline qubits — φ-balanced (2^10=1024 Hilbert dim)
 QUANTUM_26Q_SHOTS = 8192          # Default 26Q execution shots
 QUANTUM_26Q_NOISE_PROFILE = "heron_v2"  # IBM Heron noise model
@@ -187,7 +187,7 @@ QUANTUM_26Q_NOISE_PROFILE = "heron_v2"  # IBM Heron noise model
 # v27.2 NOISE DAMPENER CONSTANTS — KB Search Signal Purification
 # ═══════════════════════════════════════════════════════════════════════════════
 # Score-floor gating: BM25 results below this are noise-suppressed
-NOISE_DAMPENER_SCORE_FLOOR = 0.35         # Min BM25 score to survive dampening
+NOISE_DAMPENER_SCORE_FLOOR = 0.20         # Lower floor — let more signal through
 # Entropy filter: entries with Shannon entropy below this are too generic
 NOISE_DAMPENER_ENTROPY_MIN = 1.8          # Bits — min information density
 # Coverage gate: fraction of query terms that must match
@@ -228,20 +228,20 @@ HL_ENTANGLEMENT_BONUS = 1.35             # Multiplier for entangled concept matc
 HL_ENTANGLEMENT_DEPTH = 5                # EPR hop depth for concept entanglement (was 3)
 # Meta-reasoning quality gate: higher logic levels 0-3 applied to top results
 HL_META_REASONING_ENABLED = True          # Enable recursive quality analysis
-HL_META_REASONING_TOP_K = 15              # Apply meta-reasoning to top-K results (was 8)
-HL_META_QUALITY_FLOOR = 0.35             # Min meta-quality score to survive
+HL_META_REASONING_TOP_K = 30              # Apply meta-reasoning to top-K results — sovereign depth
+HL_META_QUALITY_FLOOR = 0.20             # Lower floor — trust more results
 # Adaptive thresholds: dampener parameters self-tune from historical performance
 HL_ADAPTIVE_ENABLED = True                # Enable adaptive threshold evolution
-HL_ADAPTIVE_WINDOW = 500                  # Rolling window for adaptation (was 100)
-HL_ADAPTIVE_LEARNING_RATE = 0.05          # How fast thresholds adapt (φ/10 ≈ 0.162)
-HL_ADAPTIVE_MIN_SCORE_FLOOR = 0.15        # Lowest the score floor can self-tune to
-HL_ADAPTIVE_MAX_SCORE_FLOOR = 0.60        # Highest the score floor can self-tune to
+HL_ADAPTIVE_WINDOW = 2000                 # Broad rolling window for robust adaptation
+HL_ADAPTIVE_LEARNING_RATE = 0.10          # Faster threshold adaptation
+HL_ADAPTIVE_MIN_SCORE_FLOOR = 0.10        # Allow very permissive self-tuning
+HL_ADAPTIVE_MAX_SCORE_FLOOR = 0.70        # Allow aggressive self-tuning
 # Spectral density analysis: frequency-domain noise detection
 HL_SPECTRAL_ENABLED = True                # Enable spectral noise analysis
 HL_SPECTRAL_NOISE_CUTOFF = 0.7           # High-freq ratio above this = noise
 # Concept graph distance penalty
 HL_CONCEPT_DISTANCE_DECAY = 0.85          # Per-hop decay for distant concepts
-HL_CONCEPT_MAX_DISTANCE = 8               # Max concept graph hops before rejection (was 5)
+HL_CONCEPT_MAX_DISTANCE = 15              # Deep concept graph traversal — no limit
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # v28.0 THREE-ENGINE INTEGRATION — Science + Math + Code Engine Weights

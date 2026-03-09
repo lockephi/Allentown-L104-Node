@@ -386,28 +386,16 @@ class AdaptiveSimulator:
             gate_count += 1
 
         # Sample measurements
+        # Build the post-circuit tableau ONCE (circuit application is deterministic;
+        # only measurement is random), then clone its internal array for each shot.
+        # This reduces complexity from O(shots × gates) to O(gates + shots).
         rng = np.random.default_rng()
         shots = 10000
         counts: Dict[str, int] = {}
         for _ in range(shots):
-            tab_copy = StabilizerTableau(n)
-            # Re-run (stabilizer measurement is destructive)
-            for op in circuit.operations:
-                if hasattr(op, 'label') and op.label == "BARRIER":
-                    continue
-                name = op.gate.name.upper()
-                qubits = list(op.qubits)
-                if name in ('I', 'IDENTITY'): pass
-                elif name == 'X': tab_copy.x_gate(qubits[0])
-                elif name == 'Y': tab_copy.y_gate(qubits[0])
-                elif name == 'Z': tab_copy.z_gate(qubits[0])
-                elif name == 'H': tab_copy.hadamard(qubits[0])
-                elif name in ('S', 'S_GATE'): tab_copy.s_gate(qubits[0])
-                elif name in ('SDG', 'S_DAG'): tab_copy.s_dagger(qubits[0])
-                elif name in ('CNOT', 'CX'): tab_copy.cnot(qubits[0], qubits[1])
-                elif name == 'CZ': tab_copy.cz(qubits[0], qubits[1])
-                elif name == 'SWAP': tab_copy.swap(qubits[0], qubits[1])
-
+            tab_copy = StabilizerTableau.__new__(StabilizerTableau)
+            tab_copy.n = tab.n
+            tab_copy.tab = tab.tab.copy()
             outcome = tab_copy.measure_all(rng)
             counts[outcome] = counts.get(outcome, 0) + 1
 

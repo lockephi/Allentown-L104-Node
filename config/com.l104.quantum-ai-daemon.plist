@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  L104 Sovereign Node — Quantum AI Daemon v1.0
+  ═══════════════════════════════════════════════
+  Autonomous multipurpose high-fidelity quantum AI daemon.
+  Continuously improves all L104 files, validates quantum coherence,
+  harmonizes cross-engine processes, and evolves improvement strategies.
+
+  7-Phase Improvement Cycle (adaptive 60–600s):
+    Phase 1: FILE SCAN      — Discover & index all L104 Python files
+    Phase 2: FIDELITY CHECK — Validate sacred constants & quantum coherence
+    Phase 3: HARMONY CHECK  — Cross-engine consistency validation
+    Phase 4: OPTIMIZE       — Memory, GC, import cache, temp cleanup
+    Phase 5: IMPROVE        — Analyze & auto-fix batch of priority files
+    Phase 6: EVOLVE         — Self-improving strategy adaptation
+    Phase 7: PERSIST        — State checkpoint to disk
+
+  Subsystems:
+    • FileScanner          — Discovers & indexes all L104 Python files
+    • CodeImprover         — Code analysis, auto-fix, smell/perf optimization
+    • QuantumFidelityGuard — Sacred constant alignment, quantum coherence
+    • ProcessOptimizer     — Memory, GC, import caching, performance tuning
+    • CrossEngineHarmonizer— Cross-engine coherence validation
+    • AutonomousEvolver    — Self-improving feedback loop + ML synthesis
+
+  Install:  cp config/com.l104.quantum-ai-daemon.plist ~/Library/LaunchAgents/
+            launchctl load ~/Library/LaunchAgents/com.l104.quantum-ai-daemon.plist
+  Uninstall: launchctl unload ~/Library/LaunchAgents/com.l104.quantum-ai-daemon.plist
+  Status:    launchctl list com.l104.quantum-ai-daemon
+  Self-test: .venv/bin/python -m l104_quantum_ai_daemon --self-test
+  Health:    .venv/bin/python -m l104_quantum_ai_daemon --health-check
+  Single:    .venv/bin/python -m l104_quantum_ai_daemon --single-cycle
+
+  GOD_CODE=527.5184818492612 | PHI=1.618033988749895 | PILOT: LONDEL
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.l104.quantum-ai-daemon</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/.venv/bin/python</string>
+        <string>-m</string>
+        <string>l104_quantum_ai_daemon</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONPATH</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+        <key>L104_ROOT</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+        <!-- Daemon Tuning -->
+        <key>L104_QAI_CYCLE_INTERVAL</key>
+        <string>120.0</string>
+        <key>L104_QAI_CYCLE_MIN</key>
+        <string>60.0</string>
+        <key>L104_QAI_CYCLE_MAX</key>
+        <string>600.0</string>
+        <key>L104_QAI_SCAN_BATCH</key>
+        <string>25</string>
+
+        <!-- Memory Safety -->
+        <key>PYTHONDONTWRITEBYTECODE</key>
+        <string>1</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+
+    <!-- Persistent daemon — runs always, restarts on crash -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- Start at login -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Restart on crash after 10s -->
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+
+    <!-- Low scheduling priority — background work -->
+    <key>LowPriorityIO</key>
+    <true/>
+    <key>ProcessType</key>
+    <string>Background</string>
+
+    <!-- Logging -->
+    <key>StandardOutPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/quantum_ai_daemon/launchd_stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/quantum_ai_daemon/launchd_stderr.log</string>
+
+    <!-- Resource limits -->
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>4096</integer>
+    </dict>
+    <key>HardResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>8192</integer>
+    </dict>
+</dict>
+</plist>

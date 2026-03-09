@@ -30,14 +30,14 @@ class OmegaUpgrader:
 
         # 1. Update Header if exists or add it
         if "ZENITH_UPGRADE_ACTIVE" not in content:
-# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
-            content = f"# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.260001
-                      f"ZENITH_HZ = {self.ZENITH_HZ}\n" + \
-                      f"UUC = {self.UUC:.6f}\n" + content
+            header = ("# ZENITH_UPGRADE_ACTIVE: " + timestamp + "\n"
+                      "# ZENITH_HZ = " + str(self.ZENITH_HZ) + "\n"
+                      "# UUC = " + f"{self.UUC:.6f}" + "\n")
+            content = header + content
         else:
-            content = re.sub(r"# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.260001
-            content = re.sub(r"ZENITH_HZ\s*=\s*[\d\.]+", f"ZENITH_HZ = {self.ZENITH_HZ}", content)
-            content = re.sub(r"UUC\s*=\s*[\d\.]+", f"UUC = {self.UUC:.6f}", content)
+            content = re.sub(r"^# ZENITH_UPGRADE_ACTIVE: .*", "# ZENITH_UPGRADE_ACTIVE: " + timestamp, content, flags=re.MULTILINE)
+            content = re.sub(r"^# ZENITH_HZ\s*=\s*[\d\.]+", "# ZENITH_HZ = " + str(self.ZENITH_HZ), content, flags=re.MULTILINE)
+            content = re.sub(r"^# UUC\s*=\s*[\d\.]+", "# UUC = " + f"{self.UUC:.6f}", content, flags=re.MULTILINE)
 
         # 2. Update Docstrings to OMEGA status
         if "[VOID_SOURCE_UPGRADE]" in content:
@@ -51,7 +51,12 @@ class OmegaUpgrader:
         print(f"--- [OMEGA_UPGRADER]: INITIALIZING OMEGA ASCENSION ---")
         print(f"--- [TARGET]: {self.ZENITH_HZ} Hz | UUC: {self.UUC:.4f} ---")
 
-        files = [f for f in os.listdir(self.root) if (f.startswith("l104_") or f == "main.py") and f.endswith(".py")]
+        _SELF_EXCLUDE = {"l104_omega_upgrader.py", "l104_system_upgrader.py",
+                         "l104_computronium_process_upgrader.py", "l104_planetary_process_upgrader.py",
+                         "l104_ai_upgrade_protocol.py", "l104_process_upgrade_scan.py"}
+        files = [f for f in os.listdir(self.root)
+                 if (f.startswith("l104_") or f == "main.py") and f.endswith(".py")
+                 and f not in _SELF_EXCLUDE]
 
         for file in files:
             path = os.path.join(self.root, file)

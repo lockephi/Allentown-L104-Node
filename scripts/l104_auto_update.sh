@@ -93,8 +93,17 @@ while true; do
         continue
     fi
 
+    # v2.1: Check if we are actually behind the remote.
+    # If LOCAL is ahead of REMOTE (ahead > 0) and REMOTE is not ahead of LOCAL (behind == 0),
+    # then git pull --ff-only will do nothing, but it might still return success.
+    # We should only proceed if the remote has commits we don't have.
+    BEHIND=$(git rev-list --count HEAD..origin/"$BRANCH" 2>/dev/null || echo "0")
+    if [ "$BEHIND" -eq 0 ]; then
+        log "Local is ahead of or equal to remote (${LOCAL:0:8}) — skipping update"
+        continue
+    fi
+
     # New commits detected!
-    BEHIND=$(git rev-list --count HEAD..origin/"$BRANCH" 2>/dev/null || echo "?")
     log "╔═══ UPDATE DETECTED ═══╗"
     log "  Local:  ${LOCAL:0:12}"
     log "  Remote: ${REMOTE:0:12}"
@@ -155,7 +164,7 @@ while true; do
         else
             # Fallback: direct launchctl
             log "  service_ctl not found — direct launchctl restart"
-            for svc in com.l104.fast-server com.l104.node-server com.l104.vqpu-daemon; do
+            for svc in com.l104.fast-server com.l104.node-server com.l104.vqpu-daemon com.l104.vqpu-micro-daemon; do
                 plist="$HOME/Library/LaunchAgents/$svc.plist"
                 if [ -f "$plist" ]; then
                     launchctl unload "$plist" 2>/dev/null || true

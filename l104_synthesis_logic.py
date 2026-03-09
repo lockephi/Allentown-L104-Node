@@ -25,7 +25,7 @@ from pathlib import Path
 from collections import deque, defaultdict
 from typing import Dict, List, Any, Optional, Tuple
 
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.512314
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:54.622625
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 
@@ -133,7 +133,7 @@ class EntropyFuser:
         avg_entropy = total_entropy / n_channels
 
         # PHI-weighted fusion score: higher entropy diversity = richer synthesis
-        fusion_score = min(1.0, avg_entropy / math.log2(10) * PHI)
+        fusion_score = avg_entropy / math.log2(10) * PHI
 
         return {
             'channels': n_channels,

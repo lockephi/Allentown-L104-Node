@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/carolalvarez/Applications/Allentown-L104-Node/l104_ml_engine/knowledge_synthesis.py", line 21, in <module>
+    from .constants import (
+ImportError: attempted relative import with no known parent package

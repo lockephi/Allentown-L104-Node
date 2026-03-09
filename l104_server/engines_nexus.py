@@ -4443,6 +4443,15 @@ class UnifiedEngineRegistry:
         'reinforcement': 1.0,
         # v4.0+ tri-engine
         'tri_engine': PHI * PHI,           # φ² = 2.618 — cross-engine integration hub
+        # v4.2+ cross-package engines
+        'ml_engine': PHI,                  # φ — ML/inference
+        'quantum_data_analyzer': PHI,      # φ — quantum data intelligence
+        'simulator': 1.0,                  # real-world physics
+        'audio_simulation': 1.0,           # quantum DAW
+        'search_precog': PHI,              # φ — search + precognition
+        'numerical_engine': 1.0,           # numerical builder
+        'gate_engine': 1.0,               # logic gate builder
+        'quantum_engine': PHI,             # φ — quantum brain
     }
 
     def __init__(self):
@@ -4595,5 +4604,48 @@ if _dual_layer_ref is not None:
     engine_registry.register('dual_layer', _dual_layer_ref)
 # Register Tri-Engine Integration hub — Science + Math + Code
 engine_registry.register('tri_engine', tri_engine)
+
+# ★ v4.2+ Register cross-package engines (lazy, graceful degradation)
+try:
+    from l104_ml_engine import ml_engine as _ml_engine_ref
+    engine_registry.register('ml_engine', _ml_engine_ref)
+except ImportError:
+    pass
+try:
+    from l104_quantum_data_analyzer import QuantumDataAnalyzer as _QDA
+    engine_registry.register('quantum_data_analyzer', _QDA())
+except ImportError:
+    pass
+try:
+    from l104_simulator import RealWorldSimulator as _RWS
+    engine_registry.register('simulator', _RWS())
+except ImportError:
+    pass
+try:
+    from l104_audio_simulation import quantum_daw as _qdaw_ref
+    engine_registry.register('audio_simulation', _qdaw_ref)
+except ImportError:
+    pass
+try:
+    from l104_search import ThreeEngineSearchPrecog as _TESP
+    engine_registry.register('search_precog', _TESP())
+except ImportError:
+    pass
+try:
+    from l104_numerical_engine import QuantumNumericalBuilder as _QNB
+    engine_registry.register('numerical_engine', _QNB())
+except ImportError:
+    pass
+try:
+    from l104_gate_engine import HyperASILogicGateEnvironment as _HALE
+    engine_registry.register('gate_engine', _HALE(auto_sync=False))
+except ImportError:
+    pass
+try:
+    from l104_quantum_engine import quantum_brain as _qbrain_ref
+    engine_registry.register('quantum_engine', _qbrain_ref)
+except ImportError:
+    pass
+
 logger.info(f"🔧 [REGISTRY] Unified Engine Registry: {len(engine_registry.engines)} engines, φ-weighted health active, Dual-Layer Flagship: {'ACTIVE' if _dual_layer_ref else 'UNAVAILABLE'}, Tri-Engine: ACTIVE")
 

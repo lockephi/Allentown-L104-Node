@@ -457,9 +457,10 @@ class GateCompiler:
         result = GateCircuit(circuit.num_qubits, circuit.name)
         ops = list(circuit.operations)
 
-        # Simple bubble-pass: swap adjacent commuting gates if it enables cancellation
+        # Bubble-pass: swap adjacent commuting gates if it enables cancellation
+        # Adaptive pass count: scale with circuit size for large circuits
         changed = True
-        max_passes = 8
+        max_passes = max(8, min(32, len(ops) // 10))
         current_pass = 0
         while changed and current_pass < max_passes:
             changed = False
@@ -596,12 +597,43 @@ class GateCompiler:
                 # Analyze via KAK
                 kak = GateAlgebra.kak_decompose(op.gate.matrix)
                 if kak["is_product_gate"]:
-                    # No entanglement needed — decompose to local gates
-                    # (simplified: just use the original gate as overhead is minimal)
-                    result.append(op.gate, op.qubits)
+                    # No entanglement needed — decompose to two local unitaries
+                    try:
+                        U = op.gate.matrix
+                        # SVD to extract local factors: U ≈ (A⊗B)
+                        U_reshaped = U.reshape(2, 2, 2, 2).transpose(0, 2, 1, 3).reshape(4, 4)
+                        # For product gates, use before_a and before_b from KAK
+                        A = kak.get("before_a", np.eye(2, dtype=complex))
+                        B = kak.get("before_b", np.eye(2, dtype=complex))
+                        if not np.allclose(A, np.eye(2), atol=1e-10):
+                            u3_a = U3(*GateAlgebra.zyz_decompose(A)[:3])
+                            result.append(u3_a, (op.qubits[0],), label="kak_local_a")
+                        if not np.allclose(B, np.eye(2), atol=1e-10):
+                            u3_b = U3(*GateAlgebra.zyz_decompose(B)[:3])
+                            result.append(u3_b, (op.qubits[1],), label="kak_local_b")
+                    except Exception:
+                        result.append(op.gate, op.qubits)
                 elif kak["equivalent_cnot_count"] < self._count_cnots_in_gate(op.gate):
-                    # Re-synthesis would reduce CNOT count
-                    result.append(op.gate, op.qubits)  # Preserve for now
+                    # KAK says fewer CNOTs suffice — emit optimal CNOT + local gates
+                    try:
+                        cx_count = kak["equivalent_cnot_count"]
+                        A_before = kak.get("before_a", np.eye(2, dtype=complex))
+                        B_before = kak.get("before_b", np.eye(2, dtype=complex))
+                        A_after = kak.get("after_a", np.eye(2, dtype=complex))
+                        B_after = kak.get("after_b", np.eye(2, dtype=complex))
+                        # Emit: local_before → CNOTs w/ Rz → local_after
+                        if not np.allclose(A_before, np.eye(2), atol=1e-10):
+                            result.append(U3(*GateAlgebra.zyz_decompose(A_before)[:3]), (op.qubits[0],))
+                        if not np.allclose(B_before, np.eye(2), atol=1e-10):
+                            result.append(U3(*GateAlgebra.zyz_decompose(B_before)[:3]), (op.qubits[1],))
+                        for _ in range(max(1, cx_count)):
+                            result.append(CNOT, op.qubits)
+                        if not np.allclose(A_after, np.eye(2), atol=1e-10):
+                            result.append(U3(*GateAlgebra.zyz_decompose(A_after)[:3]), (op.qubits[0],))
+                        if not np.allclose(B_after, np.eye(2), atol=1e-10):
+                            result.append(U3(*GateAlgebra.zyz_decompose(B_after)[:3]), (op.qubits[1],))
+                    except Exception:
+                        result.append(op.gate, op.qubits)
                 else:
                     result.append(op.gate, op.qubits)
             else:

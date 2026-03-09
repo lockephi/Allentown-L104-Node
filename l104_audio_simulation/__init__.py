@@ -1,5 +1,5 @@
 """
-L104 Audio Simulation Suite — Decomposed Package v2.3.0
+L104 Audio Simulation Suite — Decomposed Package v3.0.0
 ═══════════════════════════════════════════════════════════════════════════════
 
 Refactored from the monolithic _gen_perfect_audio.py (v8.2, 3,231 lines),
@@ -59,7 +59,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-__version__ = "2.4.0"
+__version__ = "3.0.0"
 
 # ── Constants ────────────────────────────────────────────────────────────────
 from .constants import (
@@ -163,7 +163,14 @@ from .daw_session import (
     DAWTrack,
     DAWArrangement,
 )
-
+# ── Cross-Engine Integration (v3.0) ──────────────────────────────────────────
+from .cross_engine import (
+    AudioMLBridge,
+    AudioQDABridge,
+    AudioScienceBridge,
+    AudioCrossEngineHub,
+    audio_cross_engine_hub,
+)
 # ── Module-level orchestrator singletons ────────────────────────────────────
 audio_suite = AudioSimulationPipeline()
 

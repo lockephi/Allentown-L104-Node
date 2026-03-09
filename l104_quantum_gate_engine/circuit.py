@@ -491,12 +491,11 @@ class GateCircuit:
         perm_indices = list(reversed(qubits)) + rest
 
         # Build permutation array: perm_array[original_state] = permuted_state
+        # v1.0.1: Vectorized bit manipulation instead of Python double loop.
+        indices = np.arange(dim, dtype=np.intp)
         perm_array = np.zeros(dim, dtype=np.intp)
-        for s in range(dim):
-            ps = 0
-            for new_bit, old_bit in enumerate(perm_indices):
-                ps |= ((s >> old_bit) & 1) << new_bit
-            perm_array[s] = ps
+        for new_bit, old_bit in enumerate(perm_indices):
+            perm_array |= ((indices >> old_bit) & 1) << new_bit
 
         # Gate on low bits, identity on high bits (in permuted basis)
         op_perm = np.kron(np.eye(max(1, 2 ** (n - k)), dtype=complex), gate_matrix)

@@ -87,8 +87,10 @@ class SacredKernelLibrary:
         """
         X = np.atleast_2d(X)
         Y = np.atleast_2d(Y)
-        # L1 distance via broadcasting
-        l1_dists = np.sum(np.abs(X[:, np.newaxis, :] - Y[np.newaxis, :, :]), axis=2)
+        # L1 distance via feature-wise accumulation (O(n*m) memory, not O(n*m*d))
+        l1_dists = np.zeros((X.shape[0], Y.shape[0]))
+        for k in range(X.shape[1]):
+            l1_dists += np.abs(X[:, k:k+1] - Y[:, k:k+1].T)
         bandwidth = 104.0 * VOID_CONSTANT
         return VOID_CONSTANT * np.exp(-l1_dists / bandwidth)
 

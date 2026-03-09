@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.392669
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:51.470096
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -74,15 +74,15 @@ except ImportError:
 # Qiskit imports for REAL quantum computing
 try:
     from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
-QuantumRegister = None  # Registers handled by GateCircuit qubit ranges
-ClassicalRegister = None
+    QuantumRegister = None  # Registers handled by GateCircuit qubit ranges
+    ClassicalRegister = None
     GroverOperator = None  # Use l104_quantum_gate_engine orchestrator
-MCMT = None
-ZGate = None
+    MCMT = None
+    ZGate = None
     AerSimulator = None  # Use l104_qiskit_utils.L104AerBackend (sovereign local)
     QiskitRuntimeService = None  # IBM runtime removed — sovereign only
-Session = None
-SamplerV2 = None
+    Session = None
+    SamplerV2 = None
     generate_preset_pass_manager = None  # Use l104_quantum_gate_engine.GateCompiler
     QISKIT_AVAILABLE = True
 except ImportError:

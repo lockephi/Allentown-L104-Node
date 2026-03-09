@@ -1673,8 +1673,12 @@ class CodeEngine:
         path = workspace_path or os.getcwd()
         return self.code_search.find_sacred_references(path)
 
-    def full_code_review(self, source: str, filename: str = "") -> Dict[str, Any]:
-        """Comprehensive v6.0.0 code review: analysis + threats + architecture + perf + deprecations."""
+    def v6_code_review(self, source: str, filename: str = "") -> Dict[str, Any]:
+        """Lightweight v6.0.0 code review: analysis + threats + architecture + perf + deprecations.
+
+        For the comprehensive 9-step pipeline with SOLID, archaeology, refactoring,
+        test generation, and auto-fix, use full_code_review() instead.
+        """
         analysis = self.analyzer.full_analysis(source, filename)
         threats = self.threat_modeler.model_threats(source, filename)
         arch = self.arch_linter.lint_architecture(source, filename)

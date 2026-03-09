@@ -25,7 +25,9 @@ Programmable parametric sweeps over God Code simulation parameters:
 from __future__ import annotations
 
 import math
+import os
 import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
 
 import numpy as np
@@ -52,7 +54,10 @@ if TYPE_CHECKING:
 
 
 class ParametricSweepEngine:
-    """Run parametric sweeps over simulation parameters — v3.0."""
+    """Run parametric sweeps over simulation parameters — v3.0 (parallelized v5.1)."""
+
+    # ThreadPool workers: bounded by CPU count for compute-bound sweeps
+    _MAX_WORKERS = min(os.cpu_count() or 4, 8)
 
     def dial_sweep(self, dial: str = "a", start: int = 0, stop: int = 8) -> List[Dict[str, Any]]:
         """Sweep a single God Code dial and verify conservation.
@@ -251,24 +256,22 @@ class ParametricSweepEngine:
         for q in range(nq):
             sv_ref = apply_single_gate(sv_ref, H_GATE, q, nq)
 
-        for phase in phase_range:
+        # v5.1 PERFORMANCE: Parallelize phase grid computation.
+        # Each phase point is independent — embarrassingly parallel.
+        def _eval_phase(phase):
             sv = sv_ref.copy()
-
-            # Sacred gate with swept phase
             rz = make_gate([[np.exp(-1j * phase / 2), 0],
                             [0, np.exp(1j * phase / 2)]])
             sv = apply_single_gate(sv, rz, 0, nq)
-            for q in range(nq - 1):
-                sv = apply_cnot(sv, q, q + 1, nq)
-
+            for q_inner in range(nq - 1):
+                sv = apply_cnot(sv, q_inner, q_inner + 1, nq)
             entropy = entanglement_entropy(sv, nq)
             purity = state_purity(sv, nq)
             le = linear_entropy(sv, nq)
             td = trace_distance(sv, sv_ref)
             alignment_gc = abs(math.cos(phase - GOD_CODE_PHASE_ANGLE))
             alignment_phi = abs(math.cos(phase - PHI_PHASE_ANGLE))
-
-            results.append({
+            return {
                 "phase": round(phase, 6),
                 "entropy": round(entropy, 6),
                 "purity": round(purity, 6),
@@ -276,7 +279,14 @@ class ParametricSweepEngine:
                 "trace_distance": round(td, 6),
                 "alignment_god_code": round(alignment_gc, 6),
                 "alignment_phi": round(alignment_phi, 6),
-            })
+            }
+
+        workers = min(self._MAX_WORKERS, len(phase_range))
+        if workers > 1:
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                results = list(pool.map(_eval_phase, phase_range))
+        else:
+            results = [_eval_phase(p) for p in phase_range]
 
         # Find resonance peaks (local maxima of alignment × entropy)
         scores = [r["alignment_god_code"] * r["entropy"] for r in results]
@@ -396,6 +406,34 @@ class ParametricSweepEngine:
     #  v3.0 — Advanced & VQPU-Derived Sweep Types
     # ═══════════════════════════════════════════════════════════════════════════
 
+    @staticmethod
+    def _evaluate_fidelity(nq: int, noise: float, depth: int, angle: float) -> float:
+        """Build a sacred circuit and return noisy-vs-ideal fidelity.
+
+        Shared helper used by sensitivity_sweep and joint_sweep_2d to avoid
+        duplicating the 20-line circuit construction + noise model.
+        """
+        sv = init_sv(nq)
+        sv = apply_single_gate(sv, H_GATE, 0, nq)
+        for q in range(1, nq):
+            sv = apply_cnot(sv, q - 1, q, nq)
+        for d in range(depth):
+            sv = apply_cnot(sv, d % nq, (d + 1) % nq, nq)
+            sv = apply_single_gate(sv, GOD_CODE_GATE, d % nq, nq)
+        sv_ideal = sv.copy()
+        if angle != 0.0:
+            rz = make_gate([[np.exp(-1j * angle / 2), 0],
+                            [0, np.exp(1j * angle / 2)]])
+            sv = apply_single_gate(sv, rz, 0, nq)
+            sv_ideal = apply_single_gate(sv_ideal, rz, 0, nq)
+        for q in range(nq):
+            damp = make_gate([[1, 0], [0, np.exp(-noise * (q + 1))]])
+            sv = apply_single_gate(sv, damp, q, nq)
+        norm = np.linalg.norm(sv)
+        if norm > 0:
+            sv /= norm
+        return fidelity(sv, sv_ideal)
+
     def sensitivity_sweep(self, base_noise: float = 0.05,
                           base_depth: int = 8, base_angle: float = 0.0,
                           nq: int = 4, epsilon: float = 1e-3) -> Dict[str, Any]:
@@ -413,27 +451,7 @@ class ParametricSweepEngine:
         Returns per-axis gradient magnitude and the combined sensitivity
         norm, indicating which parameter most influences fidelity.
         """
-        def _evaluate(noise: float, depth: int, angle: float) -> float:
-            sv = init_sv(nq)
-            sv = apply_single_gate(sv, H_GATE, 0, nq)
-            for q in range(1, nq):
-                sv = apply_cnot(sv, q - 1, q, nq)
-            for d in range(depth):
-                sv = apply_cnot(sv, d % nq, (d + 1) % nq, nq)
-                sv = apply_single_gate(sv, GOD_CODE_GATE, d % nq, nq)
-            sv_ideal = sv.copy()
-            if angle != 0.0:
-                rz = make_gate([[np.exp(-1j * angle / 2), 0],
-                                [0, np.exp(1j * angle / 2)]])
-                sv = apply_single_gate(sv, rz, 0, nq)
-                sv_ideal = apply_single_gate(sv_ideal, rz, 0, nq)
-            for q in range(nq):
-                damp = make_gate([[1, 0], [0, np.exp(-noise * (q + 1))]])
-                sv = apply_single_gate(sv, damp, q, nq)
-            norm = np.linalg.norm(sv)
-            if norm > 0:
-                sv /= norm
-            return fidelity(sv, sv_ideal)
+        _evaluate = lambda noise, depth, angle: self._evaluate_fidelity(nq, noise, depth, angle)
 
         f_base = _evaluate(base_noise, base_depth, base_angle)
 
@@ -488,45 +506,43 @@ class ParametricSweepEngine:
         if y_values is None:
             y_values = defaults.get(axis_y, defaults["depth"])
 
-        def _evaluate(noise: float, depth: int, angle: float) -> float:
-            sv = init_sv(nq)
-            sv = apply_single_gate(sv, H_GATE, 0, nq)
-            for q in range(1, nq):
-                sv = apply_cnot(sv, q - 1, q, nq)
-            for d in range(depth):
-                sv = apply_cnot(sv, d % nq, (d + 1) % nq, nq)
-                sv = apply_single_gate(sv, GOD_CODE_GATE, d % nq, nq)
-            sv_ideal = sv.copy()
-            if angle != 0.0:
-                rz = make_gate([[np.exp(-1j * angle / 2), 0],
-                                [0, np.exp(1j * angle / 2)]])
-                sv = apply_single_gate(sv, rz, 0, nq)
-                sv_ideal = apply_single_gate(sv_ideal, rz, 0, nq)
-            for q in range(nq):
-                damp = make_gate([[1, 0], [0, np.exp(-noise * (q + 1))]])
-                sv = apply_single_gate(sv, damp, q, nq)
-            norm = np.linalg.norm(sv)
-            if norm > 0:
-                sv /= norm
-            return fidelity(sv, sv_ideal)
+        _evaluate = lambda noise, depth, angle: self._evaluate_fidelity(nq, noise, depth, angle)
 
         matrix: List[List[float]] = []
         best_f, worst_f = -1.0, 2.0
         best_xy: Tuple[float, float] = (0.0, 0.0)
         worst_xy: Tuple[float, float] = (0.0, 0.0)
 
+        # v5.1 PERFORMANCE: Parallelize 2D grid evaluation.
+        # Flatten the cartesian product and evaluate all points in parallel.
+        grid_points = [(xv, yv) for xv in x_values for yv in y_values]
+
+        def _eval_point(point):
+            xv, yv = point
+            params: Dict[str, Any] = {"noise": 0.0, "depth": 4, "angle": 0.0}
+            params[axis_x] = xv
+            params[axis_y] = yv
+            return _evaluate(params["noise"], int(params["depth"]), params["angle"])
+
+        workers = min(self._MAX_WORKERS, len(grid_points))
+        if workers > 1:
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                flat_results = list(pool.map(_eval_point, grid_points))
+        else:
+            flat_results = [_eval_point(pt) for pt in grid_points]
+
+        # Reshape flat results into matrix
+        idx = 0
         for xv in x_values:
             row = []
             for yv in y_values:
-                params: Dict[str, Any] = {"noise": 0.0, "depth": 4, "angle": 0.0}
-                params[axis_x] = xv
-                params[axis_y] = yv
-                f = _evaluate(params["noise"], int(params["depth"]), params["angle"])
+                f = flat_results[idx]
                 row.append(round(f, 6))
                 if f > best_f:
                     best_f, best_xy = f, (xv, yv)
                 if f < worst_f:
                     worst_f, worst_xy = f, (xv, yv)
+                idx += 1
             matrix.append(row)
 
         arr = np.array(matrix)
@@ -562,22 +578,29 @@ class ParametricSweepEngine:
         ref_result = iron_lattice_heisenberg(n_sites=nq, trotter_steps=256, total_time=t)
         sv_ref = ref_result["statevector"]
 
-        results = []
-        for steps in step_counts:
+        # v5.1 PERFORMANCE: Parallelize step-count evaluations.
+        def _eval_steps(steps):
             t0 = time.time()
             run = iron_lattice_heisenberg(n_sites=nq, trotter_steps=steps, total_time=t)
             elapsed = (time.time() - t0) * 1000
             sv_approx = run["statevector"]
             f = fidelity(sv_approx, sv_ref)
             error = 1.0 - f
-            results.append({
+            return {
                 "steps": steps,
                 "fidelity": round(f, 8),
                 "trotter_error": round(error, 8),
                 "energy": round(run["energy"], 6),
                 "elapsed_ms": round(elapsed, 2),
                 "expected_scaling": round(t ** 2 / steps, 6),
-            })
+            }
+
+        workers = min(self._MAX_WORKERS, len(step_counts))
+        if workers > 1:
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                results = list(pool.map(_eval_steps, step_counts))
+        else:
+            results = [_eval_steps(s) for s in step_counts]
 
         return results
 

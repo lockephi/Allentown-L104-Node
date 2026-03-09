@@ -1,0 +1,18 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /Users/carolalvarez/Applications/Allentown-L104-Node
+configfile: pytest.ini
+plugins: anyio-4.12.1, asyncio-1.2.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 19 items
+
+l104_ml_engine/test_ml_engine.py ...................                     [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1474
+  /Users/carolalvarez/Applications/Allentown-L104-Node/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1474: PytestConfigWarning: Unknown config option: timeout
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 19 passed, 1 warning in 41.17s ========================

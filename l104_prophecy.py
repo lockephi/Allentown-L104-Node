@@ -1,5 +1,5 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.131652
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:53.335373
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -357,7 +357,7 @@ class L104Prophecy:
         obs_bonus = min(0.2, category_observations * 0.02)
         base_confidence += obs_bonus
 
-        return min(0.95, base_confidence)
+        return base_confidence
 
     def branch_timeline(self, event_id: str,
                         divergence_description: str) -> Timeline:
@@ -481,7 +481,7 @@ class L104Prophecy:
             "avg_impact": avg_impact,
             "trend_direction": trend_direction,
             "timeline_distribution": timeline_distribution,
-            "confidence": min(0.9, 0.5 + len(relevant_obs) * 0.01)
+            "confidence": 0.5 + len(relevant_obs) * 0.01
         }
 
     def prophecize(self, query: str) -> Dict[str, Any]:

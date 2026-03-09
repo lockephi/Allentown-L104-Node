@@ -271,27 +271,37 @@ class StabilizerSimulator:
         # Build probability dict
         probs = {k: v / shots for k, v in counts.items()}
 
-        # For small n, construct full statevector; for large n, use sparse
+        # For small n, construct full statevector; for large n, omit it
+        # (2^n complex128 exceeds practical memory limits above ~20 qubits)
         if n <= 20:
             sv = np.zeros(2**n, dtype=complex)
             for bitstr, p in probs.items():
                 sv[int(bitstr, 2)] = math.sqrt(p)
         else:
-            # Sparse representation: only allocate for observed states
-            # Use a minimal statevector with just enough entries
-            sv = np.zeros(2, dtype=complex)
-            sv[0] = math.sqrt(probs.get('0' * n, 0.0))
-            sv[1] = math.sqrt(probs.get('1' * n, 0.0))
+            # Full statevector infeasible — store empty array.
+            # Measurement data is available via result.sampled_probs / .counts.
+            import warnings
+            warnings.warn(
+                f"StabilizerSimulator: n={n} > 20, full statevector omitted "
+                f"({len(probs)} unique outcomes sampled). "
+                f"Use result.sampled_probs for probability data.",
+                stacklevel=2,
+            )
+            sv = np.zeros(0, dtype=complex)
 
         elapsed = (time.time() - t0) * 1000
 
-        return SimulationResult(
+        result = SimulationResult(
             statevector=sv,
-            n_qubits=min(n, 20) if n > 20 else n,
+            n_qubits=n,
             circuit_name=circuit.name,
             gate_count=circuit.gate_count,
             execution_time_ms=elapsed,
         )
+        # Always attach sampled measurement data for downstream access
+        result.sampled_probs = probs  # type: ignore[attr-defined]
+        result.counts = counts         # type: ignore[attr-defined]
+        return result
 
     def _apply_circuit(self, tab: StabilizerTableau, circuit: QuantumCircuit):
         """Apply all gates in a circuit to the tableau."""

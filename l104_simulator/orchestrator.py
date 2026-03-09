@@ -96,6 +96,56 @@ class RealWorldSimulator:
         # Layer 5: Observables
         self.observables = Observables(self.lattice, self.generations, self.mixing)
 
+        # ══════ Cross-engine integration (lazy-loaded) ══════
+        self._science_engine = None
+        self._math_engine = None
+        self._vqpu_bridge = None
+        self._god_code_simulator = None
+
+    # ═════════════════════════════════════════════════════════════════════════
+    #  CROSS-ENGINE INTEGRATION
+    # ═════════════════════════════════════════════════════════════════════════
+
+    def _get_science_engine(self):
+        """Lazy-load ScienceEngine for entropy/coherence feedback."""
+        if self._science_engine is None:
+            try:
+                from l104_science_engine import ScienceEngine
+                self._science_engine = ScienceEngine()
+            except Exception:
+                pass
+        return self._science_engine
+
+    def _get_math_engine(self):
+        """Lazy-load MathEngine for harmonic/proof validation."""
+        if self._math_engine is None:
+            try:
+                from l104_math_engine import MathEngine
+                self._math_engine = MathEngine()
+            except Exception:
+                pass
+        return self._math_engine
+
+    def _get_vqpu_bridge(self):
+        """Lazy-load VQPUBridge for Metal GPU quantum circuit execution."""
+        if self._vqpu_bridge is None:
+            try:
+                from l104_vqpu import get_bridge
+                self._vqpu_bridge = get_bridge()
+            except Exception:
+                pass
+        return self._vqpu_bridge
+
+    def _get_god_code_simulator(self):
+        """Lazy-load GodCodeSimulator for feedback loop integration."""
+        if self._god_code_simulator is None:
+            try:
+                from l104_god_code_simulator import god_code_simulator
+                self._god_code_simulator = god_code_simulator
+            except Exception:
+                pass
+        return self._god_code_simulator
+
     # ═════════════════════════════════════════════════════════════════════════
     #  CONVENIENCE API
     # ═════════════════════════════════════════════════════════════════════════
@@ -215,6 +265,12 @@ class RealWorldSimulator:
                 "X": X_SCAFFOLD, "R": R_RATIO, "Q": Q_GRAIN,
                 "P": P_DIAL, "K": K_OFFSET,
                 "BASE": BASE, "GOD_CODE": GOD_CODE,
+                "cross_engines": {
+                    "science_engine": self._science_engine is not None,
+                    "math_engine": self._math_engine is not None,
+                    "vqpu_bridge": self._vqpu_bridge is not None,
+                    "god_code_simulator": self._god_code_simulator is not None,
+                },
             },
         )
 

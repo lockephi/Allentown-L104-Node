@@ -1,0 +1,14 @@
+l104_ml_engine/__init__.py:    ├── CrossEngineFeatureExtractor  — 50-feature cross-engine extraction
+l104_ml_engine/constants.py:KNOWLEDGE_TOTAL_FEATURES = 50                              # 5 engines × 10 features
+l104_ml_engine/knowledge_synthesis.py:  CrossEngineFeatureExtractor — Extract ~50 ML features from all engines
+l104_ml_engine/knowledge_synthesis.py:    ~10 features for a total of ~50 features per extraction.
+l104_ml_engine/knowledge_synthesis.py:        Returns array of shape (50,) = 5 engines × 10 features each.
+l104_ml_engine/knowledge_synthesis.py:        """Return feature names for all 50 features."""
+l104_ml_engine/knowledge_synthesis.py:            abs(np.sin(GOD_CODE * features[i])) for i in range(0, 50, 10)
+l104_ml_engine/quantum_classifiers.py:            max_iterations: int = 50,
+l104_ml_engine/test_ml_engine.py:def _make_binary_data(n=50):
+l104_ml_engine/test_ml_engine.py:    X = rng.normal(size=(50, 3))
+l104_ml_engine/test_ml_engine.py:    y = X[:, 0] * 2 + X[:, 1] - X[:, 2] + rng.normal(0, 0.1, 50)
+l104_ml_engine/test_ml_engine.py:    """CrossEngineFeatureExtractor produces 50-dimensional features."""
+l104_ml_engine/test_ml_engine.py:    assert len(features) == 50
+l104_ml_engine/test_ml_engine.py:    assert len(names) == 50

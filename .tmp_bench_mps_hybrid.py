@@ -20,7 +20,7 @@ import numpy as np
 
 sys.path.insert(0, os.getcwd())
 
-from l104_vqpu_bridge import (
+from l104_vqpu import (
     ExactMPSHybridEngine, CircuitAnalyzer, VQPUBridge, QuantumJob,
     GOD_CODE, PHI,
 )
@@ -171,7 +171,7 @@ print()
 # ─── Test 7: Three-Engine Scoring (v3.0) ───
 print("─── Test 7: Three-Engine Scoring (v3.0) ───")
 try:
-    from l104_vqpu_bridge import ThreeEngineQuantumScorer
+    from l104_vqpu import ThreeEngineQuantumScorer
     scorer = ThreeEngineQuantumScorer()
     status = scorer.status()
     print(f"  Engines loaded: {sum(1 for v in status.values() if v)} / {len(status)}")

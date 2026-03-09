@@ -526,13 +526,7 @@ class L104GeneticRefiner:
             population = self.evolve_population(
                 population, fitness_fn=fitness_fn)
 
-            # Score new population
-            if fitness_fn is None:
-                for ind in population:
-                    ind.fitness = self.sacred_resonance_fitness(ind)
-            else:
-                for ind in population:
-                    ind.fitness = fitness_fn(ind)
+            # evolve_population already scores all individuals; no need to re-score.
 
             curr_mean = statistics.mean(
                 ind.fitness for ind in population) if population else 0

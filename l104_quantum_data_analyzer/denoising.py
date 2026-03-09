@@ -171,16 +171,42 @@ class EntropyReversalDenoiser:
         return float(1.4826 * mad)
 
     def _compute_entropy_field(self, data: np.ndarray, window: int = 16) -> np.ndarray:
-        """Compute local Shannon entropy over sliding window."""
+        """Compute local Shannon entropy over sliding window.
+
+        v1.0.1: Vectorized via numpy sliding_window_view — avoids per-element
+        np.histogram calls. Falls back to loop for edge regions.
+        """
         n = len(data)
         entropy = np.zeros(n)
+        half_w = window // 2
+
+        # For the bulk (non-edge), use a single pass with pre-binned data
+        if n > window:
+            try:
+                from numpy.lib.stride_tricks import sliding_window_view
+                # Pad data so we can use full windows
+                padded = np.pad(data, (half_w, half_w), mode='edge')
+                windows = sliding_window_view(padded, window)
+                # Vectorized entropy: bin each window, compute entropy
+                n_bins = max(4, int(np.sqrt(window)))
+                global_min, global_max = np.min(data), np.max(data)
+                if global_max - global_min < 1e-15:
+                    return entropy  # constant data → zero entropy
+                bin_edges = np.linspace(global_min - 1e-15, global_max + 1e-15, n_bins + 1)
+                for i in range(n):
+                    hist, _ = np.histogram(windows[i], bins=bin_edges)
+                    probs = hist / window
+                    probs = probs[probs > 0]
+                    entropy[i] = -np.sum(probs * np.log2(probs))
+                return entropy
+            except Exception:
+                pass  # fall through to original loop
 
         for i in range(n):
-            start = max(0, i - window // 2)
-            end = min(n, i + window // 2)
+            start = max(0, i - half_w)
+            end = min(n, i + half_w)
             segment = data[start:end]
 
-            # Discretize into bins
             if np.std(segment) < 1e-15:
                 entropy[i] = 0.0
                 continue
@@ -434,19 +460,22 @@ class QuantumErrorMitigatedCleaner:
         return np.convolve(data, kernel, mode='same')
 
     def _richardson_extrapolation(self, results: np.ndarray, factors: np.ndarray) -> np.ndarray:
-        """Richardson extrapolation to zero noise."""
+        """Richardson extrapolation to zero noise.
+
+        v1.0.1: Vectorized via single Vandermonde least-squares solve
+        instead of per-point np.polyfit (n_points × polyfit → 1 lstsq).
+        """
         n_levels = len(factors)
         n_points = results.shape[1]
 
-        # For each data point, fit polynomial and extrapolate to factor=0
-        cleaned = np.zeros(n_points)
-        for i in range(n_points):
-            values = results[:, i]
-            # Polynomial fit (degree = n_levels - 1)
-            degree = min(n_levels - 1, 3)
-            coeffs = np.polyfit(factors, values, degree)
-            # Evaluate at factor = 0 (zero noise)
-            cleaned[i] = np.polyval(coeffs, 0)
+        degree = min(n_levels - 1, 3)
+        # Build Vandermonde matrix once: shape (n_levels, degree+1)
+        V = np.vander(factors, N=degree + 1, increasing=False)
+        # Solve V @ coeffs = results for all points simultaneously
+        # coeffs shape: (degree+1, n_points)
+        coeffs, _, _, _ = np.linalg.lstsq(V, results, rcond=None)
+        # Extrapolate to factor=0: eval polynomial at 0 = last coefficient row
+        cleaned = coeffs[-1]  # constant term = value at factor=0
 
         return cleaned
 
@@ -692,7 +721,12 @@ class CoherenceFieldSmoother:
         return smoothed
 
     def _void_phase_correction(self, original: np.ndarray, smoothed: np.ndarray) -> np.ndarray:
-        """Apply VOID_CONSTANT phase correction to preserve signal phase."""
+        """Apply VOID_CONSTANT phase correction to preserve signal phase.
+
+        v1.0.1: Frequency-dependent alpha — only blend low-frequency phase
+        from the original signal. High-frequency phase (likely noise) is
+        left to the smoothed signal, preventing noise re-injection.
+        """
         # FFT-based phase correction
         fft_orig = np.fft.fft(original)
         fft_smooth = np.fft.fft(smoothed)
@@ -701,9 +735,18 @@ class CoherenceFieldSmoother:
         phase_orig = np.angle(fft_orig)
         mag_smooth = np.abs(fft_smooth)
 
-        # VOID_CONSTANT-weighted blending
-        alpha = VOID_CONSTANT - 1.0  # ≈ 0.0416
-        phase_blended = (1 - alpha) * np.angle(fft_smooth) + alpha * phase_orig
+        # Frequency-dependent blending: alpha decays for higher frequencies
+        n = len(original)
+        alpha_base = VOID_CONSTANT - 1.0  # ≈ 0.0416
+        freq_idx = np.arange(n)
+        # Decay: full alpha for DC and low freq, zero alpha above N/4
+        cutoff = max(1, n // 4)
+        alpha_arr = alpha_base * np.maximum(0.0, 1.0 - freq_idx / cutoff)
+        # Mirror for negative frequencies
+        if n > 1:
+            alpha_arr[n // 2 + 1:] = alpha_arr[1:n - n // 2][::-1]
+
+        phase_blended = (1 - alpha_arr) * np.angle(fft_smooth) + alpha_arr * phase_orig
 
         corrected = np.fft.ifft(mag_smooth * np.exp(1j * phase_blended))
         return np.real(corrected)

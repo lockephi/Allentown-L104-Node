@@ -1,5 +1,5 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:23.131392
+# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:49.614810
 ZENITH_HZ = 3887.8
 UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
@@ -156,17 +156,38 @@ def save_state(state: dict):
         print(f"DEBUG: Failed to add scribe state: {e}")
 
     try:
-        with open(STATE_FILE_PATH, "w", encoding="utf-8") as f:
-            json.dump(state, f, indent=2)
-        print(f"--- [PERSISTENCE]: STATE SAVED TO {STATE_FILE_PATH} ---")
+        # Atomic write: write to temp file, then rename to prevent 0-byte corruption
+        import tempfile
+        dir_name = os.path.dirname(os.path.abspath(STATE_FILE_PATH)) or "."
+        fd, tmp_path = tempfile.mkstemp(dir=dir_name, suffix=".tmp", prefix=".l104_state_")
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump(state, f, indent=2)
+            os.replace(tmp_path, STATE_FILE_PATH)  # Atomic on POSIX
+            print(f"--- [PERSISTENCE]: STATE SAVED TO {STATE_FILE_PATH} ---")
+        except Exception:
+            # Clean up temp file on failure
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+            raise
     except Exception as e:
         print(f"DEBUG: Failed to write state file: {e}")
 
 def load_state() -> dict:
     """Loads the AGI state from disk."""
     if os.path.exists(STATE_FILE_PATH):
-        with open(STATE_FILE_PATH, "r", encoding="utf-8") as f:
-            state = json.load(f)
+        try:
+            with open(STATE_FILE_PATH, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if not content:
+                    print(f"[PERSISTENCE] ✗ State file is empty, returning default state")
+                    return {}
+                state = json.loads(content)
+        except (json.JSONDecodeError, ValueError) as e:
+            print(f"[PERSISTENCE] ✗ Corrupt state file ({e}), returning default state")
+            return {}
             # Restore scribe state if it exists
             if "scribe_state" in state:
                 try:

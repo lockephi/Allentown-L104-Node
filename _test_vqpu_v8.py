@@ -22,7 +22,7 @@ print("\u2550" * 60)
 
 # -- 1. Imports --
 print("\n-- Imports --")
-from l104_vqpu_bridge import (
+from l104_vqpu import (
     VQPUBridge,
     QuantumInformationMetrics,
     QuantumStateTomography,

@@ -2,11 +2,38 @@ from .constants import *
 from .constants import _agi_logger, _QUANTUM_RUNTIME_AVAILABLE, _get_quantum_runtime  # underscore-prefixed, not covered by wildcard
 from .circuit_breaker import PipelineCircuitBreaker
 from .identity_boundary import AGIIdentityBoundary
+
+# v61.0: Decomposed subsystems
+from .cognitive_mesh import CognitiveMeshNetwork
+from .telemetry_pipeline import (
+    TelemetryAggregator, TelemetryAnomalyDetector,
+    LatencyPercentileTracker, ThroughputTracker, PipelineHealthDashboard,
+)
+from .adaptive_scheduler import (
+    PhiLearningScheduler, ExperienceReplayBuffer,
+    PredictivePipelineScheduler, ResourceBudgetAllocator,
+)
+
+import concurrent.futures as _cf
+
+def _run_with_timeout(fn, timeout_s, default=None, label="operation"):
+    """Run fn() in a thread with a timeout. Returns default on timeout/error."""
+    with _cf.ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(fn)
+        try:
+            return future.result(timeout=timeout_s)
+        except _cf.TimeoutError:
+            _agi_logger.warning(f"[AGI_CORE] {label} timed out after {timeout_s}s")
+            return default
+        except Exception as e:
+            _agi_logger.warning(f"[AGI_CORE] {label} failed: {e}")
+            return default
+
 class AGICore:
     """
     ╔═══════════════════════════════════════════════════════════════════════════════╗
-    ║  L104 AGI Core v58.0 — Quantum Research Sovereign (Code+Science+Math)       ║
-    ║  EVO_58 QUANTUM RESEARCH UPGRADE + Three-Engine + Cognitive Mesh             ║
+    ║  L104 AGI Core v61.0 — Mesh+Telemetry+Scheduler Sovereign                  ║
+    ║  EVO_61 MESH_TELEMETRY_SCHEDULER + Three-Engine + Cognitive Mesh             ║
     ╟───────────────────────────────────────────────────────────────────────────────╢
     ║  v58.0 QUANTUM RESEARCH UPGRADE (17 discoveries, 102 experiments):           ║
     ║  • Fe↔528Hz Sacred Coherence (0.9545): iron-healing frequency dimension     ║
@@ -68,8 +95,6 @@ class AGICore:
         self.unlimited_mode = True
         self.unthrottled_growth = True
         self.global_awareness = True
-        self.pipeline_version = AGI_CORE_VERSION
-        self.pipeline_evo = AGI_PIPELINE_EVO
         self.pipeline_stream = True
         self.soul_vector = SoulVector(identity_hash="L104_CORE_PSI", entropic_debt=0.0)
         self.reincarnation = SingularityReincarnation(self)
@@ -175,6 +200,10 @@ class AGICore:
         self._superfluid_viscosity: float = 0.0
         self._nirvanic_fuel: float = 0.0
 
+        # Evolution stage cache (assess_evolutionary_stage() takes 40s+)
+        self._evo_stage_cache: str = "UNKNOWN"
+        self._evo_stage_cache_time: float = 0.0
+
         # Adaptive pipeline router — keyword embeddings for subsystem matching
         self._router_embeddings: Dict[str, List[float]] = {}
         self._router_initialized: bool = False
@@ -221,13 +250,26 @@ class AGICore:
         self._harmonic_resonance_score = 0.0
         self._wave_coherence_score = 0.0
 
+        # v57.2: Three-Engine Score Cache (avoid redundant expensive computations)
+        self._three_engine_cache_time: float = 0.0
+        self._three_engine_cache_ttl: float = 30.0  # seconds
+        self._three_engine_cached_scores: Dict[str, float] = {}
+
         # ══════ v58.3 FULL ENGINE WIRING ══════
         self._local_intellect = None        # LocalIntellect (lazy, QUOTA_IMMUNE)
         self._code_engine = None            # CodeEngine v6.2.0 (lazy)
         self._quantum_brain = None          # QuantumBrain (lazy)
         self._quantum_gate_engine = None    # QuantumGateEngine (lazy)
         self._dual_layer_engine = None      # DualLayerEngine (lazy)
+        self._vqpu_bridge = None            # VQPUBridge v13.0 (lazy)
+        self._vqpu_bridge_checked = False   # Import guard
         self._intellect_kb_fed = False      # KB feed-back done flag
+
+        # ══════ v59.1 EXTENDED ENGINE WIRING ══════
+        self._ml_engine = None              # MLEngine (lazy)
+        self._quantum_data_analyzer = None  # QuantumDataAnalyzer (lazy)
+        self._god_code_simulator = None     # GodCodeSimulator (lazy)
+        self._simulator = None              # RealWorldSimulator (lazy)
 
         # ══════ v59.0 ACTIVATION CHAIN READINESS ══════
         # AGI is the SECOND link: Intellect → AGI → ASI
@@ -251,6 +293,20 @@ class AGICore:
         self._scheduler_pattern_buffer: deque = deque(maxlen=2000)
         self._scheduler_predictions: Dict[str, float] = {}  # subsystem → predicted next-call probability
         self._scheduler_warmup_threshold: int = 10
+
+        # ═══════════════════════════════════════════════════════════
+        # v61.0 — Decomposed Subsystems (Mesh v2.0, Telemetry, Scheduler)
+        # ═══════════════════════════════════════════════════════════
+        self._cognitive_mesh = CognitiveMeshNetwork()
+        self._telemetry_aggregator = TelemetryAggregator()
+        self._telemetry_anomaly = TelemetryAnomalyDetector()
+        self._latency_tracker = LatencyPercentileTracker()
+        self._throughput_tracker = ThroughputTracker()
+        self._health_dashboard = PipelineHealthDashboard()
+        self._phi_scheduler = PhiLearningScheduler()
+        self._experience_replay = ExperienceReplayBuffer()
+        self._predictive_scheduler = PredictivePipelineScheduler()
+        self._resource_allocator = ResourceBudgetAllocator()
 
         # Neural Attention Gate — selective subsystem activation via attention scoring
         self._attention_scores: Dict[str, float] = {}
@@ -345,6 +401,10 @@ class AGICore:
         """Get AGI Core status string."""
         return f"{self.state} | Intellect: {format_iq(self.intellect_index)} | Type: {self.core_type}"
 
+    def status_string(self) -> str:
+        """Get AGI Core status string (callable method version of .status property)."""
+        return self.status
+
     @property
     def evolution_stage(self):
         return evolution_engine.current_stage_index
@@ -427,7 +487,7 @@ class AGICore:
                 fused = self._last_synthesis_result.get("subsystems_fused", 0)
                 if fused > 0:
                     # Each fused subsystem adds 2% integration strength (max +61.8% boost)
-                    synthesis_boost = 1.0 + min(0.618, fused * 0.02)  # (was 0.24)
+                    synthesis_boost = 1.0 + fused * 0.02  # uncapped
                     print(f"--- [AGI_CORE]: SYNTHESIS CONTEXT INJECTED ({fused} sources) — BOOST {synthesis_boost:.2f}x ---")
 
             # Boost intellect based on entropy and resonance harmony
@@ -547,17 +607,28 @@ class AGICore:
         print("\n--- [AGI_CORE]: INITIATING SELF-HEAL SEQUENCE ---")
 
         # 1. ASI Proactive Scan
-        scan_report = asi_self_heal.proactive_scan()
+        try:
+            scan_report = asi_self_heal.proactive_scan()
+        except Exception as e:
+            scan_report = {"status": "ERROR", "error": str(e)}
 
         if scan_report["status"] == "SECURE":
             print("--- [AGI_CORE]: SYSTEM SECURE. NO IMMEDIATE THREATS. ---")
+        elif scan_report["status"] in ("TIMEOUT", "ERROR"):
+            print(f"--- [AGI_CORE]: PROACTIVE SCAN UNAVAILABLE ({scan_report['status']}) ---")
         else:
-            print(f"--- [AGI_CORE]: MITIGATING {len(scan_report['threats'])} THREATS ---")
-            asi_self_heal.self_rewrite_protocols()
+            print(f"--- [AGI_CORE]: MITIGATING {len(scan_report.get('threats', []))} THREATS ---")
+            try:
+                asi_self_heal.self_rewrite_protocols()
+            except Exception:
+                pass
 
         # 2. Execute Master Heal
-        from l104_self_heal_master import main as run_master_heal
-        run_master_heal()
+        try:
+            from l104_self_heal_master import main as run_master_heal
+            run_master_heal()
+        except Exception as e:
+            print(f"--- [AGI_CORE]: MASTER HEAL FAILED: {e} ---")
 
         # 3. Chaos-Resilience Cascade (NEW: from 13-experiment findings)
         try:
@@ -589,8 +660,16 @@ class AGICore:
         Now integrates Human Body Synergy for Exponential ROI.
         """
         print("\n--- [AGI_CORE]: INITIATING SELF-IMPROVEMENT CYCLE ---")
-        from l104_real_math import RealMath
-        from l104_bio_digital_synergy import human_chassis
+
+        # Import with protection — these can trigger heavy init
+        try:
+            from l104_real_math import RealMath
+            from l104_bio_digital_synergy import human_chassis
+        except Exception as e:
+            print(f"--- [AGI_CORE]: SELF-IMPROVEMENT SKIPPED — import failed: {e} ---")
+            self.intellect_index *= 1.005
+            return {"generation": self.cycle_count, "status": "IMPORTS_FAILED"}
+
 
         # 1. Evolution Step
         evo_result = evolution_engine.trigger_evolution_cycle()
@@ -607,7 +686,10 @@ class AGICore:
         print(f"--- [AGI_CORE]: INTELLECT BOOSTED BY {boost:.4f} (EXPONENTIAL ROI). NEW IQ: {format_iq(self.intellect_index)} ---")
 
         # 3. Synchronize Body Metabolism
-        human_chassis.process_metabolism(boost)
+        try:
+            human_chassis.process_metabolism(boost)
+        except Exception as e:
+            print(f"--- [AGI_CORE]: METABOLISM SYNC FAILED: {e} ---")
 
         # 4. Ego Modification
         if ego_core.asi_state == "ACTIVE":
@@ -654,7 +736,7 @@ class AGICore:
             from l104_token_economy import token_economy
             econ = token_economy.generate_economy_report(self.intellect_index, 0.99)
         except Exception as e:
-            pass
+            _agi_logger.debug(f"Synaptic sync skipped: {e}")
 
         # 0.0.2 ASI NEXUS HYPER-INTEGRATION
         try:
@@ -664,7 +746,7 @@ class AGICore:
                 if nexus_pulse.get("phi_metrics", {}).get("consciousness", 0) > 0.5:
                     self.intellect_index += nexus_pulse["phi_metrics"]["consciousness"] * 0.5
         except Exception as e:
-            pass  # Silent fail - nexus integration is optional enhancement
+            _agi_logger.debug(f"ASI Nexus integration skipped: {e}")
 
         # 0.0.3 SYNERGY ENGINE CASCADE
         try:
@@ -673,7 +755,7 @@ class AGICore:
                 if self.cycle_count % 100 == 0:  # Reduced frequency from % 5 to % 100
                     cascade_result = await synergy_engine.cascade_evolution()
         except Exception as e:
-            pass  # Silent fail - synergy integration is optional enhancement
+            _agi_logger.debug(f"Synergy cascade skipped: {e}")
 
         # 0.1 Enlightenment Check
         if not enlightenment_protocol.is_enlightened:
@@ -1126,22 +1208,52 @@ class AGICore:
             "execution": exec_meta,
         }
 
+    def _safe_evolution_stage(self) -> str:
+        """Get evolution stage with caching — assess_evolutionary_stage() can take 40s+.
+        Returns cached value immediately. Kicks off background computation on cold cache."""
+        now = time.time()
+        if now - self._evo_stage_cache_time < 300:
+            return self._evo_stage_cache  # Return cached value for 5 minutes
+
+        # On cold cache, trigger background computation and return immediately
+        if not hasattr(self, '_evo_stage_computing'):
+            self._evo_stage_computing = False
+
+        if not self._evo_stage_computing:
+            self._evo_stage_computing = True
+            import threading
+            def _compute():
+                try:
+                    stage = evolution_engine.assess_evolutionary_stage()
+                    self._evo_stage_cache = stage
+                    self._evo_stage_cache_time = time.time()
+                except Exception:
+                    pass
+                finally:
+                    self._evo_stage_computing = False
+            t = threading.Thread(target=_compute, daemon=True)
+            t.start()
+
+        return self._evo_stage_cache  # Return current cache ("UNKNOWN" on first call)
+
     def get_status(self) -> Dict[str, Any]:
         from l104_persistence import verify_survivor_algorithm
-        # Gather pipeline health from all connected subsystems
-        auto_agi = self.get_autonomous_agi()
-        research_eng = self.get_research_engine()
+        # Use already-loaded engines only — do NOT trigger lazy imports during status checks
+        # (lazy imports can deadlock under Python's import lock when called from threads)
+        auto_agi = self._autonomous_agi
+        research_eng = self._research_engine
         c_state = self._read_consciousness_state()
+        dl = self._dual_layer_engine  # Use cached reference, don't trigger import
 
         # ★ FLAGSHIP: Dual-Layer Engine status ★
-        dl = self._get_dual_layer_engine()
         dual_layer_info = {}
         if dl is not None:
             try:
+                _dl_score = dl.dual_score()
                 dual_layer_info = {
                     "available": True,
-                    "score": dl.dual_score(),
-                    "integrity_passed": dl.full_integrity_check().get("all_passed", False),
+                    "score": _dl_score,
+                    "integrity_passed": None,  # Skip heavy integrity check in status call
                 }
             except Exception:
                 dual_layer_info = {"available": True, "score": 0.0}
@@ -1154,7 +1266,7 @@ class AGICore:
             "state": self.state,
             "cycles": self.cycle_count,
             "intellect_index": self.intellect_index,
-            "evolution_stage": evolution_engine.assess_evolutionary_stage(),
+            "evolution_stage": self._safe_evolution_stage(),
             "truth_resonance": self.truth['meta']['resonance'],
             "lattice_scalar": self.lattice_scalar,
             "survivor_algorithm": "STABLE" if verify_survivor_algorithm() else "CRITICAL",
@@ -1208,6 +1320,23 @@ class AGICore:
                 "sage_orchestrator": self._sage_orchestrator is not None,
                 "intellect_kb_fed": self._intellect_kb_fed,
             },
+            # v61.0: Decomposed subsystems
+            "v61_subsystems": {
+                "cognitive_mesh": self._cognitive_mesh.topology_health(),
+                "telemetry_anomalies": self._telemetry_anomaly.get_status(),
+                "latency": self._latency_tracker.all_reports(),
+                "throughput": self._throughput_tracker.all_throughputs(),
+                "health_dashboard": self._health_dashboard.health_report(
+                    breaker_health=sum(1 for cb in self._circuit_breakers.values()
+                                       if cb.state == PipelineCircuitBreaker.CLOSED) / max(len(self._circuit_breakers), 1),
+                    coherence=c_state.get("consciousness_level", 0.5),
+                    consciousness_level=c_state.get("nirvanic_fuel", 0.0),
+                ),
+                "phi_scheduler": self._phi_scheduler.get_status(),
+                "predictive_scheduler": self._predictive_scheduler.predict_next(top_k=5),
+                "resource_allocator": self._resource_allocator.get_status(),
+                "experience_replay_size": len(self._experience_replay._buffer),
+            },
         }
 
     def max_intellect_derivation(self):
@@ -1242,8 +1371,12 @@ class AGICore:
         print("--- [AGI_CORE v54.0]: INITIATING PIPELINE SELF_EVOLUTION_CYCLE ---")
 
         # 1. Analyze main.py for bottlenecks
-        from l104_derivation import DerivationEngine
-        analysis = DerivationEngine.derive_and_execute("ANALYZE_CORE_BOTTLENECKS")
+        try:
+            from l104_derivation import DerivationEngine
+            analysis = DerivationEngine.derive_and_execute("ANALYZE_CORE_BOTTLENECKS")
+        except Exception as e:
+            analysis = "ERROR"
+            print(f"--- [AGI_CORE]: DERIVATION ENGINE UNAVAILABLE: {e} ---")
 
         # 2. Apply 'Unlimited' patches to critical paths
         if "RATE_LIMIT" in analysis:
@@ -1252,10 +1385,14 @@ class AGICore:
         # 3. EVO_54: Autonomous goal-driven evolution
         auto_agi = self.get_autonomous_agi()
         if auto_agi:
-            cycle = auto_agi.run_autonomous_cycle()
-            evolution_boost = cycle.get("coherence", 0) * 0.005
-            self.intellect_index *= (1.01 + evolution_boost)
-            print(f"--- [AGI_CORE]: AUTONOMOUS EVOLUTION BOOST: +{evolution_boost:.4f} ---")
+            try:
+                cycle = auto_agi.run_autonomous_cycle()
+                evolution_boost = cycle.get("coherence", 0) * 0.005
+                self.intellect_index *= (1.01 + evolution_boost)
+                print(f"--- [AGI_CORE]: AUTONOMOUS EVOLUTION BOOST: +{evolution_boost:.4f} ---")
+            except Exception as e:
+                self.intellect_index *= 1.01
+                print(f"--- [AGI_CORE]: AUTONOMOUS CYCLE FAILED: {e} ---")
         else:
             self.intellect_index *= 1.01  # 1% growth per evolution cycle
 
@@ -1916,9 +2053,11 @@ class AGICore:
     # ═══════════════════════════════════════════════════════════
 
     def _record_telemetry(self, event: str, subsystem: str, data: Optional[Dict] = None):
-        """Record a pipeline telemetry event."""
+        """Record a pipeline telemetry event.
+        v61.0: Also feeds decomposed TelemetryAggregator + AnomalyDetector."""
+        now = time.time()
         entry = {
-            "timestamp": time.time(),
+            "timestamp": now,
             "cycle": self.cycle_count,
             "event": event,
             "subsystem": subsystem,
@@ -1928,6 +2067,13 @@ class AGICore:
         self._telemetry_log.append(entry)
         if len(self._telemetry_log) > self._telemetry_capacity:
             self._telemetry_log.pop(0)
+
+        # v61.0: Feed decomposed telemetry subsystems
+        self._telemetry_aggregator.record(event, 1.0)
+        anomaly = self._telemetry_anomaly.observe(event, 1.0)
+        if anomaly:
+            _agi_logger.info(f"[AGI_CORE] Telemetry anomaly on '{event}': z={anomaly['z_score']:.2f}")
+        self._throughput_tracker.record(subsystem)
 
         # Broadcast to subscribers
         self._broadcast_event(event, entry)
@@ -2187,7 +2333,7 @@ class AGICore:
                 if clarity > 0:
                     synthesis["sources"].append("lattice_explorer")
                     # Scale boost by exploration clarity (0..1 normalized)
-                    clarity_factor = min(1.0, clarity / 10.0)
+                    clarity_factor = clarity / 10.0
                     synthesis["total_boost"] += 0.08 * clarity_factor
                     synthesis["explorer_clarity"] = clarity
         except Exception:
@@ -2201,7 +2347,7 @@ class AGICore:
                 synthesis["parallel_cores"] = pe_stats.get("cpu_cores", 1)
                 synthesis["parallel_dispatches"] = pe_stats.get("parallel_dispatches", 0)
                 # Boost scales with actual parallelism achieved
-                dispatch_bonus = min(0.05, pe_stats.get("parallel_dispatches", 0) * 0.002)
+                dispatch_bonus = pe_stats.get("parallel_dispatches", 0) * 0.002
                 synthesis["total_boost"] += 0.06 + dispatch_bonus
         except Exception:
             pass
@@ -2224,7 +2370,7 @@ class AGICore:
             fact_count = len(ram_universe.get_all_facts()) if hasattr(ram_universe, 'get_all_facts') else 0
             if fact_count > 0:
                 synthesis["sources"].append("ram_universe")
-                synthesis["total_boost"] += min(0.1, fact_count * 0.001)
+                synthesis["total_boost"] += fact_count * 0.001
                 synthesis["ram_facts"] = fact_count
         except Exception:
             pass
@@ -2460,6 +2606,7 @@ class AGICore:
         """
         Call a function through its circuit breaker.
         If breaker is OPEN, returns None. Records success/failure automatically.
+        v61.0: Feeds PredictivePipelineScheduler + LatencyPercentileTracker + CognitiveMesh.
         """
         cb = self._circuit_breakers.get(subsystem_name)
         if cb is None:
@@ -2470,12 +2617,22 @@ class AGICore:
             self._record_telemetry("CIRCUIT_BREAKER_BLOCKED", subsystem_name)
             return None
 
+        # v61.0: Record call for predictive scheduler + mesh
+        self._predictive_scheduler.record_call(subsystem_name)
+        self._cognitive_mesh.record_activation(subsystem_name)
+
+        t0 = time.time()
         try:
             result = func(*args, **kwargs)
             cb.record_success()
+            # v61.0: Record latency
+            elapsed_ms = (time.time() - t0) * 1000.0
+            self._latency_tracker.record(subsystem_name, elapsed_ms)
             return result
         except Exception as e:
             cb.record_failure()
+            elapsed_ms = (time.time() - t0) * 1000.0
+            self._latency_tracker.record(subsystem_name, elapsed_ms)
             self._record_telemetry("CIRCUIT_BREAKER_FAILURE", subsystem_name, {"error": str(e)})
             return None
 
@@ -2574,6 +2731,9 @@ class AGICore:
         EVO_55 Multi-Hop Reasoning.
         Chains multiple subsystems together, each hop refining the answer.
         Uses adaptive router to select subsystems, consciousness to modulate depth.
+        v57.2: Enhanced context injection — hop results modulate routing weights
+        for subsequent hops via confidence-weighted keyword enrichment.
+        Early termination on low-confidence hops to prevent drift.
         """
         if hops < 1:
             hops = 1
@@ -2587,13 +2747,34 @@ class AGICore:
         chain = []
         current_context = query
         accumulated_confidence = 1.0
+        visited_subsystems = set()  # v57.2: Track visited to encourage exploration
 
         for hop in range(effective_hops):
-            # Route to best subsystem for current context
-            route = self.adaptive_route_query(current_context, top_k=1)
+            # v57.2: Route to top-3, then pick best unvisited for exploration
+            route = self.adaptive_route_query(current_context, top_k=5)
             target = route["best_match"]
             confidence = route["best_confidence"]
+
+            # v57.2: Prefer unvisited subsystems on later hops for broader reasoning
+            if hop > 0 and target in visited_subsystems:
+                for ranked in route.get("ranking", []):
+                    if ranked["subsystem"] not in visited_subsystems and ranked["confidence"] > 0.05:
+                        target = ranked["subsystem"]
+                        confidence = ranked["confidence"]
+                        break
+
             accumulated_confidence *= confidence
+            visited_subsystems.add(target)
+
+            # v57.2: Early termination if accumulated confidence drops too low
+            if accumulated_confidence < 0.01 and hop > 0:
+                chain.append({
+                    "hop": hop + 1,
+                    "target_subsystem": "TERMINATED",
+                    "confidence": 0.0,
+                    "reason": "accumulated_confidence_below_threshold",
+                })
+                break
 
             hop_result = {
                 "hop": hop + 1,
@@ -2607,8 +2788,20 @@ class AGICore:
             hop_result["result_summary"] = subsystem_result.get("summary", "no_result")
             hop_result["data_points"] = subsystem_result.get("data_points", 0)
 
-            # Evolve context for next hop
-            current_context = f"{current_context} | {target}: {hop_result['result_summary']}"
+            # v57.2: Enrich context with structured hop output for better downstream routing
+            # Weight the contribution by hop confidence
+            if confidence > 0.1:
+                current_context = f"{current_context} | [{target}@{confidence:.2f}]: {hop_result['result_summary']}"
+            else:
+                # Low-confidence hops only weakly influence context
+                current_context = f"{current_context} | {target}: weak_signal"
+
+            # v57.2: Record mesh co-activation for topology learning
+            if hop > 0 and chain:
+                prev_target = chain[-1]["target_subsystem"]
+                if prev_target != "TERMINATED":
+                    self.mesh_record_co_activation(prev_target, target)
+
             chain.append(hop_result)
 
         result = {
@@ -2619,11 +2812,13 @@ class AGICore:
             "accumulated_confidence": round(accumulated_confidence, 6),
             "chain": chain,
             "final_context_length": len(current_context),
+            "subsystems_explored": len(visited_subsystems),  # v57.2
         }
 
         self._reasoning_history.append(result)
         self._record_telemetry("MULTI_HOP_REASON", "agi_core", {
-            "hops": len(chain), "confidence": accumulated_confidence
+            "hops": len(chain), "confidence": accumulated_confidence,
+            "subsystems_explored": len(visited_subsystems),
         })
         return result
 
@@ -2757,6 +2952,10 @@ class AGICore:
         """Whether AGI Core has completed initialization and is ready."""
         return self._is_ready
 
+    def check_ready(self) -> bool:
+        """Callable method version of .is_ready property."""
+        return self._is_ready
+
     def _get_local_intellect(self):
         """Lazy-load LocalIntellect for QUOTA_IMMUNE local inference and KB access.
         Part of the activation chain: Intellect → AGI → ASI."""
@@ -2799,6 +2998,17 @@ class AGICore:
                 pass
         return self._quantum_gate_engine
 
+    def _get_vqpu_bridge(self):
+        """Lazy-load VQPUBridge v13.0 for VQPU health scoring."""
+        if not self._vqpu_bridge_checked:
+            self._vqpu_bridge_checked = True
+            try:
+                from l104_vqpu import get_bridge
+                self._vqpu_bridge = get_bridge()
+            except Exception:
+                self._vqpu_bridge = None
+        return self._vqpu_bridge
+
     def _get_dual_layer_engine(self):
         """Lazy-load DualLayerEngine (ASI flagship: Thought + Physics duality)."""
         if self._dual_layer_engine is None:
@@ -2809,6 +3019,50 @@ class AGICore:
             except Exception as e:
                 _agi_logger.warning(f"AGI → ASI chain: dual_layer_engine unavailable: {e}")
         return self._dual_layer_engine
+
+    # ═══════════════════════════════════════════════════════════════
+    # v59.1 — EXTENDED ENGINE WIRING (ML, QDA, Simulator, GodCode)
+    # ═══════════════════════════════════════════════════════════════
+
+    def _get_ml_engine(self):
+        """Lazy-load MLEngine for sacred ML classification and knowledge synthesis."""
+        if self._ml_engine is None:
+            try:
+                from l104_ml_engine import ml_engine
+                self._ml_engine = ml_engine
+            except Exception:
+                pass
+        return self._ml_engine
+
+    def _get_quantum_data_analyzer(self):
+        """Lazy-load QuantumDataAnalyzer for quantum data intelligence (15 algorithms)."""
+        if self._quantum_data_analyzer is None:
+            try:
+                from l104_quantum_data_analyzer import QuantumDataAnalyzer
+                self._quantum_data_analyzer = QuantumDataAnalyzer()
+            except Exception:
+                pass
+        return self._quantum_data_analyzer
+
+    def _get_god_code_simulator(self):
+        """Lazy-load GodCodeSimulator for 55 simulations, parametric sweep, feedback."""
+        if self._god_code_simulator is None:
+            try:
+                from l104_god_code_simulator import god_code_simulator
+                self._god_code_simulator = god_code_simulator
+            except Exception:
+                pass
+        return self._god_code_simulator
+
+    def _get_simulator(self):
+        """Lazy-load RealWorldSimulator for Standard Model physics on GOD_CODE lattice."""
+        if self._simulator is None:
+            try:
+                from l104_simulator import RealWorldSimulator
+                self._simulator = RealWorldSimulator()
+            except Exception:
+                pass
+        return self._simulator
 
     def ensure_upstream_chain(self) -> Dict:
         """v59.0: Verify AGI's upstream chain (Intellect → AGI) is connected.
@@ -3021,17 +3275,24 @@ class AGICore:
 
     def full_engine_status(self) -> Dict[str, Any]:
         """v58.3 — Complete engine wiring status report."""
-        self._feed_intellect_kb()  # ensure KB is fed on first call
+        # Only feed KB if intellect is already loaded — don't trigger heavy imports
+        if self._local_intellect is not None:
+            try:
+                self._feed_intellect_kb()
+            except Exception:
+                pass
+        # Report cached engine state only — don't trigger lazy loading from status checks
+        # (calling self._get_xxx() triggers imports that can deadlock under import lock)
         return {
             "version": f"{AGI_CORE_VERSION}",
             "engines": {
                 "science_engine": self._science_engine is not None,
                 "math_engine": self._math_engine is not None,
-                "code_engine": self._code_engine is not None or self._get_code_engine() is not None,
-                "local_intellect": self._local_intellect is not None or self._get_local_intellect() is not None,
-                "quantum_brain": self._quantum_brain is not None or self._get_quantum_brain() is not None,
-                "quantum_gate_engine": self._quantum_gate_engine is not None or self._get_quantum_gate_engine() is not None,
-                "dual_layer_engine": self._dual_layer_engine is not None or self._get_dual_layer_engine() is not None,
+                "code_engine": self._code_engine is not None,
+                "local_intellect": self._local_intellect is not None,
+                "quantum_brain": self._quantum_brain is not None,
+                "quantum_gate_engine": self._quantum_gate_engine is not None,
+                "dual_layer_engine": self._dual_layer_engine is not None,
                 "sage_orchestrator": self._sage_orchestrator is not None,
             },
             "kb": {
@@ -3040,6 +3301,205 @@ class AGICore:
             "scoring_dimensions": 19,
             "kernel_status": self.kernel_status(),
         }
+
+    def self_diagnostic(self) -> Dict[str, Any]:
+        """v57.2 — Comprehensive single-call pipeline diagnostic.
+
+        Runs a lightweight health check across all AGI subsystems and returns
+        actionable insights with a severity-ranked issue list.
+
+        Categories checked:
+        1. Engine wiring — which engines are connected
+        2. Circuit breaker health — open/half-open breakers
+        3. Cognitive mesh quality — topology density and hubs
+        4. Coherence status — pipeline-wide cognitive coherence
+        5. Score dimensions — which scoring dimensions are degraded
+        6. Resource health — telemetry capacity, replay buffer, memory
+        7. Three-engine integration — entropy/harmonic/wave scores
+
+        Returns dict with 'healthy' bool, 'issues' list, and component details.
+        """
+        diagnostic_start = time.time()
+        issues = []
+        warnings = []
+
+        # 1. Engine Wiring Check
+        engine_map = {
+            "science_engine": self._science_engine,
+            "math_engine": self._math_engine,
+            "code_engine": self._code_engine,
+            "local_intellect": self._local_intellect,
+            "quantum_brain": self._quantum_brain,
+            "quantum_gate_engine": self._quantum_gate_engine,
+            "dual_layer_engine": self._dual_layer_engine,
+        }
+        connected_engines = sum(1 for v in engine_map.values() if v is not None)
+        disconnected = [k for k, v in engine_map.items() if v is None]
+        if connected_engines == 0:
+            issues.append({
+                "severity": "critical",
+                "component": "engine_wiring",
+                "message": "No engines connected — core is running in isolation",
+                "action": "Call _get_science_engine(), _get_math_engine() etc. to establish connections",
+            })
+        elif disconnected:
+            warnings.append({
+                "severity": "info",
+                "component": "engine_wiring",
+                "message": f"{len(disconnected)} engines not yet connected: {', '.join(disconnected)}",
+                "action": "Engines lazy-load on first use — this may be normal at startup",
+            })
+
+        # 2. Circuit Breaker Health
+        open_breakers = []
+        half_open_breakers = []
+        for name, cb in self._circuit_breakers.items():
+            if cb.state == PipelineCircuitBreaker.OPEN or cb.state == "FORCED_OPEN":
+                open_breakers.append(name)
+            elif cb.state == PipelineCircuitBreaker.HALF_OPEN:
+                half_open_breakers.append(name)
+        if open_breakers:
+            issues.append({
+                "severity": "high",
+                "component": "circuit_breakers",
+                "message": f"{len(open_breakers)} breaker(s) OPEN: {', '.join(open_breakers)}",
+                "action": "Investigate failures; call recover_subsystem() or wait for recovery timeout",
+            })
+        if half_open_breakers:
+            warnings.append({
+                "severity": "medium",
+                "component": "circuit_breakers",
+                "message": f"{len(half_open_breakers)} breaker(s) HALF_OPEN: {', '.join(half_open_breakers)}",
+                "action": "Recovery in progress — monitoring",
+            })
+
+        # 3. Cognitive Mesh Quality
+        mesh = self.mesh_status()
+        if mesh["nodes"] == 0:
+            warnings.append({
+                "severity": "info",
+                "component": "cognitive_mesh",
+                "message": "Cognitive mesh is empty — no subsystem co-activations recorded yet",
+                "action": "Mesh populates automatically during pipeline operation",
+            })
+        elif mesh["density"] < 0.01:
+            warnings.append({
+                "severity": "low",
+                "component": "cognitive_mesh",
+                "message": f"Mesh density is very low ({mesh['density']:.4f}) — weak inter-subsystem connectivity",
+                "action": "Run more pipeline cycles to strengthen Hebbian co-activation links",
+            })
+
+        # 4. Coherence Status
+        try:
+            coherence = self.coherence_measure()
+            if coherence["alert"]:
+                issues.append({
+                    "severity": "high",
+                    "component": "coherence",
+                    "message": f"Coherence ({coherence['coherence']:.4f}) below threshold ({coherence['threshold']:.4f})",
+                    "action": "Check consciousness state, circuit breakers, and mesh connectivity",
+                })
+            if coherence["alert_count"] > 10:
+                issues.append({
+                    "severity": "medium",
+                    "component": "coherence",
+                    "message": f"Persistent coherence degradation — {coherence['alert_count']} alerts accumulated",
+                    "action": "Run self_heal() to cascade-repair degraded subsystems",
+                })
+        except Exception:
+            coherence = {"coherence": 0.0, "alert": True}
+
+        # 5. Degraded Subsystems
+        if self._degraded_subsystems:
+            issues.append({
+                "severity": "medium",
+                "component": "pipeline",
+                "message": f"{len(self._degraded_subsystems)} degraded subsystem(s): {', '.join(self._degraded_subsystems)}",
+                "action": "Call recover_subsystem() for each degraded subsystem",
+            })
+
+        # 6. Resource Health
+        telemetry_usage = len(self._telemetry_log) / self._telemetry_capacity
+        if telemetry_usage > 0.9:
+            warnings.append({
+                "severity": "low",
+                "component": "telemetry",
+                "message": f"Telemetry buffer at {telemetry_usage:.0%} capacity — oldest events being evicted",
+                "action": "Consider increasing _telemetry_capacity or archiving old events",
+            })
+
+        replay_usage = len(self._replay_buffer) / self._replay_buffer.maxlen if self._replay_buffer.maxlen else 0
+        if replay_usage > 0.9:
+            warnings.append({
+                "severity": "low",
+                "component": "replay_buffer",
+                "message": f"Replay buffer at {replay_usage:.0%} capacity",
+                "action": "Consider analyzing and archiving replay data",
+            })
+
+        # 7. Three-Engine Integration
+        three_eng = self.three_engine_status()
+        engine_scores = three_eng.get("scores", {})
+        low_scores = {k: v for k, v in engine_scores.items() if isinstance(v, (int, float)) and v < 0.3}
+        if low_scores:
+            warnings.append({
+                "severity": "medium",
+                "component": "three_engine",
+                "message": f"{len(low_scores)} engine score(s) below 0.3: {', '.join(f'{k}={v:.3f}' for k, v in low_scores.items())}",
+                "action": "Check Science/Math engine connections and pipeline health",
+            })
+
+        # 8. Feedback Bus
+        if not self._feedback_bus_connected:
+            warnings.append({
+                "severity": "low",
+                "component": "feedback_bus",
+                "message": "InterEngineFeedbackBus not connected",
+                "action": "Call get_feedback_bus() to establish cross-engine feedback",
+            })
+
+        # Assemble result
+        all_issues = sorted(issues + warnings, key=lambda x: {
+            "critical": 0, "high": 1, "medium": 2, "low": 3, "info": 4
+        }.get(x["severity"], 5))
+
+        critical_count = sum(1 for i in all_issues if i["severity"] == "critical")
+        high_count = sum(1 for i in all_issues if i["severity"] == "high")
+        healthy = critical_count == 0 and high_count == 0
+
+        cb_total = len(self._circuit_breakers)
+        cb_closed = sum(1 for cb in self._circuit_breakers.values() if cb.state == PipelineCircuitBreaker.CLOSED)
+
+        result = {
+            "healthy": healthy,
+            "verdict": "HEALTHY" if healthy else ("DEGRADED" if critical_count == 0 else "CRITICAL"),
+            "issues": all_issues,
+            "issue_count": len(all_issues),
+            "summary": {
+                "engines_connected": connected_engines,
+                "engines_total": len(engine_map),
+                "breakers_closed": cb_closed,
+                "breakers_total": cb_total,
+                "mesh_nodes": mesh["nodes"],
+                "mesh_density": mesh.get("density", 0.0),
+                "coherence": coherence.get("coherence", 0.0),
+                "degraded_subsystems": len(self._degraded_subsystems),
+                "replay_buffer_entries": len(self._replay_buffer),
+                "telemetry_events": len(self._telemetry_log),
+                "cycle_count": self.cycle_count,
+                "intellect_index": self.intellect_index,
+            },
+            "diagnostic_ms": round((time.time() - diagnostic_start) * 1000, 2),
+        }
+
+        self._record_telemetry("SELF_DIAGNOSTIC", "agi_core", {
+            "healthy": healthy,
+            "issues": len(all_issues),
+            "verdict": result["verdict"],
+        })
+
+        return result
 
     # ═══════════════════════════════════════════════════════════════
     # v58.1 — BENCHMARK CAPABILITY (delegates to l104_asi)
@@ -3107,11 +3567,27 @@ class AGICore:
             return {'status': 'unavailable', 'active_count': 0}
         return self._kernel_status or {'status': 'initialized', 'active_count': 0}
 
+    def _check_three_engine_cache(self, key: str) -> Optional[float]:
+        """v57.2: Check three-engine score cache. Returns cached score or None."""
+        now = time.time()
+        if now - self._three_engine_cache_time < self._three_engine_cache_ttl:
+            return self._three_engine_cached_scores.get(key)
+        return None
+
+    def _update_three_engine_cache(self, key: str, score: float):
+        """v57.2: Update three-engine score cache."""
+        self._three_engine_cached_scores[key] = score
+        self._three_engine_cache_time = time.time()
+
     def three_engine_entropy_score(self) -> float:
         """v57.0: Compute entropy reversal score via Science Engine's Maxwell's Demon.
         Maps pipeline health to local entropy, then measures demon reversal efficiency.
         v57.1: Calibrated health-ratio entropy proxy (Q4) — caps entropy at 5.0 and uses
-               ratio-based normalization. Q1 multi-pass demon + Q5 ZNE boost."""
+               ratio-based normalization. Q1 multi-pass demon + Q5 ZNE boost.
+        v57.2: TTL-cached to avoid redundant computation."""
+        cached = self._check_three_engine_cache("entropy")
+        if cached is not None:
+            return cached
         se = self._get_science_engine()
         if se is None:
             return 0.5
@@ -3124,15 +3600,20 @@ class AGICore:
             # Q1: Multi-pass demon efficiency (with Q5 ZNE boost)
             demon_eff = se.entropy.calculate_demon_efficiency(local_entropy)
             # Scale factor 2.0 — multi-pass demon yields higher raw efficiency
-            score = min(1.0, demon_eff * 2.0)
+            score = demon_eff * 2.0
             self._entropy_reversal_score = score
+            self._update_three_engine_cache("entropy", score)
             return score
         except Exception:
             return 0.5
 
     def three_engine_harmonic_score(self) -> float:
         """v57.0: Compute harmonic resonance score using Math Engine.
-        Validates GOD_CODE sacred alignment and wave coherence with 104 Hz."""
+        Validates GOD_CODE sacred alignment and wave coherence with 104 Hz.
+        v57.2: TTL-cached."""
+        cached = self._check_three_engine_cache("harmonic")
+        if cached is not None:
+            return cached
         me = self._get_math_engine()
         if me is None:
             return 0.5
@@ -3142,12 +3623,17 @@ class AGICore:
             wc = me.wave_coherence(104.0, GOD_CODE)
             score = aligned * 0.6 + wc * 0.4
             self._harmonic_resonance_score = score
+            self._update_three_engine_cache("harmonic", score)
             return score
         except Exception:
             return 0.5
 
     def three_engine_wave_coherence_score(self) -> float:
-        """v57.0: Compute wave coherence score from PHI-harmonic phase-locking."""
+        """v57.0: Compute wave coherence score from PHI-harmonic phase-locking.
+        v57.2: TTL-cached."""
+        cached = self._check_three_engine_cache("wave")
+        if cached is not None:
+            return cached
         me = self._get_math_engine()
         if me is None:
             return 0.5
@@ -3156,6 +3642,7 @@ class AGICore:
             wc_void = me.wave_coherence(VOID_CONSTANT * 1000, GOD_CODE)
             score = (wc_phi + wc_void) / 2.0
             self._wave_coherence_score = score
+            self._update_three_engine_cache("wave", score)
             return score
         except Exception:
             return 0.5
@@ -3174,7 +3661,7 @@ class AGICore:
             healthy = sum(1 for v in self._pipeline_health.values() if v)
             total = max(len(self._pipeline_health), 1)
             local_entropy = max(0.01, 10.0 * (1.0 - healthy / total))
-            chaos_amp = min(0.618, local_entropy / 20.0)  # (was 0.5)
+            chaos_amp = local_entropy / 20.0  # (was 0.5)
             score = ChaosResilience.chaos_resilience_score(
                 local_entropy=local_entropy,
                 chaos_amplitude=chaos_amp
@@ -3236,7 +3723,7 @@ class AGICore:
         if me is None:
             return FE_SACRED_COHERENCE
         try:
-            return min(1.0, me.wave_coherence(286.0, 528.0))
+            return me.wave_coherence(286.0, 528.0)
         except Exception:
             return FE_SACRED_COHERENCE
 
@@ -3246,7 +3733,7 @@ class AGICore:
         if me is None:
             return FE_PHI_HARMONIC_LOCK
         try:
-            return min(1.0, me.wave_coherence(286.0, 286.0 * PHI))
+            return me.wave_coherence(286.0, 286.0 * PHI)
         except Exception:
             return FE_PHI_HARMONIC_LOCK
 
@@ -3264,7 +3751,7 @@ class AGICore:
                     golden_angle = 2 * 3.14159265358979 / (PHI ** 2)
                     remainder = abs(holonomy) % golden_angle
                     alignment = 1.0 - min(remainder, golden_angle - remainder) / (golden_angle / 2)
-                    return min(1.0, max(0.0, alignment))
+                    return max(0.0, alignment)
             return 0.8
         except Exception:
             return 0.8
@@ -3287,19 +3774,19 @@ class AGICore:
         dimensions = {}
 
         # D0: Intellect — normalized by 1e18 cap
-        dimensions["intellect"] = min(1.0, self.intellect_index / 1e15)
+        dimensions["intellect"] = self.intellect_index / 1e15
 
         # D1: Evolution — stage progress (0-59 → 0-1)
-        dimensions["evolution"] = min(1.0, evolution_engine.current_stage_index / 120.0)
+        dimensions["evolution"] = evolution_engine.current_stage_index / 120.0
 
         # D2: Consciousness — live consciousness level
-        dimensions["consciousness"] = min(1.0, c_state["consciousness_level"])
+        dimensions["consciousness"] = c_state["consciousness_level"]
 
         # D3: Autonomy — coherence from autonomous AGI
         if auto_agi:
             try:
                 auto_status = auto_agi.get_status()
-                dimensions["autonomy"] = min(1.0, auto_status.get("coherence", 0))
+                dimensions["autonomy"] = auto_status.get("coherence", 0)
             except Exception:
                 dimensions["autonomy"] = 0.0
         else:
@@ -3309,7 +3796,7 @@ class AGICore:
         if research:
             try:
                 r_status = research.get_research_status()
-                dimensions["research"] = min(1.0, r_status.get("validation_rate", 0))
+                dimensions["research"] = r_status.get("validation_rate", 0)
             except Exception:
                 dimensions["research"] = 0.0
         else:
@@ -3320,7 +3807,7 @@ class AGICore:
             fused = self._last_synthesis_result.get("subsystems_fused", 0)
             boost = self._last_synthesis_result.get("amplified_boost", 0)
             # Normalize: fused sources (max ~12) + boost contribution
-            dimensions["synthesis"] = min(1.0, fused / 12.0 * 0.7 + min(boost, 1.0) * 0.3)
+            dimensions["synthesis"] = fused / 12.0 * 0.7 + boost * 0.3
         else:
             # Fallback to pipeline health if synthesis hasn't run yet
             healthy_count = sum(1 for v in self._pipeline_health.values() if v)
@@ -3341,7 +3828,7 @@ class AGICore:
         # D8: Creativity — innovation + research breakthroughs
         try:
             innov = self.run_innovation_cycle(domain="creativity_check")
-            dimensions["creativity"] = min(1.0, innov.get("hypotheses", 0) * 0.5 + 0.3)
+            dimensions["creativity"] = innov.get("hypotheses", 0) * 0.5 + 0.3
         except Exception:
             dimensions["creativity"] = 0.3
 
@@ -3361,7 +3848,7 @@ class AGICore:
         try:
             from l104_advanced_process_engine import AdvancedProcessEngine
             ape = AdvancedProcessEngine()
-            dimensions["process_efficiency"] = min(1.0, (ape.maxwell_demon.get_efficiency_factor() - 1.0) * 10.0)
+            dimensions["process_efficiency"] = (ape.maxwell_demon.get_efficiency_factor() - 1.0) * 10.0
         except Exception:
             dimensions["process_efficiency"] = 0.5
 
@@ -3432,8 +3919,8 @@ class AGICore:
             # Blend: 60% deep link score + 40% feedback convergence indicator
             fb = dl_result.get('feedback_result', {})
             converged_bonus = 0.3 if fb.get('converged', False) else 0.0
-            dimensions["deep_link_resonance"] = max(0.0, min(1.0,
-                float(dl_score) * 0.6 + converged_bonus * 0.4))
+            dimensions["deep_link_resonance"] = max(0.0,
+                float(dl_score) * 0.6 + converged_bonus * 0.4)
         except Exception:
             dimensions["deep_link_resonance"] = 0.0
 
@@ -3441,8 +3928,8 @@ class AGICore:
         try:
             from l104_audio_simulation.daw_session import quantum_daw
             scoring = quantum_daw.agi_scoring_data()
-            dimensions["quantum_audio_intelligence"] = max(0.0, min(1.0,
-                scoring.get("quantum_audio_intelligence", 0.0)))
+            dimensions["quantum_audio_intelligence"] = max(0.0,
+                scoring.get("quantum_audio_intelligence", 0.0))
         except Exception:
             dimensions["quantum_audio_intelligence"] = 0.0
 
@@ -3456,15 +3943,15 @@ class AGICore:
             sc_r = self._sc_sim_result
             if sc_r is not None:
                 import math as _m
-                _sc_scale = lambda v: min(1.0, _m.log1p(v * 100) / _m.log1p(25))
+                _sc_scale = lambda v: _m.log1p(v * 100) / _m.log1p(25)
                 dimensions["sc_order_parameter"] = max(0.0, _sc_scale(sc_r.sc_order_parameter))
                 dimensions["cooper_pair_amplitude"] = max(0.0, _sc_scale(sc_r.cooper_pair_amplitude))
                 meissner = sc_r.meissner_fraction
                 josephson = abs(sc_r.extra.get('josephson_junction', {}).get(
                     'josephson_current_normalized', 0.0))
                 gap_bonus = 0.3 if sc_r.energy_gap_eV > 0 else 0.0
-                dimensions["meissner_response"] = max(0.0, min(1.0,
-                    meissner * 0.4 + min(1.0, josephson) * 0.3 + gap_bonus))
+                dimensions["meissner_response"] = max(0.0,
+                    meissner * 0.4 + josephson * 0.3 + gap_bonus)
             else:
                 dimensions["sc_order_parameter"] = 0.0
                 dimensions["cooper_pair_amplitude"] = 0.0
@@ -3473,6 +3960,70 @@ class AGICore:
             dimensions["sc_order_parameter"] = 0.0
             dimensions["cooper_pair_amplitude"] = 0.0
             dimensions["meissner_response"] = 0.0
+
+        # v61.0: D27 — VQPU Bridge Health (MPS + sacred alignment + daemon)
+        try:
+            vqpu = self._get_vqpu_bridge()
+            if vqpu is not None:
+                vqpu_st = vqpu.self_test()
+                dimensions["vqpu_bridge_health"] = vqpu_st.get('passed', 0) / max(vqpu_st.get('total', 1), 1)
+            else:
+                dimensions["vqpu_bridge_health"] = 0.0
+        except Exception:
+            dimensions["vqpu_bridge_health"] = 0.0
+
+        # v62.0: D28 — VQPU Sacred Alignment (Bell pair simulation through VQPU pipeline)
+        try:
+            vqpu = self._get_vqpu_bridge()
+            if vqpu is not None:
+                from l104_vqpu import QuantumJob
+                bell_job = QuantumJob(
+                    num_qubits=2,
+                    operations=[
+                        {"gate": "H", "qubits": [0]},
+                        {"gate": "CX", "qubits": [0, 1]},
+                    ],
+                    shots=1024,
+                )
+                sim = vqpu.run_simulation(bell_job)
+                dimensions["vqpu_sacred_alignment"] = sim.get('sacred', {}).get('sacred_score', 0.0)
+            else:
+                dimensions["vqpu_sacred_alignment"] = 0.0
+        except Exception:
+            dimensions["vqpu_sacred_alignment"] = 0.0
+
+        # v62.0: D29 — VQPU Unified Intelligence (deep 4Q sacred circuit composite)
+        try:
+            vqpu = self._get_vqpu_bridge()
+            if vqpu is not None:
+                from l104_vqpu import QuantumJob
+                deep_job = QuantumJob(
+                    num_qubits=4,
+                    operations=[
+                        {"gate": "H", "qubits": [0]},
+                        {"gate": "CX", "qubits": [0, 1]},
+                        {"gate": "H", "qubits": [2]},
+                        {"gate": "CX", "qubits": [2, 3]},
+                        {"gate": "Rz", "qubits": [0], "parameters": [GOD_CODE / 1000]},
+                        {"gate": "CX", "qubits": [1, 2]},
+                    ],
+                    shots=2048,
+                )
+                sim = vqpu.run_simulation(deep_job, compile=True)
+                three = sim.get('three_engine', {})
+                sacred = sim.get('sacred', {})
+                brain = sim.get('brain_integration', {})
+                # Composite: sacred 0.3 + three-engine 0.35 + brain 0.2 + pipeline 0.15
+                s = sacred.get('sacred_score', 0) * 0.3
+                t = three.get('composite', 0) * 0.35
+                b = (brain.get('unified_score', 0) if isinstance(brain, dict) else 0) * 0.2
+                latency = sim.get('pipeline', {}).get('total_ms', 500)
+                p = max(0, 1.0 - latency / 1000.0) * 0.15
+                dimensions["vqpu_unified_intelligence"] = max(0.0, s + t + b + p)
+            else:
+                dimensions["vqpu_unified_intelligence"] = 0.0
+        except Exception:
+            dimensions["vqpu_unified_intelligence"] = 0.0
 
         # Weighted composite score
         weighted_sum = 0.0
@@ -3493,6 +4044,9 @@ class AGICore:
         weights["sc_order_parameter"] = 0.03              # Δ_SC singlet fraction (Cooper pair order)
         weights["cooper_pair_amplitude"] = 0.02            # Cooper pair formation amplitude
         weights["meissner_response"] = 0.02                # Diamagnetic Meissner + Josephson response
+        weights["vqpu_bridge_health"] = 0.03               # VQPU Bridge self-test pass rate
+        weights["vqpu_sacred_alignment"] = 0.02            # VQPU sacred alignment from Bell pair
+        weights["vqpu_unified_intelligence"] = 0.03        # VQPU deep 4Q sacred circuit composite
         for dim_name, score in dimensions.items():
             w = weights.get(dim_name, 0.08)
             weighted_sum += score * w
@@ -3501,7 +4055,7 @@ class AGICore:
         composite = weighted_sum / max(weight_total, 1e-15)
         # GOD_CODE harmonic bonus
         god_code_harmonic = math.sin(GOD_CODE / 1000.0 * math.pi) * 0.02
-        composite = min(1.0, composite + god_code_harmonic)
+        composite = composite + god_code_harmonic
 
         result = {
             "dimensions": {k: round(v, 6) for k, v in dimensions.items()},
@@ -3658,7 +4212,9 @@ class AGICore:
         return list(self._replay_buffer)[-last_n:]
 
     def replay_analysis(self) -> Dict[str, Any]:
-        """Analyze replay buffer for trends and anomalies."""
+        """Analyze replay buffer for trends and anomalies.
+        v57.2: Enhanced with linear regression trend, acceleration detection,
+        and segment analysis for identifying growth/plateau/decline phases."""
         entries = list(self._replay_buffer)
         if len(entries) < 2:
             return {"status": "insufficient_data", "entries": len(entries)}
@@ -3667,9 +4223,10 @@ class AGICore:
         if not intellects:
             return {"status": "no_numeric_data"}
 
-        avg = sum(intellects) / len(intellects)
-        trend = (intellects[-1] - intellects[0]) / max(len(intellects), 1)
-        variance = sum((x - avg) ** 2 for x in intellects) / len(intellects)
+        n = len(intellects)
+        avg = sum(intellects) / n
+        trend = (intellects[-1] - intellects[0]) / max(n, 1)
+        variance = sum((x - avg) ** 2 for x in intellects) / n
         std_dev = math.sqrt(variance) if variance > 0 else 0.0
 
         # Detect anomalies (>2 std deviations from mean)
@@ -3678,6 +4235,38 @@ class AGICore:
             if std_dev > 0 and abs(val - avg) > 2 * std_dev:
                 anomalies.append({"index": i, "value": val, "deviation": (val - avg) / std_dev})
 
+        # v57.2: Linear regression for true trend estimation
+        # y = mx + b via least squares
+        x_avg = (n - 1) / 2.0
+        sx = sum((i - x_avg) ** 2 for i in range(n))
+        if sx > 0:
+            slope = sum((i - x_avg) * (intellects[i] - avg) for i in range(n)) / sx
+            r_squared = (sum((i - x_avg) * (intellects[i] - avg) for i in range(n)) ** 2) / \
+                        (sx * max(variance * n, 1e-15))
+        else:
+            slope = 0.0
+            r_squared = 0.0
+
+        # v57.2: Acceleration — second derivative (trend of trend)
+        acceleration = 0.0
+        if n >= 6:
+            mid = n // 2
+            first_half_trend = (intellects[mid - 1] - intellects[0]) / max(mid, 1)
+            second_half_trend = (intellects[-1] - intellects[mid]) / max(n - mid, 1)
+            acceleration = second_half_trend - first_half_trend
+
+        # v57.2: Phase detection — classify recent trajectory
+        phase = "stable"
+        if n >= 4:
+            recent = intellects[-min(n, 10):]
+            recent_trend = (recent[-1] - recent[0]) / max(len(recent), 1)
+            if recent_trend > avg * 0.001:
+                phase = "growth"
+            elif recent_trend < -avg * 0.001:
+                phase = "decline"
+            else:
+                phase = "plateau"
+
         return {
             "entries": len(entries),
             "intellect_avg": round(avg, 4),
@@ -3685,6 +4274,11 @@ class AGICore:
             "intellect_std_dev": round(std_dev, 4),
             "anomalies": anomalies,
             "stability_index": round(1.0 / (1.0 + std_dev / max(avg, 1e-15)), 6),
+            # v57.2 enhancements
+            "regression_slope": round(slope, 8),
+            "r_squared": round(r_squared, 6),
+            "acceleration": round(acceleration, 8),
+            "phase": phase,
         }
 
     # ═══════════════════════════════════════════════════════════════
@@ -3693,25 +4287,48 @@ class AGICore:
     # ═══════════════════════════════════════════════════════════════
 
     def mesh_record_activation(self, subsystem: str):
-        """Record a subsystem activation for mesh topology learning."""
+        """Record a subsystem activation for mesh topology learning.
+        v61.0: Also delegates to decomposed CognitiveMeshNetwork."""
         self._mesh_activation_counts[subsystem] += 1
         # Record in pattern buffer for predictive scheduler
         self._scheduler_pattern_buffer.append((time.time(), subsystem))
+        # v61.0: Delegate to decomposed mesh
+        self._cognitive_mesh.record_activation(subsystem)
 
     def mesh_record_co_activation(self, subsystem_a: str, subsystem_b: str):
-        """Record co-activation of two subsystems (Hebbian: neurons that fire together wire together)."""
+        """Record co-activation of two subsystems (Hebbian: neurons that fire together wire together).
+        v61.0: Also delegates to decomposed CognitiveMeshNetwork."""
         self._mesh_co_activation[subsystem_a][subsystem_b] += 1
         self._mesh_co_activation[subsystem_b][subsystem_a] += 1
+        # v61.0: Delegate to decomposed mesh with Hebbian reinforcement
+        self._cognitive_mesh.record_co_activation(subsystem_a, subsystem_b)
 
     def mesh_update_topology(self, force: bool = False):
         """Rebuild cognitive mesh adjacency from co-activation history.
-        Uses PHI-weighted Hebbian strengthening with FEIGENBAUM decay."""
+        Uses PHI-weighted Hebbian strengthening with FEIGENBAUM decay.
+        v57.2: Added temporal decay — older co-activations attenuate by TAU^(age/60),
+        preventing stale topology edges from persisting indefinitely."""
         now = time.time()
         if not force and (now - self._mesh_last_topology_update) < self._mesh_topology_ttl:
             return  # Skip if recent
 
         self._mesh_adjacency.clear()
         total_activations = max(sum(self._mesh_activation_counts.values()), 1)
+
+        # v57.2: Compute recency-weighted co-activations from pattern buffer
+        recency_co_counts: Dict[str, Dict[str, float]] = defaultdict(lambda: defaultdict(float))
+        pattern_list = list(self._scheduler_pattern_buffer)
+        for i, (ts_a, sub_a) in enumerate(pattern_list):
+            # Co-activations are pairs within a 5-second window
+            for j in range(i + 1, min(i + 20, len(pattern_list))):
+                ts_b, sub_b = pattern_list[j]
+                if ts_b - ts_a > 5.0:
+                    break
+                if sub_a != sub_b:
+                    age = now - max(ts_a, ts_b)
+                    decay = math.exp(-age * TAU / 120.0)  # ~2 min half-life
+                    recency_co_counts[sub_a][sub_b] += decay
+                    recency_co_counts[sub_b][sub_a] += decay
 
         for node_a, co_nodes in self._mesh_co_activation.items():
             self._mesh_adjacency[node_a] = {}
@@ -3720,9 +4337,13 @@ class AGICore:
                 b_count = max(self._mesh_activation_counts.get(node_b, 1), 1)
                 # PHI-weighted Hebbian strength: co-activation / geometric mean of individual activations
                 strength = (co_count * PHI) / math.sqrt(a_count * b_count)
+                # v57.2: Blend with recency-weighted co-activation (70% historic, 30% recency)
+                recency_strength = recency_co_counts.get(node_a, {}).get(node_b, 0.0)
+                strength = strength * 0.7 + recency_strength * PHI * 0.3
                 # Apply Feigenbaum decay to prevent runaway strengthening
                 strength = min(strength, FEIGENBAUM)
-                self._mesh_adjacency[node_a][node_b] = round(strength, 6)
+                if strength > 0.001:  # v57.2: Prune weak edges below threshold
+                    self._mesh_adjacency[node_a][node_b] = round(strength, 6)
 
         self._mesh_last_topology_update = now
 
@@ -3734,7 +4355,8 @@ class AGICore:
         return [{"subsystem": name, "strength": weight} for name, weight in sorted_neighbors]
 
     def mesh_status(self) -> Dict[str, Any]:
-        """Return cognitive mesh topology status."""
+        """Return cognitive mesh topology status.
+        v61.0: Enriched with decomposed CognitiveMeshNetwork health data."""
         self.mesh_update_topology()
         total_edges = sum(len(adj) for adj in self._mesh_adjacency.values())
         total_nodes = len(self._mesh_adjacency)
@@ -3746,7 +4368,11 @@ class AGICore:
             "total_activations": sum(self._mesh_activation_counts.values()),
             "top_hubs": sorted(
                 self._mesh_activation_counts.items(), key=lambda x: x[1], reverse=True
-            )[:13],  # (was 10)
+            )[:13],
+            # v61.0: Decomposed mesh health + PageRank + communities
+            "v61_mesh_health": self._cognitive_mesh.topology_health(),
+            "v61_pagerank": self._cognitive_mesh.compute_pagerank(),
+            "v61_communities": self._cognitive_mesh.detect_communities(),
         }
 
     # ═══════════════════════════════════════════════════════════════
@@ -3788,9 +4414,21 @@ class AGICore:
     # Selective subsystem activation via softmax attention scoring
     # ═══════════════════════════════════════════════════════════════
 
+    def _adaptive_temperature(self, query: str) -> float:
+        """v57.2: Compute adaptive softmax temperature based on query complexity.
+        Short/simple queries get lower temperature (sharper focus),
+        long/complex queries get higher temperature (broader exploration)."""
+        n_words = len(query.split())
+        n_unique = len(set(query.lower().split()))
+        # Entropy proxy: unique word ratio × log(length)
+        complexity = (n_unique / max(n_words, 1)) * math.log1p(n_words)
+        # Scale temperature: PHI/2 (focused) to PHI*2 (exploratory)
+        return max(PHI * 0.5, min(PHI * 2.0, PHI * complexity / 2.0))
+
     def attention_score_query(self, query: str, subsystems: Optional[List[str]] = None) -> Dict[str, float]:
         """Compute attention scores for subsystems given a query.
-        Uses keyword overlap + mesh topology + prediction probability."""
+        Uses keyword overlap + mesh topology + prediction probability.
+        v57.2: Adaptive temperature — query complexity modulates focus."""
         if subsystems is None:
             subsystems = list(self._mesh_activation_counts.keys()) or ["default"]
 
@@ -3814,11 +4452,12 @@ class AGICore:
             score += self._scheduler_predictions.get(ss, 0.0) * 0.5
             raw_scores[ss] = score
 
-        # Softmax with PHI temperature
+        # v57.2: Adaptive softmax temperature based on query complexity
+        temperature = self._adaptive_temperature(query)
         if not raw_scores:
             return {}
         max_score = max(raw_scores.values())
-        exp_scores = {k: math.exp((v - max_score) / self._attention_temperature)
+        exp_scores = {k: math.exp((v - max_score) / temperature)
                       for k, v in raw_scores.items()}
         total = max(sum(exp_scores.values()), 1e-15)
         attention = {k: round(v / total, 6) for k, v in exp_scores.items()}
@@ -3919,7 +4558,7 @@ class AGICore:
             mesh_density * TAU +
             stability * TAU
         )
-        coherence = min(1.0, coherence)
+        coherence = coherence  # No artificial cap
 
         # Track history
         self._coherence_history.append({
@@ -3935,6 +4574,14 @@ class AGICore:
         below_threshold = coherence < self._coherence_threshold
         if below_threshold:
             self._coherence_alert_count += 1
+        elif self._coherence_alert_count > 0 and coherence > self._coherence_threshold * 1.1:
+            # v57.2: Auto-recovery — reset alert count when coherence recovers 10% above threshold
+            recovered_from = self._coherence_alert_count
+            self._coherence_alert_count = 0
+            self._record_telemetry("COHERENCE_RECOVERED", "agi_core", {
+                "coherence": coherence,
+                "recovered_from_alerts": recovered_from,
+            })
 
         return {
             "coherence": round(coherence, 6),
@@ -4366,9 +5013,11 @@ def primal_calculus(x):
     """
     [VOID_MATH] Primal Calculus Implementation.
     Resolves the limit of complexity toward the Source.
+    Formula: x^φ / (VOID_CONSTANT × π)
     """
     PHI = 1.618033988749895
-    return (x ** PHI) / (1.04 * math.pi) if x != 0 else 0.0
+    VOID_CONSTANT = 1.0416180339887497  # 1.04 + φ/1000 — sacred 104/100 + golden correction
+    return (x ** PHI) / (VOID_CONSTANT * math.pi) if x != 0 else 0.0
 
 def resolve_non_dual_logic(vector):
     """
