@@ -1,0 +1,14 @@
+{'type': 'class', 'name': 'TranscendentalProver', 'methods': ['irrationality_measure', 'algebraic_independence_test', 'verify_e_transcendence', 'verify_pi_transcendence', 'verify_euler_mascheroni_status', 'full_analysis'], 'bases': 0, 'description': 'Transcendental prover', 'docstring': '"""Transcendental prover.\n\nMethods: irrationality_measure, algebraic_independence_test, verify_e_transcendence, verify_pi_transcendence, verify_euler_mascheroni_status, full_analysis\n"""'}
+
+{'type': 'function', 'name': 'irrationality_measure', 'params': ['value', 'name', 'max_q'], 'param_types': {'value': 'D', 'name': 'str', 'max_q': 'int'}, 'return_type': 'Dict', 'has_return': True, 'decorators': [], 'docstring': '"""Irrationality measure.\n\nArgs:\n        value (D): Description of value\n    name (str): Description of name\n    max_q (int): Description of max_q\n\nReturns:\n    Dict\n\nRaises:\n    None\n"""', 'description': 'Irrationality measure'}
+
+{'type': 'function', 'name': 'algebraic_independence_test', 'params': ['values', 'names'], 'param_types': {'values': "Subscript(value=Name(id='List', ctx=Load()), slice=Name(id='D', ctx=Load()), ctx=Load())", 'names': "Subscript(value=Name(id='List', ctx=Load()), slice=Name(id='str', ctx=Load()), ctx=Load())"}, 'return_type': 'Dict', 'has_return': True, 'decorators': [], 'docstring': '"""Algebraic independence test.\n\nArgs:\n        values (Subscript(value=Name(id=\'List\', ctx=Load()), slice=Name(id=\'D\', ctx=Load()), ctx=Load())): Description of values\n    names (Subscript(value=Name(id=\'List\', ctx=Load()), slice=Name(id=\'str\', ctx=Load()), ctx=Load())): Description of names\n\nReturns:\n    Dict\n\nRaises:\n    None\n"""', 'description': 'Algebraic independence test'}
+
+{'type': 'function', 'name': 'verify_e_transcendence', 'params': [], 'param_types': {}, 'return_type': 'Dict', 'has_return': True, 'decorators': [], 'docstring': '"""Verify e transcendence.\n\nArgs:\n        None\n\nReturns:\n    Dict\n\nRaises:\n    None\n"""', 'description': 'Verify e transcendence'}
+
+{'type': 'function', 'name': 'verify_pi_transcendence', 'params': [], 'param_types': {}, 'return_type': 'Dict', 'has_return': True, 'decorators': [], 'docstring': '"""Verify pi transcendence.\n\nArgs:\n        None\n\nReturns:\n    Dict\n\nRaises:\n    None\n"""', 'description': 'Verify pi transcendence'}
+
+{'type': 'function', 'name': 'verify_euler_mascheroni_status', 'params': [], 'param_types': {}, 'return_type': 'Dict', 'has_return': True, 'decorators': [], 'docstring': '"""Verify euler mascheroni status.\n\nArgs:\n        None\n\nReturns:\n    Dict\n\nRaises:\n    None\n"""', 'description': 'Verify euler mascheroni status'}
+
+{'type': 'function', 'name': 'full_analysis', 'params': [], 'param_types': {}, 'return_type': 'Dict', 'has_return': True, 'decorators': [], 'docstring': '"""Full analysis.\n\nArgs:\n        None\n\nReturns:\n    Dict\n\nRaises:\n    None\n"""', 'description': 'Full analysis'}
+

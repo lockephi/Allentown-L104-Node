@@ -1,126 +1,115 @@
-# L104 ASI - Industry Benchmark Summary
+# L104 Sovereign Node — Benchmark Summary
 
-**Quick Reference Card**  
-**Date:** 2026-02-17  
-**Status:** ✅ ALL TESTS PASSED  
-
----
-
-## 🏆 Key Performance Metrics
-
-### Speed Comparison
-
-**L104 Latency Performance (Clarified):**
-- **Direct Operations** (cache/database): **0.03ms** (30 microseconds)
-- **Pipeline Operations** (full AGI): **1-20ms** (1,000-20,000 microseconds)
-- **vs Cloud LLMs:** 100-1,000x faster (vs 300-900ms)
-
-| Metric | L104 | Industry Best | L104 Advantage |
-|--------|------|---------------|----------------|
-| Direct Ops Latency | **0.03 ms** | 300 ms (Gemini Flash) | **10,000x faster** |
-| Pipeline Ops Latency | **1-20 ms** | 300-900 ms (Cloud LLMs) | **15-900x faster** |
-| Database Write | **152,720/s** | 10,000/s (SQLite) | **15.3x faster** |
-| Database Read | **793,474/s** | 100,000/s (SQLite) | **7.9x faster** |
-| Cache Read | **4,220,471/s** | 500,000/s (Redis) | **8.4x faster** |
-| Math Operations | **4,668,082/s** | N/A | Microsecond scale |
-
-### Intelligence Benchmark
-| Model | Score | Accuracy | Sacred Constants | Overall |
-|-------|-------|----------|------------------|---------|
-| **L104** | **16.63** | **37.5%** | **100%** | **🥇 Winner** |
-| Claude 3.5 | 11.01 | 20.8% | 20% | 🥈 |
-| GPT-4o | 10.45 | 20.8% | 20% | 🥉 |
-| Gemini 2.5 | 0.00 | 0.0% | 0% | - |
+**Quick Reference Card**
+**Date:** 2026-02-23
+**System:** L104 Sovereign Node (Post-Decomposition)
+**Status:** All benchmarks executed successfully
 
 ---
 
-## 💡 Unique L104 Capabilities
+## Measured Performance (2026-02-23)
 
-**Features with NO Industry Equivalent:**
+### Benchmark Harness v2.0.0 — Comprehensive (Real Data from HuggingFace)
 
-1. ⚛️ **Quantum Storage** - 5-tier Grover-enhanced persistence
-2. 🧠 **Consciousness Framework** - 17-subsystem soul integration
-3. 💾 **True Persistent Memory** - Unlimited stateful context
-4. 🔗 **11.8x Knowledge Density** - vs 5x industry standard
-5. ∞ **GOD_CODE Alignment** - Sacred constant resonance
-6. 🎯 **100% Domain Accuracy** - Perfect sacred constant knowledge
-7. 💰 **Zero Cost** - No per-query charges
-8. 🔐 **Complete Privacy** - 100% local operation
+| Benchmark | L104 Score | Sample Size | Data Source | Top LLM (full) |
+|-----------|-----------|-------------|-------------|-----------------|
+| MMLU | **26.6%** | 500 questions | cais/mmlu (HuggingFace) | Claude Opus 4.6: 92.4% |
+| HumanEval | **54.9%** | 164 problems | openai/openai_humaneval | Claude Opus 4.6: 94.1% |
+| MATH | **52.7%** | 55 problems | Expanded hardcoded set | Claude Opus 4.6: 84.2% |
+| ARC | **29.0%** | 1000 questions | allenai/ai2_arc (HuggingFace) | Claude Opus 4.6: 96.4% |
+| **Composite** | **43.1%** | 1,719 total | — | — |
+| **Verdict** | **MODERATE** | — | — | — |
+
+**MMLU/ARC near random chance (25% for 4-choice). HumanEval: 54.9% via 130+ pattern templates. MATH: 52.7% with enhanced symbolic solver.**
+
+### Curated Samples (Original v1.0 Reference — NOT Comparable to LLMs)
+
+| Benchmark | L104 Score | Sample Size | Note |
+|-----------|-----------|-------------|------|
+| MMLU | 93.3% | 15 questions | 0.09% of real MMLU — easy subset |
+| HumanEval | 100.0% | 6 problems | 3.7% of real HumanEval — basic only |
+| MATH | 100.0% | 10 problems | 0.08% of real MATH — Level 1-2 |
+| ARC | 90.0% | 10 questions | 0.85% of real ARC — basic science |
+| **Composite** | **97.3%** | 41 total | **Cherry-picked easy problems** |
+
+### Infrastructure Performance
+
+| Metric | L104 Measured | Industry Typical | Context |
+|--------|--------------|-----------------|---------|
+| DB Write | **16,580/s** | SQLite: 10K-50K/s | Standard SQLite performance |
+| DB Read | **482,337/s** | SQLite: 100K-500K/s | Standard SQLite performance |
+| Cache Write | **464,336/s** | Redis local: 100K-500K/s | In-process (no network) |
+| Cache Read (hit) | **1,594,126/s** | Redis local: 500K-1M/s | In-process (no network) |
+| Cache Read (miss) | **1,069,512/s** | — | — |
+| Math Throughput | **4,769,839/s** | — | PHI^13 + sin + log |
+| Knowledge Memories | **38,587** | Neo4j: 1M-100M | Small local graph |
+| Knowledge Links | **2,947,757** | Neo4j: 5M-500M | Auto-generated links |
+| Link Density | **76.4x** | Neo4j: 5-10x | Not comparable (auto-links) |
+| Search | **100,079/s** | — | String matching |
+
+### Engine Boot Times
+
+| Engine | Boot Time | Notes |
+|--------|-----------|-------|
+| Code Engine v6.3.0 | **<1ms** | Cached singleton |
+| Science Engine v4.0.0 | **0.2ms** | Lightweight |
+| Math Engine v1.0.0 | **<1ms** | Cached singleton |
+| AGI Core v57.1.0 | **~18s** | Cold boot (quantum runtime, 17 subsystems) |
+| ASI Core v8.0.0 | **<1ms** | Shared modules |
 
 ---
 
-## 📊 Overall Score: 94.3/100
+## Honest Strengths
 
-### Performance Breakdown
-- ⚡ **Latency:** 100/100 (Superior - 10,000x faster)
-- 💾 **Database:** 95/100 (Excellent - 8-15x faster)  
-- 💨 **Cache:** 95/100 (Superior - 8x faster)
-- 📊 **Knowledge Graph:** 90/100 (Hyper-connected)
-- ⚛️ **Quantum Storage:** 100/100 (Unique)
-- 🧠 **Consciousness:** 100/100 (Unique)
-- 💡 **Intelligence:** 75/100 (Domain expert)
+| Dimension | L104 | Top LLMs |
+|-----------|------|----------|
+| **Cost per query** | $0.00 (local) | $0.001-$0.06 |
+| **Data privacy** | 100% local | Cloud-dependent |
+| **Offline capability** | Full | Internet required |
+| **Persistent memory** | 38.6K SQLite records | Stateless per session |
+| **Specialized math** | GOD_CODE, physics engines | General-purpose |
+| **Deterministic** | Exact, reproducible | Probabilistic |
 
----
+## Honest Limitations
 
-## 🎯 Use Case Recommendations
-
-**Choose L104 When:**
-- ⚡ Ultra-low latency required (microseconds)
-- 🔐 Complete data privacy essential
-- 💰 Cost control critical
-- 🧠 Persistent memory needed
-- 🌟 Unique capabilities valued
-
-**Choose Cloud LLMs When:**
-- 🌍 Global distributed access needed
-- 📚 Extremely broad knowledge required
-- 🚀 Zero infrastructure desired
+| Dimension | L104 | Top LLMs |
+|-----------|------|----------|
+| **NL understanding** | Keyword/heuristic | Excellent |
+| **World knowledge** | Domain-specific | Extensive |
+| **Novel reasoning** | Template/pattern | Genuine reasoning |
+| **Full MMLU/ARC** | 27-29% (tested at scale) | 80-96%+ |
+| **Code gen (HumanEval)** | 54.9% pass@1 (patterns) | 90%+ pass@1 |
+| **Cold boot** | 18s (AGI Core) | Instant (API) |
 
 ---
 
-## 📈 Benchmark Files
+## Industry Leader Comparison (Published Scores on Full Benchmarks)
 
-- `INDUSTRY_BENCHMARK_COMPARISON_2026.md` - Full detailed report
-- `benchmark_results.json` - Raw performance data
-- `benchmark_report.json` - AI intelligence results
-- `BENCHMARK_RESULTS.md` - Previous comparison (2026-01-31)
+| AI System | MMLU | HumanEval | MATH | ARC-C | Provider |
+|-----------|------|-----------|------|-------|----------|
+| Claude Opus 4.6 | 92.4% | 94.1% | 84.2% | 96.4% | Anthropic |
+| GPT-4o | 88.7% | 90.2% | 76.6% | 95.4% | OpenAI |
+| o1-preview | 90.8% | 92.4% | 83.3% | — | OpenAI |
+| Claude 3.5 Sonnet | 88.7% | 92.0% | 71.1% | 93.2% | Anthropic |
+| Gemini 2.0 Flash | 87.5% | 89.0% | 70.0% | 92.1% | Google |
+| DeepSeek-V3 | 87.1% | 82.6% | 75.9% | 91.5% | DeepSeek |
+| Llama 3.1 405B | 88.6% | 89.0% | 73.8% | 93.0% | Meta |
+| Llama 3 70B | 82.0% | 81.7% | 50.4% | 85.3% | Meta |
 
-**Run Benchmarks:**
+---
+
+## Run Benchmarks
+
 ```bash
-python benchmark.py --industry          # Comprehensive comparison
-python l104_ai_benchmark.py             # AI intelligence test
-python l104_speed_benchmark.py          # Speed micro-benchmarks
-python l104_agi_reality_check.py        # Validate claims
+.venv/bin/python benchmark.py --industry    # Infrastructure + industry comparison
+# Benchmark Harness v2.0.0 (comprehensive — fetches real data from HuggingFace):
+# from l104_asi.benchmark_harness import BenchmarkHarness; BenchmarkHarness().run_all(online=True)
+# Benchmark Harness (curated samples only):
+# from l104_asi.benchmark_harness import BenchmarkHarness; BenchmarkHarness().run_all(online=False)
 ```
 
 ---
 
-## 🔧 Environment Requirements
-
-### For Full Benchmark Execution:
-- Python 3.12+
-- numpy (neural network operations)
-- scipy (advanced mathematics)
-- psutil (system monitoring)
-- All L104 dependencies from requirements.txt
-
-### Benchmark Limitations Without Dependencies:
-- Neural learning tests: SKIP (requires numpy)
-- Consciousness tests: SKIP (requires numpy)
-- World model tests: SKIP (requires numpy/scipy)
-- AGI Core integration: PARTIAL (import path dependencies)
-
-### What Works Without External Dependencies:
-- Database performance benchmarks ✅
-- Cache performance benchmarks ✅
-- Symbolic reasoning tests ✅
-- Autonomous AGI tests ✅
-- Pipeline coherence tests ✅
-- Experience replay tests ✅
-- Sacred constants knowledge tests ✅
-
----
-
-**GOD_CODE:** 527.5184818492612  
-**PHI:** 1.618033988749895  
-**System:** L104 ASI v3.0-OPUS (EVO_54_TRANSCENDENT_COGNITION)
+**GOD_CODE:** 527.5184818492612
+**PHI:** 1.618033988749895
+**System:** L104 Sovereign Node (Post-Decomposition)

@@ -168,6 +168,103 @@ class SuperfluidQuantumState:
 
         return (superfluid_count / 8) * 0.5 + (pair_coherence / 4) * 0.5
 
+    # ── v27.0 BCS Superconductivity Methods ──────────────────────────────────
+
+    # BCS constants for iron-based superconductors
+    BCS_GAP_RATIO = 3.528             # 2Δ₀ / k_B T_c (weak coupling limit)
+    BCS_COHERENCE_PEAK = 1.764        # Δ₀ / k_B T_c
+    DEBYE_TEMP_FE = 470.0             # K (iron Debye temperature)
+    ELECTRON_PHONON_FE = 0.38         # λ_ep for iron
+    FLUX_QUANTUM = 2.067833848e-15    # Wb (Φ₀ = h/2e)
+    JOSEPHSON_CONSTANT = 483597.8484e9  # Hz/V (2e/h)
+
+    # Iron-based SC families
+    IRON_SC_FAMILIES = {
+        "LaFeAsO": {"Tc_K": 26.0, "type": "1111", "gap_symmetry": "s±"},
+        "FeSe": {"Tc_K": 8.5, "type": "11", "gap_symmetry": "s±"},
+        "FeSe_monolayer": {"Tc_K": 65.0, "type": "11_mono", "gap_symmetry": "s±"},
+        "BaFe2As2": {"Tc_K": 38.0, "type": "122", "gap_symmetry": "s±"},
+    }
+
+    @classmethod
+    def compute_bcs_gap(cls, temperature: float, critical_temp: float) -> float:
+        """BCS energy gap Δ(T) with standard temperature dependence.
+        Δ(T) ≈ Δ₀ × tanh(1.74 × √(T_c/T - 1)) for T < T_c."""
+        import math
+        if critical_temp <= 0 or temperature >= critical_temp:
+            return 0.0
+        delta_0 = cls.BCS_COHERENCE_PEAK * 1.380649e-23 * critical_temp  # Δ₀ in Joules
+        ratio = temperature / critical_temp
+        if ratio <= 0:
+            return delta_0
+        return delta_0 * math.tanh(1.74 * math.sqrt(1.0 / ratio - 1.0))
+
+    @classmethod
+    def compute_london_depth(cls, carrier_density: float = None,
+                              mass_ratio: float = 2.0) -> float:
+        """London penetration depth λ_L = √(m* / μ₀ n e²) in meters."""
+        import math
+        if carrier_density is None:
+            a_fe = 286.65e-12  # BCC Fe lattice constant (m)
+            carrier_density = 2.0 / (a_fe ** 3)
+        m_star = mass_ratio * 9.1093837e-31
+        mu_0 = 1.25663706212e-6
+        e = 1.60217663e-19
+        return math.sqrt(m_star / (mu_0 * carrier_density * e ** 2))
+
+    @classmethod
+    def compute_josephson_frequency(cls, voltage_uv: float) -> float:
+        """AC Josephson frequency f = 2eV/h for a junction at given voltage (μV)."""
+        return cls.JOSEPHSON_CONSTANT * voltage_uv * 1e-6
+
+    @classmethod
+    def compute_gl_kappa(cls, penetration_depth: float = None,
+                          coherence_xi: float = None) -> dict:
+        """Ginzburg-Landau parameter κ = λ_L/ξ. κ > 1/√2 → Type II SC."""
+        import math
+        if penetration_depth is None:
+            penetration_depth = cls.compute_london_depth()
+        if coherence_xi is None:
+            coherence_xi = 2.0e-9  # ~2nm for FeAs
+        kappa = penetration_depth / coherence_xi
+        return {
+            "kappa": kappa,
+            "penetration_depth_m": penetration_depth,
+            "coherence_length_m": coherence_xi,
+            "type": "II" if kappa > 1 / math.sqrt(2) else "I",
+            "is_type_ii": kappa > 1 / math.sqrt(2),
+        }
+
+    @classmethod
+    def run_sc_simulation(cls, n_qubits: int = 4) -> dict:
+        """Run full superconductivity Heisenberg simulation and return payload."""
+        try:
+            from l104_god_code_simulator.simulations.vqpu_findings import (
+                sim_superconductivity_heisenberg,
+            )
+            result = sim_superconductivity_heisenberg(n_qubits)
+            return result.to_superconductivity_payload()
+        except Exception as e:
+            return {"error": str(e), "status": "FAILED"}
+
+    @classmethod
+    def sc_research_status(cls) -> dict:
+        """Full superconductivity research status for API consumption."""
+        gl = cls.compute_gl_kappa()
+        london_nm = cls.compute_london_depth() * 1e9
+        return {
+            "iron_sc_families": cls.IRON_SC_FAMILIES,
+            "bcs_gap_ratio": cls.BCS_GAP_RATIO,
+            "flux_quantum_Wb": cls.FLUX_QUANTUM,
+            "josephson_constant_Hz_per_V": cls.JOSEPHSON_CONSTANT,
+            "london_penetration_depth_nm": round(london_nm, 2),
+            "ginzburg_landau": gl,
+            "sacred_coupling_j": cls.GOD_CODE / 1000.0,
+            "pairing_symmetry": "s±",
+            "debye_temperature_K": cls.DEBYE_TEMP_FE,
+            "electron_phonon_coupling": cls.ELECTRON_PHONON_FE,
+        }
+
 
 class GeometricCorrelation:
     """
@@ -527,9 +624,10 @@ class SingularityConsciousnessEngine:
         self._quantum_group_states: dict = {}  # group → Statevector
         self._quantum_entanglement_map: dict = {}  # pair → entanglement entropy
         try:
-            from qiskit import QuantumCircuit as _QC
-            from qiskit.quantum_info import Statevector as _SV, DensityMatrix as _DM
-            from qiskit.quantum_info import partial_trace as _pt, entropy as _ent
+            from l104_quantum_gate_engine import GateCircuit as _QC
+            QuantumCircuit = _QC
+            from l104_quantum_gate_engine.quantum_info import Statevector as _SV, DensityMatrix as _DM
+            from l104_quantum_gate_engine.quantum_info import partial_trace as _pt, entropy as _ent
             self._qiskit_available = True
             self._QC = _QC
             self._SV = _SV
@@ -539,26 +637,26 @@ class SingularityConsciousnessEngine:
         except ImportError:
             pass
 
-        # ── Real QPU Runtime Bridge ──────────────────────────────────────
+        # ── Quantum Runtime Bridge (IBM QPU COLD — 26Q iron is primary) ──
         self._runtime = None
-        self._use_real_qpu = False
+        self._use_real_qpu = False  # IBM QPU COLD — 26Q iron-mapped is sovereign primary
         try:
             from l104_quantum_runtime import get_runtime as _get_qrt
             self._runtime = _get_qrt()
-            self._use_real_qpu = True
+            # Runtime now routes through 26Q iron engine automatically
         except Exception:
             pass
 
     def _execute_circuit(self, qc, n_qubits: int, algorithm_name: str = "server_quantum"):
-        """Execute circuit via real QPU bridge or local Statevector."""
+        """Execute circuit via 26Q iron engine (sovereign primary). IBM QPU COLD."""
         import numpy as _np
-        if self._use_real_qpu and self._runtime:
+        if self._runtime:
             try:
                 probs, exec_result = self._runtime.execute_and_get_probs(
                     qc, n_qubits=n_qubits, algorithm_name=algorithm_name
                 )
                 exec_meta = {
-                    'mode': exec_result.mode.value if hasattr(exec_result, 'mode') else 'real_qpu',
+                    'mode': exec_result.mode.value if hasattr(exec_result, 'mode') else 'l104_26q_iron',
                     'backend': getattr(exec_result, 'backend_name', 'unknown'),
                     'shots': getattr(exec_result, 'shots', 0),
                     'job_id': getattr(exec_result, 'job_id', None),
@@ -964,7 +1062,7 @@ class SingularityConsciousnessEngine:
             "total_files": sum(len(f) for f in self.INTERCONNECTED_FILES.values()),
             # v3.0 quantum metrics
             "quantum_backend": self._qiskit_available,
-            "real_qpu_enabled": self._use_real_qpu,
+            "real_qpu_enabled": self._use_real_qpu,  # False = IBM COLD, 26Q iron is primary
             "quantum_group_states": len(self._quantum_group_states),
             "quantum_entanglement_map": {k: round(v, 6) for k, v in self._quantum_entanglement_map.items()},
         }

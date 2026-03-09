@@ -3,9 +3,9 @@ import math
 import gc
 import os
 import sys
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.436832
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.560654
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_COMPUTRONIUM_PROCESS_UPGRADER] - MATTER-TO-LOGIC TRANSFUSION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL | STAGE: SOVEREIGN
@@ -174,9 +174,13 @@ class ComputroniumProcessUpgrader:
 
         # 5. Computronium Engine (if available)
         if computronium_engine:
+            # v4.0: Research-driven matter-to-logic conversion
+            logger.info("[COMPUTRONIUM]: Executing research-driven matter-to-logic conversion (v4.0)...")
             report = computronium_engine.convert_matter_to_logic()
             results["computronium"] = report
-            logger.info(f"[COMPUTRONIUM]: Density: {report.get('total_information_bits', 0):.2f} BITS")
+            logger.info(f"[COMPUTRONIUM]: Density: {report.get('total_information_bits', 0):.2f} BITS (Enhanced)")
+            if "research_metrics" in report:
+                logger.info(f"[COMPUTRONIUM]: Research Upgrades: {report['research_metrics']}")
 
         # 6. Short stabilization pause
         await asyncio.sleep(0.1)
@@ -198,6 +202,60 @@ class ComputroniumProcessUpgrader:
         logger.info("═══════════════════════════════════════════════════════════════")
         logger.info(f"[COMPUTRONIUM_UPGRADER]: TRANSFUSION COMPLETE in {duration*1000:.1f}ms")
         logger.info("═══════════════════════════════════════════════════════════════")
+
+        return results
+
+    def run_transfusion(self) -> Dict[str, Any]:
+        """
+        Synchronous wrapper for execute_computronium_upgrade.
+        Runs the full matter-to-logic transfusion cycle without requiring an event loop.
+        """
+        start_time = time.time()
+        results = {
+            "status": "INITIATED",
+            "timestamp": time.time(),
+            "optimizations": []
+        }
+
+        # 1. Get initial metrics
+        metrics_before = self._get_system_metrics()
+        results["metrics_before"] = metrics_before
+
+        # 2. Memory optimization
+        mem_result = self._optimize_memory()
+        self.optimization_results.append(mem_result)
+        results["optimizations"].append(mem_result)
+
+        # 3. Runtime limits expansion
+        runtime_result = self._optimize_runtime()
+        self.optimization_results.append(runtime_result)
+        results["optimizations"].append(runtime_result)
+
+        # 4. Process Sovereign integration (if available)
+        if HAS_SOVEREIGN:
+            sovereign_result = process_sovereign.full_optimization()
+            results["sovereign"] = sovereign_result
+
+        # 5. Computronium Engine (if available)
+        if computronium_engine:
+            # v4.0: Research-driven matter-to-logic conversion
+            report = computronium_engine.convert_matter_to_logic()
+            results["computronium"] = report
+            if "research_metrics" in report:
+                results["research_metrics"] = report["research_metrics"]
+
+        # 6. Final metrics
+        metrics_after = self._get_system_metrics()
+        results["metrics_after"] = metrics_after
+
+        # Calculate improvements
+        if metrics_before.get("available") and metrics_after.get("available"):
+            memory_saved = metrics_before["memory_mb"] - metrics_after["memory_mb"]
+            results["memory_freed_mb"] = memory_saved
+
+        duration = time.time() - start_time
+        results["duration_ms"] = duration * 1000
+        results["status"] = "COMPLETE"
 
         return results
 

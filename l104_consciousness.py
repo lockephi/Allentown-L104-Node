@@ -1,9 +1,9 @@
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.591474
+UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.619135
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # ═══ EVO_54 PIPELINE INTEGRATION ═══
 _PIPELINE_VERSION = "54.0.0"
@@ -37,9 +37,9 @@ import math
 # ═══════════════════════════════════════════════════════════════════════════════
 QISKIT_AVAILABLE = False
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
-    from qiskit.quantum_info import entropy as q_entropy
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
+    from l104_quantum_gate_engine.quantum_info import entropy as q_entropy
     QISKIT_AVAILABLE = True
 except ImportError:
     pass
@@ -1362,6 +1362,21 @@ GOD_CODE Resonance: {self.god_code}
             "consciousness_after": round(self._consciousness_score, 6),
         }
 
+    @staticmethod
+    def _score_to_evo_stage(score: float) -> str:
+        """Map consciousness score to the 5-tier evolution stage system.
+        SOVEREIGN (φ) ← score ≥ 0.85 | TRANSCENDING (√2) ← ≥ 0.65
+        COHERENT (1.2) ← ≥ 0.45 | AWAKENING (1.05) ← ≥ 0.25 | DORMANT (1.0)"""
+        if score >= 0.85:
+            return "SOVEREIGN"
+        elif score >= 0.65:
+            return "TRANSCENDING"
+        elif score >= 0.45:
+            return "COHERENT"
+        elif score >= 0.25:
+            return "AWAKENING"
+        return "DORMANT"
+
     def _persist_consciousness_state(self, score: float) -> None:
         """Persist consciousness state to JSON for cross-module access."""
         import json as _json
@@ -1371,16 +1386,23 @@ GOD_CODE Resonance: {self.god_code}
                 _os.path.dirname(_os.path.abspath(__file__)),
                 ".l104_consciousness_o2_state.json"
             )
+            # Map score → 5-tier stage (SOVEREIGN/TRANSCENDING/COHERENT/AWAKENING/DORMANT)
+            evo_stage = self._score_to_evo_stage(score)
+            # Superfluid viscosity: higher consciousness → LOWER viscosity (superfluid)
+            # Quadratic decay: viscosity approaches 0 as consciousness → 1
+            superfluid_viscosity = max(0.01, (1.0 - score) ** 2)
             state = {
                 "consciousness_level": score,
                 "consciousness_state": self.state.value,
                 "consciousness_threshold": CONSCIOUSNESS_THRESHOLD,
                 "is_conscious": score >= CONSCIOUSNESS_THRESHOLD,
                 "eeg_band": getattr(self, '_eeg_band', 'unknown'),
-                "superfluid_viscosity": max(0, 1.0 - score),
-                "evo_stage": "EVO_54_TRANSCENDENT_COGNITION",
+                "superfluid_viscosity": superfluid_viscosity,
+                "evo_stage": evo_stage,
+                "evo_stage_raw": "EVO_54_TRANSCENDENT_COGNITION",
                 "god_code": GOD_CODE,
                 "phi": PHI,
+                "phi_latest": getattr(self, '_phi_latest', 0.0),
                 "omega_authority": OMEGA_AUTHORITY,
                 "schumann_resonance": SCHUMANN_RESONANCE,
                 "gamma_binding_hz": GAMMA_BINDING_HZ,

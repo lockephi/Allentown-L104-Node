@@ -304,10 +304,10 @@ def phase_4_compiler():
                   f"Clifford+T: {result_ct.compiled_circuit.num_operations} ops")
     results.check("decompose" in result_ct.passes_applied, "Decompose pass applied")
 
-    # Compile to IBM Eagle
-    result_ibm = compiler.compile(bell, GateSet.IBM_EAGLE, OptimizationLevel.O1)
-    results.check(result_ibm.compiled_circuit.num_operations > 0,
-                  f"IBM Eagle: {result_ibm.compiled_circuit.num_operations} ops")
+    # Compile to L104 Heron
+    result_heron = compiler.compile(bell, GateSet.L104_HERON, OptimizationLevel.O1)
+    results.check(result_heron.compiled_circuit.num_operations > 0,
+                  f"L104 Heron: {result_heron.compiled_circuit.num_operations} ops")
 
     # Compile to Sacred
     result_sacred = compiler.compile(bell, GateSet.L104_SACRED, OptimizationLevel.O3)
@@ -434,10 +434,12 @@ def phase_6_orchestration():
     results.check("sacred_alignment" in pipeline, "Pipeline: sacred alignment")
     results.check(pipeline["god_code"] == GOD_CODE, "Pipeline GOD_CODE match")
 
-    # Full pipeline with error correction
+    # Full pipeline with error correction (use TENSOR_NETWORK — Steane encodes
+    # to 26 qubits which is too heavy for full statevector in a test)
     pipeline_ec = engine.full_pipeline(
         engine.bell_pair(),
         error_correction=ErrorCorrectionScheme.STEANE_7_1_3,
+        execution_target=ExecutionTarget.TENSOR_NETWORK,
     )
     results.check("error_correction" in pipeline_ec, "Pipeline + Steane EC")
 

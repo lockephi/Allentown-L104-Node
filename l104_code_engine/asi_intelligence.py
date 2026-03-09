@@ -71,7 +71,7 @@ class SelfReferentialEngine:
         ws = _WORKSPACE_ROOT
         results = []
 
-        files_to_analyze = [target_file] if target_file else self.L104_CORE_FILES[:10]
+        files_to_analyze = [target_file] if target_file else self.L104_CORE_FILES[:25]
 
         for fname in files_to_analyze:
             fpath = ws / fname
@@ -130,7 +130,7 @@ class SelfReferentialEngine:
                 })
 
         suggestions.sort(key=lambda s: {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}.get(s["priority"], 4))
-        return suggestions[:25]
+        return suggestions[:50]
 
     def measure_evolution(self) -> Dict[str, Any]:
         """Measure the evolution state of the L104 system."""
@@ -268,10 +268,10 @@ class ASICodeIntelligence:
 
         # Normalize to valid quantum state amplitudes
         metric_values = list(metrics.values())
-        # Pad to 8 (2^3 basis states)
-        while len(metric_values) < 8:
+        # Pad to 16 (2^4 basis states)
+        while len(metric_values) < 16:
             metric_values.append(PHI / 10)
-        metric_values = metric_values[:8]
+        metric_values = metric_values[:16]
 
         # Normalize: amplitudes must satisfy Σ|α|² = 1
         norm = math.sqrt(sum(v ** 2 for v in metric_values))
@@ -279,8 +279,8 @@ class ASICodeIntelligence:
             norm = 1.0
         amplitudes = [v / norm for v in metric_values]
 
-        # Create quantum circuit — 3 qubits (8 basis states for 8 metrics)
-        n_qubits = 3
+        # Create quantum circuit — 4 qubits (16 basis states for 16 metrics)
+        n_qubits = 4
         qc = QuantumCircuit(n_qubits)
         sv_init = Statevector(amplitudes)
 
@@ -512,15 +512,15 @@ class ASICodeIntelligence:
         engine = _get_code_engine()
         signal = self._code_to_neural_signal(source, filename, engine)
 
-        # Ensure 8 elements (3-qubit space)
-        while len(signal) < 8:
+        # Ensure 16 elements (4-qubit space)
+        while len(signal) < 16:
             signal.append(PHI / (len(signal) + 1))
-        signal = signal[:8]
+        signal = signal[:16]
 
         # Normalize
         norm = math.sqrt(sum(s ** 2 for s in signal))
         if norm < 1e-10:
-            signal = [1.0 / math.sqrt(8)] * 8
+            signal = [1.0 / math.sqrt(16)] * 16
         else:
             signal = [s / norm for s in signal]
 
@@ -1038,8 +1038,8 @@ class ASICodeIntelligence:
         # Check for unvalidated flow from source to sink
         if taint_sources and taint_sinks:
             results["taint_analysis"] = {
-                "sources": taint_sources[:10],
-                "sinks": taint_sinks[:10],
+                "sources": taint_sources[:25],
+                "sinks": taint_sinks[:25],
                 "potential_flows": min(len(taint_sources), len(taint_sinks)),
                 "risk": "HIGH" if len(taint_sources) > 0 and len(taint_sinks) > 0 else "LOW",
                 "recommendation": "Validate and sanitize all user input before use in dangerous operations",

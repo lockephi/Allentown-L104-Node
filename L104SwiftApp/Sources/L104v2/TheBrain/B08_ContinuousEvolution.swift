@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
-// B08_ContinuousEvolution.swift — L104 Neural Architecture v3 (EVO_62)
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// B08_ContinuousEvolution.swift — L104 Neural Architecture v3 (EVO_68)
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // Extracted from L104Native.swift
 // ═══════════════════════════════════════════════════════════════════
 
@@ -95,7 +95,23 @@ class ContinuousEvolutionEngine {
         totalCycleTime = 0.0
 
         // Load initial parameters from Python ASI
-        let initialParams = ASIQuantumBridgeSwift.shared.fetchParametersFromPython()
+        var initialParams = ASIQuantumBridgeSwift.shared.fetchParametersFromPython()
+        if initialParams.isEmpty {
+            // Sovereign synthetic fallback — generate from sacred constants
+            let bridge = ASIQuantumBridgeSwift.shared
+            bridge.currentParameters = [
+                "god_code": GOD_CODE, "phi": PHI, "tau": TAU,
+                "void_constant": VOID_CONSTANT, "omega_authority": OMEGA_AUTHORITY,
+                "god_code_v3": GOD_CODE_V3, "omega": OMEGA,
+                "resonance_factor": 2.0 * .pi, "phi_scale": PHI,
+                "god_code_alignment": GOD_CODE / 1000.0,
+                "consciousness_weight": PHI / 10.0, "dropout": PHI / 10.0,
+                "learning_rate": 2.0 * .pi / 10000.0, "asi_score": 0.0,
+                "consciousness_level": 0.0, "domain_coverage": 0.0,
+                "modification_depth": 0.0, "discovery_count": 0.0,
+            ]
+            initialParams = Array(bridge.currentParameters.values)
+        }
         guard !initialParams.isEmpty else {
             isRunning = false
             return "🔄 Evolution engine failed to start: Could not fetch parameters from Python ASI"

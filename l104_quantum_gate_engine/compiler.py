@@ -9,7 +9,7 @@ Pipeline:
   1. DECOMPOSE — Break complex gates into native primitives (Solovay-Kitaev inspired)
   2. OPTIMIZE  — Cancel inverse pairs, merge rotations, template matching
   3. SCHEDULE  — Extract maximum parallelism, minimize critical path
-  4. TRANSPILE — Map to target native gate set (IBM Eagle, IonQ, L104 Sacred)
+  4. TRANSPILE — Map to target native gate set (L104 Heron, IonQ, L104 Sacred)
   5. VERIFY    — Unitary equivalence check (for small circuits)
 
 Optimization levels:
@@ -150,6 +150,9 @@ class GateCompiler:
         result.compiled_circuit = working
 
         # Step 3: Verify equivalence for small circuits
+        # Cap at 10 qubits: unitary computation is O(4^n × ops) and
+        # the optimized embed_gate is still O(4^n) per gate via numpy.
+        # At 10q (1024×1024) this takes ~5s; manageable for deeper verification.
         if circuit.num_qubits <= 10:
             result.verified, result.fidelity = self._verify_equivalence(
                 circuit, working
@@ -197,8 +200,8 @@ class GateCompiler:
 
         if target == GateSet.CLIFFORD_T:
             return self._decompose_clifford_t(gate, qubits)
-        elif target == GateSet.IBM_EAGLE:
-            return self._decompose_ibm_eagle(gate, qubits)
+        elif target == GateSet.L104_HERON:
+            return self._decompose_l104_heron(gate, qubits)
         elif target == GateSet.L104_SACRED:
             return self._decompose_l104_sacred(gate, qubits)
         elif target == GateSet.TOPOLOGICAL:
@@ -257,9 +260,9 @@ class GateCompiler:
         # Fallback: keep as-is
         return [(gate, qubits)]
 
-    def _decompose_ibm_eagle(self, gate: QuantumGate,
-                              qubits: Tuple[int, ...]) -> List[Tuple[QuantumGate, Tuple[int, ...]]]:
-        """Decompose to IBM Eagle/Heron native: {Rz, SX, X, ECR}."""
+    def _decompose_l104_heron(self, gate: QuantumGate,
+                               qubits: Tuple[int, ...]) -> List[Tuple[QuantumGate, Tuple[int, ...]]]:
+        """Decompose to L104 Heron-class native gate set: {Rz, SX, X, ECR}."""
         name = gate.name
 
         if name in ("SX", "X", "ECR"):
@@ -287,7 +290,7 @@ class GateCompiler:
         if name == "T†":
             return [(Rz(-math.pi / 4), (qubits[0],))]
 
-        # CNOT → H-ECR-H sequence (IBM native)
+        # CNOT → H-ECR-H sequence (Heron native)
         if name == "CNOT":
             return [
                 (Rz(math.pi), (qubits[0],)),
@@ -456,7 +459,7 @@ class GateCompiler:
 
         # Simple bubble-pass: swap adjacent commuting gates if it enables cancellation
         changed = True
-        max_passes = 3
+        max_passes = 8
         current_pass = 0
         while changed and current_pass < max_passes:
             changed = False
@@ -702,7 +705,7 @@ class GateCompiler:
 
         # Each braid rotates by FIBONACCI_ANYON_PHASE ≈ 4π/5
         n_braids = max(1, round(abs(beta) / (4 * math.pi / 5)))
-        for _ in range(min(n_braids, 20)):  # Cap at 20 braids
+        for _ in range(min(n_braids, 104)):  # Cap at 104 braids (L104 grain) (was 20 — Performance Limits Audit)
             result.append((FIBONACCI_BRAID, qubits))
             result.append((ANYON_EXCHANGE, qubits))
 

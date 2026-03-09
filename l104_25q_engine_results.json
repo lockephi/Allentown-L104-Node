@@ -1,0 +1,440 @@
+{
+  "version": "2.0.0",
+  "timestamp": "2026-02-23T05:00:26",
+  "backend": "aer_simulator_c++",
+  "total_circuits": 6,
+  "total_execution_time_ms": 395088.9,
+  "total_gates_executed": 1467,
+  "sacred_constants": {
+    "god_code": 527.5184818492611,
+    "phi": 1.618033988749895,
+    "void_constant": 1.04161803398875
+  },
+  "circuits": {
+    "ghz_sacred": {
+      "depth": 9,
+      "gates": 77,
+      "gate_breakdown": {
+        "rz": 26,
+        "measure": 25,
+        "cx": 24,
+        "h": 1,
+        "barrier": 1
+      }
+    },
+    "full_engine": {
+      "depth": 52,
+      "gates": 293,
+      "gate_breakdown": {
+        "rz": 98,
+        "ry": 69,
+        "cx": 56,
+        "measure": 25,
+        "h": 24,
+        "cp": 10,
+        "cz": 7,
+        "swap": 2,
+        "x": 1,
+        "barrier": 1
+      }
+    },
+    "vqe_ansatz": {
+      "depth": 39,
+      "gates": 326,
+      "gate_breakdown": {
+        "rz": 104,
+        "ry": 100,
+        "cx": 96,
+        "measure": 25,
+        "barrier": 1
+      }
+    },
+    "qaoa": {
+      "depth": 40,
+      "gates": 347,
+      "gate_breakdown": {
+        "rz": 100,
+        "rx": 100,
+        "rzz": 96,
+        "h": 25,
+        "measure": 25,
+        "barrier": 1
+      }
+    },
+    "qft_sacred": {
+      "depth": 52,
+      "gates": 235,
+      "gate_breakdown": {
+        "cp": 147,
+        "ry": 25,
+        "h": 25,
+        "measure": 25,
+        "swap": 12,
+        "barrier": 1
+      }
+    },
+    "grover_godcode": {
+      "depth": 38,
+      "gates": 189,
+      "gate_breakdown": {
+        "x": 72,
+        "h": 68,
+        "measure": 25,
+        "ry": 17,
+        "mcx": 6,
+        "barrier": 1
+      }
+    }
+  },
+  "results": {
+    "ghz_sacred": {
+      "name": "ghz_sacred",
+      "num_qubits": 25,
+      "depth": 9,
+      "gates": 77,
+      "gate_breakdown": {
+        "rz": 26,
+        "measure": 25,
+        "cx": 24,
+        "h": 1,
+        "barrier": 1
+      },
+      "time_ms": 19765.0,
+      "shots": 4096,
+      "unique_states": 2,
+      "top_10": [
+        {
+          "bitstring": "0000000000000000000000000",
+          "probability": 0.51391602
+        },
+        {
+          "bitstring": "1111111111111111111111111",
+          "probability": 0.48608398
+        }
+      ],
+      "mode": "aer_simulator",
+      "backend": "aer_c++",
+      "fidelity_estimate": 1.0
+    },
+    "full_engine": {
+      "name": "full_engine",
+      "num_qubits": 25,
+      "depth": 52,
+      "gates": 293,
+      "gate_breakdown": {
+        "rz": 98,
+        "ry": 69,
+        "cx": 56,
+        "measure": 25,
+        "h": 24,
+        "cp": 10,
+        "cz": 7,
+        "swap": 2,
+        "x": 1,
+        "barrier": 1
+      },
+      "time_ms": 29277.4,
+      "shots": 4096,
+      "unique_states": 1901,
+      "top_10": [
+        {
+          "bitstring": "1000110011000000001100000",
+          "probability": 0.00512695
+        },
+        {
+          "bitstring": "1000110011000001001100000",
+          "probability": 0.00512695
+        },
+        {
+          "bitstring": "1000110100000001010100000",
+          "probability": 0.00439453
+        },
+        {
+          "bitstring": "1000110011000001010111111",
+          "probability": 0.00415039
+        },
+        {
+          "bitstring": "1000110100000001001100000",
+          "probability": 0.00390625
+        },
+        {
+          "bitstring": "1000110011000001001111111",
+          "probability": 0.00390625
+        },
+        {
+          "bitstring": "1000110011000000001111111",
+          "probability": 0.00366211
+        },
+        {
+          "bitstring": "1000110011000000010100000",
+          "probability": 0.00366211
+        },
+        {
+          "bitstring": "1000110100000000001100000",
+          "probability": 0.00341797
+        },
+        {
+          "bitstring": "1000110011000000110111111",
+          "probability": 0.00341797
+        }
+      ],
+      "mode": "aer_simulator",
+      "backend": "aer_c++",
+      "fidelity_estimate": 1.0
+    },
+    "vqe_ansatz": {
+      "name": "vqe_ansatz",
+      "num_qubits": 25,
+      "depth": 39,
+      "gates": 326,
+      "gate_breakdown": {
+        "rz": 104,
+        "ry": 100,
+        "cx": 96,
+        "measure": 25,
+        "barrier": 1
+      },
+      "time_ms": 42873.3,
+      "shots": 4096,
+      "unique_states": 4008,
+      "top_10": [
+        {
+          "bitstring": "0110111011100000000001011",
+          "probability": 0.00073242
+        },
+        {
+          "bitstring": "0011101110110101010101000",
+          "probability": 0.00073242
+        },
+        {
+          "bitstring": "1111101101001010101001011",
+          "probability": 0.00073242
+        },
+        {
+          "bitstring": "0110111011101010101001011",
+          "probability": 0.00073242
+        },
+        {
+          "bitstring": "0110010001010101010101011",
+          "probability": 0.00073242
+        },
+        {
+          "bitstring": "0001101110000000000001011",
+          "probability": 0.00073242
+        },
+        {
+          "bitstring": "1000000100010000000001011",
+          "probability": 0.00073242
+        },
+        {
+          "bitstring": "1100010000000000000001011",
+          "probability": 0.00073242
+        },
+        {
+          "bitstring": "1100010001010101010101000",
+          "probability": 0.00073242
+        },
+        {
+          "bitstring": "1111101101011010101001011",
+          "probability": 0.00073242
+        }
+      ],
+      "mode": "aer_simulator",
+      "backend": "aer_c++",
+      "fidelity_estimate": 1.0
+    },
+    "qaoa": {
+      "name": "qaoa",
+      "num_qubits": 25,
+      "depth": 40,
+      "gates": 347,
+      "gate_breakdown": {
+        "rz": 100,
+        "rx": 100,
+        "rzz": 96,
+        "h": 25,
+        "measure": 25,
+        "barrier": 1
+      },
+      "time_ms": 86940.5,
+      "shots": 4096,
+      "unique_states": 4096,
+      "top_10": [
+        {
+          "bitstring": "0010001001001101001010111",
+          "probability": 0.00024414
+        },
+        {
+          "bitstring": "0011110010101100100011000",
+          "probability": 0.00024414
+        },
+        {
+          "bitstring": "0011101011001001001111011",
+          "probability": 0.00024414
+        },
+        {
+          "bitstring": "0111010111100001111000100",
+          "probability": 0.00024414
+        },
+        {
+          "bitstring": "1000111000001101100101010",
+          "probability": 0.00024414
+        },
+        {
+          "bitstring": "1111010111001001001011011",
+          "probability": 0.00024414
+        },
+        {
+          "bitstring": "1100010100010000100100101",
+          "probability": 0.00024414
+        },
+        {
+          "bitstring": "0011100011000111100110100",
+          "probability": 0.00024414
+        },
+        {
+          "bitstring": "0010100000111111100100100",
+          "probability": 0.00024414
+        },
+        {
+          "bitstring": "0010010000101010101001111",
+          "probability": 0.00024414
+        }
+      ],
+      "mode": "aer_simulator",
+      "backend": "aer_c++",
+      "fidelity_estimate": 1.0
+    },
+    "qft_sacred": {
+      "name": "qft_sacred",
+      "num_qubits": 25,
+      "depth": 52,
+      "gates": 235,
+      "gate_breakdown": {
+        "cp": 147,
+        "ry": 25,
+        "h": 25,
+        "measure": 25,
+        "swap": 12,
+        "barrier": 1
+      },
+      "time_ms": 72922.0,
+      "shots": 4096,
+      "unique_states": 4088,
+      "top_10": [
+        {
+          "bitstring": "1010110011001101010100101",
+          "probability": 0.00048828
+        },
+        {
+          "bitstring": "0100110101010101101011101",
+          "probability": 0.00048828
+        },
+        {
+          "bitstring": "1110101010100101011001001",
+          "probability": 0.00048828
+        },
+        {
+          "bitstring": "1011001010101010011010101",
+          "probability": 0.00048828
+        },
+        {
+          "bitstring": "1101011001010101010010010",
+          "probability": 0.00048828
+        },
+        {
+          "bitstring": "1001010011010101110101010",
+          "probability": 0.00048828
+        },
+        {
+          "bitstring": "0111001010100101011010100",
+          "probability": 0.00048828
+        },
+        {
+          "bitstring": "0110010101010101010010100",
+          "probability": 0.00048828
+        },
+        {
+          "bitstring": "1010110100110010110100110",
+          "probability": 0.00024414
+        },
+        {
+          "bitstring": "1101110101010101011010101",
+          "probability": 0.00024414
+        }
+      ],
+      "mode": "aer_simulator",
+      "backend": "aer_c++",
+      "fidelity_estimate": 1.0
+    },
+    "grover_godcode": {
+      "name": "grover_godcode",
+      "num_qubits": 25,
+      "depth": 38,
+      "gates": 189,
+      "gate_breakdown": {
+        "x": 72,
+        "h": 68,
+        "measure": 25,
+        "ry": 17,
+        "mcx": 6,
+        "barrier": 1
+      },
+      "time_ms": 143310.7,
+      "shots": 4096,
+      "unique_states": 3892,
+      "top_10": [
+        {
+          "bitstring": "1110100000000000000001111",
+          "probability": 0.00170898
+        },
+        {
+          "bitstring": "1111010000000000000001111",
+          "probability": 0.00146484
+        },
+        {
+          "bitstring": "1110010000000000000001111",
+          "probability": 0.0012207
+        },
+        {
+          "bitstring": "1110000000000000000001111",
+          "probability": 0.0012207
+        },
+        {
+          "bitstring": "1110001000000000000001111",
+          "probability": 0.0012207
+        },
+        {
+          "bitstring": "1011000000000000000001111",
+          "probability": 0.00097656
+        },
+        {
+          "bitstring": "0110010000000000000001111",
+          "probability": 0.00097656
+        },
+        {
+          "bitstring": "1101100100000000000001111",
+          "probability": 0.00097656
+        },
+        {
+          "bitstring": "1111100000000000000001111",
+          "probability": 0.00097656
+        },
+        {
+          "bitstring": "0111110100000000000001111",
+          "probability": 0.00097656
+        }
+      ],
+      "mode": "aer_simulator",
+      "backend": "aer_c++",
+      "fidelity_estimate": 1.0
+    }
+  },
+  "registers": {
+    "A_foundation": "q0-q4: GHZ backbone + GOD_CODE phase lock",
+    "B_coherence": "q5-q9: Fe-Sacred 286\u2194528Hz wave encoding",
+    "C_harmonic": "q10-q14: PHI-entangled Fibonacci cascade",
+    "D_resonance": "q15-q19: Berry phase holonomy (11-step)",
+    "E_convergence": "q20-q24: QPE sacred constant verification"
+  }
+}

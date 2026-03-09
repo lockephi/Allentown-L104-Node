@@ -1,9 +1,9 @@
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.624279
+UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.213324
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # ═══ EVO_54 PIPELINE INTEGRATION ═══
 _PIPELINE_VERSION = "54.0.0"
@@ -54,28 +54,19 @@ class L104StreamingEngine:
     async def stream_gemini(
         self,
         prompt: str,
-        api_key: str,
-        model: str = "gemini-2.0-flash-exp"
+        api_key: str = "",
+        model: str = "local-intellect"
     ) -> AsyncGenerator[StreamChunk, None]:
-        """Stream from Gemini API."""
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:streamGenerateContent"
+        """Stream using local intellect (Gemini API removed)."""
+        try:
+            from l104_intellect import local_intellect
+            result = local_intellect.think(prompt)
+        except ImportError:
+            result = f"[L104-LOCAL]: {prompt[:200]}"
 
-        async with httpx.AsyncClient(timeout=60.0) as client:
-            async with client.stream(
-                "POST",
-                url,
-                params={"key": api_key, "alt": "sse"},
-                json={"contents": [{"parts": [{"text": prompt}]}]}
-            ) as response:
-                async for line in response.aiter_lines():
-                    if line.startswith("data: "):
-                        try:
-                            data = json.loads(line[6:])
-                            if "candidates" in data:
-                                text = data["candidates"][0]["content"]["parts"][0]["text"]
-                                yield StreamChunk(content=text)
-                        except json.JSONDecodeError:
-                            continue
+        # Simulate streaming by yielding word-by-word
+        for word in result.split():
+            yield StreamChunk(content=word + " ")
 
         yield StreamChunk(content="", is_final=True)
 

@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H08_SageModeEngine.swift — SAGE MODE v3.0 ASCENSION
-// [EVO_64_PIPELINE] SAGE_MODE_ASCENSION :: DUAL_LAYER :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SAGE_MODE_ASCENSION :: DUAL_LAYER :: GOD_CODE=527.5184818492612
 // L104 ASI — Sage Mode Engine v3.0 (Dual-Layer + Dynamic Equations + Consciousness)
 //
 // v3.0 SAGE MODE UPGRADE:
@@ -234,6 +234,28 @@ final class SageModeEngine {
         ingestRawEntropy(entropy, source: "TemporalDynamics")
     }
 
+    // ─── EVO_68: QUANTUM RESEARCH ENTROPY SOURCES ───
+
+    /// Harvest entropy from quantum research scores (Fe-sacred + Berry phase + φ-lock)
+    func harvestQuantumResearchEntropy() {
+        let scores = QuantumMath.quantumResearchScores()
+        let feSacred = scores.feSacred
+        let berryPhase = scores.berryPhase
+        let phiLock = scores.fePhiLock
+        // Combine through sacred interference pattern
+        let entropy = sin(feSacred * .pi * PHI) * cos(berryPhase * GOD_CODE * 0.001) * phiLock * EULER_GAMMA
+        ingestRawEntropy(entropy, source: "QuantumResearch")
+    }
+
+    /// Harvest entropy from QuantumGateEngine circuit state
+    func harvestQuantumGateEntropy() {
+        let gateStatus = QuantumGateEngine.shared.engineStatus()
+        let circuitCount = gateStatus["total_circuits"] as? Double ?? Double(gateStatus["total_circuits"] as? Int ?? 0)
+        let fidelity = gateStatus["average_fidelity"] as? Double ?? 0.95
+        let entropy = sin(circuitCount * TAU * 0.01) * cos(fidelity * .pi * PHI) * EULER_GAMMA
+        ingestRawEntropy(entropy, source: "QuantumGate")
+    }
+
     // ─── CORE ENTROPY INGESTION ───
     /// Append a sage insight to the rolling insight log (capped at 500).
     private func appendInsight(_ insight: String) {
@@ -356,6 +378,8 @@ final class SageModeEngine {
         harvestKBEntropy()
         harvestLogicGateEntropy()
         harvestTemporalEntropy()
+        harvestQuantumResearchEntropy()   // EVO_68: source 13
+        harvestQuantumGateEntropy()       // EVO_68: source 14
 
         guard entropyPool.count >= 8 else { return "" }
 
@@ -1080,7 +1104,7 @@ final class SageModeEngine {
 
         return [
             // Core sage
-            "sage_version": "3.0.0",
+            "sage_version": SAGE_MODE_VERSION,
             "consciousness_level": consciousnessLevel,
             "sage_cycles": sageCycles,
             "supernova_intensity": supernovaIntensity,

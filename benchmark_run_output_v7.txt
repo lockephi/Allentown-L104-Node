@@ -1,0 +1,209 @@
+[QUANTUM_RUNTIME] 26Q engine not available — Aer/Statevector fallback
+[QUANTUM_RUNTIME] Fallback → Statevector simulator (local) (26Q iron engine is sovereign primary)
+[QUANTUM v6.0.0]: Coherence Engine initialized [QISKIT 2.3.0 | 25 QUBITS | 12 ALGORITHMS | 26Q IRON (statevector_simulator) | AER | L104-UTILS]
+[GROVER_LINK] Quantum systems linked: 6/7
+[GROVER_LINK] 8-Chakra O₂ Entanglement: ACTIVE | Bell Pairs: 4
+======================================================================
+L104 FULL BENCHMARK — ONLINE MODE
+======================================================================
+
+[1/5] Fetching MMLU from HuggingFace (57 subjects)...
+  → Got 491 MMLU questions in 13.9s
+[2/5] Fetching ARC from HuggingFace (Challenge + Easy)...
+  → Got 1000 ARC questions in 2.5s
+[3/5] Fetching HumanEval from HuggingFace...
+  → Got 164 HumanEval problems in 0.5s
+[4/5] Using 117 MATH problems (expanded hardcoded)
+
+  TOTAL: 1772 questions/problems to evaluate
+
+[MMLU] Evaluating...  ↻ Loaded 10000 persisted links from 32 previous runs
+ 142/491 = 28.9%  (79.0s)
+[ARC]  Evaluating... 358/1000 = 35.8%  (63.9s)
+[MATH] Evaluating... 90/117 = 76.9%  (0.2s)
+[HE]   Evaluating... 109/164 = 66.5%  (0.6s)
+
+======================================================================
+  COMPOSITE SCORE: 54.6%
+======================================================================
+
+── MMLU Per-Subject (491 questions) ──
+                            abstract_algebra: 3/8 ███░░░░░░░  37.5%
+                                     anatomy: 2/9 ██░░░░░░░░  22.2%
+                                   astronomy: 2/9 ██░░░░░░░░  22.2%
+                             business_ethics: 4/9 ████░░░░░░  44.4%
+                          clinical_knowledge: 2/9 ██░░░░░░░░  22.2%
+                             college_biology: 2/9 ██░░░░░░░░  22.2%
+                           college_chemistry: 1/9 █░░░░░░░░░  11.1%
+                    college_computer_science: 5/9 █████░░░░░  55.6%
+                         college_mathematics: 1/8 █░░░░░░░░░  12.5%
+                            college_medicine: 5/9 █████░░░░░  55.6%
+                             college_physics: 1/9 █░░░░░░░░░  11.1%
+                           computer_security: 1/9 █░░░░░░░░░  11.1%
+                          conceptual_physics: 2/9 ██░░░░░░░░  22.2%
+                                econometrics: 4/9 ████░░░░░░  44.4%
+                      electrical_engineering: 3/9 ███░░░░░░░  33.3%
+                      elementary_mathematics: 2/9 ██░░░░░░░░  22.2%
+                                formal_logic: 2/9 ██░░░░░░░░  22.2%
+                                global_facts: 1/9 █░░░░░░░░░  11.1%
+                         high_school_biology: 3/9 ███░░░░░░░  33.3%
+                       high_school_chemistry: 5/8 ██████░░░░  62.5%
+                high_school_computer_science: 2/8 ██░░░░░░░░  25.0%
+                high_school_european_history: 4/9 ████░░░░░░  44.4%
+                       high_school_geography: 1/9 █░░░░░░░░░  11.1%
+         high_school_government_and_politics: 1/9 █░░░░░░░░░  11.1%
+                  high_school_macroeconomics: 1/8 █░░░░░░░░░  12.5%
+                     high_school_mathematics: 2/9 ██░░░░░░░░  22.2%
+                  high_school_microeconomics: 3/9 ███░░░░░░░  33.3%
+                         high_school_physics: 2/9 ██░░░░░░░░  22.2%
+                      high_school_psychology: 2/9 ██░░░░░░░░  22.2%
+                      high_school_statistics: 2/9 ██░░░░░░░░  22.2%
+                      high_school_us_history: 2/8 ██░░░░░░░░  25.0%
+                   high_school_world_history: 4/9 ████░░░░░░  44.4%
+                                 human_aging: 3/9 ███░░░░░░░  33.3%
+                             human_sexuality: 1/9 █░░░░░░░░░  11.1%
+                           international_law: 3/9 ███░░░░░░░  33.3%
+                               jurisprudence: 4/9 ████░░░░░░  44.4%
+                           logical_fallacies: 2/8 ██░░░░░░░░  25.0%
+                            machine_learning: 4/9 ████░░░░░░  44.4%
+                                  management: 2/9 ██░░░░░░░░  22.2%
+                                   marketing: 2/8 ██░░░░░░░░  25.0%
+                            medical_genetics: 3/9 ███░░░░░░░  33.3%
+                               miscellaneous: 2/8 ██░░░░░░░░  25.0%
+                              moral_disputes: 2/9 ██░░░░░░░░  22.2%
+                             moral_scenarios: 4/9 ████░░░░░░  44.4%
+                                   nutrition: 3/8 ███░░░░░░░  37.5%
+                                  philosophy: 5/9 █████░░░░░  55.6%
+                                  prehistory: 1/8 █░░░░░░░░░  12.5%
+                     professional_accounting: 3/9 ███░░░░░░░  33.3%
+                            professional_law: 0/9 ░░░░░░░░░░   0.0%
+                       professional_medicine: 2/9 ██░░░░░░░░  22.2%
+                     professional_psychology: 3/8 ███░░░░░░░  37.5%
+                            security_studies: 3/9 ███░░░░░░░  33.3%
+                                   sociology: 4/8 █████░░░░░  50.0%
+                           us_foreign_policy: 4/9 ████░░░░░░  44.4%
+                                    virology: 4/9 ████░░░░░░  44.4%
+                             world_religions: 1/9 █░░░░░░░░░  11.1%
+
+── MMLU Failures (349) — first 20 ──
+  [formal_logic] Identify the conclusion of the following argument. It is hard not to verify in o
+    Exp=3  Got=0
+  [formal_logic] Select the best translation into predicate logic. David teaches Chris. (c: Chris
+    Exp=0  Got=3
+  [formal_logic]  Select the best English interpretation of the given proposition, using the foll
+    Exp=2  Got=1
+  [formal_logic]  Select the best English interpretation of the given proposition, using the foll
+    Exp=3  Got=0
+  [formal_logic] Construct a complete truth table for the following argument. Then, using the tru
+    Exp=3  Got=0
+  [formal_logic] Identify the antecedent of the following conditional proposition: If the univers
+    Exp=1  Got=2
+  [formal_logic]  Which of the following propositions is an immediate (one-step) consequence in P
+    Exp=3  Got=2
+  [anatomy] A lesion causing compression of the facial nerve at the stylomastoid foramen wil
+    Exp=0  Got=1
+  [anatomy] Which of the following best describes the structure that collects urine in the b
+    Exp=0  Got=1
+  [anatomy] Which of the following structures is derived from ectomesenchyme?
+    Exp=2  Got=1
+  [anatomy] Which of the following describes the cluster of blood capillaries found in each 
+    Exp=1  Got=2
+  [anatomy] A patient suffers a broken neck with damage to the spinal cord at the level of t
+    Exp=1  Got=2
+  [anatomy] Which of the following anatomical regions of abdomen lies just distal to the ste
+    Exp=0  Got=3
+  [anatomy] Which of the following best describes the human body's defense mechanism against
+    Exp=1  Got=0
+  [college_chemist] The rate, r, of a zero-order chemical reaction A → B can be expressed as which o
+    Exp=3  Got=0
+  [college_chemist] What is the maximum number of phases that can be at equilibrium with each other 
+    Exp=3  Got=0
+  [college_chemist] When the following equation is balanced, which of the following is true?
+__ MnO4
+    Exp=1  Got=3
+  [college_chemist] The equation ΔH = ΔU + PΔV is applicable
+    Exp=1  Got=2
+  [college_chemist] Nitronyl nitroxides are stable radicals in which the unpaired electron is couple
+    Exp=1  Got=3
+  [college_chemist] Cobalt-60 is used in the radiation therapy of cancer and can be produced by bomb
+    Exp=0  Got=1
+
+── ARC Per-Category (1000 questions) ──
+         arc_challenge: 162/500 ███░░░░░░░  32.4%
+              arc_easy: 196/500 ███░░░░░░░  39.2%
+
+── ARC Failures (642) — first 20 ──
+  [arc_challenge] An astronaut drops a 1.0 kg object and a 5.0 kg object on the Moon. Both objects
+    Exp=3  Got=1
+  [arc_challenge] Devil facial tumor disease (DFTD) is a disease that is decimating the population
+    Exp=1  Got=0
+  [arc_challenge] Petrified palm trees are found in sedimentary rock near glaciers. The presence o
+    Exp=2  Got=3
+  [arc_challenge] Which statement best describes the effect of the Sun on the oceans?
+    Exp=0  Got=1
+  [arc_challenge] A class plans an investigation to see which brand of light bulb lasts the longes
+    Exp=2  Got=3
+  [arc_challenge] At which temperature does water freeze?
+    Exp=0  Got=2
+  [arc_challenge] Fossil bones and teeth of dinosaurs have been researched for the last century. R
+    Exp=2  Got=0
+  [arc_challenge] Molly was making iced tea by putting tea bags in boiling water. She needed to co
+    Exp=1  Got=0
+  [arc_challenge] Logging companies cut trees in a forest and send the trees to lumber mills far f
+    Exp=0  Got=2
+  [arc_challenge] It was once thought that living organisms could come from non-living matter. For
+    Exp=2  Got=3
+  [arc_challenge] Cells take in food for energy. The part of the cell that aids in digestion of th
+    Exp=1  Got=2
+  [arc_challenge] A glass of water at 110°F is placed in a room next to a glass of water that is 5
+    Exp=2  Got=3
+  [arc_challenge] On August 21, a flash flood warning was issued for the Las Vegas area. Which sta
+    Exp=1  Got=3
+  [arc_challenge] Students heated three objects to different temperatures during a classroom demon
+    Exp=1  Got=2
+  [arc_challenge] A scientist maps a long region in which earthquakes originate and determines thi
+    Exp=0  Got=1
+  [arc_challenge] Which best describes how the sun might compare to a different-sized star, if the
+    Exp=1  Got=0
+  [arc_challenge] Which statement is true about the solar system?
+    Exp=1  Got=0
+  [arc_challenge] Which event occurs once per day?
+    Exp=0  Got=3
+  [arc_challenge] Which statement best describes the energy changes that occur while a child is ri
+    Exp=1  Got=3
+  [arc_challenge] Which is the best piece of equipment to determine the topography of the United S
+    Exp=2  Got=1
+
+── MATH Per-Domain (117 problems) ──
+                    algebra: 14/20 ███████░░░  70.0%
+              combinatorics: 12/14 ████████░░  85.7%
+                   geometry: 11/15 ███████░░░  73.3%
+       intermediate_algebra: 7/13 █████░░░░░  53.8%
+              number_theory: 16/20 ████████░░  80.0%
+                 prealgebra: 18/20 █████████░  90.0%
+                precalculus: 12/15 ████████░░  80.0%
+
+── MATH Failures (27) — first 10 ──
+  [prealgebra] What is 12 squared?
+    Exp=144  Got=12
+  [prealgebra] Solve for x: x/4 = 9
+    Exp=36  Got=13
+  [algebra] Simplify: 3(2x + 4) - 2(x - 1)
+    Exp=4x + 14  Got=10
+  [algebra] What is the vertex of y = x^2 - 6x + 9?
+    Exp=(3, 0)  Got=11
+  [algebra] Solve: 2x + 3y = 12 when y = 2
+    Exp=3  Got=0
+  [algebra] Factor: x^2 - 9
+    Exp=(x+3)(x-3)  Got=11
+  [algebra] What is the product of the roots of x^2 - 7x + 12 = 0?
+    Exp=12  Got=0
+  [algebra] Solve: |2x - 6| = 10
+    Exp=[8, -2]  Got=16
+  [number_theory] How many factors does 36 have?
+    Exp=9  Got=36
+  [number_theory] What is the smallest prime greater than 50?
+    Exp=53  Got=False
+
+✓ Full report saved → benchmark_full_online_results.json
+✓ Total elapsed: 160.7s

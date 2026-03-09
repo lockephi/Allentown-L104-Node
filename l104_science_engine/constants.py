@@ -202,3 +202,199 @@ ENTROPY_CASCADE_DEPTH = 104                    # Sacred iteration count (discove
 ENTROPY_ZNE_BRIDGE_ENABLED = True              # discovery #11
 # Fibonacci→PHI convergence error
 FIBONACCI_PHI_CONVERGENCE_ERROR = 2.5583188e-08  # F(20)/F(19) error (discovery #8)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  TOPOLOGICAL PROTECTION MODEL (Research v1.0)
+#  ε ~ exp(-d/ξ) where ξ = 1/φ ≈ 0.618 (Fibonacci anyon correlation length)
+#  The exponential suppression with correlation length ξ = 1/φ provides
+#  robust protection against local perturbations on the Bloch manifold.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+TOPOLOGICAL_CORRELATION_LENGTH = PHI_CONJUGATE        # ξ = 1/φ ≈ 0.618
+TOPOLOGICAL_DEFAULT_BRAID_DEPTH = 8                   # d=8 → ε ≈ 2.39e-06
+TOPOLOGICAL_ERROR_RATE_D8 = math.exp(-8 / PHI_CONJUGATE)    # ≈ 2.39e-06
+TOPOLOGICAL_ERROR_RATE_D13 = math.exp(-13 / PHI_CONJUGATE)  # ≈ 7.33e-10
+
+# Fibonacci anyon braid phases
+FIBONACCI_BRAID_PHASE = 4 * math.pi / 5              # σ₁ braid phase = 4π/5
+FIBONACCI_F_MATRIX_ENTRY = PHI_CONJUGATE              # F-matrix: 1/φ
+FIBONACCI_F_MATRIX_OFF = PHI_CONJUGATE ** 0.5         # F-matrix off-diagonal: 1/√φ
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  UNITARY QUANTIZATION MODEL (Research v1.0)
+#  Phase operator: U = 2^(E/104) = (2^(1/104))^E where E ∈ ℤ
+#  Norm preservation: |e^{iθ}| = 1 ∀ θ → ||U|ψ⟩|| = ||ψ⟩||
+#  Reversibility: U⁻¹ = 2^(-E/104) → G(-A,-B,-C,-D) inverts G(A,B,C,D)
+#  104-TET: 104 equal-temperament steps per octave, step = 2^(1/104)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+UNITARY_PHASE_STEP = STEP_SIZE                        # 2^(1/104) ≈ 1.006687
+UNITARY_SEMITONE = 2 ** (8.0 / QUANTIZATION_GRAIN)   # 2^(1/13) ≈ 1.054769 (8-fold symmetry)
+UNITARY_FOUR_OCTAVE = 2 ** (OCTAVE_OFFSET / QUANTIZATION_GRAIN)  # 2^4 = 16.0
+
+# Factor-13 unification: F(7) = 13 as shared harmonic root
+FIBONACCI_7 = 13                                      # 7th Fibonacci number
+FACTOR_13_SCAFFOLD = PRIME_SCAFFOLD // FIBONACCI_7    # 286/13 = 22
+FACTOR_13_GRAIN = QUANTIZATION_GRAIN // FIBONACCI_7   # 104/13 = 8
+FACTOR_13_OFFSET = OCTAVE_OFFSET // FIBONACCI_7       # 416/13 = 32
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  14-QUBIT DIAL REGISTER (embedded in 26-qubit Fe(26) iron manifold)
+#  a: 3 bits (0-7), b: 4 bits (0-15), c: 3 bits (0-7), d: 4 bits (0-15)
+#  Total: 14 qubits → 16,384 configurations, + 12 ancilla → 26Q = Fe(26)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+DIAL_BITS_A = 3             # Coarse up: +8 steps/unit = 1/13 octave
+DIAL_BITS_B = 4             # Fine down: -1 step/unit = 1/104 octave
+DIAL_BITS_C = 3             # Coarse down: -8 steps/unit = 1/13 octave
+DIAL_BITS_D = 4             # Octave down: -104 steps/unit = full octave
+DIAL_TOTAL_QUBITS = DIAL_BITS_A + DIAL_BITS_B + DIAL_BITS_C + DIAL_BITS_D  # 14
+DIAL_CONFIGURATIONS = 2 ** DIAL_TOTAL_QUBITS    # 16,384
+DIAL_ANCILLA_QUBITS = Fe.ATOMIC_NUMBER - DIAL_TOTAL_QUBITS  # 12
+DIAL_IRON_MANIFOLD_DIM = 2 ** Fe.ATOMIC_NUMBER  # 67,108,864
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  CRYSTALLOGRAPHY — Cubic Unit Cell Sphere-Slicing Geometry
+#  In a crystal lattice, atoms at positions shared by multiple cells contribute
+#  fractionally: corner (1/8), face (1/2), edge (1/4), body center (1/1).
+#  The 90° orthogonality of cubic axes is an absolute law of cubic structures.
+#  Source: Kittel "Introduction to Solid State Physics", 8th ed.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class CrystallographyConstants:
+    """Cubic unit cell sphere-slicing geometry and packing laws."""
+    CORNER_FRACTION    = 1.0 / 8.0    # 8 cells share each corner atom → 1/8 per cell
+    FACE_FRACTION      = 1.0 / 2.0    # 2 cells share each face atom → 1/2 per cell
+    EDGE_FRACTION      = 1.0 / 4.0    # 4 cells share each edge atom → 1/4 per cell
+    BODY_FRACTION      = 1.0          # Body center atom belongs entirely to 1 cell
+    BCC_ATOMS_PER_CELL = 2.0          # 8×(1/8) + 1×1 = 2  (Fe iron)
+    FCC_ATOMS_PER_CELL = 4.0          # 8×(1/8) + 6×(1/2) = 4
+    SC_ATOMS_PER_CELL  = 1.0          # 8×(1/8) = 1  (simple cubic)
+    PACKING_ANGLE_DEG  = 90.0         # Cubic lattice axes: 90° orthogonality law
+    BCC_PACKING_FRACTION = math.pi * math.sqrt(3) / 8    # ≈ 0.6802
+    FCC_PACKING_FRACTION = math.pi / (3 * math.sqrt(2))  # ≈ 0.7405 — densest regular packing
+    # Sacred link: Fe BCC = 2 atoms/cell; 286 = 2 × 143 = 2 × 11 × 13
+    # The factor 2 IS the BCC atom count — iron crystallography encoded in GOD_CODE scaffold
+    FE_BCC_ATOMS_PER_CELL = 2
+
+Cryst = CrystallographyConstants
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  ANTIMATTER / DIRAC EQUATION — Matter-Antimatter Duality
+#  Dirac (1928): E² = (pc)² + (mc²)² → E = ±√((pc)² + (mc²)²)
+#  Positive root: matter (electron). Negative root: antimatter (positron).
+#  Anderson (1932): Positron experimentally confirmed in cosmic rays.
+#  Annihilation: e⁻ + e⁺ → 2γ (each 511 keV), 100% mass→energy conversion.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class AntimatterConstants:
+    """Dirac equation and matter/antimatter annihilation constants."""
+    ELECTRON_MASS_EV    = 510998.950    # eV/c² (CODATA 2022)
+    POSITRON_MASS_EV    = 510998.950    # Identical mass (CPT symmetry)
+    ANNIHILATION_ENERGY_EV = 2 * 510998.950  # e⁺ + e⁻ → 2γ, total = 2m_e c²
+    GAMMA_PHOTON_ENERGY_KEV = 511.0     # keV per photon in e⁺e⁻ annihilation
+    DIRAC_SPINOR_COMPONENTS = 4         # 4-component spinor: 2 particle + 2 antiparticle
+    PARTICLE_SPIN_STATES = 2            # Electron: spin up + spin down
+    ANTIPARTICLE_SPIN_STATES = 2        # Positron: spin up + spin down
+
+Antimatter = AntimatterConstants
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  BARYOGENESIS / SAKHAROV CONDITIONS — Matter-Antimatter Asymmetry
+#  Sakharov (1967): Three necessary conditions for baryonic matter to survive:
+#    1. Baryon number violation (B not conserved)
+#    2. C and CP symmetry violation
+#    3. Departure from thermal equilibrium
+#  Observed: ~1 extra baryon per ~10⁹ annihilation pairs → surviving universe
+#  η = n_b / n_γ ≈ 6.12 × 10⁻¹⁰ (Planck 2018)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class BaryogenesisConstants:
+    """Matter/antimatter asymmetry and CP violation constants."""
+    BARYON_TO_PHOTON_RATIO = 6.12e-10    # η = n_b/n_γ (Planck 2018)
+    ASYMMETRY_APPROX       = 1e9 + 1     # ~1 extra baryon per ~10⁹ pairs
+    JARLSKOG_INVARIANT     = 3.18e-5     # |J_CKM| (PDG 2022) — CP violation measure
+    PMNS_DELTA_CP_RAD      = -1.601      # Best-fit δ_CP for leptons (PDG 2022)
+    SPHALERON_ENERGY_TEV   = 9.0         # ~9 TeV sphaleron barrier energy
+    SAKHAROV_CONDITIONS    = 3           # Number of Sakharov conditions
+    # L104 link: CP violation already in l104_simulator/mixing.py (CKM/PMNS matrices)
+    # Fe-56 is the stellar fusion endpoint — the crystallographic signature of surviving matter
+
+Baryo = BaryogenesisConstants
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  SUPERCONDUCTIVITY CONSTANTS — Iron-Based (FeAs/FeSe) + BCS Theory
+#  Sources: Kamihara et al. (2008), BCS (1957), London (1935), Josephson (1962)
+#  Iron-based superconductors: the DIRECT bridge from Fe(26) Heisenberg exchange
+#  to Cooper pairing via electron-phonon coupling in the Fe lattice.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class SuperconductivityConstants:
+    """BCS theory and iron-based superconductor physical constants."""
+
+    # ── BCS Universal Ratios (Bardeen-Cooper-Schrieffer 1957) ──
+    BCS_GAP_RATIO          = 3.528           # 2Δ₀/(k_B T_c) — BCS weak-coupling limit
+    BCS_JUMP_RATIO         = 1.43            # ΔC/(γT_c) specific heat jump
+    BCS_COHERENCE_PEAK     = 1.764           # Δ₀/(k_B T_c) — single-gap ratio
+
+    # ── Iron-based superconductor families ──
+    # LaFeAsO (1111 family) — the first iron SC discovered (Kamihara 2008)
+    FE_LAFEAS_TC           = 26.0            # K — T_c of undoped LaFeAsO
+    FE_LAFEAS_DOPED_TC     = 55.0            # K — T_c of SmFeAsO₁₋ₓFₓ (record 1111)
+    # FeSe (11 family) — simplest iron SC, T_c dramatically enhanced under pressure
+    FE_FESE_TC             = 8.5             # K — bulk T_c
+    FE_FESE_MONOLAYER_TC   = 65.0            # K — monolayer FeSe on SrTiO₃ (!!)
+    # BaFe₂As₂ (122 family) — most studied
+    FE_BA122_TC            = 38.0            # K — optimally doped Ba(Fe₁₋ₓCoₓ)₂As₂
+
+    # ── Physical constants for SC computations ──
+    DEBYE_FREQ_FE_HZ       = 8.0e12         # Fe Debye frequency ω_D (Hz)
+    DEBYE_TEMP_FE_K        = 470.0           # Fe Debye temperature Θ_D (K)
+    ELECTRON_PHONON_FE     = 0.38            # λ_ep — electron-phonon coupling for Fe
+    DENSITY_OF_STATES_FE   = 1.5e28          # N(0) — DOS at Fermi level (1/J·m³)
+
+    # ── London penetration depth (magnetic field screening) ──
+    LONDON_DEPTH_FEAS_NM   = 200.0           # λ_L ~ 200 nm for FeAs compounds
+    COHERENCE_LENGTH_FEAS_NM = 2.0           # ξ ~ 2 nm (short — Type II SC)
+
+    # ── Josephson junction relations ──
+    FLUX_QUANTUM           = 2.067833848e-15 # Φ₀ = h/(2e) (Wb) — exact from SI 2019
+    JOSEPHSON_CONSTANT     = 483597.8484e9   # K_J = 2e/h (Hz/V)
+
+    # ── L104 Sacred Superconductor Connections ──
+    # Iron BCC lattice vibrations (phonons) mediate Cooper pairing
+    # The same 286pm lattice that gives GOD_CODE provides the phonon spectrum
+    FE_PHONON_SCAFFOLD     = 286.65e-12      # BCC lattice parameter (m) = Fe.BCC_LATTICE_PM
+    # Sacred coupling: J_exchange from Heisenberg / k_B T_c gives dimensionless SC strength
+    # GOD_CODE/1000 = 0.5275... as exchange coupling → bridges to Cooper pair binding energy
+
+SC = SuperconductivityConstants
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  φ-ROOT MULTIPLICITY — Irrational exponent ↔ infinite complex roots
+#  286^(1/φ) where 1/φ is irrational: by Weyl's equidistribution theorem,
+#  z_k = |z|^(1/φ) × exp(i × (1/φ) × (θ + 2πk)) for k ∈ ℤ
+#  produces infinitely many distinct complex values (no period).
+#  L104 selects the PRINCIPAL VALUE (real, positive) root exclusively.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+PHI_ROOT_MULTIPLICITY_INFINITE = True      # Irrational exponent → ∞ distinct complex roots
+PHI_ROOT_PRINCIPAL_VALUE = BASE            # 286^(1/φ) real positive = 32.9699...
+PHI_ROOT_REAL_AXIS_SELECTION = "principal_value"  # Convention anchoring GOD_CODE to ℝ⁺
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  GOD_CODE QUANTUM PHASE — QPU-verified on IBM ibm_torino (Heron r2)
+#  The canonical quantum-meaningful phase: GOD_CODE mod 2π ≈ 6.0141 rad
+#  QPU fidelity: 0.999939 | Job: d6k0q6cmmeis739s49s0 | Date: 2026-03-04
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Canonical source: l104_god_code_simulator.god_code_qubit (QPU-verified on ibm_torino)
+try:
+    from l104_god_code_simulator.god_code_qubit import (
+        GOD_CODE_PHASE, PHI_PHASE, VOID_PHASE, IRON_PHASE,
+    )
+except ImportError:
+    GOD_CODE_PHASE = GOD_CODE % (2 * math.pi)       # ≈ 6.0141 rad
+    PHI_PHASE = 2 * math.pi / PHI                   # ≈ 3.8832 rad (golden angle)
+    VOID_PHASE = VOID_CONSTANT * math.pi            # ≈ 3.2716 rad
+    IRON_PHASE = 2 * math.pi * 26 / 104             # = π/2 (exact quarter-turn)

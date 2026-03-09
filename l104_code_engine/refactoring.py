@@ -663,7 +663,14 @@ class AutoFixEngine:
             lines = code.split('\n')
             offset = 0
             for line_idx, name, kind in sorted(insertions):
-                indent = "    "
+                # v6.3.1: Detect actual indentation from the first body line
+                # instead of hardcoded "    " which breaks on nested functions
+                actual_line_idx = line_idx + offset
+                if actual_line_idx < len(lines):
+                    body_text = lines[actual_line_idx]
+                    indent = body_text[:len(body_text) - len(body_text.lstrip())]
+                else:
+                    indent = "    "  # fallback
                 if kind == "ClassDef":
                     doc = f'{indent}"""TODO: Document class {name}."""'
                 else:

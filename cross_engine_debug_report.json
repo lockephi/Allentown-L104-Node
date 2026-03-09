@@ -1,19 +1,19 @@
 {
-  "timestamp": "2026-02-22 19:22:58",
+  "timestamp": "2026-02-26 14:35:55",
   "engines": {
     "science": {
-      "version": "4.0.0",
-      "boot_time": 31.085806131362915,
+      "version": "5.0.0",
+      "boot_time": 2.3277668952941895,
       "error": null
     },
     "math": {
-      "version": "1.0.0",
-      "boot_time": 0.9373800754547119,
+      "version": "1.1.0",
+      "boot_time": 0.5764129161834717,
       "error": null
     },
     "code": {
-      "version": "6.2.0",
-      "boot_time": 75.52512621879578,
+      "version": "6.3.0",
+      "boot_time": 2.7730138301849365,
       "error": null
     }
   },
@@ -46,25 +46,25 @@
         "test": "BOOT_SCIENCE",
         "engine": "science",
         "passed": true,
-        "detail": "v4.0.0 in 31.086s",
+        "detail": "v5.0.0 in 2.328s",
         "data": null,
-        "timestamp": 1771806131.951265
+        "timestamp": 1772134554.819995
       },
       {
         "test": "BOOT_MATH",
         "engine": "math",
         "passed": true,
-        "detail": "v1.0.0 in 0.937s",
+        "detail": "v1.1.0 in 0.576s",
         "data": null,
-        "timestamp": 1771806131.951561
+        "timestamp": 1772134554.820297
       },
       {
         "test": "BOOT_CODE",
         "engine": "code",
         "passed": true,
-        "detail": "v6.2.0 in 75.525s",
+        "detail": "v6.3.0 in 2.773s",
         "data": null,
-        "timestamp": 1771806176.3766332
+        "timestamp": 1772134555.2660549
       },
       {
         "test": "CONST_GOD_CODE",
@@ -72,7 +72,7 @@
         "passed": true,
         "detail": "All engines agree: 527.5184818492611",
         "data": null,
-        "timestamp": 1771806176.412029
+        "timestamp": 1772134555.2666602
       },
       {
         "test": "CONST_PHI",
@@ -80,7 +80,7 @@
         "passed": true,
         "detail": "All engines agree: 1.618033988749895",
         "data": null,
-        "timestamp": 1771806176.4143791
+        "timestamp": 1772134555.266714
       },
       {
         "test": "CONST_VOID_CONSTANT",
@@ -88,7 +88,7 @@
         "passed": true,
         "detail": "All engines agree: 1.04161803398875",
         "data": null,
-        "timestamp": 1771806176.414454
+        "timestamp": 1772134555.266752
       },
       {
         "test": "CONST_OMEGA",
@@ -96,7 +96,7 @@
         "passed": true,
         "detail": "All engines agree: 6539.34712682",
         "data": null,
-        "timestamp": 1771806176.414572
+        "timestamp": 1772134555.266783
       },
       {
         "test": "SCI\u2192MATH conservation_law",
@@ -104,7 +104,7 @@
         "passed": true,
         "detail": "verify_conservation(0.0) = True",
         "data": null,
-        "timestamp": 1771806176.718519
+        "timestamp": 1772134555.3129332
       },
       {
         "test": "SCI\u2192MATH god_code_eval",
@@ -112,47 +112,47 @@
         "passed": true,
         "detail": "G(0,0,0,0) = 527.5184818492611",
         "data": null,
-        "timestamp": 1771806176.7186902
+        "timestamp": 1772134555.3129642
       },
       {
         "test": "SCI\u2192MATH entropy_reversal",
         "engine": "science",
         "passed": true,
-        "detail": "\u03c3 before=0.7639, after=1252.0492",
+        "detail": "\u03c3 before=1.1187, after=3782.6080",
         "data": null,
-        "timestamp": 1771806176.879553
+        "timestamp": 1772134555.313618
       },
       {
         "test": "SCI\u2192MATH primal_calc_on_entropy",
         "engine": "math",
         "passed": true,
-        "detail": "primal_calculus(1252.0492) = 31468.316691",
+        "detail": "primal_calculus(3782.6080) = 188280.253183",
         "data": null,
-        "timestamp": 1771806176.879709
+        "timestamp": 1772134555.31365
       },
       {
         "test": "SCI 512mb_validation",
         "engine": "science",
         "passed": true,
-        "detail": "512MB valid: {\"equation\": \"2^25 \\u00d7 16 = 2^29 = 536,870,912 bytes = 512 MB\", \"statevector_bytes\": 536870912, \"",
+        "detail": "512MB valid: {\"equation\": \"2^25 \\u00d7 16 = 2^29 = 536,870,912 bytes = 512 MB\", \"statevector_bytes\": 1073741824, ",
         "data": null,
-        "timestamp": 1771806176.896847
+        "timestamp": 1772134555.313782
       },
       {
         "test": "SCI god_code_convergence",
         "engine": "science",
         "passed": true,
-        "detail": "convergence: {\"god_code\": 527.5184818492611, \"memory_mb\": 512, \"ratio\": 1.030309534861838, \"excess_above_parity_p",
+        "detail": "convergence: {\"god_code\": 527.5184818492611, \"memory_mb\": 1024, \"ratio\": 0.515154767430919, \"excess_above_parity_",
         "data": null,
-        "timestamp": 1771806176.9144
+        "timestamp": 1772134555.313924
       },
       {
         "test": "SCI\u2192MATH lorentz_from_convergence",
         "engine": "math",
         "passed": true,
-        "detail": "\u03b2=0.030310, boosted=[1.0004596506757688, -9090746.605088312, 0, 0]",
+        "detail": "\u03b2=0.484845, boosted=[1.1433798752825162, -166193631.00721085, 0, 0]",
         "data": null,
-        "timestamp": 1771806176.9148731
+        "timestamp": 1772134555.314005
       },
       {
         "test": "SCI coherence_init",
@@ -160,7 +160,7 @@
         "passed": true,
         "detail": "Coherence initialized: ['dimension', 'total_amplitude', 'phase_coherence', 'energy']",
         "data": null,
-        "timestamp": 1771806176.925627
+        "timestamp": 1772134555.31412
       },
       {
         "test": "SCI coherence_evolve",
@@ -168,7 +168,7 @@
         "passed": true,
         "detail": "Evolved 5 steps: ['steps', 'initial_coherence', 'final_coherence', 'avg_protection', 'preserved']",
         "data": null,
-        "timestamp": 1771806176.935173
+        "timestamp": 1772134555.3142772
       },
       {
         "test": "SCI\u2192MATH ricci_from_coherence",
@@ -176,7 +176,7 @@
         "passed": true,
         "detail": "Ricci scalar R(4,1.0) = 11.041726464662712",
         "data": null,
-        "timestamp": 1771806176.935615
+        "timestamp": 1772134555.314307
       },
       {
         "test": "MATH proofs_sovereign",
@@ -184,7 +184,7 @@
         "passed": true,
         "detail": "3 proofs, all_proven=False",
         "data": null,
-        "timestamp": 1771806176.95792
+        "timestamp": 1772134555.314879
       },
       {
         "test": "MATH\u2192SCI physics_research",
@@ -192,7 +192,7 @@
         "passed": true,
         "detail": "discovery_status=INCREMENTAL",
         "data": null,
-        "timestamp": 1771806177.107116
+        "timestamp": 1772134555.337962
       },
       {
         "test": "MATH fibonacci",
@@ -200,7 +200,7 @@
         "passed": true,
         "detail": "fib(20) = 6765",
         "data": null,
-        "timestamp": 1771806177.1086788
+        "timestamp": 1772134555.338235
       },
       {
         "test": "MATH primes_50",
@@ -208,7 +208,7 @@
         "passed": true,
         "detail": "primes up to 50: [2, 3, 5, 7, 11, 13, 17, 19]...",
         "data": null,
-        "timestamp": 1771806177.108757
+        "timestamp": 1772134555.338339
       },
       {
         "test": "MATH\u2192SCI quantum_primitive",
@@ -216,7 +216,7 @@
         "passed": true,
         "detail": "primitive from fib: NO_DISCOVERY",
         "data": null,
-        "timestamp": 1771806177.1102521
+        "timestamp": 1772134555.338546
       },
       {
         "test": "MATH hypervector",
@@ -224,7 +224,7 @@
         "passed": true,
         "detail": "dim=10000",
         "data": null,
-        "timestamp": 1771806177.1767418
+        "timestamp": 1772134555.361066
       },
       {
         "test": "MATH\u2192SCI multidim_process",
@@ -232,7 +232,7 @@
         "passed": true,
         "detail": "processed 11-dim \u2192 ndarray",
         "data": null,
-        "timestamp": 1771806177.2230551
+        "timestamp": 1772134555.3614862
       },
       {
         "test": "MATH wave_coherence",
@@ -240,7 +240,7 @@
         "passed": true,
         "detail": "wave_coherence(440Hz) = 0.9908720136392022",
         "data": null,
-        "timestamp": 1771806177.232558
+        "timestamp": 1772134555.361723
       },
       {
         "test": "MATH sacred_alignment",
@@ -248,7 +248,7 @@
         "passed": true,
         "detail": "alignment at GOD_CODE freq: {\"frequency\": 527.518, \"god_code_ratio\": 0.9999990865736886, \"phi_ratio\": 326.02",
         "data": null,
-        "timestamp": 1771806177.2422369
+        "timestamp": 1772134555.361944
       },
       {
         "test": "CODE total_subsystems",
@@ -256,7 +256,7 @@
         "passed": true,
         "detail": "31 subsystems",
         "data": null,
-        "timestamp": 1771806177.242408
+        "timestamp": 1772134555.362723
       },
       {
         "test": "CODE qiskit_status",
@@ -264,7 +264,7 @@
         "passed": true,
         "detail": "Qiskit available: True",
         "data": null,
-        "timestamp": 1771806177.242423
+        "timestamp": 1772134555.3627431
       },
       {
         "test": "CODE\u2192SCI analyze_science_source",
@@ -272,7 +272,7 @@
         "passed": true,
         "detail": "Analysis keys: ['metadata', 'complexity', 'quality', 'security', 'patterns']",
         "data": null,
-        "timestamp": 1771806178.3579211
+        "timestamp": 1772134555.393385
       },
       {
         "test": "CODE\u2192SCI smell_check",
@@ -280,7 +280,7 @@
         "passed": true,
         "detail": "Smells found: 0",
         "data": null,
-        "timestamp": 1771806178.3588312
+        "timestamp": 1772134555.394439
       },
       {
         "test": "CODE\u2192MATH analyze_math_source",
@@ -288,7 +288,7 @@
         "passed": true,
         "detail": "Analysis keys: ['metadata', 'complexity', 'quality', 'security', 'patterns']",
         "data": null,
-        "timestamp": 1771806178.3758662
+        "timestamp": 1772134555.412697
       },
       {
         "test": "CODE\u2192MATH type_flow",
@@ -296,7 +296,7 @@
         "passed": true,
         "detail": "Type flow analysis: {\"error\": \"SyntaxError: invalid syntax (<unknown>, line 91)\", \"inferences\": [], ",
         "data": null,
-        "timestamp": 1771806178.385495
+        "timestamp": 1772134555.413287
       },
       {
         "test": "CODE self_analyze",
@@ -304,7 +304,7 @@
         "passed": true,
         "detail": "Self-analysis keys: ['metadata', 'complexity', 'quality', 'security', 'patterns']",
         "data": null,
-        "timestamp": 1771806178.414585
+        "timestamp": 1772134555.4295082
       },
       {
         "test": "SCI\u2192CODE generate_from_physics",
@@ -312,7 +312,7 @@
         "passed": true,
         "detail": "Generated 99 chars",
         "data": null,
-        "timestamp": 1771806178.415287
+        "timestamp": 1772134555.429875
       },
       {
         "test": "MATH\u2192CODE generate_tests",
@@ -320,7 +320,7 @@
         "passed": true,
         "detail": "Generated tests: 3336 chars",
         "data": null,
-        "timestamp": 1771806178.4432268
+        "timestamp": 1772134555.431564
       },
       {
         "test": "CODE auto_fix_cross_engine",
@@ -328,23 +328,23 @@
         "passed": true,
         "detail": "Auto-fix applied 1 fixes",
         "data": null,
-        "timestamp": 1771806178.4605381
+        "timestamp": 1772134555.4356108
       },
       {
         "test": "CODE perf_science",
         "engine": "code",
         "passed": true,
-        "detail": "Performance: {\"version\": \"6.0.0\", \"filename\": \"\", \"duration_seconds\": 0.023, \"performance_sco",
+        "detail": "Performance: {\"error\": \"syntax_error\"}",
         "data": null,
-        "timestamp": 1771806178.4883
+        "timestamp": 1772134555.4372292
       },
       {
         "test": "CODE perf_math",
         "engine": "code",
         "passed": true,
-        "detail": "Performance: {\"version\": \"6.0.0\", \"filename\": \"\", \"duration_seconds\": 0.007, \"performance_sco",
+        "detail": "Performance: {\"version\": \"6.0.0\", \"filename\": \"\", \"duration_seconds\": 0.009, \"performance_sco",
         "data": null,
-        "timestamp": 1771806178.496342
+        "timestamp": 1772134555.446879
       },
       {
         "test": "PIPELINE science\u2192math\u2192code",
@@ -352,7 +352,7 @@
         "passed": true,
         "detail": "Full pipeline passed: physics\u2192conservation\u2192proof\u2192analysis",
         "data": null,
-        "timestamp": 1771806178.500894
+        "timestamp": 1772134555.452479
       },
       {
         "test": "PIPELINE math\u2192science\u2192code",
@@ -360,7 +360,7 @@
         "passed": true,
         "detail": "Math\u2192Science\u2192Code pipeline completed",
         "data": null,
-        "timestamp": 1771806178.519594
+        "timestamp": 1772134555.459614
       },
       {
         "test": "MATH equation_verifier",
@@ -368,7 +368,7 @@
         "passed": true,
         "detail": "Verified 5 equations",
         "data": null,
-        "timestamp": 1771806178.5230038
+        "timestamp": 1772134555.462956
       }
     ]
   }

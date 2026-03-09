@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L20_KnowledgeBase.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 Sovereign Intelligence — ASI Knowledge Base
 // Training data loading, search, synthesis, reasoning, and persistence
 // ═══════════════════════════════════════════════════════════════════
@@ -15,6 +15,10 @@ class ASIKnowledgeBase {
     static let shared = ASIKnowledgeBase()
     var trainingData: [[String: Any]] = []
     var concepts: [String: [String]] = [:]  // concept -> related completions
+    // THREAD SAFETY: protects trainingData from concurrent mutation/iteration
+    // [EVO_68_FIX] Thread 7 iterates trainingData in persistAllIngestedKnowledge()
+    // while other threads append via DataIngestPipeline — causes data race
+    let dataLock = NSLock()
     // PERF EVO_60: Pre-computed inverted index for O(k) search instead of O(n) full scan
     private var invertedIndex: [String: Set<Int>] = [:]  // keyword → trainingData indices
     private var idfCache: [String: Double] = [:]          // keyword → pre-computed IDF value
@@ -146,16 +150,16 @@ class ASIKnowledgeBase {
             let path = workspacePath.appendingPathComponent(file)
             guard let content = try? String(contentsOf: path, encoding: .utf8) else { continue }
 
-            // PERF: Use Data-based line splitting instead of String splitting (avoids extra copies)
-            let lines = content.components(separatedBy: "\n")
-            for line in lines where !line.isEmpty {
+            // PERF: Use enumerateLines instead of components(separatedBy:) to avoid full array copy
+            content.enumerateLines { line, _ in
+                guard !line.isEmpty else { return }
                 guard let data = line.data(using: .utf8),
-                      let entry = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { continue }
-                if isJunkEntry(entry) {
+                      let entry = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+                if self.isJunkEntry(entry) {
                     junkCount += 1
-                    continue
+                    return
                 }
-                trainingData.append(entry)
+                self.trainingData.append(entry)
             }
         }
 
@@ -710,7 +714,12 @@ class ASIKnowledgeBase {
             }
         }
 
-        for entry in trainingData {
+        // Snapshot trainingData under lock to avoid concurrent mutation
+        dataLock.lock()
+        let snapshot = trainingData
+        dataLock.unlock()
+
+        for entry in snapshot {
             let source = (entry["source"] as? String) ?? ""
             let category = (entry["category"] as? String) ?? ""
             guard runtimeSources.contains(source) || runtimeSources.contains(category) else { continue }

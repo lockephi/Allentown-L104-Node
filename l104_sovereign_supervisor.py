@@ -1,8 +1,8 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.671382
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.190233
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
@@ -36,7 +36,7 @@ class SovereignSupervisor:
     Injects a 416-ratio 'Override' sequence if zero-output is imminent.
     """
 
-    STALL_THRESHOLD = 5.0  # Seconds without a 'Pulse' before triggering jump-start
+    STALL_THRESHOLD = 15.0  # Seconds without a 'Pulse' before triggering jump-start
     OVERRIDE_RATIO = 416 / 286  # 1.4545...
     DESTRUCTIVE_SIGNALS = ["Legacy Conflict", "Discard", "THROTTLED", "HALT", "TIMEOUT", "REJECTED"]
 
@@ -54,8 +54,8 @@ class SovereignSupervisor:
             except Exception as e:
                 self.logger.error(f"[SUPERVISOR_ERR]: Error during pulse check: {str(e)}")
 
-            # Monitoring frequency
-            await asyncio.sleep(1.0)
+            # Monitoring frequency — 5s to reduce CPU on resource-constrained Macs
+            await asyncio.sleep(5.0)
 
     async def _check_pulse(self):
         """Analyze the heartbeat and state of the Sovereign Node."""

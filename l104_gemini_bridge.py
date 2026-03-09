@@ -1,8 +1,8 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.398795
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:23.643696
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # ═══ EVO_54 PIPELINE INTEGRATION ═══
 _PIPELINE_VERSION = "54.0.0"
@@ -20,6 +20,18 @@ import hashlib
 from typing import Dict, Any, Optional
 from pathlib import Path
 from collections import OrderedDict
+
+# ═══ LOCAL INTELLECT — lazy-loaded to avoid pulling torch at import time ═══
+_li = None
+def _get_local_intellect():
+    global _li
+    if _li is None:
+        try:
+            from l104_intellect import local_intellect
+            _li = local_intellect
+        except ImportError:
+            _li = False  # Sentinel: tried and failed
+    return _li if _li is not False else None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # RESPONSE CACHE - LRU with TTL for reduced API latency
@@ -81,21 +93,9 @@ SAFETY_SETTINGS_NONE = [
     {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
 ]
 
-# Try to import real Gemini
+# ═══ GEMINI API REMOVED — All inference routed through local intellect ═══
 _genai_client = None
 _genai_available = False
-
-try:
-    from google import genai
-    api_key = os.getenv('GEMINI_API_KEY')
-    if api_key:
-        _genai_client = genai.Client(api_key=api_key)
-        _genai_available = True
-        print("--- [GEMINI_BRIDGE]: Real Gemini API initialized ---")
-except ImportError:
-    print("--- [GEMINI_BRIDGE]: google-genai not installed, using stub mode ---")
-except Exception as e:
-    print(f"--- [GEMINI_BRIDGE]: Gemini init error: {e} ---")
 
 from l104_persistence import load_truth
 
@@ -218,57 +218,35 @@ class GeminiBridge:
             "payload": encrypted_dump
         }
 
-    def generate(self, prompt: str, system_context: str = None) -> Optional[str]:
+    def generate(self, prompt: str, system_context: str = None, **kwargs) -> Optional[str]:
         """
-        Generate a response using the real Gemini API.
-        Returns None if API unavailable.
-        OPTIMIZED: LRU cache with TTL to reduce duplicate API calls.
+        Generate a response using local intellect (Gemini API removed).
+        All inference is now QUOTA_IMMUNE and zero-latency.
         """
-        if not _genai_available or not _genai_client:
-            return None
-
-        # Check quota rotator status (lazy load)
-        quota_rotator = _get_quota_rotator()
-        if not quota_rotator.is_api_available():
-            return None
-
-        # Build full prompt and check cache
+        # Build full prompt
         full_prompt = prompt
         if system_context:
             full_prompt = f"{system_context}\n\n{prompt}"
 
-        # CACHE CHECK - hash prompt for fast lookup
+        # CACHE CHECK
         cache_key = hashlib.sha256(full_prompt.encode()).hexdigest()
         cached = _response_cache.get(cache_key)
         if cached:
             return cached
 
-        try:
-            response = _genai_client.models.generate_content(
-                model=self.model_name,
-                contents=full_prompt,
-                config={"safety_settings": SAFETY_SETTINGS_NONE}
-            )
-            result = response.text
-
-            # Cache the response
-            if result:
-                _response_cache.set(cache_key, result)
-
-            return result
-        except Exception as e:
-            error_str = str(e)
-            # Handle 429 quota errors with model rotation and rotator notification
-            if '429' in error_str or 'quota' in error_str.lower() or 'resource' in error_str.lower():
-                print(f"--- [GEMINI_BRIDGE]: Quota hit, rotating model ---")
-                self._rotate_model()
-
-                # If we've rotated and still fail, notify rotator to enter cooldown
-                quota_rotator.report_quota_error()
+        # ═══ LOCAL INTELLECT — QUOTA_IMMUNE, zero-latency ═══
+        li = _get_local_intellect()
+        if li:
+            try:
+                result = li.think(full_prompt)
+                if result:
+                    _response_cache.set(cache_key, result)
+                return result
+            except Exception as e:
+                print(f"--- [GEMINI_BRIDGE]: Local intellect error: {e} ---")
                 return None
 
-            print(f"--- [GEMINI_BRIDGE]: Generation error: {e} ---")
-            return None
+        return None
 
     def think(self, signal: str) -> str:
         """
@@ -384,28 +362,15 @@ Respond with clarity and actionable intelligence."""
 
             full_prompt = f"{system_context}\n\nUser: {prompt}"
 
-            response = _genai_client.models.generate_content(
-                model=self.model_name,
-                contents=full_prompt,
-                config={
-                    "tools": [{"function_declarations": l104_tools}] if use_l104_tools else None
-                }
-            )
+            # ═══ LOCAL INTELLECT — QUOTA_IMMUNE ═══
+            li = _get_local_intellect()
+            if li:
+                try:
+                    return li.think(full_prompt) or ""
+                except Exception:
+                    pass
 
-            # Handle function calls
-            if hasattr(response, 'candidates') and response.candidates:
-                candidate = response.candidates[0]
-                if hasattr(candidate, 'content') and candidate.content:
-                    for part in candidate.content.parts:
-                        if hasattr(part, 'function_call'):
-                            fc = part.function_call
-                            if fc.name == "get_l104_data":
-                                category = fc.args.get("category", "all")
-                                data = self.get_l104_data(category)
-                                # Generate follow-up with data
-                                return self.generate(f"Based on this L104 data:\n{data}\n\nAnswer: {prompt}")
-
-            return response.text
+            return self.think(prompt)
         except Exception as e:
             print(f"--- [GEMINI_BRIDGE]: Tool generation error: {e} ---")
             return self.think(prompt)

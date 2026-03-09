@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  L104 Quantum Node Daemon — launchd Process Manager v5.0
+  ═══════════════════════════════════════════════════════
+  Always-on headless daemon that watches /tmp/l104_queue/, /tmp/l104_bridge/inbox/,
+  and .l104_circuits/inbox/ for JSON circuit payloads and routes them
+  through the QuantumRouter with three-engine scoring.
+
+  v5.0 MacBook Speed Daemon — Maximum Performance:
+    - MetalVQPU v4.0: 8 GPU kernels, 48Q max, pipelined parallel sampling
+    - CircuitWatcher v4.0: 0.5ms inter-job delay, adaptive concurrency
+    - Bridge: 32x concurrency, Shared: 16x, Local: 16x
+    - Health-check interval: 15s with throughput + latency logging
+    - File descriptors: 32768 for ultra-high-concurrency pipeline
+    - KeepAlive: unconditional — daemon runs at ALL times
+    - ProcessType: Interactive — highest CPU/IO scheduling priority
+    - Nice: -10 — maximum elevated priority for sub-ms circuit processing
+    - LowPriorityBackgroundIO: false — unthrottled disk I/O
+    - MachServices: registered for XPC zero-copy message passing
+    - JIT memory: MALLOC optimizations for Metal shader compilation
+
+  v4.0 (retained): Maximum throughput, adaptive concurrency
+  v3.0 Three-Engine (retained):
+    - Science Engine (entropy reversal): weight 0.30
+    - Math Engine (harmonic resonance): weight 0.30
+    - Code Engine (wave coherence): weight 0.20
+    - SC Engine (superconductivity): weight 0.20
+    - Bridge IPC: /tmp/l104_bridge/{inbox,outbox,telemetry}/
+
+  Install:  cp config/com.londel.l104daemon.plist ~/Library/LaunchAgents/
+            launchctl load ~/Library/LaunchAgents/com.londel.l104daemon.plist
+  Uninstall: launchctl unload ~/Library/LaunchAgents/com.londel.l104daemon.plist
+  Status:    launchctl list com.londel.l104daemon
+             kill -USR1 $(cat l104_daemon.pid)   # dump status to log
+
+  GOD_CODE=527.5184818492612 | PHI=1.618033988749895 | PILOT: LONDEL
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.londel.l104daemon</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/.build/release/L104Daemon</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+    <!-- ─── Environment (v5.0 speed daemon + three-engine + SC) ─── -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>L104_ROOT</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin</string>
+        <key>RESONANCE</key>
+        <string>527.5184818492612</string>
+        <!-- v3.0: Three-engine integration -->
+        <key>L104_THREE_ENGINE</key>
+        <string>1</string>
+        <key>L104_BRIDGE_PATH</key>
+        <string>/tmp/l104_bridge</string>
+        <key>L104_THREE_ENGINE_WEIGHTS</key>
+        <string>0.30,0.30,0.20,0.20</string>
+        <!-- v5.0: Speed daemon — aggressive hardware utilization -->
+        <key>L104_VQPU_MAX_QUBITS</key>
+        <string>48</string>
+        <key>L104_VQPU_BATCH_LIMIT</key>
+        <string>256</string>
+        <key>L104_BRIDGE_CONCURRENCY</key>
+        <string>16</string>
+        <key>L104_CIRCUIT_WATCHER_DELAY_MS</key>
+        <string>0.5</string>
+        <key>L104_HEALTH_CHECK_INTERVAL</key>
+        <string>15</string>
+        <key>L104_PIPELINE_WORKERS</key>
+        <string>8</string>
+        <key>L104_ADAPTIVE_SHOTS_MAX</key>
+        <string>65536</string>
+        <!-- v5.0: macOS memory + Metal performance -->
+        <key>MallocNanoZone</key>
+        <string>0</string>
+        <key>MALLOC_NANO_ZONE</key>
+        <string>0</string>
+        <key>NSZombieEnabled</key>
+        <string>NO</string>
+        <key>METAL_DEVICE_WRAPPER_TYPE</key>
+        <string>1</string>
+        <key>MTL_HUD_ENABLED</key>
+        <string>0</string>
+        <!-- v5.0: Disable memory compaction pauses during circuit execution -->
+        <key>MALLOC_GUARD_EDGES</key>
+        <string>0</string>
+        <key>MallocScribble</key>
+        <string>0</string>
+        <key>MallocCheckHeapStart</key>
+        <string>0</string>
+    </dict>
+
+    <!-- ─── Lifecycle (always-on performance mode) ─── -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Unconditional KeepAlive: daemon runs at ALL times, restarts on any exit -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- Fast restart: 1s cooldown between crash restarts (was 3s) -->
+    <key>ThrottleInterval</key>
+    <integer>1</integer>
+
+    <!-- Graceful drain window for three-engine telemetry flush -->
+    <key>ExitTimeOut</key>
+    <integer>15</integer>
+
+    <!-- ─── Resource Limits (v5.0: aggressive for speed daemon) ─── -->
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>16384</integer>
+        <key>NumberOfProcesses</key>
+        <integer>2048</integer>
+    </dict>
+    <key>HardResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>32768</integer>
+        <key>NumberOfProcesses</key>
+        <integer>4096</integer>
+    </dict>
+
+    <!-- ─── Process Priority (v5.0: maximum performance boost) ─── -->
+    <!-- Nice -10: maximum scheduling priority for sub-ms circuit processing -->
+    <key>Nice</key>
+    <integer>-10</integer>
+    <!-- Interactive: highest CPU/IO scheduling (above Standard) -->
+    <key>ProcessType</key>
+    <string>Interactive</string>
+    <!-- Prevent macOS from throttling disk I/O for bridge IPC -->
+    <key>LowPriorityBackgroundIO</key>
+    <false/>
+    <!-- v5.0: Prevent macOS App Nap from throttling daemon -->
+    <key>LegacyTimers</key>
+    <true/>
+
+    <!-- ─── Logging ─── -->
+    <key>StandardOutPath</key>
+    <string>/tmp/l104_daemon_output.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/l104_daemon_error.log</string>
+</dict>
+</plist>

@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H06_UIViews.swift
-// [EVO_63_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Custom AppKit UI Components
 //
 // GradientView, HoverButton, GlowingProgressBar, PulsingDot,
@@ -110,7 +110,13 @@ class GlowingProgressBar: NSView {
 
     override init(frame: NSRect) {
         super.init(frame: frame)
-        // Low-frequency shimmer: 4fps instead of 24fps to save CPU on Intel
+        startShimmer()
+    }
+    required init?(coder: NSCoder) { super.init(coder: coder) }
+    deinit { shimmerTimer?.invalidate() }
+
+    private func startShimmer() {
+        guard shimmerTimer == nil else { return }
         shimmerTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             self.shimmerPhase += 0.10
@@ -118,8 +124,13 @@ class GlowingProgressBar: NSView {
             self.needsDisplay = true
         }
     }
-    required init?(coder: NSCoder) { super.init(coder: coder) }
-    deinit { shimmerTimer?.invalidate() }
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        if window != nil { startShimmer() } else { shimmerTimer?.invalidate(); shimmerTimer = nil }
+    }
+    override func viewDidHide() { super.viewDidHide(); shimmerTimer?.invalidate(); shimmerTimer = nil }
+    override func viewDidUnhide() { super.viewDidUnhide(); startShimmer() }
 
     override func draw(_ dirtyRect: NSRect) {
         let bgPath = NSBezierPath(roundedRect: bounds, xRadius: bounds.height / 2, yRadius: bounds.height / 2)
@@ -180,13 +191,20 @@ class PulsingDot: NSView {
     deinit { timer?.invalidate() }
 
     func startPulsing() {
-        // Slow pulse: 2s interval (was 0.1-0.5s) — dramatic CPU savings
+        guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
             guard let s = self, s.isAnimating else { return }
-            s.pulseValue = s.pulseValue > 0.7 ? 0.4 : 0.9  // simple toggle
+            s.pulseValue = s.pulseValue > 0.7 ? 0.4 : 0.9
             s.needsDisplay = true
         }
     }
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        if window != nil { startPulsing() } else { timer?.invalidate(); timer = nil }
+    }
+    override func viewDidHide() { super.viewDidHide(); timer?.invalidate(); timer = nil }
+    override func viewDidUnhide() { super.viewDidUnhide(); startPulsing() }
 
     override func draw(_ dirtyRect: NSRect) {
         guard let ctx = NSGraphicsContext.current?.cgContext else { return }
@@ -307,6 +325,7 @@ class QuantumParticleView: NSView {
     private var frameTime: Double = 0
     private let maxParticles = 18
     private let trailLength = 3
+    private var isAppActive: Bool = true  // Throttle when app is in background
 
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -314,9 +333,15 @@ class QuantumParticleView: NSView {
         layer?.backgroundColor = NSColor.clear.cgColor
         seedParticles()
         startAnimation()
+        // Pause animation when app is backgrounded (this view never gets viewDidHide since it's always behind the tabView)
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidResignActive), name: NSApplication.didResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: NSApplication.didBecomeActiveNotification, object: nil)
     }
     required init?(coder: NSCoder) { super.init(coder: coder); seedParticles(); startAnimation() }
-    deinit { timer?.invalidate() }
+    deinit { timer?.invalidate(); NotificationCenter.default.removeObserver(self) }
+
+    @objc private func appDidResignActive() { isAppActive = false; timer?.invalidate(); timer = nil }
+    @objc private func appDidBecomeActive() { isAppActive = true; startAnimation() }
 
     /// Pause/resume animation based on visibility
     override func viewDidMoveToWindow() {
@@ -356,7 +381,7 @@ class QuantumParticleView: NSView {
 
     func startAnimation() {
         guard timer == nil else { return }  // Prevent duplicate timers
-        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 15.0 : 8.0
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 10.0 : 6.0
         timer = Timer.scheduledTimer(withTimeInterval: 1.0 / fps, repeats: true) { [weak self] _ in
             self?.tick()
             self?.needsDisplay = true
@@ -364,7 +389,7 @@ class QuantumParticleView: NSView {
     }
 
     func tick() {
-        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 15.0 : 8.0
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 10.0 : 6.0
         frameTime += 1.0 / fps
         let t = CGFloat(frameTime)
         let dt: CGFloat = CGFloat(1.0 / fps)
@@ -456,13 +481,15 @@ class QuantumParticleView: NSView {
                 }
             }
 
-            // Outer glow (size scales with depth)
-            let glowRadius = p.radius * (3.0 + p.depth * 2.0)
-            let glowColors = [color.withAlphaComponent(p.alpha * 0.5).cgColor, color.withAlphaComponent(0).cgColor] as CFArray
-            if let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: glowColors, locations: [0, 1]) {
-                ctx.saveGState()
-                ctx.drawRadialGradient(gradient, startCenter: CGPoint(x: px, y: py), startRadius: 0, endCenter: CGPoint(x: px, y: py), endRadius: glowRadius, options: [])
-                ctx.restoreGState()
+            // Outer glow (size scales with depth) — skip for faint particles
+            if p.alpha > 0.15 {
+                let glowRadius = p.radius * (3.0 + p.depth * 2.0)
+                let glowColors = [color.withAlphaComponent(p.alpha * 0.5).cgColor, color.withAlphaComponent(0).cgColor] as CFArray
+                if let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: glowColors, locations: [0, 1]) {
+                    ctx.saveGState()
+                    ctx.drawRadialGradient(gradient, startCenter: CGPoint(x: px, y: py), startRadius: 0, endCenter: CGPoint(x: px, y: py), endRadius: glowRadius, options: [])
+                    ctx.restoreGState()
+                }
             }
 
             // Core dot with bright center
@@ -506,7 +533,7 @@ class ASIWaveformView: NSView {
 
     private func startWaveTimer() {
         guard timer == nil else { return }
-        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 20.0 : 10.0
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 12.0 : 8.0
         timer = Timer.scheduledTimer(withTimeInterval: 1.0/fps, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             self.phase += 0.06
@@ -707,7 +734,7 @@ class RadialGaugeView: NSView {
         ctx.strokePath()
 
         // Value arc — draw with multiple thin arcs to simulate gradient
-        let segments = max(1, Int(clampedVal * 40))
+        let segments = max(1, Int(clampedVal * 15))
         for s in 0..<segments {
             let t0 = CGFloat(s) / CGFloat(segments)
             let t1 = CGFloat(s + 1) / CGFloat(segments)
@@ -787,7 +814,7 @@ class NeuralGraphView: NSView {
 
     private func startGraphTimer() {
         guard timer == nil else { return }
-        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 15.0 : 8.0
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 10.0 : 6.0
         timer = Timer.scheduledTimer(withTimeInterval: 1.0/fps, repeats: true) { [weak self] _ in
             self?.time += 0.05
             self?.updateNodes()
@@ -966,7 +993,7 @@ class AuroraWaveView: NSView {
 
     private func startAuroraTimer() {
         guard timer == nil else { return }
-        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 15.0 : 8.0
+        let fps: Double = MacOSSystemMonitor.shared.isAppleSilicon ? 10.0 : 6.0
         timer = Timer.scheduledTimer(withTimeInterval: 1.0/fps, repeats: true) { [weak self] _ in
             self?.phase += 0.04
             self?.needsDisplay = true

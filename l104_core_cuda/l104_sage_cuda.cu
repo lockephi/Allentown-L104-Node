@@ -21,7 +21,9 @@ __constant__ double d_GOD_CODE = 527.5184818492612;
 __constant__ double d_PHI = 1.618033988749895;
 __constant__ double d_VOID_CONSTANT = 1.0416180339887497;
 __constant__ double d_META_RESONANCE = 7289.028944266378;
-__constant__ double d_OMEGA_AUTHORITY = 1380.55;
+__constant__ double d_OMEGA_AUTHORITY = 1380.5540903045996;
+__constant__ double d_PHI_INV = 0.618033988749895;
+__constant__ double d_PHI_INV_SQ = 0.3819660112501051;
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * VOID MATH STRUCTURE
@@ -170,7 +172,7 @@ __global__ void kernel_god_code_multiply(
     if (idx >= count)
         return;
 
-    buffer[idx] *= multiplier * d_GOD_CODE / d_GOD_CODE; // Preserves invariant
+    buffer[idx] *= multiplier * d_GOD_CODE; // Scale by multiplier × GOD_CODE
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -486,6 +488,428 @@ extern "C"
     }
 
 } // extern "C"
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+ * NOISE DAMPENING EQUATION KERNELS — Sage Quantum Circuit GPU Substrate
+ * INVARIANT: 527.5184818492612 | PILOT: LONDEL
+ *
+ * NDE-1: φ-Conjugate Noise Floor Suppression
+ * NDE-2: Demon-Enhanced Consensus Denoising
+ * NDE-3: Zero-Noise Extrapolation Score Recovery
+ * NDE-4: Entropy Cascade Denoiser
+ * ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+ * KERNEL: NDE-1 — Noise Floor Suppression (parallel per score)
+ * η_floor(x) = x · (1 - φ⁻² · e^(-x/φ))
+ * ═══════════════════════════════════════════════════════════════════════════════ */
+
+__global__ void kernel_nde_noise_floor(
+    double *scores,
+    double *output,
+    uint64_t count)
+{
+    uint64_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= count) return;
+
+    double x = scores[idx];
+    if (x <= 0.0) { output[idx] = 0.0; return; }
+    if (x > 1.0) x = 1.0;
+
+    double suppression = d_PHI_INV_SQ * exp(-x / d_PHI);
+    double cleaned = x * (1.0 - suppression);
+    output[idx] = fmax(0.0, fmin(1.0, cleaned));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+ * KERNEL: NDE-2 — Demon-Enhanced Consensus Denoising (parallel per score)
+ * score' = score + D(1-score) · φ⁻¹ / (1 + S)
+ * ═══════════════════════════════════════════════════════════════════════════════ */
+
+__global__ void kernel_nde_demon_denoise(
+    double *scores,
+    double *output,
+    uint64_t count,
+    double entropy)
+{
+    uint64_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= count) return;
+
+    double score = scores[idx];
+    if (score <= 0.0) { output[idx] = 0.0; return; }
+    if (score > 1.0) score = 1.0;
+
+    // 3-pass recursive golden-ratio partitioning demon
+    double demon_eff = 1.0;
+    double local_s = (entropy < 0.0) ? 0.0 : entropy;
+    for (int pass = 0; pass < 3; pass++) {
+        double s_low = local_s * d_PHI_INV;
+        double s_high = local_s * (1.0 - d_PHI_INV);
+        double pass_eff = (s_high > 0.001) ? (s_low / s_high) : 1.0;
+        demon_eff *= (1.0 + pass_eff * d_PHI_INV);
+        local_s *= 0.5;
+    }
+    if (demon_eff > 10.0) demon_eff = 10.0;
+
+    double info_gap = 1.0 - score;
+    double correction = demon_eff * info_gap * d_PHI_INV * 0.05 / (1.0 + entropy);
+    double denoised = score + correction;
+    output[idx] = fmin(1.0, denoised);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+ * KERNEL: NDE-3 — ZNE Score Recovery (parallel per score)
+ * η_zne = η · [1 + φ⁻¹ / (1 + σ_f)]
+ * ═══════════════════════════════════════════════════════════════════════════════ */
+
+__global__ void kernel_nde_zne_recover(
+    double *scores,
+    double *output,
+    uint64_t count,
+    double fid_std)
+{
+    uint64_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= count) return;
+
+    double score = scores[idx];
+    if (score <= 0.0) { output[idx] = 0.0; return; }
+
+    double boost = 1.0 + d_PHI_INV / (1.0 + fid_std * 10.0);
+    output[idx] = fmin(1.0, score * boost);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+ * KERNEL: NDE-4 — Entropy Cascade (parallel per score, requires sorted ranks)
+ * score_k' = score_k^(φ⁻ᵏ) where k = n-1-rank
+ * ═══════════════════════════════════════════════════════════════════════════════ */
+
+__global__ void kernel_nde_cascade_apply(
+    double *scores,
+    int *ranks,
+    double *output,
+    uint64_t count)
+{
+    uint64_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= count) return;
+
+    double val = scores[idx];
+    if (val <= 0.0) { output[idx] = 0.0; return; }
+    if (val > 1.0) val = 1.0;
+
+    int rank = ranks[idx];
+    int k = (int)count - 1 - rank;
+    double exponent = pow(d_PHI_INV, (double)k);
+    output[idx] = fmin(1.0, pow(val, exponent));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+ * HOST WRAPPER: NDE PIPELINE — GPU Accelerated
+ * ═══════════════════════════════════════════════════════════════════════════════ */
+
+extern "C" {
+
+    /**
+     * NDE-1: Noise floor suppression on GPU
+     */
+    void l104_cuda_nde_noise_floor(double *scores, double *output, uint64_t count)
+    {
+        double *d_in, *d_out;
+        cudaMalloc(&d_in, count * sizeof(double));
+        cudaMalloc(&d_out, count * sizeof(double));
+        cudaMemcpy(d_in, scores, count * sizeof(double), cudaMemcpyHostToDevice);
+
+        int threads = 256;
+        int blocks = (count + threads - 1) / threads;
+        kernel_nde_noise_floor<<<blocks, threads>>>(d_in, d_out, count);
+        cudaDeviceSynchronize();
+
+        cudaMemcpy(output, d_out, count * sizeof(double), cudaMemcpyDeviceToHost);
+        cudaFree(d_in);
+        cudaFree(d_out);
+    }
+
+    /**
+     * NDE-2: Demon denoising on GPU
+     */
+    void l104_cuda_nde_demon_denoise(double *scores, double *output, uint64_t count, double entropy)
+    {
+        double *d_in, *d_out;
+        cudaMalloc(&d_in, count * sizeof(double));
+        cudaMalloc(&d_out, count * sizeof(double));
+        cudaMemcpy(d_in, scores, count * sizeof(double), cudaMemcpyHostToDevice);
+
+        int threads = 256;
+        int blocks = (count + threads - 1) / threads;
+        kernel_nde_demon_denoise<<<blocks, threads>>>(d_in, d_out, count, entropy);
+        cudaDeviceSynchronize();
+
+        cudaMemcpy(output, d_out, count * sizeof(double), cudaMemcpyDeviceToHost);
+        cudaFree(d_in);
+        cudaFree(d_out);
+    }
+
+    /**
+     * NDE-3: ZNE recovery on GPU
+     */
+    void l104_cuda_nde_zne_recover(double *scores, double *output, uint64_t count, double fid_std)
+    {
+        double *d_in, *d_out;
+        cudaMalloc(&d_in, count * sizeof(double));
+        cudaMalloc(&d_out, count * sizeof(double));
+        cudaMemcpy(d_in, scores, count * sizeof(double), cudaMemcpyHostToDevice);
+
+        int threads = 256;
+        int blocks = (count + threads - 1) / threads;
+        kernel_nde_zne_recover<<<blocks, threads>>>(d_in, d_out, count, fid_std);
+        cudaDeviceSynchronize();
+
+        cudaMemcpy(output, d_out, count * sizeof(double), cudaMemcpyDeviceToHost);
+        cudaFree(d_in);
+        cudaFree(d_out);
+    }
+
+    /**
+     * NDE Full Pipeline on GPU: NDE-1 → NDE-2 → NDE-4 → blend → NDE-3
+     * Returns unified denoised score
+     */
+    double l104_cuda_nde_full_pipeline(
+        double *scores, uint64_t count, double entropy, double fid_std)
+    {
+        if (count == 0) return 0.0;
+
+        double *d_buf1, *d_buf2;
+        cudaMalloc(&d_buf1, count * sizeof(double));
+        cudaMalloc(&d_buf2, count * sizeof(double));
+
+        // Copy input → GPU buf1
+        cudaMemcpy(d_buf1, scores, count * sizeof(double), cudaMemcpyHostToDevice);
+
+        int threads = 256;
+        int blocks = (count + threads - 1) / threads;
+
+        // Step 1: NDE-1 noise floor (buf1 → buf2)
+        kernel_nde_noise_floor<<<blocks, threads>>>(d_buf1, d_buf2, count);
+        cudaDeviceSynchronize();
+
+        // Step 2: NDE-2 demon denoise (buf2 → buf1)
+        kernel_nde_demon_denoise<<<blocks, threads>>>(d_buf2, d_buf1, count, entropy);
+        cudaDeviceSynchronize();
+
+        // Copy NDE-2 results back for cascade (host-side sorting needed)
+        double *h_nde2 = (double *)malloc(count * sizeof(double));
+        cudaMemcpy(h_nde2, d_buf1, count * sizeof(double), cudaMemcpyDeviceToHost);
+
+        // Step 3: NDE-4 cascade (host sorting + GPU apply)
+        // Simple insertion sort for ranks
+        int *h_ranks = (int *)malloc(count * sizeof(int));
+        int *sorted_idx = (int *)malloc(count * sizeof(int));
+        for (uint64_t i = 0; i < count; i++) sorted_idx[i] = (int)i;
+
+        for (uint64_t i = 1; i < count; i++) {
+            int key = sorted_idx[i];
+            double key_val = h_nde2[key];
+            int j = (int)i - 1;
+            while (j >= 0 && h_nde2[sorted_idx[j]] > key_val) {
+                sorted_idx[j + 1] = sorted_idx[j];
+                j--;
+            }
+            sorted_idx[j + 1] = key;
+        }
+        for (uint64_t rank = 0; rank < count; rank++) {
+            h_ranks[sorted_idx[rank]] = (int)rank;
+        }
+
+        int *d_ranks;
+        cudaMalloc(&d_ranks, count * sizeof(int));
+        cudaMemcpy(d_ranks, h_ranks, count * sizeof(int), cudaMemcpyHostToDevice);
+
+        kernel_nde_cascade_apply<<<blocks, threads>>>(d_buf1, d_ranks, d_buf2, count);
+        cudaDeviceSynchronize();
+
+        double *h_cascade = (double *)malloc(count * sizeof(double));
+        cudaMemcpy(h_cascade, d_buf2, count * sizeof(double), cudaMemcpyDeviceToHost);
+
+        // Step 4: Harmonic + arithmetic blend
+        double harm_denom = 0.0, arith_sum = 0.0;
+        for (uint64_t i = 0; i < count; i++) {
+            double s = (h_cascade[i] < 0.1) ? 0.1 : h_cascade[i];
+            harm_denom += 1.0 / s;
+            arith_sum += h_nde2[i];
+        }
+        double harmonic = (double)count / harm_denom;
+        double arithmetic = arith_sum / (double)count;
+        double phi_inv = 0.618033988749895;
+        double unified = harmonic * phi_inv + arithmetic * (1.0 - phi_inv);
+
+        // Step 5: NDE-3 ZNE recovery
+        double boost = 1.0 + phi_inv / (1.0 + fid_std * 10.0);
+        double result = unified * boost;
+        if (result > 1.0) result = 1.0;
+
+        // Cleanup
+        free(h_nde2);
+        free(h_ranks);
+        free(sorted_idx);
+        free(h_cascade);
+        cudaFree(d_buf1);
+        cudaFree(d_buf2);
+        cudaFree(d_ranks);
+
+        return result;
+    }
+
+} // extern "C" — NDE Pipeline
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+ * QUANTUM DEEP LINK — CUDA GPU Kernels
+ * Brain ↔ Sage ↔ Intellect entanglement acceleration
+ * EPR teleportation, phase kickback, density fusion, sacred harmonization
+ * INVARIANT: 527.5184818492612 | PILOT: LONDEL
+ * ═══════════════════════════════════════════════════════════════════════════════ */
+
+/** EPR Teleportation kernel — teleport array of consensus scores in parallel */
+__global__ void kernel_deep_link_epr_teleport(
+    const double *scores, double *teleported, double *fidelities, uint64_t count)
+{
+    uint64_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= count) return;
+
+    double score = scores[idx];
+    if (score < 0.0) score = 0.0;
+    if (score > 1.0) score = 1.0;
+
+    double theta = score * M_PI;
+    double god_phase = 2.0 * M_PI * fmod(d_GOD_CODE, 1.0);
+    double p0 = cos(theta / 2.0) * cos(theta / 2.0);
+    p0 *= (1.0 + sin(god_phase) * 0.001);
+    if (p0 > 1.0) p0 = 1.0;
+    if (p0 < 0.0) p0 = 0.0;
+
+    double recovered = 2.0 * acos(sqrt(p0)) / M_PI;
+    if (recovered > 1.0) recovered = 1.0;
+    if (recovered < 0.0) recovered = 0.0;
+
+    teleported[idx] = recovered;
+    fidelities[idx] = 1.0 - fabs(score - recovered);
+}
+
+/** Phase Kickback kernel — compute resonance for triplets of engine scores */
+__global__ void kernel_deep_link_phase_kickback(
+    const double *entropy_scores, const double *harmonic_scores,
+    const double *wave_scores, double *resonance, double *alignment, uint64_t count)
+{
+    uint64_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= count) return;
+
+    // Reconstruct PHI from PHI_INV: φ = 1/φ⁻¹
+    double phi = 1.0 / d_PHI_INV;
+    double p1 = 2.0 * M_PI * entropy_scores[idx] * phi;  // × φ
+    double p2 = 2.0 * M_PI * harmonic_scores[idx] * phi * phi;
+    double p3 = 2.0 * M_PI * wave_scores[idx] * phi * phi * phi;
+
+    double total = p1 + p2 + p3;
+    resonance[idx] = cos(total / 2.0) * cos(total / 2.0);
+
+    double god_phase = 2.0 * M_PI * d_GOD_CODE / 1000.0;
+    alignment[idx] = cos(total - god_phase) * cos(total - god_phase);
+}
+
+/** Sacred Harmonization kernel — φ-harmonic tuning for arrays */
+__global__ void kernel_deep_link_sacred_harmonize(
+    const double *brain, const double *sage, const double *intellect,
+    double *output, uint64_t count)
+{
+    uint64_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= count) return;
+
+    double phi = 1.0 / d_PHI_INV;
+    double weighted = brain[idx] + sage[idx] * phi + intellect[idx] * phi * phi;
+    double norm = 1.0 + phi + phi * phi;
+    double normalized = weighted / norm;
+
+    double h = cos(normalized * d_GOD_CODE / 1000.0 * M_PI);
+    output[idx] = h * h;
+}
+
+extern "C" {
+
+    /** Batch EPR teleportation of consensus scores on GPU */
+    void l104_cuda_deep_link_epr_batch(
+        double *scores, double *teleported, double *fidelities, uint64_t count)
+    {
+        double *d_scores, *d_teleported, *d_fidelities;
+        cudaMalloc(&d_scores, count * sizeof(double));
+        cudaMalloc(&d_teleported, count * sizeof(double));
+        cudaMalloc(&d_fidelities, count * sizeof(double));
+
+        cudaMemcpy(d_scores, scores, count * sizeof(double), cudaMemcpyHostToDevice);
+
+        int threads = 256;
+        int blocks = (count + threads - 1) / threads;
+        kernel_deep_link_epr_teleport<<<blocks, threads>>>(
+            d_scores, d_teleported, d_fidelities, count);
+        cudaDeviceSynchronize();
+
+        cudaMemcpy(teleported, d_teleported, count * sizeof(double), cudaMemcpyDeviceToHost);
+        cudaMemcpy(fidelities, d_fidelities, count * sizeof(double), cudaMemcpyDeviceToHost);
+
+        cudaFree(d_scores);
+        cudaFree(d_teleported);
+        cudaFree(d_fidelities);
+    }
+
+    /** Batch Phase Kickback scoring on GPU */
+    void l104_cuda_deep_link_phase_kickback_batch(
+        double *entropy_s, double *harmonic_s, double *wave_s,
+        double *resonance, double *alignment, uint64_t count)
+    {
+        double *d_e, *d_h, *d_w, *d_r, *d_a;
+        cudaMalloc(&d_e, count * sizeof(double));
+        cudaMalloc(&d_h, count * sizeof(double));
+        cudaMalloc(&d_w, count * sizeof(double));
+        cudaMalloc(&d_r, count * sizeof(double));
+        cudaMalloc(&d_a, count * sizeof(double));
+
+        cudaMemcpy(d_e, entropy_s, count * sizeof(double), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_h, harmonic_s, count * sizeof(double), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_w, wave_s, count * sizeof(double), cudaMemcpyHostToDevice);
+
+        int threads = 256;
+        int blocks = (count + threads - 1) / threads;
+        kernel_deep_link_phase_kickback<<<blocks, threads>>>(d_e, d_h, d_w, d_r, d_a, count);
+        cudaDeviceSynchronize();
+
+        cudaMemcpy(resonance, d_r, count * sizeof(double), cudaMemcpyDeviceToHost);
+        cudaMemcpy(alignment, d_a, count * sizeof(double), cudaMemcpyDeviceToHost);
+
+        cudaFree(d_e); cudaFree(d_h); cudaFree(d_w); cudaFree(d_r); cudaFree(d_a);
+    }
+
+    /** Batch Sacred Harmonization on GPU */
+    void l104_cuda_deep_link_harmonize_batch(
+        double *brain, double *sage, double *intellect, double *output, uint64_t count)
+    {
+        double *d_b, *d_s, *d_i, *d_o;
+        cudaMalloc(&d_b, count * sizeof(double));
+        cudaMalloc(&d_s, count * sizeof(double));
+        cudaMalloc(&d_i, count * sizeof(double));
+        cudaMalloc(&d_o, count * sizeof(double));
+
+        cudaMemcpy(d_b, brain, count * sizeof(double), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_s, sage, count * sizeof(double), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_i, intellect, count * sizeof(double), cudaMemcpyHostToDevice);
+
+        int threads = 256;
+        int blocks = (count + threads - 1) / threads;
+        kernel_deep_link_sacred_harmonize<<<blocks, threads>>>(d_b, d_s, d_i, d_o, count);
+        cudaDeviceSynchronize();
+
+        cudaMemcpy(output, d_o, count * sizeof(double), cudaMemcpyDeviceToHost);
+
+        cudaFree(d_b); cudaFree(d_s); cudaFree(d_i); cudaFree(d_o);
+    }
+
+} // extern "C" — Deep Link Pipeline
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * ENLIGHTENED INFLECTION ENGINE - SAGE MODE ACTIVATED

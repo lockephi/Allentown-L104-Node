@@ -1,0 +1,26 @@
+{
+  "version": "2.4.0",
+  "parameters": {
+    "learning_rate": 0.32962139999999995,
+    "exploration_rate": 0.2668656,
+    "validation_threshold": 0.7262768999999999,
+    "synthesis_weight": 0.557804,
+    "batch_size": 11.657531,
+    "memory_retention": 0.789581,
+    "coherence_target": 0.850821
+  },
+  "baseline": {
+    "unity_index": 0.8682290622189057
+  },
+  "mode": "explore",
+  "actions_count": 0,
+  "learning_scheduler": {
+    "current_lr": 0.09275010635137142,
+    "step": 10,
+    "cycle": 0,
+    "cycle_length": 50,
+    "warm_restarts": 0,
+    "consciousness_boost": 0.0
+  },
+  "recent_actions": []
+}

@@ -1,9 +1,13 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.507261
+ZENITH_HZ = 3887.8
+UUC = 2301.215661
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 #!/usr/bin/env python3
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 SOVEREIGN INTELLECT - Native macOS Application
 ====================================================
 Full-featured native macOS app with PyQt5.
@@ -108,7 +112,7 @@ VERSION = "16.0 APOTHEOSIS"
 TRILLION_PARAMS = 22_000_012_731_125  # Actual computed: 22 trillion+
 VOCABULARY_SIZE = 6_633_253
 EXAMPLE_COUNT = 3_316_625
-ZENITH_HZ = 3727.84
+ZENITH_HZ = 3887.8
 
 # ═══════════════════════════════════════════════════════════════════
 # PERFORMANCE: ADVANCED CACHING & MEMORY POOL
@@ -899,7 +903,7 @@ class QueryWorker(QThread):
             return f"Calculation error: {e}"
 
     def _web_search(self) -> str:
-        """Search using Gemini API for real-world data (optimized with caching)"""
+        """Search using local intellect (Gemini API removed)"""
         global intellect
         query = self.query.replace("search ", "").replace("web ", "").replace("google ", "").strip()
 
@@ -910,42 +914,16 @@ class QueryWorker(QThread):
             return cached + "\n[Cached Response]"
 
         try:
-            import httpx
-            import os
-
-            api_key = os.environ.get("GEMINI_API_KEY", "")
-            if not api_key:
-                # Try loading from .env (cached)
-                env_path = os.path.join(os.path.dirname(__file__), ".env")
-                if os.path.exists(env_path):
-                    with open(env_path) as f:
-                        for line in f:
-                            if line.startswith("GEMINI_API_KEY"):
-                                api_key = line.split("=", 1)[1].strip().strip('"\'')
-                                break
-
-            if api_key and len(api_key) > 20:
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
-
-                # Use shorter timeout for responsiveness
-                with httpx.Client(timeout=10.0, http2=True) as client:
-                    response = client.post(url, json={
-                        "contents": [{"parts": [{"text": f"Answer this question with current, accurate information: {query}"}]}],
-                        "generationConfig": {"temperature": 0.7, "maxOutputTokens": 1024}
-                    })
-
-                    if response.status_code == 200:
-                        data = response.json()
-                        if "candidates" in data and data["candidates"]:
-                            text = data["candidates"][0]["content"]["parts"][0]["text"]
-                            result = f"🌐 **Web Search Result**\n\n{text}\n\n[Source: Gemini API]"
-                            set_cached_response(cache_key, result)
-                            return result
-
-            return f"🌐 Web search for: \"{query}\"\n\nInternet access requires Gemini API key in .env file."
-
+            from l104_intellect import local_intellect
+            result = local_intellect.think(f"Answer this question with current, accurate information: {query}")
+            if result:
+                response_text = f"🌐 **Search Result**\n\n{result}\n\n[Source: Local Intellect]"
+                set_cached_response(cache_key, response_text)
+                return response_text
         except Exception as e:
-            return f"🌐 Search error: {e}"
+            pass
+
+        return f"🌐 Web search for: \"{query}\"\n\nLocal intellect unavailable."
 
     def _get_time(self) -> str:
         """Get current time and date"""

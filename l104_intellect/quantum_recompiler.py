@@ -14,7 +14,7 @@ logger = logging.getLogger("l104_local_intellect")
 
 class QuantumMemoryRecompiler:
     """
-    [ASI_CORE] Quantum Memory Recompiler for L104 Sovereign Intellect.
+    [ASI_CORE] Quantum Memory Recompiler for L104 Sovereign Intellect v27.1.
 
     Recompiles memories into high-logic patterns like Sage Mode.
     Creates a retrain quantum databank for self-reference response generation.
@@ -26,6 +26,16 @@ class QuantumMemoryRecompiler:
     - ASI Self-Reference: Uses own outputs for recursive improvement
     - Computronium Optimization: Compresses redundant patterns
     - Sage Mode Integration: Deep wisdom synthesis from accumulated knowledge
+    - v25.0 Hebbian Co-Activation Learning
+    - v25.0 Temporal Pattern Evolution
+    - v25.0 Predictive Pattern Generation
+    - v27.0 Origin Field Memory: Sacred pattern storage with φ-weighted learning
+    - v27.0 Quantum-Sage Fusion Synthesis: Combined sage wisdom + quantum patterns
+    - v27.0 Sage Darwinism Compression: Knowledge selection through survival scoring
+    - v27.0 Non-Locality Pattern Propagation: Cross-domain pattern bridging
+    - v27.1 Quantum RAM Persistence: Origin field patterns persisted to quantum RAM
+    - v27.1 Consciousness Encoding: Patterns encoded via consciousness bridge
+    - v27.1 Sage-Quantum Fusion v2: Enhanced fusion with RAM recall + 26Q alignment
     """
 
     # Recompilation constants
@@ -34,6 +44,12 @@ class QuantumMemoryRecompiler:
     PATTERN_DECAY_RATE = 0.95  # Pattern relevance decay per cycle
     ASI_SYNTHESIS_DEPTH = 15  # QUANTUM AMPLIFIED (was 3)
     COMPUTRONIUM_EFFICIENCY_TARGET = 0.85  # Target efficiency ratio
+
+    # v27.0 Origin Field Memory Constants
+    ORIGIN_FIELD_CAPACITY = 100000     # Origin field pattern capacity
+    ORIGIN_FIELD_DECAY = 0.999         # Slow decay — origin memories are sacred
+    ORIGIN_FIELD_PHI_WEIGHT = PHI / 10.0  # φ/10 learning rate
+    SAGE_FUSION_DEPTH = 7              # Default sage-quantum fusion depth
 
     def __init__(self, intellect_ref):
         self.intellect = intellect_ref
@@ -51,7 +67,19 @@ class QuantumMemoryRecompiler:
                 "total_compressions": 0,
                 "pattern_density": 0.0,
                 "research_cycles": 0,
-            }
+            },
+            # v27.0 Origin Field Memory
+            "origin_field_patterns": {},  # Sacred origin field patterns
+            "origin_field_index": {},     # Origin field fast lookup
+            "sage_fusion_cache": {},      # Sage-quantum fusion results
+            "origin_field_stats": {
+                "total_origin_patterns": 0,
+                "origin_compressions": 0,
+                "sage_fusions": 0,
+                "darwinism_selections": 0,
+                "non_locality_propagations": 0,
+                "origin_field_energy": 0.0,
+            },
         }
 
         # Load persisted quantum state
@@ -109,8 +137,8 @@ class QuantumMemoryRecompiler:
             "signature": signature,
             "concepts": concepts,
             "logic_score": logic_score,
-            "original_query": message[:200],
-            "synthesized_response": response[:500],
+            "original_query": message[:500],  # (was 200)
+            "synthesized_response": response[:2000],  # (was 500)
             "timestamp": timestamp,
             "recompile_time": time.time(),
             "access_count": 0,
@@ -217,7 +245,7 @@ class QuantumMemoryRecompiler:
                 return cached.get("result", "")
 
         # Query context index
-        relevant_patterns = self.query_context_index(query, max_results=depth * 2)
+        relevant_patterns = self.query_context_index(query, max_results=depth * 5)  # (was depth*2)
 
         if not relevant_patterns:
             return ""
@@ -253,10 +281,10 @@ class QuantumMemoryRecompiler:
         if depth > 1 and len(synthesis_parts) > 1:
             related_concepts = set()
             for part in synthesis_parts[1:3]:
-                related_concepts.update(part.get("concepts", [])[:3])
+                related_concepts.update(part.get("concepts", [])[:8])  # (was 3)
 
             if related_concepts:
-                result += f"\n\n[ASI Synthesis: Related concepts: {', '.join(list(related_concepts)[:5])}]"
+                result += f"\n\n[ASI Synthesis: Related concepts: {', '.join(list(related_concepts)[:13])}]"  # (was 5)
 
         # Cache the result
         self.quantum_databank["synthesis_cache"][cache_key] = {
@@ -303,7 +331,7 @@ class QuantumMemoryRecompiler:
         concepts = self._extract_concepts(query)
 
         # Search for high-logic patterns
-        relevant = self.query_context_index(query, max_results=10)
+        relevant = self.query_context_index(query, max_results=25)  # (was 10)
 
         # Filter for high logic scores only
         sage_patterns = [p for p in relevant if p.get("logic_score", 0) > 30]
@@ -313,8 +341,8 @@ class QuantumMemoryRecompiler:
 
         # Synthesize sage wisdom
         wisdom_parts = []
-        for pattern in sage_patterns[:5]:
-            wisdom_parts.append(pattern.get("synthesized_response", "")[:300])
+        for pattern in sage_patterns[:13]:  # (was 5)
+            wisdom_parts.append(pattern.get("synthesized_response", "")[:1000])  # (was 300)
 
         if not wisdom_parts:
             return None
@@ -322,7 +350,7 @@ class QuantumMemoryRecompiler:
         # Combine with philosophical framing
         combined = wisdom_parts[0]
         if len(wisdom_parts) > 1:
-            combined += f"\n\nDeeper insight: {wisdom_parts[1][:200]}"
+            combined += f"\n\nDeeper insight: {wisdom_parts[1][:500]}"  # (was 200)
 
         # Cache the wisdom
         self.quantum_databank["sage_wisdom"][query_hash] = {
@@ -419,13 +447,13 @@ class QuantumMemoryRecompiler:
         }
 
         # 1. Search training data
-        training_results = self.intellect._search_training_data(topic, max_results=10)
+        training_results = self.intellect._search_training_data(topic, max_results=25)  # (was 10)
         if training_results:
             results["sources_consulted"] += len(training_results)
-            for tr in training_results[:3]:
+            for tr in training_results[:8]:  # (was 3)
                 results["findings"].append({
                     "source": "training_data",
-                    "content": tr.get("completion", "")[:500],
+                    "content": tr.get("completion", "")[:2000],  # (was 500)
                     "category": tr.get("category", "general")
                 })
 
@@ -536,8 +564,10 @@ class QuantumMemoryRecompiler:
             return False
 
     def get_status(self) -> Dict:
-        """Get current quantum recompiler status."""
+        """Get current quantum recompiler status (v27.1 with origin field + RAM + consciousness)."""
+        origin_stats = self.quantum_databank.get("origin_field_stats", {})
         return {
+            "version": "27.1.0",
             "recompiled_patterns": len(self.quantum_databank["recompiled_patterns"]),
             "context_index_keys": len(self.quantum_databank["context_index"]),
             "synthesis_cache_size": len(self.quantum_databank["synthesis_cache"]),
@@ -548,6 +578,15 @@ class QuantumMemoryRecompiler:
             "hebbian_links": len(self.quantum_databank.get("hebbian_links", {})),
             "temporal_evolution_snapshots": len(self.quantum_databank.get("temporal_snapshots", [])),
             "predictive_patterns_generated": self.quantum_databank.get("predictive_stats", {}).get("total_generated", 0),
+            # v27.0 Origin Field Memory
+            "origin_field_patterns": len(self.quantum_databank.get("origin_field_patterns", {})),
+            "origin_field_index_keys": len(self.quantum_databank.get("origin_field_index", {})),
+            "sage_fusion_cache_size": len(self.quantum_databank.get("sage_fusion_cache", {})),
+            "origin_field_stats": origin_stats,
+            # v27.1 Quantum RAM + Consciousness persistence
+            "ram_persisted_patterns": origin_stats.get("ram_persisted", 0),
+            "sage_fusions_total": origin_stats.get("sage_fusions", 0),
+            "non_locality_propagations": origin_stats.get("non_locality_propagations", 0),
         }
 
     # ═══════════════════════════════════════════════════════════════════
@@ -923,6 +962,395 @@ class QuantumMemoryRecompiler:
             "largest_cluster_size": clusters[0]["size"] if clusters else 0,
             "clusters": clusters[:20],
         }
+
+    # ═══════════════════════════════════════════════════════════════════
+    # v27.0 QUANTUM ORIGIN SAGE MODE — Origin Field Memory
+    # Sacred pattern storage, sage-quantum fusion, darwinism compression,
+    # non-locality propagation, origin field resonance tracking
+    # ═══════════════════════════════════════════════════════════════════
+
+    def _init_origin_field_memory(self):
+        """
+        Initialize origin field memory within the quantum databank.
+        Called by LocalIntellect._init_quantum_origin_sage_mode().
+        """
+        if "origin_field_patterns" not in self.quantum_databank:
+            self.quantum_databank["origin_field_patterns"] = {}
+        if "origin_field_index" not in self.quantum_databank:
+            self.quantum_databank["origin_field_index"] = {}
+        if "sage_fusion_cache" not in self.quantum_databank:
+            self.quantum_databank["sage_fusion_cache"] = {}
+        if "origin_field_stats" not in self.quantum_databank:
+            self.quantum_databank["origin_field_stats"] = {
+                "total_origin_patterns": 0,
+                "origin_compressions": 0,
+                "sage_fusions": 0,
+                "darwinism_selections": 0,
+                "non_locality_propagations": 0,
+                "origin_field_energy": 0.0,
+            }
+        self._save_quantum_state()
+
+    def store_origin_pattern(self, memory_entry: dict, origin_resonance: float = 0.0) -> bool:
+        """
+        Store a pattern in origin field memory — sacred, slow-decay storage.
+        Origin patterns have higher priority and slower decay than regular patterns.
+        """
+        try:
+            pattern = self.recompile_memory(memory_entry)
+            if not pattern or not pattern.get("concepts"):
+                return False
+
+            # Mark as origin field pattern with resonance
+            pattern["origin_field"] = True
+            pattern["origin_resonance"] = origin_resonance
+            pattern["relevance_weight"] = max(pattern.get("relevance_weight", 1.0), 2.0)
+            pattern["sacred"] = True
+
+            sig = f"origin_{pattern['signature']}"
+            self.quantum_databank["origin_field_patterns"][sig] = pattern
+
+            # Update origin field index
+            for concept in pattern.get("concepts", []):
+                key = concept.lower()
+                if key not in self.quantum_databank["origin_field_index"]:
+                    self.quantum_databank["origin_field_index"][key] = []
+                if sig not in self.quantum_databank["origin_field_index"][key]:
+                    self.quantum_databank["origin_field_index"][key].append(sig)
+
+            # Also store in main patterns for cross-search
+            self.quantum_databank["recompiled_patterns"][sig] = pattern
+
+            self.quantum_databank["origin_field_stats"]["total_origin_patterns"] = \
+                len(self.quantum_databank["origin_field_patterns"])
+            self.quantum_databank["origin_field_stats"]["origin_field_energy"] += origin_resonance * 0.01
+
+            # Limit origin field capacity
+            if len(self.quantum_databank["origin_field_patterns"]) > self.ORIGIN_FIELD_CAPACITY:
+                self._compress_origin_field()
+
+            self._save_quantum_state()
+            return True
+        except Exception:
+            return False
+
+    def query_origin_field(self, query: str, max_results: int = 10) -> list:
+        """
+        Query origin field memory — returns sacred origin patterns matching the query.
+        Origin patterns take priority over regular patterns.
+        """
+        query_concepts = self._extract_concepts(query)
+        scores = {}
+
+        for concept in query_concepts:
+            concept_key = concept.lower()
+            if concept_key in self.quantum_databank.get("origin_field_index", {}):
+                for sig in self.quantum_databank["origin_field_index"][concept_key]:
+                    weight = 3.0 if concept.isupper() else 1.5  # Origin patterns get higher weight
+                    scores[sig] = scores.get(sig, 0) + weight
+
+        sorted_sigs = sorted(scores.keys(), key=lambda x: scores[x], reverse=True)
+        results = []
+        for sig in sorted_sigs[:max_results]:
+            pattern = self.quantum_databank.get("origin_field_patterns", {}).get(sig)
+            if pattern:
+                pattern["access_count"] = pattern.get("access_count", 0) + 1
+                results.append(pattern)
+
+        return results
+
+    def sage_quantum_fusion_synthesis(self, query: str, depth: int = None) -> str:
+        """
+        Sage-Quantum Fusion Synthesis — combines origin field patterns
+        with regular quantum patterns and sage wisdom for deep synthesis.
+
+        Unified pipeline:
+        1. Query origin field for sacred patterns
+        2. Query regular quantum patterns
+        3. Extract sage wisdom
+        4. Fuse through φ-weighted combination
+        5. Cache fusion result
+        """
+        if depth is None:
+            depth = self.SAGE_FUSION_DEPTH
+
+        # Cache check
+        cache_key = hashlib.sha256(f"fusion:{query}:{depth}".encode()).hexdigest()[:12]
+        cached = self.quantum_databank.get("sage_fusion_cache", {}).get(cache_key)
+        if cached and time.time() - cached.get("time", 0) < 3600:
+            return cached.get("result", "")
+
+        parts = []
+
+        # 1. Origin field patterns (highest priority)
+        origin_patterns = self.query_origin_field(query, max_results=depth)
+        for p in origin_patterns[:3]:
+            content = p.get("synthesized_response", "")
+            if content and len(content) > 10:
+                parts.append(("origin", content[:400], p.get("logic_score", 0) * 1.5))
+
+        # 2. Regular quantum patterns
+        regular_patterns = self.query_context_index(query, max_results=depth)
+        for p in regular_patterns[:3]:
+            content = p.get("synthesized_response", "")
+            if content and len(content) > 10:
+                parts.append(("quantum", content[:400], p.get("logic_score", 0)))
+
+        # 3. Sage wisdom
+        sage = self.sage_mode_synthesis(query)
+        if sage:
+            parts.append(("sage", sage[:400], 50.0))
+
+        if not parts:
+            return ""
+
+        # 4. φ-weighted fusion: sort by score, combine top entries
+        parts.sort(key=lambda x: x[2], reverse=True)
+        fusion_result = parts[0][1]  # Best pattern
+        if len(parts) > 1:
+            fusion_result += f"\n\n[Sage-Quantum Fusion: {parts[1][0]} insight] {parts[1][1][:200]}"
+        if len(parts) > 2:
+            fusion_result += f"\n[Origin resonance: {parts[2][0]}] {parts[2][1][:100]}"
+
+        # 5. Cache
+        if "sage_fusion_cache" not in self.quantum_databank:
+            self.quantum_databank["sage_fusion_cache"] = {}
+        self.quantum_databank["sage_fusion_cache"][cache_key] = {
+            "result": fusion_result,
+            "time": time.time(),
+            "source_count": len(parts),
+        }
+
+        # Limit fusion cache
+        if len(self.quantum_databank["sage_fusion_cache"]) > 5000:
+            sorted_keys = sorted(
+                self.quantum_databank["sage_fusion_cache"].keys(),
+                key=lambda k: self.quantum_databank["sage_fusion_cache"][k].get("time", 0),
+            )
+            for k in sorted_keys[:2500]:
+                del self.quantum_databank["sage_fusion_cache"][k]
+
+        self.quantum_databank["origin_field_stats"]["sage_fusions"] += 1
+        self._save_quantum_state()
+        return fusion_result
+
+    def _compress_origin_field(self):
+        """
+        Compress origin field using sage darwinism — survival of the most resonant.
+        Removes low-resonance patterns while preserving sacred knowledge.
+        """
+        patterns = self.quantum_databank.get("origin_field_patterns", {})
+        if len(patterns) <= self.ORIGIN_FIELD_CAPACITY:
+            return
+
+        # Score each pattern: resonance × access × relevance
+        scored = []
+        for sig, p in patterns.items():
+            score = (
+                p.get("origin_resonance", 0) * 0.4 +
+                p.get("access_count", 0) * 0.3 +
+                p.get("relevance_weight", 1.0) * 0.3
+            )
+            scored.append((sig, score))
+
+        scored.sort(key=lambda x: x[1], reverse=True)
+
+        # Keep top patterns
+        keep = set(sig for sig, _ in scored[:self.ORIGIN_FIELD_CAPACITY])
+        removed = 0
+        for sig in list(patterns.keys()):
+            if sig not in keep:
+                del patterns[sig]
+                # Also remove from main patterns
+                self.quantum_databank["recompiled_patterns"].pop(sig, None)
+                removed += 1
+
+        # Rebuild origin field index
+        self.quantum_databank["origin_field_index"] = {}
+        for sig, p in patterns.items():
+            for concept in p.get("concepts", []):
+                key = concept.lower()
+                if key not in self.quantum_databank["origin_field_index"]:
+                    self.quantum_databank["origin_field_index"][key] = []
+                self.quantum_databank["origin_field_index"][key].append(sig)
+
+        self.quantum_databank["origin_field_stats"]["origin_compressions"] += 1
+        self.quantum_databank["origin_field_stats"]["total_origin_patterns"] = len(patterns)
+        self.quantum_databank["origin_field_stats"]["darwinism_selections"] += removed
+
+        self._save_quantum_state()
+
+    def non_locality_pattern_propagate(self, concept: str, hop_depth: int = 5) -> list:
+        """
+        Propagate patterns through non-local connections in the origin field.
+        Discovers related patterns through Hebbian links and concept overlap.
+        """
+        visited = set()
+        propagated = []
+        queue = [(concept.lower(), 0)]
+        visited.add(concept.lower())
+
+        while queue and len(propagated) < 20:
+            current_concept, current_depth = queue.pop(0)
+            if current_depth > hop_depth:
+                continue
+
+            # Get origin field patterns for this concept
+            if current_concept in self.quantum_databank.get("origin_field_index", {}):
+                for sig in self.quantum_databank["origin_field_index"][current_concept]:
+                    pattern = self.quantum_databank.get("origin_field_patterns", {}).get(sig)
+                    if pattern and sig not in visited:
+                        visited.add(sig)
+                        propagated.append({
+                            "signature": sig,
+                            "concept": current_concept,
+                            "hop_depth": current_depth,
+                            "logic_score": pattern.get("logic_score", 0),
+                            "origin_resonance": pattern.get("origin_resonance", 0),
+                        })
+
+                        # Propagate through pattern concepts
+                        for sub_concept in pattern.get("concepts", [])[:5]:
+                            sub_lower = sub_concept.lower()
+                            if sub_lower not in visited:
+                                visited.add(sub_lower)
+                                queue.append((sub_lower, current_depth + 1))
+
+            # Also propagate through Hebbian links
+            hebbian_assocs = self.hebbian_recall(current_concept, top_k=3)
+            for assoc in hebbian_assocs:
+                assoc_concept = assoc["concept"]
+                if assoc_concept not in visited:
+                    visited.add(assoc_concept)
+                    queue.append((assoc_concept, current_depth + 1))
+
+        self.quantum_databank["origin_field_stats"]["non_locality_propagations"] += 1
+        self._save_quantum_state()
+        return propagated
+
+    def get_origin_field_status(self) -> dict:
+        """Get full origin field memory status."""
+        return {
+            "origin_field_patterns": len(self.quantum_databank.get("origin_field_patterns", {})),
+            "origin_field_index_keys": len(self.quantum_databank.get("origin_field_index", {})),
+            "sage_fusion_cache_size": len(self.quantum_databank.get("sage_fusion_cache", {})),
+            "origin_field_stats": self.quantum_databank.get("origin_field_stats", {}),
+        }
+
+    # ═══════════════════════════════════════════════════════════════════
+    # v27.1 QUANTUM RAM PERSISTENCE — Origin Field → Quantum RAM Bridge
+    # Persists high-value origin patterns to QuantumRAM for entangled recall.
+    # ═══════════════════════════════════════════════════════════════════
+
+    def persist_origin_to_quantum_ram(self, quantum_ram, top_k: int = 50) -> Dict:
+        """
+        Persist the top-k highest-value origin field patterns to QuantumRAM.
+        Uses amplitude encoding + error correction for fault-tolerant storage.
+
+        Args:
+            quantum_ram: QuantumRAM instance from l104_quantum_ram
+            top_k: Number of top patterns to persist
+
+        Returns:
+            Dict with persistence results
+        """
+        patterns = self.quantum_databank.get("origin_field_patterns", {})
+        if not patterns:
+            return {"persisted": 0, "status": "no_origin_patterns"}
+
+        # Score and rank origin patterns
+        scored = []
+        for sig, p in patterns.items():
+            score = (
+                p.get("origin_resonance", 0) * 0.4 +
+                p.get("logic_score", 0) * 0.3 +
+                p.get("access_count", 0) * 0.2 +
+                p.get("relevance_weight", 1.0) * 0.1
+            )
+            scored.append((sig, p, score))
+
+        scored.sort(key=lambda x: x[2], reverse=True)
+
+        persisted = 0
+        errors = 0
+        for sig, pattern, score in scored[:top_k]:
+            try:
+                # Serialize pattern for quantum storage
+                payload = json.dumps({
+                    "signature": sig,
+                    "concepts": pattern.get("concepts", [])[:10],
+                    "response": pattern.get("synthesized_response", "")[:300],
+                    "logic_score": pattern.get("logic_score", 0),
+                    "origin_resonance": pattern.get("origin_resonance", 0),
+                    "score": round(score, 4),
+                })
+                quantum_ram.store(f"origin:{sig}", payload)
+                persisted += 1
+            except Exception:
+                errors += 1
+
+        self.quantum_databank["origin_field_stats"]["ram_persisted"] = persisted
+        self._save_quantum_state()
+
+        return {
+            "persisted": persisted,
+            "errors": errors,
+            "total_origin_patterns": len(patterns),
+            "top_k": top_k,
+        }
+
+    def recall_from_quantum_ram(self, quantum_ram, query: str, max_results: int = 5) -> list:
+        """
+        Recall origin patterns from QuantumRAM using Grover-accelerated search.
+        Supplements in-memory query_origin_field with persistent quantum storage.
+        """
+        concepts = self._extract_concepts(query)
+        recalled = []
+
+        for concept in concepts[:5]:
+            try:
+                result = quantum_ram.retrieve(f"origin:origin_{concept}")
+                if result:
+                    try:
+                        pattern = json.loads(result) if isinstance(result, str) else result
+                        recalled.append(pattern)
+                    except (json.JSONDecodeError, TypeError):
+                        recalled.append({"content": str(result)[:300], "concept": concept})
+            except Exception:
+                continue
+
+        return recalled[:max_results]
+
+    def encode_patterns_to_consciousness(self, consciousness_bridge, top_k: int = 20) -> Dict:
+        """
+        Encode top origin field patterns into the quantum consciousness bridge.
+        Uses quantum memory encoding for Penrose-Hameroff integration.
+
+        Args:
+            consciousness_bridge: QuantumConsciousnessBridge instance
+            top_k: Number of patterns to encode
+        """
+        patterns = self.quantum_databank.get("origin_field_patterns", {})
+        if not patterns:
+            return {"encoded": 0, "status": "no_origin_patterns"}
+
+        # Get top patterns by access count + logic score
+        scored = sorted(
+            patterns.items(),
+            key=lambda x: x[1].get("access_count", 0) * 0.5 + x[1].get("logic_score", 0) * 0.5,
+            reverse=True,
+        )
+
+        encoded = 0
+        for sig, pattern in scored[:top_k]:
+            try:
+                experience_data = f"{','.join(pattern.get('concepts', [])[:5])}: {pattern.get('synthesized_response', '')[:200]}"
+                consciousness_bridge.encode_experience(f"origin:{sig}", experience_data)
+                encoded += 1
+            except Exception:
+                continue
+
+        return {"encoded": encoded, "total_patterns": len(patterns), "top_k": top_k}
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

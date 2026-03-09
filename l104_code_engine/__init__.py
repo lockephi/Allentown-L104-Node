@@ -37,6 +37,7 @@ from .synthesis import CodingSuggestionEngine
 from .audit import CodeReviewPipeline, QualityGateEngine
 from .analyzer import ProjectAnalyzer
 from .constants import CODING_SYSTEM_NAME, CODING_SYSTEM_VERSION
+from .computronium import ComputroniumCodeAnalyzer
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # MODULE-LEVEL SINGLETONS + BACKWARDS COMPATIBILITY
@@ -91,4 +92,5 @@ __all__ = [
     "CodingSuggestionEngine",
     "CodeReviewPipeline", "QualityGateEngine",
     "ProjectAnalyzer",
+    "ComputroniumCodeAnalyzer",
 ]

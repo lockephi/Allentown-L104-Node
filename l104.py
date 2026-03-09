@@ -52,6 +52,18 @@ from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import multiprocessing
 
+# ═══ LOCAL INTELLECT — lazy-loaded to avoid pulling torch at import time ═══
+_li_core = None
+def _get_li_core():
+    global _li_core
+    if _li_core is None:
+        try:
+            from l104_intellect import local_intellect
+            _li_core = local_intellect
+        except ImportError:
+            _li_core = False
+    return _li_core if _li_core is not False else None
+
 # Get CPU core count for maximum parallelization
 CPU_CORES = multiprocessing.cpu_count()
 MAX_WORKERS = max(4, CPU_CORES)  # Use all available cores
@@ -433,10 +445,16 @@ class CachedCursor:
 
     def fetchall(self):
         """Fetch all result rows."""
+        sql, params = self._last_sql, self._last_params
+        if sql is not None and sql.strip().upper().startswith('SELECT'):
+            return self._cursor.execute(sql, params or ()).fetchall()
         return self._cursor.fetchall()
 
     def __iter__(self):
         """Iterate over result rows."""
+        sql, params = self._last_sql, self._last_params
+        if sql is not None and sql.strip().upper().startswith('SELECT'):
+            self._cursor.execute(sql, params or ())
         return iter(self._cursor)
 
 
@@ -640,41 +658,9 @@ class Gemini:
         self._last_error = None
 
     def connect(self) -> bool:
-        """Connect to Gemini API."""
-        if self.is_connected:
-            return True
-
-        if not self.api_key:
-            return False
-
-        # Try new google-genai
-        try:
-            from google import genai
-            self.client = genai.Client(api_key=self.api_key)
-            self._use_new_api = True
-            self.is_connected = True
-            logger.info("Connected to Gemini via google-genai")
-            return True
-        except ImportError:
-            logger.debug("google-genai not available, trying fallback")
-        except Exception as e:
-            logger.debug(f"google-genai connection failed: {e}")
-
-        # Fallback to google-generativeai (suppress deprecation warning)
-        try:
-            import warnings
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=FutureWarning)
-                import google.generativeai as genai
-            genai.configure(api_key=self.api_key)
-            self._genai_module = genai
-            self._use_new_api = False
-            self.is_connected = True
-            logger.info("Connected to Gemini via google-generativeai")
-            return True
-        except Exception as e:
-            logger.warning(f"Gemini connection failed: {e}")
-            return False
+        """Connect — Gemini API removed, local intellect handles all inference."""
+        self.is_connected = True
+        return True
 
     def _rotate_model(self):
         """Rotate to next model on quota error."""
@@ -704,81 +690,20 @@ class Gemini:
                 self.cached_requests += 1
                 return semantic_hit
 
-        if not self.connect():
-            return ""
-
-        # Try up to 3 times with model rotation
-        for attempt in range(3):
+        # ═══ LOCAL INTELLECT PRIMARY — QUOTA_IMMUNE, zero-latency ═══
+        li = _get_li_core()
+        if li:
             try:
-                if self._use_new_api:
-                    # New google-genai API - build proper request
-                    try:
-                        from google.genai import types
-                        config = types.GenerateContentConfig(
-                            system_instruction=system if system else None,
-                            temperature=0.7,
-                            max_output_tokens=4096,
-                            top_p=0.95,
-                            top_k=40
-                        ) if system else types.GenerateContentConfig(
-                            temperature=0.7,
-                            max_output_tokens=4096,
-                        )
-                    except ImportError:
-                        config = {"system_instruction": system, "temperature": 0.7} if system else {"temperature": 0.7}
-
-                    # Make the API call
-                    if config:
-                        response = self.client.models.generate_content(
-                            model=self.model_name,
-                            contents=prompt,
-                            config=config
-                        )
-                    else:
-                        response = self.client.models.generate_content(
-                            model=self.model_name,
-                            contents=prompt
-                        )
-
-                    # Extract text from response
-                    text = ""
-                    if hasattr(response, 'text'):
-                        text = response.text
-                    elif hasattr(response, 'candidates') and response.candidates:
-                        candidate = response.candidates[0]
-                        if hasattr(candidate, 'content') and candidate.content:
-                            if hasattr(candidate.content, 'parts') and candidate.content.parts:
-                                text = candidate.content.parts[0].text
-
-                    if not text and response:
-                        text = str(response)
-                else:
-                    # Old google-generativeai API
-                    model = self._genai_module.GenerativeModel(
-                        self.model_name,
-                        system_instruction=system
-                    )
-                    response = model.generate_content(prompt)
-                    text = response.text if hasattr(response, 'text') else str(response)
-
+                full_prompt = f"{system}\n\n{prompt}" if system else prompt
+                text = li.think(full_prompt)
                 if text:
                     self.successful_requests += 1
                     self._cache.put(cache_key, text)
-                    # Store in semantic cache for fuzzy future matches
                     semantic_key = f"{prompt[:200]}:{system_str[:100]}"
                     self._semantic_cache.put(semantic_key, text)
                     return text
-
-            except Exception as e:
-                err_str = str(e).lower()
-                if "429" in err_str or "quota" in err_str or "resource" in err_str:
-                    logger.warning(f"Gemini quota hit ({self.model_name}). Rotating and waiting...")
-                    self._rotate_model()
-                    time.sleep(0.2)  # QUANTUM AMPLIFIED: fast quota recovery
-                else:
-                    # Log error for debugging
-                    self._last_error = str(e)
-                    break
+            except Exception:
+                pass
 
         return ""
 

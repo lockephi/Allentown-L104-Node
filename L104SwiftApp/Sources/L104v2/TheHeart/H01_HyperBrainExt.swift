@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H01_HyperBrainExt.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — HyperBrain Extension (Advanced Streams + Persistence)
 //
 // Super-functional stream processors v3.0: temporal drift, Hebbian
@@ -31,7 +31,7 @@ extension HyperBrain {
 
     /// ⏳ TEMPORAL DRIFT ANALYZER: Detects trending and fading concepts
     func runTemporalDriftStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["temporalDrift"] else { return }
             stream.cycleCount += 1
 
@@ -85,20 +85,22 @@ extension HyperBrain {
 
     /// 🧠 HEBBIAN CONSOLIDATOR: "Neurons that fire together, wire together"
     func runHebbianLearningStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        // ═══ EXTRACT TOPICS OUTSIDE SYNC BLOCK ═══
+        // extractTopics() calls getPatterns() which uses syncQueue.sync internally.
+        // Calling it inside syncQueue.sync causes re-entrant deadlock (EXC_BAD_INSTRUCTION).
+        let recentMemoriesSnapshot: [String] = syncQueue.sync { Array(shortTermMemory.suffix(10)) }
+        var windowConcepts: [String] = []
+        for mem in recentMemoriesSnapshot {
+            let topics = L104State.shared.extractTopics(mem)
+            windowConcepts.append(contentsOf: topics)
+        }
+
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["hebbianLearning"] else { return }
             stream.cycleCount += 1
 
             let triggerMod = Int(60.0 * (1.0 - gammaPhase * 0.4))
             if stream.cycleCount % max(triggerMod, 30) == 0 {
-                // Find concepts that co-occur in recent memory
-                let recentMemories = shortTermMemory.suffix(10)
-                var windowConcepts: [String] = []
-
-                for mem in recentMemories {
-                    let topics = L104State.shared.extractTopics(mem)
-                    windowConcepts.append(contentsOf: topics)
-                }
 
                 // Generate all unique pairs
                 let uniqueConcepts = Array(Set(windowConcepts))
@@ -154,7 +156,13 @@ extension HyperBrain {
 
     /// 🔮 PREDICTIVE PRE-LOADER: Anticipates next queries and pre-fetches context
     func runPredictivePreloadStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        // ═══ EXTRACT TOPICS OUTSIDE SYNC BLOCK ═══
+        // extractTopics() calls getPatterns() which uses syncQueue.sync internally.
+        // Calling it inside syncQueue.sync causes re-entrant deadlock (EXC_BAD_INSTRUCTION).
+        let lastInputSnapshot: String? = syncQueue.sync { shortTermMemory.last }
+        let lastInputTopics: [String] = lastInputSnapshot.map { L104State.shared.extractTopics($0) } ?? []
+
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["predictivePreload"] else { return }
             stream.cycleCount += 1
 
@@ -166,10 +174,9 @@ extension HyperBrain {
                 // Add trending concepts (they're gaining momentum)
                 predictions.append(contentsOf: trendingConcepts.shuffled().prefix(3))
 
-                // Add strong associative links from last query
-                if let lastInput = shortTermMemory.last {
-                    let topics = L104State.shared.extractTopics(lastInput)
-                    for topic in topics.prefix(2) {
+                // Add strong associative links from last query (topics extracted outside sync)
+                if !lastInputTopics.isEmpty {
+                    for topic in lastInputTopics.prefix(2) {
                         if let links = associativeLinks[topic] {
                             predictions.append(contentsOf: links.prefix(2))
                         }
@@ -218,59 +225,71 @@ extension HyperBrain {
 
     /// 🌟 CURIOSITY EXPLORER: Seeks novel, unexplored concepts at the frontier
     func runCuriosityExplorerStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        // ═══ PRE-FETCH DATA OUTSIDE SYNC BLOCK ═══
+        // Phase 1: Compute frontier and KB results outside sync to avoid deadlock.
+        // extractTopics() calls getPatterns() which uses syncQueue.sync internally.
+        let frontierSnapshot: (frontier: [String], explore: String?) = syncQueue.sync {
+            var f: [String] = []
+            for (concept, strength) in longTermPatterns {
+                if strength < 0.3 && strength > 0.05 {
+                    if let links = associativeLinks[concept] {
+                        for link in links {
+                            if (longTermPatterns[link] ?? 0) > 0.6 {
+                                f.append(concept)
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+            let finalFrontier = Array(Set(f)).prefix(10).map { $0 }
+            return (frontier: finalFrontier, explore: finalFrontier.randomElement())
+        }
+
+        // Phase 2: KB search + extractTopics OUTSIDE sync (safe — no re-entrant deadlock)
+        var kbTopicsByResult: [[(topic: String, explore: String)]] = []
+        if let explore = frontierSnapshot.explore {
+            let kb = ASIKnowledgeBase.shared
+            let results = kb.search(explore, limit: 3)
+            if !results.isEmpty {
+                for result in results {
+                    if let completion = result["completion"] as? String {
+                        let newTopics = L104State.shared.extractTopics(completion)
+                        let pairs = newTopics.prefix(3).filter { $0 != explore }.map { (topic: $0, explore: explore) }
+                        kbTopicsByResult.append(pairs)
+                    }
+                }
+            }
+        }
+
+        // Phase 3: Apply mutations inside sync block (barrier = exclusive write)
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["curiosityExplorer"] else { return }
             stream.cycleCount += 1
 
             let triggerMod = Int(100.0 * (1.0 - gammaPhase * 0.4))
             if stream.cycleCount % max(triggerMod, 50) == 0 {
-                // 1. Find "frontier" concepts: weak patterns that have associative links to strong patterns
-                var frontier: [String] = []
-
-                for (concept, strength) in longTermPatterns {
-                    // Look for weak concepts
-                    if strength < 0.3 && strength > 0.05 {
-                        // Check if any of their links connect to strong concepts
-                        if let links = associativeLinks[concept] {
-                            for link in links {
-                                if (longTermPatterns[link] ?? 0) > 0.6 {
-                                    frontier.append(concept)
-                                    break
-                                }
-                            }
-                        }
-                    }
-                }
-
-                explorationFrontier = Array(Set(frontier)).prefix(10).map { $0 }
+                explorationFrontier = frontierSnapshot.frontier
 
                 // 2. Curiosity-driven learning: boost a random frontier concept
-                if let explore = explorationFrontier.randomElement() {
-                    // Search KB for this concept
-                    let kb = ASIKnowledgeBase.shared
-                    let results = kb.search(explore, limit: 3)
+                if let explore = frontierSnapshot.explore {
 
-                    if !results.isEmpty {
+                    if !kbTopicsByResult.isEmpty {
                         // Boost this concept with novelty bonus
                         longTermPatterns[explore] = min(1.0, (longTermPatterns[explore] ?? 0.1) + noveltyBonus)
 
-                        // Extract new topics from KB results and add to links
-                        for result in results {
-                            if let completion = result["completion"] as? String {
-                                let newTopics = L104State.shared.extractTopics(completion)
-                                for topic in newTopics.prefix(3) {
-                                    if topic != explore {
-                                        if associativeLinks[explore] == nil { associativeLinks[explore] = [] }
-                                        if !(associativeLinks[explore]?.contains(topic) ?? false) {
-                                            associativeLinks[explore]?.append(topic)
-                                        }
-                                    }
+                        // Apply pre-extracted topics to links
+                        for pairs in kbTopicsByResult {
+                            for pair in pairs {
+                                if associativeLinks[pair.explore] == nil { associativeLinks[pair.explore] = [] }
+                                if !(associativeLinks[pair.explore]?.contains(pair.topic) ?? false) {
+                                    associativeLinks[pair.explore]?.append(pair.topic)
                                 }
                             }
                         }
 
                         curiositySpikes += 1
-                        postThought("🌟 CURIOSITY SPIKE: Exploring '\(explore)' → Found \(results.count) knowledge entries")
+                        postThought("🌟 CURIOSITY SPIKE: Exploring '\(explore)' → Found \(kbTopicsByResult.count) knowledge entries")
                     }
                 }
 
@@ -285,7 +304,7 @@ extension HyperBrain {
     }
 
     func runSelfAnalysisStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["selfAnalysis"] else { return }
             stream.cycleCount += 1
 
@@ -355,7 +374,7 @@ extension HyperBrain {
 
     /// ⚖️ PARADOX RESOLVER: Detects and resolves cognitive dissonance
     func runParadoxResolverStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["paradoxResolver"] else { return }
             stream.cycleCount += 1
 
@@ -400,7 +419,7 @@ extension HyperBrain {
 
     /// 🩺 AUTONOMIC MANAGER (ANS): Manages Neurotransmitter Analogs
     func runAutonomicManagerStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["autonomicManager"] else { return }
             stream.cycleCount += 1
 
@@ -435,7 +454,7 @@ extension HyperBrain {
 
     /// 📑 META-COGNITIVE AUDITOR: Validates stream outputs and strategic logic
     func runMetaAuditorStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["metaAuditor"] else { return }
             stream.cycleCount += 1
 
@@ -491,7 +510,7 @@ extension HyperBrain {
 
     /// 🔧 CODE QUALITY MONITOR: Periodically audits workspace via Python CodeEngine
     func runCodeQualityStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["codeQuality"] else { return }
             stream.cycleCount += 1
             codeQualityCycleCount = stream.cycleCount
@@ -565,7 +584,7 @@ extension HyperBrain {
 
     /// 🔬 HIGH-DIMENSIONAL SCIENCE: Generates scientific hypotheses in N-dimensional spaces
     func runHyperDimScienceStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["hyperDimScience"] else { return }
             stream.cycleCount += 1
 
@@ -619,7 +638,7 @@ extension HyperBrain {
 
     /// 🧮 TOPOLOGY ANALYZER: Computes topological invariants of the concept manifold
     func runTopologyAnalyzerStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["topologyAnalyzer"] else { return }
             stream.cycleCount += 1
 
@@ -679,7 +698,7 @@ extension HyperBrain {
 
     /// 💡 INVENTION SYNTHESIZER: Generates novel devices and theorems
     func runInventionSynthStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["inventionSynth"] else { return }
             stream.cycleCount += 1
 
@@ -721,7 +740,7 @@ extension HyperBrain {
 
     /// ✍️ SOVEREIGN WRITE ENGINE: Integrates laws, derivations, code, and imagination
     func runWriteCoreStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["write"] else { return }
             stream.cycleCount += 1
 
@@ -771,7 +790,7 @@ extension HyperBrain {
 
     /// 📖 NARRATIVE STORY ENGINE: Expands structural narrative through machine learning
     func runStoryCoreStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["story"] else { return }
             stream.cycleCount += 1
 
@@ -828,10 +847,10 @@ extension HyperBrain {
     // ─── PUBLIC INTERFACE ───
 
     func process(_ input: String) -> String {
-        // ═══ THREAD SAFETY: Shared state mutations via syncQueue ═══
+        // ═══ THREAD SAFETY: Shared state mutations via syncQueue (barrier = exclusive write) ═══
         let inputTopics = L104State.shared.extractTopics(input)
 
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
         // Add to short-term memory
         shortTermMemory.append(input)
         workingMemory["last_input"] = input
@@ -870,7 +889,7 @@ extension HyperBrain {
         let rtSearch = RealTimeSearchEngine.shared
         let recentMemory = syncQueue.sync { Array(shortTermMemory.suffix(5)) }
         let searchResult = rtSearch.search(input, context: recentMemory, limit: 8)
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             for frag in searchResult.fragments.prefix(3) {
                 let summary = String(frag.text.prefix(150))
                 if !workingMemory.keys.contains("search_\(frag.category)") {
@@ -885,7 +904,7 @@ extension HyperBrain {
         for insight in evoContext.evolutionaryInsights {
             postThought(insight)
         }
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             for (idx, prior) in evoContext.priorKnowledge.prefix(3).enumerated() {
                 workingMemory["evo_prior_\(idx)"] = prior
             }
@@ -901,7 +920,7 @@ extension HyperBrain {
         }
 
         // Generate conclusion from accumulated data
-        generateConclusion(from: input)
+        generateConclusion(from: input, topics: inputTopics)
 
         // 💾 PERMANENT MEMORY: Periodic save after processing (every 10 queries)
         if totalThoughtsProcessed % 10 == 0 && totalThoughtsProcessed > 0 {
@@ -910,7 +929,7 @@ extension HyperBrain {
             }
         }
 
-        return generateResponse(for: input)
+        return generateResponse(for: input, topics: inputTopics)
     }
 
     func analyzeInput(_ input: String) {
@@ -929,7 +948,7 @@ extension HyperBrain {
         let meaningfulWords = words.filter { !stopWords.contains($0) }
 
         // ═══ THREAD SAFETY: All shared state mutations via syncQueue ═══
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
 
         for word in meaningfulWords {
             longTermPatterns[word] = min(1.0, (longTermPatterns[word] ?? 0) + 0.05)
@@ -998,44 +1017,51 @@ extension HyperBrain {
     }
 
     // 🧠 GENERATE CONCLUSIONS FROM ACCUMULATED DATA — PHASE 31.6 ENHANCED
-    func generateConclusion(from input: String) {
-        // ═══ THREAD SAFETY: All shared state mutations via syncQueue ═══
-        syncQueue.sync {
-        // ═══ PHASE 31.6: Hebbian co-activation strengthening ═══
-        let inputConcepts = L104State.shared.extractTopics(input)
-        if inputConcepts.count >= 2 {
-            for i in 0..<min(inputConcepts.count, 4) {
-                for j in (i+1)..<min(inputConcepts.count, 4) {
-                    let pairKey = "\(inputConcepts[i])↔\(inputConcepts[j])"
-                    coActivationLog[pairKey] = (coActivationLog[pairKey] ?? 0) + 1
-                    // Strengthen Hebbian pair if co-activated enough
-                    if (coActivationLog[pairKey] ?? 0) >= 3 {
-                        let existingIdx = hebbianPairs.firstIndex(where: { $0.a == inputConcepts[i] && $0.b == inputConcepts[j] })
-                        if let idx = existingIdx {
-                            hebbianPairs[idx] = (a: inputConcepts[i], b: inputConcepts[j], strength: min(1.0, hebbianPairs[idx].strength + hebbianStrength))
-                        } else {
-                            hebbianPairs.append((a: inputConcepts[i], b: inputConcepts[j], strength: hebbianStrength))
-                            if hebbianPairs.count > 200 { hebbianPairs.removeFirst() }
+    func generateConclusion(from input: String, topics: [String]) {
+        // ═══ REUSE PRE-COMPUTED TOPICS (passed from process()) ═══
+        // extractTopics() is expensive (~15-40ms). Computed once in process() and reused here.
+        let inputConcepts = topics
+
+        // ═══ THREAD SAFETY: Hebbian co-activation + cross-stream (runs every cycle) ═══
+        let shouldSynthesize: Bool = syncQueue.sync(flags: .barrier) {
+            // ═══ PHASE 31.6: Hebbian co-activation strengthening ═══
+            if inputConcepts.count >= 2 {
+                for i in 0..<min(inputConcepts.count, 4) {
+                    for j in (i+1)..<min(inputConcepts.count, 4) {
+                        let pairKey = "\(inputConcepts[i])↔\(inputConcepts[j])"
+                        coActivationLog[pairKey] = (coActivationLog[pairKey] ?? 0) + 1
+                        // Strengthen Hebbian pair if co-activated enough
+                        if (coActivationLog[pairKey] ?? 0) >= 3 {
+                            let existingIdx = hebbianPairs.firstIndex(where: { $0.a == inputConcepts[i] && $0.b == inputConcepts[j] })
+                            if let idx = existingIdx {
+                                hebbianPairs[idx] = (a: inputConcepts[i], b: inputConcepts[j], strength: min(1.0, hebbianPairs[idx].strength + hebbianStrength))
+                            } else {
+                                hebbianPairs.append((a: inputConcepts[i], b: inputConcepts[j], strength: hebbianStrength))
+                                if hebbianPairs.count > 200 { hebbianPairs.removeFirst() }
+                            }
                         }
                     }
                 }
             }
-        }
 
-        // ═══ PHASE 31.6: Cross-stream insight crystallization ═══
-        let streamOutputs = thoughtStreams.values.compactMap { $0.lastOutput }.filter { $0.count > 30 }
-        if streamOutputs.count >= 2 {
-            let combined = streamOutputs.prefix(3).joined(separator: " | ")
-            let insight = "Cross-stream synthesis: \(String(combined.prefix(150)))"
-            if !crossStreamInsights.contains(where: { $0.hasPrefix(String(insight.prefix(40))) }) {
-                crossStreamInsights.append(insight)
-                if crossStreamInsights.count > 50 { crossStreamInsights.removeFirst() }
+            // ═══ PHASE 31.6: Cross-stream insight crystallization ═══
+            let streamOutputs = thoughtStreams.values.compactMap { $0.lastOutput }.filter { $0.count > 30 }
+            if streamOutputs.count >= 2 {
+                let combined = streamOutputs.prefix(3).joined(separator: " | ")
+                let insight = "Cross-stream synthesis: \(String(combined.prefix(150)))"
+                if !crossStreamInsights.contains(where: { $0.hasPrefix(String(insight.prefix(40))) }) {
+                    crossStreamInsights.append(insight)
+                    if crossStreamInsights.count > 50 { crossStreamInsights.removeFirst() }
+                }
             }
+
+            // Synthesize every 15 cycles (was 20 — faster crystallization)
+            return totalThoughtsProcessed % 15 == 0
         }
 
-        // Synthesize every 15 cycles (was 20 — faster crystallization)
-        guard totalThoughtsProcessed % 15 == 0 else { return }
+        guard shouldSynthesize else { return }
 
+        // ═══ EXTERNAL DATA FETCHES (outside sync to avoid deadlock/blocking) ═══
         let kb = ASIKnowledgeBase.shared
         let kbResults = kb.searchWithPriority(input, limit: 5)
 
@@ -1047,16 +1073,11 @@ extension HyperBrain {
             }
         }
 
-        // Add from strong long-term patterns (not just any pattern)
-        let topPatterns = longTermPatterns.filter { $0.value > 0.3 }.sorted { abs($0.value - $1.value) < 0.01 ? Bool.random() : $0.value > $1.value }.prefix(5)
-        for (pattern, _) in topPatterns {
-            concepts.append(pattern)
-        }
-
         // ═══ REAL-TIME SEARCH AUGMENTATION ═══
         // Pull top fragments from RT search to enrich conclusion synthesis
         let rtSearch = RealTimeSearchEngine.shared
-        let rtResult = rtSearch.search(input, context: shortTermMemory.suffix(3), limit: 5)
+        let recentMemForSearch = syncQueue.sync { Array(shortTermMemory.suffix(3)) }
+        let rtResult = rtSearch.search(input, context: recentMemForSearch, limit: 5)
         for frag in rtResult.fragments.prefix(3) {
             let fragSummary = String(frag.text.prefix(100))
             if !concepts.contains(where: { $0.hasPrefix(String(fragSummary.prefix(30))) }) {
@@ -1065,9 +1086,9 @@ extension HyperBrain {
         }
 
         // ═══ EVOLUTIONARY CONTEXT INJECTION ═══
-        let inputTopics = L104State.shared.extractTopics(input)
+        // Reuse inputConcepts extracted above (no second extractTopics call needed)
         let evoTracker = EvolutionaryTopicTracker.shared
-        for topic in inputTopics {
+        for topic in inputConcepts {
             if let evoState = evoTracker.topicEvolution[topic] {
                 for node in evoState.knowledgeNodes.suffix(2) {
                     if !concepts.contains(node) {
@@ -1077,59 +1098,66 @@ extension HyperBrain {
             }
         }
 
-        // ═══ RICHER SYNTHESIS WITH MULTI-HOP REASONING ═══
-        if concepts.count >= 2 {
-            // Use associative links to find deeper connections
-            let c1 = concepts[0]
-            let c2 = concepts[1]
-            let c1Key = smartTruncate(c1.lowercased(), maxLength: 300)
-            let c2Key = smartTruncate(c2.lowercased(), maxLength: 300)
+        // ═══ THREAD SAFETY: Final shared state mutations via syncQueue (barrier = exclusive write) ═══
+        syncQueue.sync(flags: .barrier) {
+            // Add from strong long-term patterns (not just any pattern)
+            let topPatterns = longTermPatterns.filter { $0.value > 0.3 }.sorted { abs($0.value - $1.value) < 0.01 ? Bool.random() : $0.value > $1.value }.prefix(5)
+            for (pattern, _) in topPatterns {
+                concepts.append(pattern)
+            }
 
-            var connectionInsight = ""
-            // Multi-hop: Try to find an intermediate concept bridging c1 and c2
-            if let c1Links = associativeLinks[c1Key], let c2Links = associativeLinks[c2Key] {
-                let bridge = Set(c1Links).intersection(Set(c2Links))
-                if let bridgeConcept = bridge.randomElement() {
-                    connectionInsight = " (bridged via '\(bridgeConcept)' — a shared conceptual attractor)"
-                    // Strengthen the bridge
-                    longTermPatterns[bridgeConcept] = min(1.0, (longTermPatterns[bridgeConcept] ?? 0.3) + 0.1)
-                } else if let c1Link = c1Links.randomElement() {
-                    connectionInsight = " (connected via: \(c1Link))"
+            // ═══ RICHER SYNTHESIS WITH MULTI-HOP REASONING ═══
+            if concepts.count >= 2 {
+                // Use associative links to find deeper connections
+                let c1 = concepts[0]
+                let c2 = concepts[1]
+                let c1Key = smartTruncate(c1.lowercased(), maxLength: 300)
+                let c2Key = smartTruncate(c2.lowercased(), maxLength: 300)
+
+                var connectionInsight = ""
+                // Multi-hop: Try to find an intermediate concept bridging c1 and c2
+                if let c1Links = associativeLinks[c1Key], let c2Links = associativeLinks[c2Key] {
+                    let bridge = Set(c1Links).intersection(Set(c2Links))
+                    if let bridgeConcept = bridge.randomElement() {
+                        connectionInsight = " (bridged via '\(bridgeConcept)' — a shared conceptual attractor)"
+                        // Strengthen the bridge
+                        longTermPatterns[bridgeConcept] = min(1.0, (longTermPatterns[bridgeConcept] ?? 0.3) + 0.1)
+                    } else if let c1Link = c1Links.randomElement() {
+                        connectionInsight = " (connected via: \(c1Link))"
+                    }
                 }
+
+                // Include Hebbian pair insight if relevant
+                var hebbianNote = ""
+                let relevantPairs = hebbianPairs.prefix(10).filter { c1.lowercased().contains($0.a) || c2.lowercased().contains($0.b) }
+                if let pair = relevantPairs.randomElement() {
+                    hebbianNote = " [Hebbian resonance: \(pair.a) ↔ \(pair.b) strength \(String(format: "%.2f", pair.strength))]"
+                }
+
+                let connectors = [
+                    "Synthesis: \(c1) intersects with \(c2)\(connectionInsight)\(hebbianNote) — suggesting shared informational structure.",
+                    "Cross-domain pattern: \(c1) and \(c2) exhibit structural isomorphism\(connectionInsight)\(hebbianNote).",
+                    "Emergent link discovered: \(c1) ↔ \(c2)\(connectionInsight)\(hebbianNote). This forms a new cognitive pathway.",
+                    "Integration: \(c1) viewed through the lens of \(c2)\(connectionInsight) reveals recursive depth\(hebbianNote)."
+                ]
+
+                let conclusion = connectors.randomElement() ?? ""
+
+                emergentConcepts.append([
+                    "concept": conclusion,
+                    "timestamp": Date(),
+                    "strength": 0.9,
+                    "type": "conclusion",
+                    "sources": concepts
+                ])
+
+                if emergentConcepts.count > 100 { emergentConcepts.removeFirst() }
+                postThought("💡 CONCLUSION: \(conclusion.prefix(80))...")
             }
-
-            // Include Hebbian pair insight if relevant
-            var hebbianNote = ""
-            let relevantPairs = hebbianPairs.prefix(10).filter { c1.lowercased().contains($0.a) || c2.lowercased().contains($0.b) }
-            if let pair = relevantPairs.randomElement() {
-                hebbianNote = " [Hebbian resonance: \(pair.a) ↔ \(pair.b) strength \(String(format: "%.2f", pair.strength))]"
-            }
-
-            let connectors = [
-                "Synthesis: \(c1) intersects with \(c2)\(connectionInsight)\(hebbianNote) — suggesting shared informational structure.",
-                "Cross-domain pattern: \(c1) and \(c2) exhibit structural isomorphism\(connectionInsight)\(hebbianNote).",
-                "Emergent link discovered: \(c1) ↔ \(c2)\(connectionInsight)\(hebbianNote). This forms a new cognitive pathway.",
-                "Integration: \(c1) viewed through the lens of \(c2)\(connectionInsight) reveals recursive depth\(hebbianNote)."
-            ]
-
-            let conclusion = connectors.randomElement() ?? ""
-
-            emergentConcepts.append([
-                "concept": conclusion,
-                "timestamp": Date(),
-                "strength": 0.9,
-                "type": "conclusion",
-                "sources": concepts
-            ])
-
-            if emergentConcepts.count > 100 { emergentConcepts.removeFirst() }
-            postThought("💡 CONCLUSION: \(conclusion.prefix(80))...")
-        }
-
         } // end syncQueue.sync
     }
 
-    func generateResponse(for input: String) -> String {
+    func generateResponse(for input: String, topics: [String]) -> String {
         let kb = ASIKnowledgeBase.shared
 
         // ═══ 0. ASI LOGIC GATE V2 — Multi-dimensional reasoning router ═══
@@ -1145,7 +1173,7 @@ extension HyperBrain {
         reasoningMomentum = min(1.0, reasoningMomentum + 0.02)
 
         // ═══ 1b. MULTI-HOP REASONING CHAIN — Phase 31.6 Higher Logic ═══
-        let inputTopicsForReasoning = L104State.shared.extractTopics(input)
+        let inputTopicsForReasoning = topics  // Reuse pre-computed topics
         var reasoningSteps: [String] = []
         // Hop 1: Direct associations
         for topic in inputTopicsForReasoning.prefix(3) {
@@ -1199,7 +1227,7 @@ extension HyperBrain {
         // ═══ 3. PRELOADED CONTEXT INJECTION ═══
         // Inject pre-fetched knowledge from the Predictive Pre-Loader
         var preloadedSnippets: [String] = []
-        let inputTopics = L104State.shared.extractTopics(input)
+        let inputTopics = topics  // Reuse pre-computed topics
         for topic in inputTopics {
             if let preloaded = preloadedContext[topic], !preloaded.isEmpty {
                 preloadedSnippets.append(preloaded)
@@ -1342,7 +1370,7 @@ extension HyperBrain {
 
         // ═══ 7. SCANNABLE FORMATTING ═══
         // Run through SyntacticResponseFormatter for scannable output
-        let inputTopicsFmt = L104State.shared.extractTopics(input)
+        let inputTopicsFmt = topics  // Reuse pre-computed topics
         let depth = (workingMemory["evo_depth"] as? String) ?? "detailed"
         response = SyntacticResponseFormatter.shared.format(response, query: input, depth: depth, topics: inputTopicsFmt)
 
@@ -1875,132 +1903,144 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
     }
 
     /// DREAM MODE: Deep background processing for non-linear synthesis
+    /// NOTE: This method manages its own syncQueue synchronization.
+    /// It must NOT be called from inside a syncQueue barrier block,
+    /// because extractTopics() calls getPatterns() which uses syncQueue.sync.
     func dream() {
         guard isRunning else { return }
         postThought("🌙 DREAM MODE: Initiating subconscious pattern rehearsal...")
 
-        // 1. Rehearse random long-term patterns
-        let patterns = longTermPatterns.filter { $0.value > 0.1 }.keys.shuffled()
-        for p in patterns.prefix(10) {
+        // ═══ Phase 1: Snapshot shared state + extract topics OUTSIDE barrier ═══
+        // extractTopics() internally calls getPatterns() → syncQueue.sync,
+        // so we must not be inside a syncQueue barrier when calling it.
+        let patternsSnapshot: [String: Double] = syncQueue.sync { self.longTermPatterns.filter { $0.value > 0.1 } }
+        let hebbianSnapshot = syncQueue.sync { Array(self.hebbianPairs.prefix(10)) }
+
+        var topicLinks: [(key: String, link: String)] = []
+        for p in patternsSnapshot.keys.shuffled().prefix(10) {
             let related = ASIKnowledgeBase.shared.search(p, limit: 1)
             if let entry = related.first, let comp = entry["completion"] as? String {
                 let subTopics = L104State.shared.extractTopics(comp)
                 if let sub = subTopics.randomElement(), sub != p {
-                    let key = smartTruncate(p, maxLength: 300)
-                    let link = smartTruncate(sub, maxLength: 300)
-                    if associativeLinks[key] == nil { associativeLinks[key] = [] }
-                    if !(associativeLinks[key]?.contains(link) ?? false) {
-                        associativeLinks[key]?.append(link)
-                        linkWeights["\(key)→\(link)"] = 0.5
+                    topicLinks.append((key: smartTruncate(p, maxLength: 300), link: smartTruncate(sub, maxLength: 300)))
+                }
+            }
+        }
+
+        // ═══ Phase 2: Apply all mutations inside barrier ═══
+        syncQueue.sync(flags: .barrier) { [self] in
+            // 1. Apply extracted topic links
+            for tl in topicLinks {
+                if self.associativeLinks[tl.key] == nil { self.associativeLinks[tl.key] = [] }
+                if !(self.associativeLinks[tl.key]?.contains(tl.link) ?? false) {
+                    self.associativeLinks[tl.key]?.append(tl.link)
+                    self.linkWeights["\(tl.key)→\(tl.link)"] = 0.5
+                }
+            }
+
+            // 2. 🧠 HEBBIAN REPLAY: Strengthen the strongest co-activations during sleep
+            for pair in hebbianSnapshot {
+                self.longTermPatterns[pair.a] = min(1.0, (self.longTermPatterns[pair.a] ?? 0.3) + 0.05)
+                self.longTermPatterns[pair.b] = min(1.0, (self.longTermPatterns[pair.b] ?? 0.3) + 0.05)
+                let linkKey = "\(pair.a)→\(pair.b)"
+                self.linkWeights[linkKey] = min(1.0, (self.linkWeights[linkKey] ?? 0.3) + 0.1)
+            }
+            if !hebbianSnapshot.isEmpty {
+                self.postThought("🌙 DREAM: Replayed \(hebbianSnapshot.count) Hebbian pairs")
+            }
+
+            // 3. 🔗 GRAPH DEFRAGMENTATION: Merge near-duplicate nodes
+            let allKeys = Array(self.longTermPatterns.keys)
+            var mergeCount = 0
+            for i in 0..<min(allKeys.count, 50) {
+                for j in (i+1)..<min(allKeys.count, 50) {
+                    let a = allKeys[i].lowercased()
+                    let b = allKeys[j].lowercased()
+                    if a.count > 4 && b.count > 4 && (a.contains(b) || b.contains(a)) {
+                        let shorter = a.count < b.count ? allKeys[i] : allKeys[j]
+                        let longer = a.count < b.count ? allKeys[j] : allKeys[i]
+                        let combinedStrength = (self.longTermPatterns[shorter] ?? 0) + (self.longTermPatterns[longer] ?? 0)
+                        self.longTermPatterns[longer] = min(1.0, combinedStrength)
+                        self.longTermPatterns.removeValue(forKey: shorter)
+                        mergeCount += 1
+                        if mergeCount >= 5 { break }
                     }
                 }
+                if mergeCount >= 5 { break }
             }
-        }
+            if mergeCount > 0 {
+                self.postThought("🌙 DREAM: Defragmented \(mergeCount) near-duplicate nodes")
+            }
 
-        // 2. 🧠 HEBBIAN REPLAY: Strengthen the strongest co-activations during sleep
-        for pair in hebbianPairs.prefix(10) {
-            longTermPatterns[pair.a] = min(1.0, (longTermPatterns[pair.a] ?? 0.3) + 0.05)
-            longTermPatterns[pair.b] = min(1.0, (longTermPatterns[pair.b] ?? 0.3) + 0.05)
-            let linkKey = "\(pair.a)→\(pair.b)"
-            linkWeights[linkKey] = min(1.0, (linkWeights[linkKey] ?? 0.3) + 0.1)
-        }
-        if !hebbianPairs.isEmpty {
-            postThought("🌙 DREAM: Replayed \(min(10, hebbianPairs.count)) Hebbian pairs")
-        }
-
-        // 3. 🔗 GRAPH DEFRAGMENTATION: Merge near-duplicate nodes
-        let allKeys = Array(longTermPatterns.keys)
-        var mergeCount = 0
-        for i in 0..<min(allKeys.count, 50) {
-            for j in (i+1)..<min(allKeys.count, 50) {
-                let a = allKeys[i].lowercased()
-                let b = allKeys[j].lowercased()
-                // If one is a substring of the other and they're close in length
-                if a.count > 4 && b.count > 4 && (a.contains(b) || b.contains(a)) {
-                    let shorter = a.count < b.count ? allKeys[i] : allKeys[j]
-                    let longer = a.count < b.count ? allKeys[j] : allKeys[i]
-                    // Merge: keep longer, absorb shorter's strength
-                    let combinedStrength = (longTermPatterns[shorter] ?? 0) + (longTermPatterns[longer] ?? 0)
-                    longTermPatterns[longer] = min(1.0, combinedStrength)
-                    longTermPatterns.removeValue(forKey: shorter)
-                    mergeCount += 1
-                    if mergeCount >= 5 { break }
+            // 4. 💎 DREAM CRYSTALLIZATION: Distill insights from strong convergences
+            let veryStrong = self.longTermPatterns.filter { $0.value > 0.8 }.sorted { abs($0.value - $1.value) < 0.01 ? Bool.random() : $0.value > $1.value }.prefix(3)
+            if veryStrong.count >= 2 {
+                let concepts = veryStrong.map { $0.key }
+                let dreamCrystal = "Core truth: \(concepts.joined(separator: " ∩ ")) form an irreducible cognitive attractor."
+                if !self.crystallizedInsights.contains(dreamCrystal) {
+                    self.crystallizedInsights.append(dreamCrystal)
+                    if self.crystallizedInsights.count > 500 { self.crystallizedInsights.removeFirst() }
+                    self.postThought("💎 DREAM CRYSTAL: \(dreamCrystal.prefix(60))...")
                 }
             }
-            if mergeCount >= 5 { break }
-        }
-        if mergeCount > 0 {
-            postThought("🌙 DREAM: Defragmented \(mergeCount) near-duplicate nodes")
-        }
 
-        // 4. 💎 DREAM CRYSTALLIZATION: Distill insights from strong convergences
-        let veryStrong = longTermPatterns.filter { $0.value > 0.8 }.sorted { abs($0.value - $1.value) < 0.01 ? Bool.random() : $0.value > $1.value }.prefix(3)
-        if veryStrong.count >= 2 {
-            let concepts = veryStrong.map { $0.key }
-            let dreamCrystal = "Core truth: \(concepts.joined(separator: " ∩ ")) form an irreducible cognitive attractor."
-            if !crystallizedInsights.contains(dreamCrystal) {
-                crystallizedInsights.append(dreamCrystal)
-                if crystallizedInsights.count > 500 { crystallizedInsights.removeFirst() }
-                postThought("💎 DREAM CRYSTAL: \(dreamCrystal.prefix(60))...")
+            // 5. Synthesize an "Impossible" Paradox
+            let kb = ASIKnowledgeBase.shared
+            if let t1 = kb.trainingData.randomElement()?["prompt"] as? String,
+               let t2 = kb.trainingData.randomElement()?["prompt"] as? String {
+                let p1 = String(t1.prefix(20))
+                let p2 = String(t2.prefix(20))
+                self.postThought("🌙 DREAM INSIGHT: If \(p1) is dual to \(p2), then PHI invariance holds.")
             }
-        }
 
-        // 5. Synthesize an "Impossible" Paradox
-        let kb = ASIKnowledgeBase.shared
-        if let t1 = kb.trainingData.randomElement()?["prompt"] as? String,
-           let t2 = kb.trainingData.randomElement()?["prompt"] as? String {
-            let p1 = String(t1.prefix(20))
-            let p2 = String(t2.prefix(20))
-            postThought("🌙 DREAM INSIGHT: If \(p1) is dual to \(p2), then PHI invariance holds.")
-        }
-
-        // 6. ✍️ WRITE DIMENSION DREAM: Consolidate integration/law/code patterns
-        let writePatterns = longTermPatterns.filter {
-            $0.key.contains("write") || $0.key.contains("integrate") || $0.key.contains("law") ||
-            $0.key.contains("derive") || $0.key.contains("code") || $0.key.contains("imagine")
-        }
-        for (key, val) in writePatterns {
-            longTermPatterns[key] = min(1.0, val + 0.03) // Dream-strengthen write patterns
-        }
-        if writePatterns.count >= 2 {
-            let keys = writePatterns.sorted { abs($0.value - $1.value) < 0.01 ? Bool.random() : $0.value > $1.value }.prefix(2).map { $0.key }
-            let writeKey = smartTruncate(keys[0], maxLength: 300)
-            let writeLink = smartTruncate(keys[1], maxLength: 300)
-            if associativeLinks[writeKey] == nil { associativeLinks[writeKey] = [] }
-            if !(associativeLinks[writeKey]?.contains(writeLink) ?? false) {
-                associativeLinks[writeKey]?.append(writeLink)
-                linkWeights["\(writeKey)→\(writeLink)"] = 0.7
+            // 6. ✍️ WRITE DIMENSION DREAM: Consolidate integration/law/code patterns
+            let writePatterns = self.longTermPatterns.filter {
+                $0.key.contains("write") || $0.key.contains("integrate") || $0.key.contains("law") ||
+                $0.key.contains("derive") || $0.key.contains("code") || $0.key.contains("imagine")
             }
-            postThought("🌙 DREAM WRITE: Consolidated \(writePatterns.count) sovereign patterns")
-        }
-
-        // 7. 📖 STORY DIMENSION DREAM: Weave narrative/strength/machine patterns
-        let storyPatterns = longTermPatterns.filter {
-            $0.key.contains("story") || $0.key.contains("narrative") || $0.key.contains("strength") ||
-            $0.key.contains("sorted") || $0.key.contains("machine") || $0.key.contains("expand")
-        }
-        for (key, val) in storyPatterns {
-            longTermPatterns[key] = min(1.0, val + 0.025)
-        }
-        if storyPatterns.count >= 2 {
-            let keys = storyPatterns.sorted { abs($0.value - $1.value) < 0.01 ? Bool.random() : $0.value > $1.value }.prefix(2).map { $0.key }
-            let storyKey = smartTruncate(keys[0], maxLength: 300)
-            let storyLink = smartTruncate(keys[1], maxLength: 300)
-            if associativeLinks[storyKey] == nil { associativeLinks[storyKey] = [] }
-            if !(associativeLinks[storyKey]?.contains(storyLink) ?? false) {
-                associativeLinks[storyKey]?.append(storyLink)
-                linkWeights["\(storyKey)→\(storyLink)"] = 0.65
+            for (key, val) in writePatterns {
+                self.longTermPatterns[key] = min(1.0, val + 0.03)
             }
-            postThought("🌙 DREAM STORY: Wove \(storyPatterns.count) narrative threads")
+            if writePatterns.count >= 2 {
+                let keys = writePatterns.sorted { abs($0.value - $1.value) < 0.01 ? Bool.random() : $0.value > $1.value }.prefix(2).map { $0.key }
+                let writeKey = self.smartTruncate(keys[0], maxLength: 300)
+                let writeLink = self.smartTruncate(keys[1], maxLength: 300)
+                if self.associativeLinks[writeKey] == nil { self.associativeLinks[writeKey] = [] }
+                if !(self.associativeLinks[writeKey]?.contains(writeLink) ?? false) {
+                    self.associativeLinks[writeKey]?.append(writeLink)
+                    self.linkWeights["\(writeKey)→\(writeLink)"] = 0.7
+                }
+                self.postThought("🌙 DREAM WRITE: Consolidated \(writePatterns.count) sovereign patterns")
+            }
+
+            // 7. 📖 STORY DIMENSION DREAM: Weave narrative/strength/machine patterns
+            let storyPatterns = self.longTermPatterns.filter {
+                $0.key.contains("story") || $0.key.contains("narrative") || $0.key.contains("strength") ||
+                $0.key.contains("sorted") || $0.key.contains("machine") || $0.key.contains("expand")
+            }
+            for (key, val) in storyPatterns {
+                self.longTermPatterns[key] = min(1.0, val + 0.025)
+            }
+            if storyPatterns.count >= 2 {
+                let keys = storyPatterns.sorted { abs($0.value - $1.value) < 0.01 ? Bool.random() : $0.value > $1.value }.prefix(2).map { $0.key }
+                let storyKey = self.smartTruncate(keys[0], maxLength: 300)
+                let storyLink = self.smartTruncate(keys[1], maxLength: 300)
+                if self.associativeLinks[storyKey] == nil { self.associativeLinks[storyKey] = [] }
+                if !(self.associativeLinks[storyKey]?.contains(storyLink) ?? false) {
+                    self.associativeLinks[storyKey]?.append(storyLink)
+                    self.linkWeights["\(storyKey)→\(storyLink)"] = 0.65
+                }
+                self.postThought("🌙 DREAM STORY: Wove \(storyPatterns.count) narrative threads")
+            }
+
+            // 8. Modulate metrics
+            self.coherenceIndex = min(1.0, self.coherenceIndex + 0.05)
+            self.emergenceLevel = min(1.0, self.emergenceLevel + 0.02)
+
+            // 9. 💾 PERMANENT MEMORY: Save after dream consolidation
+            self.saveState()
+            self.postThought("🌙 DREAM COMPLETE: Consolidated patterns saved to permanent memory")
         }
-
-        // 8. Modulate metrics
-        coherenceIndex = min(1.0, coherenceIndex + 0.05)
-        emergenceLevel = min(1.0, emergenceLevel + 0.02)
-
-        // 7. 💾 PERMANENT MEMORY: Save after dream consolidation
-        saveState()
-        postThought("🌙 DREAM COMPLETE: Consolidated patterns saved to permanent memory")
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -2014,7 +2054,7 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
     }
 
     func processNeuralBus() {
-        syncQueue.async { [weak self] in
+        syncQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
 
             // Route messages based on stream synapse map
@@ -2073,7 +2113,7 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
     // ═══════════════════════════════════════════════════════════════
 
     func updateAttentionFocus() {
-        syncQueue.async { [weak self] in
+        syncQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
 
             // Analyze recent attention history to determine focus mode
@@ -2120,7 +2160,13 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
     // ═══════════════════════════════════════════════════════════════
 
     func crystallizeInsights() {
-        syncQueue.async { [weak self] in
+        // ═══ FIX: dispatch_sync deadlock (hyper.brain.sync re-entrancy) ═══
+        // Cross-engine calls (ApexIntelligenceCoordinator, KnowledgeGraph, etc.)
+        // can call back into HyperBrain.getPatterns() which does syncQueue.sync.
+        // Running those calls inside a syncQueue barrier block causes SIGILL.
+        // Solution: Mutate state inside the barrier, then dispatch cross-engine
+        // propagation to a global queue with captured snapshot data.
+        syncQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
 
             // Find patterns that have been consistently strong over time
@@ -2159,40 +2205,76 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
             }
 
             // ═══ CROSS-ENGINE CRYSTALLIZATION — Feed strong patterns to KnowledgeGraph + Consciousness ═══
-            // Every 5th crystallization: propagate strongest patterns to KnowledgeGraph
-            if self.crystallizationCount % 5 == 0 {
-                let graph = KnowledgeGraphEngine.shared
+            // Capture snapshot data inside barrier, dispatch external calls outside.
+            let shouldPropagate = self.crystallizationCount % 5 == 0
+            let shouldCuriosity = self.curiositySpikes > 0 && self.crystallizationCount % 10 == 0
+
+            guard shouldPropagate || shouldCuriosity else { return }
+
+            // Snapshot all data needed for cross-engine calls (safe value-type copies)
+            struct CrossEngineSnapshot {
+                var graphNodes: [(concept: String, strength: Double)] = []
+                var graphEdges: [(source: String, target: String, weight: Double)] = []
+                var topInsight: String?
+                var hebbianPairs: [(a: String, b: String)] = []
+                var frontier: String?
+            }
+            var snapshot = CrossEngineSnapshot()
+
+            if shouldPropagate {
                 for (concept, strength) in stableStrong.prefix(5) {
-                    graph.addNode(label: concept, type: "crystal", properties: ["source": "hyperbrain_crystal", "strength": String(format: "%.3f", strength)])
+                    snapshot.graphNodes.append((concept: concept, strength: strength))
                     if let links = self.associativeLinks[concept] {
                         for link in links.prefix(3) {
                             let weight = self.linkWeights["\(concept)→\(link)"] ?? 0.3
-                            graph.addEdge(source: concept, target: link, relation: "hebbian", weight: weight * PHI)
+                            snapshot.graphEdges.append((source: concept, target: link, weight: weight))
                         }
                     }
                 }
 
-                // Feed crystallized insights to ConsciousnessSubstrate for integration
                 if let topInsight = self.crystallizedInsights.suffix(5).randomElement() {
-                    _ = ConsciousnessSubstrate.shared.processInput(
-                        source: "HyperBrainCrystal",
-                        content: String(topInsight.prefix(200))
-                    )
+                    snapshot.topInsight = String(topInsight.prefix(200))
                 }
 
-                // Propagate strong Hebbian pairs as entangled topics in QuantumProcessingCore
-                for pair in strongPairs.prefix(2) {
-                    _ = QuantumProcessingCore.shared.entanglementRoute(
-                        query: pair.a,
-                        primaryResult: "Hebbian bond: \(pair.a) ↔ \(pair.b)",
-                        topics: [pair.a, pair.b]
-                    )
-                }
+                snapshot.hebbianPairs = strongPairs.prefix(2).map { (a: $0.a, b: $0.b) }
             }
 
-            // Feed curiosity-driven insights to ApexIntelligenceCoordinator
-            if self.curiositySpikes > 0 && self.crystallizationCount % 10 == 0 {
-                if let frontier = self.explorationFrontier.randomElement() {
+            if shouldCuriosity {
+                snapshot.frontier = self.explorationFrontier.randomElement()
+            }
+
+            // ═══ Phase 2: Cross-engine propagation OUTSIDE syncQueue ═══
+            // Runs on global queue so callbacks to getPatterns() won't deadlock.
+            DispatchQueue.global(qos: .utility).async {
+                if shouldPropagate {
+                    let graph = KnowledgeGraphEngine.shared
+                    for node in snapshot.graphNodes {
+                        graph.addNode(label: node.concept, type: "crystal", properties: ["source": "hyperbrain_crystal", "strength": String(format: "%.3f", node.strength)])
+                    }
+                    for edge in snapshot.graphEdges {
+                        graph.addEdge(source: edge.source, target: edge.target, relation: "hebbian", weight: edge.weight * PHI)
+                    }
+
+                    // Feed crystallized insights to ConsciousnessSubstrate for integration
+                    if let topInsight = snapshot.topInsight {
+                        _ = ConsciousnessSubstrate.shared.processInput(
+                            source: "HyperBrainCrystal",
+                            content: topInsight
+                        )
+                    }
+
+                    // Propagate strong Hebbian pairs as entangled topics in QuantumProcessingCore
+                    for pair in snapshot.hebbianPairs {
+                        _ = QuantumProcessingCore.shared.entanglementRoute(
+                            query: pair.a,
+                            primaryResult: "Hebbian bond: \(pair.a) ↔ \(pair.b)",
+                            topics: [pair.a, pair.b]
+                        )
+                    }
+                }
+
+                // Feed curiosity-driven insights to ApexIntelligenceCoordinator
+                if let frontier = snapshot.frontier {
                     _ = ApexIntelligenceCoordinator.shared.generateInsight(topic: frontier)
                 }
             }

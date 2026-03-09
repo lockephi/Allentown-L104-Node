@@ -1,0 +1,142 @@
+{
+  "version": "2.4.0",
+  "total_runs": 1483,
+  "passed": 1483,
+  "failed": 0,
+  "pass_rate": 1.0,
+  "elapsed_seconds": 1773.6,
+  "failures": [],
+  "discoveries": [
+    "High timing variance in 16 sims: antimatter_annihilation(CV=2.7), berry_phase(CV=1.0), conservation_law(CV=1.7), entanglement_analysis(CV=1.4), gate_cascade_fidelity(CV=1.2)",
+    "MC found composite=0.9202 at nq=2, depth=8, phase=2.159",
+    "Optimizer reached 1.0000 at nq=2, depth=2",
+    "'composite_shield' dominates 30/30 scenarios"
+  ],
+  "batteries": {
+    "stability": {
+      "reps": 10,
+      "all_pass": true,
+      "total_runs": 450,
+      "avg_ms": 176716.23312890058,
+      "std_ms": 69839.46762186036,
+      "min_ms": 97683.49046300136,
+      "max_ms": 330082.8349260009
+    },
+    "monte_carlo": {
+      "trials": 200,
+      "valid": 200,
+      "mean_composite": 0.2917682705382636,
+      "max_composite": 0.920207349942929,
+      "min_composite": 0.006244095641932146,
+      "best_params": {
+        "nq": 2,
+        "depth": 8,
+        "phase_scale": 2.158622118445187,
+        "gc_mix": 0.38774513009108513,
+        "composite": 0.920207349942929,
+        "valid": true
+      }
+    },
+    "dial_sweeps": {
+      "by_dial": {
+        "a": {
+          "total": 50,
+          "passed": 50,
+          "max_error": 2.2737367544323206e-13
+        },
+        "b": {
+          "total": 50,
+          "passed": 50,
+          "max_error": 1.1368683772161603e-13
+        },
+        "c": {
+          "total": 50,
+          "passed": 50,
+          "max_error": 2.2737367544323206e-13
+        },
+        "d": {
+          "total": 50,
+          "passed": 50,
+          "max_error": 0.0
+        }
+      },
+      "extended_a": {
+        "total": 51,
+        "passed": 51,
+        "max_error": 1.2505552149377763e-12
+      },
+      "worst_conservation_error": 2.2737367544323206e-13
+    },
+    "noise_gradient": {
+      "points": 100,
+      "threshold_90": 0.1,
+      "threshold_50": 3.75,
+      "steepest_noise": 0.1,
+      "steepest_rate": -2.387646103061891,
+      "floor": 0.4999999999999999
+    },
+    "qubit_scaling": {
+      "entanglement_entropy": {
+        "pass_count": 10,
+        "max_qubits": 14
+      },
+      "sacred_cascade": {
+        "pass_count": 10,
+        "max_qubits": 14
+      },
+      "bell_chsh_violation": {
+        "pass_count": 10,
+        "max_qubits": 14
+      },
+      "phase_interference": {
+        "pass_count": 10,
+        "max_qubits": 14
+      },
+      "ghz_witness": {
+        "pass_count": 10,
+        "max_qubits": 14
+      }
+    },
+    "optimizer_convergence": {
+      "configs_tested": 30,
+      "converged": 30,
+      "best_fidelity": 0.9999999999999991,
+      "best_config": {
+        "nq": 2,
+        "depth": 2,
+        "max_iter": 50,
+        "target": 0.99
+      },
+      "mean_fidelity": 0.999999999999999
+    },
+    "protection_matrix": {
+      "combos": 30,
+      "strategy_wins": {
+        "composite_shield": 30
+      },
+      "strategy_avg_fidelity": {
+        "raw": 0.7597857446443579,
+        "dynamical_decouple": 0.9958366025387,
+        "bit_flip_code": 0.7513164220875015,
+        "sacred_encode": 0.7492191385997088,
+        "phi_braided_echo": 0.7597857446443579,
+        "zeno_freeze": 0.9841491381698458,
+        "composite_shield": 0.9999999999999998,
+        "fibonacci_echo": 0.8739077058870733
+      }
+    },
+    "feedback_loops": {
+      "total": 30,
+      "converging": 0,
+      "avg_coherence": 0.8813424666666664
+    },
+    "depth_saturation": {
+      "points": 100,
+      "nq2_final_entropy": 0.9863138230683084,
+      "nq4_final_entropy": 0.15503473970416695
+    },
+    "edge_cases": {
+      "tests_run": "~50"
+    }
+  }
+}

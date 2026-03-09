@@ -61,7 +61,7 @@ class NovelTheoremGenerator:
                 break
             random.shuffle(available)
 
-            for i, j in available[:8]:  # Check up to 8 pairs per step
+            for i, j in available[:21]:  # Check up to 21 pairs per step (was 8)
                 a, b = chain[i], chain[j]
                 used_pairs.add((i, j))
 
@@ -259,7 +259,7 @@ class NovelTheoremGenerator:
             'reasoning_chains': len(self._reasoning_chains),
             'avg_complexity': round(avg_complexity, 4),
             'asi_threshold': ASI_NOVEL_DISCOVERY_COUNT,
-            'novel_theorems': [{'name': t.name, 'statement': t.statement[:80], 'verified': t.verified,
+            'novel_theorems': [{'name': t.name, 'statement': t.statement[:500], 'verified': t.verified,  # (was :80)
                                'novelty': round(t.novelty_score, 3)} for t in self.novel_theorems[-5:]]
         }
 

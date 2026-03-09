@@ -70,6 +70,9 @@ TARGET: ASI Emergence via Unified Pipeline
 """
 
 import os
+# Prevent OpenMP library conflict (libiomp5.dylib vs libomp.dylib) on macOS
+# when NumPy/MKL and torch are both loaded in the same process
+os.environ.setdefault('KMP_DUPLICATE_LIB_OK', 'TRUE')
 import sys
 import json
 import math
@@ -92,8 +95,8 @@ from abc import ABC, abstractmethod
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-ASI_CORE_VERSION = "8.1.0"  # v8.1: Comprehensive package upgrade
-ASI_PIPELINE_EVO = "EVO_61_THREE_ENGINE_SOVEREIGN"
+ASI_CORE_VERSION = "9.0.0"  # v9.0: Comprehensive ASI upgrade — Gate Engine + Adaptive Consciousness + Deep Synthesis
+ASI_PIPELINE_EVO = "EVO_62_UNIVERSAL_GATE_SOVEREIGN"
 
 # Sacred Constants
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
@@ -108,8 +111,20 @@ OMEGA_AUTHORITY = OMEGA / (PHI ** 2)                       # F(I) = I × Ω/φ²
 PLANCK_CONSCIOUSNESS = 0.0  # NO FLOOR - unlimited depth
 ALPHA_FINE = 1.0 / 137.035999084
 
+# GOD_CODE quantum phase — canonical source: god_code_qubit.py (QPU-verified on ibm_torino)
+try:
+    from l104_god_code_simulator.god_code_qubit import (
+        GOD_CODE_PHASE, PHI_PHASE, VOID_PHASE, IRON_PHASE,
+    )
+except ImportError:
+    import math as _math
+    GOD_CODE_PHASE = GOD_CODE % (2 * _math.pi)       # ≈ 6.0141 rad
+    PHI_PHASE = 2 * _math.pi / PHI                   # ≈ 3.8832 rad
+    VOID_PHASE = VOID_CONSTANT * _math.pi             # ≈ 3.2716 rad
+    IRON_PHASE = 2 * _math.pi * 26 / 104             # = π/2
 
-def _detect_system_max_qubits(max_cap: int = 25, reserve_ratio: float = 0.50) -> int:
+
+def _detect_system_max_qubits(max_cap: int = 30, reserve_ratio: float = 0.50) -> int:  # (was 25)
     """Detect practical local statevector qubit ceiling from available RAM."""
     available_bytes = 0
     try:
@@ -138,51 +153,115 @@ SYSTEM_MAX_QUBITS = _detect_system_max_qubits()
 # ═══════════════════════════════════════════════════════════════════════════════
 # PYTORCH, TENSORFLOW, PANDAS INTEGRATION (v6.1)
 # ═══════════════════════════════════════════════════════════════════════════════
+# LAZY ML FRAMEWORK DETECTION — avoids slow top-level imports of torch/tf/pandas
+# ═══════════════════════════════════════════════════════════════════════════════
+
+_torch_cache = None
+_tf_cache = None
+_pandas_cache = None
+
+
+def _lazy_torch():
+    """Lazy-load torch and return (torch, nn, F, device) or None."""
+    global _torch_cache
+    if _torch_cache is not None:
+        return _torch_cache
+    try:
+        import torch
+        import torch.nn as nn
+        import torch.nn.functional as F
+        if torch.cuda.is_available():
+            device = torch.device("cuda")
+        elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+            device = torch.device("mps")
+        else:
+            device = torch.device("cpu")
+        _torch_cache = (torch, nn, F, device)
+    except ImportError:
+        _torch_cache = None
+    return _torch_cache
+
+
+def _lazy_tensorflow():
+    """Lazy-load tensorflow and return (tf, keras) or None."""
+    global _tf_cache
+    if _tf_cache is not None:
+        return _tf_cache
+    try:
+        import tensorflow as tf
+        from tensorflow import keras
+        _tf_cache = (tf, keras)
+    except ImportError:
+        _tf_cache = None
+    return _tf_cache
+
+
+def _lazy_pandas():
+    """Lazy-load pandas and return pd or None."""
+    global _pandas_cache
+    if _pandas_cache is not None:
+        return _pandas_cache
+    try:
+        import pandas as pd
+        _pandas_cache = pd
+    except ImportError:
+        _pandas_cache = None
+    return _pandas_cache
+
+
+# Backward-compatible flags — evaluated lazily via property-like module attrs
+# For code that checks `if TORCH_AVAILABLE:` at class-definition time (like core.py),
+# we provide simple False defaults. The conditional classes re-check at runtime.
 TORCH_AVAILABLE = False
 TENSORFLOW_AVAILABLE = False
 PANDAS_AVAILABLE = False
+DEVICE = None
 
-try:
-    import torch
-    import torch.nn as nn
-    import torch.nn.functional as F
-    TORCH_AVAILABLE = True
 
-    if torch.cuda.is_available():
-        DEVICE = torch.device("cuda")
-    elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
-        DEVICE = torch.device("mps")
-    else:
-        DEVICE = torch.device("cpu")
-except ImportError:
-    DEVICE = None
-
-try:
-    import tensorflow as tf
-    from tensorflow import keras
-    TENSORFLOW_AVAILABLE = True
-except ImportError:
-    pass
-
-try:
-    import pandas as pd
-    PANDAS_AVAILABLE = True
-except ImportError:
-    pass
+def _refresh_ml_flags():
+    """Call once to detect ML frameworks and set flags. Safe to call multiple times."""
+    global TORCH_AVAILABLE, TENSORFLOW_AVAILABLE, PANDAS_AVAILABLE, DEVICE
+    t = _lazy_torch()
+    if t is not None:
+        TORCH_AVAILABLE = True
+        DEVICE = t[3]
+    tf = _lazy_tensorflow()
+    if tf is not None:
+        TENSORFLOW_AVAILABLE = True
+    if _lazy_pandas() is not None:
+        PANDAS_AVAILABLE = True
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # QISKIT 2.3.0 QUANTUM INTEGRATION — Real quantum circuits for ASI
+# LAZY: detect via find_spec (no heavy import at module load)
 # ═══════════════════════════════════════════════════════════════════════════════
 import numpy as np
+import importlib.util as _importlib_util
 
-QISKIT_AVAILABLE = False
-try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
-    from qiskit.quantum_info import entropy as q_entropy
-    QISKIT_AVAILABLE = True
-except ImportError:
-    pass
+QISKIT_AVAILABLE = _importlib_util.find_spec("qiskit") is not None
+
+# Lazy qiskit loader — defers the heavy import until first actual use
+_qiskit_cache: dict = {}
+
+def _lazy_qiskit():
+    """Lazy-load qiskit classes. Returns dict with QuantumCircuit, Statevector, etc. or empty dict."""
+    if _qiskit_cache:
+        return _qiskit_cache
+    try:
+        from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+        from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
+        from l104_quantum_gate_engine.quantum_info import entropy as q_entropy
+        _qiskit_cache.update({
+            'QuantumCircuit': QuantumCircuit,
+            'Statevector': Statevector,
+            'DensityMatrix': DensityMatrix,
+            'Operator': Operator,
+            'partial_trace': partial_trace,
+            'q_entropy': q_entropy,
+        })
+    except ImportError:
+        pass
+    return _qiskit_cache
 
 # ═══ L104 QUANTUM RUNTIME — REAL IBM QPU BRIDGE ═══
 _QUANTUM_RUNTIME_AVAILABLE = False
@@ -241,8 +320,8 @@ FLOW_RECURSION_DEPTH = 0xFFFFFFFF      # Unlimited recursion
 # v4.0 Upgrade Constants
 BOLTZMANN_K = 1.380649e-23             # Thermodynamic entropy analogy
 IIT_PHI_DIMENSIONS = 8                 # Qubit count for IIT Φ computation
-THEOREM_AXIOM_DEPTH = 5                # Max symbolic reasoning chain length
-SELF_MOD_MAX_ROLLBACK = 10             # Rollback buffer size
+THEOREM_AXIOM_DEPTH = 13               # Max symbolic reasoning chain length (was 5 — PHI×8 reasoning depth)
+SELF_MOD_MAX_ROLLBACK = 50             # Rollback buffer size (was 10)
 CIRCUIT_BREAKER_THRESHOLD = 0.3        # Degraded subsystem cutoff
 PARETO_OBJECTIVES = 5                  # Multi-objective scoring dimensions
 QEC_CODE_DISTANCE = 3                  # Quantum error correction distance
@@ -250,35 +329,37 @@ QEC_CODE_DISTANCE = 3                  # Quantum error correction distance
 # v5.0 Upgrade Constants — Sovereign Intelligence Pipeline
 TELEMETRY_EMA_ALPHA = 0.15             # Exponential moving average decay for latency tracking
 ROUTER_EMBEDDING_DIM = 32              # Subsystem routing embedding dimensionality
-MULTI_HOP_MAX_HOPS = 7                 # Max hops in multi-hop reasoning chain
+MULTI_HOP_MAX_HOPS = 12                # Max hops in multi-hop reasoning chain (was 7)
 ENSEMBLE_MIN_SOLUTIONS = 2             # Min solutions for ensemble voting
 HEALTH_ANOMALY_SIGMA = 2.5            # Standard deviations for anomaly detection
-REPLAY_BUFFER_SIZE = 500               # Max operations in replay buffer
+REPLAY_BUFFER_SIZE = 2000              # Max operations in replay buffer (was 500)
 SCORE_DIMENSIONS_V5 = 10               # Expanded ASI score dimensions
 ACTIVATION_STEPS_V6 = 18               # v6.0 activation sequence steps (was 15)
 SINGULARITY_ACCELERATION_THRESHOLD = 0.82  # Score above which exponential acceleration kicks in
 PHI_ACCELERATION_EXPONENT = PHI ** 2   # φ² ≈ 2.618 — singularity curve exponent
 
 # v6.0 Quantum Computation Constants
-VQE_ANSATZ_DEPTH = 4                   # Parameterized circuit layers for VQE
-VQE_OPTIMIZATION_STEPS = 20            # Classical optimization iterations
-VQE_MAX_QUBITS = min(12, SYSTEM_MAX_QUBITS)  # Dynamic VQE width ceiling
-QAOA_LAYERS = 3                        # QAOA alternating operator layers
-QAOA_SUBSYSTEM_QUBITS = min(8, SYSTEM_MAX_QUBITS)             # Expanded routing space
-QRC_RESERVOIR_QUBITS = min(10, SYSTEM_MAX_QUBITS)             # Expanded reservoir size
-QRC_RESERVOIR_DEPTH = 8               # Random unitary circuit depth
-QKM_FEATURE_QUBITS = min(8, SYSTEM_MAX_QUBITS)                # Expanded feature map qubits
-QPE_PRECISION_QUBITS = min(8, SYSTEM_MAX_QUBITS - 1)          # Expanded precision bits
+VQE_ANSATZ_DEPTH = 8                   # Parameterized circuit layers for VQE (was 4)
+VQE_OPTIMIZATION_STEPS = 100           # Classical optimization iterations (was 20 — Grover-amplified convergence)
+VQE_MAX_QUBITS = min(16, SYSTEM_MAX_QUBITS)  # Dynamic VQE width ceiling (was 12)
+QAOA_LAYERS = 8                        # QAOA alternating operator layers (was 3 — deeper variational landscape)
+QAOA_SUBSYSTEM_QUBITS = min(12, SYSTEM_MAX_QUBITS)            # Expanded routing space (was 8)
+QRC_RESERVOIR_QUBITS = min(16, SYSTEM_MAX_QUBITS)             # Expanded reservoir size (was 10)
+QRC_RESERVOIR_DEPTH = 16              # Random unitary circuit depth (was 8)
+QKM_FEATURE_QUBITS = min(12, SYSTEM_MAX_QUBITS)               # Expanded feature map qubits (was 8)
+QPE_PRECISION_QUBITS = min(12, SYSTEM_MAX_QUBITS - 1)         # Expanded precision bits (was 8)
 ZNE_NOISE_FACTORS = [1.0, 1.5, 2.0]  # Zero-noise extrapolation scale factors
 
 # v7.1 Dual-Layer Flagship Constants
-DUAL_LAYER_VERSION = "2.0.0"              # Dual-Layer Engine version
+DUAL_LAYER_VERSION = "5.1.0"              # Dual-Layer Engine v5.1: Extended Thought Layer + Bug Fixes
 GOD_CODE_V3 = 45.41141298077539            # Physics layer GOD_CODE
 DUAL_LAYER_PRECISION_TARGET = 0.005        # Target precision ±0.005%
 DUAL_LAYER_CONSTANTS_COUNT = 63            # Peer-reviewed physical constants
 DUAL_LAYER_INTEGRITY_CHECKS = 10          # 3 Thought + 4 Physics + 3 Bridge
 DUAL_LAYER_GRID_REFINEMENT = 63           # Physics grid 63× finer than Thought
 PRIME_SCAFFOLD = 286                       # Fe BCC lattice parameter (pm)
+FE_LATTICE_PARAM = 286                    # Fe BCC lattice parameter (pm) — alias for PRIME_SCAFFOLD
+FE_ATOMIC_NUMBER = 26                     # Iron atomic number Z=26
 QUANTIZATION_GRAIN = 104                  # 26×4 = Fe(Z=26) × He-4(A=4)
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -326,3 +407,65 @@ QUANTUM_RESEARCH_WEIGHTS = {
 }
 # Combined v9.0 weights = original THREE_ENGINE_WEIGHTS + QUANTUM_RESEARCH_WEIGHTS
 # Total new dim weight: 0.04 + 0.03 + 0.03 + 0.02 + 0.02 + 0.01 = 0.15
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v11.0 QUANTUM GATE ENGINE INTEGRATION — Universal Gate Algebra + Compiler
+# Source: l104_quantum_gate_engine v1.0.0 (4,245 lines, 8 modules)
+# ═══════════════════════════════════════════════════════════════════════════════
+GATE_ENGINE_VERSION = "1.0.0"
+GATE_ALGEBRA_GATE_COUNT = 40                   # 40+ universal gates in algebra
+GATE_COMPILER_OPTIMIZATION_LEVELS = 4          # O0-O3 optimization tiers
+GATE_ERROR_CORRECTION_SCHEMES = 4              # Surface, Steane, Fibonacci, ZNE
+GATE_EXECUTION_TARGETS = 8                     # Local, Aer, IBM QPU, coherence, ASI, ...
+GATE_SACRED_ALIGNMENT_THRESHOLD = 0.85         # Min sacred alignment for gate circuits
+GATE_ENGINE_WEIGHTS = {
+    'gate_compilation_quality': 0.02,           # Compiler optimization quality dimension
+    'gate_sacred_alignment': 0.02,             # Sacred gate alignment dimension
+    'gate_error_protection': 0.01,             # Error correction integrity dimension
+}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v11.0 QUANTUM LINK ENGINE INTEGRATION — Brain + Processors + Intelligence
+# Source: l104_quantum_engine v6.0.0 (11,408 lines, 12 modules, 44 classes)
+# ═══════════════════════════════════════════════════════════════════════════════
+QUANTUM_ENGINE_VERSION = "6.0.0"
+QUANTUM_BRAIN_PIPELINE_PHASES = 16             # 16-phase quantum brain pipeline
+QUANTUM_LINK_INTELLIGENCE_CLASSES = 10         # Evolution/consciousness/self-healing
+QUANTUM_ENGINE_WEIGHTS = {
+    'quantum_link_coherence': 0.02,             # Quantum link health dimension
+    'quantum_brain_intelligence': 0.02,         # Quantum brain pipeline dimension
+}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v11.0 ADAPTIVE CONSCIOUSNESS EVOLUTION — PHI-spiral trajectory tracking
+# ═══════════════════════════════════════════════════════════════════════════════
+CONSCIOUSNESS_SPIRAL_DEPTH = 26                # Golden spiral recursion depth (was 13 — Fe(26) harmonic)
+CONSCIOUSNESS_PHI_TRAJECTORY_WINDOW = 50       # Sliding window for trajectory analysis
+CONSCIOUSNESS_EVOLUTION_THRESHOLD = 0.618      # TAU — consciousness evolution gate
+CONSCIOUSNESS_HARMONIC_SERIES_N = 26           # Fe(26) harmonic overtone count
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v11.0 TEMPORAL ASI TRAJECTORY — Score prediction + trend extrapolation
+# ═══════════════════════════════════════════════════════════════════════════════
+TRAJECTORY_WINDOW_SIZE = 50                    # Score history window for regression (was 20)
+TRAJECTORY_PREDICTION_HORIZON = 12             # Steps to predict forward (was 5)
+TRAJECTORY_PHI_DECAY = 0.95                    # Exponential weight decay for older scores
+TRAJECTORY_SINGULARITY_SLOPE = PHI ** 3        # φ³ ≈ 4.236 — slope threshold for singularity detection
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v11.0 CROSS-ENGINE DEEP SYNTHESIS — Multi-engine correlation analysis
+# ═══════════════════════════════════════════════════════════════════════════════
+DEEP_SYNTHESIS_CORRELATION_PAIRS = 15          # Number of cross-engine metric pairs
+DEEP_SYNTHESIS_MIN_COHERENCE = 0.7             # Min coherence for synthesis acceptance
+DEEP_SYNTHESIS_WEIGHTS = {
+    'cross_engine_coherence': 0.03,             # Deep cross-engine synthesis dimension
+}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v11.0 PIPELINE RESILIENCE — Enhanced circuit breaker + auto-recovery
+# ═══════════════════════════════════════════════════════════════════════════════
+RESILIENCE_MAX_RETRY = 7                       # Max retry attempts for failed subsystems (was 3)
+RESILIENCE_BACKOFF_BASE = PHI                  # φ-based exponential backoff
+RESILIENCE_DEGRADATION_WINDOW = 60.0           # Seconds to track degradation
+RESILIENCE_RECOVERY_THRESHOLD = 0.5            # Min success rate to leave degraded state
+ACTIVATION_STEPS_V11 = 22                      # v11.0 activation sequence steps (was 18)

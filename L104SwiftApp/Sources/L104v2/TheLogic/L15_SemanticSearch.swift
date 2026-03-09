@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L15_SemanticSearch.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104v2 — Extracted from L104Native.swift
 //   SemanticSearchEngine (lines 11129-11224)
 //   IntelligentSearchEngine (lines 32229-32519)
@@ -20,8 +20,11 @@ class SemanticSearchEngine {
 
     private var wordEmbedding: NLEmbedding?
     private var initialized = false
+    private let initLock = NSLock()
 
     func initialize() {
+        initLock.lock()
+        defer { initLock.unlock() }
         guard !initialized else { return }
         wordEmbedding = NLEmbedding.wordEmbedding(for: .english)
         initialized = true
@@ -87,20 +90,30 @@ class SemanticSearchEngine {
                 if sumVec == nil {
                     sumVec = vec
                 } else {
-                    sumVec = zip(sumVec!, vec).map { $0 + $1 }
+                    // vDSP add: sumVec += vec (SIMD-accelerated)
+                    vDSP_vaddD(sumVec!, 1, vec, 1, &sumVec!, 1, vDSP_Length(vec.count))
                 }
                 count += 1
             }
         }
-        guard let sv = sumVec, count > 0 else { return [] }
-        return sv.map { $0 / Double(count) }
+        guard var sv = sumVec, count > 0 else { return [] }
+        // vDSP scalar divide: sv /= count
+        var divisor = Double(count)
+        vDSP_vsdivD(sv, 1, &divisor, &sv, 1, vDSP_Length(sv.count))
+        return sv
     }
 
     private func cosineSimilarity(_ a: [Double], _ b: [Double]) -> Double {
         guard a.count == b.count, !a.isEmpty else { return 0 }
-        let dot = zip(a, b).map(*).reduce(0, +)
-        let magA = sqrt(a.map { $0 * $0 }.reduce(0, +))
-        let magB = sqrt(b.map { $0 * $0 }.reduce(0, +))
+        let n = vDSP_Length(a.count)
+        var dot: Double = 0
+        var magASq: Double = 0
+        var magBSq: Double = 0
+        vDSP_dotprD(a, 1, b, 1, &dot, n)
+        vDSP_svesqD(a, 1, &magASq, n)
+        vDSP_svesqD(b, 1, &magBSq, n)
+        let magA = sqrt(magASq)
+        let magB = sqrt(magBSq)
         guard magA > 0, magB > 0 else { return 0 }
         return max(0, dot / (magA * magB))
     }
@@ -116,6 +129,7 @@ class IntelligentSearchEngine {
     static let shared = IntelligentSearchEngine()
 
     // ─── SEARCH STATE ───
+    private let indexLock = NSLock()
     var searchHistory: [(query: String, results: Int, timestamp: Date)] = []
     private var queryExpansionCache: [String: [String]] = [:]
     private var searchIndex: [String: Set<Int>] = [:]      // term → entry indices
@@ -171,9 +185,19 @@ class IntelligentSearchEngine {
     // ═══ COMPREHENSIVE MULTI-STAGE SEARCH ═══
     func search(_ query: String) -> SearchResult {
         let start = CFAbsoluteTimeGetCurrent()
-        totalSearches += 1
 
-        if !indexBuilt { buildIndex() }
+        indexLock.lock()
+        totalSearches += 1
+        let isBuilt = indexBuilt
+        indexLock.unlock()
+
+        if !isBuilt { buildIndex() }
+
+        // Snapshot index state under lock for safe reading
+        indexLock.lock()
+        let localSearchIndex = searchIndex
+        let localDocumentVectors = documentVectors
+        indexLock.unlock()
 
         let kb = ASIKnowledgeBase.shared
         let gate = ContextualLogicGate.shared
@@ -209,11 +233,11 @@ class IntelligentSearchEngine {
         let totalDocs = Double(kb.trainingData.count)
 
         for term in allTerms {
-            guard let postings = searchIndex[term] else { continue }
+            guard let postings = localSearchIndex[term] else { continue }
             // IDF component
             let idf = log((totalDocs - Double(postings.count) + 0.5) / (Double(postings.count) + 0.5) + 1.0)
             for docIdx in postings {
-                let tf = documentVectors.indices.contains(docIdx) ? (documentVectors[docIdx][term] ?? 0) : 0.5
+                let tf = localDocumentVectors.indices.contains(docIdx) ? (localDocumentVectors[docIdx][term] ?? 0) : 0.5
                 let bm25Score = idf * (tf * 2.5) / (tf + 1.5)
                 candidateScores[docIdx, default: 0] += bm25Score
             }
@@ -263,11 +287,12 @@ class IntelligentSearchEngine {
         }
 
         let elapsed = CFAbsoluteTimeGetCurrent() - start
+        indexLock.lock()
         avgSearchLatency = avgSearchLatency * 0.9 + elapsed * 0.1
         totalResultsReturned += finalResults.count
-
         searchHistory.append((query: query, results: finalResults.count, timestamp: Date()))
         if searchHistory.count > 500 { searchHistory.removeFirst() }
+        indexLock.unlock()
 
         // Learn query expansions from results
         learnFromResults(query: query, results: finalResults)
@@ -354,12 +379,14 @@ class IntelligentSearchEngine {
             if $0.value == $1.value { return Bool.random() }
             return $0.value > $1.value
         }.prefix(5).map { $0.key }
+        indexLock.lock()
         for qTerm in queryTerms {
             queryExpansionCache[qTerm] = topExpansions
         }
         if queryExpansionCache.count > 2000 {
             queryExpansionCache = Dictionary(queryExpansionCache.suffix(1000), uniquingKeysWith: { first, _ in first })
         }
+        indexLock.unlock()
     }
 
     // ═══ TOKENIZE ═══

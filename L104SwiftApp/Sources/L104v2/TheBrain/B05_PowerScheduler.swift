@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B05_PowerScheduler.swift
-// [EVO_62_PIPELINE] QUANTUM_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Power-Aware Compute Scheduler
 //
 // PowerAwareScheduler dispatches work to performance, balanced,

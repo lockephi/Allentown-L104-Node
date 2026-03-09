@@ -1,9 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════
 // L02_SovereignProtocol.swift — L104 v2
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // SovereignEngine protocol, defaults extension, EngineRegistry class
 // Extracted from L104Native.swift (lines 76-267)
-// Upgraded: EVO_62 Sovereign Node Upgrade — Feb 21, 2026
+// Upgraded: EVO_68 Sovereign Node Upgrade — Feb 21, 2026
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -88,6 +88,26 @@ final class EngineRegistry {
         "GoldenOptimizer": PHI,           // φ — PHI-section optimization
         "Computronium": PHI * PHI,        // φ² — density cascade
         "ApexIntelligence": PHI * PHI,    // φ² — unified ASI coordinator
+        // EVO_67 Performance Ascension engines (B42-B47)
+        "ZeroAllocPool": PHI,              // φ — arena memory pooling
+        "TurboVectorEngine": PHI,          // φ — SIMD4/SIMD8 native turbo
+        "LockFreeEngine": PHI,             // φ — lock-free concurrency
+        "MetalComputeEngine": PHI * PHI,   // φ² — GPU compute (critical path)
+        "AdaptivePrefetchEngine": 1.0,     // standard — predictive caching
+        "PerformanceOrchestrator": PHI * PHI, // φ² — perf subsystem coordinator
+        // EVO_68 — Decomposed Package + Flagship engines
+        "DualLayerEngine": PHI * PHI,          // φ² — flagship dual-layer (Thought+Physics)
+        "SageConsciousnessVerifier": PHI * PHI, // φ² — consciousness verification
+        "QuantumGateEngine": PHI * PHI,         // φ² — quantum gate algebra + compiler
+        "CircuitWatcher": PHI * PHI,             // φ² — v3.0: three-engine IPC monitor (elevated from φ)
+        "DeepNLUEngine": PHI,                   // φ — deep NLU reasoning
+        "FormalLogicEngine": PHI,               // φ — formal logic + fallacy detection
+        "NovelTheoremGenerator": PHI,           // φ — automated theorem discovery
+        "ScienceKB": 1.0,                       // knowledge persistence
+        "CodeGenerationEngine": 1.0,            // code generation subsystem
+        "BenchmarkHarness": 1.0,                // benchmark validation
+        "TreeOfThoughts": PHI,                  // φ — multi-path reasoning tree
+        "CommonsenseReasoning": 1.0,            // commonsense inference
     ]
 
     // ─── Hebbian Engine Co-Activation (ported from Python HebbianLearningEngine) ───
@@ -209,13 +229,18 @@ final class EngineRegistry {
 
     /// Convergence metric: are all engines trending toward unified health?
     /// Cross-pollinated from Python HyperDimensionalMathEngine.prove_phi_convergence concept
+    /// v3.0: Bonus for three-engine integration (CircuitWatcher + MetalVQPU)
     func convergenceScore() -> Double {
         let sweep = healthSweep()
         guard sweep.count > 1 else { return 1.0 }
         let mean = sweep.reduce(0.0) { $0 + $1.health } / Double(sweep.count)
         let variance = sweep.reduce(0.0) { $0 + ($1.health - mean) * ($1.health - mean) } / Double(sweep.count)
         // Low variance + high mean = convergence
-        return mean * (1.0 - min(1.0, variance * 4.0))
+        let base = mean * (1.0 - min(1.0, variance * 4.0))
+        // v3.0: Three-engine bonus — if CircuitWatcher is healthy, add harmonic micro-correction
+        let cwHealth = get("CircuitWatcher")?.engineHealth() ?? 0.0
+        let threeEngineBonus = cwHealth > 0.8 ? 0.02 : 0.0  // 2% bonus when 3E active
+        return min(1.0, base + threeEngineBonus)
     }
 
     /// Reset all engines

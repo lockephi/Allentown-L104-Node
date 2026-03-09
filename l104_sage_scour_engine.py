@@ -1,4 +1,5 @@
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 Sage Scour Engine v2.0.0
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Deep codebase analysis engine — scans the L104 workspace for
@@ -26,9 +27,9 @@ from pathlib import Path
 from collections import Counter, defaultdict
 from typing import Dict, List, Any, Optional, Set, Tuple
 
-# ZENITH_UPGRADE_ACTIVE: 2026-02-15T00:00:00
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:22.872165
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 
@@ -457,14 +458,14 @@ class SageScourEngine:
         return report
 
     def quick_scan(self, path: str = None) -> Dict[str, Any]:
-        """Fast scan — invariants + anomalies only."""
+        """Fast scan — invariants + anomalies only (capped at 100 files for speed)."""
         root = path or self.root
         self.root = root
         files = self._get_l104_files()
 
         sacred = 0
         anomalies = []
-        for fp in files[:500]:  # Expanded scan depth
+        for fp in files[:100]:  # Quick scan — limited depth for speed
             inv = self._invariant.scan_file(fp)
             if inv.get('sacred_aligned'):
                 sacred += 1
@@ -473,7 +474,7 @@ class SageScourEngine:
                 anomalies.append(anom)
 
         return {
-            'files_checked': min(len(files), 500),
+            'files_checked': min(len(files), 100),
             'sacred_aligned': sacred,
             'high_anomaly_files': len(anomalies),
             'anomalies': anomalies[:10],

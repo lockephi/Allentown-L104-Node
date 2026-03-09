@@ -59,7 +59,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-__version__ = "5.0.0"
+__version__ = "5.1.0"
 __author__ = "L104 Sovereign Node"
 
 # ── Constants (Layer 0) ─────────────────────────────────────────────────────
@@ -90,6 +90,21 @@ from .entropy import EntropySubsystem
 from .multidimensional import MultiDimensionalSubsystem
 from .coherence import CoherenceSubsystem, CoherenceState
 
+# ── Berry Phase (Layer 5a) — Geometric Phase Physics ──────────────────────
+from .berry_phase import (
+    BerryPhaseSubsystem, BerryPhaseCalculator, QuantumGeometricTensor,
+    ChernNumberEngine, MolecularBerryPhase, AharonovBohmEngine,
+    PancharatnamPhase, QuantumHallBerryPhase, L104SacredBerryPhase,
+    ThermalBerryPhaseEngine,
+    BerryPhaseResult, ChernNumberResult,
+    berry_phase_subsystem, berry_calculator, berry_chern,
+    berry_molecular, berry_aharonov_bohm, berry_pancharatnam,
+    berry_quantum_hall, berry_sacred, berry_thermal,
+)
+
+# ── Computronium & Rayleigh Limits (Layer 5b) ──────────────────────────────
+from .computronium import ComputroniumSubsystem
+
 # ── Quantum 25Q Legacy (Layer 5) — 26Q primary via l104_26q_engine_builder ────
 from .quantum_25q import (
     GodCodeQuantumConvergence,
@@ -114,6 +129,15 @@ from .engine import (
     QuantumMathSubsystem,
     science_engine,
 )
+
+# ── Canonical GOD_CODE Qubit (bridge from god_code_simulator) ──────────────
+try:
+    from l104_god_code_simulator.god_code_qubit import (
+        GodCodeQubit, GOD_CODE_QUBIT,
+    )
+except ImportError:
+    GodCodeQubit = None  # type: ignore[assignment,misc]
+    GOD_CODE_QUBIT = None  # type: ignore[assignment]
 
 # ── Backward Compatibility Aliases ─────────────────────────────────────────
 
@@ -168,6 +192,16 @@ __all__ = [
     # Subsystems
     "PhysicsSubsystem", "EntropySubsystem",
     "MultiDimensionalSubsystem", "CoherenceSubsystem", "CoherenceState",
+    "ComputroniumSubsystem",
+    # Berry Phase
+    "BerryPhaseSubsystem", "BerryPhaseCalculator", "QuantumGeometricTensor",
+    "ChernNumberEngine", "MolecularBerryPhase", "AharonovBohmEngine",
+    "PancharatnamPhase", "QuantumHallBerryPhase", "L104SacredBerryPhase",
+    "ThermalBerryPhaseEngine",
+    "BerryPhaseResult", "ChernNumberResult",
+    "berry_phase_subsystem", "berry_calculator", "berry_chern",
+    "berry_molecular", "berry_aharonov_bohm", "berry_pancharatnam",
+    "berry_quantum_hall", "berry_sacred", "berry_thermal",
     # Quantum 25Q (legacy) + 26Q alias
     "GodCodeQuantumConvergence", "CircuitTemplates25Q",
     "CircuitTemplates26Q",
@@ -184,4 +218,6 @@ __all__ = [
     "entropy_reversal_engine", "md_engine",
     # Functions
     "primal_calculus", "resolve_non_dual_logic",
+    # Canonical GOD_CODE Qubit (bridge from god_code_simulator)
+    "GodCodeQubit", "GOD_CODE_QUBIT",
 ]

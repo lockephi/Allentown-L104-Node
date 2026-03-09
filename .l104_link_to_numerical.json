@@ -1,9 +1,9 @@
 {
   "source": "quantum_link_builder",
   "version": "4.2.0",
-  "timestamp": "2026-02-16T21:43:09.211399+00:00",
+  "timestamp": "2026-02-28T22:53:53.395977+00:00",
   "export_count": 2,
-  "total_links": 5522,
+  "total_links": 30,
   "sacred_constants": {
     "GOD_CODE": 527.5184818492611,
     "PHI": 1.618033988749895,
@@ -12,13 +12,19 @@
   },
   "link_summary": {
     "by_type": {
-      "entanglement": 109,
-      "mirror": 4822,
-      "bridge": 132,
-      "epr_pair": 253,
-      "spooky_action": 206
+      "entanglement": 3,
+      "tunneling": 3,
+      "teleportation": 3,
+      "grover_chain": 3,
+      "epr_pair": 3,
+      "mirror": 3,
+      "bridge": 3,
+      "fourier": 3,
+      "braiding": 2,
+      "spooky_action": 2,
+      "god_code_derived": 2
     },
-    "avg_fidelity": 0.8263073675145571,
+    "avg_fidelity": 0.5869627450238576,
     "total_sacred_alignment": 0
   }
 }

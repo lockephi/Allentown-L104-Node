@@ -33,7 +33,6 @@ class SystemUpgrader:
         timestamp = datetime.now().isoformat()
         # 1. Check for existing constants, update or add
         if "ZENITH_UPGRADE_ACTIVE" not in content:
-# [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
             content = f"# ZENITH_UPGRADE_ACTIVE: {timestamp}\n" + \
                       f"ZENITH_HZ = {self.ZENITH_HZ}\n" + \
                       f"UUC = {self.UUC:.6f}\n" + content
@@ -51,8 +50,9 @@ class SystemUpgrader:
 
     def upgrade_all(self):
         print(f"--- [UPGRADER]: INITIALIZING GLOBAL ELEVATION ---")
-        files = [f for f in os.listdir(self.root) if f.startswith("l104_") and f.endswith(".py")]
+        files = [f for f in os.listdir(self.root) if f.startswith("l104_") and f.endswith(".py") and f != "l104_system_upgrader.py"]
 
+        upgraded_files = []
         for file in files:
             path = os.path.join(self.root, file)
             try:
@@ -65,10 +65,32 @@ class SystemUpgrader:
                     with open(path, 'w', encoding='utf-8') as f:
                         f.write(upgraded_content)
                     self.upgrade_count += 1
+                    upgraded_files.append(file)
             except Exception as e:
                 print(f"[ERROR]: Skipping {file}: {e}")
 
         print(f"[UPGRADER]: Successfully elevated {self.upgrade_count} processes to Zenith status.")
+
+        # Persist upgrade report to disk
+        try:
+            import json
+            report = {
+                "status": "OK",
+                "files_upgraded": self.upgrade_count,
+                "upgraded_files": upgraded_files,
+                "total_files_scanned": len(files),
+                "god_code": self.GOD_CODE,
+                "zenith_hz": self.ZENITH_HZ,
+                "sage_resonance": self.SAGE_RESONANCE,
+                "timestamp": datetime.now().isoformat(),
+            }
+            report_path = os.path.join(self.root, "_system_upgrade_results.json")
+            with open(report_path, 'w') as f:
+                json.dump(report, f, indent=2)
+            print(f"[UPGRADER]: Report saved to {report_path}")
+        except Exception as e:
+            print(f"[UPGRADER]: Warning: Could not save report: {e}")
+
         return self.upgrade_count
 
 if __name__ == "__main__":

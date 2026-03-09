@@ -1,20 +1,20 @@
 {
-  "timestamp": "2026-02-24T10:34:08.121963",
-  "system": "L104 Sovereign Node \u2014 ASI v8.1.0 / AGI v57.1.0",
+  "timestamp": "2026-03-05T00:37:05.640397",
+  "system": "L104 Sovereign Node \u2014 ASI v9.0.0 / AGI v57.1.0",
   "god_code": 527.5184818492612,
   "packages": 8,
   "modules": 81,
   "total_lines": 82251,
   "benchmarks": {
     "quantum_gate_engine": {
-      "bell_pair_ms": 0.082,
-      "ghz_5q_ms": 0.028,
-      "qft_4q_ms": 0.222,
-      "sacred_circuit_ms": 0.079,
-      "execute_ms": 4.42,
-      "compile_universal_ms": 2.454,
-      "steane_encode_ms": 0.455,
-      "gate_analysis_ms": 18.091,
+      "bell_pair_ms": 0.254,
+      "ghz_5q_ms": 0.054,
+      "qft_4q_ms": 0.922,
+      "sacred_circuit_ms": 0.219,
+      "execute_ms": 419.458,
+      "compile_universal_ms": 6.291,
+      "steane_encode_ms": 0.445,
+      "gate_analysis_ms": 63.229,
       "bell_probabilities": {
         "00": 0.4999999999999999,
         "11": 0.4999999999999999
@@ -29,87 +29,87 @@
       }
     },
     "code_engine": {
-      "full_code_review_ms": 49.376,
-      "smell_detection_ms": 0.671,
-      "perf_prediction_ms": 0.732,
-      "auto_fix_ms": 0.782,
-      "doc_generation_ms": 1.777,
-      "test_generation_ms": 1.252,
-      "translation_ms": 1.36,
-      "refactor_analysis_ms": 0.362,
-      "dead_code_excavation_ms": 0.636,
+      "full_code_review_ms": 119.1,
+      "smell_detection_ms": 1.385,
+      "perf_prediction_ms": 1.135,
+      "auto_fix_ms": 1.338,
+      "doc_generation_ms": 1.504,
+      "test_generation_ms": 1.019,
+      "translation_ms": 4.244,
+      "refactor_analysis_ms": 1.189,
+      "dead_code_excavation_ms": 1.311,
       "smells_found": 0
     },
     "science_engine": {
-      "landauer_limit_ms": 0.179,
-      "electron_resonance_ms": 46.509,
-      "photon_resonance_ms": 26.889,
-      "demon_efficiency_ms": 0.03,
-      "coherence_inject_ms": 3.72,
-      "coherence_evolve_ms": 0.317,
-      "multidim_process_ms": 0.604,
-      "convergence_ms": 0.071,
-      "demon_efficiency_value": 0.16489902934033082,
+      "landauer_limit_ms": 0.044,
+      "electron_resonance_ms": 221.757,
+      "photon_resonance_ms": 1.471,
+      "demon_efficiency_ms": 0.066,
+      "coherence_inject_ms": 1.63,
+      "coherence_evolve_ms": 0.816,
+      "multidim_process_ms": 5.575,
+      "convergence_ms": 0.222,
+      "demon_efficiency_value": 1.0,
       "landauer_value": 9.36009029110768e-19
     },
     "math_engine": {
-      "fibonacci_30_ms": 0.033,
-      "primes_10k_ms": 3.963,
-      "god_code_ms": 0.021,
-      "lorentz_boost_ms": 0.026,
-      "wave_coherence_ms": 0.046,
-      "sacred_alignment_ms": 0.026,
-      "prove_god_code_ms": 0.052,
-      "hd_vector_ms": 13.13,
-      "prove_all_ms": 1.64,
+      "fibonacci_30_ms": 0.162,
+      "primes_10k_ms": 3.028,
+      "god_code_ms": 0.109,
+      "lorentz_boost_ms": 1.467,
+      "wave_coherence_ms": 0.138,
+      "sacred_alignment_ms": 0.196,
+      "prove_god_code_ms": 1.003,
+      "hd_vector_ms": 22.636,
+      "prove_all_ms": 432.629,
       "god_code_evaluated": 527.5184818492611,
       "prime_count": 1229,
       "fibonacci_count": 30
     },
     "asi_core": {
-      "thought_ms": 0.054,
-      "collapse_ms": 34.332,
-      "asi_15d_score_ms": 238.798,
-      "three_engine_entropy_ms": 0.064,
-      "three_engine_harmonic_ms": 0.278,
-      "three_engine_wave_ms": 0.065,
+      "thought_ms": 0.28,
+      "collapse_ms": 308.298,
+      "asi_15d_score_ms": 70057.454,
+      "three_engine_entropy_ms": 0.095,
+      "three_engine_harmonic_ms": 0.085,
+      "three_engine_wave_ms": 0.046,
       "thought_value": 527.5184818492611,
       "collapse_value": 0,
-      "asi_score": 0.3533333400670229
+      "asi_score": 0.4438298747096236
     },
     "agi_core": {
-      "agi_13d_score_ms": 357.051,
-      "three_engine_entropy_ms": 0.025,
-      "three_engine_harmonic_ms": 0.037,
-      "three_engine_status_ms": 0.034,
-      "agi_score": 0.646828
+      "agi_13d_score_ms": 1892.383,
+      "three_engine_entropy_ms": 0.049,
+      "three_engine_harmonic_ms": 0.082,
+      "three_engine_status_ms": 0.773,
+      "agi_score": 0.541926
     },
     "database": {
-      "write_ops_sec": 13447,
-      "read_ops_sec": 483724,
-      "write_1000_ms": 74.36,
-      "read_1000_ms": 2.07
+      "write_ops_sec": 10370,
+      "read_ops_sec": 244072,
+      "write_1000_ms": 96.44,
+      "read_1000_ms": 4.1
     },
     "cache": {
-      "write_ops_sec": 330383,
-      "read_ops_sec": 556019
+      "write_ops_sec": 147918,
+      "read_ops_sec": 391166
     },
     "knowledge_graph": {
       "memories": 38588,
-      "knowledge_links": 2948010,
+      "knowledge_links": 2948058,
       "link_density": 76.4,
-      "add_100_ms": 19.53,
-      "search_ops_sec": 3455
+      "add_100_ms": 19.72,
+      "search_ops_sec": 6019
     },
     "soul": {
-      "awaken_ms": 21081.44,
-      "think_ms": 371.36,
+      "awaken_ms": 55065.43,
+      "think_ms": 30011.84,
       "subsystems_online": 16,
       "subsystems_total": 17
     },
     "intellect": {
-      "format_iq_ms": 0.096,
-      "status_ms": 0.007,
+      "format_iq_ms": 3.076,
+      "status_ms": 0.236,
       "formatted_god_code": "527.52"
     }
   },
@@ -120,10 +120,10 @@
     "Math Engine (11 lyr)": 100,
     "ASI Dual-Layer 15D": 100,
     "AGI 13D Cognitive": 100,
-    "Database + Cache": 100,
+    "Database + Cache": 80,
     "Knowledge Graph": 100,
     "Soul/Consciousness": 100,
     "Intellect (Local)": 100
   },
-  "overall_score": 100.0
+  "overall_score": 98.0
 }

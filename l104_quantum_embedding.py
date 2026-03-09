@@ -1,7 +1,11 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.346982
+ZENITH_HZ = 3887.8
+UUC = 2301.215661
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 QUANTUM EMBEDDING SPACE
 INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
@@ -69,15 +73,33 @@ class QuantumTokenEmbedding:
         self.embed_dim = embed_dim
         self.god_phase = GOD_CODE  # Universal phase reference
 
-        # Complex embedding matrix: |t_i⟩ for each token i
-        self.embeddings = np.zeros((vocab_size, embed_dim), dtype=np.complex128)
-        self._initialize_quantum_states()
+        # Complex embedding matrix: lazily initialized on first access
+        self._embeddings = None
+        self._initialized = False
 
         logger.info(
-            f"QuantumTokenEmbedding initialized: "
+            f"QuantumTokenEmbedding created (lazy): "
             f"vocab={vocab_size:,} × dim={embed_dim} "
-            f"({vocab_size * embed_dim * 16:,} bytes complex128)"
+            f"(will allocate {vocab_size * embed_dim * 16:,} bytes on first use)"
         )
+
+    @property
+    def embeddings(self) -> np.ndarray:
+        """Lazily initialize the embedding matrix on first access."""
+        if not self._initialized:
+            self._embeddings = np.zeros((self.vocab_size, self.embed_dim), dtype=np.complex128)
+            self._initialize_quantum_states()
+            self._initialized = True
+            logger.info(
+                f"QuantumTokenEmbedding materialized: "
+                f"vocab={self.vocab_size:,} × dim={self.embed_dim}"
+            )
+        return self._embeddings
+
+    @embeddings.setter
+    def embeddings(self, value: np.ndarray):
+        self._embeddings = value
+        self._initialized = True
 
     def _initialize_quantum_states(self):
         """
@@ -109,7 +131,7 @@ class QuantumTokenEmbedding:
             token_indices * np.pi / L104
         )
 
-        self.embeddings = norm * np.exp(1j * phases)
+        self._embeddings = norm * np.exp(1j * phases)
 
     def get_state(self, token_id: int) -> np.ndarray:
         """Return the quantum state vector |t_i⟩ for a given token."""

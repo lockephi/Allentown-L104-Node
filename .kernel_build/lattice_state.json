@@ -11,16 +11,16 @@
     "machine": "x86_64",
     "node": "Carols-Air.ht.home",
     "workspace": "/Users/carolalvarez/Applications/Allentown-L104-Node",
-    "pid": "5827",
+    "pid": "16086",
     "cwd": "/Users/carolalvarez/Applications/Allentown-L104-Node",
     "disk_total_gb": "112.6",
-    "disk_free_gb": "44.9",
-    "disk_used_pct": "60.2",
-    "memory_peak_mb": "995.1",
-    "workspace_size_mb": "6587.2"
+    "disk_free_gb": "32.4",
+    "disk_used_pct": "71.3",
+    "memory_peak_mb": "674.4",
+    "workspace_size_mb": "9098.1"
   },
-  "elapsed_s": 240.533,
-  "timestamp": "2026-02-20T17:31:58.146473",
+  "elapsed_s": 262.742,
+  "timestamp": "2026-03-07T05:44:54.148845",
   "subsystems": [
     {
       "name": "GOD_CODE Invariant",
@@ -42,7 +42,7 @@
       "name": "Sacred Constants",
       "available": true,
       "version": "",
-      "latency_ms": 0.028848648071289062,
+      "latency_ms": 0.2541542053222656,
       "error": "",
       "details": {
         "classes": [
@@ -67,7 +67,7 @@
       "name": "Kernel Bootstrap",
       "available": true,
       "version": "",
-      "latency_ms": 17.083168029785156,
+      "latency_ms": 26.65877342224121,
       "error": "",
       "details": {
         "classes": [
@@ -83,7 +83,7 @@
       "name": "Fast Intelligence Server",
       "available": true,
       "version": "",
-      "latency_ms": 0.018835067749023438,
+      "latency_ms": 0.11491775512695312,
       "error": "",
       "details": {
         "classes": [
@@ -106,7 +106,7 @@
       "name": "MacBook Integration",
       "available": true,
       "version": "",
-      "latency_ms": 15.936136245727539,
+      "latency_ms": 113.01922798156738,
       "error": "",
       "details": {
         "classes": [
@@ -140,7 +140,7 @@
       "name": "API Gateway",
       "available": true,
       "version": "",
-      "latency_ms": 28.143882751464844,
+      "latency_ms": 38.19584846496582,
       "error": "",
       "details": {
         "classes": [
@@ -174,7 +174,7 @@
       "name": "Workflow Stabilizer",
       "available": true,
       "version": "",
-      "latency_ms": 11.153221130371094,
+      "latency_ms": 15.829086303710938,
       "error": "",
       "details": {
         "classes": [
@@ -204,7 +204,7 @@
       "name": "External API",
       "available": true,
       "version": "",
-      "latency_ms": 79.59818840026855,
+      "latency_ms": 107.29122161865234,
       "error": "",
       "details": {
         "classes": [
@@ -238,7 +238,7 @@
       "name": "Unified Intelligence API",
       "available": true,
       "version": "",
-      "latency_ms": 0.0209808349609375,
+      "latency_ms": 0.13184547424316406,
       "error": "",
       "details": {
         "classes": [
@@ -272,7 +272,7 @@
       "name": "DB: l104_intellect_memory.db",
       "available": true,
       "version": "",
-      "latency_ms": 201712.02993392944,
+      "latency_ms": 203424.8399734497,
       "error": "",
       "details": {
         "tables": [
@@ -288,17 +288,20 @@
           "concept_clusters",
           "consciousness_state",
           "skills",
-          "init_check"
+          "init_check",
+          "knowledge_store",
+          "sqlite_sequence",
+          "learning_log"
         ],
-        "table_count": 13,
-        "size_mb": 555.22
+        "table_count": 16,
+        "size_mb": 557.3
       }
     },
     {
       "name": "DB: l104_asi_nexus.db",
       "available": true,
       "version": "",
-      "latency_ms": 232.7730655670166,
+      "latency_ms": 264.4648551940918,
       "error": "",
       "details": {
         "tables": [
@@ -307,10 +310,13 @@
           "improvements",
           "agent_performance",
           "meta_learnings",
-          "init_check"
+          "init_check",
+          "nexus_state",
+          "theorem_journal",
+          "sqlite_sequence"
         ],
-        "table_count": 6,
-        "size_mb": 3.41
+        "table_count": 9,
+        "size_mb": 4.25
       }
     },
     {
@@ -325,7 +331,7 @@
       "name": "DB: lattice_v2.db",
       "available": true,
       "version": "",
-      "latency_ms": 31856.70566558838,
+      "latency_ms": 35243.15810203552,
       "error": "",
       "details": {
         "tables": [
@@ -334,22 +340,23 @@
           "lattice_history"
         ],
         "table_count": 3,
-        "size_mb": 2961.48
+        "size_mb": 3170.89
       }
     },
     {
       "name": "DB: api_keys.db",
       "available": true,
       "version": "",
-      "latency_ms": 49.54218864440918,
+      "latency_ms": 4.74095344543457,
       "error": "",
       "details": {
         "tables": [
           "api_keys",
           "key_usage",
-          "sqlite_sequence"
+          "sqlite_sequence",
+          "init_check"
         ],
-        "table_count": 3,
+        "table_count": 4,
         "size_mb": 0.02
       }
     },
@@ -357,15 +364,16 @@
       "name": "DB: wallet_keys.db",
       "available": true,
       "version": "",
-      "latency_ms": 17.940044403076172,
+      "latency_ms": 4.720926284790039,
       "error": "",
       "details": {
         "tables": [
           "keys",
           "key_audit",
-          "sqlite_sequence"
+          "sqlite_sequence",
+          "init_check"
         ],
-        "table_count": 3,
+        "table_count": 4,
         "size_mb": 0.02
       }
     },
@@ -425,7 +433,7 @@
       "name": "Port: Fast Server (:8081)",
       "available": true,
       "version": "",
-      "latency_ms": 77.58307456970215,
+      "latency_ms": 3.9839744567871094,
       "error": "",
       "details": {}
     },
@@ -433,7 +441,7 @@
       "name": "Port: External API (:8082)",
       "available": false,
       "version": "",
-      "latency_ms": 1.0521411895751953,
+      "latency_ms": 0.1010894775390625,
       "error": "Not listening",
       "details": {}
     },
@@ -441,7 +449,7 @@
       "name": "Port: API Gateway (:8080)",
       "available": false,
       "version": "",
-      "latency_ms": 0.2269744873046875,
+      "latency_ms": 300.3568649291992,
       "error": "Not listening",
       "details": {}
     },
@@ -454,7 +462,7 @@
       "details": {
         "package_swift": true,
         "build_dir_exists": true,
-        "swift_files": 80
+        "swift_files": 120
       }
     }
   ],

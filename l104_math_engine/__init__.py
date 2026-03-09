@@ -51,7 +51,7 @@ from .constants import (
     # Helper functions
     primal_calculus, resolve_non_dual_logic,
     compute_resonance, golden_modulate,
-    god_code_at, verify_conservation,
+    god_code_at, verify_conservation, verify_conservation_statistical,
 )
 
 # ── Layer 1: Pure Math ──────────────────────────────────────────────────────
@@ -68,6 +68,7 @@ from .pure_math import (
 # ── Layer 2: God Code ───────────────────────────────────────────────────────
 from .god_code import (
     GodCodeEquation, god_code_equation,
+    ChaosResilience, chaos_resilience,
     DerivationEngine, derivation_engine,
     AbsoluteDerivation, absolute_derivation,
     HarmonicOptimizer, harmonic_optimizer,
@@ -137,6 +138,26 @@ from .hyperdimensional import (
     resonator_network,
 )
 
+# ── Layer 11: Computronium & Rayleigh ───────────────────────────────────────
+from .computronium import (
+    AiryDiffraction, airy_diffraction,
+    ComputroniumMath, computronium_math,
+    RayleighMath, rayleigh_math,
+)
+
+# ── Layer 12: Berry Geometry ────────────────────────────────────────────────
+from .berry_geometry import (
+    BerryGeometry, berry_geometry,
+    FiberBundle, fiber_bundle,
+    ConnectionForm, connection_form,
+    ParallelTransport, parallel_transport,
+    HolonomyGroup, holonomy_group,
+    ChernWeilTheory, chern_weil,
+    BerryConnectionMath, berry_connection_math,
+    DiracMonopole, dirac_monopole,
+    BlochSphereGeometry, bloch_sphere,
+)
+
 # ── Facade ──────────────────────────────────────────────────────────────────
 from .engine import MathEngine, math_engine
 
@@ -155,7 +176,7 @@ __all__ = [
     "CONSCIOUSNESS_BASE", "METALLIC_RATIOS",
     "primal_calculus", "resolve_non_dual_logic",
     "compute_resonance", "golden_modulate",
-    "god_code_at", "verify_conservation",
+    "god_code_at", "verify_conservation", "verify_conservation_statistical",
     # Pure math
     "PureMath", "pure_math", "Matrix", "matrix",
     "Calculus", "calculus", "ComplexMath", "complex_math",
@@ -207,6 +228,20 @@ __all__ = [
     "Hypervector", "ItemMemory", "SparseDistributedMemory",
     "ResonatorNetwork", "SequenceEncoder", "RecordEncoder",
     "resonator_network",
+    # Computronium & Rayleigh
+    "AiryDiffraction", "airy_diffraction",
+    "ComputroniumMath", "computronium_math",
+    "RayleighMath", "rayleigh_math",
+    # Berry Geometry
+    "BerryGeometry", "berry_geometry",
+    "FiberBundle", "fiber_bundle",
+    "ConnectionForm", "connection_form",
+    "ParallelTransport", "parallel_transport",
+    "HolonomyGroup", "holonomy_group",
+    "ChernWeilTheory", "chern_weil",
+    "BerryConnectionMath", "berry_connection_math",
+    "DiracMonopole", "dirac_monopole",
+    "BlochSphereGeometry", "bloch_sphere",
     # Facade
     "MathEngine", "math_engine",
 ]

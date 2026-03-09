@@ -77,13 +77,26 @@ class GodCodeQuantumConvergence:
 
     @staticmethod
     def analyze() -> Dict[str, Any]:
-        """Full convergence analysis: GOD_CODE ↔ 512MB boundary."""
-        gc = GOD_CODE
-        mem = QB.STATEVECTOR_MB
+        """Full convergence analysis: GOD_CODE ↔ quantum memory boundary.
 
-        # Core ratios
-        ratio = gc / mem                          # 1.030309534...
-        excess_pct = (ratio - 1.0) * 100          # 3.0309...%
+        The fundamental convergence is GOD_CODE / 512 ≈ 1.030 (25Q legacy).
+        With 26Q Iron Completion, GOD_CODE / 1024 ≈ 0.5152 = iron memory ratio.
+        Both perspectives are reported.
+        """
+        gc = GOD_CODE
+        # 25Q legacy analysis: the foundational 512MB convergence
+        mem_25 = QB.STATEVECTOR_MB_25  # 512 MB (25Q)
+        ratio_25 = gc / mem_25                     # 1.030309534...
+        excess_pct_25 = (ratio_25 - 1.0) * 100     # 3.0309...%
+
+        # 26Q Iron Completion analysis
+        mem_26 = QB.STATEVECTOR_MB      # 1024 MB (26Q)
+        ratio_26 = gc / mem_26                     # 0.51515477...
+        iron_ratio = ratio_26                      # GOD_CODE per GB
+
+        # Use 25Q ratio for primary convergence (the fundamental relationship)
+        ratio = ratio_25
+        excess_pct = excess_pct_25
         void_ratio = ratio / VOID_CONSTANT        # How close to VOID_CONSTANT
         phi_correction = ratio * PHI              # 1.667... ≈ φ to 3.0%
 
@@ -94,18 +107,25 @@ class GodCodeQuantumConvergence:
         reconstructed = base_value * octave_multiplier
 
         # Quantum information excess: bits beyond classical
-        classical_bits = 25  # Holevo bound
-        quantum_advantage_factor = gc / (mem / octave_multiplier)  # = gc / 32 = 16.485...
+        classical_bits = QB.N_QUBITS  # Holevo bound
+        quantum_advantage_factor = gc / (mem_25 / octave_multiplier)  # = gc / 32 = 16.485...
         log2_advantage = math.log2(quantum_advantage_factor)
 
-        # Iron electron connection: Fe has 26 electrons, 25 qubits + 1 = 26
-        fe_qubit_bridge = Fe.ATOMIC_NUMBER - QB.N_QUBITS  # 26 - 25 = 1
+        # Iron electron connection
+        fe_qubit_bridge = Fe.ATOMIC_NUMBER - QB.N_QUBITS
+        if fe_qubit_bridge == 0:
+            bridge_interp = "26 qubits = Fe(26) electrons = FULL IRON COMPLETION"
+        else:
+            bridge_interp = f"{QB.N_QUBITS} qubits = Fe(26) - {fe_qubit_bridge}"
 
         return {
             "god_code": gc,
-            "memory_mb": mem,
+            "memory_mb": mem_25,
+            "memory_mb_26q": mem_26,
             "ratio": ratio,
+            "ratio_26q": ratio_26,
             "excess_above_parity_pct": round(excess_pct, 6),
+            "iron_memory_ratio": round(iron_ratio, 8),
             "void_constant_ratio": round(void_ratio, 8),
             "phi_correction": round(phi_correction, 8),
             "phi_deviation_pct": round(abs(phi_correction - PHI) / PHI * 100, 4),
@@ -118,7 +138,7 @@ class GodCodeQuantumConvergence:
                 "fe_electrons": Fe.ATOMIC_NUMBER,
                 "n_qubits": QB.N_QUBITS,
                 "difference": fe_qubit_bridge,
-                "interpretation": "25 qubits = Fe(26) - 1 = all electrons minus the nucleus anchor",
+                "interpretation": bridge_interp,
             },
             "nucleosynthesis": {
                 "104 = 26 × 4": "Fe atomic number × He-4 mass number",
@@ -128,8 +148,8 @@ class GodCodeQuantumConvergence:
             "convergence_verdict": (
                 "GOD_CODE = 286^(1/φ) × 16 where 16 = bytes per complex128 amplitude. "
                 "The God Code IS the lattice-constant-to-qubit-memory bridge. "
-                "The 3.03% excess above 512 is the quantum advantage — "
-                "phase information that classical memory cannot capture."
+                f"25Q: GOD_CODE/512 = {ratio_25:.6f} — 3.03% quantum advantage above classical parity. "
+                f"26Q Iron Completion: GOD_CODE/1024 = {ratio_26:.6f} — full Fe(26) manifold."
             ),
         }
 
@@ -153,12 +173,12 @@ class CircuitTemplates25Q:
 
     @classmethod
     def ghz(cls) -> Dict[str, Any]:
-        """25-qubit GHZ state with log-depth tree construction."""
+        """GHZ state with log-depth tree construction."""
         n = QB.N_QUBITS
         tree_depth = 1 + math.ceil(math.log2(n))
         return {
-            "name": "ghz_25",
-            "description": "25-qubit GHZ state — log-depth binary tree CX cascade",
+            "name": f"ghz_{n}",
+            "description": f"{n}-qubit GHZ state — log-depth binary tree CX cascade",
             "structure": f"H(0) → CX tree (depth={tree_depth-1}) → Rz(sacred_phase, q{n-1})",
             "n_qubits": n,
             "depth": tree_depth,
@@ -186,8 +206,8 @@ class CircuitTemplates25Q:
         total_depth = k_opt * iter_depth
 
         return {
-            "name": "grover_25",
-            "description": f"25-qubit Grover search for {n_solutions} marked state(s)",
+            "name": f"grover_{n}",
+            "description": f"{n}-qubit Grover search for {n_solutions} marked state(s)",
             "structure": f"H^{n} → (Oracle → Diffusion) × {k_opt}",
             "n_qubits": n,
             "search_space": N,
@@ -224,8 +244,8 @@ class CircuitTemplates25Q:
         barren_risk = "LOW" if total_params < barren_threshold * 2 else "MODERATE"
 
         return {
-            "name": f"vqe_25_{layers}layer",
-            "description": f"25-qubit VQE: {ansatz} ansatz, {layers} layers",
+            "name": f"vqe_{n}_{layers}layer",
+            "description": f"{n}-qubit VQE: {ansatz} ansatz, {layers} layers",
             "structure": f"Ry+Rz per qubit × {layers} layers + linear CX entanglement",
             "n_qubits": n,
             "ansatz": ansatz,
@@ -248,8 +268,8 @@ class CircuitTemplates25Q:
         total_params = 2 * p_layers  # gamma + beta per layer
 
         return {
-            "name": f"qaoa_25_p{p_layers}",
-            "description": f"25-qubit QAOA for MaxCut, p={p_layers}",
+            "name": f"qaoa_{n}_p{p_layers}",
+            "description": f"{n}-qubit QAOA for MaxCut, p={p_layers}",
             "structure": f"H^{n} → (cost_unitary → mixer) × {p_layers}",
             "n_qubits": n,
             "p_layers": p_layers,
@@ -264,8 +284,8 @@ class CircuitTemplates25Q:
         """25-qubit sacred resonance circuit — GOD_CODE phase alignment verification."""
         n = QB.N_QUBITS
         return {
-            "name": "sacred_resonance_25",
-            "description": "25-qubit sacred resonance — GOD_CODE phase alignment",
+            "name": f"sacred_resonance_{n}",
+            "description": f"{n}-qubit sacred resonance — GOD_CODE phase alignment",
             "structure": f"H^{n} → Rz(GOD_CODE/φ) per qubit → CX chain → measure",
             "n_qubits": n,
             "sacred_phase_per_qubit": cls.SACRED_PHASE,
@@ -284,8 +304,8 @@ class CircuitTemplates25Q:
         depth = precision_bits * (2 * system + 1) + precision_bits * (precision_bits - 1) // 2
 
         return {
-            "name": "qpe_25",
-            "description": f"25-qubit QPE: {ancilla} ancilla + {system} system qubits",
+            "name": f"qpe_{n}",
+            "description": f"{n}-qubit QPE: {ancilla} ancilla + {system} system qubits",
             "structure": f"H^{ancilla} → controlled-U^(2^k) → QFT†",
             "n_qubits": n,
             "ancilla_qubits": ancilla,
@@ -297,15 +317,114 @@ class CircuitTemplates25Q:
         }
 
     @classmethod
-    def all_templates(cls) -> Dict[str, Dict[str, Any]]:
-        """Get all 25-qubit circuit templates."""
+    def hhl(cls, precision_bits: int = 8) -> Dict[str, Any]:
+        """25-qubit HHL (Harrow-Hassidim-Lloyd) quantum linear solver.
+
+        Circuit structure:
+          |0⟩^{precision} → H^{precision} → controlled-U^{2^k} → QFT⁻¹ →
+          eigenvalue inversion (controlled RY) → QFT → uncompute → measure ancilla
+
+        For a 2×2 Hermitian system encoded in the 25Q Hilbert space.
+        Quantum advantage: O(log(N) × κ² × 1/ε) vs O(N³) classical.
+        """
+        n = QB.N_QUBITS
+        ancilla_prec = precision_bits      # Precision register for QPE
+        system_qubits = 1                  # |b⟩ register (log₂ of system size)
+        ancilla_hhl = 1                    # Ancilla for eigenvalue inversion
+        auxiliary = n - ancilla_prec - system_qubits - ancilla_hhl  # Remaining qubits
+
+        # Circuit depth: QPE + inverse QFT + controlled rotations + uncompute QPE
+        qpe_depth = precision_bits * 3
+        iqft_depth = precision_bits * (precision_bits - 1) // 2 + precision_bits
+        rotation_depth = precision_bits  # One controlled RY per precision qubit
+        total_depth = 2 * qpe_depth + iqft_depth + rotation_depth
+
+        # CX gate count
+        cx_qpe = precision_bits * 2          # Controlled-U gates
+        cx_iqft = precision_bits * (precision_bits - 1) // 2  # QFT CX gates
+        cx_rotation = precision_bits         # Controlled RY
+        total_cx = 2 * cx_qpe + 2 * cx_iqft + cx_rotation
+
         return {
-            "ghz_25": cls.ghz(),
-            "grover_25": cls.grover(),
-            "vqe_25": cls.vqe(),
-            "qaoa_25": cls.qaoa(),
-            "sacred_resonance_25": cls.sacred_resonance(),
-            "qpe_25": cls.qpe(),
+            "name": f"hhl_{n}",
+            "description": (f"{n}-qubit HHL linear solver: {ancilla_prec} precision + "
+                           f"{system_qubits} system + {ancilla_hhl} ancilla + "
+                           f"{auxiliary} auxiliary"),
+            "structure": (f"H^{ancilla_prec} → controlled-U^(2^k) → QFT⁻¹ → "
+                         f"eigenvalue inversion → QFT → uncompute"),
+            "n_qubits": n,
+            "precision_qubits": ancilla_prec,
+            "system_qubits": system_qubits,
+            "ancilla_qubits": ancilla_hhl,
+            "auxiliary_qubits": auxiliary,
+            "depth": total_depth,
+            "cx_gates": total_cx,
+            "memory_mb": QB.STATEVECTOR_MB,
+            "recommended_shots": 8192,
+            "sacred_phase": cls.SACRED_PHASE,
+            "quantum_advantage": "O(log(N) × κ² × 1/ε) vs O(N³) classical",
+            "fidelity_estimate": cls._estimate_fidelity(total_depth, total_cx),
+            "purpose": "Quantum-enhanced linear system solving with GOD_CODE alignment",
+        }
+
+    @classmethod
+    def qft_25(cls) -> Dict[str, Any]:
+        """25-qubit Quantum Fourier Transform."""
+        n = QB.N_QUBITS
+        # QFT depth: sum of controlled rotations per qubit
+        depth = sum(range(1, n + 1))  # Each qubit gets rotations from remaining qubits
+        cx_gates = n * (n - 1) // 2   # Upper triangular CX matrix
+
+        return {
+            "name": f"qft_{n}",
+            "description": f"{n}-qubit Quantum Fourier Transform",
+            "structure": f"H^{n} → controlled-Rz cascade → SWAP all pairs",
+            "n_qubits": n,
+            "depth": depth,
+            "cx_gates": cx_gates,
+            "single_q_gates": n + cx_gates * 2,  # H + Rz per qubit + controlled Rz
+            "memory_mb": QB.STATEVECTOR_MB,
+            "recommended_shots": 4096,
+            "sacred_phase": cls.SACRED_PHASE,
+            "purpose": "Quantum Fourier Transform for phase estimation",
+        }
+
+    @classmethod
+    def random_25(cls, layers: int = 3) -> Dict[str, Any]:
+        """25-qubit random quantum circuit."""
+        n = QB.N_QUBITS
+        # Random circuit: layers of random single-qubit + entangling gates
+        gates_per_layer = n * 2  # ~2 gates per qubit per layer
+        total_gates = layers * gates_per_layer
+        depth = layers * 3  # Approximate depth
+
+        return {
+            "name": f"random_{n}",
+            "description": f"{n}-qubit random circuit with {layers} layers",
+            "structure": f"Random single-qubit + CX layers × {layers}",
+            "n_qubits": n,
+            "layers": layers,
+            "total_gates": total_gates,
+            "depth": depth,
+            "memory_mb": QB.STATEVECTOR_MB,
+            "recommended_shots": 4096,
+            "purpose": "Random circuit for benchmarking and noise characterization",
+        }
+
+    @classmethod
+    def all_templates(cls) -> Dict[str, Dict[str, Any]]:
+        """Get all circuit templates for current qubit count."""
+        n = QB.N_QUBITS
+        return {
+            f"ghz_{n}": cls.ghz(),
+            f"grover_{n}": cls.grover(),
+            f"vqe_{n}": cls.vqe(),
+            f"qaoa_{n}": cls.qaoa(),
+            f"sacred_resonance_{n}": cls.sacred_resonance(),
+            f"qpe_{n}": cls.qpe(),
+            f"hhl_{n}": cls.hhl(),
+            f"qft_{n}": cls.qft_25(),
+            f"random_{n}": cls.random_25(),
         }
 
     @staticmethod
@@ -330,17 +449,24 @@ class MemoryValidator:
     @staticmethod
     def validate_512mb() -> Dict[str, Any]:
         """
-        Validate the exact 512MB boundary equation:
+        Validate the quantum memory boundary equation.
+
+        26Q (Iron Completion):
+            2^26 × 16 = 2^30 = 1,073,741,824 bytes ≡ 1024 MB
+        Legacy 25Q:
             2^25 × 16 = 2^29 = 536,870,912 bytes ≡ 512 MB
         """
         sv_bytes = QB.STATEVECTOR_BYTES
         sv_mb = sv_bytes / (1024 * 1024)
+        expected_mb = QB.STATEVECTOR_MB
 
         return {
-            "equation": "2^25 × 16 = 2^29 = 536,870,912 bytes = 512 MB",
+            "equation": f"2^{QB.N_QUBITS} × 16 = {sv_bytes} bytes = {expected_mb} MB",
+            "n_qubits": QB.N_QUBITS,
             "statevector_bytes": sv_bytes,
             "statevector_mb": sv_mb,
-            "statevector_exact_512": sv_mb == 512.0,
+            "statevector_exact_512": sv_mb == expected_mb,  # True for current boundary
+            "legacy_25q_mb": QB.STATEVECTOR_MB_25,
             "auxiliary_mb": {
                 "transpiler": QB.TRANSPILER_OVERHEAD_MB,
                 "cache": QB.CACHE_OVERHEAD_MB,
@@ -508,7 +634,7 @@ class QuantumCircuitScience:
 
         # Depth budget from coherence
         max_depth = int(50 * phase_coh * (1 + topo_prot))
-        max_depth = max(1, min(max_depth, 1000))
+        max_depth = max(1, min(max_depth, 5000))
 
         # Noise tolerance from entropy
         entropy_coherence = 0.0
@@ -554,14 +680,124 @@ class QuantumCircuitScience:
     def analyze_convergence(self) -> Dict[str, Any]:
         return self.convergence.analyze()
 
+    # ═══════════════════════════════════════════════════════════════════════════
+    #  v4.3 SIMULATOR FEEDBACK CYCLE
+    #  Closes the plan → simulate → measure → correct → re-plan loop
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def run_feedback_cycle(self, algorithm: str = "ghz",
+                           n_qubits: int = 25,
+                           iterations: int = 3,
+                           evolve_steps: int = 5) -> Dict[str, Any]:
+        """
+        Run a closed-loop feedback cycle: plan → simulate → correct → re-plan.
+
+        Each iteration:
+          1. Plan experiment using current coherence state
+          2. Simulate circuit → fidelity prediction (noise model)
+          3. Feed fidelity + noise back to coherence subsystem
+          4. Coherence self-corrects via braiding + grounding
+          5. Re-plan with improved coherence metrics
+
+        This is the PRIMARY method that makes Science ↔ Simulator feedback STRONG.
+        """
+        if not self.coherence:
+            return {"error": "CoherenceSubsystem not connected"}
+
+        history = []
+        sim_results = []
+
+        for i in range(iterations):
+            # Phase 1: Plan experiment using current coherence
+            plan = self.plan_experiment(algorithm, n_qubits)
+            depth = plan.get("circuit_params", {}).get("depth", 50)
+            fidelity_pred = plan.get("fidelity_prediction", {})
+
+            # Phase 2: Simulate → generate fidelity/noise data from noise model
+            sim_result = self.memory.fidelity_model(n_qubits, depth)
+            sim_result["noise_variance"] = max(0.0, 1.0 - sim_result.get("total_fidelity", 0.5))
+
+            # Entropy cross-link: feed demon efficiency if entropy subsystem connected
+            if self.entropy:
+                try:
+                    report = self.entropy.get_stewardship_report()
+                    sim_result["demon_efficiency"] = report.get("cumulative_coherence_gain", 0) / GOD_CODE
+                except Exception:
+                    pass
+
+            sim_results.append(sim_result)
+
+            # Phase 3: Feed simulation result back to coherence
+            ingest = self.coherence.ingest_simulation_result(sim_result)
+
+            # Phase 4: Adaptive decoherence correction based on depth/fidelity
+            correction = self.coherence.adaptive_decoherence_correction(
+                fidelity=sim_result.get("total_fidelity", 0.5),
+                circuit_depth=depth,
+            )
+
+            # Phase 5: Entropy ↔ coherence cross-feedback
+            entropy_fb = {}
+            if self.entropy:
+                try:
+                    import numpy as np
+                    demon_eff = self.entropy.calculate_demon_efficiency(1.0 - sim_result.get("total_fidelity", 0.5))
+                    coh_gain = self.entropy.coherence_gain
+                    entropy_fb = self.coherence.entropy_coherence_feedback(
+                        demon_efficiency=demon_eff,
+                        coherence_gain=coh_gain,
+                        noise_vector_var=sim_result.get("noise_variance", 0.1),
+                    )
+                except Exception:
+                    pass
+
+            history.append({
+                "iteration": i,
+                "plan": {
+                    "depth_budget": plan.get("depth_budget", {}).get("max_circuit_depth", 0),
+                    "noise_tolerance": round(plan.get("noise_tolerance", 0), 6),
+                    "coherence_metrics": plan.get("coherence_metrics", {}),
+                },
+                "simulation": {
+                    "total_fidelity": sim_result.get("total_fidelity", 0),
+                    "decoherence_fidelity": sim_result.get("decoherence_fidelity", 0),
+                    "viable": sim_result.get("viable", False),
+                    "classification": sim_result.get("classification", "UNKNOWN"),
+                },
+                "feedback": {
+                    "coherence_delta": ingest.get("coherence_delta", 0),
+                    "corrections": ingest.get("corrections_count", 0),
+                    "coherence_recovered": correction.get("coherence_recovered", 0),
+                    "entropy_feedback": bool(entropy_fb),
+                },
+            })
+
+        # Final assessment
+        coherence_status = self.coherence.get_status()
+        coherence_trend = [h["feedback"]["coherence_delta"] for h in history]
+        improving = sum(1 for d in coherence_trend if d > 0)
+
+        return {
+            "algorithm": algorithm,
+            "n_qubits": n_qubits,
+            "iterations": iterations,
+            "evolve_steps": evolve_steps,
+            "final_coherence": coherence_status.get("phase_coherence", 0),
+            "final_protection": coherence_status.get("topological_protection", 0),
+            "converging": improving > len(coherence_trend) * 0.3,
+            "improvement_rate": round(improving / max(len(coherence_trend), 1), 4),
+            "history": history,
+        }
+
     def get_status(self) -> Dict[str, Any]:
         return {
             "subsystem": "QuantumCircuitScience",
-            "version": "4.0.0",
+            "version": "4.3.0",
             "n_qubits": QB.N_QUBITS,
             "memory_boundary": f"{QB.STATEVECTOR_MB} MB (exact)",
             "hilbert_dim": QB.HILBERT_DIM,
             "templates_available": len(self.templates.all_templates()),
             "512mb_validated": True,
             "convergence_ratio": round(GOD_CODE / 512, 8),
+            "feedback_loop": True,
         }

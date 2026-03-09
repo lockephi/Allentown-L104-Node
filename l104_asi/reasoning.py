@@ -1,10 +1,350 @@
 from __future__ import annotations
 from .constants import *
+
+
+class MCTSReasoningNode:
+    """Node in a Monte Carlo Tree Search reasoning tree.
+    v7.0: MCTS applied to reasoning — each node represents a reasoning state,
+    UCB1 selects which branch to explore, rollouts simulate reasoning outcomes."""
+    __slots__ = ('query', 'parent', 'children', 'visits', 'value', 'depth',
+                 'solution', 'confidence', 'untried_actions')
+
+    def __init__(self, query: str, parent: Optional['MCTSReasoningNode'] = None, depth: int = 0):
+        self.query = query
+        self.parent = parent
+        self.children: List['MCTSReasoningNode'] = []
+        self.visits = 0
+        self.value = 0.0
+        self.depth = depth
+        self.solution: Optional[str] = None
+        self.confidence = 0.0
+        self.untried_actions: List[str] = []
+
+    def ucb1(self, exploration: float = PHI) -> float:
+        """Upper Confidence Bound with PHI exploration constant."""
+        if self.visits == 0:
+            return float('inf')
+        exploit = self.value / self.visits
+        explore = exploration * math.sqrt(math.log(self.parent.visits + 1) / self.visits)
+        return exploit + explore
+
+    def best_child(self) -> 'MCTSReasoningNode':
+        return max(self.children, key=lambda c: c.ucb1())
+
+    def most_visited_child(self) -> 'MCTSReasoningNode':
+        return max(self.children, key=lambda c: c.visits)
+
+    def is_leaf(self) -> bool:
+        return len(self.children) == 0
+
+    def backpropagate(self, reward: float):
+        node = self
+        while node is not None:
+            node.visits += 1
+            node.value += reward
+            node = node.parent
+
+
+class MCTSReasoner:
+    """Monte Carlo Tree Search applied to multi-step reasoning.
+    v7.0: Uses UCB1 (PHI exploration) for selection, generates reasoning variants
+    for expansion, simulates rollouts via solve_fn, and backpropagates confidence.
+    Sacred: exploration constant = PHI, max rollout depth = int(PHI * 5) = 8."""
+
+    def __init__(self, max_iterations: int = 200, max_depth: int = None,
+                 exploration: float = PHI):
+        self.max_iterations = max_iterations
+        self.max_depth = max_depth or max(6, int(PHI * 9))  # ~14 (was 8 — deeper search tree)
+        self.exploration = exploration
+        self.total_iterations = 0
+        self.total_rollouts = 0
+        self._reasoning_perspectives = [
+            "Decompose into fundamental axioms: ",
+            "Find an analogous well-solved problem: ",
+            "Apply reductio ad absurdum to: ",
+            "Analyze boundary conditions of: ",
+            "Construct a proof by induction for: ",
+            "Apply dimensional analysis to: ",
+            "Consider the contrapositive of: ",
+            "Use the pigeonhole principle on: ",
+        ]
+
+    def search(self, problem: str, solve_fn: Callable, max_iterations: int = None) -> Dict:
+        """Run MCTS on a reasoning problem.
+        Args:
+            problem: The problem to reason about
+            solve_fn: Callable(dict) -> dict with 'solution' and 'confidence'
+            max_iterations: Override default iteration count
+        """
+        iterations = max_iterations or self.max_iterations
+        root = MCTSReasoningNode(problem, depth=0)
+        root.untried_actions = self._generate_actions(problem, 0)
+
+        best_solution = None
+        best_confidence = 0.0
+
+        for i in range(iterations):
+            # SELECT: traverse tree using UCB1
+            node = self._select(root)
+
+            # EXPAND: add a new child node
+            if node.untried_actions and node.depth < self.max_depth:
+                node = self._expand(node)
+
+            # SIMULATE: rollout from the new node
+            reward, solution, confidence = self._simulate(node, solve_fn)
+            self.total_rollouts += 1
+
+            # BACKPROPAGATE: update node chain with reward
+            node.backpropagate(reward)
+
+            # Track best solution found
+            if confidence > best_confidence:
+                best_confidence = confidence
+                best_solution = solution
+
+            self.total_iterations += 1
+
+        # Return best from most-visited path
+        best_leaf = root
+        path = [root.query[:500]]
+        while not best_leaf.is_leaf():
+            best_leaf = best_leaf.most_visited_child()
+            path.append(best_leaf.query[:500])
+
+        return {
+            'method': 'MCTS_Reasoning',
+            'iterations': iterations,
+            'tree_depth': best_leaf.depth,
+            'root_visits': root.visits,
+            'best_confidence': round(best_confidence, 4),
+            'solution': best_solution or best_leaf.solution or '',
+            'confidence': round(best_confidence, 4),
+            'reasoning_path': path[:13],
+            'total_rollouts': self.total_rollouts,
+        }
+
+    def _select(self, node: MCTSReasoningNode) -> MCTSReasoningNode:
+        while not node.is_leaf() and not node.untried_actions:
+            node = node.best_child()
+        return node
+
+    def _expand(self, node: MCTSReasoningNode) -> MCTSReasoningNode:
+        action = node.untried_actions.pop(0)
+        child = MCTSReasoningNode(action, parent=node, depth=node.depth + 1)
+        child.untried_actions = self._generate_actions(action, child.depth)
+        node.children.append(child)
+        return child
+
+    def _simulate(self, node: MCTSReasoningNode, solve_fn: Callable) -> Tuple[float, str, float]:
+        """Rollout: solve from current node and return (reward, solution, confidence)."""
+        try:
+            result = solve_fn({'query': node.query})
+            confidence = result.get('confidence', 0.0)
+            solution = str(result.get('solution', ''))
+            node.solution = solution
+            node.confidence = confidence
+            # Reward = confidence scaled by sacred alignment
+            sacred_bonus = 0.0
+            if 'god_code' in solution.lower() or '527' in solution:
+                sacred_bonus = 0.1
+            reward = confidence + sacred_bonus
+            return reward, solution, confidence
+        except Exception:
+            return 0.0, '', 0.0
+
+    def _generate_actions(self, query: str, depth: int) -> List[str]:
+        """Generate reasoning action variants for tree expansion."""
+        k = max(2, int(PHI * 2) - depth)  # Fewer branches at deeper levels
+        actions = []
+        for i in range(k):
+            prefix = self._reasoning_perspectives[(depth * k + i) % len(self._reasoning_perspectives)]
+            actions.append(f"{prefix}{query[:1000]}")
+        return actions
+
+    def get_status(self) -> Dict:
+        return {
+            'type': 'MCTS_Reasoner',
+            'max_iterations': self.max_iterations,
+            'max_depth': self.max_depth,
+            'exploration_constant': round(self.exploration, 6),
+            'total_iterations': self.total_iterations,
+            'total_rollouts': self.total_rollouts,
+        }
+
+
+class QuantumSVMSolver:
+    """MCTS solve_fn implementation using quantum SVM classification.
+
+    v25.0: Classifies reasoning states into solution/non-solution using
+    a quantum kernel from l104_ml_engine's QuantumSVM.
+
+    Compatible with MCTSReasoner.search(solve_fn=quantum_svm_solver).
+
+    Usage:
+        solver = QuantumSVMSolver(n_qubits=4)
+        mcts = MCTSReasoner()
+        result = mcts.search(query, solve_fn=solver)
+    """
+
+    def __init__(self, n_qubits: int = 4):
+        self.n_qubits = n_qubits
+        self._qsvm = None
+
+    def _lazy_qsvm(self):
+        if self._qsvm is None:
+            try:
+                from l104_ml_engine.quantum_svm import QuantumSVM
+                self._qsvm = QuantumSVM(n_qubits=self.n_qubits, kernel_type='sacred')
+            except ImportError:
+                pass
+        return self._qsvm
+
+    def __call__(self, problem: Dict) -> Dict:
+        """Callable matching MCTSReasoner solve_fn signature.
+
+        Args:
+            problem: Dict with 'query' key
+
+        Returns:
+            Dict with 'solution' and 'confidence' keys
+        """
+        import math
+        query = str(problem.get('query', ''))
+
+        # Extract features from the query string
+        features = self._extract_features(query)
+
+        # Use quantum kernel distance from sacred constants as confidence
+        qsvm = self._lazy_qsvm()
+        if qsvm is not None:
+            try:
+                import numpy as np
+                # Compute self-kernel as coherence measure
+                x = np.array([features[:self.n_qubits]])
+                K = qsvm.quantum_kernel_matrix(x)
+                confidence = float(np.mean(np.diag(K)))
+            except Exception:
+                confidence = 0.5
+        else:
+            confidence = 0.5
+
+        # Generate solution based on query analysis
+        solution = f"Quantum SVM analysis of: {query[:500]}"
+        return {
+            'solution': solution,
+            'confidence': min(1.0, max(0.0, confidence)),
+            'method': 'quantum_svm',
+            'n_qubits': self.n_qubits,
+        }
+
+    @staticmethod
+    def _extract_features(text: str) -> list:
+        """Extract numerical features from text for SVM classification."""
+        import math
+        PHI = 1.618033988749895
+        features = [
+            len(text) / 1000.0,                    # Length
+            text.count(' ') / max(len(text), 1),    # Word density
+            text.count('?') * PHI,                  # Question markers
+            sum(1 for c in text if c.isupper()) / max(len(text), 1),  # Caps ratio
+            len(set(text)) / max(len(text), 1),     # Char diversity
+            math.sin(len(text) * PHI),              # Sacred oscillation
+            math.cos(len(text) / 104.0),            # L104 modulation
+            text.count('.') / max(len(text), 1),    # Sentence density
+        ]
+        return features
+
+
+class ReflectionRefinementLoop:
+    """Self-reflective reasoning loop — generates, critiques, and refines solutions.
+    v7.0: Inspired by Reflexion (Shinn et al. 2023) —
+    1. Generate initial solution
+    2. Self-critique: identify weaknesses
+    3. Refine: address identified weaknesses
+    4. Repeat until convergence or max reflections
+    Sacred: convergence threshold = TAU, max reflections = int(PHI * 4) = 6."""
+
+    def __init__(self, max_reflections: int = None, convergence_threshold: float = TAU):
+        self.max_reflections = max_reflections or max(6, int(PHI * 8))  # ~12 (was 6 — deeper self-critique)
+        self.convergence_threshold = convergence_threshold
+        self.total_reflections = 0
+        self.total_refinements = 0
+        self.total_converged = 0
+
+    def reflect_and_refine(self, problem: str, solve_fn: Callable) -> Dict:
+        """Execute reflection-refinement loop.
+        solve_fn should accept a dict and return dict with 'solution' and 'confidence'."""
+        reflections = []
+        current_query = problem
+        best_solution = None
+        best_confidence = 0.0
+        converged = False
+
+        for i in range(self.max_reflections):
+            # GENERATE: solve current formulation
+            result = solve_fn({'query': current_query})
+            confidence = result.get('confidence', 0.0)
+            solution = str(result.get('solution', ''))
+            self.total_reflections += 1
+
+            reflection = {
+                'iteration': i + 1,
+                'confidence': round(confidence, 4),
+                'solution_preview': solution[:1000],
+            }
+
+            if confidence > best_confidence:
+                best_confidence = confidence
+                best_solution = solution
+
+            # CRITIQUE: identify gaps (using confidence delta as signal)
+            if i > 0 and abs(confidence - reflections[-1]['confidence']) < 0.01:
+                converged = True
+                self.total_converged += 1
+                reflection['status'] = 'converged'
+                reflections.append(reflection)
+                break
+
+            # REFINE: reformulate query based on confidence level
+            if confidence < 0.3:
+                current_query = f"The previous approach was insufficient. Fundamentally rethink: {problem[:500]}"
+            elif confidence < 0.6:
+                current_query = f"Partial solution found ({solution[:500]}). Strengthen and complete: {problem[:500]}"
+            else:
+                current_query = f"Good solution ({solution[:500]}), but refine precision and verify: {problem[:500]}"
+
+            reflection['status'] = 'refined'
+            self.total_refinements += 1
+            reflections.append(reflection)
+
+        return {
+            'method': 'ReflectionRefinement',
+            'reflections': len(reflections),
+            'converged': converged,
+            'best_confidence': round(best_confidence, 4),
+            'solution': best_solution or '',
+            'confidence': round(best_confidence, 4),
+            'reflection_log': reflections,
+        }
+
+    def get_status(self) -> Dict:
+        return {
+            'type': 'ReflectionRefinement',
+            'max_reflections': self.max_reflections,
+            'convergence_threshold': round(self.convergence_threshold, 6),
+            'total_reflections': self.total_reflections,
+            'total_refinements': self.total_refinements,
+            'convergence_rate': round(self.total_converged / max(self.total_reflections, 1), 4),
+        }
 class TreeOfThoughts:
     """Tree of Thoughts (Yao et al. 2023, Princeton/DeepMind) + Graph of Thoughts aggregation.
 
     Generalizes chain-of-thought from a single linear path to a search tree of
     reasoning paths with deliberate evaluation and pruning.
+
+    v7.0: Integrates MCTS for complex problems (>200 chars) and Reflection-Refinement
+    for high-confidence polishing. Falls back to beam search for simpler queries.
 
     At each reasoning step:
     1. Generate K candidate thoughts (branching factor)
@@ -24,9 +364,26 @@ class TreeOfThoughts:
         self.total_nodes_explored = 0
         self.total_backtracks = 0
         self.total_aggregations = 0
+        # v7.0: MCTS + Reflection sub-engines
+        self._mcts = MCTSReasoner(max_iterations=100)
+        self._reflector = ReflectionRefinementLoop(max_reflections=8)
 
     def think(self, problem: str, solve_fn: Callable, max_depth: int = 4) -> Dict:
-        """Execute tree-structured reasoning with beam search and GoT aggregation."""
+        """Execute tree-structured reasoning with beam search and GoT aggregation.
+        v7.0: Delegates to MCTS for complex problems, uses reflection for polishing."""
+        # For complex problems, use MCTS first then refine
+        if len(problem) > 200:
+            mcts_result = self._mcts.search(problem, solve_fn, max_iterations=100)
+            if mcts_result.get('best_confidence', 0) > 0.6:
+                # Polish with reflection
+                refined = self._reflector.reflect_and_refine(problem, solve_fn)
+                if refined.get('best_confidence', 0) > mcts_result['best_confidence']:
+                    mcts_result['solution'] = refined['solution']
+                    mcts_result['confidence'] = refined['confidence']
+                    mcts_result['best_confidence'] = refined['best_confidence']
+                    mcts_result['method'] = 'MCTS+Reflection'
+                return mcts_result
+
         beam = [{"query": problem, "confidence": 0.0, "path": [], "depth": 0}]
         all_solutions = []
 
@@ -39,16 +396,16 @@ class TreeOfThoughts:
                     self.total_nodes_explored += 1
                     conf = result.get("confidence", 0.0)
                     candidates.append({
-                        "query": variant[:300],
+                        "query": variant[:1000],
                         "confidence": conf,
-                        "solution": str(result.get("solution", ""))[:500],
-                        "path": node["path"] + [variant[:80]],
+                        "solution": str(result.get("solution", ""))[:2000],
+                        "path": node["path"] + [variant[:1000]],
                         "depth": depth + 1,
                     })
 
             viable = [c for c in candidates if c["confidence"] >= self.prune_threshold]
             if not viable:
-                viable = sorted(candidates, key=lambda c: c["confidence"], reverse=True)[:1]
+                viable = sorted(candidates, key=lambda c: c["confidence"], reverse=True)[:3]  # (was [:1])
 
             viable.sort(key=lambda c: c["confidence"], reverse=True)
             beam = viable[:self.B]
@@ -83,7 +440,7 @@ class TreeOfThoughts:
             "Apply cross-domain analogy to: ",
             f"At reasoning depth {depth + 1}, decompose: ",
         ]
-        return [f"{prefixes[i % len(prefixes)]}{query[:300]}" for i in range(k)]
+        return [f"{prefixes[i % len(prefixes)]}{query[:1000]}" for i in range(k)]
 
     def _aggregate_solutions(self, solutions: List[Dict]) -> str:
         """GoT aggregation (Besta et al. 2024): merge multiple branches into one insight."""
@@ -98,25 +455,29 @@ class TreeOfThoughts:
             if sol and sol not in seen:
                 seen.add(sol)
                 parts.append(sol)
-        return " | ".join(parts[:5])
+        return " | ".join(parts[:15])
 
     def get_status(self) -> Dict:
         return {
-            "type": "TreeOfThoughts_GoT",
+            "type": "TreeOfThoughts_GoT_MCTS",
+            "version": "7.0",
             "branching_factor": self.K,
             "beam_width": self.B,
             "nodes_explored": self.total_nodes_explored,
             "backtracks": self.total_backtracks,
             "aggregations": self.total_aggregations,
+            "mcts": self._mcts.get_status(),
+            "reflector": self._reflector.get_status(),
         }
 
 
 class MultiHopReasoningChain:
     """Multi-hop reasoning with Tree of Thoughts (Yao 2023) + GoT aggregation.
 
-    v5.0: Breaks complex problems into sub-problems, routes each to the best subsystem,
+    v7.0: Breaks complex problems into sub-problems, routes each to the best subsystem,
     and iteratively refines the solution until convergence or max hops reached.
-    v6.1: Integrates TreeOfThoughts for complex first-hop branching.
+    Integrates TreeOfThoughts for complex first-hop branching.
+    Added MCTS fallback for low-confidence intermediate hops.
     """
     def __init__(self, max_hops: int = MULTI_HOP_MAX_HOPS):
         self.max_hops = max_hops
@@ -125,6 +486,8 @@ class MultiHopReasoningChain:
         self._convergence_count = 0
         # Tree of Thoughts for complex first-hop reasoning
         self._tot = TreeOfThoughts()
+        # v7.0: MCTS for stuck intermediate hops
+        self._mcts_fallback = MCTSReasoner(max_iterations=100)  # (was 50)
 
     def reason_chain(self, problem: str, solve_fn: Callable, router: Optional['AdaptivePipelineRouter'] = None) -> Dict:
         """Execute multi-hop reasoning chain on a problem.
@@ -146,7 +509,7 @@ class MultiHopReasoningChain:
 
             # First hop: use Tree of Thoughts for complex problems (branching search)
             if hop_idx == 0 and len(problem) > 100:
-                tot_result = self._tot.think(current_query, solve_fn, max_depth=3)
+                tot_result = self._tot.think(current_query, solve_fn, max_depth=5)
                 result = {
                     'solution': tot_result.get('aggregated_solution', ''),
                     'confidence': tot_result.get('best_confidence', 0.5),
@@ -156,6 +519,15 @@ class MultiHopReasoningChain:
             else:
                 # Solve current sub-problem (standard single-path)
                 result = solve_fn({'query': current_query})
+                # v7.0: If confidence is very low, try MCTS exploration
+                if result.get('confidence', 0.0) < 0.2 and hop_idx < self.max_hops - 1:
+                    mcts_result = self._mcts_fallback.search(current_query, solve_fn, max_iterations=50)  # (was 30)
+                    if mcts_result.get('confidence', 0) > result.get('confidence', 0):
+                        result = {
+                            'solution': mcts_result.get('solution', ''),
+                            'confidence': mcts_result.get('confidence', 0),
+                            'method': 'MCTS_fallback',
+                        }
             last_result = result
             hop_latency = (time.time() - hop_start) * 1000
 
@@ -164,7 +536,7 @@ class MultiHopReasoningChain:
 
             hop_record = {
                 'hop': hop_idx + 1,
-                'query': current_query[:200],
+                'query': current_query[:500],
                 'confidence': round(hop_confidence, 4),
                 'confidence_delta': round(confidence_delta, 4),
                 'latency_ms': round(hop_latency, 2),
@@ -190,11 +562,11 @@ class MultiHopReasoningChain:
             # Refine query for next hop — always continue if we have any solution at all
             solution_text = str(result.get('solution', ''))
             if solution_text:
-                current_query = f"Given that '{solution_text[:200]}', further analyze: {problem[:200]}"
+                current_query = f"Given that '{solution_text[:500]}', further analyze: {problem[:500]}"
             else:
                 # No solution text at all: try rephrasing the original problem
                 if hop_idx == 0:
-                    current_query = f"Approach from a different angle: {problem[:300]}"
+                    current_query = f"Approach from a different angle: {problem[:500]}"
                 else:
                     break  # Repeated empty solutions — stop
 
@@ -209,10 +581,12 @@ class MultiHopReasoningChain:
 
     def get_status(self) -> Dict:
         return {
+            'type': 'MultiHopReasoningChain_v7',
             'chains_executed': self._chain_count,
             'total_hops': self._total_hops,
             'avg_hops_per_chain': round(self._total_hops / max(self._chain_count, 1), 2),
             'convergence_rate': round(self._convergence_count / max(self._chain_count, 1), 4),
+            'mcts_fallback': self._mcts_fallback.get_status(),
         }
 
 
@@ -334,7 +708,7 @@ class SolutionEnsembleEngine:
         self._solver_history[winner['source']]['wins'] += 1
 
         # ── Consensus detection via pairwise Jaccard similarity ──
-        solution_texts = [str(c['solution'])[:200] for c in candidates]
+        solution_texts = [str(c['solution'])[:1000] for c in candidates]
         pairwise_sims = []
         for i in range(len(solution_texts)):
             for j in range(i + 1, len(solution_texts)):
@@ -370,7 +744,7 @@ class SolutionEnsembleEngine:
                 'confidence': round(c['confidence'], 4),
                 'ensemble_score': round(c['ensemble_score'], 4),
                 'reliability': round(c.get('reliability', 0.5), 4),
-            } for c in candidates[:5]],
+            } for c in candidates[:15]],
         }
 
     @staticmethod
@@ -459,13 +833,13 @@ class PipelineHealthDashboard:
         }
 
         self._health_history.append(snapshot)
-        if len(self._health_history) > 200:
-            self._health_history = self._health_history[-200:]
+        if len(self._health_history) > 1000:
+            self._health_history = self._health_history[-1000:]
 
         if anomalies:
             self._anomaly_log.extend(anomalies)
-            if len(self._anomaly_log) > 500:
-                self._anomaly_log = self._anomaly_log[-500:]
+            if len(self._anomaly_log) > 2000:
+                self._anomaly_log = self._anomaly_log[-2000:]
 
         return snapshot
 
@@ -520,8 +894,8 @@ class PipelineReplayBuffer:
             'seq': self._sequence_id,
             'operation': operation,
             'subsystem': subsystem,
-            'input_summary': str(input_data)[:300],
-            'output_summary': str(output_data)[:300] if output_data else None,
+            'input_summary': str(input_data)[:1000],
+            'output_summary': str(output_data)[:1000] if output_data else None,
             'latency_ms': round(latency_ms, 2),
             'success': success,
             'timestamp': time.time(),

@@ -26,9 +26,9 @@ from datetime import datetime
 # ═══════════════════════════════════════════════════════════════════════════════
 QISKIT_AVAILABLE = False
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
-    from qiskit.quantum_info import entropy as q_entropy
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
+    from l104_quantum_gate_engine.quantum_info import entropy as q_entropy
     QISKIT_AVAILABLE = True
 except ImportError:
     pass
@@ -68,7 +68,7 @@ from l104_ego_core import ego_core
 from l104_sacral_drive import sacral_drive
 from l104_lattice_explorer import lattice_explorer
 from l104_intelligence import SovereignIntelligence
-from l104_local_intellect import format_iq
+from l104_intellect import format_iq
 
 # ── Quantum Runtime Bridge (Real QPU Execution) ─────────────────────────────
 _QUANTUM_RUNTIME_AVAILABLE = False

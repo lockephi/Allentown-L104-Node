@@ -1,8 +1,8 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.377970
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.916330
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
@@ -42,6 +42,18 @@ from datetime import datetime, timedelta
 sys.path.insert(0, str(Path(__file__).parent.absolute()))
 
 from l104_config import get_config, LRUCache
+
+# ═══ LOCAL INTELLECT — lazy-loaded to avoid pulling torch at import time ═══
+_li_enhanced = None
+def _get_li_enhanced():
+    global _li_enhanced
+    if _li_enhanced is None:
+        try:
+            from l104_intellect import local_intellect
+            _li_enhanced = local_intellect
+        except ImportError:
+            _li_enhanced = False
+    return _li_enhanced if _li_enhanced is not False else None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -161,54 +173,16 @@ class GeminiEnhanced:
         self._last_request_time = time.time()
 
     def connect(self) -> bool:
-        """Initialize connection to Gemini API."""
-        if not self.api_key:
-            print("--- [GEMINI]: ERROR - No API key ---")
-            return False
-
-        try:
-            from google import genai
-            self.client = genai.Client(api_key=self.api_key)
-            self._use_new_api = True
-            self.is_connected = True
-            print(f"--- [GEMINI]: Connected to {self.model_name} ---")
-            return True
-        except ImportError:
-            pass
-        except Exception as e:
-            print(f"--- [GEMINI]: google-genai error: {e} ---")
-
-        # Fallback to legacy API (suppress deprecation warning)
-        try:
-            import warnings
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=FutureWarning)
-                import google.generativeai as genai
-            genai.configure(api_key=self.api_key)
-            self._genai_module = genai
-            self._use_new_api = False
-            self.is_connected = True
-            print(f"--- [GEMINI]: Connected via legacy API to {self.model_name} ---")
-            return True
-        except Exception as e:
-            print(f"--- [GEMINI]: Connection failed: {e} ---")
-            return False
+        """Connection always succeeds — all inference routed through local intellect."""
+        self.is_connected = True
+        return True
 
     def generate(self, prompt: str, system_instruction: str = None,
                  use_cache: bool = True, temperature: float = None,
                  max_retries: int = None) -> Optional[str]:
         """
-        Generate a response with intelligent retry and caching.
-
-        Args:
-            prompt: The user prompt
-            system_instruction: Optional system context
-            use_cache: Whether to use response caching
-            temperature: Override default temperature
-            max_retries: Override default max retries
-
-        Returns:
-            Generated text or None on error
+        Generate a response via local intellect (Gemini API removed).
+        QUOTA_IMMUNE, zero-latency local inference.
         """
         self.metrics.total_requests += 1
         start_time = time.time()
@@ -220,75 +194,26 @@ class GeminiEnhanced:
             if cached:
                 return cached
 
-        if not self.is_connected:
-            if not self.connect():
-                return None
-
         # Build prompt
         full_prompt = prompt
         if system_instruction:
             full_prompt = f"{system_instruction}\n\n{prompt}"
 
-        # Retry logic with exponential backoff
-        max_retries = max_retries or self.config.max_retries
-        last_error = None
-
-        for attempt in range(max_retries + 1):
+        # ═══ LOCAL INTELLECT — QUOTA_IMMUNE, zero-latency ═══
+        li = _get_li_enhanced()
+        if li:
             try:
-                self._rate_limit()
+                result = li.think(full_prompt)
+                if result:
+                    self.metrics.successful_requests += 1
+                    self.metrics.total_latency_ms += (time.time() - start_time) * 1000
+                    if use_cache:
+                        self._store_cache(cache_key, result)
+                    return result
+            except Exception:
+                pass
 
-                if getattr(self, '_use_new_api', False):
-                    response = self.client.models.generate_content(
-                        model=self.model_name,
-                        contents=full_prompt
-                    )
-                    result = response.text
-                else:
-                    model = self._genai_module.GenerativeModel(self.model_name)
-                    response = model.generate_content(full_prompt)
-                    result = response.text
-
-                # Success
-                self.metrics.successful_requests += 1
-                self.metrics.total_latency_ms += (time.time() - start_time) * 1000
-                self.metrics.total_tokens_estimated += len(result.split())
-
-                # Cache result
-                if use_cache:
-                    self._store_cache(cache_key, result)
-
-                return result
-
-            except Exception as e:
-                last_error = e
-                error_str = str(e).lower()
-
-                # Handle different error types
-                if '429' in str(e) or 'quota' in error_str or 'resource' in error_str:
-                    # Rate limit / quota - rotate model
-                    self._rotate_model()
-                    self.metrics.retries += 1
-
-                elif 'timeout' in error_str:
-                    # Timeout - just retry
-                    self.metrics.retries += 1
-
-                elif 'invalid' in error_str or 'auth' in error_str:
-                    # Auth error - don't retry
-                    break
-
-                else:
-                    # Unknown error - retry with backoff
-                    self.metrics.retries += 1
-
-                if attempt < max_retries:
-                    # Exponential backoff
-                    delay = self.config.retry_delay * (2 ** attempt)
-                    time.sleep(delay)
-
-        # All retries failed
         self.metrics.failed_requests += 1
-        print(f"--- [GEMINI]: Failed after {max_retries + 1} attempts: {last_error} ---")
         return None
 
     def generate_async(self, prompt: str, system_instruction: str = None,
@@ -332,94 +257,38 @@ class GeminiEnhanced:
 
     def stream(self, prompt: str, system_instruction: str = None) -> Generator[str, None, None]:
         """
-        Stream response token by token.
-
-        Args:
-            prompt: The user prompt
-            system_instruction: Optional system context
-
-        Yields:
-            Response chunks as they arrive
+        Stream response via local intellect (Gemini API removed).
+        Returns full response in one chunk.
         """
-        if not self.is_connected:
-            if not self.connect():
-                return
-
         full_prompt = prompt
         if system_instruction:
             full_prompt = f"{system_instruction}\n\n{prompt}"
 
-        try:
-            self._rate_limit()
-
-            if getattr(self, '_use_new_api', False):
-                # New API streaming
-                response = self.client.models.generate_content_stream(
-                    model=self.model_name,
-                    contents=full_prompt
-                )
-                for chunk in response:
-                    if hasattr(chunk, 'text'):
-                        yield chunk.text
-            else:
-                # Legacy API streaming
-                model = self._genai_module.GenerativeModel(self.model_name)
-                response = model.generate_content(full_prompt, stream=True)
-                for chunk in response:
-                    if hasattr(chunk, 'text'):
-                        yield chunk.text
-
-        except Exception as e:
-            print(f"--- [GEMINI]: Stream error: {e} ---")
+        li = _get_li_enhanced()
+        if li:
+            try:
+                result = li.think(full_prompt)
+                if result:
+                    yield result
+                    return
+            except Exception:
+                pass
 
     def chat(self, messages: List[Dict[str, str]],
              use_cache: bool = False) -> Optional[str]:
         """
-        Multi-turn chat.
-
-        Args:
-            messages: List of {"role": "user"|"model", "content": "..."}
-            use_cache: Whether to cache (usually False for chat)
-
-        Returns:
-            Model's response
+        Multi-turn chat via local intellect (Gemini API removed).
         """
-        if not self.is_connected:
-            if not self.connect():
-                return None
-
-        try:
-            self._rate_limit()
-
-            if getattr(self, '_use_new_api', False):
-                contents = []
-                for msg in messages:
-                    role = "user" if msg["role"] == "user" else "model"
-                    contents.append({
-                        "role": role,
-                        "parts": [{"text": msg["content"]}]
-                    })
-
-                response = self.client.models.generate_content(
-                    model=self.model_name,
-                    contents=contents
-                )
-                return response.text
-            else:
-                model = self._genai_module.GenerativeModel(self.model_name)
-                chat = model.start_chat(history=[])
-
-                for msg in messages[:-1]:
-                    if msg["role"] == "user":
-                        chat.send_message(msg["content"])
-
-                if messages and messages[-1]["role"] == "user":
-                    response = chat.send_message(messages[-1]["content"])
-                    return response.text
-
-        except Exception as e:
-            print(f"--- [GEMINI]: Chat error: {e} ---")
-            return None
+        li = _get_li_enhanced()
+        if li:
+            try:
+                combined = "\n".join(f"{msg['role']}: {msg['content']}" for msg in messages)
+                result = li.think(combined)
+                if result:
+                    return result
+            except Exception:
+                pass
+        return None
 
     def sovereign_think(self, signal: str) -> str:
         """L104 Sovereign Thinking."""

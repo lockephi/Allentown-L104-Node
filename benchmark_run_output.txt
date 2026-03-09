@@ -1,0 +1,198 @@
+[QUANTUM_RUNTIME] 26Q engine not available — Aer/Statevector fallback
+[QUANTUM_RUNTIME] Fallback → Statevector simulator (local) (26Q iron engine is sovereign primary)
+[QUANTUM v6.0.0]: Coherence Engine initialized [QISKIT 2.3.0 | 25 QUBITS | 12 ALGORITHMS | 26Q IRON (statevector_simulator) | AER | L104-UTILS]
+[GROVER_LINK] Quantum systems linked: 6/7
+[GROVER_LINK] 8-Chakra O₂ Entanglement: ACTIVE | Bell Pairs: 4
+======================================================================
+L104 FULL BENCHMARK — ONLINE MODE
+======================================================================
+
+[1/5] Fetching MMLU from HuggingFace (57 subjects)...
+  → Got 315 MMLU questions in 11.4s
+[2/5] Fetching ARC from HuggingFace (Challenge + Easy)...
+  → Got 0 ARC questions in 0.2s
+[3/5] Fetching HumanEval from HuggingFace...
+  → Got 0 HumanEval problems in 0.1s
+[4/5] Using 117 MATH problems (expanded hardcoded)
+
+  TOTAL: 432 questions/problems to evaluate
+
+[MMLU] Evaluating...  ↻ Loaded 10000 persisted links from 32 previous runs
+--- [L104_LEARNING]: INITIALIZED ---
+    Pattern Network: 74176 params
+    Prediction Network: 18656 params
+★★★ [SAGE_MODE_INFLECT]: INITIALIZED ★★★
+★★★ [SAGE_MODE_INFLECT]: INITIALIZED ★★★
+[26Q_AER] Initialized: noise=heron_v2, shots=8192, DD=True, ZNE=True
+[26Q_AER] Memory budget: 1024 MB statevector + 180 MB overhead = 1204 MB total
+[26Q_BUILDER v1.0.0] ══════ IRON COMPLETION ══════
+[26Q_BUILDER] Engines: Math=True, Science=True, Runtime=True
+[26Q_BUILDER] GOD_CODE=527.5184818492611, PHI=1.618033988749895, VOID=1.04161803398875
+[26Q_BUILDER] Fe(26) electrons → 26 qubits = FULL IRON MANIFOLD
+[26Q_BUILDER] Memory: 1024 MB statevector (1 GB exact)
+[26Q_BUILDER] Noise: heron_v2, Shots: 8192
+[26Q_BUILDER] Algorithms: 26 circuit builders (one per qubit)
+ 92/315 = 29.2%  (170.5s)
+[ARC]  Evaluating... 7 324/1000 = 32.4%  (117.5s)
+[MATH] Evaluating... 90/117 = 76.9%  (0.1s)
+[HE]   Evaluating... 109/164 = 66.5%  (1.1s)
+
+======================================================================
+  COMPOSITE SCORE: 55.0%
+======================================================================
+
+── MMLU Per-Subject (48 questions) ──
+                                   astronomy: 2/8 ██░░░░░░░░  25.0%
+                             college_biology: 3/8 ███░░░░░░░  37.5%
+                                econometrics: 2/8 ██░░░░░░░░  25.0%
+                      electrical_engineering: 2/8 ██░░░░░░░░  25.0%
+                high_school_computer_science: 2/8 ██░░░░░░░░  25.0%
+                             moral_scenarios: 5/8 ██████░░░░  62.5%
+
+── MMLU Failures (32) — first 20 ──
+  [high_school_com] Let x = 1. What is x << 3 in Python 3?
+    Exp=2  Got=3
+  [high_school_com] A user enters a Web address in a browser, and a request for a file is sent to a 
+    Exp=0  Got=1
+  [high_school_com] A programmer is writing a program that is intended to be able to process large a
+    Exp=1  Got=0
+  [high_school_com] Suppose the characters 0,1, . . . ,8,9,A,B,C,D, E,F are used to represent a hexa
+    Exp=2  Got=3
+  [high_school_com] A large data set contains information about all students majoring in computer sc
+    Exp=1  Got=3
+  [high_school_com] The code segment below uses the procedure IsFound (list, item), which returns tr
+    Exp=1  Got=0
+  [college_biology] Based on the characteristic population curves that result from plotting populati
+    Exp=2  Got=1
+  [college_biology] A frameshift mutation is created when
+    Exp=2  Got=1
+  [college_biology] To prevent desiccation and injury, the embryos of terrestrial vertebrates are en
+    Exp=0  Got=2
+  [college_biology] In order for the Hardy-Weinberg law to operate with respect to a population of o
+    Exp=0  Got=2
+  [college_biology] Which of the following is NOT a source of atmospheric carbon?
+    Exp=1  Got=3
+  [astronomy] What is true for a type-Ia ("type one-a") supernova?
+    Exp=0  Got=3
+  [astronomy] Why is the sky blue?
+    Exp=2  Got=0
+  [astronomy] You’ve made a scientific theory that there is an attractive force between all ob
+    Exp=2  Got=0
+  [astronomy] Which of the following is/are true?
+    Exp=3  Got=1
+  [astronomy] A comet of mass m impacts the earth (mass M radius R) at the minimum impact spee
+    Exp=2  Got=3
+  [astronomy] Most rocks on the Moon's surface are older than those on the Earth's surface. Th
+    Exp=1  Got=2
+  [electrical_engi] The Barkhausen criterion for an oscillator
+    Exp=3  Got=2
+  [electrical_engi] Potentiometer method of DC voltage measurement is more accurate than direct meas
+    Exp=3  Got=1
+  [electrical_engi] Which of these sets of logic gates are designated as universal gates?
+    Exp=0  Got=2
+
+── ARC Per-Category (1000 questions) ──
+         arc_challenge: 129/500 ██░░░░░░░░  25.8%
+              arc_easy: 195/500 ███░░░░░░░  39.0%
+
+── ARC Failures (676) — first 20 ──
+  [arc_challenge] A group of engineers wanted to know how different building designs would respond
+    Exp=1  Got=2
+  [arc_challenge] An astronaut drops a 1.0 kg object and a 5.0 kg object on the Moon. Both objects
+    Exp=3  Got=1
+  [arc_challenge] Devil facial tumor disease (DFTD) is a disease that is decimating the population
+    Exp=1  Got=0
+  [arc_challenge] A type of small mammal from the mountain regions of the western United States ma
+    Exp=2  Got=3
+  [arc_challenge] Petrified palm trees are found in sedimentary rock near glaciers. The presence o
+    Exp=2  Got=3
+  [arc_challenge] Farmers in Wyoming were concerned because some of their chickens were being prey
+    Exp=1  Got=2
+  [arc_challenge] Copper is an element that is used in electrical wires. What is the smallest unit
+    Exp=0  Got=1
+  [arc_challenge] According to cell classification, prokaryotic cells are separated from eukaryoti
+    Exp=1  Got=3
+  [arc_challenge] Which statement best describes the effect of the Sun on the oceans?
+    Exp=0  Got=1
+  [arc_challenge] The morning temperature in a city is 41°F. If a sunny, mild day is forecast, whi
+    Exp=2  Got=0
+  [arc_challenge] A class plans an investigation to see which brand of light bulb lasts the longes
+    Exp=2  Got=3
+  [arc_challenge] At which temperature does water freeze?
+    Exp=0  Got=2
+  [arc_challenge] Fossil bones and teeth of dinosaurs have been researched for the last century. R
+    Exp=2  Got=0
+  [arc_challenge] Molly was making iced tea by putting tea bags in boiling water. She needed to co
+    Exp=1  Got=0
+  [arc_challenge] Logging companies cut trees in a forest and send the trees to lumber mills far f
+    Exp=0  Got=2
+  [arc_challenge] It was once thought that living organisms could come from non-living matter. For
+    Exp=2  Got=3
+  [arc_challenge] Cells take in food for energy. The part of the cell that aids in digestion of th
+    Exp=1  Got=2
+  [arc_challenge] Which is a fact about penguins?
+    Exp=0  Got=2
+  [arc_challenge] A glass of water at 110°F is placed in a room next to a glass of water that is 5
+    Exp=2  Got=3
+  [arc_challenge] Scott filled a tray with juice and put it in a freezer. The next day, Scott open
+    Exp=3  Got=2
+
+── MATH Per-Domain (117 problems) ──
+                    algebra: 14/20 ███████░░░  70.0%
+              combinatorics: 12/14 ████████░░  85.7%
+                   geometry: 11/15 ███████░░░  73.3%
+       intermediate_algebra: 7/13 █████░░░░░  53.8%
+              number_theory: 16/20 ████████░░  80.0%
+                 prealgebra: 18/20 █████████░  90.0%
+                precalculus: 12/15 ████████░░  80.0%
+
+── MATH Failures (27) — first 10 ──
+  [prealgebra] What is 12 squared?
+    Exp=144  Got=12
+  [prealgebra] Solve for x: x/4 = 9
+    Exp=36  Got=13
+  [algebra] Simplify: 3(2x + 4) - 2(x - 1)
+    Exp=4x + 14  Got=10
+  [algebra] What is the vertex of y = x^2 - 6x + 9?
+    Exp=(3, 0)  Got=11
+  [algebra] Solve: 2x + 3y = 12 when y = 2
+    Exp=3  Got=0
+  [algebra] Factor: x^2 - 9
+    Exp=(x+3)(x-3)  Got=11
+  [algebra] What is the product of the roots of x^2 - 7x + 12 = 0?
+    Exp=12  Got=0
+  [algebra] Solve: |2x - 6| = 10
+    Exp=[8, -2]  Got=16
+  [number_theory] How many factors does 36 have?
+    Exp=9  Got=36
+  [number_theory] What is the smallest prime greater than 50?
+    Exp=53  Got=False
+
+✓ Full report saved → benchmark_full_online_results.json
+✓ Total elapsed: 199.8s
+             precalculus: 12/15 ████████░░  80.0%
+
+── MATH Failures (27) — first 10 ──
+  [prealgebra] What is 12 squared?
+    Exp=144  Got=12
+  [prealgebra] Solve for x: x/4 = 9
+    Exp=36  Got=13
+  [algebra] Simplify: 3(2x + 4) - 2(x - 1)
+    Exp=4x + 14  Got=10
+  [algebra] What is the vertex of y = x^2 - 6x + 9?
+    Exp=(3, 0)  Got=11
+  [algebra] Solve: 2x + 3y = 12 when y = 2
+    Exp=3  Got=0
+  [algebra] Factor: x^2 - 9
+    Exp=(x+3)(x-3)  Got=11
+  [algebra] What is the product of the roots of x^2 - 7x + 12 = 0?
+    Exp=12  Got=0
+  [algebra] Solve: |2x - 6| = 10
+    Exp=[8, -2]  Got=16
+  [number_theory] How many factors does 36 have?
+    Exp=9  Got=36
+  [number_theory] What is the smallest prime greater than 50?
+    Exp=53  Got=False
+
+✓ Full report saved → benchmark_full_online_results.json
+✓ Total elapsed: 183.4s

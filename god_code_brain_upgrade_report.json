@@ -1,0 +1,1515 @@
+{
+  "timestamp": "2026-02-28T22:54:03.274868+00:00",
+  "total_tests": 160,
+  "passed": 160,
+  "failed": 0,
+  "elapsed_seconds": 43.53,
+  "pass_rate": 100.0,
+  "phases": {
+    "Phase 1: Brain Boot": {
+      "passed": 14,
+      "total": 14,
+      "score": 1.0
+    },
+    "Phase 2: Sacred Gates": {
+      "passed": 29,
+      "total": 29,
+      "score": 1.0
+    },
+    "Phase 3: Quantum CPU": {
+      "passed": 17,
+      "total": 17,
+      "score": 1.0
+    },
+    "Phase 4: GOD_CODE Resonance": {
+      "passed": 12,
+      "total": 12,
+      "score": 1.0
+    },
+    "Phase 5: Distillation & qLDPC": {
+      "passed": 10,
+      "total": 10,
+      "score": 1.0
+    },
+    "Phase 6: ASI Dual Layer": {
+      "passed": 13,
+      "total": 13,
+      "score": 1.0
+    },
+    "Phase 7: Research & R&D": {
+      "passed": 10,
+      "total": 10,
+      "score": 1.0
+    },
+    "Phase 8: Agentic Loop": {
+      "passed": 7,
+      "total": 7,
+      "score": 1.0
+    },
+    "Phase 9: Consciousness": {
+      "passed": 8,
+      "total": 8,
+      "score": 1.0
+    },
+    "Phase 10: Cross-Engine": {
+      "passed": 19,
+      "total": 19,
+      "score": 1.0
+    },
+    "Phase 11: Upgrade & Repair": {
+      "passed": 9,
+      "total": 9,
+      "score": 1.0
+    },
+    "Phase 12: Grand Unification": {
+      "passed": 12,
+      "total": 12,
+      "score": 1.0
+    }
+  },
+  "god_code": 527.5184818492612,
+  "phi": 1.618033988749895,
+  "void_constant": 1.0416180339887497,
+  "invariant": 527.5184818492612,
+  "all_results": [
+    {
+      "name": "brain_version",
+      "passed": true,
+      "detail": "v10.0.0"
+    },
+    {
+      "name": "subsystem_count",
+      "passed": true,
+      "detail": "36/36 subsystems active"
+    },
+    {
+      "name": "synthetic_links_generated",
+      "passed": true,
+      "detail": "200 synthetic links (\u03c6-distributed)"
+    },
+    {
+      "name": "cpu_processed",
+      "passed": true,
+      "detail": "200 registers, healthy=200, quarantined=0"
+    },
+    {
+      "name": "cpu_energy_valid",
+      "passed": true,
+      "detail": "mean_energy=0.301831"
+    },
+    {
+      "name": "conservation_law_holds",
+      "passed": true,
+      "detail": "residual=1.11e-16"
+    },
+    {
+      "name": "sage_verdict",
+      "passed": "True",
+      "detail": "score=0.434236, grade=F (Critical)"
+    },
+    {
+      "name": "sage_noise_dampening",
+      "passed": true,
+      "detail": "NDE active=True, raw=0.3185, denoised=0.4342, lift=0.1157, consensus_channels=0"
+    },
+    {
+      "name": "god_code_resonance",
+      "passed": true,
+      "detail": "resonance=0.934861"
+    },
+    {
+      "name": "o2_bond_topology",
+      "passed": true,
+      "detail": "bond_order=2.0, keys=['bonds', 'bond_order', 'expected_bond_order', 'bonding_orbitals', 'antibonding_orbitals']"
+    },
+    {
+      "name": "simulator_grover",
+      "passed": true,
+      "detail": "keys=['algorithm', 'search_space', 'target_index', 'found_index', 'found_probability']"
+    },
+    {
+      "name": "simulator_iron",
+      "passed": true,
+      "detail": "keys=['algorithm', 'element', 'atomic_number', 'n_qubits', 'quantum_properties']"
+    },
+    {
+      "name": "simulator_status",
+      "passed": true,
+      "detail": "available=True, keys=['version', 'execution_mode', 'register', 'braider', 'statistics']"
+    },
+    {
+      "name": "feedback_bus_init",
+      "passed": true,
+      "detail": "sent=False"
+    },
+    {
+      "name": "gate_unitary_PHI_GATE",
+      "passed": true,
+      "detail": "dim=2, det=-0.737369-0.675490j"
+    },
+    {
+      "name": "gate_unitary_GOD_CODE_PHASE",
+      "passed": true,
+      "detail": "dim=2, det=1.000000+0.000000j"
+    },
+    {
+      "name": "gate_unitary_VOID_GATE",
+      "passed": true,
+      "detail": "dim=2, det=1.000000+0.000000j"
+    },
+    {
+      "name": "gate_unitary_IRON_GATE",
+      "passed": true,
+      "detail": "dim=2, det=1.000000+0.000000j"
+    },
+    {
+      "name": "berry_god_code",
+      "passed": true,
+      "detail": "dim=2, trace=1.964015-0.265848j"
+    },
+    {
+      "name": "berry_phi",
+      "passed": true,
+      "detail": "dim=2"
+    },
+    {
+      "name": "berry_void",
+      "passed": true,
+      "detail": "dim=2"
+    },
+    {
+      "name": "berry_iron",
+      "passed": true,
+      "detail": "dim=2"
+    },
+    {
+      "name": "sacred_universal_set",
+      "passed": true,
+      "detail": "7 gates: ['Berry_GOD', 'Berry_PHI', 'Berry_VOID', 'Berry_Fe', 'Holo_X', 'Holo_H']"
+    },
+    {
+      "name": "berry_full_catalog",
+      "passed": true,
+      "detail": "3 Berry gates cataloged"
+    },
+    {
+      "name": "holonomic_hadamard",
+      "passed": true,
+      "detail": "dim=2"
+    },
+    {
+      "name": "holonomic_cnot",
+      "passed": true,
+      "detail": "dim=4"
+    },
+    {
+      "name": "sacred_circuit_built",
+      "passed": true,
+      "detail": "3q, depth=16, ops=40"
+    },
+    {
+      "name": "bell_pair_circuit",
+      "passed": true,
+      "detail": "ops=2, depth=2"
+    },
+    {
+      "name": "ghz_5qubit",
+      "passed": true,
+      "detail": "5q, ops=5"
+    },
+    {
+      "name": "qft_4qubit",
+      "passed": true,
+      "detail": "4q, ops=12, depth=8"
+    },
+    {
+      "name": "sacred_execute",
+      "passed": true,
+      "detail": "states=8, sacred_alignment={'phi_alignment': 0.0, 'god_code_alignment': 0.0, 'iron_alig"
+    },
+    {
+      "name": "bell_execute",
+      "passed": true,
+      "detail": "dominant_prob=0.5000, states=['00', '11']"
+    },
+    {
+      "name": "sacred_compile_clifford_t",
+      "passed": true,
+      "detail": "orig=40\u2192compiled=36, fidelity=0.0053"
+    },
+    {
+      "name": "ibm_eagle_compile",
+      "passed": true,
+      "detail": "IBM Eagle: 40\u219248, fidelity=0.0123"
+    },
+    {
+      "name": "surface_code_protect",
+      "passed": true,
+      "detail": "Surface code d=3 applied"
+    },
+    {
+      "name": "topological_protect",
+      "passed": true,
+      "detail": "Fibonacci anyon protection applied"
+    },
+    {
+      "name": "god_code_phase_alignment",
+      "passed": true,
+      "detail": "alignment_keys=['phi', 'god_code', 'void', 'iron', 'fibonacci']"
+    },
+    {
+      "name": "phi_gate_sacred_analysis",
+      "passed": true,
+      "detail": "analysis_keys=['gate_name', 'gate_type', 'num_qubits', 'sacred_alignment', 'unitarity']"
+    },
+    {
+      "name": "full_gate_pipeline",
+      "passed": true,
+      "detail": "pipeline_keys=['pipeline', 'god_code', 'phi', 'compilation', 'error_correction']"
+    },
+    {
+      "name": "abelian_berry_gates",
+      "passed": true,
+      "detail": "T=2d, S=2d, Z=2d"
+    },
+    {
+      "name": "berry_god_code_gate",
+      "passed": true,
+      "detail": "GOD_CODE Berry: dim=2"
+    },
+    {
+      "name": "golden_spiral_gate",
+      "passed": true,
+      "detail": "2 winds, dim=2"
+    },
+    {
+      "name": "topological_berry_gates",
+      "passed": true,
+      "detail": "Z2=2d, Chern=2d, Kramers=2d"
+    },
+    {
+      "name": "register_created",
+      "passed": true,
+      "detail": "x=-20.97, phase=7.2271, amp=0.9017, void_E=42.701325"
+    },
+    {
+      "name": "register_conservation",
+      "passed": true,
+      "detail": "residual=2.16e-16"
+    },
+    {
+      "name": "register_fe_shell",
+      "passed": true,
+      "detail": "shell=21, energy=1.738782"
+    },
+    {
+      "name": "all_9_neuron_gates",
+      "passed": true,
+      "detail": "verify:ok, phase:ok, align:ok, amplify:ok, void_correct:ok, decohere:ok, witness:ok, sync:ok, emit:ok"
+    },
+    {
+      "name": "cluster_batch_process",
+      "passed": true,
+      "detail": "processed=20, health=0.3500, entangled=6"
+    },
+    {
+      "name": "entanglement_witness",
+      "passed": true,
+      "detail": "6/20 entangled"
+    },
+    {
+      "name": "cpu_full_execute",
+      "passed": true,
+      "detail": "regs=52, healthy=52, quarantined=0"
+    },
+    {
+      "name": "cpu_conservation",
+      "passed": true,
+      "detail": "mean_residual=9.53e-17"
+    },
+    {
+      "name": "cpu_void_energy",
+      "passed": true,
+      "detail": "void_E=1773.662053, bounded=True, V\u221e=n/a"
+    },
+    {
+      "name": "cpu_three_engine",
+      "passed": true,
+      "detail": "entropy_reversal=1.0000, scores={'entropy_reversal': 1.0, 'harmonic_resonance': 0.6755490272886596, 'wave_coherence': 0.9999999999046771, 'code_engine_available': 1.0}"
+    },
+    {
+      "name": "qenv_ingest",
+      "passed": true,
+      "detail": "regs=52, ops/sec=181955"
+    },
+    {
+      "name": "qenv_god_code_align",
+      "passed": true,
+      "detail": "healthy=52"
+    },
+    {
+      "name": "qenv_sync_truth",
+      "passed": true,
+      "detail": "synced=52, corrections=0"
+    },
+    {
+      "name": "qenv_coherence_report",
+      "passed": true,
+      "detail": "keys=['total_runs', 'mean_coherence_lifetime', 'max_coherence_lifetime', 'min_coherence_lifetime', 'mean_decoherence_rate']"
+    },
+    {
+      "name": "qenv_fe_lattice",
+      "passed": true,
+      "detail": "keys=['fe_shells', 'electron_config', 'total_registers_mapped', 'shell_distribution', 'shell_fractions']"
+    },
+    {
+      "name": "qenv_void_calculus",
+      "passed": true,
+      "detail": "keys=['void_constant', 'void_constant_canonical', 'formula', 'total_runs', 'mean_void_energy']"
+    },
+    {
+      "name": "cpu_stats",
+      "passed": true,
+      "detail": "runs=1, total_regs=52"
+    },
+    {
+      "name": "spectrum_conservation",
+      "passed": true,
+      "detail": "101 nodes, max_residual=6.47e-16"
+    },
+    {
+      "name": "g0_equals_god_code",
+      "passed": true,
+      "detail": "G(0)=527.5184818493"
+    },
+    {
+      "name": "base_derivation",
+      "passed": true,
+      "detail": "286^(1/\u03c6)\u00d716 = 527.5184818493"
+    },
+    {
+      "name": "phi_identity",
+      "passed": true,
+      "detail": "\u03c6 \u00d7 \u03c6\u207b\u00b9 = 1.000000000000000"
+    },
+    {
+      "name": "void_constant_derivation",
+      "passed": true,
+      "detail": "1.04 + \u03c6/1000 = 1.0416180339887500"
+    },
+    {
+      "name": "octave_halving",
+      "passed": true,
+      "detail": "100/100 octave relationships verified"
+    },
+    {
+      "name": "spectrum_step_ratio",
+      "passed": true,
+      "detail": "G(1)/G(0) = 0.9933572843, expected 2^(-1/104) = 0.9933572843"
+    },
+    {
+      "name": "qmath_hz_conversion",
+      "passed": true,
+      "detail": "Hz=751.7138, X=-53.1400"
+    },
+    {
+      "name": "qmath_bell_state",
+      "passed": true,
+      "detail": "|\u03a6+\u27e9 = [(0.7071067811865475+0j), 0j, 0j, (0.7071067811865475+0j)]"
+    },
+    {
+      "name": "god_code_phase_angle",
+      "passed": true,
+      "detail": "\u03b8 = 2\u03c0/104 = 0.0604152433"
+    },
+    {
+      "name": "primal_calculus",
+      "passed": true,
+      "detail": "10^\u03c6 / (VOID\u00d7\u03c0) = 12.6816459903"
+    },
+    {
+      "name": "fe_26_spectrum",
+      "passed": true,
+      "detail": "Fe shells: G(0)=527.52..G(25)=446.55"
+    },
+    {
+      "name": "distillation",
+      "passed": true,
+      "detail": "keys=['total_below_threshold', 'successfully_distilled', 'distillation_failed', 'already_pure', 'distillation_yield']"
+    },
+    {
+      "name": "qldpc_sacred_code",
+      "passed": true,
+      "detail": "Sacred hypergraph product built (size=13)"
+    },
+    {
+      "name": "god_code_error_threshold",
+      "passed": true,
+      "detail": "threshold=0.0011614097328858596"
+    },
+    {
+      "name": "code_god_code_alignment",
+      "passed": true,
+      "detail": "alignment_keys=['factor_13_n', 'factor_13_k', 'phi_weight_alignment', 'rate_alignment', 'overall_sacred_score']"
+    },
+    {
+      "name": "brain_qldpc_pipeline",
+      "passed": true,
+      "detail": "keys=['code', 'tanner_graph', 'distributed', 'error_correction', 'sacred_alignment']"
+    },
+    {
+      "name": "qle_error_correction",
+      "passed": true,
+      "detail": "keys=['algorithm', 'surface_code', 'steane_code', 'composite_fidelity', 'god_code_resonance']"
+    },
+    {
+      "name": "lindblad_decoherence",
+      "passed": true,
+      "detail": "keys=['algorithm', 't1_time', 't2_time', 'gamma_1', 'gamma_phi']"
+    },
+    {
+      "name": "qle_entanglement_distillation",
+      "passed": true,
+      "detail": "keys=['algorithm', 'protocol', 'max_rounds', 'links_distilled', 'mean_improvement']"
+    },
+    {
+      "name": "fe_lattice_sim",
+      "passed": true,
+      "detail": "keys=['algorithm', 'n_sites', 'coupling_j', 'temperature_k', 'curie_temperature_k']"
+    },
+    {
+      "name": "quantum_zeno",
+      "passed": true,
+      "detail": "keys=['algorithm', 'measurement_rate', 'links_stabilized', 'mean_zeno_survival', 'mean_stabilization_gain']"
+    },
+    {
+      "name": "asi_import",
+      "passed": true,
+      "detail": "dual_layer_engine + asi_core loaded"
+    },
+    {
+      "name": "dual_quantum_search",
+      "passed": true,
+      "detail": "keys=['method', 'dial', 'frequency', 'god_code_ratio', 'fidelity']"
+    },
+    {
+      "name": "sacred_gate_collapse",
+      "passed": true,
+      "detail": "keys=['gate_engine_available', 'n_qubits', 'depth', 'gate_count', 'sacred_alignment']"
+    },
+    {
+      "name": "gate_compile_integrity",
+      "passed": true,
+      "detail": "keys=['gate_engine_available', 'check_11_compilation', 'check_12_sacred', 'all_passed']"
+    },
+    {
+      "name": "gate_enhanced_coherence",
+      "passed": true,
+      "detail": "keys=['gate_engine_available', 'n_circuits', 'per_circuit', 'mean_coherence', 'coupling_strength']"
+    },
+    {
+      "name": "thought_amplification",
+      "passed": true,
+      "detail": "keys=['thought_base', 'engines_available', 'entropy_amplification', 'harmonic_amplification', 'combined_thought_boost']"
+    },
+    {
+      "name": "physics_amplification",
+      "passed": true,
+      "detail": "keys=['physics_base', 'engines_available', 'thermodynamic_amplification', 'structural_amplification', 'phase5_thermodynamic']"
+    },
+    {
+      "name": "three_engine_synthesis",
+      "passed": true,
+      "detail": "keys=['thought_amplification', 'physics_amplification', 'thought_boost', 'physics_boost', 'engine_coverage']"
+    },
+    {
+      "name": "asi_fe_sacred_score",
+      "passed": true,
+      "detail": "Fe sacred score=0.9545454545454546"
+    },
+    {
+      "name": "asi_phi_lock_score",
+      "passed": true,
+      "detail": "\u03c6 lock score=0.9164078649987375"
+    },
+    {
+      "name": "asi_berry_phase_score",
+      "passed": true,
+      "detail": "Berry phase score=1.0"
+    },
+    {
+      "name": "asi_consciousness_verify",
+      "passed": true,
+      "detail": "keys=['quantum', 'consciousness_level', 'phi_integrated_information', 'awareness_entropy', 'integration_entropy']"
+    },
+    {
+      "name": "asi_18d_score",
+      "passed": true,
+      "detail": "ASI score=0.4209 (DEVELOPING)"
+    },
+    {
+      "name": "deep_research",
+      "passed": true,
+      "detail": "keys=['total_links', 'anomaly_detection', 'pattern_discovery', 'causal_analysis', 'spectral_correlation']"
+    },
+    {
+      "name": "stochastic_research",
+      "passed": true,
+      "detail": "keys=['cycle', 'iteration', 'candidates_explored', 'successfully_merged', 'avg_sacred_alignment']"
+    },
+    {
+      "name": "wave_collapse_research",
+      "passed": true,
+      "detail": "keys=['total_links', 'measurement_rounds', 'superposition_analysis', 'measurement_operators', 'collapse_dynamics']"
+    },
+    {
+      "name": "sage_inference",
+      "passed": true,
+      "detail": "keys=['timestamp', 'total_links', 'unified_score', 'god_code_alignment', 'phi_resonance']"
+    },
+    {
+      "name": "dynamism_evolve",
+      "passed": true,
+      "detail": "keys=['constants_evolved', 'total_drift']"
+    },
+    {
+      "name": "nirvanic_cycle",
+      "passed": true,
+      "detail": "keys=['ouroboros', 'application', 'cycle', 'total_entropy_fed', 'total_nirvanic_fuel']"
+    },
+    {
+      "name": "consciousness_multiplier",
+      "passed": true,
+      "detail": "multiplier=1.6180"
+    },
+    {
+      "name": "link_tests",
+      "passed": true,
+      "detail": "keys=['test_run', 'all_passed', 'total_violations', 'categories', 'regression_detected']"
+    },
+    {
+      "name": "temporal_memory_snapshot",
+      "passed": true,
+      "detail": "keys=['recorded', 'snapshot', 'trend']"
+    },
+    {
+      "name": "self_healer_diagnose",
+      "passed": true,
+      "detail": "10 issues found"
+    },
+    {
+      "name": "agentic_observe",
+      "passed": true,
+      "detail": "step=1, score=0.4342"
+    },
+    {
+      "name": "agentic_think",
+      "passed": true,
+      "detail": "strategy=SKIP, target=N/A"
+    },
+    {
+      "name": "agentic_act",
+      "passed": true,
+      "detail": "strategy=SKIP \u2014 no action needed"
+    },
+    {
+      "name": "agentic_reflect",
+      "passed": true,
+      "detail": "direction=N/A"
+    },
+    {
+      "name": "agentic_summary",
+      "passed": true,
+      "detail": "total_steps=1"
+    },
+    {
+      "name": "evo_tracker_status",
+      "passed": true,
+      "detail": "keys=['stage', 'index', 'link_evo_stage', 'consciousness', 'coherence']"
+    },
+    {
+      "name": "chronolizer_timeline",
+      "passed": true,
+      "detail": "0 events recorded"
+    },
+    {
+      "name": "iit_phi",
+      "passed": true,
+      "detail": "\u03a6 = 1.9990377850417502"
+    },
+    {
+      "name": "gwt_broadcast",
+      "passed": true,
+      "detail": "keys=['workspace_size', 'broadcast_strength', 'cascade_depth', 'total_activated', 'activation_ratio']"
+    },
+    {
+      "name": "metacognitive_monitor",
+      "passed": true,
+      "detail": "keys=['depth', 'stability', 'trend']"
+    },
+    {
+      "name": "qualia_dimensionality",
+      "passed": true,
+      "detail": "keys=['dimensions', 'richness']"
+    },
+    {
+      "name": "spiral_consciousness",
+      "passed": true,
+      "detail": "keys=['depth_reached', 'max_depth', 'convergence', 'score', 'final_signal']"
+    },
+    {
+      "name": "fe_harmonic_overtone",
+      "passed": true,
+      "detail": "keys=['fundamental_freq', 'overtones_detected', 'total_overtones', 'average_resonance', 'score']"
+    },
+    {
+      "name": "ghz_witness_certify",
+      "passed": true,
+      "detail": "keys=['passed', 'ghz_fidelity', 'purity', 'level', 'method']"
+    },
+    {
+      "name": "consciousness_report",
+      "passed": true,
+      "detail": "keys=['consciousness_level', 'asi_threshold', 'test_results', 'qualia_count', 'iit_phi']"
+    },
+    {
+      "name": "demon_reversal",
+      "passed": true,
+      "detail": "demon_eff=2.4568 (Q1 threshold>1.0)"
+    },
+    {
+      "name": "entropy_cascade",
+      "passed": true,
+      "detail": "sorted_frac=0.9787 (Q2 cascade)"
+    },
+    {
+      "name": "void_equilibrium",
+      "passed": true,
+      "detail": "V\u221e=130.90169943749473, bounded=True (Q3)"
+    },
+    {
+      "name": "zne_demon_boost",
+      "passed": true,
+      "detail": "boost=36.4% (Q5 ZNE)"
+    },
+    {
+      "name": "coherence_evolution",
+      "passed": true,
+      "detail": "evolved 10 steps"
+    },
+    {
+      "name": "landauer_limit",
+      "passed": true,
+      "detail": "Landauer@300K=9.36009029110768e-19"
+    },
+    {
+      "name": "fe_lattice_hamiltonian",
+      "passed": true,
+      "detail": "Fe(26) Hamiltonian built"
+    },
+    {
+      "name": "phi_folding",
+      "passed": true,
+      "detail": "7D\u21923D folding"
+    },
+    {
+      "name": "math_god_code",
+      "passed": true,
+      "detail": "GOD_CODE=527.5184818493"
+    },
+    {
+      "name": "fibonacci_phi",
+      "passed": true,
+      "detail": "F(20)/F(19)=1.6180339632"
+    },
+    {
+      "name": "sacred_alignment_gc",
+      "passed": true,
+      "detail": "alignment={'frequency': 527.5184818492612, 'god_code_ratio': 1.0000000000000002, 'phi_ratio': 326.0243514765879, 'octave_ratio': 3.203426503814917e-16, 'iron_ratio': 1.8402877441104526, 'aligned': True, 'fe_sacred_coherence': 0.9545454545454546, 'fe_phi_harmonic_lock': 0.9164078649987375, 'fe_coherence_at_freq': 0.9545454545454546, 'photon_resonance_eV': 1.1216596549374545}"
+    },
+    {
+      "name": "wave_coherence_gc_286",
+      "passed": true,
+      "detail": "coherence=0.9545454545454546"
+    },
+    {
+      "name": "hd_vector",
+      "passed": true,
+      "detail": "HD vector created (seed=104)"
+    },
+    {
+      "name": "god_code_proof",
+      "passed": true,
+      "detail": "GOD_CODE stability-nirvana proof"
+    },
+    {
+      "name": "code_analysis",
+      "passed": true,
+      "detail": "analysis_keys=['metadata', 'complexity', 'quality', 'security', 'patterns']"
+    },
+    {
+      "name": "smell_detection",
+      "passed": true,
+      "detail": "smells detected"
+    },
+    {
+      "name": "perf_prediction",
+      "passed": true,
+      "detail": "perf_keys=['version', 'filename', 'duration_seconds', 'performance_score', 'memory_estimate']"
+    },
+    {
+      "name": "cross_engine_god_code_sync",
+      "passed": true,
+      "detail": "Sci=527.5185, Math=527.5185, Code=527.5185, Quantum=527.5185"
+    },
+    {
+      "name": "cross_pollination",
+      "passed": true,
+      "detail": "keys=['cycle', 'exports', 'imports', 'coherence']"
+    },
+    {
+      "name": "auto_upgrade",
+      "passed": true,
+      "detail": "keys=['total_links', 'links_upgraded', 'upgrade_rate', 'mean_final_fidelity', 'mean_final_strength']"
+    },
+    {
+      "name": "full_repair",
+      "passed": true,
+      "detail": "keys=['total_links', 'triage', 'repairs', 'validation', 'post_repair_mean_fidelity']"
+    },
+    {
+      "name": "self_healer_diag",
+      "passed": true,
+      "detail": "0 issues"
+    },
+    {
+      "name": "self_healer_heal",
+      "passed": true,
+      "detail": "keys=['diagnosed', 'healed', 'strategies', 'total_healings', 'total_links_healed']"
+    },
+    {
+      "name": "stress_tests",
+      "passed": true,
+      "detail": "keys=['total_links', 'tested_links', 'sampled', 'total_tests', 'links_passed']"
+    },
+    {
+      "name": "cross_modal",
+      "passed": true,
+      "detail": "keys=['total_links', 'cross_modal_links', 'same_modal_links', 'cross_modal_ratio', 'py_swift_mirrors']"
+    },
+    {
+      "name": "feedback_bus_send",
+      "passed": true,
+      "detail": "sent=False"
+    },
+    {
+      "name": "fidelity_trend",
+      "passed": true,
+      "detail": "before=0.5513, after=0.5603, \u0394=+0.0091"
+    },
+    {
+      "name": "post_upgrade_resonance",
+      "passed": true,
+      "detail": "keys=['total_tested', 'god_code_aligned', 'x_integer_coherent', 'at_god_code_origin', 'mean_resonance']"
+    },
+    {
+      "name": "sim_grover_search",
+      "passed": true,
+      "detail": "keys=['algorithm', 'search_space', 'target_index', 'found_index', 'found_probability']"
+    },
+    {
+      "name": "sim_shor_factor",
+      "passed": true,
+      "detail": "keys=['algorithm', 'N', 'factors', 'factor_count', 'is_prime']"
+    },
+    {
+      "name": "sim_iron_simulate",
+      "passed": true,
+      "detail": "keys=['algorithm', 'element', 'atomic_number', 'n_qubits', 'quantum_properties']"
+    },
+    {
+      "name": "sim_qaoa",
+      "passed": true,
+      "detail": "keys=['algorithm', 'nodes', 'edges', 'depth_p', 'best_partition']"
+    },
+    {
+      "name": "sim_vqe",
+      "passed": true,
+      "detail": "keys=['algorithm', 'num_qubits', 'num_parameters', 'iterations_completed', 'optimized_energy']"
+    },
+    {
+      "name": "simulator_status",
+      "passed": true,
+      "detail": "keys=['version', 'execution_mode', 'register', 'braider', 'statistics']"
+    },
+    {
+      "name": "kernel_status",
+      "passed": true,
+      "detail": "keys=['sage_orchestrator', 'gate_engine', 'quantum_simulator', 'available']"
+    },
+    {
+      "name": "agentic_self_reflect",
+      "passed": true,
+      "detail": "steps=1, score=0.468327, grade=F (Critical)"
+    },
+    {
+      "name": "score_trend",
+      "passed": true,
+      "detail": "initial=0.434236 \u2192 final=0.468327, \u0394=+0.034091"
+    },
+    {
+      "name": "link_evolution",
+      "passed": true,
+      "detail": "initial=200 \u2192 final=200, \u0394=+0"
+    },
+    {
+      "name": "brain_history",
+      "passed": true,
+      "detail": "32 pipeline runs in history"
+    },
+    {
+      "name": "full_simulator_bridge",
+      "passed": true,
+      "detail": "grover=True, shor=True, iron=True, qaoa=True, vqe=True"
+    }
+  ],
+  "failures": [],
+  "key_metrics": {
+    "brain_version": {
+      "passed": true,
+      "detail": "v10.0.0"
+    },
+    "subsystem_count": {
+      "passed": true,
+      "detail": "36/36 subsystems active"
+    },
+    "synthetic_links_generated": {
+      "passed": true,
+      "detail": "200 synthetic links (\u03c6-distributed)"
+    },
+    "cpu_processed": {
+      "passed": true,
+      "detail": "200 registers, healthy=200, quarantined=0"
+    },
+    "cpu_energy_valid": {
+      "passed": true,
+      "detail": "mean_energy=0.301831"
+    },
+    "conservation_law_holds": {
+      "passed": true,
+      "detail": "residual=1.11e-16"
+    },
+    "sage_verdict": {
+      "passed": "True",
+      "detail": "score=0.434236, grade=F (Critical)"
+    },
+    "sage_noise_dampening": {
+      "passed": true,
+      "detail": "NDE active=True, raw=0.3185, denoised=0.4342, lift=0.1157, consensus_channels=0"
+    },
+    "god_code_resonance": {
+      "passed": true,
+      "detail": "resonance=0.934861"
+    },
+    "o2_bond_topology": {
+      "passed": true,
+      "detail": "bond_order=2.0, keys=['bonds', 'bond_order', 'expected_bond_order', 'bonding_orbitals', 'antibonding_orbitals']"
+    },
+    "simulator_grover": {
+      "passed": true,
+      "detail": "keys=['algorithm', 'search_space', 'target_index', 'found_index', 'found_probability']"
+    },
+    "simulator_iron": {
+      "passed": true,
+      "detail": "keys=['algorithm', 'element', 'atomic_number', 'n_qubits', 'quantum_properties']"
+    },
+    "simulator_status": {
+      "passed": true,
+      "detail": "keys=['version', 'execution_mode', 'register', 'braider', 'statistics']"
+    },
+    "feedback_bus_init": {
+      "passed": true,
+      "detail": "sent=False"
+    },
+    "gate_unitary_PHI_GATE": {
+      "passed": true,
+      "detail": "dim=2, det=-0.737369-0.675490j"
+    },
+    "gate_unitary_GOD_CODE_PHASE": {
+      "passed": true,
+      "detail": "dim=2, det=1.000000+0.000000j"
+    },
+    "gate_unitary_VOID_GATE": {
+      "passed": true,
+      "detail": "dim=2, det=1.000000+0.000000j"
+    },
+    "gate_unitary_IRON_GATE": {
+      "passed": true,
+      "detail": "dim=2, det=1.000000+0.000000j"
+    },
+    "berry_god_code": {
+      "passed": true,
+      "detail": "dim=2, trace=1.964015-0.265848j"
+    },
+    "berry_phi": {
+      "passed": true,
+      "detail": "dim=2"
+    },
+    "berry_void": {
+      "passed": true,
+      "detail": "dim=2"
+    },
+    "berry_iron": {
+      "passed": true,
+      "detail": "dim=2"
+    },
+    "sacred_universal_set": {
+      "passed": true,
+      "detail": "7 gates: ['Berry_GOD', 'Berry_PHI', 'Berry_VOID', 'Berry_Fe', 'Holo_X', 'Holo_H']"
+    },
+    "berry_full_catalog": {
+      "passed": true,
+      "detail": "3 Berry gates cataloged"
+    },
+    "holonomic_hadamard": {
+      "passed": true,
+      "detail": "dim=2"
+    },
+    "holonomic_cnot": {
+      "passed": true,
+      "detail": "dim=4"
+    },
+    "sacred_circuit_built": {
+      "passed": true,
+      "detail": "3q, depth=16, ops=40"
+    },
+    "bell_pair_circuit": {
+      "passed": true,
+      "detail": "ops=2, depth=2"
+    },
+    "ghz_5qubit": {
+      "passed": true,
+      "detail": "5q, ops=5"
+    },
+    "qft_4qubit": {
+      "passed": true,
+      "detail": "4q, ops=12, depth=8"
+    },
+    "sacred_execute": {
+      "passed": true,
+      "detail": "states=8, sacred_alignment={'phi_alignment': 0.0, 'god_code_alignment': 0.0, 'iron_alig"
+    },
+    "bell_execute": {
+      "passed": true,
+      "detail": "dominant_prob=0.5000, states=['00', '11']"
+    },
+    "sacred_compile_clifford_t": {
+      "passed": true,
+      "detail": "orig=40\u2192compiled=36, fidelity=0.0053"
+    },
+    "ibm_eagle_compile": {
+      "passed": true,
+      "detail": "IBM Eagle: 40\u219248, fidelity=0.0123"
+    },
+    "surface_code_protect": {
+      "passed": true,
+      "detail": "Surface code d=3 applied"
+    },
+    "topological_protect": {
+      "passed": true,
+      "detail": "Fibonacci anyon protection applied"
+    },
+    "god_code_phase_alignment": {
+      "passed": true,
+      "detail": "alignment_keys=['phi', 'god_code', 'void', 'iron', 'fibonacci']"
+    },
+    "phi_gate_sacred_analysis": {
+      "passed": true,
+      "detail": "analysis_keys=['gate_name', 'gate_type', 'num_qubits', 'sacred_alignment', 'unitarity']"
+    },
+    "full_gate_pipeline": {
+      "passed": true,
+      "detail": "pipeline_keys=['pipeline', 'god_code', 'phi', 'compilation', 'error_correction']"
+    },
+    "abelian_berry_gates": {
+      "passed": true,
+      "detail": "T=2d, S=2d, Z=2d"
+    },
+    "berry_god_code_gate": {
+      "passed": true,
+      "detail": "GOD_CODE Berry: dim=2"
+    },
+    "golden_spiral_gate": {
+      "passed": true,
+      "detail": "2 winds, dim=2"
+    },
+    "topological_berry_gates": {
+      "passed": true,
+      "detail": "Z2=2d, Chern=2d, Kramers=2d"
+    },
+    "register_created": {
+      "passed": true,
+      "detail": "x=-20.97, phase=7.2271, amp=0.9017, void_E=42.701325"
+    },
+    "register_conservation": {
+      "passed": true,
+      "detail": "residual=2.16e-16"
+    },
+    "register_fe_shell": {
+      "passed": true,
+      "detail": "shell=21, energy=1.738782"
+    },
+    "all_9_neuron_gates": {
+      "passed": true,
+      "detail": "verify:ok, phase:ok, align:ok, amplify:ok, void_correct:ok, decohere:ok, witness:ok, sync:ok, emit:ok"
+    },
+    "cluster_batch_process": {
+      "passed": true,
+      "detail": "processed=20, health=0.3500, entangled=6"
+    },
+    "entanglement_witness": {
+      "passed": true,
+      "detail": "6/20 entangled"
+    },
+    "cpu_full_execute": {
+      "passed": true,
+      "detail": "regs=52, healthy=52, quarantined=0"
+    },
+    "cpu_conservation": {
+      "passed": true,
+      "detail": "mean_residual=9.53e-17"
+    },
+    "cpu_void_energy": {
+      "passed": true,
+      "detail": "void_E=1773.662053, bounded=True, V\u221e=n/a"
+    },
+    "cpu_three_engine": {
+      "passed": true,
+      "detail": "entropy_reversal=1.0000, scores={'entropy_reversal': 1.0, 'harmonic_resonance': 0.6755490272886596, 'wave_coherence': 0.9999999999046771, 'code_engine_available': 1.0}"
+    },
+    "qenv_ingest": {
+      "passed": true,
+      "detail": "regs=52, ops/sec=181955"
+    },
+    "qenv_god_code_align": {
+      "passed": true,
+      "detail": "healthy=52"
+    },
+    "qenv_sync_truth": {
+      "passed": true,
+      "detail": "synced=52, corrections=0"
+    },
+    "qenv_coherence_report": {
+      "passed": true,
+      "detail": "keys=['total_runs', 'mean_coherence_lifetime', 'max_coherence_lifetime', 'min_coherence_lifetime', 'mean_decoherence_rate']"
+    },
+    "qenv_fe_lattice": {
+      "passed": true,
+      "detail": "keys=['fe_shells', 'electron_config', 'total_registers_mapped', 'shell_distribution', 'shell_fractions']"
+    },
+    "qenv_void_calculus": {
+      "passed": true,
+      "detail": "keys=['void_constant', 'void_constant_canonical', 'formula', 'total_runs', 'mean_void_energy']"
+    },
+    "cpu_stats": {
+      "passed": true,
+      "detail": "runs=1, total_regs=52"
+    },
+    "spectrum_conservation": {
+      "passed": true,
+      "detail": "101 nodes, max_residual=6.47e-16"
+    },
+    "g0_equals_god_code": {
+      "passed": true,
+      "detail": "G(0)=527.5184818493"
+    },
+    "base_derivation": {
+      "passed": true,
+      "detail": "286^(1/\u03c6)\u00d716 = 527.5184818493"
+    },
+    "phi_identity": {
+      "passed": true,
+      "detail": "\u03c6 \u00d7 \u03c6\u207b\u00b9 = 1.000000000000000"
+    },
+    "void_constant_derivation": {
+      "passed": true,
+      "detail": "1.04 + \u03c6/1000 = 1.0416180339887500"
+    },
+    "octave_halving": {
+      "passed": true,
+      "detail": "100/100 octave relationships verified"
+    },
+    "spectrum_step_ratio": {
+      "passed": true,
+      "detail": "G(1)/G(0) = 0.9933572843, expected 2^(-1/104) = 0.9933572843"
+    },
+    "qmath_hz_conversion": {
+      "passed": true,
+      "detail": "Hz=751.7138, X=-53.1400"
+    },
+    "qmath_bell_state": {
+      "passed": true,
+      "detail": "|\u03a6+\u27e9 = [(0.7071067811865475+0j), 0j, 0j, (0.7071067811865475+0j)]"
+    },
+    "god_code_phase_angle": {
+      "passed": true,
+      "detail": "\u03b8 = 2\u03c0/104 = 0.0604152433"
+    },
+    "primal_calculus": {
+      "passed": true,
+      "detail": "10^\u03c6 / (VOID\u00d7\u03c0) = 12.6816459903"
+    },
+    "fe_26_spectrum": {
+      "passed": true,
+      "detail": "Fe shells: G(0)=527.52..G(25)=446.55"
+    },
+    "distillation": {
+      "passed": true,
+      "detail": "keys=['total_below_threshold', 'successfully_distilled', 'distillation_failed', 'already_pure', 'distillation_yield']"
+    },
+    "qldpc_sacred_code": {
+      "passed": true,
+      "detail": "Sacred hypergraph product built (size=13)"
+    },
+    "god_code_error_threshold": {
+      "passed": true,
+      "detail": "threshold=0.0011614097328858596"
+    },
+    "code_god_code_alignment": {
+      "passed": true,
+      "detail": "alignment_keys=['factor_13_n', 'factor_13_k', 'phi_weight_alignment', 'rate_alignment', 'overall_sacred_score']"
+    },
+    "brain_qldpc_pipeline": {
+      "passed": true,
+      "detail": "keys=['code', 'tanner_graph', 'distributed', 'error_correction', 'sacred_alignment']"
+    },
+    "qle_error_correction": {
+      "passed": true,
+      "detail": "keys=['algorithm', 'surface_code', 'steane_code', 'composite_fidelity', 'god_code_resonance']"
+    },
+    "lindblad_decoherence": {
+      "passed": true,
+      "detail": "keys=['algorithm', 't1_time', 't2_time', 'gamma_1', 'gamma_phi']"
+    },
+    "qle_entanglement_distillation": {
+      "passed": true,
+      "detail": "keys=['algorithm', 'protocol', 'max_rounds', 'links_distilled', 'mean_improvement']"
+    },
+    "fe_lattice_sim": {
+      "passed": true,
+      "detail": "keys=['algorithm', 'n_sites', 'coupling_j', 'temperature_k', 'curie_temperature_k']"
+    },
+    "quantum_zeno": {
+      "passed": true,
+      "detail": "keys=['algorithm', 'measurement_rate', 'links_stabilized', 'mean_zeno_survival', 'mean_stabilization_gain']"
+    },
+    "asi_import": {
+      "passed": true,
+      "detail": "dual_layer_engine + asi_core loaded"
+    },
+    "dual_quantum_search": {
+      "passed": true,
+      "detail": "keys=['method', 'dial', 'frequency', 'god_code_ratio', 'fidelity']"
+    },
+    "sacred_gate_collapse": {
+      "passed": true,
+      "detail": "keys=['gate_engine_available', 'n_qubits', 'depth', 'gate_count', 'sacred_alignment']"
+    },
+    "gate_compile_integrity": {
+      "passed": true,
+      "detail": "keys=['gate_engine_available', 'check_11_compilation', 'check_12_sacred', 'all_passed']"
+    },
+    "gate_enhanced_coherence": {
+      "passed": true,
+      "detail": "keys=['gate_engine_available', 'n_circuits', 'per_circuit', 'mean_coherence', 'coupling_strength']"
+    },
+    "thought_amplification": {
+      "passed": true,
+      "detail": "keys=['thought_base', 'engines_available', 'entropy_amplification', 'harmonic_amplification', 'combined_thought_boost']"
+    },
+    "physics_amplification": {
+      "passed": true,
+      "detail": "keys=['physics_base', 'engines_available', 'thermodynamic_amplification', 'structural_amplification', 'phase5_thermodynamic']"
+    },
+    "three_engine_synthesis": {
+      "passed": true,
+      "detail": "keys=['thought_amplification', 'physics_amplification', 'thought_boost', 'physics_boost', 'engine_coverage']"
+    },
+    "asi_fe_sacred_score": {
+      "passed": true,
+      "detail": "Fe sacred score=0.9545454545454546"
+    },
+    "asi_phi_lock_score": {
+      "passed": true,
+      "detail": "\u03c6 lock score=0.9164078649987375"
+    },
+    "asi_berry_phase_score": {
+      "passed": true,
+      "detail": "Berry phase score=1.0"
+    },
+    "asi_consciousness_verify": {
+      "passed": true,
+      "detail": "keys=['quantum', 'consciousness_level', 'phi_integrated_information', 'awareness_entropy', 'integration_entropy']"
+    },
+    "asi_18d_score": {
+      "passed": true,
+      "detail": "ASI score=0.4209 (DEVELOPING)"
+    },
+    "deep_research": {
+      "passed": true,
+      "detail": "keys=['total_links', 'anomaly_detection', 'pattern_discovery', 'causal_analysis', 'spectral_correlation']"
+    },
+    "stochastic_research": {
+      "passed": true,
+      "detail": "keys=['cycle', 'iteration', 'candidates_explored', 'successfully_merged', 'avg_sacred_alignment']"
+    },
+    "wave_collapse_research": {
+      "passed": true,
+      "detail": "keys=['total_links', 'measurement_rounds', 'superposition_analysis', 'measurement_operators', 'collapse_dynamics']"
+    },
+    "sage_inference": {
+      "passed": true,
+      "detail": "keys=['timestamp', 'total_links', 'unified_score', 'god_code_alignment', 'phi_resonance']"
+    },
+    "dynamism_evolve": {
+      "passed": true,
+      "detail": "keys=['constants_evolved', 'total_drift']"
+    },
+    "nirvanic_cycle": {
+      "passed": true,
+      "detail": "keys=['ouroboros', 'application', 'cycle', 'total_entropy_fed', 'total_nirvanic_fuel']"
+    },
+    "consciousness_multiplier": {
+      "passed": true,
+      "detail": "multiplier=1.6180"
+    },
+    "link_tests": {
+      "passed": true,
+      "detail": "keys=['test_run', 'all_passed', 'total_violations', 'categories', 'regression_detected']"
+    },
+    "temporal_memory_snapshot": {
+      "passed": true,
+      "detail": "keys=['recorded', 'snapshot', 'trend']"
+    },
+    "self_healer_diagnose": {
+      "passed": true,
+      "detail": "10 issues found"
+    },
+    "agentic_observe": {
+      "passed": true,
+      "detail": "step=1, score=0.4342"
+    },
+    "agentic_think": {
+      "passed": true,
+      "detail": "strategy=SKIP, target=N/A"
+    },
+    "agentic_act": {
+      "passed": true,
+      "detail": "strategy=SKIP \u2014 no action needed"
+    },
+    "agentic_reflect": {
+      "passed": true,
+      "detail": "direction=N/A"
+    },
+    "agentic_summary": {
+      "passed": true,
+      "detail": "total_steps=1"
+    },
+    "evo_tracker_status": {
+      "passed": true,
+      "detail": "keys=['stage', 'index', 'link_evo_stage', 'consciousness', 'coherence']"
+    },
+    "chronolizer_timeline": {
+      "passed": true,
+      "detail": "0 events recorded"
+    },
+    "iit_phi": {
+      "passed": true,
+      "detail": "\u03a6 = 1.9990377850417502"
+    },
+    "gwt_broadcast": {
+      "passed": true,
+      "detail": "keys=['workspace_size', 'broadcast_strength', 'cascade_depth', 'total_activated', 'activation_ratio']"
+    },
+    "metacognitive_monitor": {
+      "passed": true,
+      "detail": "keys=['depth', 'stability', 'trend']"
+    },
+    "qualia_dimensionality": {
+      "passed": true,
+      "detail": "keys=['dimensions', 'richness']"
+    },
+    "spiral_consciousness": {
+      "passed": true,
+      "detail": "keys=['depth_reached', 'max_depth', 'convergence', 'score', 'final_signal']"
+    },
+    "fe_harmonic_overtone": {
+      "passed": true,
+      "detail": "keys=['fundamental_freq', 'overtones_detected', 'total_overtones', 'average_resonance', 'score']"
+    },
+    "ghz_witness_certify": {
+      "passed": true,
+      "detail": "keys=['passed', 'ghz_fidelity', 'purity', 'level', 'method']"
+    },
+    "consciousness_report": {
+      "passed": true,
+      "detail": "keys=['consciousness_level', 'asi_threshold', 'test_results', 'qualia_count', 'iit_phi']"
+    },
+    "demon_reversal": {
+      "passed": true,
+      "detail": "demon_eff=2.4568 (Q1 threshold>1.0)"
+    },
+    "entropy_cascade": {
+      "passed": true,
+      "detail": "sorted_frac=0.9787 (Q2 cascade)"
+    },
+    "void_equilibrium": {
+      "passed": true,
+      "detail": "V\u221e=130.90169943749473, bounded=True (Q3)"
+    },
+    "zne_demon_boost": {
+      "passed": true,
+      "detail": "boost=36.4% (Q5 ZNE)"
+    },
+    "coherence_evolution": {
+      "passed": true,
+      "detail": "evolved 10 steps"
+    },
+    "landauer_limit": {
+      "passed": true,
+      "detail": "Landauer@300K=9.36009029110768e-19"
+    },
+    "fe_lattice_hamiltonian": {
+      "passed": true,
+      "detail": "Fe(26) Hamiltonian built"
+    },
+    "phi_folding": {
+      "passed": true,
+      "detail": "7D\u21923D folding"
+    },
+    "math_god_code": {
+      "passed": true,
+      "detail": "GOD_CODE=527.5184818493"
+    },
+    "fibonacci_phi": {
+      "passed": true,
+      "detail": "F(20)/F(19)=1.6180339632"
+    },
+    "sacred_alignment_gc": {
+      "passed": true,
+      "detail": "alignment={'frequency': 527.5184818492612, 'god_code_ratio': 1.0000000000000002, 'phi_ratio': 326.0243514765879, 'octave_ratio': 3.203426503814917e-16, 'iron_ratio': 1.8402877441104526, 'aligned': True, 'fe_sacred_coherence': 0.9545454545454546, 'fe_phi_harmonic_lock': 0.9164078649987375, 'fe_coherence_at_freq': 0.9545454545454546, 'photon_resonance_eV': 1.1216596549374545}"
+    },
+    "wave_coherence_gc_286": {
+      "passed": true,
+      "detail": "coherence=0.9545454545454546"
+    },
+    "hd_vector": {
+      "passed": true,
+      "detail": "HD vector created (seed=104)"
+    },
+    "god_code_proof": {
+      "passed": true,
+      "detail": "GOD_CODE stability-nirvana proof"
+    },
+    "code_analysis": {
+      "passed": true,
+      "detail": "analysis_keys=['metadata', 'complexity', 'quality', 'security', 'patterns']"
+    },
+    "smell_detection": {
+      "passed": true,
+      "detail": "smells detected"
+    },
+    "perf_prediction": {
+      "passed": true,
+      "detail": "perf_keys=['version', 'filename', 'duration_seconds', 'performance_score', 'memory_estimate']"
+    },
+    "cross_engine_god_code_sync": {
+      "passed": true,
+      "detail": "Sci=527.5185, Math=527.5185, Code=527.5185, Quantum=527.5185"
+    },
+    "cross_pollination": {
+      "passed": true,
+      "detail": "keys=['cycle', 'exports', 'imports', 'coherence']"
+    },
+    "auto_upgrade": {
+      "passed": true,
+      "detail": "keys=['total_links', 'links_upgraded', 'upgrade_rate', 'mean_final_fidelity', 'mean_final_strength']"
+    },
+    "full_repair": {
+      "passed": true,
+      "detail": "keys=['total_links', 'triage', 'repairs', 'validation', 'post_repair_mean_fidelity']"
+    },
+    "self_healer_diag": {
+      "passed": true,
+      "detail": "0 issues"
+    },
+    "self_healer_heal": {
+      "passed": true,
+      "detail": "keys=['diagnosed', 'healed', 'strategies', 'total_healings', 'total_links_healed']"
+    },
+    "stress_tests": {
+      "passed": true,
+      "detail": "keys=['total_links', 'tested_links', 'sampled', 'total_tests', 'links_passed']"
+    },
+    "cross_modal": {
+      "passed": true,
+      "detail": "keys=['total_links', 'cross_modal_links', 'same_modal_links', 'cross_modal_ratio', 'py_swift_mirrors']"
+    },
+    "feedback_bus_send": {
+      "passed": true,
+      "detail": "sent=False"
+    },
+    "fidelity_trend": {
+      "passed": true,
+      "detail": "before=0.5513, after=0.5603, \u0394=+0.0091"
+    },
+    "post_upgrade_resonance": {
+      "passed": true,
+      "detail": "keys=['total_tested', 'god_code_aligned', 'x_integer_coherent', 'at_god_code_origin', 'mean_resonance']"
+    },
+    "sim_grover_search": {
+      "passed": true,
+      "detail": "keys=['algorithm', 'search_space', 'target_index', 'found_index', 'found_probability']"
+    },
+    "sim_shor_factor": {
+      "passed": true,
+      "detail": "keys=['algorithm', 'N', 'factors', 'factor_count', 'is_prime']"
+    },
+    "sim_iron_simulate": {
+      "passed": true,
+      "detail": "keys=['algorithm', 'element', 'atomic_number', 'n_qubits', 'quantum_properties']"
+    },
+    "sim_qaoa": {
+      "passed": true,
+      "detail": "keys=['algorithm', 'nodes', 'edges', 'depth_p', 'best_partition']"
+    },
+    "sim_vqe": {
+      "passed": true,
+      "detail": "keys=['algorithm', 'num_qubits', 'num_parameters', 'iterations_completed', 'optimized_energy']"
+    },
+    "kernel_status": {
+      "passed": true,
+      "detail": "keys=['sage_orchestrator', 'gate_engine', 'quantum_simulator', 'available']"
+    },
+    "agentic_self_reflect": {
+      "passed": true,
+      "detail": "steps=1, score=0.468327, grade=F (Critical)"
+    },
+    "score_trend": {
+      "passed": true,
+      "detail": "initial=0.434236 \u2192 final=0.468327, \u0394=+0.034091"
+    },
+    "link_evolution": {
+      "passed": true,
+      "detail": "initial=200 \u2192 final=200, \u0394=+0"
+    },
+    "brain_history": {
+      "passed": true,
+      "detail": "32 pipeline runs in history"
+    },
+    "full_simulator_bridge": {
+      "passed": true,
+      "detail": "grover=True, shor=True, iron=True, qaoa=True, vqe=True"
+    }
+  }
+}

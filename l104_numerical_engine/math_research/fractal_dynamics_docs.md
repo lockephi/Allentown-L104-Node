@@ -1,0 +1,16 @@
+{'type': 'class', 'name': 'FractalDynamicsLab', 'methods': ['feigenbaum_verification', '_refine_bifurcation', '_has_period', 'logistic_map_orbit', 'lyapunov_exponent', 'mandelbrot_orbit', 'full_analysis'], 'bases': 0, 'description': 'Fractal dynamics lab', 'docstring': '"""Fractal dynamics lab.\n\nMethods: feigenbaum_verification, _refine_bifurcation, _has_period, logistic_map_orbit, lyapunov_exponent, mandelbrot_orbit, full_analysis\n"""'}
+
+{'type': 'function', 'name': 'feigenbaum_verification', 'params': ['depth'], 'param_types': {'depth': 'int'}, 'return_type': 'Dict', 'has_return': True, 'decorators': [], 'docstring': '"""Feigenbaum verification.\n\nArgs:\n        depth (int): Description of depth\n\nReturns:\n    Dict\n\nRaises:\n    None\n"""', 'description': 'Feigenbaum verification'}
+
+{'type': 'function', 'name': '_refine_bifurcation', 'params': ['r_seed', 'period'], 'param_types': {'r_seed': 'D', 'period': 'int'}, 'return_type': 'D', 'has_return': True, 'decorators': [], 'docstring': '"""Refine bifurcation.\n\nArgs:\n        r_seed (D): Description of r_seed\n    period (int): Description of period\n\nReturns:\n    D\n\nRaises:\n    None\n"""', 'description': 'Refine bifurcation'}
+
+{'type': 'function', 'name': '_has_period', 'params': ['r', 'period'], 'param_types': {'r': 'D', 'period': 'int'}, 'return_type': 'bool', 'has_return': True, 'decorators': [], 'docstring': '"""Has period.\n\nArgs:\n        r (D): Description of r\n    period (int): Description of period\n\nReturns:\n    bool\n\nRaises:\n    None\n"""', 'description': 'Has period'}
+
+{'type': 'function', 'name': 'logistic_map_orbit', 'params': ['r_val', 'x0', 'iterations'], 'param_types': {'r_val': 'float', 'x0': 'float', 'iterations': 'int'}, 'return_type': 'Dict', 'has_return': True, 'decorators': [], 'docstring': '"""Logistic map orbit.\n\nArgs:\n        r_val (float): Description of r_val\n    x0 (float): Description of x0\n    iterations (int): Description of iterations\n\nReturns:\n    Dict\n\nRaises:\n    None\n"""', 'description': 'Logistic map orbit'}
+
+{'type': 'function', 'name': 'lyapunov_exponent', 'params': ['r_val', 'x0', 'iterations'], 'param_types': {'r_val': 'float', 'x0': 'float', 'iterations': 'int'}, 'return_type': 'float', 'has_return': True, 'decorators': [], 'docstring': '"""Lyapunov exponent.\n\nArgs:\n        r_val (float): Description of r_val\n    x0 (float): Description of x0\n    iterations (int): Description of iterations\n\nReturns:\n    float\n\nRaises:\n    None\n"""', 'description': 'Lyapunov exponent'}
+
+{'type': 'function', 'name': 'mandelbrot_orbit', 'params': ['c_real', 'c_imag', 'max_iter'], 'param_types': {'c_real': 'float', 'c_imag': 'float', 'max_iter': 'int'}, 'return_type': 'Dict', 'has_return': True, 'decorators': [], 'docstring': '"""Mandelbrot orbit.\n\nArgs:\n        c_real (float): Description of c_real\n    c_imag (float): Description of c_imag\n    max_iter (int): Description of max_iter\n\nReturns:\n    Dict\n\nRaises:\n    None\n"""', 'description': 'Mandelbrot orbit'}
+
+{'type': 'function', 'name': 'full_analysis', 'params': [], 'param_types': {}, 'return_type': 'Dict', 'has_return': True, 'decorators': [], 'docstring': '"""Full analysis.\n\nArgs:\n        None\n\nReturns:\n    Dict\n\nRaises:\n    None\n"""', 'description': 'Full analysis'}
+

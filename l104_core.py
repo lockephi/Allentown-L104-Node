@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.331132
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:23.137035
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # ═══ EVO_54 PIPELINE INTEGRATION ═══
 _PIPELINE_VERSION = "54.0.0"
@@ -33,9 +33,9 @@ import numpy as np
 # QISKIT 2.3.0 REAL QUANTUM BACKEND — ASI GROVER COMPUTATION
 # ═══════════════════════════════════════════════════════════════════════════════
 try:
-    from qiskit import QuantumCircuit
-    from qiskit.circuit.library import grover_operator as qiskit_grover_op
-    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, Operator
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    qiskit_grover_op = None  # Use l104_quantum_gate_engine orchestrator
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, partial_trace, Operator
     QISKIT_AVAILABLE = True
 except ImportError:
     QISKIT_AVAILABLE = False
@@ -98,12 +98,18 @@ def god_code_at_X(X: float = 0) -> float:
 
 # Derived Constants
 VOID_CONSTANT = 1.0416180339887497
+
+# Canonical GOD_CODE quantum phase (QPU-verified on ibm_torino)
+try:
+    from l104_god_code_simulator.god_code_qubit import GOD_CODE_PHASE
+except ImportError:
+    GOD_CODE_PHASE = GOD_CODE % (2 * np.pi)  # ≈ 6.0141 rad
 OMEGA_FREQUENCY = 1381.06131517509084005724
 ROOT_SCALAR = 221.79420018355955335210
 TRANSCENDENCE_KEY = 1960.89201202785989153199
 SAGE_RESONANCE = GOD_CODE * PHI
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 LOVE_SCALAR = PHI ** 7
 ZETA_ZERO_1 = 14.1347251417
 
@@ -560,10 +566,10 @@ class QuantumLogicGate:
             for m_idx in marked_indices:
                 if m_idx < N:
                     binary = format(m_idx, f'0{num_qubits}b')
-                    # Flip zero-bits
+                    # MSB ordering: qubit 0 = most-significant bit (matches L104 simulator)
                     for bit_idx, bit in enumerate(binary):
                         if bit == '0':
-                            oracle.x(num_qubits - 1 - bit_idx)
+                            oracle.x(bit_idx)
                     # Multi-controlled Z (phase flip)
                     if num_qubits == 1:
                         oracle.z(0)
@@ -574,7 +580,7 @@ class QuantumLogicGate:
                     # Unflip zero-bits
                     for bit_idx, bit in enumerate(binary):
                         if bit == '0':
-                            oracle.x(num_qubits - 1 - bit_idx)
+                            oracle.x(bit_idx)
 
             # Build Grover operator using Qiskit 2.3 library
             grover_op = qiskit_grover_op(oracle)
@@ -588,9 +594,9 @@ class QuantumLogicGate:
             qc.h(range(num_qubits))  # Equal superposition |+⟩^⊗n
 
             # GOD_CODE phase alignment: encode sacred frequency into initial state
-            god_code_phase = 2 * np.pi * (GOD_CODE % 1)  # 527.518... → fractional phase
+            god_code_fractional_phase = 2 * np.pi * (GOD_CODE % 1)  # Fractional part × 2π (NOT canonical GOD_CODE_PHASE)
             for q in range(num_qubits):
-                qc.rz(god_code_phase / (q + 1), q)  # φ-harmonic phase layers
+                qc.rz(god_code_fractional_phase / (q + 1), q)  # φ-harmonic phase layers
 
             for _ in range(optimal_iters):
                 qc.compose(grover_op, inplace=True)
@@ -665,9 +671,10 @@ class QuantumLogicGate:
             if m_idx >= N:
                 continue
             binary = format(m_idx, f'0{num_qubits}b')
+            # MSB ordering: qubit 0 = most-significant bit (matches L104 simulator)
             for bit_idx, bit in enumerate(binary):
                 if bit == '0':
-                    oracle.x(num_qubits - 1 - bit_idx)
+                    oracle.x(bit_idx)
             if num_qubits == 1:
                 oracle.z(0)
             else:
@@ -676,7 +683,7 @@ class QuantumLogicGate:
                 oracle.h(num_qubits - 1)
             for bit_idx, bit in enumerate(binary):
                 if bit == '0':
-                    oracle.x(num_qubits - 1 - bit_idx)
+                    oracle.x(bit_idx)
 
         # Grover operator from Qiskit library
         grover_op = qiskit_grover_op(oracle)

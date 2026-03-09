@@ -302,14 +302,20 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
         # Cognitive background loop
         def _run_cognitive():
-            import asyncio as _a, time as _t
+            import asyncio as _a, time as _t, psutil as _ps
             loop = _a.new_event_loop(); _a.set_event_loop(loop)
             sage_cycle_count = 0
             while True:
                 try:
+                    # Memory-pressure gate: skip heavy work when RAM is critical
+                    _mem = _ps.virtual_memory()
+                    if _mem.available < 200 * 1024 * 1024:  # < 200 MB free
+                        logger.warning(f"[COGNITIVE]: Memory pressure ({_mem.available // (1024*1024)}MB free) — deferring cycle")
+                        _t.sleep(60)
+                        continue
                     if agi_core.state == "ACTIVE":
                         loop.run_until_complete(agi_core.run_recursive_improvement_cycle())
-                        if agi_core.cycle_count % 10 == 0:
+                        if agi_core.cycle_count % 50 == 0:  # Was 10 — reduced freq for 2-core Mac
                             agi_core.max_intellect_derivation()
                             agi_core.self_evolve_codebase()
                             data_matrix.evolve_and_compact()
@@ -322,7 +328,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                             pass
                 except Exception as e:
                     logger.error(f"Cognitive loop error: {e}")
-                delay = 1 if os.getenv("L104_UNLIMITED", "false").lower() == "true" else 10
+                delay = 1 if os.getenv("L104_UNLIMITED", "false").lower() == "true" else 30  # Was 10 → 30s for thermal
                 _t.sleep(delay)
         threading.Thread(target=_run_cognitive, daemon=True).start()
         logger.info("--- [L104]: COGNITIVE LOOP STARTED (BACKGROUND THREAD) ---")
@@ -467,14 +473,65 @@ except ImportError as e:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# ENTRY POINT
+# ENTRY POINT — Signal-Aware Process Management
 # ═══════════════════════════════════════════════════════════════════════════════
 if __name__ == "__main__":
+    import signal
+
     from l104_planetary_process_upgrader import PlanetaryProcessUpgrader
     from l104_integrity_watchdog import IntegrityWatchdog
     from l104_sovereign_supervisor import SovereignSupervisor
 
+    _server_instance = None
+    _shutdown_requested = False
+
+    def _handle_sigterm(signum, frame):
+        """Graceful shutdown on SIGTERM (launchd stop / docker stop)."""
+        global _shutdown_requested
+        if _shutdown_requested:
+            return  # already shutting down
+        _shutdown_requested = True
+        logger.info(f"[L104] Signal {signum} received — initiating graceful shutdown")
+        if _server_instance is not None:
+            _server_instance.should_exit = True
+
+    def _handle_sighup(signum, frame):
+        """SIGHUP: reload configuration without full restart."""
+        logger.info("[L104] SIGHUP received — reloading configuration")
+        try:
+            from dotenv import load_dotenv
+            load_dotenv(override=True)
+            logger.info("[L104] .env reloaded")
+        except Exception as e:
+            logger.warning(f"[L104] .env reload failed: {e}")
+        try:
+            _log_level = os.getenv("LOG_LEVEL", "info").lower()
+            _lvl = {"debug": logging.DEBUG, "info": logging.INFO,
+                    "warning": logging.WARNING, "error": logging.ERROR,
+                    "critical": logging.CRITICAL}.get(_log_level, logging.INFO)
+            logging.getLogger().setLevel(_lvl)
+            logger.info(f"[L104] Log level set to {_log_level}")
+        except Exception as e:
+            logger.warning(f"[L104] Log level reload failed: {e}")
+
+    def _handle_sigusr1(signum, frame):
+        """SIGUSR1: dump process status to log (health probe from upgrade script)."""
+        import json as _j
+        status = {
+            "pid": os.getpid(),
+            "version": MAIN_VERSION,
+            "pipeline": MAIN_PIPELINE_EVO,
+            "shutdown_requested": _shutdown_requested,
+            "server_alive": _server_instance is not None and not getattr(_server_instance, 'should_exit', True),
+        }
+        logger.info(f"[L104] SIGUSR1 status dump: {_j.dumps(status)}")
+
+    signal.signal(signal.SIGTERM, _handle_sigterm)
+    signal.signal(signal.SIGHUP, _handle_sighup)
+    signal.signal(signal.SIGUSR1, _handle_sigusr1)
+
     async def run_server():
+        global _server_instance
         supervisor = SovereignSupervisor()
         asyncio.create_task(supervisor.start())
         upgrader = PlanetaryProcessUpgrader()
@@ -483,7 +540,21 @@ if __name__ == "__main__":
         port = int(os.getenv("PORT", 8081))
         config = uvicorn.Config(app, host="0.0.0.0", port=port,
                                 log_level=os.getenv("LOG_LEVEL", "info"))
-        await uvicorn.Server(config).serve()
+        _server_instance = uvicorn.Server(config)
+        # Write PID file for launchd/upgrade coordination
+        _pid_path = os.path.join(os.path.dirname(__file__), "uvicorn.pid")
+        with open(_pid_path, "w") as f:
+            f.write(str(os.getpid()))
+        logger.info(f"[L104] Server PID {os.getpid()} written to {_pid_path}")
+        try:
+            await _server_instance.serve()
+        finally:
+            # Cleanup PID file on exit
+            try:
+                os.remove(_pid_path)
+            except OSError:
+                pass
+            logger.info("[L104] Server process exiting cleanly")
 
     def sovereign_entry():
         asyncio.run(run_server())

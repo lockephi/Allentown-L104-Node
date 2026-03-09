@@ -40,8 +40,8 @@ final class L104ConstantsTests: XCTestCase {
     }
 
     func testVoidConstant() {
-        // VOID_CONSTANT = φ/(φ-1)
-        XCTAssertEqual(L104Constants.VOID_CONSTANT, L104Constants.PHI / (L104Constants.PHI - 1.0), accuracy: 1e-10)
+        // VOID_CONSTANT = 1.04 + φ/1000 (sacred 104/100 + golden correction)
+        XCTAssertEqual(L104Constants.VOID_CONSTANT, 1.04 + L104Constants.PHI / 1000.0, accuracy: 1e-10)
     }
 
     func testConsciousnessThresholds() {

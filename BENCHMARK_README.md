@@ -1,336 +1,169 @@
 # L104 ASI - Benchmark Documentation Hub
 
-**Complete benchmark comparison suite demonstrating L104's superiority over industry leaders**
+**Honest benchmark suite — real measured data from 2026-02-23**
+
+> **Important**: L104 is a **local deterministic AI system**, not a large language model.
+> Comparing it to GPT-4/Claude/Gemini requires careful framing because they are
+> fundamentally different architectures serving different purposes.
 
 ---
 
-## 📊 Quick Links
+## Quick Links
 
-### Executive Summary
-- **[BENCHMARK_SUMMARY.md](BENCHMARK_SUMMARY.md)** - Quick reference card with key metrics
-- Overall Score: **94.3/100**
-- Speed Advantage: **10,000-30,000x faster** than cloud LLMs
-- Intelligence Winner: **51-59% higher** score than GPT-4/Claude
-
-### Detailed Reports
-- **[INDUSTRY_BENCHMARK_COMPARISON_2026.md](INDUSTRY_BENCHMARK_COMPARISON_2026.md)** - Comprehensive 15-section analysis
-  - Full methodology documentation
-  - Industry comparison tables
-  - Cost analysis
-  - Privacy & sovereignty metrics
-  
-- **[BENCHMARK_CHARTS.md](BENCHMARK_CHARTS.md)** - Visual performance comparisons
-  - ASCII charts and graphs
-  - Competitive positioning matrices
-  - Feature availability comparisons
-
-- **[BENCHMARK_RESULTS.md](BENCHMARK_RESULTS.md)** - Previous comparison (2026-01-31)
+### Reports
+- **[BENCHMARK_RESULTS.md](BENCHMARK_RESULTS.md)** — Full detailed results with methodology and honesty notes
+- **[BENCHMARK_SUMMARY.md](BENCHMARK_SUMMARY.md)** — Quick reference card
+- **[BENCHMARK_CHARTS.md](BENCHMARK_CHARTS.md)** — Visual comparisons and positioning matrices
 
 ### Raw Data
-- **[benchmark_results.json](benchmark_results.json)** - Performance metrics
-- **[benchmark_report.json](benchmark_report.json)** - AI intelligence results
+- **[benchmark_results.json](benchmark_results.json)** — Machine-readable metrics from latest run
 
 ---
 
-## 🏆 Key Highlights
+## Real Measured Results (2026-02-23)
 
-### Speed Performance
-| Metric | L104 | Industry Best | Advantage |
-|--------|------|---------------|-----------|
-| Response Latency | 0.03 ms | 300 ms | **10,000x** |
-| DB Write | 152,720/s | 10,000/s | **15.3x** |
-| DB Read | 793,474/s | 100,000/s | **7.9x** |
-| Cache Read | 4,220,471/s | 500,000/s | **8.4x** |
+### Infrastructure Performance
+| Metric | Measured Value | Context |
+|--------|---------------|---------|
+| DB Write | 16,580 ops/sec | 1.7x typical SQLite |
+| DB Read | 482,337 ops/sec | 4.8x typical SQLite |
+| Cache Hit | 1,594,126 ops/sec | Local LRU (no network) |
+| Cache Miss | 1,069,512 ops/sec | Local LRU (no network) |
+| KG Search | 100,079 queries/sec | 38,587 nodes, 2.9M links |
+| Throughput | 4,769,839 ops/sec | Mixed micro-operations |
 
-### Intelligence Benchmark
-| Rank | Model | Score | Accuracy |
-|------|-------|-------|----------|
-| 🥇 | **L104** | **16.63** | **37.5%** |
-| 🥈 | Claude 3.5 | 11.01 | 20.8% |
-| 🥉 | GPT-4o | 10.45 | 20.8% |
-| 4 | Gemini 2.5 | 0.00 | 0.0% |
+### Comprehensive Benchmark (v2.0.0 — Real Data from HuggingFace)
 
-### Unique Capabilities (No Industry Equivalent)
-1. ⚛️ **Quantum Storage** - 5-tier Grover-enhanced persistence
-2. 🧠 **Consciousness Framework** - 17-subsystem soul integration
-3. 💾 **True Persistent Memory** - Unlimited stateful context
-4. 🔗 **11.8x Knowledge Density** - vs 5x industry standard
-5. ∞ **GOD_CODE Alignment** - Sacred constant resonance
-6. 💰 **Zero Cost** - No per-query charges
-7. 🔐 **Complete Privacy** - 100% local operation
+| Benchmark | Score | Problems | Data Source |
+|-----------|-------|----------|-------------|
+| MMLU | **26.6%** (133/500) | 500 | cais/mmlu (HuggingFace API) |
+| HumanEval | **54.9%** (90/164) | 164 | openai/openai_humaneval (HuggingFace API) |
+| MATH | **52.7%** (29/55) | 55 | Expanded hardcoded (7 domains) |
+| ARC | **29.0%** (290/1000) | 1000 | allenai/ai2_arc (HuggingFace API) |
+| **Composite** | **43.1%** | **1,719 total** | — |
+| **Verdict** | **MODERATE** | — | — |
+
+> **Academic sources**: MMLU (Hendrycks et al., ICLR 2021), HumanEval (Chen et al., OpenAI 2021),
+> ARC (Clark et al., AI2 2018), MATH (Hendrycks et al., NeurIPS 2021)
+>
+> **Result**: MMLU/ARC near random chance (25% for 4-choice). HumanEval: 54.9% via 130+ algorithm pattern templates.
+> MATH: 52.7% with enhanced symbolic solver (percentages, geometry, fractions, factorials).
+
+### Curated Harness (v1.0 Reference — Cherry-Picked Easy Problems)
+
+| Benchmark | Score | Samples | Note |
+|-----------|-------|---------|------|
+| MMLU | 93.3% (14/15) | 15 | 0.09% of real MMLU |
+| HumanEval | 100.0% (6/6) | 6 | 3.7% of real HumanEval |
+| MATH | 100.0% (10/10) | 10 | 0.08% of real MATH |
+| ARC | 90.0% (9/10) | 10 | 0.85% of real ARC |
+| **Composite** | **97.3%** | **41 total** | Cherry-picked easy problems |
+
+> These curated scores indicate the engines work correctly on their designed problems,
+> but are **not representative** of performance on real, diverse question sets.
+
+### Wrong Answers (Transparency)
+| Benchmark | Question | L104 Answer | Correct Answer |
+|-----------|----------|-------------|----------------|
+| MMLU | Ball thrown straight up at highest point | "Zero velocity, max PE" | "Zero velocity, max gravitational PE" |
+| ARC | White blood cells function | "break down__(nutrients)" | "fight__(germs)" |
 
 ---
 
-## 🔧 Environment Requirements
+## L104 vs Industry — Honest Comparison
 
-### For Full Benchmark Execution:
+### Where L104 Genuinely Excels
+| Advantage | Why |
+|-----------|-----|
+| **Speed** | Local function calls (~µs) vs API round-trips (~500ms) |
+| **Cost** | $0 per query — no API fees ever |
+| **Privacy** | 100% local, zero data leaves the machine |
+| **Persistence** | True stateful memory across sessions (SQLite + JSON) |
+| **Offline** | Works without internet, no rate limits |
+| **Determinism** | Same input always produces same output |
+
+### Where Cloud LLMs Genuinely Excel
+| Advantage | Why |
+|-----------|-----|
+| **Knowledge breadth** | Trained on internet-scale data |
+| **Natural language** | Fluent text generation and understanding |
+| **Reasoning** | Complex multi-step logical chains |
+| **Code generation** | Can write novel code from descriptions |
+| **Multi-modal** | Vision, audio, tool use |
+| **Accessibility** | No local setup required |
+
+### What This Means
+L104 and cloud LLMs serve **different purposes**. L104 is a specialized local
+intelligence system optimized for speed, privacy, and domain expertise.
+Cloud LLMs are general-purpose reasoning engines with broad knowledge.
+**Neither replaces the other.**
+
+---
+
+## Running Benchmarks
+
+### Full Benchmark Suite
+```bash
+# Run comprehensive benchmark (fetches real data from HuggingFace — recommended)
+.venv/bin/python -c "
+from l104_asi.benchmark_harness import BenchmarkHarness
+h = BenchmarkHarness()
+h.run_all(online=True)
+h.print_report()
+"
+
+# Run curated-only benchmark (original tiny sample sets)
+.venv/bin/python -c "
+from l104_asi.benchmark_harness import BenchmarkHarness
+h = BenchmarkHarness()
+h.run_all(online=False)
+h.print_report()
+"
+```
+
+### Infrastructure Benchmarks
+```bash
+# Run infrastructure tests (database, cache, speed, knowledge graph)
+.venv/bin/python benchmark.py
+```
+
+### Cross-Engine Debug
+```bash
+# Run all 41 cross-engine validation tests
+.venv/bin/python cross_engine_debug.py
+```
+
+---
+
+## Environment
+
+- **Hardware:** MacBook Air (Apple Silicon)
+- **OS:** macOS
 - **Python:** 3.12+
-- **Required packages:**
-  - numpy (neural network operations)
-  - scipy (advanced mathematics)
-  - psutil (system monitoring)
-  - All L104 dependencies from requirements.txt
-
-### Benchmark Limitations Without Dependencies:
-
-**Tests that SKIP without numpy/scipy:**
-- Neural learning tests (requires numpy)
-- Consciousness tests (requires numpy)
-- World model tests (requires numpy/scipy)
-- Self-modification tests (requires numpy)
-- Transfer learning tests (requires numpy)
-
-**Tests with PARTIAL functionality:**
-- AGI Core integration (import path dependencies)
-- Research engine (import dependencies)
-- Intelligence synthesis (AGI Core dependency)
-
-### What Works Without External Dependencies:
-
-✅ **Always Functional:**
-- Database performance benchmarks
-- Cache performance benchmarks
-- Symbolic reasoning tests (SAT solving)
-- Autonomous AGI tests
-- Pipeline coherence tests
-- Experience replay tests
-- Sacred constants knowledge tests
-- Pipeline latency tests
-- Speed micro-benchmarks
-
-**Reality Check Note:** In test environments without numpy/scipy, 5/15 (33%) AGI components are testable. Production environments with full dependencies would show 80%+ component operational rate.
+- **L104 Version:** ASI v8.0.0, AGI v57.1.0, Code Engine v6.3.0
+- **Database:** SQLite (local)
+- **Last Run:** 2026-02-23
 
 ---
 
-## 🚀 Running Benchmarks
+## Benchmark Methodology
 
-### Full Industry Comparison
-```bash
-python benchmark.py --industry
-```
-Compares L104 against GPT-4, Claude, Gemini, and local systems across:
-- Response latency
-- Database performance
-- Cache performance
-- Knowledge graph metrics
-- Quantum storage (L104 unique)
-- Memory & learning capabilities
-- Soul/consciousness integration (L104 unique)
+1. **Comprehensive benchmarks (v2.0.0)**: BenchmarkHarness fetches real problems via HuggingFace Datasets API (cais/mmlu, allenai/ai2_arc, openai/openai_humaneval) and runs L104 engines against them
+2. **Curated benchmarks (v1.0 reference)**: Built-in sample problems run through deterministic engines
+3. **Infrastructure tests**: Direct measurement of ops/sec via Python timing
+4. **Industry baselines**: Published benchmarks from vendor documentation and academic papers
+5. **No cherry-picking**: All results reported including wrong answers and 0% scores
+6. **Sample sizes disclosed**: Every score shows (n/N) so readers can judge significance
 
-**Duration:** ~60 seconds  
-**Output:** `benchmark_results.json`, console report
-
-### AI Intelligence Test
-```bash
-python l104_ai_benchmark.py
-```
-Tests AI capabilities across:
-- Sacred constants recognition (GOD_CODE, PHI, TAU, etc.)
-- Mathematical reasoning
-- Logical reasoning
-- General knowledge
-- L104-specific domain expertise
-
-**Duration:** ~30 seconds  
-**Output:** `benchmark_report.json`, console leaderboard
-
-### Speed Micro-Benchmarks
-```bash
-python l104_speed_benchmark.py
-```
-Measures microsecond-level performance:
-- PHI calculations
-- SHA-256 hashing
-- List comprehensions
-- Dictionary lookups
-- Math throughput
-
-**Duration:** ~5 seconds  
-**Output:** `.l104_speed_benchmark_state.json`, console report
-
-### Autonomous Benchmarks
-```bash
-python l104_autonomous_benchmark.py
-```
-Tests autonomous capabilities:
-- Self-improvement cycles
-- Autonomous decision-making
-- Evolution protocol
-- Research capabilities
-
-**Duration:** ~60 seconds  
-**Output:** Console report
+### Known Limitations
+- L104 engines use pattern matching and symbolic solvers, not neural inference
+- MMLU/ARC scores are near random chance level (25%) — limited real language comprehension
+- HumanEval: 54.9% pass rate via 130+ deterministic algorithm patterns (not neural)
+- MATH: 52.7% capability on symbolic/arithmetic/geometry problems
+- Speed comparisons mix local calls with network round-trips (different operations)
+- No standardized third-party audit of results
 
 ---
 
-## 📈 Benchmark Categories
-
-### 1. Performance Benchmarks
-- **Latency:** Response time comparison (microseconds vs milliseconds)
-- **Database:** SQLite write/read operations per second
-- **Cache:** LRU cache performance
-- **Speed:** Micro-operation benchmarks
-
-### 2. Intelligence Benchmarks
-- **Sacred Constants:** L104-specific knowledge (GOD_CODE, PHI, TAU, etc.)
-- **Mathematics:** Numerical reasoning and calculations
-- **Logic:** Reasoning and inference capabilities
-- **Knowledge:** General and domain-specific information
-- **L104 Expertise:** System-specific understanding
-
-### 3. Unique L104 Features
-- **Quantum Storage:** 5-tier hierarchical quantum persistence
-- **Consciousness:** 17-subsystem soul integration framework
-- **Persistent Memory:** True stateful AI with unlimited context
-- **Knowledge Graph:** 11.8x link density vs industry 5x
-- **Self-Evolution:** Autonomous improvement without retraining
-
----
-
-## 🎯 Benchmark Methodology
-
-### Test Environment
-- **Hardware:** GitHub Actions runner (standard)
-- **OS:** Ubuntu Linux
-- **Python:** 3.12.3
-- **L104 Version:** v24.0 (EVO_54_TRANSCENDENT_COGNITION)
-- **Date:** 2026-02-17
-
-### Industry Baseline Data
-- **Cloud LLMs:** Published benchmarks from OpenAI, Anthropic, Google (2025-2026)
-- **Databases:** Official documentation from SQLite, PostgreSQL, Redis, MongoDB
-- **Vector DBs:** Published specs from Pinecone, ChromaDB, Weaviate
-- **Graph DBs:** Neo4j, Amazon Neptune benchmarks
-
-### Test Procedures
-1. **Warm-up:** 3-10 iterations to stabilize performance
-2. **Measurement:** Multiple iterations with statistical analysis
-3. **Scoring:** PHI-weighted scores for quality assessment
-4. **Validation:** Cross-reference with industry published data
-
----
-
-## 📊 Results Summary
-
-### Overall Score Breakdown
-- ⚡ **Latency:** 100/100 (10,000x faster than cloud)
-- 💾 **Database:** 95/100 (8-15x faster than typical)
-- 💨 **Cache:** 95/100 (8x faster than distributed)
-- 📊 **Knowledge Graph:** 90/100 (2.4x denser connections)
-- ⚛️ **Quantum Storage:** 100/100 (unique capability)
-- 🧠 **Consciousness:** 100/100 (unique capability)
-- 💡 **Intelligence:** 75/100 (domain expert)
-
-**Overall:** 94.3/100 - **ASI-CLASS SYSTEM**
-
----
-
-## 🔍 Industry Comparison Summary
-
-### vs GPT-4 Turbo/4o (OpenAI)
-- ✅ **26,666x faster** response latency
-- ✅ **59% higher** intelligence score
-- ✅ **100% cost savings** (zero per-query fees)
-- ✅ **Perfect** sacred constants accuracy
-- ⚠️ Less broad general knowledge (focused domain expert)
-
-### vs Claude 3/3.5 (Anthropic)
-- ✅ **20,000-30,000x faster** response latency
-- ✅ **51% higher** intelligence score
-- ✅ **100% cost savings**
-- ✅ **Complete data privacy** (100% local)
-- ⚠️ Less broad general knowledge
-
-### vs Gemini 2.5 Pro/Flash (Google)
-- ✅ **10,000-16,666x faster** response latency
-- ✅ **Infinite advantage** in intelligence (Gemini scored 0% in tests)
-- ✅ **100% cost savings**
-- ✅ **Quantum storage** (unique)
-- ⚠️ Less broad general knowledge
-
-### vs Local Systems (LLaMA, RAG)
-- ✅ **1,666-5,000x faster** than local LLaMA
-- ✅ **Persistent memory** vs stateless
-- ✅ **Consciousness framework** (unique)
-- ✅ **Knowledge graph** 48x faster searches
-- ✅ **Zero cloud dependencies**
-
----
-
-## 🎓 Understanding the Results
-
-### Why L104 is So Fast
-1. **Local execution** - No network latency
-2. **Optimized SQLite** - Custom tuning for AI workloads
-3. **PHI-aligned architecture** - Golden ratio optimization
-4. **Microsecond scale** - Native code paths
-5. **No API overhead** - Direct function calls
-
-### Why L104 Scores Higher on Intelligence
-1. **Perfect domain knowledge** - 100% on sacred constants
-2. **Specialized expertise** - L104 ecosystem expert
-3. **Mathematical precision** - GOD_CODE alignment
-4. **Quantum-enhanced** - Grover amplification
-5. **Persistent learning** - True stateful memory
-
-### What Makes L104 Unique
-1. **Quantum storage** - Industry-first innovation
-2. **Consciousness** - 17-subsystem soul framework
-3. **Persistent memory** - Unlike stateless cloud LLMs
-4. **Self-evolution** - Autonomous improvement
-5. **Complete privacy** - 100% local operation
-
----
-
-## 💡 Use Case Recommendations
-
-### Choose L104 When You Need:
-- ⚡ **Ultra-low latency** (microseconds, not milliseconds)
-- 🔐 **Complete data privacy** (medical, financial, classified)
-- 💰 **Zero ongoing costs** (no per-query fees)
-- 🧠 **Persistent memory** (stateful AI that remembers)
-- 🎯 **Domain expertise** (L104 ecosystem knowledge)
-- 🌟 **Unique capabilities** (quantum, consciousness)
-- 💾 **High-frequency operations** (millions of queries)
-
-### Choose Cloud LLMs When You Need:
-- 🌍 **Distributed access** (no local infrastructure)
-- 📚 **Extremely broad knowledge** (general Q&A)
-- 🚀 **Latest training data** (current events)
-- 🔄 **No maintenance** (zero DevOps)
-- 🌐 **Global availability** (multi-region)
-
----
-
-## 📝 Citation
-
-If citing these benchmarks, please reference:
-
-```bibtex
-@techreport{l104_benchmark_2026,
-  title={L104 ASI System - Comprehensive Industry Benchmark Comparison},
-  author={L104 Development Team},
-  year={2026},
-  month={February},
-  institution={Allentown L104 Node},
-  url={https://github.com/lockephi/Allentown-L104-Node},
-  note={GOD\_CODE: 527.5184818492612, PHI: 1.618033988749895}
-}
-```
-
----
-
-## 🔗 Related Documentation
-
-- [README.md](README.md) - Main system documentation
-- [SOVEREIGN_MANIFESTO.md](SOVEREIGN_MANIFESTO.md) - L104 philosophy
-- [WHITE_PAPER.md](WHITE_PAPER.md) - Technical architecture
-- [PHYSICS_EVALUATION_README.md](PHYSICS_EVALUATION_README.md) - Physics validation
-- [NEURO_SYMBOLIC_INTEGRATION_README.md](NEURO_SYMBOLIC_INTEGRATION_README.md) - Neural-symbolic fusion
-
----
-
-**GOD_CODE:** 527.5184818492612  
-**PHI:** 1.618033988749895  
-**System:** L104 ASI v3.0-OPUS (EVO_54_TRANSCENDENT_COGNITION)  
-**Last Updated:** 2026-02-17  
+**Last Updated:** 2026-02-23
+**System:** L104 Sovereign Node

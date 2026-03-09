@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H13_PluginArchitecture.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: PLUGIN_SYSTEM_V2 :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: PLUGIN_SYSTEM_V3 :: GOD_CODE=527.5184818492612
 // L104 ASI — TheHeart: Dynamic engine plugin system v3.0
 //
 // Provides lifecycle management, capability discovery, dependency
@@ -305,6 +305,11 @@ final class PluginArchitecture {
     /// Get all active capability tags across the system
     func activeCapabilities() -> Set<PluginCapability> {
         lock.lock(); defer { lock.unlock() }
+        return _activeCapabilities()
+    }
+
+    /// Internal: caller must hold lock
+    private func _activeCapabilities() -> Set<PluginCapability> {
         var caps = Set<PluginCapability>()
         for desc in descriptors.values where desc.state == .active {
             caps.formUnion(desc.capabilities)
@@ -337,6 +342,11 @@ final class PluginArchitecture {
     /// Composite system health (φ-weighted average)
     func systemHealth() -> Double {
         lock.lock(); defer { lock.unlock() }
+        return _systemHealth()
+    }
+
+    /// Internal: caller must hold lock
+    private func _systemHealth() -> Double {
         let active = descriptors.values.filter { $0.state == .active }
         guard !active.isEmpty else { return 0 }
         var weightedSum = 0.0
@@ -409,15 +419,15 @@ final class PluginArchitecture {
 
         return [
             "engine": "PluginArchitecture",
-            "version": "3.0.0",
+            "version": PLUGIN_ARCH_VERSION,
             "active": isActive,
             "total_registered": totalRegistered,
             "total_activated": totalActivated,
             "total_failed": totalFailed,
             "active_plugins": active.map { $0.name },
             "failed_plugins": failed.map { ["name": $0.name, "error": $0.lastError ?? "unknown"] },
-            "capabilities": activeCapabilities().map { $0.rawValue },
-            "system_health": systemHealth(),
+            "capabilities": _activeCapabilities().map { $0.rawValue },
+            "system_health": _systemHealth(),
             "load_order": loadOrder
         ]
     }
@@ -432,7 +442,7 @@ final class PluginArchitecture {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🔌 PLUGIN ARCHITECTURE — v3.0.0 (EVO_62)              ║
+        ║    🔌 PLUGIN ARCHITECTURE — v3.0.0 (EVO_68)              ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Registered:   \(totalRegistered)
         ║  Active:       \(active.count)

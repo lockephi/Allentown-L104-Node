@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H24_APIGateway.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — API Gateway: HTTP endpoint management, request routing,
 // rate limiting, connection pooling, and external service integration
 // for the L104 network mesh.
@@ -75,6 +75,17 @@ final class APIGateway {
         registerEndpoint(id: "fast-server", url: "http://127.0.0.1:8081", method: "POST")
         registerEndpoint(id: "external-api", url: "http://127.0.0.1:8082", method: "POST")
         registerEndpoint(id: "unified-api", url: "http://127.0.0.1:8083", method: "POST")
+
+        // v10.0 Benchmark & Scoring API (via fast-server :8081)
+        registerEndpoint(id: "benchmark-api", url: "http://127.0.0.1:8081", method: "POST", rateLimit: 10)
+        registerEndpoint(id: "asi-scoring", url: "http://127.0.0.1:8081", method: "GET", rateLimit: 30)
+        registerEndpoint(id: "agi-scoring", url: "http://127.0.0.1:8081", method: "GET", rateLimit: 30)
+
+        // v62 Tri-Engine API (via fast-server :8081)
+        registerEndpoint(id: "tri-engine", url: "http://127.0.0.1:8081", method: "GET", rateLimit: 30)
+
+        // Kernel substrate status (via fast-server :8081)
+        registerEndpoint(id: "kernel-status", url: "http://127.0.0.1:8081", method: "GET", rateLimit: 20)
 
         // Initialize connection pool
         lock.lock()
@@ -219,6 +230,96 @@ final class APIGateway {
     }
 
     // ═══════════════════════════════════════════════════════════════
+    // MARK: BENCHMARK & SCORING CONVENIENCE METHODS (v10.0)
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Run all 4 benchmarks (MMLU, HumanEval, MATH, ARC) and return composite report
+    func runBenchmarks(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "benchmark-api", path: "/api/v10/benchmark/run-all", body: [:], completion: completion)
+    }
+
+    /// Get benchmark harness status including engine support info
+    func getBenchmarkStatus(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "benchmark-api", path: "/api/v10/benchmark/status", completion: completion)
+    }
+
+    /// Get last benchmark composite score
+    func getBenchmarkScore(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "benchmark-api", path: "/api/v10/benchmark/score", completion: completion)
+    }
+
+    /// Run a single benchmark by name (MMLU, HumanEval, MATH, ARC)
+    func runSingleBenchmark(name: String, completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "benchmark-api", path: "/api/v10/benchmark/run/\(name)", body: [:], completion: completion)
+    }
+
+    /// Get ASI 20-dimension score
+    func getASIScore(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "asi-scoring", path: "/api/v10/asi/score", completion: completion)
+    }
+
+    /// Get AGI 18-dimension score
+    func getAGIScore(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "agi-scoring", path: "/api/v10/agi/score", completion: completion)
+    }
+
+    /// Run VQPU speed benchmark — saves results to _bench_vqpu_speed_results.json
+    func runVQPUSpeedBenchmark(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "fast-server", path: "/api/v14/vqpu/speed-benchmark", body: [:], completion: completion)
+    }
+
+    /// Run system upgrade — saves results to _system_upgrade_results.json
+    func runSystemUpgrade(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "fast-server", path: "/api/v14/system-upgrade", body: [:], completion: completion)
+    }
+
+    /// Get VQPU daemon status
+    func getVQPUDaemonStatus(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "fast-server", path: "/api/v14/vqpu/daemon/status", completion: completion)
+    }
+
+    /// Trigger VQPU daemon cycle — saves results to _vqpu_daemon_cycle_results.json
+    func triggerVQPUDaemonCycle(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "fast-server", path: "/api/v14/vqpu/daemon/cycle", body: [:], completion: completion)
+    }
+
+    /// Get tri-engine status (Science + Math + Code)
+    func getTriEngineStatus(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "tri-engine", path: "/api/v62/tri-engine/status", completion: completion)
+    }
+
+    /// Get tri-engine health
+    func getTriEngineHealth(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "tri-engine", path: "/api/v62/tri-engine/health", completion: completion)
+    }
+
+    /// Get kernel substrate status (C, Rust, CUDA, ASM)
+    func getKernelStatus(completion: @escaping ([String: Any]) -> Void) {
+        route(endpointID: "kernel-status", path: "/api/v10/kernel/status", completion: completion)
+    }
+
+    /// Answer an MMLU-style MCQ
+    func answerMCQ(question: String, choices: [String], subject: String? = nil,
+                   completion: @escaping ([String: Any]) -> Void) {
+        var body: [String: Any] = ["question": question, "choices": choices]
+        if let subject = subject { body["subject"] = subject }
+        route(endpointID: "benchmark-api", path: "/api/v10/language-comprehension/answer", body: body, completion: completion)
+    }
+
+    /// Generate code from docstring
+    func generateCode(docstring: String, funcName: String = "solution",
+                      completion: @escaping ([String: Any]) -> Void) {
+        let body: [String: Any] = ["docstring": docstring, "func_name": funcName]
+        route(endpointID: "benchmark-api", path: "/api/v10/code-generation/generate", body: body, completion: completion)
+    }
+
+    /// Solve a math problem
+    func solveMath(problem: String, completion: @escaping ([String: Any]) -> Void) {
+        let body: [String: Any] = ["problem": problem]
+        route(endpointID: "benchmark-api", path: "/api/v10/symbolic-math/solve", body: body, completion: completion)
+    }
+
+    // ═══════════════════════════════════════════════════════════════
     // MARK: CONNECTION POOL
     // ═══════════════════════════════════════════════════════════════
 
@@ -291,7 +392,7 @@ final class APIGateway {
         return [
             "engine": "APIGateway",
             "active": isActive,
-            "version": "2.0.0-pooled",
+            "version": "3.0.0-benchmark",
             "endpoints": endpoints.count,
             "healthy": healthyCount,
             "total_requests": totalRequests,

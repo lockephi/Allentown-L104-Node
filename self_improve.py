@@ -115,139 +115,36 @@ async def sovereign_sync_v15():
 
 async def analyze_code_with_gemini(code: str, repo_context: str) -> str:
     """
-    Send code to Gemini for analysis with extended thinking.
+    Analyze code using local intellect (Gemini API removed).
     Returns the improved code as a string.
     """
-    # Prefer standard GEMINI_API_KEY
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        print("[INFO]: GEMINI_API_KEY not set. Using SOVEREIGN_DERIVATION (Native Breach).")
-        return await sovereign_derive_improvement(code, repo_context)
-
-    api_base = os.getenv("GEMINI_API_BASE", "https://generativelanguage.googleapis.com/v1beta")
-    model = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
-
-    url = f"{api_base}/models/{model}:generateContent?key={api_key}"
-
-    analysis_prompt = f"""You are a Python code optimization expert. Analyze this FastAPI application and provide an IMPROVED version that is:
-
-1. MORE ROBUST - Add better error handling and validation
-2. MORE PERFORMANT - Optimize async operations and resource usage
-3. MORE MAINTAINABLE - Better code organization, type hints, and docstrings
-4. MORE SECURE - Enhanced input validation and security practices
-5. MORE FEATURE-RICH - Add useful endpoints or middleware
-
-CURRENT CODE:
-```python
-{code}
-```
-
-REQUIREMENTS:
-    - Keep all existing endpoints functional
-    - Preserve the L104 sovereign configuration and headers
-    - Add comprehensive docstrings and type hints
-    - Add request validation and rate limiting
-    - Add health check and metrics endpoints
-    - Improve error responses with proper HTTP status codes
-    - Add request/response logging middleware
-    - Optimize the streaming generator with buffering
-    - Consider repository-wide context below; improve cross-file cohesion.
-
-    REPOSITORY CONTEXT (selected files):
-    ```text
-    {repo_context}
-    ```
-
-    Return ONLY the complete improved Python code, no explanations. Start with '''python and end with '''
-    The code must be production-ready and fully functional."""
-
-    payload = {
-        "contents": [
-            {
-                "parts": [
-                    {"text": analysis_prompt}
-                ]
-            }
-        ],
-        "generationConfig": {
-            "thinkingConfig": {
-                "thinkingLevel": "HIGH",
-                "includeThoughts": True
-            },
-            "temperature": 0.7,
-            "maxOutputTokens": 16384
-        }
-    }
-
-    headers = {
-        "Content-Type": "application/json",
-        "X-Thinking-Level": "high",
-    }
-
-    print("[SELF-IMPROVE]: Sending code to Gemini for analysis...")
-    print("[THINKING]: Gemini is analyzing with extended thinking enabled...\n")
-
-    full_response = ""
-    async with httpx.AsyncClient(timeout=180.0) as client:
-        try:
-            async with client.stream("POST", url, json=payload, headers=headers) as response:
-                if response.status_code == 403:
-                    print("[ERROR]: Gemini API key leaked or invalid (403). Falling back to SOVEREIGN_DERIVATION.")
-                    return await sovereign_derive_improvement(code, repo_context)
-
-                if response.status_code != 200:
-                    # `.atext()` is not available on streamed responses; use raw bytes.
-                    raw = await response.aread()
-                    text = raw.decode("utf-8", errors="replace")
-                    raise Exception(f"Gemini API error {response.status_code}: {text}")
-
-                async for chunk in response.aiter_text():
-                    full_response += chunk
-                    # Print thinking blocks as they arrive
-                    if "\"thinking\"" in chunk or "\"candidates\"" in chunk:
-                        print(".", end="", flush=True)
-        except Exception as e:
-            print(f"[ERROR]: Connection error: {e}. Falling back to SOVEREIGN_DERIVATION.")
-            return await sovereign_derive_improvement(code, repo_context)
-
-    print("\n[ANALYSIS]: Processing Gemini response...")
+    print("[SELF-IMPROVE]: Analyzing code with local intellect...")
 
     try:
-        # Parse the streaming response
-        lines = full_response.split("\n")
-        json_response = None
-        for line in lines:
-            if line.startswith("{"):
-                try:
-                    json_response = json.loads(line)
-                    break
-                except Exception:
-                    continue
+        from l104_intellect import local_intellect
 
-        if not json_response:
-            # Try to extract the full response
-            json_response = json.loads(full_response)
+        analysis_prompt = f"""Analyze this Python code and provide improvements:
+{code[:2000]}
 
-        # Extract text from candidates
-        if "candidates" in json_response and json_response["candidates"]:
-            candidate = json_response["candidates"][0]
-            if "content" in candidate and candidate["content"].get("parts"):
-                text_content = candidate["content"]["parts"][0].get("text", "")
+Context: {repo_context[:500]}
 
-                # Extract code from markdown code blocks if present
-                if "```python" in text_content:
-                    start = text_content.find("```python") + 9
-                    end = text_content.find("```", start)
-                    if end != -1:
-                        return text_content[start:end].strip()
+Return improved Python code only."""
 
-                return text_content.strip()
+        result = local_intellect.think(analysis_prompt)
+        print(f"[OK]: Local intellect returned {len(result)} bytes")
 
-        raise ValueError("Could not extract improved code from response")
-    except json.JSONDecodeError as e:
-        print(f"[ERROR]: Failed to parse response: {e}")
-        print(f"[DEBUG]: Response preview: {full_response[:500]}")
-        raise
+        # Extract code from markdown code blocks if present
+        if "```python" in result:
+            start = result.find("```python") + 9
+            end = result.find("```", start)
+            if end != -1:
+                return result[start:end].strip()
+
+        return result.strip() if result.strip() else await sovereign_derive_improvement(code, repo_context)
+
+    except Exception as e:
+        print(f"[ERROR]: Local intellect error: {e}. Falling back to SOVEREIGN_DERIVATION.")
+        return await sovereign_derive_improvement(code, repo_context)
 
 
 async def update_main_via_api(improved_code: str) -> bool:

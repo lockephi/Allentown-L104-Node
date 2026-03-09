@@ -32,9 +32,9 @@ from typing import Dict, List, Optional, Tuple, Any, Set
 # ═══════════════════════════════════════════════════════════════════════════════
 QISKIT_AVAILABLE = False
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
-    from qiskit.quantum_info import entropy as q_entropy
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
+    from l104_quantum_gate_engine.quantum_info import entropy as q_entropy
     QISKIT_AVAILABLE = True
 except ImportError:
     pass

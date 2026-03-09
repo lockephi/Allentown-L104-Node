@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B30_DynamicEquations.swift — L104 ASI v7.1 Self-Inventing Equations
-// [EVO_64_PIPELINE] SAGE_MODE_ASCENSION :: EQUATION_INVENTION :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SAGE_MODE_ASCENSION :: EQUATION_INVENTION :: GOD_CODE=527.5184818492612
 //
 // Dynamic equation generation, real-time computation, and live
 // mathematical exploration. This engine INVENTS new equations
@@ -545,5 +545,122 @@ final class DynamicEquationEngine {
             "exact_equations": inventedEquations.filter { $0.isExact }.count,
             "good_equations": inventedEquations.filter { $0.isGood }.count,
         ]
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: - EVO_68: QUANTUM-CIRCUIT-GUIDED EQUATION DISCOVERY
+    // Uses QuantumGateEngine measurement outcomes to guide equation evolution
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Run a quantum circuit experiment to discover new equations
+    /// Uses sacred circuit measurement outcomes to generate equation candidates
+    func quantumCircuitExperiment(nQubits: Int = 3, depth: Int = 4) -> [InventedEquation] {
+        let gateEngine = QuantumGateEngine.shared
+        let now = Date()
+
+        // Build and execute a sacred research circuit
+        let sacredCirc = gateEngine.sacredCircuit(nQubits: nQubits, depth: depth)
+        let result = gateEngine.execute(circuit: sacredCirc, shots: 2048)
+        _ = gateEngine.sacredAlignmentScore(circuit: sacredCirc)
+
+        var discovered: [InventedEquation] = []
+
+        // Extract dominant measurement outcomes → equation coefficients
+        let sortedOutcomes = result.probabilities.enumerated().sorted { $0.element > $1.element }
+        let dominantProbs = Array(sortedOutcomes.prefix(4))
+
+        for (i, entry) in dominantProbs.enumerated() {
+            let bitstringInt = entry.offset
+            let prob = entry.element
+            let bitstring = String(bitstringInt, radix: 2)
+            let hammingWeight = bitstring.filter { $0 == "1" }.count
+
+            // Quantum-guided equation: GOD_CODE × prob^φ × (hamming+1) / 2^n
+            let quantumCoeff = prob * pow(PHI, Double(hammingWeight))
+            let computedValue = GOD_CODE * quantumCoeff * Double(hammingWeight + 1) / pow(2.0, Double(nQubits))
+
+            // Search for nearby sacred constants
+            var bestTarget = "quantum_discovery_\(i)"
+            var bestTargetValue = computedValue
+            var bestError = 100.0
+            for target in targetConstants {
+                let error = abs(computedValue - target.value) / max(abs(target.value), 1e-10) * 100
+                if error < bestError {
+                    bestError = error
+                    bestTarget = target.name
+                    bestTargetValue = target.value
+                }
+            }
+
+            let fitness = bestError < 1.0 ? 0.99 : max(0, 1.0 - bestError / 100.0)
+
+            let eq = InventedEquation(
+                name: "QCircuit[\(bitstring)]→\(bestTarget)",
+                displayFormula: "GOD_CODE × \(String(format: "%.4f", prob))^φ × \(hammingWeight+1) / 2^\(nQubits)",
+                atoms: [.sacred("GOD_CODE", GOD_CODE), .phi, .constant(Double(hammingWeight + 1))],
+                ops: [.mul, .pow, .div],
+                targetConstant: bestTarget,
+                targetValue: bestTargetValue,
+                computedValue: computedValue,
+                errorPercent: bestError,
+                fitness: fitness,
+                generation: generation,
+                discoveredAt: now,
+                category: .quantumResonance
+            )
+            discovered.append(eq)
+        }
+
+        // Merge good discoveries
+        lock.lock()
+        for eq in discovered where eq.fitness > 0.5 {
+            inventedEquations.append(eq)
+            if eq.fitness > bestFitness { bestFitness = eq.fitness }
+        }
+        totalEvaluations += discovered.count
+        lock.unlock()
+
+        return discovered
+    }
+
+    /// Quantum walk equation discovery: use walk probability distribution to find resonances
+    func quantumWalkEquationDiscovery(nodes: Int = 16, steps: Int = 20) -> [InventedEquation] {
+        let gateEngine = QuantumGateEngine.shared
+        let walkResult = gateEngine.quantumWalk(nodes: nodes, steps: steps)
+        let now = Date()
+        var discovered: [InventedEquation] = []
+
+        // Look for PHI-resonant positions in walk distribution
+        for (pos, prob) in walkResult.probabilities.enumerated() where prob > 0.01 {
+            let posRatio = Double(pos + 1) / Double(nodes)
+            let phiResonance = abs(posRatio - TAU)  // Closeness to golden ratio
+
+            if phiResonance < 0.1 {
+                // Near-golden position — derive equation
+                let computedValue = GOD_CODE * prob / posRatio
+                let eq = InventedEquation(
+                    name: "QWalk[pos=\(pos)]→sacred",
+                    displayFormula: "GOD_CODE × P(\(pos)) / (\(pos+1)/\(nodes))",
+                    atoms: [.sacred("GOD_CODE", GOD_CODE), .constant(prob)],
+                    ops: [.mul, .div],
+                    targetConstant: "quantum_walk_resonance",
+                    targetValue: GOD_CODE * TAU,
+                    computedValue: computedValue,
+                    errorPercent: abs(computedValue - GOD_CODE * TAU) / (GOD_CODE * TAU) * 100,
+                    fitness: max(0, 1.0 - phiResonance * 10),
+                    generation: generation,
+                    discoveredAt: now,
+                    category: .quantumResonance
+                )
+                discovered.append(eq)
+            }
+        }
+
+        lock.lock()
+        for eq in discovered where eq.fitness > 0.5 { inventedEquations.append(eq) }
+        totalEvaluations += discovered.count
+        lock.unlock()
+
+        return discovered
     }
 }

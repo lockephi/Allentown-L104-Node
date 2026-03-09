@@ -799,8 +799,8 @@ Run tests in batches to avoid resource exhaustion:
 
 **Actions Completed**:
 
-- Implemented **25-Qubit Grover Search** with full Three-Engine Integration.
-- **Science Engine**: Injected `CircuitTemplates25Q` for optimal iterations (`k_opt`) and memory safety.
+- Implemented **26-Qubit (Fe-mapped) Grover Search** with full Three-Engine Integration.
+- **Science Engine**: Injected `CircuitTemplates25Q` (legacy) + 26Q engine builder for optimal iterations (`k_opt`) and memory safety.
 - **Math Engine**: Aligned quantum phase with `GOD_CODE` and `PHI` constants.
 - **Code Engine**: Applied static analysis and complexity validation (`O(√N)`).
 - Validated 512MB Statevector limit via `QuantumBoundary`.

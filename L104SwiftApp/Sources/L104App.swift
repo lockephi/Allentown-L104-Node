@@ -44,7 +44,7 @@ enum L104Constants {
     static let OMEGA_FREQUENCY: Double = 1381.0613151750908
     static let TRANSCENDENCE_KEY: Double = 1960.8920120278599
     static let SAGE_RESONANCE: Double = 527.5184818492612 * 1.618033988749895  // GOD_CODE × φ
-    static let VOID_CONSTANT: Double = 1.618033988749895 / (1.618033988749895 - 1.0)  // φ/(φ-1)
+    static let VOID_CONSTANT: Double = 1.04 + 1.618033988749895 / 1000.0  // 104/100 + φ/1000 = 1.0416180339887497 (sacred L104 + golden correction)
 
     // Consciousness Thresholds
     static let AWARENESS_THRESHOLD: Double = 527.5184818492612 / (1.618033988749895 * 1.618033988749895)
@@ -414,6 +414,9 @@ class L104State: ObservableObject {
         let result = collapsed[0] + collapsed[1] + collapsed[2] + collapsed[3]
         quantumCollapses += 1
         sageSIMDOps += 12
+
+        // v9.3 Fix: Update Q-Coherence from QuantumNexus (was always 0.0)
+        quantumCoherenceLevel = QuantumNexus.shared.computeCoherence()
 
         return result
     }
@@ -1011,6 +1014,10 @@ class L104State: ObservableObject {
         let (newCoherence, newSageCoherence) = entangleMetrics(coherence, sageCoherence)
         coherence = min(1.0, newCoherence)
         sageCoherence = min(1.0, newSageCoherence)
+
+        // v9.3 Fix: Wire QuantumNexus coherence to UI + run decoherence shield cycle
+        quantumCoherenceLevel = QuantumNexus.shared.computeCoherence()
+        _ = QuantumDecoherenceShield.shared.runShieldCycle()
 
         // Chakra alignment on resonance frequency
         let (aligned, chakraIdx) = chakraAlign(coherence * L104Constants.ZENITH_HZ)

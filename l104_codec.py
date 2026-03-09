@@ -1,8 +1,8 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-02-15T00:00:00.000000
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.624352
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_SOVEREIGN_CODEC] v3.0.0 — ASI-GRADE ENCODING & INTEGRITY ENGINE
 # Streaming codec pipeline | Batch encoding/decoding | Versioned format registry
@@ -28,9 +28,9 @@ from enum import Enum
 # ═══ Quantum Imports (Qiskit 2.3.0) ═══
 QISKIT_AVAILABLE = False
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
-    from qiskit.quantum_info import entropy as q_entropy
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
+    from l104_quantum_gate_engine.quantum_info import entropy as q_entropy
     QISKIT_AVAILABLE = True
 except ImportError:
     pass
@@ -69,6 +69,7 @@ class CodecFormat(Enum):
 
 class FormatRegistry:
     """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     Registry of versioned encoding formats.
     Allows format negotiation between encoder/decoder pairs and
     tracks which formats are available, deprecated, or experimental.

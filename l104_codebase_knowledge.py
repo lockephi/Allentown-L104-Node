@@ -1,7 +1,7 @@
 VOID_CONSTANT = 1.0416180339887497
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.425709
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.556569
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_CODEBASE_KNOWLEDGE] - LEARNED PATTERNS FROM CODE DATABASE
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
@@ -40,9 +40,9 @@ from enum import Enum, auto
 # ═══════════════════════════════════════════════════════════════════════════════
 QISKIT_AVAILABLE = False
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, Operator
-    from qiskit.quantum_info import entropy as q_entropy
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator
+    from l104_quantum_gate_engine.quantum_info import entropy as q_entropy
     QISKIT_AVAILABLE = True
 except ImportError:
     pass

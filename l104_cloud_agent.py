@@ -1,8 +1,8 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.022465
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.035008
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # ═══ EVO_54 PIPELINE INTEGRATION ═══
 _PIPELINE_VERSION = "54.0.0"
@@ -62,7 +62,7 @@ class CloudAgentDelegator:
                 "enabled": True
             },
             "gemini_agent": {
-                "endpoint": "https://generativelanguage.googleapis.com/v1beta",
+                "endpoint": "internal",
                 "capabilities": ["text_generation", "code_analysis", "reasoning"],
                 "priority": 2,
                 "enabled": True
@@ -162,7 +162,22 @@ class CloudAgentDelegator:
     async def _delegate_internal(self, task: Dict[str, Any], agent_name: str) -> Dict[str, Any]:
         """Handle delegation to internal/local agents."""
         task_type = task.get("type")
-        if task_type == "derivation":
+        if task_type in ("text_generation", "code_analysis", "reasoning"):
+            try:
+                from l104_intellect import local_intellect
+                prompt = task.get("data", {}).get("prompt", "") or task.get("data", {}).get("signal", "")
+                result = local_intellect.think(prompt)
+                return {
+                    "status": "SUCCESS",
+                    "agent": agent_name,
+                    "result": result,
+                    "processing": "local_intellect"
+                }
+            except Exception as e:
+                logger.warning(f"Local intellect failed: {e}")
+                return {"status": "ERROR", "message": f"Local intellect failed: {str(e)}"}
+
+        elif task_type == "derivation":
             try:
                 from l104_derivation import DerivationEngine
                 signal = task.get("data", {}).get("signal", "")

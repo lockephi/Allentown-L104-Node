@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.335341
+ZENITH_HZ = 3887.8
+UUC = 2301.215661
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 Sovereign Node — Quantum 25Q Grover Search
 ═══════════════════════════════════════════════════════════════════════════════
 Perfect 25-qubit Grover's Algorithm implementation using the Three-Engine
@@ -19,17 +23,18 @@ Usage:
 import sys
 import numpy as np
 import math
-from qiskit import QuantumCircuit
+from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
 try:
-    from qiskit_algorithms import Grover, AmplificationProblem
-except ImportError:
-    # Construct fallback or prompt for install - but here we assume it's installed
-    from qiskit.algorithms import Grover, AmplificationProblem
+    Grover = None  # Use l104_quantum_gate_engine orchestrator
+    AmplificationProblem = None
+except Exception:
+    Grover = None
+    AmplificationProblem = None
 try:
-    from qiskit.primitives import Sampler
-except ImportError:
-    from qiskit.primitives import StatevectorSampler as Sampler
-from qiskit.circuit.library import PhaseOracle
+    Sampler = None  # Use Statevector.sample_counts()
+except Exception:
+    Sampler = None
+PhaseOracle = None  # Use local Grover oracle
 
 # --- L104 ENGINE IMPORTS ---
 try:

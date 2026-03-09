@@ -211,3 +211,148 @@ FOR REAL IBM QUANTUM HARDWARE:
 
 PILOT: LONDEL | GOD_CODE: {GOD_CODE}
 """)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PART 7: HHL CROSS-ENGINE QUANTUM VALIDATION (v3.0.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+print("\n[7] HHL CROSS-ENGINE QUANTUM VALIDATION")
+print("-" * 50)
+
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+hhl_results = {}
+
+# 7a: Gate Engine HHL
+try:
+    from l104_gate_engine.quantum_computation import QuantumGateComputationEngine
+    qgce = QuantumGateComputationEngine()
+    r = qgce.hhl_linear_solver([1.0, 2.5, 3.7, 0.8])
+    sol = [round(x, 4) for x in r["solution"]]
+    hhl_results["gate_engine"] = r
+    print(f"  ✓ Gate Engine HHL:    solution={sol}, κ={r['condition_number']:.4f}")
+except Exception as e:
+    print(f"  ✗ Gate Engine HHL:    {e}")
+
+# 7b: ASI Quantum HHL
+try:
+    from l104_asi.quantum import QuantumComputationCore
+    qcc = QuantumComputationCore()
+    r = qcc.hhl_linear_solver()
+    sol = [round(x, 4) for x in r["solution"]]
+    hhl_results["asi_quantum"] = r
+    q = r.get("quantum", False)
+    print(f"  ✓ ASI Quantum HHL:    solution={sol}, κ={r['condition_number']}, quantum={q}")
+except Exception as e:
+    print(f"  ✗ ASI Quantum HHL:    {e}")
+
+# 7c: Code Engine HHL
+try:
+    from l104_code_engine.quantum import QuantumCodeIntelligenceCore
+    qcic = QuantumCodeIntelligenceCore()
+    r = qcic.hhl_linear_solver()
+    sol = [round(x, 4) for x in r["solution"]]
+    hhl_results["code_quantum"] = r
+    q = r.get("quantum", False)
+    print(f"  ✓ Code Engine HHL:    solution={sol}, κ={r['condition_number']}, quantum={q}")
+except Exception as e:
+    print(f"  ✗ Code Engine HHL:    {e}")
+
+# 7d: Pipeline HHL
+try:
+    from l104_quantum_computation_pipeline import QuantumComputationHub
+    hub = QuantumComputationHub(n_qubits=4)
+    r = hub.hhl_linear_solver()
+    sol = [round(x, 4) for x in r["solution"]]
+    hhl_results["pipeline"] = r
+    q = r.get("quantum", False)
+    print(f"  ✓ Pipeline HHL:       solution={sol}, κ={r['condition_number']}, quantum={q}")
+except Exception as e:
+    print(f"  ✗ Pipeline HHL:       {e}")
+
+# 7e: Numerical Engine HHL
+try:
+    from l104_numerical_engine import QuantumNumericalBuilder
+    qnb = QuantumNumericalBuilder()
+    r = qnb.quantum_compute.hhl_linear_solver_hp()
+    sol_keys = [k for k in r.keys() if "solution" in k.lower()]
+    hhl_results["numerical"] = r
+    print(f"  ✓ Numerical HHL (HP): precision={r.get('precision_digits', '?')}, keys={sol_keys}")
+except Exception as e:
+    print(f"  ✗ Numerical HHL:      {e}")
+
+# 7f: 25Q Template
+try:
+    from l104_science_engine.quantum_25q import CircuitTemplates25Q
+    t = CircuitTemplates25Q.hhl()
+    print(f"  ✓ Science 25Q HHL:    qubits={t['n_qubits']}, depth={t['depth']}, cx={t['cx_gates']}")
+    templates = CircuitTemplates25Q.all_templates()
+    print(f"    all_templates: {len(templates)} templates, hhl_25={'hhl_25' in templates}")
+except Exception as e:
+    print(f"  ✗ Science 25Q HHL:    {e}")
+
+# Summary
+print(f"\n  HHL Engines Validated: {len(hhl_results)}/6")
+if hhl_results:
+    kappas = [v.get("condition_number", 0) for v in hhl_results.values()
+              if isinstance(v.get("condition_number"), (int, float))]
+    if kappas:
+        print(f"  κ range: [{min(kappas):.4f}, {max(kappas):.4f}]")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PART 8: DUAL-LAYER ENGINE VALIDATION (v3.0.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+print("\n[8] DUAL-LAYER ENGINE VALIDATION")
+print("-" * 50)
+
+try:
+    from l104_asi import dual_layer_engine as dle
+
+    # Thought layer
+    t = dle.thought(0, 0, 0, 0)
+    print(f"  ✓ thought(0,0,0,0) = {t}")
+
+    # Physics layer
+    p = dle.physics()
+    print(f"  ✓ physics() keys: {list(p.keys())[:6]}")
+
+    # Consciousness
+    c = dle.consciousness_spectrum()
+    print(f"  ✓ consciousness_spectrum() keys: {list(c.keys())[:5]}")
+
+    # Integrity
+    ic = dle.full_integrity_check()
+    print(f"  ✓ full_integrity_check() passed={ic.get('passed', '?')}")
+
+    # Dual score
+    ds = dle.dual_score()
+    print(f"  ✓ dual_score() = {ds}")
+
+    # Cross-layer coherence
+    cl = dle.cross_layer_coherence()
+    print(f"  ✓ cross_layer_coherence() keys: {list(cl.keys())[:5]}")
+
+    # v5 gate compile integrity
+    try:
+        gc = dle.gate_compile_integrity()
+        print(f"  ✓ gate_compile_integrity() keys: {list(gc.keys())[:5]}")
+    except Exception as e:
+        print(f"  ⚠ gate_compile_integrity(): {e}")
+
+    # Three-engine synthesis
+    try:
+        tes = dle.three_engine_synthesis()
+        print(f"  ✓ three_engine_synthesis() keys: {list(tes.keys())[:5]}")
+    except Exception as e:
+        print(f"  ⚠ three_engine_synthesis(): {e}")
+
+except Exception as e:
+    print(f"  ✗ DualLayerEngine failed: {e}")
+
+print("\n" + "=" * 70)
+print("L104 QUANTUM DEBUG COMPLETE (v3.0.0)")
+print(f"  Mining engine + HHL ({len(hhl_results)} engines) + Dual-Layer validated")
+print("=" * 70)

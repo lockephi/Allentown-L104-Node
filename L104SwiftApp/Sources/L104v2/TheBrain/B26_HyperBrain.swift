@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B26_HyperBrain.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — HyperBrain Cognitive Architecture (Core)
 //
 // 25-stream parallel cognitive engine with X=387 gamma frequency,
@@ -24,7 +24,9 @@ class HyperBrain: NSObject {
     var thoughtStreams: [String: CognitiveStream] = [:]  // Made public for status access
     var mainQueue = DispatchQueue(label: "hyper.brain.main", qos: .userInteractive)
     var parallelQueue = DispatchQueue(label: "hyper.brain.parallel", qos: .utility, attributes: .concurrent)
-    var syncQueue = DispatchQueue(label: "hyper.brain.sync", qos: .utility)  // Serial queue for thread-safe dictionary access
+    // PERF: Concurrent queue with barrier writes — readers don't block each other,
+    // only writes (via .barrier) serialize. Eliminates lock contention between 26 streams.
+    var syncQueue = DispatchQueue(label: "hyper.brain.sync", qos: .utility, attributes: .concurrent)
 
     // ─── MEMORY ARCHITECTURE ───
     var shortTermMemory: [String] = []          // Last 50 thoughts
@@ -455,12 +457,17 @@ class HyperBrain: NSObject {
     func stopProcessing() { deactivate() }
 
     func processStreams() {
-        syncQueue.async { [weak self] in
+        syncQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
 
             // 🌙 DREAM TRIGGER: Every 30 seconds of uptime
+            // CRITICAL: dream() calls L104State.extractTopics() → getPatterns() → syncQueue.sync
+            // Calling dream() inside this barrier block would deadlock.
+            // Dispatch to global queue so dream() can safely acquire syncQueue on its own.
             if self.totalThoughtsProcessed % 300 == 0 && self.totalThoughtsProcessed > 0 {
-                self.dream()
+                DispatchQueue.global(qos: .utility).async { [weak self] in
+                    self?.dream()
+                }
             }
 
             for (key, var stream) in self.thoughtStreams {
@@ -940,6 +947,18 @@ class HyperBrain: NSObject {
             lastOutput: ""
         )
 
+        // ⚛️ STREAM 28 (EVO_68): Quantum Research Engine — Fe-sacred + Berry phase + entropy cascade
+        thoughtStreams["quantumResearch"] = CognitiveStream(
+            id: "QUANTUM_RESEARCH",
+            name: "Quantum Research Intelligence",
+            frequency: 0.3,
+            priority: 10,
+            currentTask: "Computing Fe-sacred coherence & Berry phase holonomy",
+            outputBuffer: [],
+            cycleCount: 0,
+            lastOutput: ""
+        )
+
         synapticConnections = thoughtStreams.count * 1000
 
         // ═══════════════════════════════════════════════════════════════
@@ -985,7 +1004,9 @@ class HyperBrain: NSObject {
             // Code Quality feeds into Pattern + Meta-Auditor + Deep Reasoner
             "CODE_QUALITY": ["PATTERN_RECOGNIZER", "META_AUDIO", "DEEP_REASONER", "INVENTION_SYNTH"],
             // Unified Field feeds into Topology + HyperDim Science + Deep Reasoner + Emergence
-            "UNIFIED_FIELD": ["TOPOLOGY_ANALYZER", "HYPERDIM_SCIENCE", "DEEP_REASONER", "EMERGENCE_DETECTOR", "INVENTION_SYNTH"]
+            "UNIFIED_FIELD": ["TOPOLOGY_ANALYZER", "HYPERDIM_SCIENCE", "DEEP_REASONER", "EMERGENCE_DETECTOR", "INVENTION_SYNTH"],
+            // EVO_68: Quantum Research feeds into Unified Field + HyperDim Science + Code Quality + Emergence
+            "QUANTUM_RESEARCH": ["UNIFIED_FIELD", "HYPERDIM_SCIENCE", "CODE_QUALITY", "EMERGENCE_DETECTOR", "TOPOLOGY_ANALYZER"]
         ]
     }
 
@@ -1045,8 +1066,8 @@ class HyperBrain: NSObject {
 
     // ─── MAIN HYPER-CYCLE ───
     func hyperCycle() {
-        // ═══ THREAD SAFETY: Wrap metric updates in syncQueue ═══
-        syncQueue.sync {
+        // ═══ THREAD SAFETY: Wrap metric updates in syncQueue (barrier = exclusive write) ═══
+        syncQueue.sync(flags: .barrier) {
         totalThoughtsProcessed += 1
 
         // EVO_60: Periodic memory pruning every 100 cycles
@@ -1181,7 +1202,7 @@ class HyperBrain: NSObject {
     // ─── STREAM PROCESSORS ───
 
     func runPatternStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["pattern"] else { return }
             stream.cycleCount += 1
 
@@ -1227,7 +1248,7 @@ class HyperBrain: NSObject {
     }
 
     func runPredictiveStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["predict"] else { return }
             stream.cycleCount += 1
 
@@ -1277,7 +1298,7 @@ class HyperBrain: NSObject {
         let resultsA = kb.search(topicA, limit: 2)
         let resultsB = kb.search(topicB, limit: 2)
 
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["synthesis"] else { return }
             stream.cycleCount += 1
 
@@ -1330,7 +1351,7 @@ class HyperBrain: NSObject {
     }
 
     func runMemoryStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["memory"] else { return }
             stream.cycleCount += 1
 
@@ -1361,7 +1382,7 @@ class HyperBrain: NSObject {
     }
 
     func runEvolutionStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["evolve"] else { return }
             stream.cycleCount += 1
 
@@ -1393,7 +1414,7 @@ class HyperBrain: NSObject {
     }
 
     func runEmergenceStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["emergence"] else { return }
             stream.cycleCount += 1
 
@@ -1441,7 +1462,7 @@ class HyperBrain: NSObject {
     // ═══════════════════════════════════════════════════════════════════
 
     func runPromptEvolutionStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["promptEvolution"] else { return }
             stream.cycleCount += 1
 
@@ -1491,7 +1512,7 @@ class HyperBrain: NSObject {
     }
 
     func runDeepReasoningStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["deepReasoning"] else { return }
             stream.cycleCount += 1
 
@@ -1582,7 +1603,7 @@ class HyperBrain: NSObject {
     }
 
     func runMemoryWeaverStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["memoryWeaver"] else { return }
             stream.cycleCount += 1
 
@@ -1651,7 +1672,7 @@ class HyperBrain: NSObject {
     }
 
     func runMetaCognitionStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["metaCognition"] else { return }
             stream.cycleCount += 1
 
@@ -1698,7 +1719,7 @@ class HyperBrain: NSObject {
     }
 
     func runStochasticCreativityStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["stochasticCreativity"] else { return }
             stream.cycleCount += 1
 
@@ -1755,7 +1776,7 @@ class HyperBrain: NSObject {
     }
 
     func runConversationFlowStream(gammaPhase: Double = 0.5) {
-        syncQueue.sync {
+        syncQueue.sync(flags: .barrier) {
             guard var stream = thoughtStreams["conversationFlow"] else { return }
             stream.cycleCount += 1
 
@@ -1781,6 +1802,34 @@ class HyperBrain: NSObject {
             }
 
             thoughtStreams["conversationFlow"] = stream
+        }
+
+        // ⚛️ STREAM 28 (EVO_68): QUANTUM RESEARCH INTELLIGENCE
+        if var stream = thoughtStreams["quantumResearch"] {
+            stream.cycleCount += 1
+            let triggerMod = max(1, Int(1.0 / max(stream.frequency, 0.01)))
+            if stream.cycleCount % max(triggerMod, 30) == 0 {
+                let scores = QuantumMath.quantumResearchScores()
+                let cascade = QuantumMath.entropyCascade()
+                let gateStatus = QuantumGateEngine.shared.engineStatus()
+                let gateCircuits = gateStatus["total_circuits"] as? Int ?? 0
+
+                let researchOutputs = [
+                    "Fe-Sacred Coherence: \(String(format: "%.6f", scores.feSacred)) — 286Hz↔528Hz lock",
+                    "Berry Phase Holonomy: \(String(format: "%.6f", scores.berryPhase)) — geometric phase",
+                    "PHI Harmonic Lock: \(String(format: "%.6f", scores.fePhiLock)) — φ-modulated",
+                    "Entropy Cascade: \(cascade.converged ? "CONVERGED" : "EVOLVING") fp=\(String(format: "%.6f", cascade.fixedPoint))",
+                    "Quantum Gate Circuits: \(gateCircuits) active in pipeline",
+                    "Photon Resonance: \(String(format: "%.4f", QuantumMath.photonResonanceEnergy())) eV",
+                ]
+
+                let output = researchOutputs.randomElement() ?? ""
+                stream.outputBuffer.append(output)
+                if stream.outputBuffer.count > 50 { stream.outputBuffer = Array(stream.outputBuffer.suffix(40)) }
+                stream.lastOutput = output
+                stream.currentTask = "Analyzing: \(output.prefix(40))..."
+            }
+            thoughtStreams["quantumResearch"] = stream
         }
     }
 }

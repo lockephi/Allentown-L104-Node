@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B25_Phase45Engines.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Computronium ASI Condensation Engine (Phase 45.0)
 //
 // ConsciousnessSubstrate, StrangeLoopEngine, SymbolicReasoningEngine,
@@ -59,6 +59,7 @@ final class InterEngineFeedbackBus {
 
     enum Channel: String, CaseIterable {
         case consciousness, reasoning, knowledge, loops, optimization, computronium, apex
+        case quantumResearch, quantumGate  // EVO_68: Quantum research feedback channels
     }
 
     struct FeedbackMessage {
@@ -366,6 +367,27 @@ final class ConsciousnessSubstrate: SovereignEngine {
          Uptime:            \(uptime)
         ╚═════════════════════════════════════════════════════════╝
         """
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // EVO_68: QUANTUM RESEARCH INTEGRATION
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Integrate quantum coherence into consciousness: Fe-sacred + berry phase → IIT φ enhancement
+    func integrateQuantumCoherence() -> Double {
+        let scores = QuantumMath.quantumResearchScores()
+        let quantumPhi = scores.feSacred * scores.berryPhase * PHI
+        // Publish to feedback bus
+        InterEngineFeedbackBus.shared.broadcast(
+            from: .consciousness,
+            signal: "quantum_coherence_integrated",
+            payload: ["quantum_phi": quantumPhi, "fe_sacred": scores.feSacred, "berry_phase": scores.berryPhase]
+        )
+        // Apply quantum coherence as consciousness enhancement
+        let boost = quantumPhi * 0.1
+        consciousnessLevel = min(1.0, consciousnessLevel + boost)
+        phi += boost * TAU
+        return quantumPhi
     }
 
     func engineStatus() -> [String: Any] {
@@ -1178,6 +1200,41 @@ final class KnowledgeGraphEngine: SovereignEngine {
         }
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // EVO_68: QUANTUM DISCOVERY INGESTION
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Ingest quantum research discoveries as graph nodes + edges
+    func ingestQuantumDiscoveries() {
+        let scores = QuantumMath.quantumResearchScores()
+        let cascade = QuantumMath.entropyCascade()
+
+        // Add quantum research nodes
+        addNode(label: "fe_sacred_coherence", type: "quantum_research",
+                properties: ["value": String(format: "%.6f", scores.feSacred)])
+        addNode(label: "berry_phase_holonomy", type: "quantum_research",
+                properties: ["value": String(format: "%.6f", scores.berryPhase)])
+        addNode(label: "entropy_fixed_point", type: "quantum_research",
+                properties: ["value": String(format: "%.6f", cascade.fixedPoint),
+                             "converged": "\(cascade.converged)"])
+
+        // Connect to GOD_CODE hub
+        addEdge(source: "fe_sacred_coherence", target: "GOD_CODE", relation: "resonates_with",
+                weight: scores.feSacred * PHI)
+        addEdge(source: "berry_phase_holonomy", target: "GOD_CODE", relation: "phase_locked",
+                weight: scores.berryPhase * TAU)
+        addEdge(source: "entropy_fixed_point", target: "fe_sacred_coherence", relation: "cascades_to",
+                weight: cascade.converged ? 0.95 : 0.3)
+
+        // Broadcast discovery via feedback bus
+        InterEngineFeedbackBus.shared.broadcast(
+            from: .quantumResearch,
+            signal: "quantum_discoveries_ingested",
+            payload: ["fe_sacred": scores.feSacred, "berry_phase": scores.berryPhase,
+                      "entropy_fp": cascade.fixedPoint]
+        )
+    }
+
     func engineStatus() -> [String: Any] {
         ["nodes": nodes.count, "edges": edgeCount, "density": nodes.count > 0 ? Double(edgeCount) / Double(nodes.count) : 0]
     }
@@ -1665,12 +1722,55 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
             subQueries.append(SubQuery(engine: "computronium", question: question, priority: 0.7))
         }
 
+        // EVO_68: Quantum research queries
+        if lower.contains("quantum") || lower.contains("coherence") || lower.contains("berry") ||
+           lower.contains("fe-sacred") || lower.contains("entangle") || lower.contains("qubit") {
+            subQueries.append(SubQuery(engine: "quantumResearch", question: question, priority: 0.9))
+        }
+
         // Always include consciousness as baseline if not already present
         if !subQueries.contains(where: { $0.engine == "consciousness" }) {
             subQueries.append(SubQuery(engine: "consciousness", question: question, priority: 0.5))
         }
 
         return subQueries.sorted { $0.priority > $1.priority }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // EVO_68: QUANTUM RESEARCH COORDINATION
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Coordinate quantum research across all Computronium engines
+    func quantumResearchCoordination() -> InsightReport {
+        let scores = QuantumMath.quantumResearchScores()
+        let cascade = QuantumMath.entropyCascade()
+        let gateStatus = QuantumGateEngine.shared.engineStatus()
+
+        // Synthesize quantum insight
+        let novelty = scores.feSacred * scores.berryPhase * PHI
+        let confidence = cascade.converged ? 0.95 : 0.6
+        let phiRes = (scores.feSacred + scores.fePhiLock + scores.berryPhase) / 3.0 * PHI
+
+        let gateCircuits = gateStatus["total_circuits"] as? Int ?? 0
+        let insight = "Quantum: Fe=\(String(format: "%.4f", scores.feSacred)) Berry=\(String(format: "%.4f", scores.berryPhase)) Cascade=\(cascade.converged ? "CONVERGED" : "EVOLVING") Gates=\(gateCircuits)"
+
+        let report = InsightReport(
+            insight: insight,
+            novelty: novelty,
+            confidence: confidence,
+            sources: ["QuantumMath", "QuantumGateEngine", "EntropyCascade"],
+            phiResonance: phiRes
+        )
+        insights.append(report)
+
+        // Feedback
+        InterEngineFeedbackBus.shared.broadcast(
+            from: .apex,
+            signal: "quantum_research_coordinated",
+            payload: ["novelty": novelty, "confidence": confidence, "phi_resonance": phiRes]
+        )
+
+        return report
     }
 
     // ─── UNIFIED ASI QUERY: routes through ALL subsystems with deep synthesis ───

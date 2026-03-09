@@ -1,7 +1,7 @@
 {
-  "last_updated": "2026-02-16T21:59:21.689220+00:00",
-  "total_runs": 2,
-  "total_regressions": 0,
+  "last_updated": "2026-02-28T22:53:53.299870+00:00",
+  "total_runs": 51,
+  "total_regressions": 4,
   "history": [
     {
       "run_id": 1,
@@ -58,7 +58,1408 @@
           "violations": 105
         }
       ]
+    },
+    {
+      "run_id": 3,
+      "timestamp": "2026-02-28T16:22:35.990497+00:00",
+      "all_passed": false,
+      "total_violations": 2,
+      "results_summary": [
+        {
+          "category": "sacred_conservation",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 2
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "noise_resilience",
+          "passed": true,
+          "violations": 0
+        }
+      ]
+    },
+    {
+      "run_id": 4,
+      "timestamp": "2026-02-28T16:23:40.575508+00:00",
+      "all_passed": false,
+      "total_violations": 739,
+      "results_summary": [
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 23
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 646
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        }
+      ]
+    },
+    {
+      "run_id": 5,
+      "timestamp": "2026-02-28T16:42:50.497390+00:00",
+      "all_passed": false,
+      "total_violations": 137599,
+      "results_summary": [
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68648
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 68881
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        }
+      ]
+    },
+    {
+      "run_id": 6,
+      "timestamp": "2026-02-28T16:43:48.480782+00:00",
+      "all_passed": false,
+      "total_violations": 1,
+      "results_summary": [
+        {
+          "category": "sacred_conservation",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 1
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "noise_resilience",
+          "passed": true,
+          "violations": 0
+        }
+      ]
+    },
+    {
+      "run_id": 7,
+      "timestamp": "2026-02-28T16:52:25.081353+00:00",
+      "all_passed": false,
+      "total_violations": 138017,
+      "results_summary": [
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68846
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69101
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        }
+      ]
+    },
+    {
+      "run_id": 8,
+      "timestamp": "2026-02-28T17:11:40.010653+00:00",
+      "all_passed": false,
+      "total_violations": 137578,
+      "results_summary": [
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68639
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 68869
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        }
+      ]
+    },
+    {
+      "run_id": 9,
+      "timestamp": "2026-02-28T17:12:24.603164+00:00",
+      "all_passed": true,
+      "total_violations": 0,
+      "results_summary": [
+        {
+          "category": "sacred_conservation",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "noise_resilience",
+          "passed": true,
+          "violations": 0
+        }
+      ]
+    },
+    {
+      "run_id": 10,
+      "timestamp": "2026-02-28T17:49:51.480841+00:00",
+      "all_passed": false,
+      "total_violations": 137595,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68648
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 68877
+        }
+      ],
+      "regression_detected": true
+    },
+    {
+      "run_id": 11,
+      "timestamp": "2026-02-28T17:50:33.116812+00:00",
+      "all_passed": true,
+      "total_violations": 0,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": true,
+          "violations": 0
+        }
+      ]
+    },
+    {
+      "run_id": 12,
+      "timestamp": "2026-02-28T18:04:17.031756+00:00",
+      "all_passed": false,
+      "total_violations": 137611,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68651
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 68890
+        }
+      ],
+      "regression_detected": true
+    },
+    {
+      "run_id": 13,
+      "timestamp": "2026-02-28T18:05:30.407065+00:00",
+      "all_passed": false,
+      "total_violations": 1,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 1
+        }
+      ]
+    },
+    {
+      "run_id": 14,
+      "timestamp": "2026-02-28T18:07:27.751507+00:00",
+      "all_passed": false,
+      "total_violations": 138013,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68858
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69085
+        }
+      ]
+    },
+    {
+      "run_id": 15,
+      "timestamp": "2026-02-28T18:12:35.493727+00:00",
+      "all_passed": false,
+      "total_violations": 137599,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 69
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68655
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 68875
+        }
+      ]
+    },
+    {
+      "run_id": 16,
+      "timestamp": "2026-02-28T18:24:04.777827+00:00",
+      "all_passed": false,
+      "total_violations": 137620,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68654
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 68896
+        }
+      ]
+    },
+    {
+      "run_id": 17,
+      "timestamp": "2026-02-28T18:26:18.341028+00:00",
+      "all_passed": false,
+      "total_violations": 137623,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 69
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68655
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 68899
+        }
+      ]
+    },
+    {
+      "run_id": 18,
+      "timestamp": "2026-02-28T18:59:55.751211+00:00",
+      "all_passed": false,
+      "total_violations": 137799,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68754
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 68975
+        }
+      ]
+    },
+    {
+      "run_id": 19,
+      "timestamp": "2026-02-28T19:00:52.095876+00:00",
+      "all_passed": false,
+      "total_violations": 1,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 1
+        }
+      ]
+    },
+    {
+      "run_id": 20,
+      "timestamp": "2026-02-28T19:02:33.369119+00:00",
+      "all_passed": false,
+      "total_violations": 138225,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 71
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68963
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69191
+        }
+      ]
+    },
+    {
+      "run_id": 21,
+      "timestamp": "2026-02-28T19:06:53.510952+00:00",
+      "all_passed": false,
+      "total_violations": 137831,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68768
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 68993
+        }
+      ]
+    },
+    {
+      "run_id": 22,
+      "timestamp": "2026-02-28T19:07:50.467114+00:00",
+      "all_passed": true,
+      "total_violations": 0,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": true,
+          "violations": 0
+        }
+      ]
+    },
+    {
+      "run_id": 23,
+      "timestamp": "2026-02-28T19:09:34.436918+00:00",
+      "all_passed": false,
+      "total_violations": 138239,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68968
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69201
+        }
+      ],
+      "regression_detected": true
+    },
+    {
+      "run_id": 24,
+      "timestamp": "2026-02-28T19:15:27.521297+00:00",
+      "all_passed": false,
+      "total_violations": 137805,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 71
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68756
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 68978
+        }
+      ]
+    },
+    {
+      "run_id": 25,
+      "timestamp": "2026-02-28T19:24:25.630711+00:00",
+      "all_passed": false,
+      "total_violations": 137930,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68813
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69047
+        }
+      ]
+    },
+    {
+      "run_id": 26,
+      "timestamp": "2026-02-28T19:31:02.830003+00:00",
+      "all_passed": false,
+      "total_violations": 137916,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68806
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69040
+        }
+      ]
+    },
+    {
+      "run_id": 27,
+      "timestamp": "2026-02-28T19:38:40.251743+00:00",
+      "all_passed": false,
+      "total_violations": 137965,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 71
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68815
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69079
+        }
+      ]
+    },
+    {
+      "run_id": 28,
+      "timestamp": "2026-02-28T19:47:05.393215+00:00",
+      "all_passed": false,
+      "total_violations": 137922,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68808
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69044
+        }
+      ]
+    },
+    {
+      "run_id": 29,
+      "timestamp": "2026-02-28T19:58:56.785211+00:00",
+      "all_passed": true,
+      "total_violations": 0,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": true,
+          "violations": 0
+        }
+      ]
+    },
+    {
+      "run_id": 30,
+      "timestamp": "2026-02-28T20:04:39.079302+00:00",
+      "all_passed": false,
+      "total_violations": 138305,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 70
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 69002
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69233
+        }
+      ],
+      "regression_detected": true
+    },
+    {
+      "run_id": 31,
+      "timestamp": "2026-02-28T20:17:19.818290+00:00",
+      "all_passed": false,
+      "total_violations": 137933,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 71
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68812
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69050
+        }
+      ]
+    },
+    {
+      "run_id": 32,
+      "timestamp": "2026-02-28T20:30:09.754465+00:00",
+      "all_passed": false,
+      "total_violations": 137920,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 71
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68807
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69042
+        }
+      ]
+    },
+    {
+      "run_id": 33,
+      "timestamp": "2026-02-28T20:45:41.684832+00:00",
+      "all_passed": false,
+      "total_violations": 137928,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 71
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 68809
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 69048
+        }
+      ]
+    },
+    {
+      "run_id": 34,
+      "timestamp": "2026-02-28T20:55:09.634499+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 35,
+      "timestamp": "2026-02-28T21:02:18.792777+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 36,
+      "timestamp": "2026-02-28T21:06:15.811435+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 37,
+      "timestamp": "2026-02-28T21:10:00.811032+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 38,
+      "timestamp": "2026-02-28T21:12:16.051918+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 39,
+      "timestamp": "2026-02-28T21:15:42.947039+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 40,
+      "timestamp": "2026-02-28T21:19:36.407966+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 41,
+      "timestamp": "2026-02-28T21:22:21.926841+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 42,
+      "timestamp": "2026-02-28T21:24:19.668580+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 43,
+      "timestamp": "2026-02-28T21:25:37.946221+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 44,
+      "timestamp": "2026-02-28T21:28:11.254020+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 45,
+      "timestamp": "2026-02-28T21:30:45.183768+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 46,
+      "timestamp": "2026-02-28T22:08:56.300944+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 47,
+      "timestamp": "2026-02-28T22:10:24.290476+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 48,
+      "timestamp": "2026-02-28T22:17:52.693441+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 49,
+      "timestamp": "2026-02-28T22:19:08.743416+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 50,
+      "timestamp": "2026-02-28T22:19:54.733495+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
+    },
+    {
+      "run_id": 51,
+      "timestamp": "2026-02-28T22:53:53.299843+00:00",
+      "all_passed": false,
+      "total_violations": 37,
+      "results_summary": [
+        {
+          "category": "noise_resilience",
+          "passed": false,
+          "violations": 9
+        },
+        {
+          "category": "sacred_conservation",
+          "passed": false,
+          "violations": 13
+        },
+        {
+          "category": "entanglement_verification",
+          "passed": true,
+          "violations": 0
+        },
+        {
+          "category": "fidelity_bounds",
+          "passed": false,
+          "violations": 15
+        }
+      ]
     }
   ],
-  "regressions": []
+  "regressions": [
+    {
+      "detected_at": 10,
+      "previous_run": 9,
+      "new_violations": 137595,
+      "timestamp": "2026-02-28T17:49:51.480893+00:00"
+    },
+    {
+      "detected_at": 12,
+      "previous_run": 11,
+      "new_violations": 137611,
+      "timestamp": "2026-02-28T18:04:17.031785+00:00"
+    },
+    {
+      "detected_at": 23,
+      "previous_run": 22,
+      "new_violations": 138239,
+      "timestamp": "2026-02-28T19:09:34.436946+00:00"
+    },
+    {
+      "detected_at": 30,
+      "previous_run": 29,
+      "new_violations": 138305,
+      "timestamp": "2026-02-28T20:04:39.079358+00:00"
+    }
+  ]
 }

@@ -1,0 +1,1243 @@
+{
+  "timestamp": "2026-02-25 08:30:41",
+  "total": {
+    "correct": 94,
+    "total": 122,
+    "pct": 77.0
+  },
+  "arc": {
+    "correct": 48,
+    "total": 60,
+    "pct": 80.0,
+    "results": [
+      {
+        "idx": 0,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 2.5773050785064697,
+        "question": "An astronomer observes that a planet rotates faster after a meteorite impact. Wh",
+        "id": "Mercury_7175875"
+      },
+      {
+        "idx": 1,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.06321501731872559,
+        "question": "A group of engineers wanted to know how different building designs would respond",
+        "id": "Mercury_SC_409171"
+      },
+      {
+        "idx": 2,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.0743410587310791,
+        "question": "The end result in the process of photosynthesis is the production of sugar and o",
+        "id": "Mercury_SC_408547"
+      },
+      {
+        "idx": 3,
+        "ok": false,
+        "got": 0,
+        "expected": 3,
+        "confidence": 0.7833,
+        "time": 0.05749082565307617,
+        "question": "A physicist wants to determine the speed a car must reach to jump over a ramp. T",
+        "id": "Mercury_407327"
+      },
+      {
+        "idx": 4,
+        "ok": false,
+        "got": 1,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.06215095520019531,
+        "question": "An astronaut drops a 1.0 kg object and a 5.0 kg object on the Moon. Both objects",
+        "id": "MCAS_2006_9_44"
+      },
+      {
+        "idx": 5,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.2711,
+        "time": 0.04417085647583008,
+        "question": "Devil facial tumor disease (DFTD) is a disease that is decimating the population",
+        "id": "Mercury_7270393"
+      },
+      {
+        "idx": 6,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.06166362762451172,
+        "question": "A type of small mammal from the mountain regions of the western United States ma",
+        "id": "MCAS_2014_5_7"
+      },
+      {
+        "idx": 7,
+        "ok": false,
+        "got": 0,
+        "expected": 2,
+        "confidence": 0.2551,
+        "time": 0.10928201675415039,
+        "question": "Petrified palm trees are found in sedimentary rock near glaciers. The presence o",
+        "id": "Mercury_7086660"
+      },
+      {
+        "idx": 8,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.08011603355407715,
+        "question": "Farmers in Wyoming were concerned because some of their chickens were being prey",
+        "id": "Mercury_7168805"
+      },
+      {
+        "idx": 9,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.0818328857421875,
+        "question": "Copper is an element that is used in electrical wires. What is the smallest unit",
+        "id": "MCAS_2003_8_11"
+      },
+      {
+        "idx": 10,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.05228996276855469,
+        "question": "According to cell classification, prokaryotic cells are separated from eukaryoti",
+        "id": "Mercury_7250058"
+      },
+      {
+        "idx": 11,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.05187582969665527,
+        "question": "Which statement best describes the effect of the Sun on the oceans?",
+        "id": "Mercury_7012740"
+      },
+      {
+        "idx": 12,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.05043220520019531,
+        "question": "The morning temperature in a city is 41\u00b0F. If a sunny, mild day is forecast, whi",
+        "id": "Mercury_LBS10610"
+      },
+      {
+        "idx": 13,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.06269693374633789,
+        "question": "A class plans an investigation to see which brand of light bulb lasts the longes",
+        "id": "Mercury_SC_407400"
+      },
+      {
+        "idx": 14,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.0468900203704834,
+        "question": "Which of these gases is the most abundant greenhouse gas in the lower atmosphere",
+        "id": "Mercury_7212993"
+      },
+      {
+        "idx": 15,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.0535888671875,
+        "question": "At which temperature does water freeze?",
+        "id": "Mercury_SC_413240"
+      },
+      {
+        "idx": 16,
+        "ok": false,
+        "got": 0,
+        "expected": 2,
+        "confidence": 0.7833,
+        "time": 0.06556105613708496,
+        "question": "Fossil bones and teeth of dinosaurs have been researched for the last century. R",
+        "id": "Mercury_7186358"
+      },
+      {
+        "idx": 17,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.032753944396972656,
+        "question": "Molly was making iced tea by putting tea bags in boiling water. She needed to co",
+        "id": "Mercury_7166425"
+      },
+      {
+        "idx": 18,
+        "ok": false,
+        "got": 3,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.04538106918334961,
+        "question": "Logging companies cut trees in a forest and send the trees to lumber mills far f",
+        "id": "MDSA_2007_8_3"
+      },
+      {
+        "idx": 19,
+        "ok": false,
+        "got": 3,
+        "expected": 2,
+        "confidence": 0.2653,
+        "time": 0.04446816444396973,
+        "question": "It was once thought that living organisms could come from non-living matter. For",
+        "id": "Mercury_7094290"
+      },
+      {
+        "idx": 20,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.07487630844116211,
+        "question": "Cells take in food for energy. The part of the cell that aids in digestion of th",
+        "id": "Mercury_7186568"
+      },
+      {
+        "idx": 21,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.2934,
+        "time": 0.0500948429107666,
+        "question": "When an electric current is passed through water (H_{2}O) using a specific appar",
+        "id": "Mercury_402216"
+      },
+      {
+        "idx": 22,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.04539299011230469,
+        "question": "Which is a fact about penguins?",
+        "id": "Mercury_404894"
+      },
+      {
+        "idx": 23,
+        "ok": false,
+        "got": 1,
+        "expected": 2,
+        "confidence": 0.2602,
+        "time": 0.032833099365234375,
+        "question": "A glass of water at 110\u00b0F is placed in a room next to a glass of water that is 5",
+        "id": "MCAS_2002_8_11"
+      },
+      {
+        "idx": 24,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.04536294937133789,
+        "question": "Snow, rain, hail, and fog are all forms of",
+        "id": "Mercury_SC_405086"
+      },
+      {
+        "idx": 25,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.040081024169921875,
+        "question": "Scott filled a tray with juice and put it in a freezer. The next day, Scott open",
+        "id": "Mercury_SC_408324"
+      },
+      {
+        "idx": 26,
+        "ok": false,
+        "got": 3,
+        "expected": 1,
+        "confidence": 0.4168,
+        "time": 0.039962053298950195,
+        "question": "On August 21, a flash flood warning was issued for the Las Vegas area. Which sta",
+        "id": "Mercury_7218820"
+      },
+      {
+        "idx": 27,
+        "ok": false,
+        "got": 2,
+        "expected": 1,
+        "confidence": 0.2763,
+        "time": 0.0475311279296875,
+        "question": "Students heated three objects to different temperatures during a classroom demon",
+        "id": "Mercury_412202"
+      },
+      {
+        "idx": 28,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.04835915565490723,
+        "question": "Tiny organisms called plankton live in oceans. Some plankton can take energy fro",
+        "id": "Mercury_SC_409139"
+      },
+      {
+        "idx": 29,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.07112717628479004,
+        "question": "Which statement best explains why a tree branch floats on water?",
+        "id": "Mercury_400687"
+      },
+      {
+        "idx": 30,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.04874920845031738,
+        "question": "Students are observing two fossils in a lab. They are told by the teacher that t",
+        "id": "Mercury_7171605"
+      },
+      {
+        "idx": 31,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.2551,
+        "time": 0.07795095443725586,
+        "question": "Earth's distance from the Sun enables water to be readily available for organism",
+        "id": "Mercury_7210245"
+      },
+      {
+        "idx": 32,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.2823,
+        "time": 0.04283499717712402,
+        "question": "Which statement correctly describes a property of a type of matter?",
+        "id": "AKDE&ED_2008_4_25"
+      },
+      {
+        "idx": 33,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.05483078956604004,
+        "question": "Which statement describes a positive effect of a scientific discovery?",
+        "id": "AKDE&ED_2008_4_19"
+      },
+      {
+        "idx": 34,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.0532839298248291,
+        "question": "Which natural event occurs with the most frequency?",
+        "id": "Mercury_SC_400402"
+      },
+      {
+        "idx": 35,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.052143096923828125,
+        "question": "A scientist maps a long region in which earthquakes originate and determines thi",
+        "id": "Mercury_7234308"
+      },
+      {
+        "idx": 36,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.3616,
+        "time": 0.04885983467102051,
+        "question": "Which best describes how the sun might compare to a different-sized star, if the",
+        "id": "ACTAAP_2014_5_8"
+      },
+      {
+        "idx": 37,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.05386495590209961,
+        "question": "Which statement is true about the solar system?",
+        "id": "Mercury_400407"
+      },
+      {
+        "idx": 38,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.05140995979309082,
+        "question": "What is the main function of photosynthetic cells within a plant?",
+        "id": "Mercury_7116288"
+      },
+      {
+        "idx": 39,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.054882049560546875,
+        "question": "Which of the following is the primary difference between hydraulic and pneumatic",
+        "id": "MCAS_2004_9_15-v1"
+      },
+      {
+        "idx": 40,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.05159902572631836,
+        "question": "In the spring and early summer, bears often scratch their backs against trees to",
+        "id": "NYSEDREGENTS_2015_4_26"
+      },
+      {
+        "idx": 41,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.056381940841674805,
+        "question": "Which event occurs once per day?",
+        "id": "Mercury_SC_401620"
+      },
+      {
+        "idx": 42,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.10035395622253418,
+        "question": "What is the mass of a carbon atom that has 6 protons, 7 neutrons, and 6 electron",
+        "id": "Mercury_400877"
+      },
+      {
+        "idx": 43,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.09748506546020508,
+        "question": "The speed of a sound wave varies as it travels through different substances. Whi",
+        "id": "Mercury_7174213"
+      },
+      {
+        "idx": 44,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.08995199203491211,
+        "question": "Which statement best describes the energy changes that occur while a child is ri",
+        "id": "NYSEDREGENTS_2008_8_34"
+      },
+      {
+        "idx": 45,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.496,
+        "time": 0.08155965805053711,
+        "question": "The best way to separate salt from water is with the use of",
+        "id": "Mercury_7212398"
+      },
+      {
+        "idx": 46,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.2832,
+        "time": 0.05778193473815918,
+        "question": "Which is the best piece of equipment to determine the topography of the United S",
+        "id": "Mercury_SC_401290"
+      },
+      {
+        "idx": 47,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.06018996238708496,
+        "question": "Which tool would be best to use to determine how long it takes a cup of water to",
+        "id": "Mercury_SC_402120"
+      },
+      {
+        "idx": 48,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.06347107887268066,
+        "question": "To determine how closely related organisms are, scientists consider all of the f",
+        "id": "Mercury_184975"
+      },
+      {
+        "idx": 49,
+        "ok": false,
+        "got": 1,
+        "expected": 0,
+        "confidence": 0.2653,
+        "time": 0.04969501495361328,
+        "question": "Which is an example of a learned behavior?",
+        "id": "Mercury_SC_400578"
+      },
+      {
+        "idx": 50,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.052854061126708984,
+        "question": "Suppose 20 g of liquid hydrogen peroxide is heated so it completely breaks down ",
+        "id": "MCAS_2001_8_4"
+      },
+      {
+        "idx": 51,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.07428598403930664,
+        "question": "Air has no color and cannot be seen, yet it takes up space. What could be done t",
+        "id": "MCAS_2003_5_33"
+      },
+      {
+        "idx": 52,
+        "ok": false,
+        "got": 3,
+        "expected": 0,
+        "confidence": 0.25,
+        "time": 0.0603482723236084,
+        "question": "Which geologic process most likely caused the formation of the Mount St. Helens ",
+        "id": "Mercury_7068513"
+      },
+      {
+        "idx": 53,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.7233,
+        "time": 0.059825897216796875,
+        "question": "Which example shows a relationship between a living thing and a nonliving thing?",
+        "id": "AKDE&ED_2008_4_26"
+      },
+      {
+        "idx": 54,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.0516819953918457,
+        "question": "Images from the Voyager and the Galileo spacecraft provide evidence Europa has a",
+        "id": "Mercury_7235638"
+      },
+      {
+        "idx": 55,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.055329084396362305,
+        "question": "All natural resources on Earth are either renewable or nonrenewable. Whether a r",
+        "id": "MDSA_2009_5_20"
+      },
+      {
+        "idx": 56,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.04228830337524414,
+        "question": "Scientists studied largemouth bass populations in several different geographic l",
+        "id": "Mercury_178325"
+      },
+      {
+        "idx": 57,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.03802204132080078,
+        "question": "A bar magnet was moved quickly back and forth in a coil of copper wire. The ends",
+        "id": "Mercury_7212678"
+      },
+      {
+        "idx": 58,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.04861712455749512,
+        "question": "Which of the following traits is most influenced by the environment?",
+        "id": "TAKS_2009_8_32"
+      },
+      {
+        "idx": 59,
+        "ok": false,
+        "got": 1,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.06505894660949707,
+        "question": "Which of the following actions will increase the gravitational force between two",
+        "id": "Mercury_412681"
+      }
+    ]
+  },
+  "mmlu": {
+    "correct": 46,
+    "total": 62,
+    "pct": 74.2,
+    "results": [
+      {
+        "idx": 0,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.2736,
+        "time": 2.6764187812805176,
+        "subject": "high_school_biology",
+        "question": "Which describes an African butterfly species that exists in two strikingly diffe"
+      },
+      {
+        "idx": 1,
+        "ok": false,
+        "got": 0,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.33617091178894043,
+        "subject": "high_school_biology",
+        "question": "Regarding meiosis and mitosis, one difference between the two forms of cellular "
+      },
+      {
+        "idx": 2,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.4385089874267578,
+        "subject": "high_school_biology",
+        "question": "Which of the following about meiosis is NOT true?"
+      },
+      {
+        "idx": 3,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.2962031364440918,
+        "subject": "high_school_biology",
+        "question": "Oligomycin is an antibiotic that blocks proton channels in the cristae of mitoch"
+      },
+      {
+        "idx": 4,
+        "ok": false,
+        "got": 2,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.23790407180786133,
+        "subject": "high_school_biology",
+        "question": "If neutral variation is truly \"neutral,\" then it should have no effect on"
+      },
+      {
+        "idx": 5,
+        "ok": false,
+        "got": 1,
+        "expected": 3,
+        "confidence": 0.9317,
+        "time": 0.22841596603393555,
+        "subject": "high_school_biology",
+        "question": "Which of the following characteristics would allow you to distinguish a prokaryo"
+      },
+      {
+        "idx": 6,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.9283,
+        "time": 0.22791194915771484,
+        "subject": "high_school_biology",
+        "question": "This process leads to the net production of two pyruvate, two ATP, and two NADH."
+      },
+      {
+        "idx": 7,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.15561795234680176,
+        "subject": "high_school_biology",
+        "question": "When oxygen becomes unavailable, this process regenerates NAD+, allowing respira"
+      },
+      {
+        "idx": 8,
+        "ok": false,
+        "got": 0,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.1983790397644043,
+        "subject": "high_school_biology",
+        "question": "Before the human genome was sequenced by the Human Genome Project, scientists ex"
+      },
+      {
+        "idx": 9,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.3773996829986572,
+        "subject": "high_school_biology",
+        "question": "Which of the following must exist in a population before natural selection can a"
+      },
+      {
+        "idx": 10,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.1625378131866455,
+        "subject": "high_school_biology",
+        "question": "You observe a species that gives birth to only one offspring at a time and has a"
+      },
+      {
+        "idx": 11,
+        "ok": false,
+        "got": 0,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.1609950065612793,
+        "subject": "high_school_biology",
+        "question": "A piece of potato is dropped into a beaker of pure water. Which of the following"
+      },
+      {
+        "idx": 12,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.2571277618408203,
+        "subject": "high_school_biology",
+        "question": "In most ecosystems, net primary productivity is important because it represents "
+      },
+      {
+        "idx": 13,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.4039280414581299,
+        "subject": "high_school_biology",
+        "question": "During a study session about evolution, one of your fellow students remarks, \"Th"
+      },
+      {
+        "idx": 14,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.3131692409515381,
+        "subject": "high_school_biology",
+        "question": "Incomplete dominance and epistasis are two terms that define genetic relationshi"
+      },
+      {
+        "idx": 15,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.16603589057922363,
+        "subject": "high_school_biology",
+        "question": "Which of the following statements about the DNA in one of your liver cells is co"
+      },
+      {
+        "idx": 16,
+        "ok": false,
+        "got": 1,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.30024003982543945,
+        "subject": "high_school_biology",
+        "question": "Energy is harvested during cellular respiration in stages. Which of the followin"
+      },
+      {
+        "idx": 17,
+        "ok": false,
+        "got": 3,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.2911207675933838,
+        "subject": "high_school_biology",
+        "question": "Which of the following best explains why drinking breast milk is beneficial to a"
+      },
+      {
+        "idx": 18,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.2538769245147705,
+        "subject": "high_school_biology",
+        "question": "During oxidative phosphorylation, the energy needed to drive ATP synthesis comes"
+      },
+      {
+        "idx": 19,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.3470592498779297,
+        "subject": "high_school_biology",
+        "question": "Easily produced genetic variation is key to the rapid evolution of viral and mic"
+      },
+      {
+        "idx": 20,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.09723520278930664,
+        "subject": "high_school_biology",
+        "question": "If a couple has had three sons and the woman is pregnant with their fourth child"
+      },
+      {
+        "idx": 21,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.12173318862915039,
+        "subject": "high_school_biology",
+        "question": "Which of the following is an incorrect statement about gel electrophoresis?"
+      },
+      {
+        "idx": 22,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.1430211067199707,
+        "subject": "high_school_biology",
+        "question": "Which of the following observations helped Darwin shape his concept of descent w"
+      },
+      {
+        "idx": 23,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.20599699020385742,
+        "subject": "high_school_biology",
+        "question": "Which of the following statements about post-transcriptional modification are in"
+      },
+      {
+        "idx": 24,
+        "ok": false,
+        "got": 0,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.3139951229095459,
+        "subject": "high_school_biology",
+        "question": "Photosynthesis requires"
+      },
+      {
+        "idx": 25,
+        "ok": false,
+        "got": 2,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.5022232532501221,
+        "subject": "high_school_biology",
+        "question": "The first simple cells evolved approximately 3.5 billion years ago, followed by "
+      },
+      {
+        "idx": 26,
+        "ok": false,
+        "got": 2,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.24750399589538574,
+        "subject": "high_school_biology",
+        "question": "The sequence of amino acids in hemoglobin molecules of humans is more similar to"
+      },
+      {
+        "idx": 27,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.9325,
+        "time": 0.37313175201416016,
+        "subject": "high_school_biology",
+        "question": "Basepair sequence that signals the start site for gene transcription."
+      },
+      {
+        "idx": 28,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.7374,
+        "time": 0.14072299003601074,
+        "subject": "high_school_biology",
+        "question": "Those being hunted adopt a coloring scheme that allows them to blend in to the c"
+      },
+      {
+        "idx": 29,
+        "ok": false,
+        "got": 1,
+        "expected": 3,
+        "confidence": 0.9285,
+        "time": 0.23109197616577148,
+        "subject": "high_school_biology",
+        "question": "A baby duck runs for cover when a large object is tossed over its head. After th"
+      },
+      {
+        "idx": 30,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.3257269859313965,
+        "subject": "high_school_biology",
+        "question": "Stretching out from the equator is a wide belt of tropical rain forests that are"
+      },
+      {
+        "idx": 31,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.3287980556488037,
+        "subject": "high_school_biology",
+        "question": "The theory of evolution is most accurately described as"
+      },
+      {
+        "idx": 32,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.4869,
+        "time": 0.2886240482330322,
+        "subject": "high_school_psychology",
+        "question": "The ability to perceive your front door as a rectangle even when it is open, dis"
+      },
+      {
+        "idx": 33,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.3695,
+        "time": 0.26424407958984375,
+        "subject": "high_school_psychology",
+        "question": "It has been suggested that learned helplessness may be related to"
+      },
+      {
+        "idx": 34,
+        "ok": false,
+        "got": 3,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.2690279483795166,
+        "subject": "high_school_psychology",
+        "question": "A low level of glucose in Sam's bloodstream is most likely to make him want to"
+      },
+      {
+        "idx": 35,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.929,
+        "time": 0.2209939956665039,
+        "subject": "high_school_psychology",
+        "question": "Tonya runs into an old schoolmate on the street. During their brief conversation"
+      },
+      {
+        "idx": 36,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.3196299076080322,
+        "subject": "high_school_psychology",
+        "question": "In a number of experiments, Elizabeth Loftus has shown that the wording of a que"
+      },
+      {
+        "idx": 37,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.261462926864624,
+        "subject": "high_school_psychology",
+        "question": "The scientific investigation of mental processes and behavior is called"
+      },
+      {
+        "idx": 38,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.21522283554077148,
+        "subject": "high_school_psychology",
+        "question": "Noam Chomsky and B. F. Skinner disagreed about how children acquire language. Wh"
+      },
+      {
+        "idx": 39,
+        "ok": false,
+        "got": 1,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.25752806663513184,
+        "subject": "high_school_psychology",
+        "question": "Which type of assessment attempts to identify the most pressing behavioral probl"
+      },
+      {
+        "idx": 40,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.33951520919799805,
+        "subject": "high_school_psychology",
+        "question": "Extinction occurs when the conditioned stimulus"
+      },
+      {
+        "idx": 41,
+        "ok": false,
+        "got": 3,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.3522510528564453,
+        "subject": "high_school_psychology",
+        "question": "How would Piaget describe the process of learning something new using terminolog"
+      },
+      {
+        "idx": 42,
+        "ok": false,
+        "got": 2,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.3758201599121094,
+        "subject": "high_school_psychology",
+        "question": "Which of the following best states why the study of twins is significant to the "
+      },
+      {
+        "idx": 43,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.37945079803466797,
+        "subject": "high_school_psychology",
+        "question": "Which of the following questions best frames the nature-nurture controversy?"
+      },
+      {
+        "idx": 44,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.35587573051452637,
+        "subject": "high_school_psychology",
+        "question": "According to social learning theory, gender identity results primarily from"
+      },
+      {
+        "idx": 45,
+        "ok": false,
+        "got": 2,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.26992106437683105,
+        "subject": "high_school_psychology",
+        "question": "In the nature versus nurture debate, nature is most closely associated with"
+      },
+      {
+        "idx": 46,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.14970016479492188,
+        "subject": "high_school_psychology",
+        "question": "Tests that have been pretested with a sample of the population for whom the test"
+      },
+      {
+        "idx": 47,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.2569141387939453,
+        "subject": "high_school_psychology",
+        "question": "To save the expense of purchasing a new test form, a chief school administrator "
+      },
+      {
+        "idx": 48,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.9315,
+        "time": 0.32194995880126953,
+        "subject": "high_school_psychology",
+        "question": "If arrested for committing a crime, who of the following would be most likely to"
+      },
+      {
+        "idx": 49,
+        "ok": true,
+        "got": 2,
+        "expected": 2,
+        "confidence": 0.95,
+        "time": 0.35037899017333984,
+        "subject": "high_school_psychology",
+        "question": "What is the first step in any example of classical conditioning?"
+      },
+      {
+        "idx": 50,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.26374197006225586,
+        "subject": "high_school_psychology",
+        "question": "Which of the following accurately states the order of the transmission of visual"
+      },
+      {
+        "idx": 51,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.7503,
+        "time": 0.13419318199157715,
+        "subject": "high_school_psychology",
+        "question": "As a result of an accident, Abdul lost sight in his right eye. To judge the dist"
+      },
+      {
+        "idx": 52,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.9304,
+        "time": 0.22357392311096191,
+        "subject": "high_school_psychology",
+        "question": "Certain cross-cultural studies have suggested that six facial expressions are re"
+      },
+      {
+        "idx": 53,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.9237,
+        "time": 0.08076167106628418,
+        "subject": "high_school_psychology",
+        "question": "The brainstem is comprised of the"
+      },
+      {
+        "idx": 54,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.9287,
+        "time": 0.17182278633117676,
+        "subject": "high_school_psychology",
+        "question": "An artist doing a pencil drawing could use which of the following techniques to "
+      },
+      {
+        "idx": 55,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.22040700912475586,
+        "subject": "high_school_psychology",
+        "question": "A musician's ability to make a distinction between two very similar pitches depe"
+      },
+      {
+        "idx": 56,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.24241399765014648,
+        "subject": "high_school_psychology",
+        "question": "When Antoinette comes home to her apartment, people suddenly jump out towards he"
+      },
+      {
+        "idx": 57,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.24613595008850098,
+        "subject": "high_school_psychology",
+        "question": "Studying a few subjects in great depth to investigate a rare condition is known "
+      },
+      {
+        "idx": 58,
+        "ok": true,
+        "got": 1,
+        "expected": 1,
+        "confidence": 0.95,
+        "time": 0.26238489151000977,
+        "subject": "high_school_psychology",
+        "question": "Which theory of emotion are cognitive psychologists most likely to support?"
+      },
+      {
+        "idx": 59,
+        "ok": true,
+        "got": 0,
+        "expected": 0,
+        "confidence": 0.95,
+        "time": 0.1567070484161377,
+        "subject": "high_school_psychology",
+        "question": "Narcotics work because they are chemically very similar to"
+      },
+      {
+        "idx": 60,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.28310394287109375,
+        "subject": "high_school_psychology",
+        "question": "Which of the following contributes most directly to people's exaggerated percept"
+      },
+      {
+        "idx": 61,
+        "ok": true,
+        "got": 3,
+        "expected": 3,
+        "confidence": 0.95,
+        "time": 0.22302794456481934,
+        "subject": "high_school_psychology",
+        "question": "Cognitivists claim that classical conditioning results from"
+      }
+    ]
+  },
+  "elapsed_seconds": 26.0
+}

@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.241468
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.858170
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
@@ -61,9 +61,9 @@ from l104_stable_kernel import stable_kernel
 # ═══════════════════════════════════════════════════════════════════════════════
 QISKIT_AVAILABLE = False
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
-    from qiskit.quantum_info import entropy as q_entropy
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
+    from l104_quantum_gate_engine.quantum_info import entropy as q_entropy
     QISKIT_AVAILABLE = True
 except ImportError:
     pass

@@ -1,9 +1,13 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.245770
+ZENITH_HZ = 3887.8
+UUC = 2301.215661
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 #!/usr/bin/env python3
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 ASI Language & Human Inference Engine
 ===========================================
 
@@ -93,7 +97,7 @@ class SyntacticTree:
 
 class ASILinguisticAnalyzer:
     """
-    ASI-Level Linguistic Analyzer.
+    ASI-Level Linguistic Analyzer v2.0.0.
 
     Implements:
     - Morphological analysis
@@ -101,7 +105,12 @@ class ASILinguisticAnalyzer:
     - Semantic role labeling
     - Discourse analysis
     - Pragmatic inference
+    - Temporal reasoning       ★ NEW v2.0.0
+    - Causal reasoning         ★ NEW v2.0.0
+    - Word sense disambiguation ★ NEW v2.0.0
     """
+
+    VERSION = "2.0.0"
 
     def __init__(self):
         self.god_code = GOD_CODE
@@ -112,7 +121,22 @@ class ASILinguisticAnalyzer:
         self._init_semantic_frames()
         self._init_discourse_markers()
 
-        logger.info("--- [ASI_LINGUISTIC]: ANALYZER INITIALIZED ---")
+        # DeepNLU v2.0.0 integration (temporal, causal, disambiguation)
+        self._deep_nlu = None
+        try:
+            from l104_asi.deep_nlu import TemporalReasoner, CausalReasoner, ContextualDisambiguator
+            self._temporal = TemporalReasoner()
+            self._causal = CausalReasoner()
+            self._disambiguator = ContextualDisambiguator()
+            self._deep_nlu_available = True
+        except ImportError:
+            self._temporal = None
+            self._causal = None
+            self._disambiguator = None
+            self._deep_nlu_available = False
+
+        logger.info("--- [ASI_LINGUISTIC v%s]: ANALYZER INITIALIZED (DeepNLU=%s) ---",
+                    self.VERSION, self._deep_nlu_available)
 
     def _init_patterns(self):
         """Initialize linguistic pattern databases."""
@@ -199,6 +223,9 @@ class ASILinguisticAnalyzer:
         - Semantic interpretation
         - Discourse analysis
         - Pragmatic inference
+        - Temporal reasoning       ★ NEW v2.0.0
+        - Causal reasoning         ★ NEW v2.0.0
+        - Contextual disambiguation ★ NEW v2.0.0
         """
         # Tokenize
         tokens = self._tokenize(text)
@@ -221,6 +248,31 @@ class ASILinguisticAnalyzer:
         # Compute PHI-resonance of linguistic structure
         resonance = self._compute_linguistic_resonance(tokens)
 
+        # ── v2.0.0: Deep NLU layers ──────────────────────────────────
+        temporal = {}
+        causal = {}
+        disambiguation = {}
+        if self._deep_nlu_available:
+            try:
+                temporal = self._temporal.analyze(text)
+            except Exception:
+                pass
+            try:
+                causal = self._causal.analyze(text)
+            except Exception:
+                pass
+            try:
+                disambiguation = self._disambiguator.disambiguate(text)
+            except Exception:
+                pass
+
+        # Enhanced complexity score incorporating new layers
+        depth_bonus = (
+            temporal.get('temporal_richness', 0) * 0.1 +
+            causal.get('causal_density', 0) * 0.1 +
+            disambiguation.get('wsd_coverage', 0) * 0.05
+        )
+
         return {
             "tokens": [self._token_to_dict(t) for t in tokens],
             "morphological": morphological,
@@ -228,9 +280,13 @@ class ASILinguisticAnalyzer:
             "semantic": semantic,
             "discourse": discourse,
             "pragmatic": pragmatic,
+            "temporal": temporal,
+            "causal": causal,
+            "disambiguation": disambiguation,
             "linguistic_resonance": resonance,
             "god_code_alignment": resonance / self.god_code,
-            "complexity_score": len(tokens) * resonance * self.phi
+            "complexity_score": len(tokens) * resonance * self.phi + depth_bonus,
+            "deep_nlu_available": self._deep_nlu_available,
         }
 
     def _tokenize(self, text: str) -> List[LinguisticToken]:
@@ -561,6 +617,26 @@ class ASILinguisticAnalyzer:
             return "ILLUSTRATIVE"
         return "DESCRIPTIVE"
 
+    # ── v2.0.0: Temporal & Causal Analysis ────────────────────────────
+
+    def analyze_temporal(self, text: str) -> Dict[str, Any]:
+        """Temporal analysis: tense, event ordering, duration.  ★ v2.0.0"""
+        if self._temporal:
+            return self._temporal.analyze(text)
+        return {'tense': {'dominant': 'unknown'}, 'temporal_richness': 0.0}
+
+    def analyze_causal(self, text: str) -> Dict[str, Any]:
+        """Causal analysis: cause-effect, chains, counterfactuals.  ★ v2.0.0"""
+        if self._causal:
+            return self._causal.analyze(text)
+        return {'causal_pairs': [], 'causal_density': 0.0}
+
+    def disambiguate(self, text: str) -> Dict[str, Any]:
+        """Word sense disambiguation and metaphor detection.  ★ v2.0.0"""
+        if self._disambiguator:
+            return self._disambiguator.disambiguate(text)
+        return {'disambiguations': [], 'ambiguous_words_found': 0}
+
     def _compute_topic_continuity(self, tokens: List[LinguisticToken]) -> float:
         """Compute topic continuity score."""
         nouns = [t.lemma for t in tokens if t.pos == LinguisticCategory.NOUN]
@@ -731,7 +807,7 @@ class SpeechPattern:
 
 class ASISpeechPatternGenerator:
     """
-    ASI-Level Speech Pattern Generator.
+    ASI-Level Speech Pattern Generator v2.0.0.
 
     Generates human-like speech patterns inspired by:
     - Industry leaders (tech visionaries, thought leaders)
@@ -739,17 +815,36 @@ class ASISpeechPatternGenerator:
     - Persuasive communication
     - Empathetic counseling
     - Sage wisdom traditions
+
+    v2.0.0: DeepNLU integration for temporal/causal-aware response
+    generation. Queries with temporal or causal structure receive
+    style-adapted patterns that preserve cause-effect reasoning.
     """
+
+    VERSION = "2.0.0"
 
     def __init__(self, analyzer: ASILinguisticAnalyzer):
         self.analyzer = analyzer
         self.god_code = GOD_CODE
         self.phi = PHI
 
+        # DeepNLU v2.0.0 integration
+        self._temporal = None
+        self._causal = None
+        self._deep_nlu_available = False
+        try:
+            from l104_asi.deep_nlu import TemporalReasoner, CausalReasoner
+            self._temporal = TemporalReasoner()
+            self._causal = CausalReasoner()
+            self._deep_nlu_available = True
+        except ImportError:
+            pass
+
         self._init_patterns()
         self._init_rhetorical_devices()
 
-        logger.info("--- [ASI_SPEECH]: PATTERN GENERATOR INITIALIZED ---")
+        logger.info("--- [ASI_SPEECH v%s]: PATTERN GENERATOR INITIALIZED (DeepNLU=%s) ---",
+                    self.VERSION, self._deep_nlu_available)
 
     def _init_patterns(self):
         """Initialize speech pattern templates."""
@@ -1002,13 +1097,35 @@ class ASISpeechPatternGenerator:
         """
         Generate a response to a query using speech patterns.
 
-        This is the main interface for conversational response generation.
+        v2.0.0: Enriches response with temporal/causal context when detected.
         """
         # Analyze the query
         query_analysis = self.analyzer.analyze(query)
 
+        # ── DeepNLU temporal/causal enrichment ──
+        temporal_hint = None
+        causal_hint = None
+        if self._deep_nlu_available:
+            if self._temporal:
+                t_result = self._temporal.analyze(query)
+                if t_result.get('temporal_richness', 0) > 0.1:
+                    temporal_hint = t_result.get('tense', {}).get('dominant', 'present')
+            if self._causal:
+                c_result = self._causal.analyze(query)
+                if c_result.get('total_relations', 0) > 0:
+                    pairs = c_result.get('causal_pairs', [])
+                    if pairs:
+                        causal_hint = pairs[0]
+
         # Determine response content based on analysis
         content = self._derive_response_content(query_analysis, context)
+
+        # Inject temporal/causal hints into content
+        if temporal_hint and temporal_hint != 'unknown':
+            content['temporal_context'] = temporal_hint
+        if causal_hint:
+            content.setdefault('cause', causal_hint.get('cause', ''))
+            content.setdefault('effect', causal_hint.get('effect', ''))
 
         # Generate with appropriate style
         result = self.generate(content, style)
@@ -1082,12 +1199,20 @@ class ASIHumanInferenceEngine:
     - Intuitive pattern matching
     - Metacognitive monitoring
 
+    v2.0.0 — DeepNLU integration:
+    - Temporal reasoning via TemporalReasoner for event ordering
+    - CausalReasoner integration for deep cause-effect extraction
+    - Enhanced inference type selection using NLU signals
+    - Temporal inference mode for time-sequence queries
+
     Industry-leader features:
     - Chain-of-thought reasoning
     - Self-reflection and error correction
     - Uncertainty quantification
     - Cognitive bias awareness
     """
+
+    VERSION = "2.0.0"
 
     def __init__(self, analyzer: ASILinguisticAnalyzer):
         self.analyzer = analyzer
@@ -1103,13 +1228,26 @@ class ASIHumanInferenceEngine:
         # Inference history
         self.inference_history: List[InferenceStep] = []
 
+        # DeepNLU v2.0.0 integration
+        self._temporal = None
+        self._causal = None
+        self._deep_nlu_available = False
+        try:
+            from l104_asi.deep_nlu import TemporalReasoner, CausalReasoner
+            self._temporal = TemporalReasoner()
+            self._causal = CausalReasoner()
+            self._deep_nlu_available = True
+        except ImportError:
+            pass
+
         # Cognitive biases to watch for
         self._init_bias_detectors()
 
         # Heuristics
         self._init_heuristics()
 
-        logger.info("--- [ASI_INFERENCE]: HUMAN INFERENCE ENGINE INITIALIZED ---")
+        logger.info("--- [ASI_INFERENCE v%s]: HUMAN INFERENCE ENGINE INITIALIZED (DeepNLU=%s) ---",
+                    self.VERSION, self._deep_nlu_available)
 
     def _init_bias_detectors(self):
         """Initialize cognitive bias detection patterns."""
@@ -1200,8 +1338,27 @@ class ASIHumanInferenceEngine:
 
     def _select_inference_type(self, premise_analyses: List[Dict],
                               query_analysis: Dict) -> InferenceType:
-        """Select the most appropriate inference type."""
-        # Check for causal language
+        """Select the most appropriate inference type.
+
+        v2.0.0: Uses DeepNLU temporal/causal analysis for smarter selection.
+        """
+        # ── DeepNLU causal/temporal signal detection ──
+        if self._deep_nlu_available and self._causal:
+            all_text = ' '.join(
+                ' '.join(t.get('text', '') for t in a.get('tokens', []))
+                for a in premise_analyses + [query_analysis]
+            )
+            causal_result = self._causal.analyze(all_text)
+            if causal_result.get('total_relations', 0) > 0:
+                return InferenceType.CAUSAL
+
+            if self._temporal:
+                temporal_result = self._temporal.analyze(all_text)
+                if temporal_result.get('temporal_richness', 0) > 0.3:
+                    # Strong temporal signal — use temporal-aware causal inference
+                    return InferenceType.CAUSAL
+
+        # ── Fallback: keyword-based causal detection ──
         causal_words = {'because', 'cause', 'effect', 'result', 'lead', 'therefore'}
         for analysis in premise_analyses + [query_analysis]:
             tokens = analysis.get("tokens", [])
@@ -1214,6 +1371,9 @@ class ASIHumanInferenceEngine:
             # "Why" questions suggest abductive
             if any(t.get("text") == "why" for t in query_analysis.get("tokens", [])):
                 return InferenceType.ABDUCTIVE
+            # "When" questions suggest temporal-aware reasoning
+            if any(t.get("text") == "when" for t in query_analysis.get("tokens", [])):
+                return InferenceType.CAUSAL
 
         # Default based on number of premises
         if len(premise_analyses) >= 3:
@@ -1314,24 +1474,59 @@ class ASIHumanInferenceEngine:
 
     def _causal_inference(self, premises: List[str], query: str,
                          premise_analyses: List[Dict], query_analysis: Dict) -> Dict:
-        """Perform causal inference."""
-        # Identify potential cause-effect relationships
-        causal_links = self._identify_causal_links(premises)
+        """Perform causal inference.
 
-        # Build causal chain
+        v2.0.0: Enhanced with DeepNLU CausalReasoner for deep cause-effect extraction
+        and TemporalReasoner for event ordering within causal chains.
+        """
+        # ── DeepNLU deep causal extraction ──
+        deep_causal_pairs = []
+        temporal_context = {}
+        if self._deep_nlu_available and self._causal:
+            combined_text = '. '.join(premises)
+            deep_result = self._causal.analyze(combined_text)
+            deep_causal_pairs = deep_result.get('causal_pairs', [])
+
+            if self._temporal:
+                temporal_context = self._temporal.analyze(combined_text)
+
+        # ── Fallback: positional causal links ──
+        positional_links = self._identify_causal_links(premises)
+
+        # ── Merge: prefer DeepNLU pairs, supplement with positional ──
         chain = []
-        for i, link in enumerate(causal_links):
-            chain.append({
-                "step": i + 1,
-                "reasoning": f"{link['cause']} → {link['effect']} (strength: {link['strength']:.2f})"
-            })
-
-        if causal_links:
-            final_effect = causal_links[-1]["effect"]
-            confidence = sum(l["strength"] for l in causal_links) / len(causal_links)
+        if deep_causal_pairs:
+            for i, pair in enumerate(deep_causal_pairs[:5]):
+                chain.append({
+                    "step": i + 1,
+                    "reasoning": f"{pair['cause']} → {pair['effect']} "
+                                 f"(relation: {pair.get('relation', 'unknown')}, "
+                                 f"confidence: {pair.get('confidence', 0.7):.2f})",
+                    "source": "DeepNLU"
+                })
+            confidence = sum(p.get('confidence', 0.7) for p in deep_causal_pairs[:5]) / len(deep_causal_pairs[:5])
+            final_effect = deep_causal_pairs[-1].get('effect', query)
+        elif positional_links:
+            for i, link in enumerate(positional_links):
+                chain.append({
+                    "step": i + 1,
+                    "reasoning": f"{link['cause']} → {link['effect']} (strength: {link['strength']:.2f})",
+                    "source": "positional"
+                })
+            confidence = sum(l["strength"] for l in positional_links) / len(positional_links)
+            final_effect = positional_links[-1]["effect"]
         else:
             final_effect = query
             confidence = 0.5
+
+        # ── Temporal enrichment ──
+        if temporal_context.get('temporal_richness', 0) > 0:
+            chain.append({
+                "step": len(chain) + 1,
+                "reasoning": f"Temporal context: tense={temporal_context.get('tense', {}).get('dominant', 'unknown')}, "
+                             f"richness={temporal_context.get('temporal_richness', 0):.3f}",
+                "source": "TemporalReasoner"
+            })
 
         conclusion = f"Causal analysis suggests: {final_effect}"
 
@@ -1339,7 +1534,9 @@ class ASIHumanInferenceEngine:
             "conclusion": conclusion,
             "confidence": confidence,
             "chain": chain,
-            "phi_resonance": confidence * self.phi
+            "phi_resonance": confidence * self.phi,
+            "deep_nlu_enhanced": len(deep_causal_pairs) > 0,
+            "temporal_enriched": temporal_context.get('temporal_richness', 0) > 0,
         }
 
     def _intuitive_inference(self, premises: List[str], query: str,
@@ -1584,7 +1781,15 @@ class Innovation:
 
 class ASIInnovationEngine:
     """
-    ASI-Level Innovation Engine.
+    ASI-Level Innovation Engine v2.0.0.
+
+    v2.0.0 Upgrades:
+    - DeepNLU integration: causal chains → problem decomposition
+    - DeepNLU temporal reasoning → trend-aware innovation
+    - DeepNLU query synthesis → solution space exploration
+    - QueryDecomposer → multi-faceted problem breakdown
+    - QueryClassifier → domain-aware innovation targeting
+    - NLU-enriched concept extraction (SRL roles, causal pairs, disambiguated senses)
 
     Implements:
     - TRIZ-inspired inventive principles
@@ -1592,12 +1797,16 @@ class ASIInnovationEngine:
     - Cross-domain innovation transfer
     - Conceptual blending
     - PHI-guided creative exploration
+    - NLU-driven problem decomposition  ★ NEW
 
     Industry-leader features:
     - Pattern analysis from successful innovations
     - Systematic creativity methods
     - Novel combination generation
+    - Deep linguistic understanding of innovation goals  ★ NEW
     """
+
+    VERSION = "2.0.0"
 
     def __init__(self, analyzer: ASILinguisticAnalyzer,
                  inference: ASIHumanInferenceEngine):
@@ -1610,10 +1819,30 @@ class ASIInnovationEngine:
         self._init_innovation_patterns()
         self._init_industry_leaders()
 
+        # DeepNLU integration ★ NEW v2.0.0
+        self._deep_nlu_available = False
+        self._deep_nlu = None
+        self._decomposer = None
+        self._classifier = None
+        try:
+            from l104_asi.deep_nlu import (
+                DeepComprehension, QueryDecomposer, QueryClassifier,
+                CausalReasoner, TemporalReasoner,
+            )
+            self._deep_nlu = DeepComprehension()
+            self._decomposer = QueryDecomposer()
+            self._classifier = QueryClassifier()
+            self._causal = CausalReasoner()
+            self._temporal = TemporalReasoner()
+            self._deep_nlu_available = True
+            logger.info("--- [ASI_INNOVATION v2.0.0]: DeepNLU INTEGRATION ACTIVE ---")
+        except Exception as e:
+            logger.debug(f"[ASI_INNOVATION]: DeepNLU not available: {e}")
+
         # Innovation history
         self.innovations: List[Innovation] = []
 
-        logger.info("--- [ASI_INNOVATION]: ENGINE INITIALIZED ---")
+        logger.info(f"--- [ASI_INNOVATION v{self.VERSION}]: ENGINE INITIALIZED ---")
 
     def _init_inventive_principles(self):
         """Initialize TRIZ-inspired inventive principles."""
@@ -1724,6 +1953,11 @@ class ASIInnovationEngine:
         """
         Generate innovations for a given problem.
 
+        v2.0.0: Uses DeepNLU for richer problem understanding —
+        causal chain analysis, temporal trends, query decomposition
+        for multi-faceted problem breakdown, and domain classification
+        for targeted innovation.
+
         Args:
             problem: Description of the problem to solve
             domain: Domain of innovation
@@ -1735,8 +1969,38 @@ class ASIInnovationEngine:
         # Analyze the problem
         problem_analysis = self.analyzer.analyze(problem)
 
-        # Extract key concepts
-        concepts = self._extract_key_concepts(problem_analysis)
+        # Deep NLU analysis ★ NEW v2.0.0
+        nlu_context = {}
+        if self._deep_nlu_available and self._deep_nlu is not None:
+            try:
+                nlu_context = self._deep_nlu.analyze(problem)
+            except Exception:
+                pass
+
+        # Extract key concepts (now NLU-enriched)
+        concepts = self._extract_key_concepts(problem_analysis, nlu_context)
+
+        # Decompose problem if complex ★ NEW v2.0.0
+        decomposition = None
+        if self._decomposer is not None:
+            try:
+                decomposition = self._decomposer.decompose(problem)
+                if not decomposition.get('is_atomic', True):
+                    # Add sub-query focuses as additional concepts
+                    for sq in decomposition.get('sub_queries', []):
+                        focus = sq.get('focus', '')
+                        if focus and focus not in concepts:
+                            concepts.append(focus)
+            except Exception:
+                pass
+
+        # Classify problem domain ★ NEW v2.0.0
+        domain_info = None
+        if self._classifier is not None:
+            try:
+                domain_info = self._classifier.classify(problem)
+            except Exception:
+                pass
 
         # Generate innovations using multiple methods
         innovations = []
@@ -1757,16 +2021,27 @@ class ASIInnovationEngine:
         phi_innovations = self._phi_guided_innovation(problem, concepts)
         innovations.extend(phi_innovations)
 
+        # Method 5: NLU-driven causal innovation ★ NEW v2.0.0
+        if nlu_context:
+            causal_innovations = self._causal_innovation(problem, nlu_context, concepts)
+            innovations.extend(causal_innovations)
+
         # Rank and select top innovations
-        ranked = self._rank_innovations(innovations)
+        ranked = self._rank_innovations(innovations, nlu_context)
 
         # Store innovations
         self.innovations.extend(ranked[:num_innovations])
 
         return ranked[:num_innovations]
 
-    def _extract_key_concepts(self, analysis: Dict) -> List[str]:
-        """Extract key concepts from problem analysis."""
+    def _extract_key_concepts(self, analysis: Dict, nlu_context: Dict = None) -> List[str]:
+        """
+        Extract key concepts from problem analysis.
+
+        v2.0.0: Enriched with NLU signals — SRL roles, causal entities,
+        temporal events, and disambiguated senses provide deeper concept
+        extraction than surface-level entity/token scanning.
+        """
         concepts = []
 
         # Extract from entities
@@ -1777,7 +2052,43 @@ class ASIInnovationEngine:
         tokens = analysis.get("tokens", [])
         concepts.extend([t.get("text") for t in tokens if t.get("importance", 0) > 0.5])
 
-        return list(set(concepts))
+        # ★ NEW v2.0.0: NLU-enriched extraction
+        if nlu_context:
+            # SRL agents and patients — key actors and targets
+            for sa in nlu_context.get('sentences', []):
+                srl = sa.get('srl', {})
+                roles = srl.get('roles', {})
+                for role_name in ('agent', 'patient', 'theme', 'instrument'):
+                    role_value = roles.get(role_name, '')
+                    if role_value and role_value not in concepts:
+                        concepts.append(role_value)
+
+            # Causal entities — causes and effects are key innovation targets
+            causal = nlu_context.get('causal', {})
+            for pair in causal.get('causal_pairs', []):
+                cause = pair.get('cause', '')
+                effect = pair.get('effect', '')
+                if cause and cause not in concepts:
+                    concepts.append(cause)
+                if effect and effect not in concepts:
+                    concepts.append(effect)
+
+            # Temporal events — time-sensitive concepts
+            temporal = nlu_context.get('temporal', {})
+            for evt in temporal.get('events', []):
+                evt_text = evt if isinstance(evt, str) else evt.get('text', '')
+                if evt_text and evt_text not in concepts:
+                    concepts.append(evt_text)
+
+            # Disambiguated senses — precise meanings
+            disamb = nlu_context.get('disambiguation', {})
+            for d in disamb.get('disambiguations', []):
+                word = d.get('word', '')
+                sense = d.get('selected_sense', '')
+                if word and sense and word not in concepts:
+                    concepts.append(f"{word} ({sense})")
+
+        return list(set(c for c in concepts if c))
 
     def _apply_inventive_principles(self, problem: str,
                                    concepts: List[str]) -> List[Innovation]:
@@ -1882,15 +2193,88 @@ class ASIInnovationEngine:
 
         return [innovation]
 
-    def _rank_innovations(self, innovations: List[Innovation]) -> List[Innovation]:
-        """Rank innovations by combined score."""
+    def _rank_innovations(self, innovations: List[Innovation],
+                          nlu_context: Dict = None) -> List[Innovation]:
+        """Rank innovations by combined score.
+
+        v2.0.0: NLU-aware ranking — innovations that address identified
+        causal chains, temporal concerns, or decomposed sub-problems
+        receive a boost.
+        """
+        # NLU boost factor
+        has_causal = bool(nlu_context and nlu_context.get('causal', {}).get('causal_pairs'))
+        has_temporal = bool(nlu_context and nlu_context.get('temporal', {}).get('events'))
+
         def score(inn: Innovation) -> float:
-            return (inn.utility_score * 0.3 +
+            base = (inn.utility_score * 0.3 +
                    inn.feasibility_score * 0.3 +
                    inn.phi_resonance * 0.2 +
                    inn.god_code_alignment * 0.2)
+            # NLU boost for causal/temporal-aware innovations
+            desc_lower = inn.description.lower()
+            if has_causal and any(w in desc_lower for w in ('cause', 'effect', 'chain', 'causal')):
+                base *= 1.08
+            if has_temporal and any(w in desc_lower for w in ('temporal', 'trend', 'evolution', 'sequence')):
+                base *= 1.05
+            return base
 
         return sorted(innovations, key=score, reverse=True)
+
+    def _causal_innovation(self, problem: str, nlu_context: Dict,
+                           concepts: List[str]) -> List[Innovation]:
+        """Generate innovations from causal chain analysis.  ★ NEW v2.0.0
+
+        Identifies cause-effect pairs and generates innovations that
+        either amplify positive effects or mitigate negative causes.
+        """
+        innovations = []
+        causal = nlu_context.get('causal', {})
+        pairs = causal.get('causal_pairs', [])
+
+        for pair in pairs[:2]:
+            cause = pair.get('cause', '')
+            effect = pair.get('effect', '')
+            if cause and effect:
+                # Causal reversal innovation
+                innovations.append(Innovation(
+                    name=f"Causal Reversal: {cause[:30]}",
+                    domain=InnovationDomain.TECHNOLOGY,
+                    description=(
+                        f"NLU causal analysis reveals: '{cause}' → '{effect}'. "
+                        f"Innovation: reverse or redirect the causal mechanism — "
+                        f"transform the cause into a constructive driver or "
+                        f"decouple the cause-effect link entirely. "
+                        f"Applied to {problem[:60]}, this creates new solution pathways."
+                    ),
+                    novel_elements=["causal_reversal", cause, effect, "nlu_driven"],
+                    utility_score=random.uniform(0.65, 0.92),
+                    feasibility_score=random.uniform(0.5, 0.82),
+                    phi_resonance=self.phi * random.uniform(0.9, 1.15),
+                    god_code_alignment=random.uniform(0.7, 0.95),
+                ))
+
+        # Counterfactual innovation
+        counterfactuals = causal.get('counterfactuals', [])
+        for cf in counterfactuals[:1]:
+            cf_text = cf if isinstance(cf, str) else cf.get('text', str(cf))
+            if cf_text:
+                innovations.append(Innovation(
+                    name=f"Counterfactual Exploration",
+                    domain=InnovationDomain.CONSCIOUSNESS,
+                    description=(
+                        f"NLU counterfactual: '{cf_text}'. "
+                        f"Explore the alternative reality where this counterfactual holds — "
+                        f"what new solutions emerge when we invert assumptions? "
+                        f"PHI-guided exploration of the solution space boundary."
+                    ),
+                    novel_elements=["counterfactual", "alternative_reality", "nlu_driven"],
+                    utility_score=random.uniform(0.6, 0.88),
+                    feasibility_score=random.uniform(0.45, 0.75),
+                    phi_resonance=self.phi * random.uniform(0.95, 1.25),
+                    god_code_alignment=random.uniform(0.72, 0.96),
+                ))
+
+        return innovations
 
     def study_industry_leader(self, domain: str) -> Dict[str, Any]:
         """
@@ -2016,16 +2400,23 @@ class ASIInnovationEngine:
 
 class ASILanguageEngine:
     """
-    Unified ASI Language & Inference Engine.
+    Unified ASI Language & Inference Engine v3.0.0.
 
     Combines:
-    - Linguistic Analysis
-    - Speech Pattern Generation
-    - Human Inference
-    - Innovation Engine
+    - Linguistic Analysis (v2.0.0 — temporal/causal/disambiguation)
+    - Speech Pattern Generation (v2.0.0 — multi-style + NLU tone)
+    - Human Inference (v2.0.0 — DeepNLU causal/temporal)
+    - Innovation Engine (v2.0.0 — NLU-driven causal innovation)  ★ UPGRADED
+    - DeepNLU v2.2.0 integration (17-layer comprehension)
+
+    v3.0.0: Innovation Engine NLU upgrade — causal chain innovation,
+    counterfactual exploration, NLU-enriched concept extraction,
+    domain-aware ranking.
 
     This is the main interface for ASI-level language processing.
     """
+
+    VERSION = "3.0.0"
 
     def __init__(self):
         self.god_code = GOD_CODE
@@ -2188,11 +2579,25 @@ class ASILanguageEngine:
             "total_analyses": self.total_analyses,
             "total_inferences": self.total_inferences,
             "total_innovations": self.total_innovations,
+            "version": self.VERSION,
             "components": {
                 "linguistic_analyzer": "ONLINE",
                 "speech_generator": "ONLINE",
                 "inference_engine": "ONLINE",
-                "innovation_engine": "ONLINE"
+                "innovation_engine": "ONLINE",
+                "innovation_engine_version": self.innovation_engine.VERSION,
+                "innovation_nlu_active": self.innovation_engine._deep_nlu_available,
+                "deep_nlu_temporal": "ONLINE" if self.analyzer._deep_nlu_available else "OFFLINE",
+                "deep_nlu_causal": "ONLINE" if self.analyzer._deep_nlu_available else "OFFLINE",
+                "deep_nlu_disambiguation": "ONLINE" if self.analyzer._deep_nlu_available else "OFFLINE",
+                "deep_nlu_query_decomposer": "ONLINE" if (
+                    self.innovation_engine._deep_nlu_available and
+                    self.innovation_engine._decomposer is not None
+                ) else "OFFLINE",
+                "deep_nlu_query_classifier": "ONLINE" if (
+                    self.innovation_engine._deep_nlu_available and
+                    self.innovation_engine._classifier is not None
+                ) else "OFFLINE",
             },
             "beliefs_tracked": len(self.inference_engine.beliefs),
             "innovations_generated": len(self.innovation_engine.innovations),

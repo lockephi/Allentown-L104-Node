@@ -1,10 +1,13 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.398936
+ZENITH_HZ = 3887.8
+UUC = 2301.215661
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 #!/usr/bin/env python3
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # ═══ EVO_54 PIPELINE INTEGRATION ═══
-_PIPELINE_VERSION = "55.0.0"
+_PIPELINE_VERSION = "54.0.0"
 _PIPELINE_EVO = "EVO_54_TRANSCENDENT_COGNITION"
 _PIPELINE_STREAM = True
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -67,7 +70,7 @@ except ImportError:
 # Dynamic core allocation with environment override
 # Set L104_CPU_CORES=64 to override auto-detection
 CPU_COUNT = int(os.getenv('L104_CPU_CORES', 0)) or os.cpu_count() or 4
-SAGE_WORKERS = max(8, CPU_COUNT * 2)  # MAXIMUM — double core utilization
+SAGE_WORKERS = max(4, CPU_COUNT)  # Mixed workloads
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -79,10 +82,10 @@ SAGE_WORKERS = max(8, CPU_COUNT * 2)  # MAXIMUM — double core utilization
 # CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-SAGE_VERSION = "3.0.0"
+SAGE_VERSION = "2.0.0"
 SAGE_DB_PATH = os.getenv("SAGE_DB_PATH", "./data/sage_memory.db")
-LLM_TIMEOUT = float(os.getenv("L104_LLM_TIMEOUT", "120.0"))  # MAXIMUM — deep reasoning needs time
-LLM_MAX_RETRIES = int(os.getenv("L104_LLM_RETRIES", "7"))  # PHI-scaled retry count
+LLM_TIMEOUT = float(os.getenv("L104_LLM_TIMEOUT", "30.0"))
+LLM_MAX_RETRIES = int(os.getenv("L104_LLM_RETRIES", "3"))
 
 logger = get_logger("SAGE_CORE")
 
@@ -97,7 +100,7 @@ class ProviderConfig:
     api_key_env: str
     model: str
     enabled: bool = True
-    rate_limit: int = 300  # MAXIMUM — burst operations
+    rate_limit: int = 60  # requests per minute
     last_call: float = 0.0
     success_count: int = 0
     failure_count: int = 0
@@ -395,7 +398,7 @@ class MultiProviderOrchestrator:
         try:
             response = await self.client.post(url, json={
                 "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {"temperature": 0.85, "maxOutputTokens": 16384}
+                "generationConfig": {"temperature": 0.7, "maxOutputTokens": 4096}
             })
             latency = time.time() - start
 
@@ -432,8 +435,8 @@ class MultiProviderOrchestrator:
             response = await self.client.post(url, headers=headers, json={
                 "model": config.model,
                 "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.85,
-                "max_tokens": 16384
+                "temperature": 0.7,
+                "max_tokens": 4096
             })
             latency = time.time() - start
 
@@ -470,7 +473,7 @@ class MultiProviderOrchestrator:
         try:
             response = await self.client.post(url, headers=headers, json={
                 "model": config.model,
-                "max_tokens": 16384,
+                "max_tokens": 4096,
                 "messages": [{"role": "user", "content": prompt}]
             })
             latency = time.time() - start
@@ -791,7 +794,7 @@ Provide a step-by-step plan in JSON format:
                     logger.error(f"[SAGE] Goal failed: {e}")
                     self.memory.complete_goal(goal["id"], f"Failed: {e}")
 
-            await asyncio.sleep(10)  # MAXIMUM — rapid goal pursuit
+            await asyncio.sleep(60)  # Check for goals every minute
 
     def start(self):
         """Start autonomous goal pursuit."""
@@ -826,8 +829,8 @@ class OnlineLearner:
         # Import neural network from l104_neural_learning
         try:
             from l104_neural_learning import NeuralNetwork, ExperienceReplay
-            self.network = NeuralNetwork([256, 128, 64, 32, 16], learning_rate=0.003)
-            self.replay = ExperienceReplay(capacity=100000)
+            self.network = NeuralNetwork([128, 64, 32, 16], learning_rate=0.001)
+            self.replay = ExperienceReplay(capacity=10000)
             self.has_nn = True
         except ImportError:
             self.has_nn = False
@@ -840,7 +843,7 @@ class OnlineLearner:
         """Simple text encoding using hash-based features."""
         # Use character n-grams for encoding
         features = np.zeros(128)
-        text = text.lower()[:5000]  # MAXIMUM — wider encoding window
+        text = text.lower()[:1000]
 
         for i, char in enumerate(text):
             idx = ord(char) % 64
@@ -865,8 +868,8 @@ class OnlineLearner:
 
         # Store experience
         self.memory.store_experience(
-            context=input_text[:2000],
-            action=output_text[:2000],
+            context=input_text[:500],
+            action=output_text[:500],
             result="learned",
             reward=reward
         )
@@ -876,7 +879,7 @@ class OnlineLearner:
         self.memory.store_pattern(
             pattern_type="interaction",
             key=key,
-            value={"input": input_text[:1000], "output": output_text[:1000], "reward": reward},
+            value={"input": input_text[:200], "output": output_text[:200], "reward": reward},
             confidence=min(1.0, 0.5 + reward * 0.5)
         )
 
@@ -1047,7 +1050,7 @@ class SageCore:
     #          PROFESSOR MODE V2 — SAGE CORE RESEARCH & MASTERY METHODS
     # ═══════════════════════════════════════════════════════════════════════════
 
-    def v2_research(self, topic: str, depth: int = 13) -> Dict[str, Any]:
+    def v2_research(self, topic: str, depth: int = 5) -> Dict[str, Any]:
         """Run V2 research pipeline through Sage Core."""
         if not self._v2_available or not self._v2_research:
             return {"error": "Professor V2 not available", "topic": topic}
@@ -1068,7 +1071,7 @@ class SageCore:
             # Learn from the interaction
             insights = getattr(research_data, 'insights', [])
             if insights:
-                raw_insights = [str(i) for i in insights[:20]]
+                raw_insights = [str(i) for i in insights[:5]]
                 self.learner.learn_from_interaction(
                     topic, " | ".join(raw_insights), 0.8
                 )

@@ -57,11 +57,14 @@ Target: ARC ~25% → 50-65% (approach mid-to-upper-tier reasoning)
 
 from __future__ import annotations
 
+import logging
 import math
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Set, Tuple
+
+logger = logging.getLogger(__name__)
 
 # ── Sacred Constants ──────────────────────────────────────────────────────────
 PHI = 1.618033988749895
@@ -8736,8 +8739,19 @@ class CommonsenseMCQSolver:
 class CommonsenseReasoningEngine:
     """
     Unified commonsense reasoning engine for ARC-grade question answering.
-    v2.0.0 — Full 8-layer pipeline with temporal, cross-verification,
-    PHI-weighted calibration, and Dual-Layer Engine integration.
+    v3.0.0 — Full 8-layer pipeline with temporal, cross-verification,
+    PHI-weighted calibration, Dual-Layer Engine integration, and
+    DeepNLU v2.2.0 integration.
+
+    v3.0.0 Upgrades:
+    - DeepNLU integration: causal/temporal/disambiguation layers feed into
+      reason_about() for richer concept extraction and reasoning quality
+    - NLU-enriched concept matching: SRL roles, causal pairs, temporal events
+      supplement ontology-based concept extraction
+    - Disambiguation-aware reasoning: polysemous words are resolved before
+      ontology lookup, reducing false matches
+    - NLU evidence in reason_about() output: exposes NLU signals for downstream
+    - evaluate_reasoning() includes NLU depth factor
 
     Combines concept ontology, causal reasoning, physical intuition,
     temporal sequencing, analogical reasoning, MCQ solving, and
@@ -8756,7 +8770,7 @@ class CommonsenseReasoningEngine:
       + coherence phase alignment
     """
 
-    VERSION = "2.3.0"
+    VERSION = "3.0.0"
 
     def __init__(self):
         self.ontology = ConceptOntology()
@@ -8776,6 +8790,27 @@ class CommonsenseReasoningEngine:
         self._dual_layer_engine = None
         # Science Engine Bridge (physics-grounded reasoning)
         self._science_bridge: Optional[ScienceEngineBridge] = None
+
+        # DeepNLU integration ★ NEW v3.0.0
+        self._deep_nlu_available = False
+        self._deep_nlu = None
+        self._nlu_causal = None
+        self._nlu_temporal = None
+        self._nlu_disambiguator = None
+        try:
+            from l104_asi.deep_nlu import (
+                DeepComprehension, CausalReasoner as NLUCausalReasoner,
+                TemporalReasoner as NLUTemporalReasoner,
+                ContextualDisambiguator,
+            )
+            self._deep_nlu = DeepComprehension()
+            self._nlu_causal = NLUCausalReasoner()
+            self._nlu_temporal = NLUTemporalReasoner()
+            self._nlu_disambiguator = ContextualDisambiguator()
+            self._deep_nlu_available = True
+            logger.info("[COMMONSENSE v3.0.0]: DeepNLU integration ACTIVE")
+        except Exception as e:
+            logger.debug(f"[COMMONSENSE]: DeepNLU not available: {e}")
 
     def initialize(self):
         """Initialize all 8 reasoning layers."""
@@ -9207,12 +9242,20 @@ class CommonsenseReasoningEngine:
         return self.mcq_solver.solve(question, choices, subject)
 
     def reason_about(self, query: str) -> Dict[str, Any]:
-        """General commonsense reasoning about a query (all 8 layers)."""
+        """General commonsense reasoning about a query (all 8 layers + DeepNLU).
+
+        v3.0.0: DeepNLU integration adds:
+        - SRL-based concept extraction supplement
+        - Causal chain analysis from NLU layer
+        - Temporal event extraction from NLU layer
+        - Disambiguation-aware concept matching
+        - NLU evidence in output for downstream consumers
+        """
         if not self._initialized:
             self.initialize()
         self._total_queries += 1
 
-        # Extract concepts
+        # Extract concepts from ontology
         q_lower = query.lower()
         concepts = []
         for key, concept in self.ontology.concepts.items():
@@ -9232,6 +9275,54 @@ class CommonsenseReasoningEngine:
 
         # Temporal sequences
         temporal_matches = self.temporal.query_sequence(query, top_k=3)
+
+        # ★ NEW v3.0.0: DeepNLU enrichment
+        nlu_enrichment = {}
+        if self._deep_nlu_available and self._deep_nlu is not None:
+            try:
+                nlu_analysis = self._deep_nlu.analyze(query)
+
+                # NLU causal pairs supplement internal causal engine
+                nlu_causal = nlu_analysis.get('causal', {})
+                nlu_causal_pairs = nlu_causal.get('causal_pairs', [])
+                nlu_enrichment['nlu_causal_pairs'] = [
+                    {'cause': p.get('cause', ''), 'effect': p.get('effect', '')}
+                    for p in nlu_causal_pairs
+                ]
+
+                # NLU temporal events
+                nlu_temporal = nlu_analysis.get('temporal', {})
+                nlu_enrichment['nlu_temporal'] = {
+                    'tense': nlu_temporal.get('tense', 'unknown'),
+                    'events': nlu_temporal.get('events', []),
+                }
+
+                # NLU SRL roles for richer concept extraction
+                srl_concepts = []
+                for sa in nlu_analysis.get('sentences', []):
+                    srl = sa.get('srl', {})
+                    roles = srl.get('roles', {})
+                    for role_name in ('agent', 'patient', 'theme'):
+                        val = roles.get(role_name, '')
+                        if val:
+                            srl_concepts.append(val)
+                nlu_enrichment['srl_concepts'] = srl_concepts
+
+                # NLU disambiguation — resolved senses
+                disamb = nlu_analysis.get('disambiguation', {})
+                disambiguations = disamb.get('disambiguations', [])
+                nlu_enrichment['disambiguated_senses'] = [
+                    {'word': d.get('word', ''), 'sense': d.get('selected_sense', ''),
+                     'domain': d.get('domain', '')}
+                    for d in disambiguations
+                ]
+
+                # NLU coherence score
+                nlu_enrichment['nlu_coherence'] = nlu_analysis.get(
+                    'coherence', {}).get('overall_coherence', 0)
+
+            except Exception:
+                pass
 
         # Science Engine Bridge: physics-grounded analysis
         physics_validation = {}
@@ -9255,10 +9346,15 @@ class CommonsenseReasoningEngine:
         }
         if physics_validation:
             result['science_engine_validation'] = physics_validation
+        if nlu_enrichment:
+            result['deep_nlu_enrichment'] = nlu_enrichment
         return result
 
     def evaluate_reasoning(self) -> float:
-        """Compute commonsense reasoning quality score (0-1) with PHI calibration."""
+        """Compute commonsense reasoning quality score (0-1) with PHI calibration.
+
+        v3.0.0: NLU depth factor contributes to overall reasoning quality.
+        """
         ontology_status = self.ontology.get_status()
         mcq_status = self.mcq_solver.get_status() if self.mcq_solver else {'accuracy': 0}
         temporal_status = self.temporal.get_status()
@@ -9272,9 +9368,15 @@ class CommonsenseReasoningEngine:
         bridge_coverage = 0.0
         if self._science_bridge and self._science_bridge._se is not None:
             bridge_coverage = min(1.0, self._science_bridge._enrichment_count / 10.0)
-        raw = (concept_coverage * 0.22 + rule_coverage * 0.18 +
-               temporal_coverage * 0.12 + answering_accuracy * 0.38 +
-               bridge_coverage * 0.10)
+
+        # ★ NEW v3.0.0: NLU depth factor
+        nlu_factor = 0.0
+        if self._deep_nlu_available:
+            nlu_factor = 0.05  # Base bonus for NLU integration
+
+        raw = (concept_coverage * 0.20 + rule_coverage * 0.16 +
+               temporal_coverage * 0.10 + answering_accuracy * 0.36 +
+               bridge_coverage * 0.10 + nlu_factor * 0.08)
         return raw * VOID_CONSTANT  # Sacred calibration (≈1.04)
 
     def get_status(self) -> Dict[str, Any]:
@@ -9302,5 +9404,9 @@ class CommonsenseReasoningEngine:
                 'quantum_math_core': self._quantum_math_core is not None,
                 'dual_layer_engine': self._dual_layer_engine is not None,
                 'science_bridge': self._science_bridge.get_status() if self._science_bridge else {'connected': False},
+                'deep_nlu': self._deep_nlu_available,
+                'deep_nlu_causal': self._nlu_causal is not None,
+                'deep_nlu_temporal': self._nlu_temporal is not None,
+                'deep_nlu_disambiguation': self._nlu_disambiguator is not None,
             },
         }

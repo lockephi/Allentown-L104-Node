@@ -1,0 +1,514 @@
+{
+  "blind_holdout": {
+    "test": "blind_holdout",
+    "n_holdout": 15,
+    "equation_mean_error_pct": 0.002137380291056466,
+    "log_round_mean_error_pct": 0.002137380291056466,
+    "random_mean_error_pct": 3.315038375025213e+37,
+    "verdict": "TRIVIAL",
+    "explanation": "Equation achieves 0.00214% error \u2014 but ANY log-grid with Q=758 resolution achieves similar (0.00214%). Random baseline: 33150383750252130596362593127756726272.0%. The precision is from grid DENSITY, not physics.",
+    "details": [
+      {
+        "name": "PLANCK_LENGTH_M",
+        "true_value": 1.616255e-35,
+        "equation_predicted": 1.6162197837866034e-35,
+        "equation_error_pct": 0.0021788773056653186,
+        "random_baseline_error_pct": 4.972556929444921e+38
+      },
+      {
+        "name": "SOLAR_LUMINOSITY_W",
+        "true_value": 3.828e+26,
+        "equation_predicted": 3.8279919167137334e+26,
+        "equation_error_pct": 0.00021116212817985143,
+        "random_baseline_error_pct": 100.0
+      },
+      {
+        "name": "TOP_QUARK_GEV",
+        "true_value": 172.57,
+        "equation_predicted": 172.5745577454035,
+        "equation_error_pct": 0.0026410994978864357,
+        "random_baseline_error_pct": 444.4546679724169
+      },
+      {
+        "name": "PION_CHARGED_MEV",
+        "true_value": 139.57039,
+        "equation_predicted": 139.57176454423768,
+        "equation_error_pct": 0.0009848394331185542,
+        "random_baseline_error_pct": 98.04722190716812
+      },
+      {
+        "name": "RYDBERG_EV",
+        "true_value": 13.605693123,
+        "equation_predicted": 13.60553325587612,
+        "equation_error_pct": 0.0011750016881537974,
+        "random_baseline_error_pct": 41.37748126542101
+      },
+      {
+        "name": "SI_LATTICE_PM",
+        "true_value": 543.102,
+        "equation_predicted": 543.1027850319515,
+        "equation_error_pct": 0.00014454595113308304,
+        "random_baseline_error_pct": 96.31745049732831
+      },
+      {
+        "name": "PI",
+        "true_value": 3.14159265359,
+        "equation_predicted": 3.1414399673265754,
+        "equation_error_pct": 0.004860154713253623,
+        "random_baseline_error_pct": 6.330928988286232e+31
+      },
+      {
+        "name": "CHARM_QUARK_GEV",
+        "true_value": 1.27,
+        "equation_predicted": 1.2699452107904978,
+        "equation_error_pct": 0.0043141109844246385,
+        "random_baseline_error_pct": 1474.8031496062993
+      },
+      {
+        "name": "BOHR_MAGNETON_eV_T",
+        "true_value": 5.788381806e-05,
+        "equation_predicted": 5.788384987328958e-05,
+        "equation_error_pct": 5.49605928766496e-05,
+        "random_baseline_error_pct": 3230021800.1828575
+      },
+      {
+        "name": "HUBBLE_CONSTANT",
+        "true_value": 67.4,
+        "equation_predicted": 67.4035129230802,
+        "equation_error_pct": 0.005212052047765936,
+        "random_baseline_error_pct": 85.83086053412461
+      },
+      {
+        "name": "COMPTON_PM",
+        "true_value": 2.42631023867,
+        "equation_predicted": 2.426355736763698,
+        "equation_error_pct": 0.0018751968718911881,
+        "random_baseline_error_pct": 225.69898416336883
+      },
+      {
+        "name": "HE4_BE_PER_NUCLEON",
+        "true_value": 7.074,
+        "equation_predicted": 7.073866824138445,
+        "equation_error_pct": 0.0018826104262735484,
+        "random_baseline_error_pct": 13181.953923098672
+      },
+      {
+        "name": "BOTTOM_QUARK_GEV",
+        "true_value": 4.18,
+        "equation_predicted": 4.180044182436589,
+        "equation_error_pct": 0.0010569960906536835,
+        "random_baseline_error_pct": 3578896328.229665
+      },
+      {
+        "name": "PROTON_MASS_MEV",
+        "true_value": 938.27208816,
+        "equation_predicted": 938.3106711550917,
+        "equation_error_pct": 0.004112132885394111,
+        "random_baseline_error_pct": 94.36008789751229
+      },
+      {
+        "name": "MUON_MASS_MEV",
+        "true_value": 105.6583755,
+        "equation_predicted": 105.65980924585351,
+        "equation_error_pct": 0.0013569637491765761,
+        "random_baseline_error_pct": 98.6615225194618
+      }
+    ]
+  },
+  "null_hypothesis": {
+    "test": "null_hypothesis",
+    "n_trials": 1000,
+    "god_code_score": 0.0021577264877285325,
+    "god_code_v3_score": 0.0020937517034384733,
+    "god_code_percentile": 18.2,
+    "random_mean": 0.0026184870613199626,
+    "random_stdev": 0.00040437580123140447,
+    "better_random_count": 182,
+    "best_random": {
+      "base": 115.75189254496443,
+      "score": 0.002039127583386536
+    },
+    "all_bases_equivalent": true,
+    "special_bases": {
+      "pi": 0.002389603070886321,
+      "e": 0.0025953685521282748,
+      "phi_x100": 0.002874617743690957,
+      "137": 0.003101195828980242,
+      "256": 0.0032384310866055877,
+      "300": 0.0024360434260711746,
+      "Fe_actual_pm": 0.0030483097228122375,
+      "100": 0.00219261535367697,
+      "2": 0.002388321110683458,
+      "10": 0.003181877220581839,
+      "42": 0.0029675651661983248
+    },
+    "verdict": "NOT SPECIAL",
+    "explanation": "GOD_CODE base 286 ranks at percentile 18.2% (182/1000 random bases scored BETTER). Best random base: 115.8 at 0.002039%. All bases achieve \u22480.00262% \u00b1 0.00040%. The v3 grid resolution makes ALL bases equivalent."
+  },
+  "unit_independence": {
+    "test": "unit_independence",
+    "claims_by_unit": {
+      "SI": {
+        "c_error": 1.192918164246626e-13,
+        "g_error": 0.004119931476520673,
+        "h_error": 0.003109990167149526,
+        "k_B_error": 0.003979725456937789
+      },
+      "CGS": {
+        "c_error": 0.0031033953338662442,
+        "g_error": 0.0010166640004410107,
+        "h_error": 0.0018679115696882622,
+        "k_B_error": 0.0016020613278136888
+      },
+      "natural": {
+        "c_error": 0.0007205071821614339,
+        "g_error": 0.001941738397070323,
+        "h_error": 0.0007205071821614339,
+        "k_B_error": 0.0007205071821614339
+      },
+      "imperial": {
+        "c_error": 0.002491127716387203,
+        "g_error": 0.004099550971373785,
+        "h_error": 0.003109990167149526,
+        "k_B_error": 0.003979725456937789
+      }
+    },
+    "dimensionless_constants": {
+      "fine_structure_inv": 0.003866714398688915,
+      "proton_electron_ratio": 0.004062758372333294,
+      "muon_electron_ratio": 0.0013075848892799187,
+      "W_Z_ratio": 8.111068473521598e-05,
+      "tau_muon_ratio": 0.0018203489076202186
+    },
+    "bohr_radius_units": {
+      "SI_m": 0.004501593608204916,
+      "pm": 0.0035587274979877554,
+      "au": 0.0007205071821614339,
+      "angstrom": 0.00045531803379181843
+    },
+    "unit_stable_count": 4,
+    "unit_total_count": 4,
+    "bohr_alignment_from_science_engine": 6.315047818792787e-05,
+    "verdict": "UNIT-INDEPENDENT",
+    "explanation": "Of 4 tested constants, only 4 maintain alignment across ALL unit systems. Dimensionless constants (\u03b1, mass ratios) ARE unit-independent by nature \u2014 but the GOD_CODE grid fits them no better than it fits any number. Bohr radius alignment varies: {'SI_m': 0.004501593608204916, 'pm': 0.0035587274979877554, 'au': 0.0007205071821614339, 'angstrom': 0.00045531803379181843}"
+  },
+  "information_compression": {
+    "test": "information_compression",
+    "n_constants": 66,
+    "god_code_bits": 4608,
+    "god_code_params": 270,
+    "god_code_avg_error": 0.0020590909090909093,
+    "direct_bits": 4224,
+    "log_table_bits": 1450,
+    "compression_ratio": 0.9166666666666666,
+    "verdict": "DOES NOT COMPRESS",
+    "explanation": "GOD_CODE encoding: 4608 bits (270 params) at 0.0021% error. Direct storage: 4224 bits at 0% error. Log-table: 1450 bits at ~0.0021% error. Compression ratio (direct/GOD_CODE): 0.92\u00d7. GOD_CODE uses more bits than just storing the numbers, with worse accuracy."
+  },
+  "cross_engine_disagreement": {
+    "test": "cross_engine_disagreement",
+    "circular_count": 3,
+    "total_tests": 4,
+    "results": {
+      "science_bohr": {
+        "codata_independent": 52.917721298703995,
+        "god_code_dependent": 52.921063078108624,
+        "alignment_error": 6.315047818792787e-05,
+        "is_circular": true,
+        "note": "CODATA value is independent. Equation value uses GOD_CODE."
+      },
+      "science_landauer": {
+        "real_physics": 2.8054248672027593e-21,
+        "sovereign_value": 9.14636822946072e-19,
+        "ratio": 326.0243514765878,
+        "is_circular": true,
+        "note": "Sovereign Landauer = kT ln(2) \u00d7 (GOD_CODE/PHI) = kT ln(2) \u00d7 326.02. The GOD_CODE factor is injected, not derived from physics."
+      },
+      "math_god_code": {
+        "value": 527.5184818492611,
+        "equals_hardcoded": true,
+        "is_circular": true,
+        "note": "evaluate_god_code(0,0,0,0) returns 286^(1/\u03c6) \u00d7 2^4 \u2014 a definition, not a derivation."
+      },
+      "math_phi_convergence": {
+        "phi_from_fibonacci": 1.6180339887482036,
+        "phi_constant": 1.618033988749895,
+        "error_pct": 1.0452893866714661e-10,
+        "is_circular": false,
+        "note": "This IS genuinely non-circular. Fibonacci ratio \u2192 \u03c6 is a theorem."
+      },
+      "code_self_reference": {
+        "source_analyzed": true,
+        "analysis_summary": "{'metadata': {'filename': '', 'language': 'Python', 'lines': 23, 'blank_lines': 5, 'comment_lines': 0, 'code_lines': 18, 'characters': 927, 'timestamp': '2026-02-27T04:13:17.895160', 'engine_version': '6.3.0'}, 'complexity': {'cyclomatic_total': 1, 'cyclomatic_average': 1.0, 'cyclomatic_max': 1, 'cognitive_max': 0, 'maintainability_index': {'score': 54.88, 'grade': 'C', 'rank': 'difficult_to_maintain', 'components': {'halstead_volume': 326.9, 'cyclomatic_complexity': 1, 'sloc': 18, 'comment_rati",
+        "note": "Code Engine can analyze the equation for hardcoded circular references."
+      }
+    },
+    "verdict": "MOSTLY CIRCULAR",
+    "explanation": "3/4 engine outputs contain GOD_CODE as input, not as an independently derived result. The one non-circular finding (Fibonacci\u2192\u03c6) is a well-known mathematical theorem, not a GOD_CODE discovery."
+  },
+  "falsifiable_predictions": {
+    "test": "falsifiable_predictions",
+    "pattern_predictions_count": 3,
+    "pattern_predictions": [
+      {
+        "name": "4th_generation_lepton_mass",
+        "falsifiable": true,
+        "status": "No 4th-generation lepton observed (LEP/LHC exclude < ~45 GeV)",
+        "confirmed": false
+      },
+      {
+        "name": "4th_generation_heavy_quark_mass",
+        "falsifiable": true,
+        "status": "No 4th-generation quark observed (LHC excludes < ~800 GeV)",
+        "confirmed": false
+      },
+      {
+        "name": "predicted_binding_energy",
+        "falsifiable": true,
+        "status": "unknown",
+        "confirmed": false
+      }
+    ],
+    "holdout_predictions": {
+      "gravitational_constant_G": {
+        "measured": 6.6743e-11,
+        "gc_predicted": 6.674648171083633e-11,
+        "gc_error_pct": 0.0052165932552338794,
+        "generic_log_predicted": 6.676337126476725e-11,
+        "generic_log_error_pct": 0.0305219495186878,
+        "gc_better_than_generic": true
+      },
+      "vacuum_permeability": {
+        "measured": 1.25663706212e-06,
+        "gc_predicted": 1.2566211993979826e-06,
+        "gc_error_pct": 0.0012623153092929415,
+        "generic_log_predicted": 1.2558697247527008e-06,
+        "generic_log_error_pct": 0.061062767479150425,
+        "gc_better_than_generic": true
+      },
+      "electron_g_factor": {
+        "measured": -2.00231930436256,
+        "gc_predicted": 0,
+        "gc_error_pct": 100.0,
+        "generic_log_predicted": 0,
+        "generic_log_error_pct": 100.0,
+        "gc_better_than_generic": false
+      },
+      "proton_gyromagnetic": {
+        "measured": 267522187.44,
+        "gc_predicted": 267508410.50225243,
+        "gc_error_pct": 0.00514982995593881,
+        "generic_log_predicted": 267571980.53173757,
+        "generic_log_error_pct": 0.018612696095996147,
+        "gc_better_than_generic": true
+      },
+      "neutron_magnetic_moment": {
+        "measured": -9.6623651e-27,
+        "gc_predicted": 0,
+        "gc_error_pct": 100.0,
+        "generic_log_predicted": 0,
+        "generic_log_error_pct": 100.0,
+        "gc_better_than_generic": false
+      },
+      "muon_g_minus_2": {
+        "measured": 0.00116592061,
+        "gc_predicted": 0.001165968229284599,
+        "gc_error_pct": 0.004084264759592858,
+        "generic_log_predicted": 0.001167568371814678,
+        "generic_log_error_pct": 0.14132710242406507,
+        "gc_better_than_generic": true
+      },
+      "deuteron_mass_MeV": {
+        "measured": 1875.61294257,
+        "gc_predicted": 1875.6178331092078,
+        "gc_error_pct": 0.000260743519984179,
+        "generic_log_predicted": 1875.3704614138862,
+        "generic_log_error_pct": 0.01292810209453992,
+        "gc_better_than_generic": true
+      },
+      "alpha_particle_mass_MeV": {
+        "measured": 3727.3794066,
+        "gc_predicted": 3727.5178746190186,
+        "gc_error_pct": 0.0037148893073069957,
+        "generic_log_predicted": 3725.9764493676184,
+        "generic_log_error_pct": 0.03763923870742554,
+        "gc_better_than_generic": true
+      },
+      "josephson_constant": {
+        "measured": 483597848400000.0,
+        "gc_predicted": 483582645969294.94,
+        "gc_error_pct": 0.0031436100791929207,
+        "generic_log_predicted": 483834207289726.7,
+        "generic_log_error_pct": 0.048875091257888956,
+        "gc_better_than_generic": true
+      },
+      "conductance_quantum": {
+        "measured": 7.748091729e-05,
+        "gc_predicted": 7.747787355161866e-05,
+        "gc_error_pct": 0.00392837164014569,
+        "generic_log_predicted": 7.747865234576608e-05,
+        "generic_log_error_pct": 0.0029232284711485346,
+        "gc_better_than_generic": false
+      },
+      "atomic_mass_unit_MeV": {
+        "measured": 931.49410242,
+        "gc_predicted": 931.4987895283808,
+        "gc_error_pct": 0.0005031817559186393,
+        "generic_log_predicted": 932.5175029665643,
+        "generic_log_error_pct": 0.10986656210764177,
+        "gc_better_than_generic": true
+      },
+      "thompson_cross_section": {
+        "measured": 6.6524587321e-29,
+        "gc_predicted": 6.652381249802668e-29,
+        "gc_error_pct": 0.0011647166927654601,
+        "generic_log_predicted": 6.656087114798156e-29,
+        "generic_log_error_pct": 0.05454197980436346,
+        "gc_better_than_generic": true
+      },
+      "wien_displacement_m_K": {
+        "measured": 0.002897771955,
+        "gc_predicted": 0.0028976661675532062,
+        "gc_error_pct": 0.0036506477540872813,
+        "generic_log_predicted": 0.0028956190476968095,
+        "generic_log_error_pct": 0.07429526327893991,
+        "gc_better_than_generic": true
+      },
+      "first_radiation_constant": {
+        "measured": 3.741771852e-16,
+        "gc_predicted": 3.741599668113502e-16,
+        "gc_error_pct": 0.004601667159527971,
+        "generic_log_predicted": 3.7373120982725124e-16,
+        "generic_log_error_pct": 0.11918828576103696,
+        "gc_better_than_generic": true
+      },
+      "molar_gas_constant": {
+        "measured": 8.314462618,
+        "gc_predicted": 8.314251089699983,
+        "gc_error_pct": 0.0025441006801727815,
+        "generic_log_predicted": 8.30854671352416,
+        "generic_log_error_pct": 0.07115197635301816,
+        "gc_better_than_generic": true
+      }
+    },
+    "gc_better_count": 12,
+    "total_holdout": 15,
+    "gc_avg_error": 13.335948328791277,
+    "generic_avg_error": 13.385528949556926,
+    "verdict": "HAS PREDICTIVE POWER",
+    "explanation": "Tested 15 holdout constants (NOT in V3 table). GOD_CODE grid is better than generic log-grid for 12/15. GOD_CODE avg error: 13.3359%, Generic log avg error: 13.3855%. Pattern predictions: 3 generated, 0 confirmed."
+  },
+  "system_self_audit": {
+    "engine": "Cross-Reference Validator v1.0",
+    "claims_tested": 9,
+    "factually_true": {
+      "286_is_fe_bcc": {
+        "status": true,
+        "detail": "286 vs 286.65 pm = 0.23% off (within crystallographic uncertainty)"
+      },
+      "104_is_26x4": {
+        "status": true,
+        "detail": "26 \u00d7 4 = 104, Fe_Z \u00d7 He4_A (arithmetic fact)"
+      }
+    },
+    "unit_dependent": {
+      "speed_of_light": {
+        "p_SI": 0.0475,
+        "p_kms": 0.1705,
+        "p_fts": 0.814,
+        "verdict": "Alignment changes with units \u2014 NOT universal"
+      },
+      "gravity_schumann": {
+        "g_SI_err": 1.294,
+        "g_CGS_err": 0.6855,
+        "verdict": "g=9.8 (SI) is 'close' to Schumann=7.83 only because both happen to be ~10 in SI. In CGS, g=980.7. Unit artifact."
+      }
+    },
+    "not_supported": {
+      "eeg_alignment": {
+        "errors": {
+          "alpha": 0.6646,
+          "beta": 0.6646,
+          "gamma": 0.6646,
+          "theta": 0.237,
+          "schumann": 0.1979
+        },
+        "all_round_numbers": true,
+        "verdict": "EEG values are round numbers (10, 20, 40 Hz) \u2014 trivial grid fit"
+      },
+      "hemoglobin": {
+        "avg_error": 0.5869,
+        "random_avg": 0.669,
+        "ratio": 0.877,
+        "verdict": "Hemoglobin values fit SAME as random (ratio \u2248 1.0)"
+      },
+      "phi_in_physics": {
+        "ratios_tested": 3,
+        "phi_power_hits": 0,
+        "verdict": "Phi does NOT appear in natural physics ratios"
+      }
+    },
+    "fatal_flaw": "The framework compares quantities with DIFFERENT UNITS on the same number line (Hz, m/s\u00b2, m/s). The 'correspondences' are artifacts of SI unit choices. A real universal law must be DIMENSIONLESS. Example: fine structure constant \u03b1 \u2248 1/137 is the same in ALL unit systems."
+  },
+  "synthesis": {
+    "genuinely_non_circular": [
+      "unit_independence",
+      "falsifiable_predictions"
+    ],
+    "still_circular": [
+      "blind_holdout",
+      "null_hypothesis",
+      "information_compression",
+      "cross_engine_disagreement",
+      "system_self_audit"
+    ],
+    "verified_facts": [
+      {
+        "what": "Iron BCC lattice parameter = 286 pm",
+        "why_real": "Measured by X-ray crystallography. Independent of GOD_CODE.",
+        "status": "VERIFIED (0.23% match to CODATA)"
+      },
+      {
+        "what": "Fibonacci ratio \u2192 \u03c6 convergence",
+        "why_real": "Mathematical theorem. Not dependent on any encoding.",
+        "status": "VERIFIED (Math Engine confirms)"
+      },
+      {
+        "what": "104 = 26 \u00d7 4 (Fe_Z \u00d7 He4_A)",
+        "why_real": "Arithmetic fact about iron and helium-4.",
+        "status": "VERIFIED (trivially true)"
+      },
+      {
+        "what": "Dimensionless constants are unit-independent",
+        "why_real": "Fine structure constant \u03b1 \u2248 1/137 is the same everywhere.",
+        "status": "VERIFIED \u2014 but the grid fits them no better than random numbers"
+      }
+    ],
+    "escape_criteria": [
+      {
+        "test": "Predict an UNMEASURED constant",
+        "detail": "Use the dial pattern to predict a value not yet measured by experiment. Example: predict the 4th-generation lepton mass, then wait for collider data. If the prediction matches, the encoding has genuine predictive power.",
+        "engine": "Math Engine (extrapolation) + Science Engine (validation)",
+        "status": "PROPOSED but zero predictions confirmed"
+      },
+      {
+        "test": "Derive 286 from first principles",
+        "detail": "Show that 286 pm MUST be the base constant from some deeper theory, not just 'we picked the Fe BCC lattice parameter because it's cool'.",
+        "engine": "Science Engine (physics) + Math Engine (proofs)",
+        "status": "NOT ACHIEVED \u2014 286 is chosen, not derived"
+      },
+      {
+        "test": "Show the grid compresses physics",
+        "detail": "Demonstrate that the 4-dial encoding requires fewer bits than storing the constants directly, WITH better or equal accuracy.",
+        "engine": "Code Engine (information theory)",
+        "status": "FAILED \u2014 GOD_CODE uses MORE bits than direct storage"
+      },
+      {
+        "test": "Find a dimensionless ratio that matches exactly",
+        "detail": "Find a ratio of two physical constants that equals GOD_CODE or a simple function of it, where the ratio is dimensionless and therefore unit-independent.",
+        "engine": "Math Engine + Science Engine",
+        "status": "NOT FOUND \u2014 no known dimensionless ratio equals 527.518..."
+      }
+    ],
+    "honest_summary": "The GOD_CODE equation is a well-constructed ENCODING SYSTEM anchored at a real physical constant (Fe BCC 286 pm) with mathematically interesting properties (\u03c6 exponent, 13-thread). But it does not derive physics, compress information, or make confirmed predictions. The three engines validate THEMSELVES, not the equation. To escape circularity: make a prediction that future measurement can confirm or deny."
+  }
+}

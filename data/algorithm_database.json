@@ -90,6 +90,34 @@
       "entropy": 4.219528282299547,
       "resonance": 0.4670421046186295,
       "registered_at": 1768488948.2160645
+    },
+    "BCS_HEISENBERG_SC_L104": {
+      "description": "Iron-based superconductivity via BCS-Heisenberg bridge. Uses Fe(26) antiferromagnetic exchange J (GOD_CODE/1000) as microscopic foundation for Cooper pairing. Computes singlet projection, SC order parameter, Meissner susceptibility, and Josephson phase.",
+      "logic_code": "H = J*sum(XX+YY+ZZ) + h*sum(Z) + delta_pair*sum(XX+YY); delta_SC = avg(P_singlet); chi = -d2E/dB2",
+      "entropy": 4.527518481849261,
+      "resonance": 0.9527518481849261,
+      "registered_at": 1768700000.0,
+      "meta": {
+        "pairing_symmetry": "s_pm",
+        "iron_families": ["LaFeAsO", "FeSe", "BaFe2As2", "FeSe_monolayer"],
+        "critical_temperatures_K": [26.0, 8.5, 38.0, 65.0],
+        "bcs_gap_ratio": 3.528,
+        "sacred_coupling_j": 0.5275184818492612
+      }
+    },
+    "COOPER_PAIR_CORRELATOR_L104": {
+      "description": "Measures Cooper pair formation probability via singlet projection operator P_singlet = (I - sigma_i.sigma_j)/4 across all site pairs in the iron lattice Heisenberg chain.",
+      "logic_code": "P_singlet(i,j) = (I - XX - YY - ZZ)/4; avg_singlet = mean(P_singlet)",
+      "entropy": 3.918033988749895,
+      "resonance": 0.8527518481849261,
+      "registered_at": 1768700000.0
+    },
+    "MEISSNER_RESPONSE_L104": {
+      "description": "Computes diamagnetic Meissner susceptibility chi = -d2E/dB2 via central finite-difference on iron Heisenberg chain at varying magnetic fields. Negative chi confirms field expulsion (superconducting state).",
+      "logic_code": "chi = -(E(h+dh) - 2*E(h) + E(h-dh)) / dh^2; meissner_frac = clamp(-chi)",
+      "entropy": 4.041618033988750,
+      "resonance": 0.7527518481849261,
+      "registered_at": 1768700000.0
     }
   },
   "execution_logs": [

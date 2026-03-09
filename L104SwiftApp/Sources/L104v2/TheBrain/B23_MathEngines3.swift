@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
 // B23_MathEngines3.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 · TheBrain · v2 Architecture
 //
 // Extracted from L104Native.swift lines 15084-16375
@@ -496,7 +496,7 @@ class SpecialFunctionsEngine {
         // Start with P_m^m
         var pmm: Double = 1
         if absM > 0 {
-            let somx2: Double = Foundation.sqrt(1.0 - x * x)
+            let somx2: Double = sqrt(1.0 - x * x)
             var fact: Double = 1
             for i in 1...absM {
                 pmm *= -fact * somx2
@@ -731,10 +731,10 @@ class SpecialFunctionsEngine {
     func ellipticK(m: Double) -> Double {
         computations += 1
         guard m < 1.0 else { return Double.infinity }
-        var a: Double = 1.0, b: Double = Foundation.sqrt(1.0 - m)
+        var a: Double = 1.0, b: Double = sqrt(1.0 - m)
         for _ in 0..<50 {
             let an: Double = (a + b) / 2.0
-            let bn: Double = Foundation.sqrt(a * b)
+            let bn: Double = sqrt(a * b)
             if abs(an - bn) < 1e-15 { a = an; break }
             a = an; b = bn
         }
@@ -746,13 +746,13 @@ class SpecialFunctionsEngine {
         computations += 1
         guard m <= 1.0 else { return 0 }
         if m == 1.0 { return 1.0 }
-        var a: Double = 1.0, b: Double = Foundation.sqrt(1.0 - m)
-        var c: Double = Foundation.sqrt(m)
+        var a: Double = 1.0, b: Double = sqrt(1.0 - m)
+        var c: Double = sqrt(m)
         var sum: Double = m / 2.0
         var pow2: Double = 1.0
         for _ in 0..<50 {
             let an: Double = (a + b) / 2.0
-            let bn: Double = Foundation.sqrt(a * b)
+            let bn: Double = sqrt(a * b)
             c = (a - b) / 2.0
             pow2 *= 2.0
             sum += pow2 * c * c
@@ -772,8 +772,8 @@ class SpecialFunctionsEngine {
     /// Standard basis states
     static let ket0: Qubit = (Complex(1, 0), Complex(0, 0))
     static let ket1: Qubit = (Complex(0, 0), Complex(1, 0))
-    static let ketPlus: Qubit = (Complex(1.0 / Foundation.sqrt(2.0), 0), Complex(1.0 / Foundation.sqrt(2.0), 0))
-    static let ketMinus: Qubit = (Complex(1.0 / Foundation.sqrt(2.0), 0), Complex(-1.0 / Foundation.sqrt(2.0), 0))
+    static let ketPlus: Qubit = (Complex(1.0 / sqrt(2.0), 0), Complex(1.0 / sqrt(2.0), 0))
+    static let ketMinus: Qubit = (Complex(1.0 / sqrt(2.0), 0), Complex(-1.0 / sqrt(2.0), 0))
 
     /// 2x2 quantum gate as [[Complex]]
     typealias Gate2x2 = [[Complex]]
@@ -799,7 +799,7 @@ class SpecialFunctionsEngine {
     /// Hadamard gate: H = (1/√2)[[1,1],[1,-1]]
     func hadamard() -> Gate2x2 {
         computations += 1
-        let h: Double = 1.0 / Foundation.sqrt(2.0)
+        let h: Double = 1.0 / sqrt(2.0)
         return [[Complex(h, 0), Complex(h, 0)], [Complex(h, 0), Complex(-h, 0)]]
     }
 
@@ -857,7 +857,7 @@ class SpecialFunctionsEngine {
     func blochCoordinates(_ qubit: Qubit) -> (theta: Double, phi: Double) {
         computations += 1
         let p0: Double = qubit.alpha.magnitude * qubit.alpha.magnitude
-        let theta: Double = 2.0 * acos(min(1.0, Foundation.sqrt(p0)))
+        let theta: Double = 2.0 * acos(min(1.0, sqrt(p0)))
         let phi: Double = qubit.beta.phase - qubit.alpha.phase
         return (theta, phi)
     }
@@ -1069,7 +1069,7 @@ class ControlTheoryEngine {
         computations += 1
         let s = Complex(0, omega)
         let h = transferFunction(numerator: numerator, denominator: denominator, at: s)
-        return 20.0 * Foundation.log10(max(h.magnitude, 1e-15))
+        return 20.0 * log10(max(h.magnitude, 1e-15))
     }
 
     /// Bode phase in degrees: arg(H(jω))
@@ -1083,14 +1083,14 @@ class ControlTheoryEngine {
     /// Gain margin: dB at phase crossover (where phase = -180°)
     func gainMargin(numerator: [Double], denominator: [Double], omegaRange: (Double, Double) = (0.001, 1000), steps: Int = 10000) -> (marginDB: Double, omegaCrossover: Double) {
         computations += 1
-        let logStart = Foundation.log10(omegaRange.0)
-        let logEnd = Foundation.log10(omegaRange.1)
+        let logStart = log10(omegaRange.0)
+        let logEnd = log10(omegaRange.1)
         var bestOmega = 0.0
         var bestPhaseDiff = Double.infinity
 
         for i in 0..<steps {
             let logOmega = logStart + (logEnd - logStart) * Double(i) / Double(steps - 1)
-            let omega = Foundation.pow(10.0, logOmega)
+            let omega = pow(10.0, logOmega)
             let phase = bodePhase(numerator: numerator, denominator: denominator, omega: omega)
             let diff = abs(phase + 180.0)
             if diff < bestPhaseDiff {
@@ -1106,14 +1106,14 @@ class ControlTheoryEngine {
     /// Phase margin: degrees above -180° at gain crossover (where |H| = 0 dB)
     func phaseMargin(numerator: [Double], denominator: [Double], omegaRange: (Double, Double) = (0.001, 1000), steps: Int = 10000) -> (marginDeg: Double, omegaCrossover: Double) {
         computations += 1
-        let logStart = Foundation.log10(omegaRange.0)
-        let logEnd = Foundation.log10(omegaRange.1)
+        let logStart = log10(omegaRange.0)
+        let logEnd = log10(omegaRange.1)
         var bestOmega = 0.0
         var bestMagDiff = Double.infinity
 
         for i in 0..<steps {
             let logOmega = logStart + (logEnd - logStart) * Double(i) / Double(steps - 1)
-            let omega = Foundation.pow(10.0, logOmega)
+            let omega = pow(10.0, logOmega)
             let magDB = bodeMagnitude(numerator: numerator, denominator: denominator, omega: omega)
             let diff = abs(magDB)
             if diff < bestMagDiff {
@@ -1205,7 +1205,7 @@ class ControlTheoryEngine {
     /// First-order step response: y(t) = K * (1 - e^(-t/τ))
     func firstOrderStepResponse(K: Double, tau: Double, t: Double) -> Double {
         computations += 1
-        return K * (1.0 - Foundation.exp(-t / tau))
+        return K * (1.0 - exp(-t / tau))
     }
 
     /// Second-order step response (underdamped ζ < 1)
@@ -1213,20 +1213,20 @@ class ControlTheoryEngine {
         computations += 1
         guard zeta < 1.0 else {
             // Critically/overdamped: approximate
-            let s1 = -wn * (zeta + Foundation.sqrt(zeta * zeta - 1))
-            let s2 = -wn * (zeta - Foundation.sqrt(zeta * zeta - 1))
-            return K * (1.0 + (s1 * Foundation.exp(s2 * t) - s2 * Foundation.exp(s1 * t)) / (s2 - s1))
+            let s1 = -wn * (zeta + sqrt(zeta * zeta - 1))
+            let s2 = -wn * (zeta - sqrt(zeta * zeta - 1))
+            return K * (1.0 + (s1 * exp(s2 * t) - s2 * exp(s1 * t)) / (s2 - s1))
         }
-        let wd = wn * Foundation.sqrt(1 - zeta * zeta)
-        let env = Foundation.exp(-zeta * wn * t)
-        return K * (1.0 - env * (Foundation.cos(wd * t) + (zeta / Foundation.sqrt(1 - zeta * zeta)) * Foundation.sin(wd * t)))
+        let wd = wn * sqrt(1 - zeta * zeta)
+        let env = exp(-zeta * wn * t)
+        return K * (1.0 - env * (cos(wd * t) + (zeta / sqrt(1 - zeta * zeta)) * sin(wd * t)))
     }
 
     /// Rise time estimate for second-order underdamped: tr ≈ (π - arccos(ζ)) / ωd
     func riseTime(wn: Double, zeta: Double) -> Double {
         computations += 1
-        let wd = wn * Foundation.sqrt(1 - zeta * zeta)
-        return (.pi - Foundation.acos(zeta)) / wd
+        let wd = wn * sqrt(1 - zeta * zeta)
+        return (.pi - acos(zeta)) / wd
     }
 
     /// Settling time (2% criterion): ts ≈ 4 / (ζωn)
@@ -1238,21 +1238,21 @@ class ControlTheoryEngine {
     /// Peak time: tp = π / ωd
     func peakTime(wn: Double, zeta: Double) -> Double {
         computations += 1
-        let wd = wn * Foundation.sqrt(1 - zeta * zeta)
+        let wd = wn * sqrt(1 - zeta * zeta)
         return .pi / wd
     }
 
     /// Maximum overshoot percentage: Mp = exp(-ζπ / √(1-ζ²)) × 100
     func overshoot(zeta: Double) -> Double {
         computations += 1
-        return Foundation.exp(-zeta * .pi / Foundation.sqrt(1 - zeta * zeta)) * 100.0
+        return exp(-zeta * .pi / sqrt(1 - zeta * zeta)) * 100.0
     }
 
     /// Bandwidth frequency (3dB): ωbw ≈ ωn * √(1-2ζ² + √(4ζ⁴-4ζ²+2))
     func bandwidth(wn: Double, zeta: Double) -> Double {
         computations += 1
         let z2 = zeta * zeta
-        return wn * Foundation.sqrt(1 - 2*z2 + Foundation.sqrt(4*z2*z2 - 4*z2 + 2))
+        return wn * sqrt(1 - 2*z2 + sqrt(4*z2*z2 - 4*z2 + 2))
     }
 
     // ═══ Lead-Lag Compensator ═══
@@ -1275,7 +1275,7 @@ class ControlTheoryEngine {
     /// Maximum phase lead: φmax = arcsin((p-z)/(p+z)) (for lead compensator, p > z)
     func maxPhaseLead(zero: Double, pole: Double) -> Double {
         computations += 1
-        return Foundation.asin((pole - zero) / (pole + zero)) * 180.0 / .pi
+        return asin((pole - zero) / (pole + zero)) * 180.0 / .pi
     }
 
     var status: String {

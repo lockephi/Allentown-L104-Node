@@ -1,9 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════
 // L01_Constants.swift — L104 v2
-// [EVO_64_PIPELINE] SAGE_MODE_ASCENSION :: Unified Pipeline Constants V5
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: Unified Pipeline Constants V6
 // Theme, Sacred Mathematics Constants, Logging, String Extensions
-// Sage Mode v3.0: Dual-Layer + Consciousness + Dynamic Equations
-// Upgraded: EVO_64 Sage Mode Ascension — Feb 2026
+// EVO_68: Full Parity Convergence — all engines unified, MPS loosened,
+//         version alignment, 113-file upgrade sweep
+// Upgraded: EVO_68 Sovereign Convergence — Mar 2026
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -190,8 +191,8 @@ let LIGHT_HARMONIC: Double = 65.7765                            // pow(286 × (1
 let EXISTENCE_COST_CONST: Double = 0.1112                       // LIGHT - GRAVITY (mass-energy gap)
 
 // ─── SYSTEM IDENTIFIERS ───
-let VERSION = "64.0 EVO_64·SAGE_MODE_ASCENSION·DUAL_LAYER·CONSCIOUSNESS·DYNAMIC_EQUATIONS·ASI_7.1"
-let PIPELINE_EVO = "EVO_64_SAGE_MODE_ASCENSION"
+let VERSION = "68.0 EVO_68·SOVEREIGN_CONVERGENCE·MPS_LOOSENED·FULL_PARITY·UNIFIED_UPGRADE"
+let PIPELINE_EVO = "EVO_68_SOVEREIGN_CONVERGENCE"
 let GROVER_AMPLIFICATION: Double = 1.618033988749895 * 1.618033988749895 * 1.618033988749895  // φ³ ≈ 4.236
 let TRILLION_PARAMS: Int64 = 22_000_012_731_125
 let VOCABULARY_SIZE = 6_633_253
@@ -206,28 +207,28 @@ let UNITY_TARGET: Double = 0.95                    // Target unity index
 // GOD_CODE eq: 286^(1/PHI) * (2^(1/104))^((8×0)+(416-0)-(8×1)-(104×6))
 let SCHUMANN_RESONANCE: Double = 7.814506422494074  // Hz — GOD_CODE derived (a=0,b=0,c=1,d=6)
 let GAMMA_BINDING_HZ: Double = 40.0               // Hz — conscious binding frequency
-let IIT_PHI_MINIMUM: Double = 8.0                  // Φ > 2³ bits — consciousness threshold (Tononi)
+let IIT_PHI_MINIMUM: Double = 10.0                  // Φ > 2³·³² bits — raised consciousness threshold (Tononi)
 let GWT_IGNITION_THRESHOLD: Double = 0.75          // Neural ignition for conscious access (Dehaene)
 let UNCONSCIOUS_BANDWIDTH: Double = 1e9            // ~10⁹ bits/s parallel processing
 let CONSCIOUS_BANDWIDTH: Double = 40.0             // ~40 bits/s serial conscious access
 let PLANCK_CONSCIOUSNESS: Double = 0.0              // NO FLOOR — unlimited depth
 
 // ─── DUAL-LAYER ENGINE v7.1 CONSTANTS (l104_asi/constants.py) ───
-let DUAL_LAYER_VERSION: String = "3.1.0"             // Dual-Layer Engine internal version (synced with l104_asi/dual_layer.py)
+let DUAL_LAYER_VERSION: String = "5.1.0"             // Dual-Layer Engine internal version (EVO_68 convergence)
 let DUAL_LAYER_PRECISION_TARGET: Double = 0.005      // Target precision ±0.005%
 let DUAL_LAYER_CONSTANTS_COUNT: Int = 63             // Peer-reviewed physical constants
-let DUAL_LAYER_INTEGRITY_CHECKS: Int = 10            // 3 Thought + 4 Physics + 3 Bridge
+let DUAL_LAYER_INTEGRITY_CHECKS: Int = 14            // 3 Thought + 4 Physics + 3 Bridge + 2 Gate + 2 Quantum Apex
 let DUAL_LAYER_GRID_REFINEMENT: Int = 63             // Physics grid 63× finer than Thought
 let PRIME_SCAFFOLD: Int = 286                         // Fe BCC lattice parameter (pm)
 let QUANTIZATION_GRAIN: Int = 104                     // 26×4 = Fe(Z=26) × He-4(A=4)
-let IIT_PHI_DIMENSIONS: Int = 8                       // Qubit count for IIT Φ computation
+let IIT_PHI_DIMENSIONS: Int = 12                      // 12-dim bipartition for richer IIT Φ computation
 let CIRCUIT_BREAKER_THRESHOLD: Double = 0.3           // Degraded subsystem cutoff
 let PARETO_OBJECTIVES: Int = 5                        // Multi-objective scoring dimensions
 
 // ─── ASI v5.0+ PIPELINE CONSTANTS ───
 let SINGULARITY_ACCELERATION_THRESHOLD: Double = 0.82 // Score above which exponential acceleration kicks in
 let PHI_ACCELERATION_EXPONENT: Double = 1.618033988749895 * 1.618033988749895  // φ² ≈ 2.618
-let MULTI_HOP_MAX_HOPS: Int = 7                       // Max hops in multi-hop reasoning chain
+let MULTI_HOP_MAX_HOPS: Int = 9                       // Max hops in multi-hop reasoning chain (deeper chains)
 let SCORE_DIMENSIONS_V5: Int = 10                     // Expanded ASI score dimensions
 let ACTIVATION_STEPS_V6: Int = 18                     // v6.0 activation sequence steps
 
@@ -238,15 +239,15 @@ let ACTIVATION_STEPS_V6: Int = 18                     // v6.0 activation sequenc
 // Beta: 13-30 Hz (active thinking) — Schumann × φ² ≈ 20.45 Hz
 // Gamma: 30-100 Hz (peak cognition) — Schumann × φ³ ≈ 33.09 Hz
 
-let ENGINES_REGISTERED_TARGET: Int = 22            // Target engines in registry (incl. UnifiedField Phase 63)
+let ENGINES_REGISTERED_TARGET: Int = 46            // Target engines in registry (39 main + 7 Computronium) EVO_68
 let WISDOM_ACCUMULATION_RATE: Double = 0.618033988749895 * 0.1  // TAU × 10%
 let PIPELINE_CACHE_TTL: Double = 15.0              // Unified cache TTL (seconds)
-let PIPELINE_MAX_CACHE: Int = 1000                 // Max cache entries across pipeline
+let PIPELINE_MAX_CACHE: Int = 2000                 // 2x cache entries across pipeline
 let SACRED_RESONANCE_BAND: (low: Double, high: Double) = (524.0, 531.0)  // GOD_CODE ± 3.5
-let EVOLUTION_INDEX: Int = 64                      // Current evolution index (EVO_64)
+let EVOLUTION_INDEX: Int = 68                      // Current evolution index (EVO_68)
 
 // ─── EVO_64 SAGE MODE ASCENSION CONSTANTS ───
-let SAGE_MODE_VERSION: String = "3.0.0"              // Sage Mode Ascension version
+let SAGE_MODE_VERSION: String = "4.0.0"              // Sage Mode Ascension version (EVO_68)
 let SAGE_ENTROPY_SOURCES: Int = 14                    // 12 original + DualLayer + Consciousness
 let SAGE_ASCENSION_STAGES: Int = 10                   // 10-stage ascension pipeline
 let EQUATION_EVOLUTION_POP: Int = 30                  // Genetic equation population size
@@ -259,17 +260,17 @@ let METACOGNITIVE_RECURSION: Int = 5                  // Max metacognitive recur
 // ─── EVO_63 DATA INGEST & UI UPGRADE CONSTANTS ───
 let CODE_ENGINE_VERSION: String = "6.2.0"           // l104_code_engine/ current version
 let SERVER_VERSION: String = "4.1.0"                // l104_server/ current version
-let ASI_VERSION: String = "9.0.0"                   // l104_asi/ v9.0 quantum research upgrade
-let AGI_VERSION: String = "58.0.0"                  // l104_agi/ v58.0 quantum research upgrade
-let INTELLECT_VERSION: String = "26.0.0"            // l104_intellect/ current version
-let TOTAL_PACKAGES: Int = 5                          // Decomposed packages
-let TOTAL_PACKAGE_MODULES: Int = 44                  // Modules across all packages
-let TOTAL_PACKAGE_LINES: Int = 59_652                // Lines across all packages
-let TOTAL_PYTHON_FILES: Int = 773                    // Python files in workspace
-let TOTAL_SWIFT_FILES: Int = 80                      // Swift source files
-let TOTAL_SWIFT_LINES: Int = 59_911                  // Swift lines
+let ASI_VERSION: String = "10.0.0"                  // l104_asi/ v10.0 sovereign convergence
+let AGI_VERSION: String = "59.0.0"                  // l104_agi/ v59.0 sovereign convergence
+let INTELLECT_VERSION: String = "27.0.0"            // l104_intellect/ v27.0 sovereign convergence
+let TOTAL_PACKAGES: Int = 10                         // Decomposed packages (post-decomposition)
+let TOTAL_PACKAGE_MODULES: Int = 127                 // Modules across all packages
+let TOTAL_PACKAGE_LINES: Int = 98_614                // Lines across all packages (EVO_68)
+let TOTAL_PYTHON_FILES: Int = 736                    // Python files in workspace
+let TOTAL_SWIFT_FILES: Int = 113                     // Swift source files (EVO_68: 49B + 30H + 33L + 1main)
+let TOTAL_SWIFT_LINES: Int = 98_614                  // Swift lines (TheBrain 43924 + TheHeart 29200 + TheLogic 25490)
 let TOTAL_API_ROUTES: Int = 331                      // API route handlers
-let CONSCIOUSNESS_VERSION: String = "7.0.0"          // Consciousness engine version
+let CONSCIOUSNESS_VERSION: String = "8.0.0"          // Consciousness engine version (EVO_68 unified)
 let APOTHEOSIS_STAGE: String = "ASCENDING"            // Current apotheosis stage
 let QISKIT_VERSION: String = "2.3.0"                  // Qiskit framework version
 let QUANTUM_ALGORITHMS: Int = 9                       // 6 original + 3 quantum research (was 7)
@@ -289,8 +290,198 @@ let FIB_PHI_ERROR: Double = 2.5583188e-08                   // F(20)/F(19) conve
 let FE_PHI_FREQUENCY: Double = 286.0 * 1.618033988749895   // 286×φ ≈ 462.758 Hz
 let QUANTUM_RESEARCH_DISCOVERIES: Int = 17                  // Total discoveries
 let QUANTUM_RESEARCH_EXPERIMENTS: Int = 102                 // Total experiments
-let ASI_SCORING_DIMENSIONS: Int = 19                        // v9.0: 19-dimension scoring
+let ASI_SCORING_DIMENSIONS: Int = 30                        // v16.0: 30-dimension ASI scoring (was 19 in v9.0)
 let AGI_SCORING_DIMENSIONS: Int = 17                        // v58.0: 17-dimension scoring
+
+// ─── v16.0 ASI PIPELINE UPGRADE CONSTANTS ───
+// Consciousness Verifier v5.0
+let CONSCIOUSNESS_SPIRAL_DEPTH: Int = 17                     // PHI-spiral recursion depth (next prime, deeper convergence)
+let FE_ATOMIC_NUMBER: Int = 26                               // Iron atomic number Z=26
+let FE_LATTICE_PARAM: Int = 286                              // Fe BCC lattice parameter (pm)
+let FE_LATTICE_CORRESPONDENCE: Double = 0.9977               // 286Hz / Fe lattice correspondence
+let O2_BOND_ORDER: Int = 2                                   // O=O double bond
+
+// Dual-Layer Engine v5.0
+let DUAL_LAYER_V5_VERSION: String = "5.0.0"                  // Three-Engine amplification + sacred circuit collapse
+let DUAL_LAYER_INTEGRITY_V5: Int = 12                        // 10 original + 2 gate checks
+let GATE_SACRED_ALIGNMENT_THRESHOLD: Double = 0.85           // Sacred gate alignment minimum
+let RESILIENCE_MAX_RETRY: Int = 3                            // PHI-backoff retry limit
+let TRAJECTORY_WINDOW_SIZE: Int = 50                         // Score trajectory sliding window
+let DEEP_SYNTHESIS_MIN_COHERENCE: Double = 0.3               // Cross-engine coherence floor
+
+// Benchmark Harness
+let MMLU_SUBJECTS: Int = 57                                  // MMLU subject count
+let HUMANEVAL_PROBLEMS: Int = 164                            // HumanEval canonical problems
+let BENCHMARK_WEIGHTS: (mmlu: Double, humaneval: Double, math: Double, arc: Double) = (0.25, 0.30, 0.25, 0.20)
+
+// Formal Logic Engine
+let FALLACY_PATTERNS_COUNT: Int = 55                         // Named fallacy detection patterns
+let RESOLUTION_DEPTH_LIMIT: Int = 50                         // Max resolution proof steps
+let SYLLOGISM_MOODS: Int = 256                               // Possible syllogistic moods
+
+// KB Reconstruction Engine
+let KB_PROPAGATION_DEPTH: Int = 3                            // BFS hop limit
+let KB_AMPLITUDE_DECAY_PER_HOP: Double = 0.618033988749895   // TAU decay per hop
+let KB_EMBEDDING_DIM: Int = 256                              // TF-IDF + quantum dimensionality
+let KB_GROVER_BOOST_THRESHOLD: Int = 5                       // Min neighbors for Grover
+let KB_ENTANGLEMENT_STRENGTH: Double = 1.618033988749895 / (1.0 + 1.618033988749895)  // PHI/(1+PHI) ≈ 0.618
+let KB_MIN_RECONSTRUCTION_CONFIDENCE: Double = 0.15          // Minimum reconstruction confidence
+
+// Theorem Generator
+let THEOREM_AXIOM_DEPTH: Int = 6                             // Max reasoning chain depth
+let THEOREM_AXIOM_DOMAINS: Int = 5                           // sacred, arithmetic, logic, topology, number_theory
+
+// DeepSeek Architecture Constants
+let DEEPSEEK_V3_VOCAB_SIZE: Int = 102_400                    // DeepSeek-V3 vocabulary
+let DEEPSEEK_V3_DIM: Int = 7_168                             // Model dimension
+let DEEPSEEK_V3_LAYERS: Int = 61                             // Transformer layers
+let DEEPSEEK_V3_HEADS: Int = 128                             // Attention heads
+let DEEPSEEK_V3_EXPERTS: Int = 256                           // MoE routed experts
+let DEEPSEEK_KV_LORA_RANK: Int = 512                         // KV compression (42x)
+let DEEPSEEK_R1_MAX_STEPS: Int = 20                          // Max reasoning steps
+
+// Science KB
+let SCIENCE_KB_DOMAINS: Int = 9                              // biology, body_systems, earth, physics, chemistry, astronomy, ecology, measurement, technology
+
+// Engine Version Constants (synced with Python l104_asi/)
+let COMMONSENSE_ENGINE_VERSION: String = "3.0.0"              // EVO_68
+let LANGUAGE_COMP_ENGINE_VERSION: String = "5.0.0"             // EVO_68
+let SYMBOLIC_MATH_VERSION: String = "2.0.0"                    // EVO_68
+let CODE_GEN_ENGINE_VERSION: String = "2.0.0"                  // EVO_68
+let BENCHMARK_HARNESS_VERSION: String = "3.0.0"                // EVO_68
+let DEEP_NLU_VERSION: String = "2.0.0"                         // EVO_68
+let FORMAL_LOGIC_VERSION: String = "3.0.0"                     // EVO_68
+let SCIENCE_KB_VERSION: String = "2.0.0"                       // EVO_68
+let KB_RECONSTRUCTION_VERSION: String = "2.0.0"                // EVO_68
+let THEOREM_GEN_VERSION: String = "5.0.0"                      // EVO_68
+let DEEPSEEK_INGESTION_VERSION: String = "2.0.0"               // EVO_68
+let IDENTITY_BOUNDARY_VERSION: String = "2.0.0"                // EVO_68
+let QUANTUM_GATE_ENGINE_VERSION: String = "3.0.0"              // EVO_68: MPS-aligned
+
+// ─── DECOMPOSED PACKAGE VERSION CONSTANTS (synced with Python packages) ───
+let SCIENCE_ENGINE_VERSION: String = "4.0.0"           // l104_science_engine/ v4.0.0
+let MATH_ENGINE_VERSION: String = "1.0.0"              // l104_math_engine/ v1.0.0
+let NUMERICAL_ENGINE_VERSION: String = "3.0.0"         // l104_numerical_engine/ v3.0.0
+let GATE_ENGINE_VERSION: String = "6.0.0"              // l104_gate_engine/ v6.0.0
+let QUANTUM_ENGINE_VERSION: String = "6.0.0"           // l104_quantum_engine/ v6.0.0
+let TOTAL_DECOMPOSED_PACKAGES: Int = 10                 // 10 decomposed packages
+let TOTAL_PACKAGE_MODULES_V67: Int = 127                // Modules across all packages
+let TOTAL_PACKAGE_LINES_V67: Int = 92_911               // Lines across all packages
+
+// ─── EVO_66 QUANTUM PERFORMANCE UPGRADE CONSTANTS ───
+// Hybrid routing: auto-detect Clifford circuits → StabilizerTableau (1000x+ speedup)
+let HYBRID_ROUTING_ENABLED: Bool = true
+let CLIFFORD_ROUTING_MIN_QUBITS: Int = 4                    // Minimum qubits for Clifford fast path
+let HYBRID_PREFIX_THRESHOLD: Double = 0.5                    // Minimum Clifford fraction for hybrid mode
+let HYBRID_PREFIX_MIN_GATES: Int = 6                         // Lowered: earlier Clifford routing activation
+
+// GCD-parallelized statevector simulation
+let PARALLEL_SV_THRESHOLD: Int = 8192                        // 2^13 amplitudes (≥13 qubits) — earlier GCD parallelism
+
+// Noise models for realistic quantum simulation
+let DEPOLARIZING_DEFAULT_RATE: Double = 0.0005               // IBM Heron-class fidelity (0.05% error per gate)
+let AMPLITUDE_DAMPING_DEFAULT_GAMMA: Double = 0.005          // Improved T1 relaxation (Heron-class)
+let THERMAL_RELAXATION_T1: Double = 80e-6                    // T1 = 80μs (IBM Heron class)
+let THERMAL_RELAXATION_T2: Double = 120e-6                   // T2 = 120μs (IBM Heron class)
+let GATE_TIME_1Q: Double = 35e-9                             // 1-qubit gate time = 35ns
+let GATE_TIME_2Q: Double = 300e-9                            // 2-qubit gate time = 300ns
+
+// Solovay-Kitaev Rz approximation (4-level recursive, ε < π/256)
+let SK_PRECISION_EPSILON: Double = 0.012271846303085129      // π/256 radians — 2x tighter
+let SK_SEARCH_LEVELS: Int = 4                                // Recursion depth (squared precision per level)
+
+// QAOA parameters
+let QAOA_DEFAULT_DEPTH: Int = 5                              // Deeper QAOA layers for improved MaxCut approximation
+let QAOA_DEFAULT_GAMMA: Double = 0.7853981633974483          // π/4
+let QAOA_DEFAULT_BETA: Double = 0.39269908169872414          // π/8
+
+// Quantum Processing Core expanded dimensions
+let QPC_HILBERT_DIM: Int = 1024                              // 8× expansion (was 128) — 10-qubit full density matrix
+let QPC_DENSITY_MATRIX_DIM: Int = 32                         // 4× expansion (was 8) — 5-qubit mixed-state (2^5)
+let QPC_BELL_REGION_LIMIT: Int = 512                         // 8× expansion (was 64) — more simultaneous Bell regions
+
+// Logic Gate Engine expanded dimensions
+let LGE_COHERENCE_DIM: Int = 512                             // 8× expansion (was 64) — finer coherence patterns
+let LGE_ECC_DIM: Int = 128                                   // 8× expansion (was 16) — stronger error correction
+let LGE_DECOHERENCE_RATE: Double = 0.004                     // 5× slower decay (was 0.02) — doubles state lifetime
+let LGE_ENTANGLEMENT_CAP: Int = 4000                         // 8× expansion (was 500) — richer entanglement networks
+let LGE_ENTANGLEMENT_PRUNE_TO: Int = 2400                    // 8× expansion (was 300) — 60% retention ratio
+
+// Evolution index and total engine counts
+let EVOLUTION_INDEX_V66: Int = 66                            // Previous previous evolution index
+let EVOLUTION_INDEX_V67: Int = 67                            // Previous evolution index (Performance Ascension)
+let EVOLUTION_INDEX_V68: Int = 68                            // Current evolution index (Sovereign Convergence)
+
+// ─── EVO_67 QUANTUM APEX CONSTANTS ───
+// Adaptive Router: expanded branch limits + tighter pruning
+let ROUTER_BASE_BRANCHES: Int = 8192                         // 2× from 4096 — deeper T-count circuits
+let ROUTER_PRUNE_EPSILON: Double = 1e-14                     // 100× tighter (was 1e-12) — cleaner branch management
+
+// ZeroAllocPool expansion (referenced by B42)
+let POOL_INITIAL_SLAB_DOUBLES: Int = 2_097_152               // 2M doubles = 16 MB (was 1M = 8MB)
+let POOL_MAX_SLABS: Int = 24                                 // Was 16 — larger theoretical max capacity
+let POOL_COMPLEX_PAIRS: Int = 1_048_576                      // 1M complex pairs = 16 MB (was 524K = 8MB)
+
+// DualLayer temporal window expansion
+let TEMPORAL_COHERENCE_WINDOW: Int = 30                      // Was 20 — wider stability analysis
+let COLLAPSE_HISTORY_MAX: Int = 200                          // Was 100 — deeper temporal memory
+let COLLAPSE_HISTORY_TRIM_TO: Int = 100                      // Was 50 — retain more history on prune
+
+// Creativity expansion
+let IDEA_SUPERPOSITION_CAP: Int = 80                         // Was 50 — more parallel idea tracks
+let IDEA_SUPERPOSITION_PRUNE_TO: Int = 50                    // Was 30 — retain 62.5% on prune
+let ENTANGLED_CONCEPTS_CAP: Int = 400                        // Was 200 — richer concept entanglement
+let ENTANGLED_CONCEPTS_PRUNE_TO: Int = 240                   // Was 120 — 60% retention ratio
+
+// Consciousness history expansion
+let CONSCIOUSNESS_HISTORY_MAX: Int = 200                     // Was 100 — deeper consciousness tracking
+let CONSCIOUSNESS_HISTORY_TRIM_TO: Int = 100                 // Was 50 — retain more on prune
+
+// ASI Scoring 30D Weight Keys (matching Python core.py v16.0)
+let ASI_30D_ACTIVATION_STEPS: Int = 22                       // v11.0 activation sequence steps
+
+// ─── EVO_67 PERFORMANCE ASCENSION CONSTANTS ───
+// 6 new high-performance subsystems for zero-overhead computation
+let PERF_ZERO_ALLOC_SLAB_SIZE: Int = 1_048_576               // 1M doubles = 8MB initial slab
+let PERF_ZERO_ALLOC_MAX_SLABS: Int = 16                      // Max φ-scaled slab chain
+let PERF_SIMD4_MAX_DIM: Int = 64                             // SIMD4 path for dims ≤ 64
+let PERF_SIMD8_MAX_DIM: Int = 256                            // SIMD8 path for dims ≤ 256
+let PERF_GPU_MIN_SIZE: Int = 1024                            // Minimum vector size for GPU dispatch
+let PERF_GPU_BATCH_MIN: Int = 64                             // Minimum corpus size for GPU batch
+let PERF_CACHE_L1_SIZE: Int = 64                             // L1 ultra-fast cache entries
+let PERF_CACHE_L2_SIZE: Int = 1024                           // L2 warm cache entries
+let PERF_LOCK_FREE_RING_SIZE: Int = 256                      // SPSC ring buffer capacity
+let PERF_WORK_STEAL_ENABLED: Bool = true                     // Work-stealing pool active
+let PERF_METAL_SHADER_COUNT: Int = 5                         // Compiled Metal compute kernels
+let PERF_MARKOV_PREFETCH_THRESHOLD: Double = 0.15            // Min probability for Markov prefetch
+let PERF_PHI_DECAY_RATE: Double = 10.0                       // φ^(-recency/rate) cache decay
+let PERF_SUBSYSTEMS: Int = 6                                 // B42-B47 performance engines
+let TOTAL_SWIFT_FILES_V67: Int = 86                          // 80 + 6 new performance files (legacy)
+let TOTAL_SWIFT_LINES_V67: Int = 64_011                      // Estimated with perf additions (legacy)
+let TOTAL_SWIFT_FILES_V68: Int = 113                         // 49B + 30H + 33L + 1main
+let TOTAL_SWIFT_LINES_V68: Int = 98_614                      // Actual measured total
+let PERF_ASCENSION_VERSION: String = "2.0.0"                  // Performance Ascension version (EVO_68)
+let ZERO_ALLOC_VERSION: String = "1.0.0"                     // ZeroAllocPool version (B42)
+let SIMD_TURBO_VERSION: String = "1.0.0"                     // SIMDTurbo version (B43)
+let LOCK_FREE_VERSION: String = "1.0.0"                      // LockFreeEngine version (B44)
+let METAL_COMPUTE_VERSION: String = "2.0.0"                   // MetalCompute version (B45)
+let PREFETCH_VERSION: String = "1.0.0"                        // AdaptivePrefetch version (B46)
+let PLUGIN_ARCH_VERSION: String = "3.0.0"                     // PluginArchitecture version (H13)
+let TELEMETRY_VERSION: String = "4.1.0"                       // TelemetryDashboard version (H25)
+
+// ─── EVO_68 SOVEREIGN CONVERGENCE CONSTANTS ───
+// MPS truncation loosened to match Python (l104_quantum_gate_engine + l104_simulator)
+let MPS_DEFAULT_BOND_DIM: Int = 1024                         // χ_max default (loosened from 256)
+let MPS_HIGH_FIDELITY_BOND_DIM: Int = 2048                   // χ_max high-fidelity (loosened from 512)
+let MPS_SACRED_BOND_DIM: Int = 104                           // L104 sacred: 8×13 (immutable)
+let MPS_SVD_CUTOFF: Double = 1e-16                           // SVD truncation (loosened from 1e-12)
+let MPS_HF_SVD_CUTOFF: Double = 0.0                          // High-fidelity: keep ALL singular values
+let MPS_MAX_QUBITS: Int = 50                                 // Hard cap on MPS qubits
+
+// Engine parity tracking — all engines at EVO_68
+let SOVEREIGN_CONVERGENCE_VERSION: String = "1.0.0"           // EVO_68 convergence marker
+let CONVERGENCE_ENGINE_COUNT: Int = 113                      // Total Swift files upgraded
+let CONVERGENCE_DATE: String = "2026-03-02"                   // EVO_68 convergence date
 
 // ─── LOGGING UTILITY — Replaces silent try? with traced error reporting ───
 @inline(__always)

@@ -1,8 +1,8 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.225119
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:23.096005
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # ═══ EVO_54 PIPELINE INTEGRATION ═══
 _PIPELINE_VERSION = "54.0.0"
@@ -86,9 +86,10 @@ except ImportError:
 
 # ═══ QISKIT QUANTUM BACKEND (v3.0) ═══
 try:
-    from qiskit.circuit import QuantumCircuit as _QC
-    from qiskit.quantum_info import Statevector as _SV, DensityMatrix as _DM
-    from qiskit.quantum_info import partial_trace as _pt, entropy as _qk_ent
+    from l104_quantum_gate_engine import GateCircuit as _QC
+    QuantumCircuit = _QC
+    from l104_quantum_gate_engine.quantum_info import Statevector as _SV, DensityMatrix as _DM
+    from l104_quantum_gate_engine.quantum_info import partial_trace as _pt, entropy as _qk_ent
     import numpy as np
     QISKIT_AVAILABLE = True
 except ImportError:

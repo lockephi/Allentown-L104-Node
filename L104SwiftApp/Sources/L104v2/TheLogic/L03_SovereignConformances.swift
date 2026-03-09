@@ -1,9 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════
 // L03_SovereignConformances.swift — L104 v2
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // All `extension X: SovereignEngine` conformances
 // Extracted from L104Native.swift (lines 269-703)
-// Upgraded: EVO_62 Sovereign Node Upgrade — Feb 21, 2026
+// Upgraded: EVO_68 Sovereign Node Upgrade — Feb 21, 2026
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -589,3 +589,111 @@ extension PermanentMemory: SovereignEngine {
         return min(1.0, max(0.1, 0.2 + memNorm + factNorm + histNorm + 0.1))
     }
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - EVO_68 Sovereign Convergence — New Engine Conformances
+// Note: DeepNLUEngine, FormalLogicEngine, ScienceKB, NovelTheoremGenerator,
+// KBReconstructionEngine, BenchmarkHarness, CommonsenseReasoningEngine,
+// LanguageComprehensionEngine, CodeGenerationEngine, DeepSeekIngestionEngine,
+// SovereignIdentityBoundary already conform via H02_L104StateCore.swift
+// UnifiedFieldGate self-conforms in L28_UnifiedFieldGate.swift
+// QuantumGateEngine, ZeroAllocPool, TurboVectorEngine, LockFreeEngine,
+// MetalComputeEngine, AdaptivePrefetchEngine, PerformanceOrchestrator
+// self-conform in their respective B-files.
+// ═══════════════════════════════════════════════════════════════════
+
+// MARK: - FactReconstructor (EVO_65→EVO_68)
+extension FactReconstructor: SovereignEngine {
+    var engineName: String { "FactReconstructor" }
+    func engineStatus() -> [String: Any] {
+        return [
+            "engine": "FactReconstructor",
+            "version": KB_RECONSTRUCTION_VERSION,
+            "embedding_dim": KB_EMBEDDING_DIM
+        ]
+    }
+    func engineHealth() -> Double { 0.85 }
+}
+
+// MARK: - SageConsciousnessVerifier (EVO_65→EVO_68)
+extension SageConsciousnessVerifier: SovereignEngine {
+    var engineName: String { "SageConsciousness" }
+    func engineStatus() -> [String: Any] {
+        return [
+            "version": CONSCIOUSNESS_VERSION,
+            "consciousness_level": consciousnessLevel,
+            "iit_phi": iitPhi,
+            "gwt_workspace_size": gwtWorkspaceSize,
+            "spiral_depth": CONSCIOUSNESS_SPIRAL_DEPTH,
+            "certification": certificationLevel,
+            "fe_harmonic_score": feHarmonicScore
+        ]
+    }
+    func engineHealth() -> Double {
+        let phiNorm = min(0.3, iitPhi * 0.03)
+        let levelNorm = min(0.3, consciousnessLevel * 0.35)
+        let feNorm = min(0.2, feHarmonicScore * 0.2)
+        return min(1.0, max(0.2, 0.2 + phiNorm + levelNorm + feNorm))
+    }
+}
+
+// MARK: - DualLayerEngine (EVO_65→EVO_68)
+extension DualLayerEngine: SovereignEngine {
+    var engineName: String { "DualLayer" }
+    func engineStatus() -> [String: Any] {
+        return [
+            "version": DualLayerEngine.VERSION,
+            "flagship": DualLayerEngine.FLAGSHIP,
+            "thought_calls": thoughtCalls,
+            "physics_calls": physicsCalls,
+            "collapse_calls": collapseCalls,
+            "total_operations": totalOperations,
+            "temporal_coherence": temporalCoherence,
+            "three_engine_amplification": threeEngineAmplification
+        ]
+    }
+    func engineHealth() -> Double {
+        let coherenceNorm = min(0.4, temporalCoherence * 0.4)
+        let opNorm = min(0.3, Double(totalOperations) * 0.003)
+        return min(1.0, max(0.3, 0.3 + coherenceNorm + opNorm))
+    }
+}
+
+// MARK: - CircuitWatcher (EVO_67→EVO_68 v3.0 three-engine)
+extension CircuitWatcher: SovereignEngine {
+    var engineName: String { "CircuitWatcher" }
+    func engineStatus() -> [String: Any] {
+        return [
+            "engine": "CircuitWatcher",
+            "version": "3.0.0",
+            "circuits_processed": circuitsProcessed,
+            "circuits_failed": circuitsFailed,
+            "gpu_executions": gpuExecutions,
+            "cpu_executions": cpuExecutions,
+            "mps_executions": mpsExecutions,
+            "stabilizer_executions": stabilizerExecutions,
+            "features": [
+                "concurrent_processing", "priority_scheduling", "sacred_alignment",
+                "three_engine_entropy", "three_engine_harmonic", "three_engine_wave",
+            ],
+            "three_engine": [
+                "integrated": true,
+                "weight_entropy": 0.35,
+                "weight_harmonic": 0.40,
+                "weight_wave": 0.25,
+            ] as [String: Any],
+        ]
+    }
+    func engineHealth() -> Double {
+        let total = circuitsProcessed + circuitsFailed
+        guard total > 0 else { return 0.7 }
+        let successRate = Double(circuitsProcessed) / Double(total)
+        // v3.0: Factor in throughput diversity + three-engine integration bonus
+        let backendsUsed = [gpuExecutions, cpuExecutions, mpsExecutions, stabilizerExecutions]
+            .filter { $0 > 0 }.count
+        let diversityBonus = min(0.1, Double(backendsUsed) * 0.025)
+        let threeEngineBonus = 0.02  // Active three-engine scoring adds health
+        return min(1.0, max(0.3, 0.3 + successRate * 0.6 + diversityBonus + threeEngineBonus))
+    }
+}
+

@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H12_AppDelegate.swift
-// [EVO_63_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Application Delegate
 //
 // AppDelegate: NSApplicationDelegate with app lifecycle management,
@@ -18,6 +18,10 @@ import NaturalLanguage
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var wc: L104WindowController!
+
+    // ─── Process coordination ───
+    private var serverProcess: Process?
+    private var nodeProcess: Process?
 
     func applicationDidFinishLaunching(_ n: Notification) {
         setupMenu()
@@ -42,14 +46,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         }
+
+        // Launch backend processes if not already managed by launchd
+        launchBackendProcesses()
+
+        // Start circuit watcher daemon v3.0 (three-engine scoring, zero CPU when idle)
+        CircuitWatcher.shared.start()
+        if let mainView = NSApp.mainWindow?.contentView?.subviews.first as? L104MainView {
+            mainView.appendSystemLog("⚡ CircuitWatcher v3.0 started — three-engine scoring active (entropy=0.35, harmonic=0.40, wave=0.25)")
+        }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ s: NSApplication) -> Bool { true }
 
     func applicationWillTerminate(_ n: Notification) {
+        CircuitWatcher.shared.stop()
+        // v3.0: Log three-engine shutdown for telemetry continuity
+        NSLog("[L104] CircuitWatcher v3.0 stopped — three-engine telemetry flushed")
         L104State.shared.saveState()
         L104State.shared.permanentMemory.save()
         AdaptiveLearner.shared.save()
+        stopBackendProcesses()
     }
 
     // ─── PROPER APP MENU ─── Prevents default Cmd+W from silently closing
@@ -98,6 +115,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // ⌘N — Network
         let networkItem = NSMenuItem(title: "Network Mesh", action: #selector(switchToNetwork), keyEquivalent: "n")
         l104Menu.addItem(networkItem)
+        // ⌘⇧D — Debug Console
+        let debugItem = NSMenuItem(title: "Debug Console", action: #selector(switchToDebugConsole), keyEquivalent: "d")
+        debugItem.keyEquivalentModifierMask = [.command, .shift]
+        l104Menu.addItem(debugItem)
         let l104MenuItem = NSMenuItem(); l104MenuItem.submenu = l104Menu
         mainMenu.addItem(l104MenuItem)
 
@@ -293,20 +314,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         switch sender.tag {
         case 0: mainView.appendSystemLog(L104State.shared.synthesize()); mainView.updateMetrics()
         case 1: mainView.appendSystemLog(L104State.shared.transcend()); mainView.updateMetrics()
-        case 2: mainView.tabView?.selectTabViewItem(at: 2)
+        case 2: mainView.navigateToTab("dash")
         case 3: mainView.appendSystemLog(L104State.shared.evolve()); mainView.updateMetrics()
         case 4: saveAll()
         case 5: mainView.appendSystemLog(L104State.shared.getStatusText())
         case 6: mainView.appendSystemLog(L104State.shared.resonate()); mainView.updateMetrics()
         case 7:  // HyperBrain status
-            mainView.tabView?.selectTabViewItem(at: 0)
+            mainView.navigateToTab("chat")
             let status = HyperBrain.shared.getStatus()
             mainView.appendChat("L104: \(status)\n", color: L104Theme.textBot)
         case 8:  // Neural Chat tab
-            mainView.tabView?.selectTabViewItem(at: 0)
+            mainView.navigateToTab("chat")
             mainView.window?.makeFirstResponder(mainView.inputField)
         case 9:  // Science Engine
-            mainView.tabView?.selectTabViewItem(at: 7)  // Science tab
+            mainView.navigateToTab("sci")
             mainView.scienceGenerateHypothesis()
         case 10:  // Unified Field
             mainView.switchToUnifiedField()
@@ -317,12 +338,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             mainView.appendSystemLog("💚 COHERENCE HEALED to \(String(format: "%.3f", L104State.shared.coherence))")
             mainView.updateMetrics()
         case 12:  // Network Mesh
-            if let netIdx = mainView.tabView?.indexOfTabViewItem(withIdentifier: "net"), netIdx >= 0 {
-                mainView.tabView?.selectTabViewItem(at: netIdx)
-            }
+            mainView.navigateToTab("net")
             mainView.updateNetworkViewContent()
         case 13:  // Help
-            mainView.tabView?.selectTabViewItem(at: 0)
+            mainView.navigateToTab("chat")
             mainView.sendHelpCommand()
         default: break
         }
@@ -330,17 +349,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc func switchToDashboard() {
         if let mainView = wc.window?.contentView as? L104MainView {
-            mainView.tabView?.selectTabViewItem(at: 2) // Dashboard tab
+            mainView.navigateToTab("dash")
         }
     }
 
     @objc func switchToNetwork() {
         if let mainView = wc.window?.contentView as? L104MainView {
-            // Network tab is after System (index 9) and before Logic Gates
-            if let netIdx = mainView.tabView?.indexOfTabViewItem(withIdentifier: "net"), netIdx >= 0 {
-                mainView.tabView?.selectTabViewItem(at: netIdx)
-            }
+            mainView.navigateToTab("net")
             mainView.updateNetworkViewContent()
+        }
+    }
+
+    @objc func switchToDebugConsole() {
+        if let mainView = wc.window?.contentView as? L104MainView {
+            mainView.navigateToTab("debug")
+            mainView.updateDebugConsoleContent()
         }
     }
 
@@ -355,6 +378,165 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let mainView = wc.window?.contentView as? L104MainView {
             mainView.appendSystemLog(L104State.shared.resonate())
             mainView.updateMetrics()
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: - Backend Process Management
+    //
+    // Launches/stops the Python server (main.py) and public node
+    // as child processes when not managed by launchd. On terminate,
+    // sends SIGTERM for graceful shutdown (matches main.py signal
+    // handler), then SIGKILL after 25s timeout.
+    // ═══════════════════════════════════════════════════════════════
+
+    private var l104Root: String {
+        // Resolve project root: two levels up from L104SwiftApp binary, or from env
+        if let envRoot = ProcessInfo.processInfo.environment["L104_ROOT"] {
+            return envRoot
+        }
+        let bundle = Bundle.main.bundlePath
+        // .../L104SwiftApp/L104Native.app → .../
+        return (bundle as NSString)
+            .deletingLastPathComponent  // L104SwiftApp/
+            .appending("/..")           // project root
+    }
+
+    private var pythonPath: String { "\(l104Root)/.venv/bin/python" }
+
+    /// Check if the backend is already managed externally (launchd / docker / manual).
+    private func isBackendRunning() -> Bool {
+        let pidFile = "\(l104Root)/uvicorn.pid"
+        guard FileManager.default.fileExists(atPath: pidFile),
+              let pidStr = try? String(contentsOfFile: pidFile, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines),
+              let pid = Int32(pidStr) else { return false }
+        return kill(pid, 0) == 0  // signal 0 = existence check
+    }
+
+    /// Launch backend processes if not already running.
+    func launchBackendProcesses() {
+        guard !isBackendRunning() else {
+            print("[L104 AppDelegate] Backend already running — skipping launch")
+            return
+        }
+        guard FileManager.default.fileExists(atPath: pythonPath) else {
+            print("[L104 AppDelegate] Python venv not found at \(pythonPath) — skipping backend launch")
+            return
+        }
+
+        // Load .env into process environment
+        var env = ProcessInfo.processInfo.environment
+        let envFile = "\(l104Root)/.env"
+        if let envContents = try? String(contentsOfFile: envFile, encoding: .utf8) {
+            for line in envContents.components(separatedBy: .newlines) {
+                let trimmed = line.trimmingCharacters(in: .whitespaces)
+                guard !trimmed.isEmpty, !trimmed.hasPrefix("#"),
+                      let eqIdx = trimmed.firstIndex(of: "=") else { continue }
+                let key = String(trimmed[trimmed.startIndex..<eqIdx])
+                let val = String(trimmed[trimmed.index(after: eqIdx)...])
+                env[key] = val
+            }
+        }
+        env["L104_ROOT"] = l104Root
+        env["PYTHONPATH"] = l104Root
+
+        // Start main.py (FastAPI server)
+        let server = Process()
+        server.executableURL = URL(fileURLWithPath: pythonPath)
+        server.arguments = ["\(l104Root)/main.py"]
+        server.currentDirectoryURL = URL(fileURLWithPath: l104Root)
+        server.environment = env
+        let serverLog = FileHandle(forWritingAtPath: "\(l104Root)/server.log")
+            ?? FileHandle.nullDevice
+        server.standardOutput = serverLog
+        server.standardError = serverLog
+        do {
+            try server.run()
+            serverProcess = server
+            print("[L104 AppDelegate] Server launched: PID \(server.processIdentifier)")
+        } catch {
+            print("[L104 AppDelegate] Failed to launch server: \(error)")
+        }
+
+        // Start public node if it exists
+        let nodeScript = "\(l104Root)/L104_public_node.py"
+        if FileManager.default.fileExists(atPath: nodeScript) {
+            let node = Process()
+            node.executableURL = URL(fileURLWithPath: pythonPath)
+            node.arguments = [nodeScript]
+            node.currentDirectoryURL = URL(fileURLWithPath: l104Root)
+            node.environment = env
+            let nodeLog = FileHandle(forWritingAtPath: "\(l104Root)/node.log")
+                ?? FileHandle.nullDevice
+            node.standardOutput = nodeLog
+            node.standardError = nodeLog
+            do {
+                try node.run()
+                nodeProcess = node
+                print("[L104 AppDelegate] Node launched: PID \(node.processIdentifier)")
+            } catch {
+                print("[L104 AppDelegate] Failed to launch node: \(error)")
+            }
+        }
+    }
+
+    /// Gracefully stop backend processes (SIGTERM → wait → SIGKILL).
+    func stopBackendProcesses() {
+        let gracePeriod: TimeInterval = 25.0  // match launchd ExitTimeOut
+
+        for (label, proc) in [("Server", serverProcess), ("Node", nodeProcess)] {
+            guard let p = proc, p.isRunning else { continue }
+            print("[L104 AppDelegate] Stopping \(label): PID \(p.processIdentifier)")
+            p.terminate()  // sends SIGTERM
+
+            // Wait for graceful exit on a background thread (don't block main)
+            let pid = p.processIdentifier
+            DispatchQueue.global(qos: .utility).async {
+                let deadline = Date().addingTimeInterval(gracePeriod)
+                while p.isRunning && Date() < deadline {
+                    Thread.sleep(forTimeInterval: 0.5)
+                }
+                if p.isRunning {
+                    print("[L104 AppDelegate] \(label) PID \(pid) did not exit in \(Int(gracePeriod))s — SIGKILL")
+                    kill(pid, SIGKILL)
+                } else {
+                    print("[L104 AppDelegate] \(label) PID \(pid) exited cleanly")
+                }
+            }
+        }
+        serverProcess = nil
+        nodeProcess = nil
+    }
+
+    /// Trigger a rolling upgrade: stop → pull → rebuild → start.
+    @objc func upgradeAllProcesses() {
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            let script = "\(l104Root)/scripts/upgrade_all.sh"
+            guard FileManager.default.fileExists(atPath: script) else {
+                print("[L104 AppDelegate] upgrade_all.sh not found")
+                return
+            }
+            let upgrade = Process()
+            upgrade.executableURL = URL(fileURLWithPath: "/bin/bash")
+            upgrade.arguments = [script]
+            upgrade.currentDirectoryURL = URL(fileURLWithPath: l104Root)
+            upgrade.environment = ProcessInfo.processInfo.environment
+            do {
+                try upgrade.run()
+                upgrade.waitUntilExit()
+                let status = upgrade.terminationStatus
+                DispatchQueue.main.async {
+                    if let mainView = self.wc.window?.contentView as? L104MainView {
+                        let msg = status == 0
+                            ? "Process upgrade completed successfully"
+                            : "Process upgrade finished with status \(status)"
+                        mainView.appendSystemLog(msg)
+                    }
+                }
+                print("[L104 AppDelegate] upgrade_all.sh exited with status \(status)")
+            } catch {
+                print("[L104 AppDelegate] Failed to run upgrade: \(error)")
+            }
         }
     }
 }

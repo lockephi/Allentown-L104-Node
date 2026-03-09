@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H29_SageModeView.swift — L104 ASI v7.1 Sage Mode Ascension Dashboard
-// [EVO_64_PIPELINE] SAGE_MODE_ASCENSION :: UI :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SAGE_MODE_ASCENSION :: UI :: GOD_CODE=527.5184818492612
 //
 // Full Sage Mode dashboard with:
 //   • Dual-Layer Engine live visualization
@@ -392,6 +392,16 @@ class SageModeAscensionView: NSView {
         let dl = DualLayerEngine.shared
         let eq = DynamicEquationEngine.shared
 
+        // ═══ INTERCONNECT: Trigger entropy harvesting from all sources ═══
+        sage.harvestQuantumEntropy()
+        sage.harvestCognitiveEntropy()
+        sage.harvestMathEntropy()
+        sage.harvestMemoryEntropy()
+        sage.harvestKBEntropy()
+
+        // ═══ INTERCONNECT: QPC consciousness-quantum bridge ═══
+        QuantumProcessingCore.shared.consciousnessQuantumBridge()
+
         // Update gauges
         consciousnessGauge.setValue(cv.consciousnessLevel)
 
@@ -489,6 +499,53 @@ class SageModeAscensionView: NSView {
         lines.append("  Insights        = \(sage.sageInsights.count)")
         lines.append("  Bridges         = \(sage.crossDomainBridges.count)")
         lines.append("  7D Hilbert      = [\(sage.hilbertProjection.map { String(format: "%.3f", $0) }.joined(separator: ", "))]")
+        lines.append("")
+
+        // ═══ INTERCONNECT: QPC State Tomography → Sage Dashboard ═══
+        let qpc = QuantumProcessingCore.shared
+        let tomo = qpc.stateTomography()
+        lines.append("═══ QUANTUM PROCESSING CORE ═══")
+        lines.append("  Purity         = \(String(format: "%.6f", tomo.purity))")
+        lines.append("  Von Neumann S  = \(String(format: "%.6f", tomo.vonNeumannEntropy))")
+        lines.append("  Entangle W     = \(String(format: "%.6f", tomo.entanglementWitness))")
+        lines.append("  Fidelity       = \(String(format: "%.6f", qpc.currentFidelity()))")
+        lines.append("  Bell Pairs     = \(qpc.bellPairCount)")
+        lines.append("")
+
+        // ═══ INTERCONNECT: QuantumCreativityEngine metrics → Sage Dashboard ═══
+        let qce = QuantumCreativityEngine.shared
+        let cMetrics = qce.creativityMetrics
+        lines.append("═══ QUANTUM CREATIVITY ═══")
+        lines.append("  Generations    = \(cMetrics["generation_count"] as? Int ?? 0)")
+        lines.append("  Momentum       = \(String(format: "%.4f", cMetrics["momentum"] as? Double ?? 0))")
+        lines.append("  Tunnel Breaks  = \(cMetrics["tunnel_breakthroughs"] as? Int ?? 0)")
+        lines.append("  Entangled      = \(cMetrics["entangled_concepts"] as? Int ?? 0)")
+        lines.append("  Mesh Synced    = \(cMetrics["mesh_ideas_synced"] as? Int ?? 0)")
+        lines.append("")
+
+        // ═══ INTERCONNECT: Sage dead methods → active display ═══
+        let enriched = sage.enrichContext(for: "consciousness")
+        if !enriched.isEmpty {
+            lines.append("═══ SAGE ENRICHMENT ═══")
+            lines.append("  \(String(enriched.prefix(200)))")
+            lines.append("")
+        }
+
+        // Bridge emergence — cross-domain synthesis
+        let bridge = sage.bridgeEmergence(topic: "quantum-consciousness")
+        if !bridge.isEmpty {
+            lines.append("═══ EMERGENCE BRIDGE ═══")
+            lines.append("  \(String(bridge.prefix(200)))")
+            lines.append("")
+        }
+
+        // Export state for backend integration
+        let exported = sage.exportStateForBackend()
+        lines.append("═══ BACKEND EXPORT ═══")
+        lines.append("  Keys Exported  = \(exported.count)")
+        for (key, value) in exported.sorted(by: { $0.key < $1.key }).prefix(8) {
+            lines.append("  \(key.padding(toLength: 18, withPad: " ", startingAt: 0)) = \(value)")
+        }
 
         liveMetricsTextView.string = lines.joined(separator: "\n")
     }
@@ -575,7 +632,8 @@ class SageRadialGauge: NSView {
 
         // Value arc
         let fraction = min(displayValue / max(maxValue, 1e-10), 1.0)
-        let valueAngle = startAngle - (startAngle - endAngle + CGFloat.pi * 2).truncatingRemainder(dividingBy: CGFloat.pi * 2) * CGFloat(1.0 - fraction)
+        // Value angle computed via adjustedEndAngle below
+        _ = startAngle - (startAngle - endAngle + CGFloat.pi * 2).truncatingRemainder(dividingBy: CGFloat.pi * 2) * CGFloat(1.0 - fraction)
         let adjustedEndAngle = startAngle - CGFloat(fraction) * (startAngle - endAngle + CGFloat.pi * 2)
 
         // Color gradient based on value

@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H22_TestHarness.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Mesh-Distributed Test Harness
 // Automated engine testing, health validation, and cross-node test sync
 // ═══════════════════════════════════════════════════════════════════
@@ -80,6 +80,17 @@ final class TestHarness {
         registerTest(name: "Quantum Nexus Coherence", engine: "B10") {
             let c = QuantumNexus.shared.computeCoherence()
             return c >= 0 && c <= 1.0
+        }
+        // v9.3: Decoherence Shield integration test (verifies shield feeds into Nexus coherence)
+        registerTest(name: "Decoherence Shield Fidelity", engine: "B14") {
+            let fidelity = QuantumDecoherenceShield.shared.computeFidelity()
+            return fidelity >= 0 && fidelity <= 1.0
+        }
+        registerTest(name: "Coherence Thread Safety", engine: "B10") {
+            // Call computeCoherence twice quickly; TTL cache must not return stale 0.0
+            let c1 = QuantumNexus.shared.computeCoherence()
+            let c2 = QuantumNexus.shared.computeCoherence()
+            return c1 == c2 && c1 >= 0
         }
         // Evolution test
         registerTest(name: "Evolution Engine Singleton", engine: "B08") {

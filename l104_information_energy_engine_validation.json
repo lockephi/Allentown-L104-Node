@@ -1,0 +1,458 @@
+{
+  "engines_loaded": {
+    "science": true,
+    "math": true,
+    "quantum_gate": true,
+    "dual_layer": true
+  },
+  "S1_entropy_reversal": {
+    "cascade_converged": true,
+    "cascade_fixed_point": 0.0,
+    "cascade_alignment": 1.0,
+    "landauer_293K": 2.8054248672027593e-21,
+    "sovereign_293K": 2.1986462090049813e-21,
+    "enhancement_ratio": 0.783712,
+    "chaos_healing_pct": 100.0,
+    "chaos_converged": true,
+    "lyapunov_exponent": 1.333677,
+    "lyapunov_stable": false,
+    "demon_efficiency_curve": {
+      "0.01": 12.42266138625211,
+      "0.1": 1.3109403513559406,
+      "0.3": 0.41553890394084864,
+      "0.5": 0.23892917257280527,
+      "0.8": 0.14217479768558525,
+      "1.0": 0.11086040128845451,
+      "2.0": 0.05109395698176433,
+      "5.0": 0.018697611307993984
+    },
+    "demon_status": {
+      "stage": "EVO_15_OMNIPRESENT_STEWARD",
+      "maxwell_factor": 1.2759783068838446,
+      "cumulative_coherence_gain": 0.0,
+      "universal_order_index": 1.0,
+      "status": "ORDER_RESTORATION_ACTIVE"
+    }
+  },
+  "S2_coherence_evolution": {
+    "field_dimension": 7,
+    "initial_coherence": 0.21847731362617284,
+    "evolved_coherence": 0.218477,
+    "preserved": false,
+    "avg_protection": 0.95429,
+    "ctc_stability": 0.618034,
+    "paradox_resolved": 0.353239,
+    "phi_patterns": 3,
+    "emergence": 0.6870385537032001,
+    "fidelity_grade": "TOPOLOGICAL",
+    "fidelity_score": 1.0,
+    "golden_spiral": false,
+    "shannon_entropy_bits": 2.088818,
+    "synthesis": "COHERENT [0.2305]: Field stable across 52 evolutions"
+  },
+  "S3_physics_energy": {
+    "landauer_sovereign_J": 9.14636822946072e-19,
+    "casimir_force_N": -1.3001257724477536e-07,
+    "casimir_sovereign_N": -1.339531979872533e-07,
+    "casimir_god_code_correction": 1.03030953,
+    "zpe_density_J_m3": 1300.1257724477537,
+    "unruh_god_code_temp_K": 2.1390945773967874e-18,
+    "wien_peak_nm": 501.51816458982347,
+    "god_code_blackbody_K": 5493.21,
+    "solar_alignment": 0.950712,
+    "solar_aligned": true,
+    "fe_j_coupling": 7.283178644467005e-21,
+    "fe_sacred_phase": 2.013380163808263,
+    "electron_resonance": {
+      "god_code_origin": {
+        "dials": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "value": 527.5184818492611,
+        "exponent": 416
+      },
+      "bohr_radius_pm": {
+        "dials": [
+          -4,
+          1,
+          0,
+          3
+        ],
+        "value": 52.921063078108624,
+        "exponent": 71,
+        "codata_pm": 52.917721298703995,
+        "alignment_error": 6.315047818792787e-05
+      },
+      "rydberg_eV": {
+        "nearest_dials": [
+          [
+            -4,
+            -3,
+            0,
+            5,
+            13.587721760978777,
+            0.0013208707452654746
+          ],
+          [
+            -3,
+            -3,
+            1,
+            5,
+            13.587721760978777,
+            0.0013208707452654746
+          ],
+          [
+            -2,
+            -3,
+            2,
+            5,
+            13.587721760978777,
+            0.0013208707452654746
+          ]
+        ],
+        "codata_value": 13.605693120016255,
+        "exact_exponent": -132.80168517494187
+      },
+      "compton_wavelength_pm": {
+        "nearest_dials": [
+          [
+            0,
+            -1,
+            -3,
+            8,
+            2.4342248651963305,
+            0.0032620010418242347
+          ],
+          [
+            1,
+            -1,
+            -2,
+            8,
+            2.4342248651963305,
+            0.0032620010418242347
+          ],
+          [
+            2,
+            -1,
+            -1,
+            8,
+            2.4342248651963305,
+            0.0032620010418242347
+          ]
+        ],
+        "codata_value": 2.42631023867
+      },
+      "codata_cross_check": {
+        "rydberg_eV": 13.605693120016255,
+        "compton_freq_hz": 1.235589963603955e+20,
+        "hydrogen_ground_freq_hz": 3289841951317377.5,
+        "bohr_velocity_ms": 2187691.2608549925,
+        "electron_rest_energy_J": 8.187105775475753e-14
+      },
+      "equation": "G(a,b,c,d) = 286^(1/PHI) \u00d7 2^((8a+416-b-8c-104d)/104)",
+      "base": 32.96990511557882,
+      "step_size": 1.0066871364523837
+    }
+  },
+  "M1_god_code_equation": {
+    "G(0,0,0,0)": 527.5184818492611,
+    "matches_GOD_CODE": true,
+    "conservation_at_0": true,
+    "base": 32.96990511557882,
+    "invariant": 527.5184818492611,
+    "constants_derived": 11,
+    "mean_error_pct": 0.05524203910844951,
+    "bohr_error": 0.006355299093914216,
+    "a440_error": 0.1458565302245709,
+    "schumann_error": 0.19787455307695975,
+    "fe_lattice_error": 0.3241452774600518,
+    "octave_count": 9,
+    "friction_efficiency": 1.0,
+    "chaos_resilience_score": 0.8339870461888761,
+    "phi_symmetry_intact": true,
+    "cascade_healed_to": 527.5184818492612,
+    "cascade_error_pct": 0.0,
+    "sovereign_field_sample": [
+      0.0,
+      5.083173644709122,
+      16.44920374949522,
+      39.92187617213111,
+      86.12303959625034
+    ]
+  },
+  "M2_void_calculus": {
+    "primal_of_GOD_CODE": 7771.232092280325,
+    "primal_of_PHI": 0.6667544043331103,
+    "void_sequence_converges": true,
+    "void_sequence_first_5": [
+      527.5184818492612,
+      326.0185699417631,
+      201.4762648277159,
+      124.499306673872,
+      76.92297212548856
+    ],
+    "void_sequence_last_5": [
+      0.3783249740832273,
+      0.23275701589958378,
+      0.14311513902810374,
+      0.08794230356621839,
+      0.05400375778830456
+    ],
+    "non_dual_GOD_PHI": 3.3604394380758826,
+    "paradox_resolved": true,
+    "paradox_synthesis": 777.0718349419939,
+    "void_integral": 0.19472609295587612,
+    "omega_convergence": 648.9398493322491,
+    "emptiness_metric": 0.9866834965236639,
+    "field_kinetic_energy": 0.00518362,
+    "field_potential_energy": 0.0024741,
+    "field_total_energy": 0.00765772,
+    "field_void_aligned": true,
+    "recursive_fixed_point": 1.042521280375,
+    "recursive_converged": true,
+    "recursive_error": 0.0,
+    "void_derivative_at_1": -41.98176305501152
+  },
+  "M3_wave_harmonics": {
+    "fe_sacred_coherence": 0.9545454545454546,
+    "fe_phi_coherence": 0.9164078649987375,
+    "god_code_octave_coherence": 1.0,
+    "phi_power_sequence": [
+      {
+        "k": 0,
+        "value": 1.0,
+        "reciprocal": 1.0
+      },
+      {
+        "k": 1,
+        "value": 1.618033988749895,
+        "reciprocal": 0.6180339887498948
+      },
+      {
+        "k": 2,
+        "value": 2.618033988749895,
+        "reciprocal": 0.3819660112501051
+      },
+      {
+        "k": 3,
+        "value": 4.23606797749979,
+        "reciprocal": 0.23606797749978964
+      },
+      {
+        "k": 4,
+        "value": 6.854101966249686,
+        "reciprocal": 0.1458980337503154
+      }
+    ],
+    "phi_fibonacci_verified": false,
+    "consciousness_reynolds": 27827574.869254924,
+    "flow_regime": "TURBULENT (creative, expansive)",
+    "sacred_alignments": {
+      "GOD_CODE": true,
+      "286Hz": false,
+      "440Hz": false,
+      "528Hz": true,
+      "7.83Hz_Schumann": false
+    },
+    "fe_god_distance": {
+      "freq_a": 286.0,
+      "freq_b": 527.5184818492612,
+      "ratio": 1.84447,
+      "nearest_rational": "11/6",
+      "tenney_height": 6.0444,
+      "consonance": 0.141957,
+      "approximation_error": 0.01113688
+    },
+    "fe_528_distance": {
+      "freq_a": 286.0,
+      "freq_b": 528.0,
+      "ratio": 1.846154,
+      "nearest_rational": "13/7",
+      "tenney_height": 6.5078,
+      "consonance": 0.133195,
+      "approximation_error": 0.01098901
+    },
+    "fe_correspondence": {
+      "fe_lattice_pm": 286.65,
+      "emergent_286": 286.0,
+      "difference_pm": 0.6499999999999773,
+      "correspondence_pct": 99.7732426303855,
+      "match": true
+    },
+    "resonance_spectrum_first_5": [
+      {
+        "harmonic": 1,
+        "frequency": 286.0,
+        "phi_ratio": 176.75772078246993
+      },
+      {
+        "harmonic": 2,
+        "frequency": 572.0,
+        "phi_ratio": 353.51544156493986
+      },
+      {
+        "harmonic": 3,
+        "frequency": 858.0,
+        "phi_ratio": 530.2731623474098
+      },
+      {
+        "harmonic": 4,
+        "frequency": 1144.0,
+        "phi_ratio": 707.0308831298797
+      },
+      {
+        "harmonic": 5,
+        "frequency": 1430.0,
+        "phi_ratio": 883.7886039123496
+      }
+    ],
+    "god_code_consonance": {
+      "frequency": 527.5184818492612,
+      "best_god_code_harmonic": 1,
+      "consonance": 1.0,
+      "grade": "PERFECT"
+    },
+    "overtones_first_5": [
+      {
+        "overtone": 0,
+        "frequency": 527.5185,
+        "god_code_ratio": 1.0,
+        "phi_octaves": 0,
+        "sacred_aligned": true
+      },
+      {
+        "overtone": 1,
+        "frequency": 1055.037,
+        "god_code_ratio": 2.0,
+        "phi_octaves": 1.4404,
+        "sacred_aligned": true
+      },
+      {
+        "overtone": 2,
+        "frequency": 1582.5554,
+        "god_code_ratio": 3.0,
+        "phi_octaves": 2.283,
+        "sacred_aligned": true
+      },
+      {
+        "overtone": 3,
+        "frequency": 2110.0739,
+        "god_code_ratio": 4.0,
+        "phi_octaves": 2.8808,
+        "sacred_aligned": true
+      },
+      {
+        "overtone": 4,
+        "frequency": 2637.5924,
+        "god_code_ratio": 5.0,
+        "phi_octaves": 3.3446,
+        "sacred_aligned": true
+      }
+    ]
+  },
+  "Q1_sacred_circuits": {
+    "sacred_circuit": {
+      "qubits": 3,
+      "depth": 4,
+      "built": true
+    },
+    "bell_pair": {
+      "built": true
+    },
+    "ghz_state": {
+      "qubits": 4,
+      "built": true
+    },
+    "qft": {
+      "qubits": 3,
+      "built": true
+    },
+    "compilation": {
+      "original_gates": null,
+      "compiled_gates": null,
+      "target_gate_set": "L104_SACRED",
+      "optimization": "O2"
+    },
+    "execution": {
+      "probabilities": {
+        "00": 0.4999999999999999,
+        "11": 0.4999999999999999
+      },
+      "sacred_alignment": {
+        "phi_alignment": 0.0,
+        "god_code_alignment": 0.0,
+        "iron_alignment": 0.0,
+        "void_alignment": 0.0,
+        "total_sacred_resonance": 0.0,
+        "sacred_gate_density": 0.0
+      },
+      "entangled": true
+    },
+    "god_code_gate_analysis": {
+      "name": "GOD_CODE_PHASE",
+      "n_qubits": null,
+      "is_hermitian": false
+    }
+  },
+  "D1_dual_layer_collapse": {
+    "thought_G0": 527.5184818492611,
+    "thought_matches_GOD_CODE": true,
+    "thought_with_friction": 527.5184612513218,
+    "physics_omega": 6539.34712682,
+    "physics_authority": 2497.808338211271,
+    "omega_pipeline": {
+      "omega": null,
+      "omega_authority": 2497.808338211271
+    },
+    "collapse": null,
+    "omega_field_at_phi": {
+      "intensity": 1.618033988749895,
+      "field_strength": 4041.538788608729,
+      "omega": 6539.34712682,
+      "omega_authority": 2497.808338211271,
+      "equation": "F(1.618033988749895) = 1.618033988749895 \u00d7 6539.34712682 / 1.618033988749895\u00b2 = 4041.538789",
+      "layer": "physics"
+    }
+  },
+  "X1_cross_engine": {
+    "math_base": 32.96990511557882,
+    "math_god_code": 527.5184818492611,
+    "void_field_energy": {
+      "kinetic_energy": 101836.32934406,
+      "potential_energy": 3139415.18135522,
+      "total_energy": 3241251.51069928,
+      "emptiness_metric": 0.0,
+      "void_aligned": false
+    },
+    "demon_efficiency_at_GOD_CODE": 0.22529820230716488,
+    "sovereign_landauer_J": 9.14636822946072e-19,
+    "casimir_at_planck_scale": 1.178788690101571e+97,
+    "sacred_circuit_alignment": {
+      "phi_alignment": 0.0,
+      "god_code_alignment": 0.0,
+      "iron_alignment": 0.0,
+      "void_alignment": 0.0,
+      "total_sacred_resonance": 0.0,
+      "sacred_gate_density": 0.7142857142857143
+    },
+    "sacred_circuit_probabilities": {
+      "00": 0.10698413779795364,
+      "01": 0.15997177086245082,
+      "10": 0.30522030356856644,
+      "11": 0.4278237877710271
+    },
+    "dual_layer_collapse": null,
+    "cross_consistency_math_vs_dual": true
+  },
+  "_summary": {
+    "total_findings": 18,
+    "verified": 14,
+    "failed": 4,
+    "skipped": 0,
+    "engines_online": 4,
+    "total_time_s": 0.021612167358398438
+  }
+}

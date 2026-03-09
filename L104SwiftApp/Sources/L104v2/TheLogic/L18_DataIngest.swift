@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L18_DataIngest.swift
-// [EVO_63_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
 // L104v2 — Extracted from L104Native.swift (lines 32520-32851)
 //
 // DATA INGEST PIPELINE — Runtime knowledge ingestion + training
@@ -35,13 +35,15 @@ class DataIngestPipeline {
     }
 
     // ═══ INGEST TEXT ═══ Process raw text into KB-ready entries
-    func ingestText(_ text: String, source: String = "user", category: String = "ingested") -> IngestResult {
+    // trusted: when true (manual user ingest), bypasses aggressive quality gates
+    //          that reject L104-related content, code snippets, and short entries
+    func ingestText(_ text: String, source: String = "user", category: String = "ingested", trusted: Bool = false) -> IngestResult {
         let sentences = text.components(separatedBy: CharacterSet(charactersIn: ".!?\n"))
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { $0.count > 5 }
 
         guard !sentences.isEmpty else {
-            return IngestResult(accepted: 0, rejected: 0, source: source, message: "No valid sentences found")
+            return IngestResult(accepted: 0, rejected: 0, source: source, message: "No valid sentences found — text must contain sentences > 5 chars separated by periods, newlines, or punctuation")
         }
 
         var accepted = 0
@@ -49,9 +51,15 @@ class DataIngestPipeline {
         let kb = ASIKnowledgeBase.shared
 
         for sentence in sentences {
-            // Quality gate
-            guard L104State.shared.isCleanKnowledge(sentence) else { rejected += 1; continue }
-            guard grover.scoreQuality(sentence, query: "") > 0.2 else { rejected += 1; continue }
+            if trusted {
+                // Trusted mode: minimal validation for manual user input
+                // Only reject truly empty or trivially short content
+                guard sentence.count >= 10 else { rejected += 1; continue }
+            } else {
+                // Standard mode: full quality gates for auto-ingest
+                guard L104State.shared.isCleanKnowledge(sentence) else { rejected += 1; continue }
+                guard grover.scoreQuality(sentence, query: "") > 0.2 else { rejected += 1; continue }
+            }
 
             // Extract key topics as prompt
             let topics = L104State.shared.extractTopics(sentence)
@@ -65,7 +73,9 @@ class DataIngestPipeline {
                 "source": source,
                 "ingested_at": Date().timeIntervalSince1970
             ]
+            kb.dataLock.lock()
             kb.trainingData.append(entry)
+            kb.dataLock.unlock()
             kb.persistIngestedEntry(entry)
             accepted += 1
         }
@@ -98,7 +108,9 @@ class DataIngestPipeline {
             "source": "direct_ingest",
             "ingested_at": Date().timeIntervalSince1970
         ]
+        kb.dataLock.lock()
         kb.trainingData.append(entry)
+        kb.dataLock.unlock()
         kb.persistIngestedEntry(entry)
         ingestCount += 1
         persistCount()
@@ -141,8 +153,11 @@ class DataIngestPipeline {
             "source": "auto_ingest",
             "ingested_at": Date().timeIntervalSince1970
         ]
-        ASIKnowledgeBase.shared.trainingData.append(entry)
-        ASIKnowledgeBase.shared.persistIngestedEntry(entry)
+        let kb = ASIKnowledgeBase.shared
+        kb.dataLock.lock()
+        kb.trainingData.append(entry)
+        kb.dataLock.unlock()
+        kb.persistIngestedEntry(entry)
         ingestCount += 1
         persistCount()
     }

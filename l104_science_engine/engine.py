@@ -51,6 +51,8 @@ from .entropy import EntropySubsystem
 from .multidimensional import MultiDimensionalSubsystem
 from .coherence import CoherenceSubsystem
 from .quantum_25q import QuantumCircuitScience, GodCodeQuantumConvergence, CircuitTemplates25Q, MemoryValidator
+from .computronium import ComputroniumSubsystem
+from .berry_phase import BerryPhaseSubsystem, berry_phase_subsystem
 from .bridge import ScienceBridge, bridge
 
 # External integrations (kept as imports, not absorbed)
@@ -87,6 +89,11 @@ try:
     from l104_validation_engine import validation_engine
 except ImportError:
     validation_engine = None
+
+try:
+    from l104_god_code_simulator import god_code_simulator as _god_code_sim
+except ImportError:
+    _god_code_sim = None
 
 try:
     from l104_knowledge_sources import source_manager
@@ -187,7 +194,7 @@ class ScienceEngine:
     - GroundingEngine (l104_real_world_grounding)
     """
 
-    VERSION = "5.0.0"
+    VERSION = "5.1.0"
 
     def __init__(self):
         # Internal subsystems
@@ -196,6 +203,8 @@ class ScienceEngine:
         self.entropy = EntropySubsystem()
         self.multidim = MultiDimensionalSubsystem()
         self.coherence = CoherenceSubsystem()
+        self.computronium = ComputroniumSubsystem()
+        self.berry_phase = berry_phase_subsystem
         self.quantum_circuit = QuantumCircuitScience(
             physics=self.physics,
             coherence=self.coherence,
@@ -209,12 +218,22 @@ class ScienceEngine:
         self.deep = deep_research
         self.grounding = grounding_engine
 
+        # God Code Simulator subsystem (v5.1 upgrade)
+        self.god_code_sim = _god_code_sim
+        if self.god_code_sim is not None:
+            # Wire live engine feedback: sim → coherence + entropy
+            self.god_code_sim.connect_engines(
+                coherence=self.coherence,
+                entropy=self.entropy,
+            )
+
         self.active_domains = [
             "QUANTUM_COMPUTING", "ADVANCED_PHYSICS", "BIO_DIGITAL",
             "NANOTECH", "COSMOLOGY", "GAME_THEORY", "NEURAL_ARCHITECTURE",
             "COMPUTRONIUM", "ANYON_TOPOLOGY", "DEEP_SYNTHESIS",
             "REAL_WORLD_GROUNDING", "INFORMATION_THEORY",
             "QUANTUM_CIRCUIT_SCIENCE", "GOD_CODE_CONVERGENCE",
+            "BERRY_PHASE", "GOD_CODE_SIMULATION",
         ]
 
     # ── Core Research Cycle ──
@@ -407,6 +426,43 @@ class ScienceEngine:
     def analyze_god_code_convergence(self) -> Dict[str, Any]:
         return self.quantum_circuit.analyze_convergence()
 
+    # ── God Code Simulation Interface ──
+
+    def run_god_code_simulation(self, sim_name: str = "entanglement_entropy") -> Dict[str, Any]:
+        """Run a God Code simulation and auto-feed results into coherence + entropy."""
+        if self.god_code_sim is None:
+            return {"error": "God Code Simulator not available"}
+        result = self.god_code_sim.run(sim_name)
+        # Auto-feed into coherence subsystem
+        coherence_report = {}
+        if self.coherence.coherence_field:
+            coherence_report = self.coherence.ingest_simulation_result(
+                result.to_coherence_payload()
+            )
+        # Auto-feed into entropy subsystem
+        demon_eff = self.entropy.calculate_demon_efficiency(result.to_entropy_input())
+        return {
+            "simulation": result.summary(),
+            "passed": result.passed,
+            "fidelity": result.fidelity,
+            "coherence_feedback": coherence_report,
+            "demon_efficiency": demon_eff,
+        }
+
+    def run_god_code_feedback_loop(self, iterations: int = 5) -> Dict[str, Any]:
+        """Run multi-simulation feedback loop through coherence + entropy."""
+        if self.god_code_sim is None:
+            return {"error": "God Code Simulator not available"}
+        return self.god_code_sim.run_feedback_loop(iterations=iterations)
+
+    def god_code_simulation_status(self) -> Dict[str, Any]:
+        """Return God Code Simulator status."""
+        if self.god_code_sim is None:
+            return {"available": False}
+        status = self.god_code_sim.get_status()
+        status["available"] = True
+        return status
+
     # ── Full Status ──
 
     def get_full_status(self) -> Dict[str, Any]:
@@ -418,6 +474,8 @@ class ScienceEngine:
             "entropy": self.entropy.get_status(),
             "multidim": self.multidim.get_status(),
             "coherence": self.coherence.get_status(),
+            "computronium": self.computronium.get_status(),
+            "berry_phase": self.berry_phase.get_status(),
             "quantum_circuit": self.quantum_circuit.get_status(),
             "bridge": self.bridge.status(),
             "512mb_boundary": MemoryValidator.validate_512mb(),
@@ -425,6 +483,14 @@ class ScienceEngine:
                 "ratio": round(GOD_CODE / 512, 8),
                 "excess_pct": round((GOD_CODE / 512 - 1) * 100, 4),
             },
+            "feedback_loop": {
+                "coherence_simulator": True,
+                "entropy_coherence": True,
+                "bridge_bidirectional": True,
+                "god_code_simulator": self.god_code_sim is not None,
+                "strength": "STRONG",
+            },
+            "god_code_simulator": self.god_code_simulation_status(),
         }
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -587,11 +653,13 @@ class ScienceEngine:
         me = self._get_math_engine()
         if me is not None:
             try:
-                proof = me.proofs.proof_of_entropy_inversion()
+                proof = me.proofs.proof_of_entropy_reduction()
                 result["math_entropy_proof"] = {
-                    "inversion_proven": proof.get("inversion_proven", False),
+                    "entropy_decreased": proof.get("entropy_decreased", False),
+                    "phi_more_effective": proof.get("phi_more_effective", False),
                     "initial_entropy": proof.get("initial_entropy", 0),
-                    "final_entropy": proof.get("final_entropy", 0),
+                    "final_entropy_phi": proof.get("final_entropy_phi", 0),
+                    "final_entropy_control": proof.get("final_entropy_control", 0),
                 }
                 # Wave coherence between demon efficiency and GOD_CODE
                 wave_coh = me.wave_coherence(demon_eff, GOD_CODE)
@@ -614,10 +682,11 @@ class ScienceEngine:
 
     def cross_engine_coherence_deep(self, seed_thoughts: List[str] = None) -> Dict[str, Any]:
         """
-        Deep coherence analysis using all three engines:
+        Deep coherence analysis using all three engines + simulator feedback:
           - Science: Topological coherence evolution + discovery
           - Math: Hyperdimensional vector encoding of coherence field + sacred proofs
           - Code: Structural analysis of coherence patterns
+          - Simulator: Feedback loop for fidelity-corrected coherence (v4.3)
         """
         if seed_thoughts is None:
             seed_thoughts = [
@@ -640,12 +709,39 @@ class ScienceEngine:
             "coherence_discover": discover,
         }
 
+        # v4.3: Simulator feedback loop — run 3 iterations of fidelity correction
+        feedback_result = self.quantum_circuit.run_feedback_cycle(
+            algorithm="sacred", n_qubits=25, iterations=3, evolve_steps=5,
+        )
+        result["simulator_feedback"] = {
+            "iterations": feedback_result.get("iterations", 0),
+            "converging": feedback_result.get("converging", False),
+            "improvement_rate": feedback_result.get("improvement_rate", 0),
+            "final_coherence": feedback_result.get("final_coherence", 0),
+            "final_protection": feedback_result.get("final_protection", 0),
+        }
+
+        # v4.3: Bridge-level feedback loop for full bidirectional flow
+        bridge_feedback = self.bridge.feedback_loop(
+            algorithm="sacred", n_qubits=25, iterations=2,
+            coherence_subsystem=self.coherence,
+            entropy_subsystem=self.entropy,
+            physics_subsystem=self.physics,
+        )
+        result["bridge_feedback"] = {
+            "converging": bridge_feedback.get("converging", False),
+            "final_phase_coherence": bridge_feedback.get("final_phase_coherence", 0),
+            "feedback_loop_active": bridge_feedback.get("feedback_loop_active", False),
+        }
+
         # Math: encode coherence field as hyperdimensional vector
         me = self._get_math_engine()
         if me is not None:
             try:
                 # Create HD vector from coherence energy signature
-                hd_vec = me.hd_vector(f"coherence_{evolve.get('final_coherence', 0):.6f}")
+                final_coh = feedback_result.get("final_coherence",
+                                                evolve.get("final_coherence", 0))
+                hd_vec = me.hd_vector(f"coherence_{final_coh:.6f}")
                 result["hd_coherence_vector"] = {
                     "dimension": hd_vec.dimension if hasattr(hd_vec, 'dimension') else 10000,
                     "encoded": True,
@@ -656,7 +752,7 @@ class ScienceEngine:
                 result["stability_proof_validates_coherence"] = stability.get("converged", False)
 
                 # Sacred alignment of coherence frequency
-                coh_freq = evolve.get("final_coherence", 0.5) * GOD_CODE
+                coh_freq = final_coh * GOD_CODE
                 alignment = me.sacred_alignment(coh_freq)
                 result["coherence_sacred_alignment"] = alignment
             except Exception as e:
@@ -692,6 +788,182 @@ class ScienceEngine:
                             "connected": ce is not None},
             "engines_online": 1 + int(me is not None) + int(ce is not None),
             "cross_reference_ready": me is not None and ce is not None,
+        }
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #  v4.3 COHERENCE ↔ SIMULATOR FEEDBACK LOOP (STRONG)
+    #  Full bidirectional integration between Science Engine subsystems and
+    #  quantum simulator/noise models. Closes the weak one-way pipe into a
+    #  self-correcting resonant loop.
+    #
+    #  Pipeline:
+    #    1. Initialize coherence field from seed thoughts
+    #    2. Plan experiment using coherence metrics → depth budget
+    #    3. Simulate circuit → fidelity + noise model output
+    #    4. Feed simulation results BACK to coherence subsystem
+    #    5. Coherence self-corrects: braiding, grounding, phase kicks
+    #    6. Entropy ↔ coherence cross-feedback (demon efficiency)
+    #    7. Re-plan with improved coherence → goto 2
+    #    8. Math Engine validation of convergence
+    #    9. Sacred alignment verification at loop exit
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def coherence_simulator_feedback_loop(self,
+                                           seed_thoughts: List[str] = None,
+                                           algorithm: str = "sacred",
+                                           n_qubits: int = 25,
+                                           iterations: int = 5,
+                                           evolve_steps: int = 5) -> Dict[str, Any]:
+        """
+        Full orchestrated coherence ↔ simulator feedback loop.
+
+        This is the UPGRADED method that replaces the weak one-way pipe
+        with a strong bidirectional self-correcting loop. Each iteration:
+
+          1. Coherence evolves (braiding + topological protection)
+          2. QuantumCircuitScience plans experiment from coherence state
+          3. Noise model simulates circuit → fidelity/decoherence metrics
+          4. Simulation results feed BACK into coherence corrections
+          5. Entropy subsystem cross-links demon efficiency into coherence
+          6. Bridge validates GOD_CODE conservation at each iteration
+          7. After all iterations, Math Engine validates sacred alignment
+
+        Returns comprehensive convergence report.
+        """
+        if seed_thoughts is None:
+            seed_thoughts = [
+                "GOD_CODE invariant 527.518", "PHI golden ratio 1.618",
+                "Iron lattice 286.65 pm", "25-qubit boundary 512MB",
+                "Maxwell Demon reversal", "Anyon braiding protection",
+                "Temporal CTC anchoring", "Sovereign field OMEGA",
+                "Feedback loop convergence", "Simulator fidelity correction",
+            ]
+
+        # Phase 1: Initialize coherence field
+        init = self.coherence.initialize(seed_thoughts)
+        initial_evolve = self.coherence.evolve(evolve_steps)
+        self.coherence.anchor(1.0)
+
+        history = []
+        pre_loop_coherence = self.coherence.get_status().get("phase_coherence", 0)
+
+        for i in range(iterations):
+            # Phase 2: Plan experiment from current coherence state
+            plan = self.quantum_circuit.plan_experiment(algorithm, n_qubits)
+            depth = plan.get("circuit_params", {}).get("depth", 50)
+            depth_budget = plan.get("depth_budget", {}).get("max_circuit_depth", 100)
+            depth_used = min(depth, depth_budget)
+
+            # Phase 3: Simulate circuit → noise model output
+            from .quantum_25q import MemoryValidator
+            sim_result = MemoryValidator.fidelity_model(n_qubits, depth_used)
+            sim_result["circuit_depth"] = depth_used
+            sim_result["noise_variance"] = max(0.0, 1.0 - sim_result.get("total_fidelity", 0.5))
+
+            # Phase 4: Feed simulation results BACK to coherence
+            ingest = self.coherence.ingest_simulation_result(sim_result)
+
+            # Phase 5: Adaptive decoherence correction
+            correction = self.coherence.adaptive_decoherence_correction(
+                fidelity=sim_result.get("total_fidelity", 0.5),
+                circuit_depth=depth_used,
+            )
+
+            # Phase 6: Entropy ↔ coherence cross-feedback
+            entropy_fb = {}
+            demon_eff = 0.0
+            try:
+                noise_var = sim_result.get("noise_variance", 0.1)
+                demon_eff = self.entropy.calculate_demon_efficiency(noise_var)
+                coh_gain = self.entropy.coherence_gain
+                entropy_fb = self.coherence.entropy_coherence_feedback(
+                    demon_efficiency=demon_eff,
+                    coherence_gain=coh_gain,
+                    noise_vector_var=noise_var,
+                )
+            except Exception:
+                pass
+
+            # Phase 7: Evolve with corrected field
+            evolve = self.coherence.evolve(evolve_steps)
+            self.coherence.anchor(1.0)
+
+            # Phase 8: Bridge conservation check at this iteration point
+            conservation = self.bridge.conservation_check(i * 104)
+
+            # Collect iteration metrics
+            coh_status = self.coherence.get_status()
+            history.append({
+                "iteration": i,
+                "depth_budget": depth_budget,
+                "depth_used": depth_used,
+                "sim_fidelity": sim_result.get("total_fidelity", 0),
+                "sim_decoherence": sim_result.get("decoherence_fidelity", 0),
+                "sim_viable": sim_result.get("viable", False),
+                "ingest_corrections": ingest.get("corrections_count", 0),
+                "coherence_delta": ingest.get("coherence_delta", 0),
+                "correction_recovered": correction.get("coherence_recovered", 0),
+                "entropy_demon_eff": round(demon_eff, 6),
+                "entropy_feedback_applied": bool(entropy_fb),
+                "post_evolve_coherence": evolve.get("final_coherence", 0),
+                "post_evolve_preserved": evolve.get("preserved", False),
+                "phase_coherence": coh_status.get("phase_coherence", 0),
+                "topological_protection": coh_status.get("topological_protection", 0),
+                "conservation_valid": conservation.get("matches_god_code", False),
+            })
+
+        # Phase 9: Math Engine validation of final state
+        post_loop_coherence = self.coherence.get_status().get("phase_coherence", 0)
+        math_validation = {}
+        me = self._get_math_engine()
+        if me is not None:
+            try:
+                # Sacred alignment of final coherence frequency
+                coh_freq = post_loop_coherence * GOD_CODE
+                alignment = me.sacred_alignment(coh_freq)
+                wave_coh = me.wave_coherence(coh_freq, GOD_CODE)
+                stability = me.prove_god_code()
+
+                math_validation = {
+                    "sacred_aligned": alignment.get("aligned", False),
+                    "god_code_ratio": alignment.get("god_code_ratio", 0),
+                    "wave_coherence": round(wave_coh, 6),
+                    "stability_proof": stability.get("converged", False),
+                    "connected": True,
+                }
+            except Exception as e:
+                math_validation = {"connected": False, "error": str(e)}
+
+        # Convergence analysis
+        coherence_trend = [h["phase_coherence"] for h in history]
+        if len(coherence_trend) >= 2:
+            diffs = [coherence_trend[j] - coherence_trend[j - 1]
+                     for j in range(1, len(coherence_trend))]
+            improving = sum(1 for d in diffs if d >= 0)
+            converging = improving >= len(diffs) * 0.5
+        else:
+            converging = True
+
+        fidelity_report = self.coherence.coherence_fidelity()
+
+        return {
+            "version": "4.3.0",
+            "algorithm": algorithm,
+            "n_qubits": n_qubits,
+            "iterations": iterations,
+            "evolve_steps": evolve_steps,
+            "pre_loop_coherence": round(pre_loop_coherence, 6),
+            "post_loop_coherence": round(post_loop_coherence, 6),
+            "total_coherence_delta": round(post_loop_coherence - pre_loop_coherence, 6),
+            "final_protection": self.coherence.get_status().get("topological_protection", 0),
+            "fidelity_grade": fidelity_report.get("grade", "UNKNOWN"),
+            "fidelity": fidelity_report.get("fidelity", 0),
+            "energy_surplus": round(self.coherence.energy_surplus, 6),
+            "converging": converging,
+            "math_validation": math_validation,
+            "history": history,
+            "feedback_loop_active": True,
+            "loop_strength": "STRONG",
         }
 
     # ═══════════════════════════════════════════════════════════════════════════

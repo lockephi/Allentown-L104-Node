@@ -1,0 +1,106 @@
+{
+  "version": "9.0.0",
+  "daemon_cycler": "VQPUDaemonCycler",
+  "last_persist": 1772786475.060534,
+  "cycles_completed": 28,
+  "total_sims_run": 308,
+  "total_sims_passed": 308,
+  "total_sims_failed": 0,
+  "pass_rate": 1.0,
+  "total_elapsed_ms": 425222.89,
+  "avg_cycle_ms": 15186.53,
+  "last_cycle_ms": 14154.97,
+  "sc_history_count": 13,
+  "sc_latest": {
+    "cycle": 27,
+    "ts": 1772786475.047938,
+    "cooper_pair": 0.014982,
+    "order_param": 0.014982,
+    "energy_gap_eV": 0.0,
+    "meissner": 0.0,
+    "pairing": "s\u00b1"
+  },
+  "health_history": [
+    {
+      "cycle": 19,
+      "ts": 1772783501.311299,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 6116.63
+    },
+    {
+      "cycle": 20,
+      "ts": 1772783819.2410061,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 17504.61
+    },
+    {
+      "cycle": 21,
+      "ts": 1772784137.2821681,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 17700.02
+    },
+    {
+      "cycle": 22,
+      "ts": 1772784457.507828,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 17867.7
+    },
+    {
+      "cycle": 23,
+      "ts": 1772784786.389889,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 27288.19
+    },
+    {
+      "cycle": 24,
+      "ts": 1772785100.9610188,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 13832.64
+    },
+    {
+      "cycle": 25,
+      "ts": 1772785474.301208,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 70442.77
+    },
+    {
+      "cycle": 26,
+      "ts": 1772785845.5741591,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 69835.15
+    },
+    {
+      "cycle": 27,
+      "ts": 1772786160.373012,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 14187.72
+    },
+    {
+      "cycle": 28,
+      "ts": 1772786475.06032,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 14154.97
+    }
+  ],
+  "god_code": 527.5184818492612
+}

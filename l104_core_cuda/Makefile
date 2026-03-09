@@ -11,7 +11,7 @@
 # ═══════════════════════════════════════════════════════════════════════════════
 
 NVCC        := nvcc
-NVCC_FLAGS  := -O3 --use_fast_math -Xcompiler -fPIC
+NVCC_FLAGS  := -O3 --fmad=true -Xcompiler -fPIC
 SRC         := l104_sage_cuda.cu
 LIB_NAME    := libl104_sage_cuda
 BUILD_DIR   := build

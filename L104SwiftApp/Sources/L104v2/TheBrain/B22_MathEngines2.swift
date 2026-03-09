@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
 // B22_MathEngines2.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 · TheBrain · v2 Architecture
 //
 // Extracted from L104Native.swift lines 14128-15083
@@ -686,12 +686,7 @@ class ProbabilityEngine {
     static let shared = ProbabilityEngine()
     private var computations: Int = 0
 
-    // Sacred constants (mirrored from L104Constants)
-    private let GOD_CODE: Double = 527.5184818492612
-    private let PHI: Double = 1.618033988749895
-    private let TAU: Double = 0.618033988749895
-    private let FEIGENBAUM: Double = 4.669201609
-    private let ALPHA_FINE: Double = 1.0 / 137.035999
+    // Sacred constants — use globals from L01_Constants (no local shadows)
 
     // Consolidated quantum gate registry
     private(set) var quantumGates: [QuantumGateState] = []

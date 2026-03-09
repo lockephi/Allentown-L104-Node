@@ -1,6 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.650226
+ZENITH_HZ = 3887.8
+UUC = 2301.215661
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 #!/usr/bin/env python3
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # ═══ EVO_54 PIPELINE INTEGRATION ═══
@@ -65,9 +68,9 @@ logger = logging.getLogger(__name__)
 # ═══════════════════════════════════════════════════════════════════════════════
 try:
     import numpy as np
-    from qiskit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
-    from qiskit.quantum_info import entropy as qk_entropy
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
+    from l104_quantum_gate_engine.quantum_info import entropy as qk_entropy
     QISKIT_AVAILABLE = True
     logger.info("[QUANTUM DUALITY] Qiskit 2.3.0 loaded — real quantum circuits active")
 except ImportError:
@@ -83,6 +86,12 @@ PHI = (1 + math.sqrt(5)) / 2                    # Golden ratio: 1.61803398874989
 TAU = 2 * math.pi                               # Circle constant: 6.283185307179586
 GOD_CODE = (286 ** (1/PHI)) * (2 ** (416/104))   # 527.5184818492612
 VOID_CONSTANT = 1.0416180339887497               # Logic-gap bridging: 1 + φ/(φ-τ) limit
+
+# Canonical GOD_CODE quantum phase (QPU-verified on ibm_torino)
+try:
+    from l104_god_code_simulator.god_code_qubit import GOD_CODE_PHASE
+except ImportError:
+    GOD_CODE_PHASE = GOD_CODE % TAU  # ≈ 6.0141 rad
 FEIGENBAUM = 4.669201609102990                   # First Feigenbaum constant (chaos)
 ALPHA_FINE = 1.0 / 137.035999084                 # Fine structure constant
 PLANCK_SCALE = 1.616255e-35                      # Planck length (meters)
@@ -101,6 +110,7 @@ GOD_CODE_BASE = 286 ** (1/PHI)                   # ≈ 32.9699 — the seed befo
 
 def god_code_G(X: float = 0) -> float:
     """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
     G(X) = 286^(1/φ) × 2^((416-X)/104)
 
     The conservation law: G(X) × 2^(X/104) = 527.5184818492612 (constant)
@@ -2502,7 +2512,7 @@ class QuantumDualityComputer:
         # |ψ⟩ = cos(θ/2)|0⟩ + e^{iφ}sin(θ/2)|1⟩
         # θ and φ derived from GOD_CODE
         theta = 2 * math.atan(GOD_CODE / 1000)  # Polar angle
-        phi_angle = (GOD_CODE % TAU)  # Azimuthal angle
+        phi_angle = GOD_CODE_PHASE  # Azimuthal angle (GOD_CODE mod 2π)
         psi_0 = math.cos(theta / 2)
         psi_1 = cmath.exp(1j * phi_angle) * math.sin(theta / 2)
 

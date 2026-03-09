@@ -11,7 +11,7 @@ ifeq ($(UNAME_S),Darwin)
     # macOS (including 2015 MacBook Air with Monterey)
     CC = clang
     # Use SSE4.2 instead of AVX2 (2015 MBA has Haswell with limited AVX support)
-    CFLAGS = -O3 -march=core2 -mtune=native -msse4.2 -ffast-math -Wall -Wextra
+    CFLAGS = -O3 -march=core2 -mtune=native -msse4.2 -fno-math-errno -ffinite-math-only -Wall -Wextra
     LDFLAGS = -lm -lpthread
     # macOS uses .dylib for shared libraries
     SHARED_EXT = .dylib
@@ -21,7 +21,7 @@ ifeq ($(UNAME_S),Darwin)
 else
     # Linux
     CC = gcc
-    CFLAGS = -O3 -march=native -mtune=native -mavx2 -ffast-math -flto -Wall -Wextra
+    CFLAGS = -O3 -march=native -mtune=native -mavx2 -fno-math-errno -ffinite-math-only -flto -Wall -Wextra
     LDFLAGS = -lm -lpthread -flto
     SHARED_EXT = .so
     SHARED_FLAGS = -shared

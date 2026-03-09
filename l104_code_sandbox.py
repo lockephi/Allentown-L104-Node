@@ -1,8 +1,8 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.951467
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.402902
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_CODE_SANDBOX] - Safe code execution environment
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
@@ -20,9 +20,9 @@ from datetime import datetime
 # ═══════════════════════════════════════════════════════════════════════════════
 QISKIT_AVAILABLE = False
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, Operator
-    from qiskit.quantum_info import entropy as q_entropy
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator
+    from l104_quantum_gate_engine.quantum_info import entropy as q_entropy
     QISKIT_AVAILABLE = True
 except ImportError:
     pass
@@ -280,9 +280,9 @@ Return ONLY the Python code, no explanation."""
         full_code = f'''
 import math
 import json
-from qiskit.circuit import QuantumCircuit
-from qiskit.quantum_info import Statevector, DensityMatrix, Operator
-from qiskit.quantum_info import entropy as q_entropy
+from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator
+from l104_quantum_gate_engine.quantum_info import entropy as q_entropy
 
 GOD_CODE = {GOD_CODE}
 PHI = {PHI}

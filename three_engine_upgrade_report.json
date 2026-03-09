@@ -1,594 +1,3045 @@
 {
-  "timestamp": "2026-02-22T05:01:19.937313",
-  "engines_used": {
-    "code_engine": "v6.2.0",
-    "science_engine": "v4.0.0",
-    "math_engine": "v1.0.0"
+  "framework_version": "3.2.0",
+  "timestamp": "2026-03-04T10:48:35.687582",
+  "invariant": 527.5184818492612,
+  "summary": {
+    "total": 324,
+    "passed": 324,
+    "failed": 0,
+    "warnings": 0
   },
-  "targets": {
-    "asi_core": {
-      "from": "v7.1.0",
-      "to": "v8.0.0"
+  "by_engine": {
+    "math": {
+      "total": 13,
+      "passed": 13,
+      "failed": 0
     },
-    "agi_core": {
-      "from": "v56.0.0",
-      "to": "v57.0.0"
-    }
-  },
-  "code_analysis": {
+    "science": {
+      "total": 14,
+      "passed": 14,
+      "failed": 0
+    },
+    "code": {
+      "total": 15,
+      "passed": 15,
+      "failed": 0
+    },
     "asi": {
-      "lines": null,
-      "functions": null,
-      "classes": null,
-      "smells": 0,
-      "performance": {
-        "version": "6.0.0",
-        "filename": "",
-        "duration_seconds": 0.284,
-        "performance_score": 0.5538,
-        "memory_estimate": {
-          "total_estimated_bytes": 91440,
-          "total_human": "89.3 KB",
-          "class_details": [
-            {
-              "name": "ASICore",
-              "type": "class",
-              "estimated_bytes": 37016,
-              "methods": 63,
-              "attributes": 50
-            },
-            {
-              "name": "TensorConsciousnessVerifier",
-              "type": "class",
-              "estimated_bytes": 1568,
-              "methods": 3,
-              "attributes": 9
-            },
-            {
-              "name": "KerasASIModel",
-              "type": "class",
-              "estimated_bytes": 1064,
-              "methods": 2,
-              "attributes": 0
-            },
-            {
-              "name": "ASIPipelineAnalytics",
-              "type": "class",
-              "estimated_bytes": 1512,
-              "methods": 6,
-              "attributes": 8
-            }
-          ],
-          "data_structures": {
-            "lists": 496,
-            "dicts": 97,
-            "numpy_arrays": 0
-          }
-        },
-        "io_bottlenecks": [
-          {
-            "type": "FILE_IO",
-            "pattern": "file_read",
-            "line": 3021,
-            "detail": "FILE_IO operation detected: open("
-          },
-          {
-            "type": "FILE_IO",
-            "pattern": "file_read",
-            "line": 3058,
-            "detail": "FILE_IO operation detected: open("
-          },
-          {
-            "type": "FILE_IO",
-            "pattern": "file_read",
-            "line": 3087,
-            "detail": "FILE_IO operation detected: open("
-          },
-          {
-            "type": "FILE_IO",
-            "pattern": "file_read",
-            "line": 3284,
-            "detail": "FILE_IO operation detected: open("
-          },
-          {
-            "type": "FILE_IO",
-            "pattern": "file_write",
-            "line": 3088,
-            "detail": "FILE_IO operation detected: .dump("
-          },
-          {
-            "type": "FILE_IO",
-            "pattern": "file_write",
-            "line": 3285,
-            "detail": "FILE_IO operation detected: .dump("
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 450,
-            "detail": "DATABASE_IO operation detected: Update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 611,
-            "detail": "DATABASE_IO operation detected: .find("
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 1335,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 1531,
-            "detail": "DATABASE_IO operation detected: Update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 1557,
-            "detail": "DATABASE_IO operation detected: Update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2165,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2257,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2289,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2290,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2291,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2291,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2293,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2303,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2304,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2316,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2342,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2554,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2555,
-            "detail": "DATABASE_IO operation detected: Update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3044,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3046,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3050,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3054,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3076,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3078,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3085,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3090,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3096,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3096,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3097,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3297,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3304,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3305,
-            "detail": "DATABASE_IO operation detected: Update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3306,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "BLOCKING",
-            "pattern": "sleep",
-            "line": 1760,
-            "detail": "BLOCKING operation detected: time.sleep("
-          }
-        ],
-        "gil_contention": {
-          "threading_used": false,
-          "multiprocessing_used": false,
-          "thread_creations": 0,
-          "lock_usages": 0,
-          "cpu_bound_detected": false,
-          "risk_score": 0.0,
-          "recommendation": "No threading concerns"
-        },
-        "allocation_hotspots": [],
-        "throughput": {
-          "max_loop_nesting": 1,
-          "io_operations": 40,
-          "io_penalty": 0.5,
-          "complexity_penalty": 0.15,
-          "score": 0.35,
-          "classification": "IO_BOUND"
-        },
-        "scores": {
-          "memory": 0.9913,
-          "io_efficiency": 0.0,
-          "gil_safety": 1.0,
-          "allocation_health": 1.0,
-          "throughput": 0.35
-        },
-        "verdict": "ACCEPTABLE"
-      }
+      "total": 17,
+      "passed": 17,
+      "failed": 0
     },
     "agi": {
-      "lines": null,
-      "functions": null,
-      "classes": null,
-      "smells": 0,
-      "performance": {
-        "version": "6.0.0",
-        "filename": "",
-        "duration_seconds": 0.286,
-        "performance_score": 0.4065,
-        "memory_estimate": {
-          "total_estimated_bytes": 86928,
-          "total_human": "84.9 KB",
-          "class_details": [
-            {
-              "name": "AGICore",
-              "type": "class",
-              "estimated_bytes": 35448,
-              "methods": 98,
-              "attributes": 50
-            }
-          ],
-          "data_structures": {
-            "lists": 563,
-            "dicts": 86,
-            "numpy_arrays": 0
-          }
-        },
-        "io_bottlenecks": [
-          {
-            "type": "FILE_IO",
-            "pattern": "file_read",
-            "line": 2206,
-            "detail": "FILE_IO operation detected: open("
-          },
-          {
-            "type": "FILE_IO",
-            "pattern": "file_read",
-            "line": 2216,
-            "detail": "FILE_IO operation detected: open("
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 40,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 214,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 222,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 693,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 693,
-            "detail": "DATABASE_IO operation detected: Update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 694,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 1191,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 1214,
-            "detail": "DATABASE_IO operation detected: Update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 1255,
-            "detail": "DATABASE_IO operation detected: Update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 1547,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 1554,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2386,
-            "detail": "DATABASE_IO operation detected: select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2923,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2927,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2944,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2948,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 2955,
-            "detail": "DATABASE_IO operation detected: update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3005,
-            "detail": "DATABASE_IO operation detected: Select"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3043,
-            "detail": "DATABASE_IO operation detected: Update"
-          },
-          {
-            "type": "DATABASE_IO",
-            "pattern": "database",
-            "line": 3210,
-            "detail": "DATABASE_IO operation detected: Update"
-          }
-        ],
-        "gil_contention": {
-          "threading_used": false,
-          "multiprocessing_used": false,
-          "thread_creations": 0,
-          "lock_usages": 0,
-          "cpu_bound_detected": false,
-          "risk_score": 0.0,
-          "recommendation": "No threading concerns"
-        },
-        "allocation_hotspots": [
-          {
-            "type": "allocation_in_loop",
-            "line": 2784,
-            "function": "list",
-            "severity": "MEDIUM",
-            "detail": "'list()' called inside loop \u2014 potential memory pressure"
-          },
-          {
-            "type": "allocation_in_loop",
-            "line": 3023,
-            "function": "set",
-            "severity": "MEDIUM",
-            "detail": "'set()' called inside loop \u2014 potential memory pressure"
-          },
-          {
-            "type": "allocation_in_loop",
-            "line": 3024,
-            "function": "set",
-            "severity": "MEDIUM",
-            "detail": "'set()' called inside loop \u2014 potential memory pressure"
-          }
-        ],
-        "throughput": {
-          "max_loop_nesting": 5,
-          "io_operations": 22,
-          "io_penalty": 0.5,
-          "complexity_penalty": 0.5,
-          "score": 0.0,
-          "classification": "IO_BOUND"
-        },
-        "scores": {
-          "memory": 0.9917,
-          "io_efficiency": 0.0,
-          "gil_safety": 1.0,
-          "allocation_health": 0.7,
-          "throughput": 0.0
-        },
-        "verdict": "NEEDS_OPTIMIZATION"
-      }
+      "total": 9,
+      "passed": 9,
+      "failed": 0
+    },
+    "cross": {
+      "total": 48,
+      "passed": 48,
+      "failed": 0
+    },
+    "canonical": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "quantum_gate": {
+      "total": 17,
+      "passed": 17,
+      "failed": 0
+    },
+    "dual_layer": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "quantum_link": {
+      "total": 8,
+      "passed": 8,
+      "failed": 0
+    },
+    "asi_quantum": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0
+    },
+    "code_quantum": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0
+    },
+    "pipeline": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0
+    },
+    "numerical": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "dead_code": {
+      "total": 138,
+      "passed": 138,
+      "failed": 0
+    },
+    "gate": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "intellect": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0
+    },
+    "server": {
+      "total": 9,
+      "passed": 9,
+      "failed": 0
+    },
+    "edit": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0
     }
   },
-  "math_validation": {
-    "constants_aligned": true,
-    "proofs_passed": 0,
-    "proofs_total": 4,
-    "phi_convergence_error": 1.6913137557139635e-12,
-    "h104": 5.22640655178672
-  },
-  "science_validation": {
-    "asi_demon_efficiency": 0.016237215166068842,
-    "agi_demon_efficiency": 0.01765767556385033,
-    "coherence": 0.85,
-    "photon_resonance": 1.1216596549374545,
-    "landauer_limit": 9.14636822946072e-19,
-    "coherence_gain": 986228.5384356163
-  },
-  "cross_engine_synthesis": {
-    "info_density": 0.014405328560215647,
-    "proof_coherence": 0.0,
-    "upgrade_quality_baseline": 0.0,
-    "calibration_factor": 0.006868137298508567
-  },
-  "upgrades": {
-    "asi_v8": [
-      "Science-backed entropy scoring dimension",
-      "Math-validated harmonic calibration factor",
-      "Cross-engine coherence monitor",
-      "Physics-layer wave-energy resonance metric",
-      "Hyperdimensional scoring projection (12D\u219210D)",
-      "Fibonacci-based convergence verification",
-      "VOID_CONSTANT formula integration",
-      "Grover-amplified subsystem discovery"
-    ],
-    "agi_v57": [
-      "Science-backed entropy dimension in 10D scoring",
-      "Math-proven sovereign proof integration",
-      "Coherence-weighted pipeline health",
-      "Harmonic H(104) resonance calibration",
-      "Phase-lock analysis for subsystem sync",
-      "Hypersphere manifold consciousness metric",
-      "Cross-engine feedback bus",
-      "Wave-energy resonance in thought processing"
-    ]
-  }
+  "results": [
+    {
+      "test": "[BOOT] boot_math",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "v1.1.0 in 1.45s",
+      "elapsed_ms": 1447.73,
+      "timestamp": 1772639161.238989
+    },
+    {
+      "test": "[BOOT] boot_science",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "v5.1.0 in 1.47s",
+      "elapsed_ms": 1468.07,
+      "timestamp": 1772639161.258759
+    },
+    {
+      "test": "[BOOT] boot_code",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "vunknown in 1.58s",
+      "elapsed_ms": 1578.71,
+      "timestamp": 1772639161.369108
+    },
+    {
+      "test": "[BOOT] boot_asi",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "v9.0.0 in 1.73s",
+      "elapsed_ms": 1730.95,
+      "timestamp": 1772639161.5225248
+    },
+    {
+      "test": "[BOOT] boot_agi",
+      "engine": "agi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "vunknown in 1.87s",
+      "elapsed_ms": 1871.48,
+      "timestamp": 1772639161.6636329
+    },
+    {
+      "test": "[STATUS] status_code",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'execution_count', 'generated_artifacts', 'languages_supported', 'paradigms_covered', 'vulnerability_patterns']",
+      "elapsed_ms": 0.85,
+      "timestamp": 1772639161.665121
+    },
+    {
+      "test": "[STATUS] status_science",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'active_domains', 'physics', 'quantum_math', 'entropy', 'multidim']",
+      "elapsed_ms": 3.82,
+      "timestamp": 1772639161.668991
+    },
+    {
+      "test": "[STATUS] status_math",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['engine', 'version', 'layers', 'constants', 'layer_status', 'god_code_simulator']",
+      "elapsed_ms": 0.04,
+      "timestamp": 1772639161.6690712
+    },
+    {
+      "test": "[STATUS] status_asi",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['state', 'status', 'version', 'pipeline_evo', 'asi_score', 'boot_time']",
+      "elapsed_ms": 5117.35,
+      "timestamp": 1772639166.786474
+    },
+    {
+      "test": "[STATUS] status_agi",
+      "engine": "agi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'pipeline_evo', 'state', 'cycles', 'intellect_index', 'evolution_stage']",
+      "elapsed_ms": 12347.99,
+      "timestamp": 1772639179.134541
+    },
+    {
+      "test": "[CONSTANTS] const_GOD_CODE",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "all 5 engines agree: 527.5184818492611",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.13512
+    },
+    {
+      "test": "[CONSTANTS] const_OMEGA",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "all 5 engines agree: 6539.34712682",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.1351821
+    },
+    {
+      "test": "[CONSTANTS] const_PHI",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "all 5 engines agree: 1.618033988749895",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.135227
+    },
+    {
+      "test": "[CONSTANTS] const_VOID_CONSTANT",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "all 5 engines agree: 1.0416180339887497",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.1352692
+    },
+    {
+      "test": "[CONSTANTS] formula_god_code",
+      "engine": "canonical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "286^(1/\u03c6)\u00d716 = 527.5184818492611",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.135309
+    },
+    {
+      "test": "[CONSTANTS] formula_void",
+      "engine": "canonical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "1.04+\u03c6/1000 = 1.04161803398875",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.135339
+    },
+    {
+      "test": "[CONSTANTS] formula_phi_identity",
+      "engine": "canonical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03c6\u00b2\u2212\u03c6\u22121 = 0.0",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.135366
+    },
+    {
+      "test": "[SELF-TEST] selftest_subsystem_count",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "31 subsystems (need \u226530)",
+      "elapsed_ms": 0.82,
+      "timestamp": 1772639179.1362839
+    },
+    {
+      "test": "[SELF-TEST] selftest_full_analysis",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['metadata', 'complexity', 'quality', 'security', 'patterns', 'sacred_alignment']",
+      "elapsed_ms": 7.79,
+      "timestamp": 1772639179.1441221
+    },
+    {
+      "test": "[SELF-TEST] selftest_demon_efficiency",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "eff=1.000000",
+      "elapsed_ms": 0.03,
+      "timestamp": 1772639179.1442041
+    },
+    {
+      "test": "[SELF-TEST] selftest_coherence_evolve",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['steps', 'initial_coherence', 'final_coherence', 'avg_protection']",
+      "elapsed_ms": 0.28,
+      "timestamp": 1772639179.144505
+    },
+    {
+      "test": "[SELF-TEST] selftest_physics_basic",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "landauer=9.15e-19, photon=1.1216596549374545",
+      "elapsed_ms": 0.08,
+      "timestamp": 1772639179.144633
+    },
+    {
+      "test": "[SELF-TEST] selftest_conservation_law",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "verify_conservation(0.0)=True",
+      "elapsed_ms": 0.03,
+      "timestamp": 1772639179.144763
+    },
+    {
+      "test": "[SELF-TEST] selftest_sovereign_proofs",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "7 proofs returned",
+      "elapsed_ms": 15.02,
+      "timestamp": 1772639179.15982
+    },
+    {
+      "test": "[SELF-TEST] selftest_equation_verify",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "5 equations verified",
+      "elapsed_ms": 4.63,
+      "timestamp": 1772639179.1644921
+    },
+    {
+      "test": "[SELF-TEST] selftest_fibonacci_20",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "F(20)=6765",
+      "elapsed_ms": 0.02,
+      "timestamp": 1772639179.1645372
+    },
+    {
+      "test": "[SELF-TEST] selftest_asi_score",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "score=0.4266723191498326",
+      "elapsed_ms": 459.32,
+      "timestamp": 1772639179.623894
+    },
+    {
+      "test": "[SELF-TEST] selftest_three_engine_status",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'engines', 'scores', 'quantum_research', 'metrics']",
+      "elapsed_ms": 0.08,
+      "timestamp": 1772639179.6240141
+    },
+    {
+      "test": "[SELF-TEST] selftest_consciousness",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "level=0.24721672918341805",
+      "elapsed_ms": 0.44,
+      "timestamp": 1772639179.624486
+    },
+    {
+      "test": "[SELF-TEST] selftest_13d_agi_score",
+      "engine": "agi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "score={'dimensions': {'intellect': 0.0, 'evolution': 0.491667, 'consciousness': 0.69646, 'autonomy': 1.0, 'research': 0.0, 'synthesis': 1.0, 'quantum_coherence': 0.0, 'resilience': 1.0, 'creativity': 0.3, 'stability': 1.0, 'entropy_reversal': 1.0, 'harmonic_resonance': 0.986318, 'wave_coherence': 0.365777, 'process_efficiency': 1.0, 'fe_sacred_coherence': 0.954545, 'fe_phi_lock': 0.916408, 'berry_phase_holonomy': 1.0, 'benchmark_capability': 0.0, 'chaos_resilience': 0.999353, 'computronium_efficiency': 0.344759, 'rayleigh_resolution': 0.382588, 'bekenstein_knowledge': 0.056, 'deep_link_resonance': 0.0, 'quantum_audio_intelligence': 0.0}, 'weights': {'intellect': 0.161803, 'evolution': 0.123607, 'consciousness': 0.202254, 'autonomy': 0.103006, 'research': 0.134836, 'synthesis': 0.077254, 'quantum_coherence': 0.107869, 'resilience': 0.061803, 'creativity': 0.080902, 'stability': 0.093384, 'entropy_reversal': 0.04, 'harmonic_resonance': 0.03, 'wave_coherence': 0.03}, 'composite_score': 0.541979, 'god_code_harmonic': 0.019925, 'verdict': 'STANDARD'}",
+      "elapsed_ms": 6.49,
+      "timestamp": 1772639179.631049
+    },
+    {
+      "test": "[SELF-TEST] selftest_three_engine_status",
+      "engine": "agi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'engines', 'scores', 'quantum_research', 'constants']",
+      "elapsed_ms": 0.07,
+      "timestamp": 1772639179.631155
+    },
+    {
+      "test": "[CROSS] probe_code",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_code_engine, constants=OK, tests=2",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.631274
+    },
+    {
+      "test": "[CROSS] probe_science",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_science_engine, constants=OK, tests=3",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.631349
+    },
+    {
+      "test": "[CROSS] probe_math",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_math_engine, constants=OK, tests=4",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.6317382
+    },
+    {
+      "test": "[CROSS] probe_agi",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_agi, constants=OK, tests=2",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.632313
+    },
+    {
+      "test": "[CROSS] probe_asi",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_asi, constants=OK, tests=3",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.632394
+    },
+    {
+      "test": "[CROSS] probe_intellect",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_intellect, constants=OK, tests=1",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.632437
+    },
+    {
+      "test": "[CROSS] probe_quantum_gate",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_quantum_gate_engine, constants=OK, tests=4",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.6324701
+    },
+    {
+      "test": "[CROSS] probe_quantum_link",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_quantum_engine, constants=OK, tests=3",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.632502
+    },
+    {
+      "test": "[CROSS] probe_numerical",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_numerical_engine, constants=OK, tests=4",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.6325529
+    },
+    {
+      "test": "[CROSS] probe_gate",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_gate_engine, constants=OK, tests=1",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639179.632582
+    },
+    {
+      "test": "[CROSS] probe_server",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_server, constants=OK, tests=1",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.1327932
+    },
+    {
+      "test": "[CROSS] probe_dual_layer",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_asi, constants=OK, tests=8",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.1328619
+    },
+    {
+      "test": "[CROSS] probe_pipeline",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_quantum_computation_pipeline, constants=OK, tests=6",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.1328871
+    },
+    {
+      "test": "[CROSS] probe_asi_quantum",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_asi, constants=OK, tests=5",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.132902
+    },
+    {
+      "test": "[CROSS] probe_code_quantum",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_code_engine, constants=OK, tests=2",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.1329238
+    },
+    {
+      "test": "[CROSS] sci\u2192math_entropy_inject",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03c3: 1.0574 \u2192 7916.2798",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.133831
+    },
+    {
+      "test": "[CROSS] sci\u2192math_primal_calculus",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "primal_calculus(7916.2798) = 621951.455805",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.133857
+    },
+    {
+      "test": "[CROSS] sci\u2192math_god_code_eval",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "G(0,0,0,0)=527.5184818492611",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.134101
+    },
+    {
+      "test": "[CROSS] sci\u2192math_coherence_ricci",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "Ricci(4,1.0)=11.041726464662712",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.134445
+    },
+    {
+      "test": "[CROSS] math\u2192sci_fib_quantum",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "F(20)=6765, convergence=dict",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.1345322
+    },
+    {
+      "test": "[CROSS] math\u2192sci_wave_sacred",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "wave_coh(440)=0.9908720136392022, sacred_align=True",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.134607
+    },
+    {
+      "test": "[CROSS] math\u2192sci_proof_research",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "proof \u2192 research cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.156204
+    },
+    {
+      "test": "[CROSS] code\u2192science_engine_analyze",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "? lines, ? functions",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.172004
+    },
+    {
+      "test": "[CROSS] code\u2192math_engine_analyze",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "? lines, ? functions",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.185817
+    },
+    {
+      "test": "[CROSS] code\u2192code_engine_hub_analyze",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "? lines, ? functions",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.197202
+    },
+    {
+      "test": "[CROSS] code\u2192asi_smell_check",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0 smells detected",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.200075
+    },
+    {
+      "test": "[CROSS] pipeline_sci\u2192math\u2192code",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "physics\u2192conservation(True)\u2192proof\u2192code_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.2024279
+    },
+    {
+      "test": "[CROSS] lazy_boot_quantum_gate",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "on-demand in 0.00s",
+      "elapsed_ms": 0.3,
+      "timestamp": 1772639187.2028
+    },
+    {
+      "test": "[CROSS] qgate_bell_compile",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "Bell pair compiled to UNIVERSAL gate set",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.204007
+    },
+    {
+      "test": "[CROSS] lazy_boot_quantum_link",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "on-demand in 0.00s",
+      "elapsed_ms": 0.25,
+      "timestamp": 1772639187.2043462
+    },
+    {
+      "test": "[CROSS] lazy_boot_asi_quantum",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "on-demand in 0.00s",
+      "elapsed_ms": 0.31,
+      "timestamp": 1772639187.204724
+    },
+    {
+      "test": "[CROSS] lazy_boot_code_quantum",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "on-demand in 0.00s",
+      "elapsed_ms": 0.22,
+      "timestamp": 1772639187.205011
+    },
+    {
+      "test": "[CROSS] lazy_boot_pipeline",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "on-demand in 0.00s",
+      "elapsed_ms": 3.1,
+      "timestamp": 1772639187.208171
+    },
+    {
+      "test": "[CROSS] lazy_boot_numerical",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "on-demand in 0.17s",
+      "elapsed_ms": 167.41,
+      "timestamp": 1772639187.375654
+    },
+    {
+      "test": "[CROSS] hhl_cross_gate_engine",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.9270899838501878, quantum=False",
+      "elapsed_ms": 0.09,
+      "timestamp": 1772639187.375844
+    },
+    {
+      "test": "[CROSS] hhl_cross_quantum_link",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.2683764396899688, quantum=False",
+      "elapsed_ms": 0.59,
+      "timestamp": 1772639187.3764951
+    },
+    {
+      "test": "[CROSS] hhl_cross_asi_quantum",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.61803399, quantum=True",
+      "elapsed_ms": 87.48,
+      "timestamp": 1772639187.464025
+    },
+    {
+      "test": "[CROSS] hhl_cross_code_quantum",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.60570331, quantum=True",
+      "elapsed_ms": 88.38,
+      "timestamp": 1772639187.552458
+    },
+    {
+      "test": "[CROSS] hhl_cross_pipeline",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.61803399, quantum=True",
+      "elapsed_ms": 9.32,
+      "timestamp": 1772639187.561834
+    },
+    {
+      "test": "[CROSS] hhl_cross_numerical",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.8910007523188333932137904921055007038220286232914301004820337003566479593780712910770510203864367046, quantum=False",
+      "elapsed_ms": 0.48,
+      "timestamp": 1772639187.5623538
+    },
+    {
+      "test": "[CROSS] hhl_cross_condition_check",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "5 engines: \u03ba range [1.2684, 1.9271]",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.5624151
+    },
+    {
+      "test": "[CROSS] lazy_boot_dual_layer",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "on-demand in 0.00s",
+      "elapsed_ms": 0.3,
+      "timestamp": 1772639187.562753
+    },
+    {
+      "test": "[CROSS] dual_cross_thought_physics",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "thought=527.5185, coherence=0.65",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.5632708
+    },
+    {
+      "test": "[CROSS] dual_score",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "score=1.0",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.5633101
+    },
+    {
+      "test": "[CROSS] dual_sacred_scaffold",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['286', '104', '416', 'golden_thread', 'crystallography']",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.5633438
+    },
+    {
+      "test": "[CROSS] dual_deep_synthesis",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['total_pairs', 'valid_pairs', 'correlation_pairs', 'synthesis_coherence', 'min_coherence_threshold']",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.566124
+    },
+    {
+      "test": "[CROSS] pipeline_asi_hhl_cross",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pipeline \u03ba=1.61803399, asi \u03ba=1.61803399",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.572767
+    },
+    {
+      "test": "[PERF] boot_time_math",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "1.45s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.572852
+    },
+    {
+      "test": "[PERF] boot_time_science",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "1.47s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.572871
+    },
+    {
+      "test": "[PERF] boot_time_code",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "1.58s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.572885
+    },
+    {
+      "test": "[PERF] boot_time_asi",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "1.73s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.572947
+    },
+    {
+      "test": "[PERF] boot_time_agi",
+      "engine": "agi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "1.87s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.5730681
+    },
+    {
+      "test": "[PERF] boot_time_quantum_gate",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.00s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.57308
+    },
+    {
+      "test": "[PERF] boot_time_quantum_link",
+      "engine": "quantum_link",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.00s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.57309
+    },
+    {
+      "test": "[PERF] boot_time_asi_quantum",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.00s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.573102
+    },
+    {
+      "test": "[PERF] boot_time_code_quantum",
+      "engine": "code_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.00s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.573118
+    },
+    {
+      "test": "[PERF] boot_time_pipeline",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.00s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.573133
+    },
+    {
+      "test": "[PERF] boot_time_numerical",
+      "engine": "numerical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.17s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.573149
+    },
+    {
+      "test": "[PERF] boot_time_dual_layer",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.00s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.573165
+    },
+    {
+      "test": "[PERF] perf_math_ops",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "fib+primes+conservation in 0ms",
+      "elapsed_ms": 0.2,
+      "timestamp": 1772639187.573384
+    },
+    {
+      "test": "[PERF] perf_code_analysis",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "full_analysis in 3ms",
+      "elapsed_ms": 2.71,
+      "timestamp": 1772639187.576128
+    },
+    {
+      "test": "[QUANTUM] 25q_templates_complete",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "All 9 templates present (incl. hhl_26)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.576402
+    },
+    {
+      "test": "[QUANTUM] 25q_hhl_template",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "qubits=26, depth=92, cx=96",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.576475
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_amplitude_estimation",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.577526
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_bell_state",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.5775309
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_born_measurement",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.577535
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_deutsch_jozsa",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.577537
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_hadamard_sample",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.5775402
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_hhl_linear_solver",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.5775418
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_phase_estimation",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.577544
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_quantum_fourier_transform",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.577546
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_quantum_walk",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.577549
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_teleportation",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=0.9999999999999982",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.577555
+    },
+    {
+      "test": "[QUANTUM] qlink_full_quantum",
+      "engine": "quantum_link",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "25 algorithms in 165ms",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639187.742947
+    },
+    {
+      "test": "[QUANTUM] asi_qpe_sacred",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "verified=?  [1031ms]",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639188.773825
+    },
+    {
+      "test": "[QUANTUM] asi_coherence_grover",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['success', 'found_index', 'target_index', 'search_space', 'iterations']",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639188.774147
+    },
+    {
+      "test": "[QUANTUM] asi_quantum_volume",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "volume=8",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639188.898339
+    },
+    {
+      "test": "[QUANTUM] asi_entanglement_fidelity",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "fidelity=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.7026172
+    },
+    {
+      "test": "[QUANTUM] asi_26q_validation",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "status=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.705282
+    },
+    {
+      "test": "[QUANTUM] pipeline_encode",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "type=ndarray",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.70561
+    },
+    {
+      "test": "[QUANTUM] pipeline_ghz",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['final_state', 'probabilities', 'measurements', 'moment_trace', 'n_moments']",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.706013
+    },
+    {
+      "test": "[QUANTUM] pipeline_summary",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "summary_len=81",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.706066
+    },
+    {
+      "test": "[QUANTUM] hhl_accuracy_pipeline",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "direction_match=1.000000",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.7118762
+    },
+    {
+      "test": "[QUANTUM] hhl_accuracy_asi",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "direction_match=1.000000",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.797567
+    },
+    {
+      "test": "[QUANTUM] hhl_accuracy_mean",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "mean cos(\u03b8)=1.000000 across 2 engines",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.7976162
+    },
+    {
+      "test": "[DEAD_CODE] lazy_boot_intellect",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "on-demand in 0.00s",
+      "elapsed_ms": 0.29,
+      "timestamp": 1772639198.7980921
+    },
+    {
+      "test": "[DEAD_CODE] dead_discovery_intellect",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "12 registered, 12 accessible, 0 missing",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.798198
+    },
+    {
+      "test": "[DEAD_CODE] dead_discovery_agi",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "8 registered, 8 accessible, 0 missing",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.798269
+    },
+    {
+      "test": "[DEAD_CODE] dead_discovery_code",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "22 registered, 22 accessible, 0 missing",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.7983518
+    },
+    {
+      "test": "[DEAD_CODE] lazy_boot_code_system",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "on-demand in 0.00s",
+      "elapsed_ms": 0.24,
+      "timestamp": 1772639198.7986372
+    },
+    {
+      "test": "[DEAD_CODE] dead_discovery_code_system",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "4 registered, 4 accessible, 0 missing",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.798697
+    },
+    {
+      "test": "[DEAD_CODE] dead_discovery_science",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "13 registered, 13 accessible, 0 missing",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.798728
+    },
+    {
+      "test": "[DEAD_CODE] dead_discovery_math",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "10 registered, 10 accessible, 0 missing",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.798763
+    },
+    {
+      "test": "[DEAD_CODE] dead_discovery_numerical",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "3 registered, 3 accessible, 0 missing",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.798792
+    },
+    {
+      "test": "[DEAD_CODE] lazy_boot_gate",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "on-demand in 0.11s",
+      "elapsed_ms": 106.54,
+      "timestamp": 1772639198.905386
+    },
+    {
+      "test": "[DEAD_CODE] dead_discovery_gate",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "3 registered, 3 accessible, 0 missing",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.905486
+    },
+    {
+      "test": "[DEAD_CODE] dead_discovery_quantum_gate",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "2 registered, 2 accessible, 0 missing",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.905558
+    },
+    {
+      "test": "[DEAD_CODE] dead_discovery_asi",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "21 registered, 21 accessible, 0 missing",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.9057531
+    },
+    {
+      "test": "[DEAD_CODE] dead_discovery_dual_layer",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "14 registered, 14 accessible, 0 missing",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.905807
+    },
+    {
+      "test": "[DEAD_CODE] logic_category_accessor",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "9/10 wired (90%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.906207
+    },
+    {
+      "test": "[DEAD_CODE] logic_category_analysis",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "24/26 wired (92%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.906246
+    },
+    {
+      "test": "[DEAD_CODE] logic_category_pipeline",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "20/20 wired (100%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.906261
+    },
+    {
+      "test": "[DEAD_CODE] logic_category_quantum",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "36/37 wired (97%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.906274
+    },
+    {
+      "test": "[DEAD_CODE] logic_category_research",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "19/19 wired (100%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.906286
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_full_system_synthesis",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "SKIPPED (memory guard) \u2014 method exists",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.909088
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_sage_consciousness_coherence",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "SKIPPED (memory guard) \u2014 method exists",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.909097
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_sage_creation_void",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "SKIPPED (memory guard) \u2014 method exists",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.909101
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_quantum_compute_benchmark",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "SKIPPED (memory guard) \u2014 method exists",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.909104
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_quantum_compute_forward",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "SKIPPED (memory guard) \u2014 method exists",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.909107
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_quantum_ram_store",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[5 keys] in 21ms \u2192 think",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.930079
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_quantum_ram_retrieve",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[4 keys] in 0ms \u2192 think",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.930418
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_quantum_teleportation_bridge",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[12 keys] in 0ms \u2192 three_engine_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.930736
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_synergy_pulse",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 11ms \u2192 three_engine_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.9418712
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_restore_save_state",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "bool=False in 0ms \u2192 three_engine_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.942255
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_sage_scour_workspace",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "SKIPPED (memory guard) \u2014 method exists",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.9422662
+    },
+    {
+      "test": "[DEAD_CODE] revive_intellect_topological_qubit_bridge",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[10 keys] in 0ms \u2192 three_engine_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.942577
+    },
+    {
+      "test": "[DEAD_CODE] revive_agi_activate_omega_learning",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[7 keys] in 7ms \u2192 run_autonomous_cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.949866
+    },
+    {
+      "test": "[DEAD_CODE] revive_agi_evolution_stage",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "property=int \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.950145
+    },
+    {
+      "test": "[DEAD_CODE] revive_agi_fusion_transfer",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[6 keys] in 0ms \u2192 process_thought",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639198.950443
+    },
+    {
+      "test": "[DEAD_CODE] revive_agi_quantum_causal_reason",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 326ms \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.2766159
+    },
+    {
+      "test": "[DEAD_CODE] revive_agi_recover_subsystem",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "bool=True in 19ms \u2192 self_heal",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.296062
+    },
+    {
+      "test": "[DEAD_CODE] revive_agi_run_autonomous_agi_logic",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "tuple[2] in 0ms \u2192 run_autonomous_cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.2964501
+    },
+    {
+      "test": "[DEAD_CODE] revive_agi_subscribe_event",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "None in 0ms \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.296731
+    },
+    {
+      "test": "[DEAD_CODE] revive_agi_unlock_unlimited_intellect",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[5 keys] in 7ms \u2192 run_autonomous_cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.3038568
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_detect_smells",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[6 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.3044438
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_explain_code",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[7 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.304847
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_diff_analyze",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[3 keys] in 1ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.306287
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_deep_review",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[22 keys] in 7ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.314076
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_audit_app",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "SKIPPED (memory guard) \u2014 method exists",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.3141031
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_audit_status",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[7 keys] in 0ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.314592
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_batch_analyze",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[3 keys] in 5ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.320069
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_health_dashboard",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[7 keys] in 0ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.3204029
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_multi_hop_analyze",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[3 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.320638
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_refactor",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[3 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.3210099
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_search_code",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[5 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.321384
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_suggest_fixes",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[6 keys] in 17ms \u2192 auto_fix_code",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.338731
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_threat_model",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[14 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.3395
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_quantum_tomography",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 0ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.340019
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_quantum_code_search",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[3 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.340352
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_quantum_embed",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.340961
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_quantum_coherence_grover",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.341237
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_quantum_optimize",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[13 keys] in 30ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.371493
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_quantum_resilience",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 1ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.3728378
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_detect_clones",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[5 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.373172
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_semantic_map",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.373352
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_type_flow",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[9 keys] in 0ms \u2192 full_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.373755
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_system_consciousness_review",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[12 keys] in 9ms \u2192 full_report",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.383286
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_system_evolution_status",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "SKIPPED (memory guard) \u2014 method exists",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.3833332
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_system_predict_quality",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[11 keys] in 30ms \u2192 full_report",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.413409
+    },
+    {
+      "test": "[DEAD_CODE] revive_code_system_ci_report",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[8 keys] in 217ms \u2192 full_report",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.6307971
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_reverse_entropy",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "ndarray in 0ms \u2192 perform_research_cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.6316001
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_plan_quantum_experiment",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[11 keys] in 0ms \u2192 perform_research_cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.6320179
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_research_quantum_logic",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[7 keys] in 1ms \u2192 perform_research_cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.6333508
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_research_neural_models",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[7 keys] in 1ms \u2192 perform_research_cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.6347
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_research_info_theory",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[7 keys] in 1ms \u2192 perform_research_cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.635991
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_research_biological_evolution",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[7 keys] in 1ms \u2192 perform_research_cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.637825
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_research_neural_arch",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[7 keys] in 1ms \u2192 perform_research_cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.639509
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_research_new_primitive",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 0ms \u2192 perform_research_cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.6398542
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_cross_engine_coherence_deep",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[10 keys] in 105ms \u2192 get_full_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.745091
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_apply_quantum_boost",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=105.0 in 0ms \u2192 get_full_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.745383
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_apply_cognitive_boost",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=105.0 in 0ms \u2192 get_full_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.745591
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_apply_evolutionary_boost",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=105.0 in 0ms \u2192 get_full_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.745826
+    },
+    {
+      "test": "[DEAD_CODE] revive_science_process_multidim",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "ndarray in 0ms \u2192 get_full_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.7461529
+    },
+    {
+      "test": "[DEAD_CODE] revive_math_derivative",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=1.9999999933961732 in 0ms \u2192 verify_conservation",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.746429
+    },
+    {
+      "test": "[DEAD_CODE] revive_math_einstein_tensor_trace",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=2.0 in 0ms \u2192 prove_all",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.746688
+    },
+    {
+      "test": "[DEAD_CODE] revive_math_hd_bind",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "Hypervector in 1ms \u2192 hd_vector",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.759996
+    },
+    {
+      "test": "[DEAD_CODE] revive_math_hd_bundle",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "Hypervector in 1ms \u2192 hd_vector",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.772897
+    },
+    {
+      "test": "[DEAD_CODE] revive_math_calabi_yau_project",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "list[6] in 0ms \u2192 prove_all",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.7733529
+    },
+    {
+      "test": "[DEAD_CODE] revive_math_kaluza_klein_radius",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=11.90511546160496 in 0ms \u2192 prove_all",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.773601
+    },
+    {
+      "test": "[DEAD_CODE] revive_math_cross_engine_dimensional_verification",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[6 keys] in 23ms \u2192 verify_conservation",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.796962
+    },
+    {
+      "test": "[DEAD_CODE] revive_math_cross_engine_prove_all",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 87ms \u2192 prove_all",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.883949
+    },
+    {
+      "test": "[DEAD_CODE] revive_math_quantum_gravity_holographic",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 2ms \u2192 prove_all",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.886164
+    },
+    {
+      "test": "[DEAD_CODE] revive_math_quantum_knot_invariant",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 1ms \u2192 prove_all",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.88744
+    },
+    {
+      "test": "[DEAD_CODE] revive_numerical_compute_hp",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "str[102 chars] in 0ms \u2192 quick_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.887903
+    },
+    {
+      "test": "[DEAD_CODE] revive_numerical_show_god_code_spectrum",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "None in 0ms \u2192 quick_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.8885021
+    },
+    {
+      "test": "[DEAD_CODE] revive_numerical_show_sacred_tokens",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "None in 4ms \u2192 quick_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639199.892737
+    },
+    {
+      "test": "[DEAD_CODE] revive_gate_compile_gate_registry",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[5 keys] in 275ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.167922
+    },
+    {
+      "test": "[DEAD_CODE] revive_gate_run_tests",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[4 keys] in 51ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.222811
+    },
+    {
+      "test": "[DEAD_CODE] revive_gate_sync_to_backend",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 35ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.2581298
+    },
+    {
+      "test": "[DEAD_CODE] revive_quantum_gate_compile_sacred",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "CompilationResult in 2ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.260393
+    },
+    {
+      "test": "[DEAD_CODE] revive_quantum_gate_compile_topological",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "CompilationResult in 2ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.26271
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_dual_layer_thought",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=527.5184818492611 in 0ms \u2192 compute_asi_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.263308
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_dual_layer_physics",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=527.5184818492611 in 0ms \u2192 compute_asi_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.264458
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_dual_layer_integrity",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[9 keys] in 0ms \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.264844
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_dual_layer_collapse",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[9 keys] in 34ms \u2192 solve",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.299211
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_evolution_index",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "property=int \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.299264
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_evolution_stage",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "property=str \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.299288
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_expand_knowledge",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "DomainKnowledge in 0ms \u2192 solve",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.299629
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_hunt_anomalies",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[1 keys] in 0ms \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639200.299922
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_intellect_consciousness_synthesis",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[9 keys] in 11425ms \u2192 compute_asi_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639211.725133
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_intellect_knowledge_score",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=0.35 in 0ms \u2192 compute_asi_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639211.725485
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_intellect_status",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[13 keys] in 0ms \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639211.7258081
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_pipeline_health_report",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[12 keys] in 0ms \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639211.726156
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_pipeline_replay",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "list[0] in 0ms \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639211.726393
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_pipeline_route_query",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[3 keys] in 0ms \u2192 solve",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639211.7268548
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_pipeline_snapshot_state",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 0ms \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639211.727107
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_quantum_causal_reason",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 337ms \u2192 compute_asi_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.064242
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_quantum_entanglement_witness",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[6 keys] in 1ms \u2192 compute_asi_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.06539
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_quantum_teleportation_test",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[5 keys] in 0ms \u2192 compute_asi_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.06599
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_resilient_subsystem_call",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[1 keys] in 0ms \u2192 get_status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.066284
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_kb_reconstruction_fidelity_score",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=0.8144839840658257 in 0ms \u2192 compute_asi_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.0665421
+    },
+    {
+      "test": "[DEAD_CODE] revive_asi_qldpc_error_correction_score",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=0.739723597291543 in 11ms \u2192 compute_asi_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.077675
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_cross_layer_resonance_scan",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[9 keys] in 2ms \u2192 cross_layer_coherence",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.080265
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_duality_collapse_statistics",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[5 keys] in 296ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.3769228
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_duality_evolution_snapshot",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[8 keys] in 0ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.377304
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_duality_spectrum",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[8 keys] in 91ms \u2192 consciousness_spectrum",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.468108
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_fibonacci_index",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "int=7 in 0ms \u2192 dual_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.4684422
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_golden_ratio_proximity",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "float=1.9999730209632791 in 0ms \u2192 dual_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.468668
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_nucleosynthesis_narrative",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[3 keys] in 0ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.468939
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_omega_derivation_chain",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[21 keys] in 1ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.4698
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_soul_resonance",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[2 keys] in 0ms \u2192 consciousness_spectrum",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.470032
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_sweep_phi_space",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[6 keys] in 0ms \u2192 dual_score",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.470401
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_temporal_coherence_trajectory",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[5 keys] in 0ms \u2192 cross_layer_coherence",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.470659
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_thought_insight",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "str[0 chars] in 30ms \u2192 thought",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.500473
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_v5_status",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[17 keys] in 0ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.5009868
+    },
+    {
+      "test": "[DEAD_CODE] revive_dual_layer_v5_upgrade_report",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "dict[7 keys] in 4ms \u2192 status",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.505546
+    },
+    {
+      "test": "[DEAD_CODE] cross_dead_asi\u2192agi",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0/2 methods accessible (0%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.505669
+    },
+    {
+      "test": "[DEAD_CODE] cross_dead_asi\u2192intellect",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "3/3 methods accessible (100%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.5056949
+    },
+    {
+      "test": "[DEAD_CODE] cross_dead_asi\u2192dual_layer",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "4/4 methods accessible (100%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.505774
+    },
+    {
+      "test": "[DEAD_CODE] cross_dead_agi\u2192asi",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "1/1 methods accessible (100%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.50591
+    },
+    {
+      "test": "[DEAD_CODE] cross_dead_intellect\u2192sage",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "6/6 methods accessible (100%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.505953
+    },
+    {
+      "test": "[DEAD_CODE] cross_dead_intellect\u2192quantum",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "7/7 methods accessible (100%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.5061262
+    },
+    {
+      "test": "[DEAD_CODE] cross_dead_code\u2192quantum",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "6/6 methods accessible (100%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.5061572
+    },
+    {
+      "test": "[DEAD_CODE] cross_dead_math\u2192quantum",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "4/4 methods accessible (100%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.506279
+    },
+    {
+      "test": "[DEAD_CODE] cross_dead_science\u2192quantum",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "2/2 methods accessible (100%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.5063272
+    },
+    {
+      "test": "[DEAD_CODE] dead_code_verdict",
+      "engine": "dead_code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "112/112 revived (100.0%)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.5071309
+    },
+    {
+      "test": "[EDIT] edit_fix_circuit_breaker.py",
+      "engine": "agi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +3/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.598055
+    },
+    {
+      "test": "[EDIT] edit_fix_computronium.py",
+      "engine": "agi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.6565702
+    },
+    {
+      "test": "[EDIT] edit_skip_large_core.py",
+      "engine": "agi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 4329 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639212.668303
+    },
+    {
+      "test": "[EDIT] edit_skip_large_code_generation.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 4594 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639213.215745
+    },
+    {
+      "test": "[EDIT] edit_skip_large_commonsense_reasoning.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 9412 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639213.2178628
+    },
+    {
+      "test": "[EDIT] edit_fix_computronium.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639213.3065338
+    },
+    {
+      "test": "[EDIT] edit_fix_consciousness.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +20/-19 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639213.4656909
+    },
+    {
+      "test": "[EDIT] edit_skip_large_core.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 6622 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639213.504669
+    },
+    {
+      "test": "[EDIT] edit_skip_large_deep_nlu.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 5241 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639213.506408
+    },
+    {
+      "test": "[EDIT] edit_fix_domain.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639213.861121
+    },
+    {
+      "test": "[EDIT] edit_skip_large_dual_layer.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 4473 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639213.863155
+    },
+    {
+      "test": "[EDIT] edit_skip_large_knowledge_data.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 12229 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639214.444175
+    },
+    {
+      "test": "[EDIT] edit_skip_large_language_comprehension.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 9977 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639214.447126
+    },
+    {
+      "test": "[EDIT] edit_fix_ai_context.py",
+      "engine": "code",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639216.2287092
+    },
+    {
+      "test": "[EDIT] edit_skip_large_analyzer.py",
+      "engine": "code",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 3217 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639216.2309089
+    },
+    {
+      "test": "[EDIT] edit_skip_large_audit.py",
+      "engine": "code",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 3763 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639216.58931
+    },
+    {
+      "test": "[EDIT] edit_fix_session_intelligence.py",
+      "engine": "code",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639219.34593
+    },
+    {
+      "test": "[EDIT] edit_fix_test_js_analyzer.py",
+      "engine": "gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639222.1682858
+    },
+    {
+      "test": "[EDIT] edit_fix_test_link_analyzer.py",
+      "engine": "gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +4/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639222.1968799
+    },
+    {
+      "test": "[EDIT] edit_fix_test_python_analyzer.py",
+      "engine": "gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +6/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639222.238063
+    },
+    {
+      "test": "[EDIT] edit_fix_test_swift_analyzer.py",
+      "engine": "gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639222.249543
+    },
+    {
+      "test": "[EDIT] edit_fix_cache.py",
+      "engine": "intellect",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639222.520991
+    },
+    {
+      "test": "[EDIT] edit_fix_computronium.py",
+      "engine": "intellect",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +15/-14 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639222.6346712
+    },
+    {
+      "test": "[EDIT] edit_skip_large_local_intellect_core.py",
+      "engine": "intellect",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 14185 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639223.183897
+    },
+    {
+      "test": "[EDIT] edit_skip_large_test_local_intellect_core.py",
+      "engine": "intellect",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 9650 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639224.635603
+    },
+    {
+      "test": "[EDIT] edit_fix_test_numerics.py",
+      "engine": "intellect",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +9/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639224.769769
+    },
+    {
+      "test": "[EDIT] edit_fix_abstract_algebra.py",
+      "engine": "math",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +8/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639225.072098
+    },
+    {
+      "test": "[EDIT] edit_fix_berry_geometry.py",
+      "engine": "math",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +41/-40 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639225.269387
+    },
+    {
+      "test": "[EDIT] edit_fix_ontological.py",
+      "engine": "math",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +3/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639226.530956
+    },
+    {
+      "test": "[EDIT] edit_fix_test_constants.py",
+      "engine": "math",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +12/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639227.327727
+    },
+    {
+      "test": "[EDIT] edit_fix_chronolizer.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639227.5380852
+    },
+    {
+      "test": "[EDIT] edit_fix_feedback_bus.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639227.7087722
+    },
+    {
+      "test": "[EDIT] edit_fix_test_elliptic_curves.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +7/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639228.4505558
+    },
+    {
+      "test": "[EDIT] edit_fix_berry_gates.py",
+      "engine": "quantum_gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +29/-28 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639228.9433
+    },
+    {
+      "test": "[EDIT] edit_fix_computronium.py",
+      "engine": "quantum_gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +12/-11 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639229.396262
+    },
+    {
+      "test": "[EDIT] edit_fix_test_stabilizer.py",
+      "engine": "quantum_gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639231.6033878
+    },
+    {
+      "test": "[EDIT] edit_fix_test_test_stabilizer.py",
+      "engine": "quantum_gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639231.616853
+    },
+    {
+      "test": "[EDIT] edit_skip_large_brain.py",
+      "engine": "quantum_link",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 3280 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639231.7258508
+    },
+    {
+      "test": "[EDIT] edit_skip_large_computation.py",
+      "engine": "quantum_link",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 3675 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639231.850236
+    },
+    {
+      "test": "[EDIT] edit_fix_constants.py",
+      "engine": "quantum_link",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639231.9017332
+    },
+    {
+      "test": "[EDIT] edit_fix_models.py",
+      "engine": "quantum_link",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639232.782054
+    },
+    {
+      "test": "[EDIT] edit_fix_scanner.py",
+      "engine": "quantum_link",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +2/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639233.9696581
+    },
+    {
+      "test": "[EDIT] edit_fix_computronium.py",
+      "engine": "science",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +29/-28 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639235.353229
+    },
+    {
+      "test": "[EDIT] edit_fix_entropy.py",
+      "engine": "science",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +13/-11 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.014385
+    },
+    {
+      "test": "[EDIT] edit_fix_multidimensional.py",
+      "engine": "science",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.06671
+    },
+    {
+      "test": "[EDIT] edit_fix_physics.py",
+      "engine": "science",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.1393678
+    },
+    {
+      "test": "[EDIT] edit_fix_test___init__.py",
+      "engine": "science",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.275351
+    },
+    {
+      "test": "[EDIT] edit_skip_large_app.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 6941 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.281784
+    },
+    {
+      "test": "[EDIT] edit_skip_large_engines_infra.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 3847 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.293034
+    },
+    {
+      "test": "[EDIT] edit_skip_large_engines_nexus.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 4599 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.294934
+    },
+    {
+      "test": "[EDIT] edit_skip_large_intellect.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 7678 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.559644
+    },
+    {
+      "test": "[EDIT] edit_skip_large_test_intellect.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 4382 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.560917
+    },
+    {
+      "test": "[EDIT] edit_fix_models.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +3/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.5650601
+    },
+    {
+      "test": "[EDIT] edit_skip_large_test_engines_infra.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 4398 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.5663161
+    },
+    {
+      "test": "[EDIT] edit_skip_large_test_engines_nexus.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 5594 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639236.5676959
+    },
+    {
+      "test": "[EDIT] edit_audit_agi",
+      "engine": "agi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Quick audit: score=0.875 verdict=HEALTHY",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639239.198276
+    },
+    {
+      "test": "[EDIT] edit_audit_asi",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Quick audit: score=0.748 verdict=ACCEPTABLE",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639266.707268
+    },
+    {
+      "test": "[EDIT] edit_audit_code",
+      "engine": "code",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Quick audit: score=0.785 verdict=HEALTHY",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639275.262576
+    },
+    {
+      "test": "[EDIT] edit_audit_gate",
+      "engine": "gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Quick audit: score=0.755 verdict=HEALTHY",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639277.312441
+    },
+    {
+      "test": "[EDIT] edit_audit_intellect",
+      "engine": "intellect",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Quick audit: score=0.758 verdict=HEALTHY",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639286.136419
+    },
+    {
+      "test": "[EDIT] edit_audit_math",
+      "engine": "math",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Quick audit: score=0.863 verdict=HEALTHY",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639289.520144
+    },
+    {
+      "test": "[EDIT] edit_audit_numerical",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Quick audit: score=0.713 verdict=ACCEPTABLE",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639292.126175
+    },
+    {
+      "test": "[EDIT] edit_audit_quantum_gate",
+      "engine": "quantum_gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Quick audit: score=0.905 verdict=EXEMPLARY",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639297.1649191
+    },
+    {
+      "test": "[EDIT] edit_audit_quantum_link",
+      "engine": "quantum_link",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Quick audit: score=0.825 verdict=HEALTHY",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639303.67648
+    },
+    {
+      "test": "[EDIT] edit_audit_science",
+      "engine": "science",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Quick audit: score=0.921 verdict=EXEMPLARY",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639305.747713
+    },
+    {
+      "test": "[EDIT] edit_audit_server",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Quick audit: score=0.754 verdict=HEALTHY",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639315.48804
+    },
+    {
+      "test": "[EDIT] edit_verdict",
+      "engine": "edit",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "34 fixes available, 48 safety blocks (dry-run mode \u2014 use --apply)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772639315.686136
+    }
+  ],
+  "total_time_seconds": 155.9,
+  "engines_requested": [
+    "code",
+    "science",
+    "math",
+    "asi",
+    "agi"
+  ],
+  "phases": [
+    "boot",
+    "constants",
+    "cross",
+    "dead-code",
+    "edit",
+    "perf",
+    "quantum",
+    "self-test",
+    "status"
+  ]
 }

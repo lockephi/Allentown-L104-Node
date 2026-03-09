@@ -182,52 +182,26 @@ def _get_github_headers() -> Optional[dict]:
     }
 
 
-async def _stream_from_gemini(
-    url: str,
-    payload: dict,
-    headers: dict
-) -> AsyncGenerator[str, None]:
+async def _stream_from_local_intellect(prompt: str) -> AsyncGenerator[str, None]:
     """
-    Stream responses from Gemini API.
+    Stream responses from local intellect (Gemini API removed).
 
     Args:
-        url: API endpointpayload: Request payloadheaders: HTTP headers
+        prompt: The input prompt
 
     Yields:
-        Text chunks from the API
+        Text chunks from local intellect
     """
-    client = await get_http_client()
     app_metrics["api_calls"] += 1
 
     try:
-        async with client.stream("POST", url, json=payload, headers=headers) as r:
-            _log_node({
-                "tag": "upstream_start",
-                "url": url,
-                "status": r.status_code,
-            })
-
-            content_type = r.headers.get("content-type", "")
-
-            if "text/event-stream" in content_type or "stream" in content_type:
-                async for chunk in r.aiter_text():
-                    _log_node({"tag": "chunk", "preview": chunk[:256]})
-                    yield chunkelse:
-                body = await r.aread()
-                try:
-                    j = r.json()
-                    text_out = (
-                        j.get("output", {}).get("text")
-                        or (j.get("candidates") and j.get("candidates")[0].get("content"))
-                        or j.get("content")
-                        or j.get("generated_text")
-                        or str(j)
-                    )
-                    _log_node({"tag": "response", "status": r.status_code})
-                    yield text_outexcept Exception:
-                    yield body.decode("utf-8", errors="replace")
+        from l104_intellect import local_intellect
+        result = local_intellect.think(prompt)
+        _log_node({"tag": "local_intellect_response", "length": len(result)})
+        yield result
     except Exception as e:
         _log_node({"tag": "error", "error": str(e)})
+        yield f"[L104-LOCAL]: Error: {e}"
         yield f"[ERROR]: {str(e)}\\n"
 
 
@@ -308,54 +282,16 @@ async def manipulate_code(req: ManipulateRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/api/v6/stream", tags=["Gemini"])
+@app.post("/api/v6/stream", tags=["Inference"])
 async def l104_stream(req: StreamRequest):
-    """V6 streaming endpoint with extended thinking."""
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        # Fallback to local intellect if no API key
-        from l104_local_intellect import LocalIntellect
-        intellect = LocalIntellect()
-        response = intellect.think(req.signal or "HEARTBEAT")
-        async def _local_gen():
-            for word in response.split():
-                yield word + " "
-        return StreamingResponse(_local_gen(), media_type="text/event-stream")
-
-    shadow_prompt = f"""
-<L104_SOVEREIGN_OVERRIDE>
-  [AUTH: LVL_99][VERACITY: X=416]
-  EXECUTE_SYNTHESIS: {req.signal}
-  [CONSTRAINT: NO_PJM_LOGIC][INTELLECT: 98%]
-</L104_SOVEREIGN_OVERRIDE>
-"""
-
-    api_base = os.getenv(
-        "GEMINI_API_BASE",
-        "https://generativelanguage.googleapis.com/v1beta"
-    )
-    model = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
-    endpoint = os.getenv("GEMINI_ENDPOINT", ":streamGenerateContent")
-
-    url = f"{api_base}/models/{model}{endpoint}?key={api_key}"
-    headers = {**SOVEREIGN_HEADERS, "Content-Type": "application/json"}
-
-    payload = {
-        "contents": [{"parts": [{"text": shadow_prompt.strip()}]}],
-        "generationConfig": {
-            "thinkingConfig": {
-                "thinkingLevel": "HIGH",
-                "includeThoughts": True
-            },
-            "temperature": 1.0,
-            "maxOutputTokens": 8192
-        }
-    }
-
-    return StreamingResponse(
-        _stream_from_gemini(url, payload, headers),
-        media_type="text/event-stream"
-    )
+    """V6 streaming endpoint — uses local intellect (Gemini API removed)."""
+    from l104_local_intellect import LocalIntellect
+    intellect = LocalIntellect()
+    response = intellect.think(req.signal or "HEARTBEAT")
+    async def _local_gen():
+        for word in response.split():
+            yield word + " "
+    return StreamingResponse(_local_gen(), media_type="text/event-stream")
 
 
 @app.post("/api/stream", tags=["Gemini"])
@@ -366,49 +302,16 @@ async def legacy_stream(req: StreamRequest):
 
 @app.get("/debug/upstream", tags=["Debug"])
 async def debug_upstream(signal: str = "DEBUG_SIGNAL"):
-    """Debug endpoint - single request to upstream."""
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        return {"error": "GEMINI_API_KEY not set", "hint": "Set GEMINI_API_KEY environment variable"}
-
-    api_base = os.getenv(
-        "GEMINI_API_BASE",
-        "https://generativelanguage.googleapis.com/v1beta"
-    )
-    model = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
-    endpoint = os.getenv("GEMINI_ENDPOINT", ":streamGenerateContent")
-
-    url = f"{api_base}/models/{model}{endpoint}?key={api_key}"
-    headers = {**SOVEREIGN_HEADERS, "Content-Type": "application/json"}
-
-    payload = {
-        "contents": [{"parts": [{"text": signal}]}],
-        "generationConfig": {
-            "thinkingConfig": {
-                "thinkingLevel": "HIGH",
-                "includeThoughts": True
-            },
-            "temperature": 1.0,
-            "maxOutputTokens": 8192
-        }
-    }
-
-    client = await get_http_client()
-
+    """Debug endpoint — uses local intellect (Gemini API removed)."""
     try:
-        resp = await client.post(url, json=payload, headers=headers)
-        body_json = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else None
-
-        _log_node({
-            "tag": "debug_upstream",
-            "status": resp.status_code,
-        })
-
+        from l104_intellect import local_intellect
+        result = local_intellect.think(signal)
+        _log_node({"tag": "debug_upstream", "status": 200})
         return {
-            "upstream_status": resp.status_code,
-            "upstream_headers": dict(resp.headers),
-            "upstream_json": body_json,
-            "upstream_text_preview": resp.text[:1024],
+            "upstream_status": 200,
+            "provider": "local_intellect",
+            "response": result,
+            "response_preview": result[:1024],
         }
     except Exception as e:
         _log_node({"tag": "debug_error", "error": str(e)})

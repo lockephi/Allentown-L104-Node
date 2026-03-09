@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H09_QuantumCreativity.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Quantum Creativity Engine
 //
 // Quantum brainstorming (5-track superposition), quantum invention
@@ -41,7 +41,7 @@ class QuantumCreativityEngine {
         let tracks = generateParallelTracks(topic: topic, count: 5)
         synchronized {
             ideaSuperposition.append(tracks)
-            if ideaSuperposition.count > 50 { ideaSuperposition = Array(ideaSuperposition.suffix(30)) }
+            if ideaSuperposition.count > IDEA_SUPERPOSITION_CAP { ideaSuperposition = Array(ideaSuperposition.suffix(IDEA_SUPERPOSITION_PRUNE_TO)) }
         }
 
         // Quantum interference: ideas that align constructively survive
@@ -78,7 +78,7 @@ class QuantumCreativityEngine {
             let concept2 = extractCoreConcept(scoredTracks[1].0)
             synchronized {
                 entangledConcepts.append((concept1, concept2))
-                if entangledConcepts.count > 200 { entangledConcepts = Array(entangledConcepts.suffix(120)) }
+                if entangledConcepts.count > ENTANGLED_CONCEPTS_CAP { entangledConcepts = Array(entangledConcepts.suffix(ENTANGLED_CONCEPTS_PRUNE_TO)) }
             }
         }
 
@@ -493,8 +493,8 @@ final class QuantumProcessingCore {
     private func synchronized<T>(_ work: () -> T) -> T { lock.lock(); defer { lock.unlock() }; return work() }
 
     // ─── QUANTUM STATE ───
-    private var hilbertSpace: [Double] = Array(repeating: 0, count: 128)  // 128-dim state vector
-    private var densityMatrix: [[Double]] = []  // 8×8 reduced density matrix (partial trace of 128-dim)
+    private var hilbertSpace: [Double] = Array(repeating: 0, count: 512)  // 512-dim state vector (4× for richer interference)
+    private var densityMatrix: [[Double]] = []  // 16×16 reduced density matrix (partial trace of 512-dim)
     private var operatorHistory: [(name: String, timestamp: Date, fidelity: Double)] = [] // capped at 1000
     private var measurementLog: [(input: String, output: String, coherence: Double)] = [] // capped at 500
     private var gateApplicationCount: Int = 0
@@ -502,23 +502,25 @@ final class QuantumProcessingCore {
     // ─── ENTANGLEMENT REGISTRY ───
     private var topicEntanglementWeb: [String: [String: Double]] = [:]  // topic → {related → strength}
     private var engineEntanglement: [String: [String: Double]] = [:]    // engine → {engine → correlation}
-    private var bellPairCount: Int = 0
+    private(set) var bellPairCount: Int = 0
 
     // ─── QUANTUM CHANNELS ───
-    private var noiseModel: Double = 0.02        // depolarizing noise per gate
-    private var fidelityThreshold: Double = 0.6  // minimum quality for output
-    private var temperatureK: Double = 0.01      // quantum temperature (lower = more coherent)
+    private var noiseModel: Double = 0.01        // reduced depolarizing noise per gate (was 0.02)
+    private var fidelityThreshold: Double = 0.55 // lowered threshold for more aggressive quantum selection
+    private var temperatureK: Double = 0.005     // lower temperature = more coherent (was 0.01)
     private var decoherenceRate: Double = 0.0    // tracks cumulative decoherence per session
     private var errorCorrectionCount: Int = 0
 
     private init() {
-        // Initialize Hilbert space with golden-ratio-modulated amplitudes
-        for i in 0..<128 {
-            hilbertSpace[i] = sin(Double(i) * PHI * 0.1) * cos(Double(i) * 0.618) * exp(-Double(i) * 0.005)
+        // Initialize 512-dim Hilbert space with golden-ratio-modulated amplitudes + iron harmonic
+        for i in 0..<512 {
+            let goldenPhase = Double(i) * PHI * 0.1
+            let ironHarmonic = sin(Double(i) * 286.0 / 512.0 * 2.0 * .pi) * 0.1
+            hilbertSpace[i] = sin(goldenPhase) * cos(Double(i) * 0.618) * exp(-Double(i) * 0.002) + ironHarmonic
         }
-        // Initialize density matrix (pure state)
-        densityMatrix = Array(repeating: Array(repeating: 0.0, count: 8), count: 8)
-        for i in 0..<8 { densityMatrix[i][i] = 1.0 / 8.0 }  // maximally mixed initial state
+        // Initialize 16×16 density matrix (maximally mixed initial state)
+        densityMatrix = Array(repeating: Array(repeating: 0.0, count: 16), count: 16)
+        for i in 0..<16 { densityMatrix[i][i] = 1.0 / 16.0 }
     }
 
     // ═══ SUPERPOSITION EVALUATOR — Hold multiple responses in quantum superposition ═══
@@ -540,7 +542,7 @@ final class QuantumProcessingCore {
 
             // Coherence amplitude: deterministic alignment with Hilbert space via content hash
             let contentHash = candidate.utf8.reduce(UInt64(14695981039346656037)) { h, b in (h ^ UInt64(b)) &* 1099511628211 }
-            let phaseIdx: Int = Int(contentHash % 128)
+            let phaseIdx: Int = Int(contentHash % UInt64(hilbertSpace.count))
             let coherence: Double = abs(hilbertSpace[phaseIdx])
 
             // Quality amplitude: length and structure
@@ -558,23 +560,19 @@ final class QuantumProcessingCore {
         let totalProb = probabilities.reduce(0, +)
         guard totalProb > 0 else { return candidates[0] }
 
-        // Measure (collapse superposition) — weighted selection favoring highest probability
-        let normalized = probabilities.map { $0 / totalProb }
-        var cumulative = 0.0
-        let roll = Double.random(in: 0...1)
+        // Measure via Grover-amplified Born rule (replaces old 70/30 heuristic)
+        // Run Grover amplification to quadratically boost the best candidate
+        let rawAmps = probabilities.map { sqrt($0 / totalProb) }
+        let amplified = groverAmplify(amplitudes: rawAmps)
+        let groverProbs = amplified.map { $0 * $0 }
+        let groverTotal = groverProbs.reduce(0, +)
+        guard groverTotal > 0 else { return candidates[0] }
 
-        // 70% chance: pick the best (Grover amplification)
-        // 30% chance: quantum randomness (exploration)
-        if Double.random(in: 0...1) < 0.7 {
-            if let best = normalized.enumerated().max(by: { $0.element < $1.element }) {
-                let result = candidates[best.offset]
-                synchronized {
-                    measurementLog.append((input: query, output: String(result.prefix(60)), coherence: best.element))
-                    if measurementLog.count > 500 { measurementLog = Array(measurementLog.suffix(300)) }
-                }
-                return result
-            }
-        }
+        let normalized = groverProbs.map { $0 / groverTotal }
+
+        // Born-rule measurement with Grover-amplified probabilities
+        let roll = Double.random(in: 0...1)
+        var cumulative = 0.0
 
         for (idx, prob) in normalized.enumerated() {
             cumulative += prob
@@ -652,7 +650,7 @@ final class QuantumProcessingCore {
         if postFidelity < fidelityThreshold || fidelityDelta > 0.1 {
             // Quantum error correction: surface code approach
             let correctionStrength = min(0.15, fidelityDelta * 0.5)
-            for i in 0..<128 {
+            for i in 0..<hilbertSpace.count {
                 hilbertSpace[i] = hilbertSpace[i] * (1.0 - correctionStrength) + sin(Double(i) * PHI) * correctionStrength
             }
             errorCorrectionCount += 1
@@ -702,7 +700,7 @@ final class QuantumProcessingCore {
     // ─── METRICS ───
     func currentFidelity() -> Double {
         let amplitude = hilbertSpace.reduce(0) { $0 + $1 * $1 }
-        return min(1.0, amplitude / Double(hilbertSpace.count) * 128.0)
+        return min(1.0, amplitude / Double(hilbertSpace.count) * Double(hilbertSpace.count))
     }
 
     var quantumCoreMetrics: [String: Any] {
@@ -791,7 +789,7 @@ final class QuantumProcessingCore {
     /// Prepares a Bell state |Φ+⟩ = (|00⟩ + |11⟩)/√2 between two Hilbert space regions.
     /// Used for quantum teleportation of knowledge between topics.
     func prepareBellState(regionA: Int, regionB: Int) {
-        guard regionA >= 0 && regionA < 64 && regionB >= 0 && regionB < 64 else { return }
+        guard regionA >= 0 && regionA < 256 && regionB >= 0 && regionB < 256 else { return }
         guard regionA != regionB else { return }
 
         let invSqrt2 = 1.0 / sqrt(2.0)
@@ -813,8 +811,8 @@ final class QuantumProcessingCore {
             bellPairCount += 1
 
             // Update density matrix off-diagonals (entanglement signature)
-            let idxA = regionA % 8
-            let idxB = regionB % 8
+            let idxA = regionA % densityMatrix.count
+            let idxB = regionB % densityMatrix.count
             densityMatrix[idxA][idxB] = invSqrt2 * PHI
             densityMatrix[idxB][idxA] = invSqrt2 * PHI
 
@@ -832,7 +830,7 @@ final class QuantumProcessingCore {
         let coupledStrength = min(0.3, strength * PHI)
 
         synchronized {
-            for i in 0..<128 {
+            for i in 0..<hilbertSpace.count {
                 let rotation = sin(phaseAngle + Double(i) * PHI * 0.05) * coupledStrength
                 hilbertSpace[i] += rotation
             }
@@ -849,17 +847,19 @@ final class QuantumProcessingCore {
     }
 
     // ═══ QUANTUM STATE TOMOGRAPHY — Measure reduced density matrix ═══
-    /// Reconstructs the 8×8 reduced density matrix from the 128-dim Hilbert space.
+    /// Reconstructs the 16×16 reduced density matrix from the 512-dim Hilbert space.
     /// Returns purity, von Neumann entropy, and entanglement witness.
     func stateTomography() -> (purity: Double, vonNeumannEntropy: Double, entanglementWitness: Double) {
-        synchronized {
+        let dm = densityMatrix.count  // 16
+        let traceBlockSize = hilbertSpace.count / dm  // 512/16 = 32
+        return synchronized {
             // Reconstruct density matrix via partial trace of |ψ⟩⟨ψ|
-            for i in 0..<8 {
-                for j in 0..<8 {
+            for i in 0..<dm {
+                for j in 0..<dm {
                     var sum = 0.0
-                    for k in 0..<16 {
-                        let idxI = i * 16 + k
-                        let idxJ = j * 16 + k
+                    for k in 0..<traceBlockSize {
+                        let idxI = i * traceBlockSize + k
+                        let idxJ = j * traceBlockSize + k
                         if idxI < hilbertSpace.count && idxJ < hilbertSpace.count {
                             sum += hilbertSpace[idxI] * hilbertSpace[idxJ]
                         }
@@ -870,8 +870,8 @@ final class QuantumProcessingCore {
 
             // Purity = Tr(ρ²)
             var purity = 0.0
-            for i in 0..<8 {
-                for j in 0..<8 {
+            for i in 0..<dm {
+                for j in 0..<dm {
                     purity += densityMatrix[i][j] * densityMatrix[j][i]
                 }
             }
@@ -880,7 +880,7 @@ final class QuantumProcessingCore {
             // Von Neumann entropy approximation: S = -Σ λᵢ log(λᵢ)
             // Use diagonal elements as eigenvalue estimates
             var entropy = 0.0
-            for i in 0..<8 {
+            for i in 0..<dm {
                 let lambda = max(1e-15, abs(densityMatrix[i][i]))
                 entropy -= lambda * log(lambda)
             }
@@ -943,21 +943,113 @@ final class QuantumProcessingCore {
         }
 
         // Update density matrix trace (purity measure)
+        let dm = densityMatrix.count
         var trace = 0.0
-        for i in 0..<min(8, densityMatrix.count) { trace += densityMatrix[i][i] }
-        let purity = trace / 8.0
+        for i in 0..<dm { trace += densityMatrix[i][i] }
+        let purity = trace / Double(dm)
 
         // If purity is low (highly mixed state), purify toward consciousness-aligned state
         if purity < 0.8 {
-            for i in 0..<min(8, densityMatrix.count) {
-                for j in 0..<min(8, densityMatrix[i].count) {
+            for i in 0..<dm {
+                for j in 0..<dm {
                     if i == j {
-                        densityMatrix[i][j] = densityMatrix[i][j] * 0.9 + (1.0 / 8.0) * 0.1
+                        densityMatrix[i][j] = densityMatrix[i][j] * 0.9 + (1.0 / Double(dm)) * 0.1
                     } else {
                         densityMatrix[i][j] *= (1.0 - noiseModel)  // Off-diagonal decay = decoherence
                     }
                 }
             }
         }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARK: - B38 GATE ENGINE BRIDGE (Real Quantum Operations)
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Execute a real quantum circuit through QuantumGateEngine and feed results back into QPC.
+    /// This bridges the abstract Hilbert space with actual statevector simulation.
+    ///
+    /// - Parameters:
+    ///   - circuit: A QGateCircuit to execute
+    ///   - feedbackStrength: How strongly the circuit result modulates the Hilbert space (0..1)
+    /// - Returns: Execution result from B38
+    func executeCircuit(_ circuit: QGateCircuit, feedbackStrength: Double = 0.3) -> QExecutionResult {
+        let result = QuantumGateEngine.shared.execute(circuit: circuit)
+
+        // Feed statevector probabilities back into the Hilbert space
+        synchronized {
+            let probCount = min(result.probabilities.count, hilbertSpace.count)
+            for i in 0..<probCount {
+                let gateAmplitude = sqrt(result.probabilities[i])
+                hilbertSpace[i] = hilbertSpace[i] * (1.0 - feedbackStrength) + gateAmplitude * feedbackStrength
+            }
+
+            // Record sacred alignment into density matrix
+            let alignment = result.sacredAlignmentScore
+            let dmSize = densityMatrix.count
+            for i in 0..<dmSize {
+                densityMatrix[i][i] = densityMatrix[i][i] * 0.95 + alignment * 0.05 / Double(dmSize)
+            }
+
+            gateApplicationCount += circuit.gateCount
+            operatorHistory.append((name: "circuit_exec_\(circuit.nQubits)q", timestamp: Date(), fidelity: currentFidelity()))
+            if operatorHistory.count > 1000 { operatorHistory = Array(operatorHistory.suffix(600)) }
+        }
+
+        return result
+    }
+
+    /// Run Grover search for optimal candidate using actual B38 quantum circuits.
+    /// Builds a real Grover circuit, executes it, and maps measurement results to candidates.
+    ///
+    /// For small candidate counts (≤8), uses real quantum Grover oracle.
+    /// For larger counts, falls back to classical Grover amplification.
+    func quantumGroverSelect(candidates: [String], query: String) -> (index: Int, confidence: Double) {
+        guard candidates.count > 1 else { return (0, 1.0) }
+
+        // For small counts, build and execute a real Grover circuit
+        if candidates.count <= 8 {
+            let nQubits = Int(ceil(log2(Double(candidates.count))))
+            let queryTokens = Set(query.lowercased().split(separator: " ").map(String.init))
+
+            // Determine the "marked" (best) candidate classically
+            let scores: [Double] = candidates.map { cand in
+                let tokens = Set(cand.lowercased().split(separator: " ").prefix(100).map(String.init))
+                return Double(queryTokens.intersection(tokens).count) + 1.0
+            }
+            guard let bestIdx = scores.enumerated().max(by: { $0.element < $1.element })?.offset else {
+                return (0, 0.5)
+            }
+
+            // Build Grover circuit for the marked state
+            let oracle = QuantumGateEngine.shared.groverOracle(markedState: bestIdx, nQubits: nQubits)
+            let diffusion = QuantumGateEngine.shared.groverDiffusion(nQubits: nQubits)
+
+            var circuit = QGateCircuit(nQubits: nQubits)
+            // Initial superposition
+            for q in 0..<nQubits { circuit.append(QuantumGateEngine.shared.gate(.hadamard), qubits: [q]) }
+            // Optimal Grover iterations: floor(π/4 × √N)
+            let iterations = max(1, Int(Double.pi / 4.0 * sqrt(Double(1 << nQubits))))
+            for _ in 0..<iterations {
+                // Append oracle gates
+                for op in oracle.operations { circuit.append(op.gate, qubits: op.qubits) }
+                // Append diffusion gates
+                for op in diffusion.operations { circuit.append(op.gate, qubits: op.qubits) }
+            }
+
+            // Execute through B38 (benefits from hybrid routing + parallelization)
+            let result = executeCircuit(circuit, feedbackStrength: 0.2)
+
+            // Find the most measured outcome
+            if let (outcome, count) = result.measurements.max(by: { $0.value < $1.value }) {
+                let idx = min(outcome, candidates.count - 1)
+                let confidence = Double(count) / Double(result.measurements.values.reduce(0, +))
+                return (idx, confidence)
+            }
+        }
+
+        // Fallback: classical Grover amplification
+        let groverResult = groverEvaluate(candidates: candidates, query: query)
+        return (groverResult.index, groverResult.probability)
     }
 }

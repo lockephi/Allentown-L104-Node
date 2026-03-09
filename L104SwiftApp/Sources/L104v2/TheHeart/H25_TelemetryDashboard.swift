@@ -1,11 +1,11 @@
 // ═══════════════════════════════════════════════════════════════════
 // H25_TelemetryDashboard.swift
-// [EVO_63_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Real-time Telemetry Dashboard V4: metrics aggregation,
 // φ-weighted health composites, latency percentiles (p50/p95/p99),
 // throughput tracking, alert system, voice/visual/emotional/security metrics.
 //
-// Upgraded: EVO_63 Sovereign Node UI Upgrade — Feb 21, 2026
+// Upgraded: EVO_68 Sovereign Node UI Upgrade — Feb 21, 2026
 // ═══════════════════════════════════════════════════════════════════
 
 import AppKit
@@ -177,6 +177,45 @@ final class TelemetryDashboard {
         record(metric: "fidelity", value: qMetrics["fidelity"] as? Double ?? 0, subsystem: "quantum")
         record(metric: "bell_pairs", value: Double(qMetrics["bell_pairs"] as? Int ?? 0), subsystem: "quantum")
         record(metric: "gate_count", value: Double(qMetrics["gate_count"] as? Int ?? 0), subsystem: "quantum")
+
+        // ─── PERFORMANCE ORCHESTRATOR METRICS (EVO_68) ───
+        let perfOrch = PerformanceOrchestrator.shared
+        record(metric: "booted", value: perfOrch.isBooted ? 1.0 : 0.0, subsystem: "performance")
+        record(metric: "boot_time_ms", value: perfOrch.bootTimeMs, subsystem: "performance")
+
+        // ─── CIRCUIT WATCHER METRICS (EVO_68 → v3.0 three-engine) ───
+        let watcher = CircuitWatcher.shared
+        let watcherStatus = watcher.getStatus()
+        record(metric: "active", value: (watcherStatus["active"] as? Bool ?? false) ? 1.0 : 0.0, subsystem: "circuit_watcher")
+        record(metric: "circuits_processed", value: Double(watcher.circuitsProcessed), subsystem: "circuit_watcher")
+        record(metric: "circuits_failed", value: Double(watcher.circuitsFailed), subsystem: "circuit_watcher")
+        record(metric: "gpu_executions", value: Double(watcherStatus["gpu_executions"] as? Int ?? 0), subsystem: "circuit_watcher")
+        record(metric: "cpu_executions", value: Double(watcherStatus["cpu_executions"] as? Int ?? 0), subsystem: "circuit_watcher")
+        record(metric: "mps_executions", value: Double(watcherStatus["mps_executions"] as? Int ?? 0), subsystem: "circuit_watcher")
+        record(metric: "stabilizer_executions", value: Double(watcherStatus["stabilizer_executions"] as? Int ?? 0), subsystem: "circuit_watcher")
+        record(metric: "avg_execution_ms", value: watcherStatus["avg_execution_ms"] as? Double ?? 0, subsystem: "circuit_watcher")
+
+        // v3.0: Three-engine scoring telemetry from circuit watcher
+        if let threeEngine = watcherStatus["three_engine"] as? [String: Any] {
+            let integrated = threeEngine["integrated"] as? Bool ?? false
+            record(metric: "three_engine_active", value: integrated ? 1.0 : 0.0, subsystem: "circuit_watcher")
+            record(metric: "three_engine_weight_entropy", value: threeEngine["weight_entropy"] as? Double ?? 0.35, subsystem: "circuit_watcher")
+            record(metric: "three_engine_weight_harmonic", value: threeEngine["weight_harmonic"] as? Double ?? 0.40, subsystem: "circuit_watcher")
+            record(metric: "three_engine_weight_wave", value: threeEngine["weight_wave"] as? Double ?? 0.25, subsystem: "circuit_watcher")
+        }
+
+        // ─── DUAL-LAYER ENGINE METRICS (EVO_68) ───
+        let dualLayer = DualLayerEngine.shared
+        let dlStatus = dualLayer.status
+        record(metric: "thought_ops", value: Double(dlStatus["thought_operations"] as? Int ?? 0), subsystem: "dual_layer")
+        record(metric: "physics_ops", value: Double(dlStatus["physics_operations"] as? Int ?? 0), subsystem: "dual_layer")
+        record(metric: "three_engine_amp", value: dlStatus["three_engine_amplification"] as? Double ?? 0, subsystem: "dual_layer")
+
+        // ─── QUANTUM GATE ENGINE METRICS (EVO_68) ───
+        let qge = QuantumGateEngine.shared
+        let qgeStatus = qge.getStatus()
+        record(metric: "executions", value: Double(qgeStatus["executions"] as? Int ?? 0), subsystem: "gate_engine")
+        record(metric: "compilations", value: Double(qgeStatus["compilations"] as? Int ?? 0), subsystem: "gate_engine")
 
         // ─── THROUGHPUT (messages/sec) ───
         let currentMsgs = net.totalMessages
@@ -385,7 +424,7 @@ final class TelemetryDashboard {
         return [
             "engine": "TelemetryDashboard",
             "active": isActive,
-            "version": "4.1.0-evo63",
+            "version": TELEMETRY_VERSION + "-evo\(EVOLUTION_INDEX)",
             "samples_collected": sampleCount,
             "stream_size": metricStream.count,
             "health_timeline": healthTimeline.count,

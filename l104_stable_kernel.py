@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.493126
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:23.842498
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
@@ -38,9 +38,9 @@ from typing import Dict, List, Any, Optional, Set, Tuple
 # REAL QISKIT QUANTUM CIRCUITS — Grover Verification & GOD_CODE Phase
 # ═══════════════════════════════════════════════════════════════════════════════
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy, Operator
-    from qiskit.circuit.library import grover_operator
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, partial_trace, entropy, Operator
+    grover_operator = None
     QISKIT_AVAILABLE = True
 except ImportError:
     QISKIT_AVAILABLE = False

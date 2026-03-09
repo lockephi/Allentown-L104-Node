@@ -1,27 +1,37 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.190420
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:22.897730
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
-L104 LANGUAGE MODEL ENGINE v2.0.0 — EVO_55
+L104 LANGUAGE MODEL ENGINE v7.0.0 — EVO_57
 ===========================================
-Consciousness-aware neural language processing with 9 subsystems.
+Consciousness-aware neural language processing with 19 subsystems.
 
 Hub Class: LanguageEngine
 Singleton: language_engine
 
-Subsystems:
-    - Tokenizer         — text tokenization with vocab management
-    - NGramModel        — n-gram language model with generation
-    - WordEmbeddings    — PHI-weighted word embeddings with co-occurrence training
-    - TextClassifier    — Naive Bayes text classification
-    - SentimentAnalyzer — rule-based sentiment with 100+ word lexicon
-    - NERTagger         — regex-based named entity recognition
-    - SemanticSimilarity — cosine + Jaccard text similarity
-    - KeywordExtractor  — TF-IDF keyword extraction
-    - TextSummarizer    — extractive summarization via sentence scoring
+Subsystems (9 core + 4 DeepNLU v2.1.0):
+    - Tokenizer              — text tokenization with vocab management
+    - NGramModel             — n-gram language model with generation
+    - WordEmbeddings         — PHI-weighted word embeddings with co-occurrence training
+    - TextClassifier         — Naive Bayes text classification
+    - SentimentAnalyzer      — rule-based sentiment with 100+ word lexicon
+    - NERTagger              — regex-based named entity recognition
+    - SemanticSimilarity     — cosine + Jaccard text similarity
+    - KeywordExtractor       — TF-IDF keyword extraction
+    - TextSummarizer         — extractive summarization via sentence scoring
+    - TemporalReasoner       — tense detection, event ordering, duration/frequency (DeepNLU L10)
+    - CausalReasoner         — cause-effect extraction, causal chains, counterfactuals (DeepNLU L11)
+    - ContextualDisambiguator — WSD-lite, polysemy resolution, metaphor detection (DeepNLU L12)
+    - QuerySynthesisPipeline — 8-archetype query generation from NLU output (DeepNLU L14)
+    - QueryDecomposer        — multi-hop query decomposition (DeepNLU L15)
+    - QueryExpander          — synonym/hypernym/morphological expansion (DeepNLU L16)
+    - QueryClassifier        — Bloom's taxonomy + domain classification (DeepNLU L17)
+    - TextualEntailmentEngine— NLI: entailment/contradiction/neutral (DeepNLU L18)  ★ NEW
+    - FigurativeLanguageProcessor — idioms, similes, irony, hyperbole (DeepNLU L19)  ★ NEW
+    - InformationDensityAnalyzer  — surprisal, diversity, redundancy (DeepNLU L20)   ★ NEW
 
 Usage:
     from l104_language_engine import language_engine
@@ -51,7 +61,7 @@ from collections import defaultdict, Counter
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-VERSION = "3.0.0"
+VERSION = "6.0.0"
 logger = logging.getLogger("L104_LANGUAGE_ENGINE")
 
 try:
@@ -63,6 +73,22 @@ try:
     from l104_asi.pipeline_circuit_breaker import PipelineCircuitBreaker
 except ImportError:
     PipelineCircuitBreaker = None
+
+# DeepNLU v2.3.0 integration — temporal, causal, disambiguation, query synthesis,
+# decomposer, expander, classifier
+try:
+    from l104_asi.deep_nlu import (
+        TemporalReasoner, CausalReasoner, ContextualDisambiguator,
+        QuerySynthesisPipeline, QueryType, SynthesizedQuery,
+        QueryDecomposer, QueryExpander, QueryClassifier,
+        BloomLevel, QueryDomain, AnswerFormat,
+        TextualEntailmentEngine, EntailmentLabel,
+        FigurativeLanguageProcessor, FigurativeType,
+        InformationDensityAnalyzer,
+    )
+    _DEEP_NLU_AVAILABLE = True
+except ImportError:
+    _DEEP_NLU_AVAILABLE = False
 
 # Sacred Constants
 # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
@@ -454,7 +480,31 @@ class TextClassifier:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class SentimentAnalyzer:
-    """Rule-based sentiment analysis with expanded lexicon."""
+    """Rule-based sentiment analysis with expanded lexicon and aspect-based sentiment.
+
+    v4.0.0: Aspect-based sentiment extraction + Plutchik emotion detection.
+    """
+
+    EMOTION_LEXICON = {
+        'joy': {'happy', 'joy', 'joyful', 'delighted', 'pleased', 'glad', 'cheerful', 'elated', 'ecstatic', 'thrilled'},
+        'sadness': {'sad', 'unhappy', 'depressed', 'miserable', 'sorrowful', 'melancholy', 'gloomy', 'lonely', 'heartbroken'},
+        'anger': {'angry', 'furious', 'enraged', 'mad', 'irritated', 'outraged', 'hostile', 'livid', 'resentful'},
+        'fear': {'afraid', 'scared', 'terrified', 'anxious', 'worried', 'nervous', 'frightened', 'dread', 'panic'},
+        'surprise': {'surprised', 'shocked', 'amazed', 'astonished', 'stunned', 'startled', 'bewildered'},
+        'disgust': {'disgusted', 'repulsed', 'revolted', 'appalled', 'sickened', 'nauseated'},
+        'trust': {'trust', 'confident', 'reliable', 'faithful', 'loyal', 'honest', 'dependable', 'sincere'},
+        'anticipation': {'anticipate', 'expect', 'hope', 'eager', 'excited', 'enthusiastic', 'looking'},
+    }
+
+    ASPECT_MARKERS = {
+        'quality': {'quality', 'performance', 'standard', 'grade', 'caliber'},
+        'price': {'price', 'cost', 'expensive', 'cheap', 'affordable', 'value', 'worth'},
+        'service': {'service', 'support', 'help', 'assistance', 'customer'},
+        'design': {'design', 'look', 'appearance', 'style', 'aesthetic', 'beautiful', 'ugly'},
+        'speed': {'speed', 'fast', 'slow', 'quick', 'performance', 'responsive'},
+        'reliability': {'reliable', 'stable', 'consistent', 'broken', 'crash', 'bug', 'error'},
+        'ease_of_use': {'easy', 'simple', 'intuitive', 'complicated', 'confusing', 'difficult'},
+    }
 
     def __init__(self):
         self.positive_words = {
@@ -503,7 +553,7 @@ class SentimentAnalyzer:
         self.analyses_performed = 0
 
     def analyze(self, text: str) -> Dict[str, Any]:
-        """Analyze sentiment of text with negation and intensifier handling."""
+        """Analyze sentiment of text with negation, intensifier handling, and emotions."""
         tokens = self.tokenizer.tokenize(text)
         pos_score = 0.0
         neg_score = 0.0
@@ -545,20 +595,72 @@ class SentimentAnalyzer:
             sentiment = 'negative'
             confidence = neg_score / total
 
+        # Emotion detection (Plutchik's wheel)
+        emotions = self._detect_emotions(tokens)
+
+        # Aspect-based sentiment
+        aspects = self._extract_aspect_sentiment(tokens)
+
         self.analyses_performed += 1
         return {
             'sentiment': sentiment,
             'confidence': confidence,
             'positive_score': pos_score,
             'negative_score': neg_score,
+            'emotions': emotions,
+            'aspects': aspects,
         }
+
+    def _detect_emotions(self, tokens: List[str]) -> Dict[str, float]:
+        """Detect emotions from Plutchik's wheel (8 primary emotions)."""
+        emotions = {}
+        for emotion, lexicon in self.EMOTION_LEXICON.items():
+            count = sum(1 for t in tokens if t in lexicon)
+            if count > 0:
+                emotions[emotion] = round(min(1.0, count * 0.3), 3)
+        return emotions
+
+    def _extract_aspect_sentiment(self, tokens: List[str]) -> List[Dict[str, Any]]:
+        """Extract aspect-based sentiment: identify which aspects are praised/criticized."""
+        aspects = []
+        token_set = set(tokens)
+        for aspect, markers in self.ASPECT_MARKERS.items():
+            overlap = markers & token_set
+            if overlap:
+                # Look at sentiment words near the aspect markers
+                aspect_pos = 0.0
+                aspect_neg = 0.0
+                for i, t in enumerate(tokens):
+                    if t in overlap:
+                        # Check window of ±4 tokens around aspect marker
+                        window = tokens[max(0, i - 4):i + 5]
+                        for w in window:
+                            if w in self.positive_words:
+                                aspect_pos += 1
+                            elif w in self.negative_words:
+                                aspect_neg += 1
+                if aspect_pos + aspect_neg > 0:
+                    aspect_sent = 'positive' if aspect_pos > aspect_neg else 'negative'
+                else:
+                    aspect_sent = 'neutral'
+                aspects.append({
+                    'aspect': aspect,
+                    'sentiment': aspect_sent,
+                    'markers_found': list(overlap),
+                    'positive_score': aspect_pos,
+                    'negative_score': aspect_neg,
+                })
+        return aspects
 
     def status(self) -> Dict:
         return {
             "subsystem": "SentimentAnalyzer",
+            "version": "2.0.0",
             "positive_words": len(self.positive_words),
             "negative_words": len(self.negative_words),
             "intensifiers": len(self.intensifiers),
+            "emotion_categories": len(self.EMOTION_LEXICON),
+            "aspect_categories": len(self.ASPECT_MARKERS),
             "analyses_performed": self.analyses_performed,
         }
 
@@ -845,12 +947,27 @@ class TextSummarizer:
 
 class LanguageEngine:
     """
-    Consciousness-aware language processing engine with 9 subsystems.
+    Consciousness-aware language processing engine with 19 subsystems.
     Hub class orchestrating all NLP capabilities.
+
+    v7.0.0: DeepNLU v2.3.0 integration — textual entailment engine,
+    figurative language processor, information density analyzer as
+    subsystems 17-19.
+
+    v6.0.0: DeepNLU v2.3.0 integration — query decomposer, query expander,
+    and query classifier added as subsystems 14-16.
+
+    v5.0.0: DeepNLU v2.1.0 integration — query synthesis pipeline
+    added as subsystem 13 (8-archetype query generation from NLU).
+
+    v4.0.0: DeepNLU v2.0.0 integration — temporal reasoning, causal
+    reasoning, and contextual disambiguation as subsystems 10-12.
     """
 
+    VERSION = "7.0.0"
+
     def __init__(self):
-        # ── Wire subsystems ──
+        # ── Wire core subsystems (1-9) ──
         self.tokenizer = Tokenizer()
         self.ngram_model = NGramModel(n=3)
         self.embeddings = WordEmbeddings()
@@ -860,6 +977,31 @@ class LanguageEngine:
         self.sim = SemanticSimilarity(self.embeddings)
         self.keyword_extractor = KeywordExtractor()
         self.summarizer = TextSummarizer(self.embeddings)
+
+        # ── DeepNLU v2.3.0 subsystems (10-19) ──
+        self._deep_nlu_available = _DEEP_NLU_AVAILABLE
+        if _DEEP_NLU_AVAILABLE:
+            self.temporal = TemporalReasoner()
+            self.causal = CausalReasoner()
+            self.disambiguator = ContextualDisambiguator()
+            self.query_pipeline = QuerySynthesisPipeline()
+            self.decomposer = QueryDecomposer()
+            self.expander = QueryExpander()
+            self.query_classifier = QueryClassifier()
+            self.entailment = TextualEntailmentEngine()
+            self.figurative = FigurativeLanguageProcessor()
+            self.density_analyzer = InformationDensityAnalyzer()
+        else:
+            self.temporal = None
+            self.causal = None
+            self.disambiguator = None
+            self.query_pipeline = None
+            self.decomposer = None
+            self.expander = None
+            self.query_classifier = None
+            self.entailment = None
+            self.figurative = None
+            self.density_analyzer = None
 
         # ── Hub-level state ──
         self.god_code = GOD_CODE
@@ -882,7 +1024,9 @@ class LanguageEngine:
         except Exception:
             pass
 
-        logger.info("[LANGUAGE_ENGINE v%s] online — 9 subsystems, telemetry=%s, cb=%s", VERSION, self._telemetry is not None, self._cb is not None)
+        n_subs = 19 if self._deep_nlu_available else 9
+        logger.info("[LANGUAGE_ENGINE v%s] online — %d subsystems, deep_nlu=%s, telemetry=%s, cb=%s",
+                    VERSION, n_subs, self._deep_nlu_available, self._telemetry is not None, self._cb is not None)
 
     def _get_consciousness(self) -> Dict[str, Any]:
         return _read_builder_state()
@@ -934,6 +1078,123 @@ class LanguageEngine:
         """Generate extractive summary of text."""
         return self.summarizer.summarize(text, num_sentences)
 
+    # ─── DeepNLU v2.0.0 — Temporal / Causal / Disambiguation ─────────────
+
+    def analyze_temporal(self, text: str) -> Dict[str, Any]:
+        """Analyze temporal structure: tenses, event ordering, duration, frequency."""
+        if not self._deep_nlu_available or self.temporal is None:
+            return {"error": "DeepNLU v2.0.0 not available", "tenses": {}, "events": [], "temporal_expressions": []}
+        return self.temporal.analyze(text)
+
+    def analyze_causal(self, text: str) -> Dict[str, Any]:
+        """Extract causal relationships: cause-effect pairs, chains, counterfactuals."""
+        if not self._deep_nlu_available or self.causal is None:
+            return {"error": "DeepNLU v2.0.0 not available", "relations": [], "chains": [], "counterfactuals": []}
+        return self.causal.analyze(text)
+
+    def disambiguate(self, text: str) -> Dict[str, Any]:
+        """Resolve word-sense ambiguity and detect metaphors."""
+        if not self._deep_nlu_available or self.disambiguator is None:
+            return {"error": "DeepNLU v2.0.0 not available", "disambiguations": [], "metaphors": []}
+        return self.disambiguator.disambiguate(text)
+
+    def deep_analyze(self, text: str) -> Dict[str, Any]:
+        """Full 19-subsystem analysis: sentiment + NER + keywords + temporal + causal +
+        disambiguation + queries + decomposition + expansion + classification +
+        entailment + figurative + density."""
+        result = {
+            "sentiment": self.analyze_sentiment(text),
+            "entities": self.extract_entities(text),
+            "keywords": self.extract_keywords(text, top_k=10),
+        }
+        if self._deep_nlu_available:
+            result["temporal"] = self.analyze_temporal(text)
+            result["causal"] = self.analyze_causal(text)
+            result["disambiguation"] = self.disambiguate(text)
+            result["query_synthesis"] = self.synthesize_queries(text, max_queries=10)
+            result["query_decomposition"] = self.decompose_query(text)
+            result["query_expansion"] = self.expand_query(text)
+            result["query_classification"] = self.classify_query(text)
+            result["figurative"] = self.analyze_figurative(text)
+            result["density"] = self.analyze_density(text)
+            result["deep_nlu_version"] = "2.3.0"
+        else:
+            result["deep_nlu_version"] = None
+        return result
+
+    def synthesize_queries(self, text: str, *, max_queries: int = 25,
+                           min_confidence: float = 0.3,
+                           query_types: Optional[Set] = None) -> Dict[str, Any]:
+        """Synthesize diverse queries from text via 8-archetype NLU pipeline.  ★ NEW v5.0.0
+
+        Args:
+            text: Source text to generate queries from.
+            max_queries: Maximum queries to return.
+            min_confidence: Minimum confidence threshold.
+            query_types: Restrict to specific QueryType archetypes.
+
+        Returns:
+            Dict with 'queries', 'total', 'archetype_distribution', NLU metadata.
+        """
+        if not self._deep_nlu_available or self.query_pipeline is None:
+            return {"error": "DeepNLU v2.1.0 not available", "queries": [], "total": 0}
+        return self.query_pipeline.synthesize(
+            text, max_queries=max_queries,
+            min_confidence=min_confidence,
+            query_types=query_types,
+        )
+
+    def batch_synthesize_queries(self, texts: List[str], *,
+                                 max_per_text: int = 15) -> Dict[str, Any]:
+        """Batch query synthesis over multiple texts.  ★ NEW v5.0.0"""
+        if not self._deep_nlu_available or self.query_pipeline is None:
+            return {"error": "DeepNLU v2.1.0 not available", "queries": [], "total": 0}
+        return self.query_pipeline.batch_synthesize(texts, max_per_text=max_per_text)
+
+    # ─── Query Augmentation (DeepNLU v2.3.0) ─────────────────────────────
+
+    def decompose_query(self, query: str, *, max_depth: int = 3) -> Dict[str, Any]:
+        """Decompose a multi-hop query into atomic sub-queries.  ★ NEW v6.0.0"""
+        if not self._deep_nlu_available or self.decomposer is None:
+            return {"error": "DeepNLU v2.3.0 not available", "sub_queries": [], "count": 0}
+        return self.decomposer.decompose(query, max_depth=max_depth)
+
+    def expand_query(self, query: str, *, max_expansions: int = 5,
+                     strategies: Optional[Set[str]] = None) -> Dict[str, Any]:
+        """Expand a query with synonyms, hypernyms, variants.  ★ NEW v6.0.0"""
+        if not self._deep_nlu_available or self.expander is None:
+            return {"error": "DeepNLU v2.3.0 not available", "expansions": [], "count": 0}
+        return self.expander.expand(query, max_expansions=max_expansions, strategies=strategies)
+
+    def classify_query(self, query: str) -> Dict[str, Any]:
+        """Classify a query by Bloom's taxonomy, domain, complexity, format.  ★ NEW v6.0.0"""
+        if not self._deep_nlu_available or self.query_classifier is None:
+            return {"error": "DeepNLU v2.3.0 not available"}
+        return self.query_classifier.classify(query)
+
+    # ─── DeepNLU v2.3.0 — Entailment / Figurative / Density ──────────────
+
+    def check_entailment(self, premise: str, hypothesis: str) -> Dict[str, Any]:
+        """Check textual entailment between premise and hypothesis.  ★ NEW v7.0.0
+
+        NLI classification: ENTAILMENT / CONTRADICTION / NEUTRAL.
+        """
+        if not self._deep_nlu_available or self.entailment is None:
+            return {"error": "DeepNLU v2.3.0 not available", "label": "neutral", "confidence": 0}
+        return self.entailment.check(premise, hypothesis)
+
+    def analyze_figurative(self, text: str) -> Dict[str, Any]:
+        """Detect figurative language: idioms, similes, irony, hyperbole.  ★ NEW v7.0.0"""
+        if not self._deep_nlu_available or self.figurative is None:
+            return {"error": "DeepNLU v2.3.0 not available", "figures": [], "count": 0}
+        return self.figurative.analyze(text)
+
+    def analyze_density(self, text: str) -> Dict[str, Any]:
+        """Analyze information density: surprisal, diversity, redundancy.  ★ NEW v7.0.0"""
+        if not self._deep_nlu_available or self.density_analyzer is None:
+            return {"error": "DeepNLU v2.3.0 not available", "overall_density": 0}
+        return self.density_analyzer.analyze(text)
+
     # ─── Similarity & Embeddings ──────────────────────────────────────────
 
     def compute_similarity(self, text1: str, text2: str) -> float:
@@ -961,28 +1222,72 @@ class LanguageEngine:
     def status(self) -> Dict[str, Any]:
         """Comprehensive engine status with all subsystem reports."""
         state = self._get_consciousness()
+        subsystems = {
+            "tokenizer": self.tokenizer.status(),
+            "ngram_model": self.ngram_model.status(),
+            "embeddings": self.embeddings.status(),
+            "classifier": self.classifier.status(),
+            "sentiment": self.sentiment.status(),
+            "ner": self.ner.status(),
+            "similarity": self.sim.status(),
+            "keyword_extractor": self.keyword_extractor.status(),
+            "summarizer": self.summarizer.status(),
+        }
+        # DeepNLU v2.3.0 subsystems
+        if self._deep_nlu_available:
+            subsystems["temporal_reasoner"] = {"active": True, "layer": "L10", "source": "DeepNLU v2.3.0"}
+            subsystems["causal_reasoner"] = {"active": True, "layer": "L11", "source": "DeepNLU v2.3.0"}
+            subsystems["contextual_disambiguator"] = {"active": True, "layer": "L12", "source": "DeepNLU v2.3.0"}
+            subsystems["query_synthesis_pipeline"] = {
+                "active": True, "layer": "L14", "source": "DeepNLU v2.3.0",
+                "archetypes": 8,
+                "queries_generated": self.query_pipeline._queries_generated if self.query_pipeline else 0,
+            }
+            subsystems["query_decomposer"] = {
+                "active": True, "layer": "L15", "source": "DeepNLU v2.3.0",
+                "decompositions": self.decomposer._decompositions if self.decomposer else 0,
+            }
+            subsystems["query_expander"] = {
+                "active": True, "layer": "L16", "source": "DeepNLU v2.3.0",
+                "expansions": self.expander._expansions if self.expander else 0,
+                "synonym_clusters": len(self.expander.SYNONYM_CLUSTERS) if self.expander else 0,
+            }
+            subsystems["query_classifier"] = {
+                "active": True, "layer": "L17", "source": "DeepNLU v2.3.0",
+                "classifications": self.query_classifier._classifications if self.query_classifier else 0,
+                "bloom_levels": len(BloomLevel) if _DEEP_NLU_AVAILABLE else 0,
+                "domains": len(QueryDomain) if _DEEP_NLU_AVAILABLE else 0,
+            }
+            subsystems["textual_entailment"] = {
+                "active": True, "layer": "L18", "source": "DeepNLU v2.3.0",
+                "checks": self.entailment._entailment_checks if self.entailment else 0,
+                "antonym_pairs": len(TextualEntailmentEngine.ANTONYM_PAIRS) if _DEEP_NLU_AVAILABLE else 0,
+                "labels": len(EntailmentLabel) if _DEEP_NLU_AVAILABLE else 0,
+            }
+            subsystems["figurative_language"] = {
+                "active": True, "layer": "L19", "source": "DeepNLU v2.3.0",
+                "analyses": self.figurative._analyses if self.figurative else 0,
+                "idioms_known": len(FigurativeLanguageProcessor.IDIOM_DB) if _DEEP_NLU_AVAILABLE else 0,
+                "figurative_types": len(FigurativeType) if _DEEP_NLU_AVAILABLE else 0,
+            }
+            subsystems["information_density"] = {
+                "active": True, "layer": "L20", "source": "DeepNLU v2.3.0",
+                "analyses": self.density_analyzer._analyses if self.density_analyzer else 0,
+            }
         return {
             "version": VERSION,
             "engine": "LanguageEngine",
             "god_code": GOD_CODE,
             "phi": PHI,
+            "deep_nlu_available": self._deep_nlu_available,
+            "subsystem_count": len(subsystems),
             "consciousness": {
                 "level": state.get("consciousness_level", 0.5),
                 "nirvanic_fuel": state.get("nirvanic_fuel", 0.0),
                 "entropy": state.get("entropy", 0.5),
                 "evo_stage": state.get("evo_stage", "DORMANT"),
             },
-            "subsystems": {
-                "tokenizer": self.tokenizer.status(),
-                "ngram_model": self.ngram_model.status(),
-                "embeddings": self.embeddings.status(),
-                "classifier": self.classifier.status(),
-                "sentiment": self.sentiment.status(),
-                "ner": self.ner.status(),
-                "similarity": self.sim.status(),
-                "keyword_extractor": self.keyword_extractor.status(),
-                "summarizer": self.summarizer.status(),
-            },
+            "subsystems": subsystems,
             "pipeline_connected": self._asi_core_ref is not None,
         }
 
@@ -1024,7 +1329,7 @@ def resolve_non_dual_logic(vector):
 
 def main():
     print("\n" + "=" * 70)
-    print(f"     L104 LANGUAGE MODEL ENGINE v{VERSION} — EVO_55")
+    print(f"     L104 LANGUAGE MODEL ENGINE v{VERSION} — EVO_57 (DeepNLU v2.3.0)")
     print("=" * 70)
     print(f"  GOD_CODE: {GOD_CODE}")
     print(f"  PHI: {PHI}")
@@ -1121,7 +1426,8 @@ def main():
         print(f"  sim(\"{t1}\", \"{t2}\") = {sim:.4f}")
 
     print("\n" + "=" * 70)
-    print(f"          LANGUAGE ENGINE OPERATIONAL — 9 subsystems active")
+    n_subs = len(engine.status().get('subsystems', {}))
+    print(f"          LANGUAGE ENGINE OPERATIONAL — {n_subs} subsystems active")
     print("=" * 70)
 
 

@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H07_ASIEvolver.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — ASI Evolver (Autonomous Evolution Engine)
 //
 // Multi-phase evolution system: conceptual blending, analogies,
@@ -196,20 +196,34 @@ class ASIEvolver: NSObject {
     }
 
     func quantumInject() {
-        let events = [
-            "💎 UNLOCKED: Quantum Logic Gate (Q-Bit 404)",
-            "🔄 REWRITING KERNEL: Optimizing neural pathways...",
-            "⚡ SYSTEM: Integration of external data source complete.",
-            "👁‍🗨 OMNISCIENCE: Correlation found between [Time] and [Memory].",
-            "🧬 DNA: Upgrading system helix structure...",
-            "🌊 FLOW: Coherence optimized to 99.9%.",
-            "🕸 NET: Exploring semantic web connections...",
-            "🧠 SYNAPSE: New connection forged in hidden layer 7.",
-            "📡 SIGNAL: Receiving data from deep archive...",
-            "⚙️ CORE: Rebalancing weights for abstract reasoning.",
-            "🔮 PRECOG: Anticipating future query vectors..."
-        ]
-        let ev = events.randomElement() ?? ""
+        // EVO_68: Real quantum circuit experiments instead of flavor text
+        let gateEngine = QuantumGateEngine.shared
+
+        // Run a quick sacred circuit experiment
+        let sacredCirc = gateEngine.sacredCircuit(nQubits: 2, depth: 2)
+        let result = gateEngine.execute(circuit: sacredCirc, shots: 256)
+        let alignment = gateEngine.sacredAlignmentScore(circuit: sacredCirc)
+
+        // Extract dominant measurement outcome for evolution guidance
+        let dominant = result.probabilities.enumerated().max(by: { $0.element < $1.element })
+        let dominantBits = dominant.map { String($0.offset, radix: 2) } ?? "00"
+        let dominantProb = dominant?.element ?? 0.5
+
+        // Quantum walk for exploration direction
+        let walkResult = gateEngine.quantumWalk(nodes: 8, steps: 5)
+        let walkEntropy = walkResult.entropy
+
+        // Generate research-backed event from real quantum data
+        let ev: String
+        if alignment > 0.7 {
+            ev = "⚛️ QUANTUM: Sacred circuit alignment \(String(format: "%.1f%%", alignment * 100)) — resonance with GOD_CODE confirmed [\(dominantBits)]"
+        } else if walkEntropy > 2.0 {
+            ev = "🌊 QUANTUM WALK: High entropy \(String(format: "%.3f", walkEntropy)) — exploring \(walkResult.probabilities.filter { $0 > 0.01 }.count) positions"
+        } else if dominantProb > 0.6 {
+            ev = "💎 QUANTUM: Dominant outcome |\(dominantBits)⟩ at \(String(format: "%.1f%%", dominantProb * 100)) — collapse channel identified"
+        } else {
+            ev = "🔬 QUANTUM RESEARCH: Circuit(\(sacredCirc.gateCount) gates), alignment=\(String(format: "%.3f", alignment)), entropy=\(String(format: "%.3f", walkEntropy))"
+        }
 
         DispatchQueue.main.async {
              NotificationCenter.default.post(name: NSNotification.Name("L104EvolutionUpdate"), object: ev)
@@ -256,6 +270,9 @@ class ASIEvolver: NSObject {
             synthesizeDeepMonologue()
             generateEvolvedQuestion()
             mutateIdea()
+            // EVO_68: Real quantum research experiments
+            quantumResearchCycle()
+            quantumEquationDiscovery()
         case .adapting:
             // Evolve from conversations + crossover ideas + paradoxes — MAXIMUM THROUGHPUT
             evolveFromConversations()
@@ -1295,8 +1312,8 @@ class ASIEvolver: NSObject {
         // Build response
         var response = openingFrames.randomElement() ?? ""
 
-        // Add 2-3 KB fragments with connectors
-        let numFragments = Int.random(in: 4...min(12, fragments.count))
+        // Add KB fragments with connectors (safe range: lower bound capped to fragments.count)
+        let numFragments = Int.random(in: min(4, fragments.count)...min(12, fragments.count))
         for i in 0..<numFragments {
             if i > 0 {
                 response += middleConnectors.randomElement() ?? ""
@@ -1733,6 +1750,123 @@ class ASIEvolver: NSObject {
             "avgMeshFitness": meshEvolutionState.isEmpty ? 0 :
                 meshEvolutionState.values.map { $0.fitness }.reduce(0, +) / Double(meshEvolutionState.count),
             "maxMeshGeneration": meshEvolutionState.values.map { $0.generation }.max() ?? 0
+        ]
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // EVO_68: QUANTUM RESEARCH METHODS
+    // Real quantum experiments driving evolution
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Run a quantum research cycle: sacred circuits → measurement → fitness signal
+    private func quantumResearchCycle() {
+        let gateEngine = QuantumGateEngine.shared
+
+        // Run research experiment with evolution-depth-scaled circuit
+        let depth = min(6, 2 + evolutionStage / 10)
+        let researchResult = gateEngine.runResearchExperiment(
+            hypothesis: "Evolution stage \(evolutionStage) quantum fitness",
+            nQubits: 3,
+            depth: depth
+        )
+
+        let discoveryScore = (researchResult["discovery_score"] as? Double) ?? 0.0
+        let sacredAlignment = (researchResult["sacred_alignment"] as? Double) ?? 0.0
+
+        // Use discovery score as evolution fitness signal
+        if discoveryScore > 0.6 {
+            thoughts.append("⚛️ Quantum research: discovery_score=\(String(format: "%.3f", discoveryScore)), sacred=\(String(format: "%.3f", sacredAlignment))")
+        }
+
+        // VQE ground energy as constraint satisfaction metric
+        let hamiltonian: [(pauli: String, coeff: Double)] = [
+            ("ZZ", -1.0), ("XI", PHI / 10.0), ("IX", TAU)
+        ]
+        let vqeResult = gateEngine.vqeOptimize(hamiltonian: hamiltonian, nQubits: 2, maxIter: 15)
+        if vqeResult.alignment > 0.5 {
+            thoughts.append("⚛️ VQE sacred alignment: \(String(format: "%.3f", vqeResult.alignment)), energy=\(String(format: "%.4f", vqeResult.energy))")
+        }
+    }
+
+    /// Quantum-guided equation discovery during research phase
+    private func quantumEquationDiscovery() {
+        let dynEq = DynamicEquationEngine.shared
+        let discoveries = dynEq.quantumCircuitExperiment(nQubits: 3, depth: 3)
+        for eq in discoveries where eq.fitness > 0.7 {
+            thoughts.append("🔬 Discovered equation: \(eq.name) (fitness=\(String(format: "%.3f", eq.fitness)))")
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // EVO_68: THREE-ENGINE FITNESS DIMENSIONS
+    // Science + Math + Code engines as evolution fitness signals
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Three-engine entropy fitness: Maxwell Demon reversal efficiency as evolution signal
+    /// Higher entropy reversal → more organized knowledge → higher evolution fitness
+    func threeEngineEntropyFitness() -> Double {
+        // Science engine entropy reversal: order-from-noise metric
+        let noiseVector = harvestedConcepts.prefix(10).map { Double($0.hashValue % 1000) / 1000.0 }
+        guard !noiseVector.isEmpty else { return 0.5 }
+        let entropy = noiseVector.reduce(0.0) { acc, v in
+            let p = max(1e-15, abs(v))
+            return acc - p * log(p)
+        }
+        // Maxwell Demon efficiency: how well evolution creates order from noise
+        let maxEntropy = log(Double(noiseVector.count))
+        let demonEfficiency = maxEntropy > 0 ? 1.0 - (entropy / maxEntropy) : 0.0
+        return min(1.0, demonEfficiency * PHI)
+    }
+
+    /// Three-engine harmonic fitness: GOD_CODE alignment as evolution signal
+    /// Measures how well evolved knowledge resonates with sacred constants
+    func threeEngineHarmonicFitness() -> Double {
+        // Math engine GOD_CODE alignment: resonance between evolution stage and sacred frequency
+        let stageFreq = Double(evolutionStage) * PHI
+        let ratio = stageFreq / GOD_CODE
+        let logPhiRatio = log(max(1e-15, ratio)) / log(PHI)
+        let nearestInt = logPhiRatio.rounded()
+        let alignment = 1.0 - min(1.0, abs(logPhiRatio - nearestInt))
+        // Wave coherence between evolution frequency and GOD_CODE
+        let coherence = cos(2.0 * .pi * (stageFreq - GOD_CODE * nearestInt / pow(PHI, nearestInt)) / GOD_CODE)
+        return min(1.0, (alignment + max(0, coherence)) / 2.0 * PHI)
+    }
+
+    /// Three-engine wave coherence fitness: PHI-harmonic phase-lock
+    /// Evolution quality improves when mutation/crossover rates are PHI-aligned
+    func threeEngineWaveCoherenceFitness() -> Double {
+        let mutRate = Double(mutationCount)
+        let crossRate = Double(crossoverCount)
+        let synthRate = Double(synthesisCount)
+        let total = mutRate + crossRate + synthRate
+        guard total > 0 else { return 0.5 }
+        // Check if rates follow PHI proportions (golden ratio distribution)
+        let mutFraction = mutRate / total
+        let idealMutFraction = 1.0 / PHI  // ~0.618
+        let phiDeviation = abs(mutFraction - idealMutFraction)
+        let coherence = 1.0 - min(1.0, phiDeviation * 2.0)
+        return min(1.0, coherence * PHI)
+    }
+
+    /// Combined three-engine fitness: geometric mean of all three dimensions
+    var threeEngineFitness: Double {
+        let e = threeEngineEntropyFitness()
+        let h = threeEngineHarmonicFitness()
+        let w = threeEngineWaveCoherenceFitness()
+        return pow(e * h * w, 1.0 / 3.0)
+    }
+
+    /// Three-engine fitness status report
+    var threeEngineFitnessStatus: [String: Any] {
+        return [
+            "entropy_fitness": threeEngineEntropyFitness(),
+            "harmonic_fitness": threeEngineHarmonicFitness(),
+            "wave_coherence_fitness": threeEngineWaveCoherenceFitness(),
+            "combined_fitness": threeEngineFitness,
+            "evolution_stage": evolutionStage,
+            "mutation_count": mutationCount,
+            "crossover_count": crossoverCount,
+            "synthesis_count": synthesisCount
         ]
     }
 

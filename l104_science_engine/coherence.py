@@ -25,7 +25,7 @@ from dataclasses import dataclass, field
 from typing import Dict, Any, List, Tuple
 
 from .constants import (
-    GOD_CODE, PHI, PHI_CONJUGATE, ZETA_ZERO_1,
+    GOD_CODE, PHI, PHI_CONJUGATE, PHI_SQUARED, ZETA_ZERO_1,
     GROVER_AMPLIFICATION, VACUUM_FREQUENCY,
     PhysicalConstants, PC,
     # v4.1 Quantum Research Discoveries
@@ -71,7 +71,7 @@ class CoherenceSubsystem:
         self.invention_log: List[Dict] = []
         self.COHERENCE_THRESHOLD = (GOD_CODE / 1000) * PHI_CONJUGATE
         self.STABILITY_MINIMUM = 1 / PHI
-        self.BRAID_DEPTH = 4
+        self.BRAID_DEPTH = 13  # (was 4 — Performance Limits Audit)
         self.braid_state = [[1 + 0j, 0 + 0j], [0 + 0j, 1 + 0j]]
         self.vacuum_state = 1e-15
         self.energy_surplus = 0.0
@@ -169,7 +169,7 @@ class CoherenceSubsystem:
     def initialize(self, seed_thoughts: List[str]) -> Dict[str, Any]:
         """Initialize the coherence field from seed thoughts."""
         self.coherence_field = []
-        limited_seeds = seed_thoughts[:50]
+        limited_seeds = seed_thoughts[:200]
         for thought in limited_seeds:
             grounding = self._stabilize_to_vacuum(thought)
             phase = (hash(thought) % 1000) / 1000 * 2 * math.pi
@@ -191,14 +191,20 @@ class CoherenceSubsystem:
         initial = self._measure_coherence()
         pi_4 = math.pi / 4
         protections = []
+        n = len(self.coherence_field) or 1
         for step in range(steps):
             resonance = self._zeta_resonance(time.time() + step)
             op = 1 if resonance > 0 else -1
             # v4.2: all 4 ops are identical → fold into single braid call
             self._execute_braid([op] * self.BRAID_DEPTH)
             protection = self._calculate_protection()
-            rotation = cmath.exp(1j * protection * pi_4)
-            self.coherence_field = [p * rotation for p in self.coherence_field]
+            # v5.0 FIX: mode-dependent rotation — each amplitude evolves at
+            # a rate proportional to its index, creating actual phase structure
+            # evolution instead of a uniform global phase (which is unobservable).
+            base_angle = protection * pi_4
+            for i in range(len(self.coherence_field)):
+                mode_freq = 1.0 + i * PHI_CONJUGATE / n  # mode-dependent
+                self.coherence_field[i] *= cmath.exp(1j * base_angle * mode_freq)
             protections.append(protection)
         self.resonance_history.extend(protections)
         final = self._measure_coherence()
@@ -260,7 +266,7 @@ class CoherenceSubsystem:
 
         # Pattern search 3: index-spacing resonance — PHI-indexed sampling creates spiral
         if n >= 3:
-            for i in range(min(n, 20)):
+            for i in range(n):  # (was min(n, 20) — Performance Limits Audit)
                 idx_a = int(i * PHI) % n
                 idx_b = int((i + 1) * PHI) % n
                 if abs(self.coherence_field[idx_a]) > 0.001 and abs(self.coherence_field[idx_b]) > 0.001:
@@ -354,7 +360,7 @@ class CoherenceSubsystem:
             "golden_angle_rad": round(golden_angle, 8),
             "mean_alignment": round(mean_alignment, 6),
             "is_golden_spiral": is_golden_spiral,
-            "spectrum": spectrum[:20],  # First 20 for brevity
+            "spectrum": spectrum[:50],  # First 50 for full analysis
         }
 
     def energy_spectrum(self) -> Dict[str, Any]:
@@ -396,7 +402,7 @@ class CoherenceSubsystem:
             "shannon_entropy_bits": round(shannon_entropy, 6),
             "max_entropy_bits": round(math.log2(max(n, 1)), 6),
             "concentration_ratio": round(shannon_entropy / max(math.log2(max(n, 1)), 0.001), 6),
-            "dominant_modes": [{"mode": idx, "energy": round(e, 8)} for idx, e in sorted_modes[:5]],
+            "dominant_modes": [{"mode": idx, "energy": round(e, 8)} for idx, e in sorted_modes[:15]],
             "phi_ratios": phi_ratios,
         }
 
@@ -436,4 +442,362 @@ class CoherenceSubsystem:
                 "DEGRADING" if fidelity > 0.5 else
                 "DECOHERENT"
             ),
+        }
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #  v4.3 SIMULATOR FEEDBACK LOOP
+    #  Closes the Science ↔ Simulator loop:
+    #    plan_experiment → execute/simulate → measure fidelity/noise →
+    #    ingest_simulation_result → adaptive correction → re-evolve
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def ingest_simulation_result(self, sim_result: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Ingest a quantum simulation result and adjust the coherence field.
+
+        The feedback path closes the loop:
+          Coherence → depth budget → circuit execution → sim_result → HERE → updated coherence
+
+        Adjustments based on simulation output:
+          1. Fidelity-based phase correction: low fidelity rotates field toward vacuum
+          2. Noise-injection reversal: measured noise profile triggers targeted braiding
+          3. Decoherence compensation: T1/T2 decay rates drive protection recalibration
+          4. Probability-distribution alignment: bias amplitudes toward measured outcomes
+          5. Entropy cross-feedback: demon efficiency modulates energy surplus
+
+        Args:
+            sim_result: Dict containing any of:
+                - total_fidelity (float, 0-1): overall circuit fidelity
+                - decoherence_fidelity (float, 0-1): T1/T2 decay contribution
+                - gate_fidelity (float, 0-1): gate error contribution
+                - probabilities (dict): measured outcome probabilities
+                - circuit_depth (int): executed depth
+                - noise_variance (float): measured noise level
+                - demon_efficiency (float): entropy reversal efficiency
+
+        Returns:
+            Dict with pre/post coherence metrics and correction details.
+        """
+        pre_coherence = self._measure_coherence()
+        pre_protection = self._calculate_protection()
+        corrections_applied = []
+
+        # ── 1. Fidelity-based phase correction ──
+        fidelity = sim_result.get("total_fidelity", sim_result.get("fidelity", None))
+        if fidelity is not None:
+            fidelity = max(0.0, min(1.0, float(fidelity)))
+            if fidelity < 0.8 and self.coherence_field:
+                # v5.0 FIX: position-dependent phase correction.  The old code
+                # applied a uniform rotation to all elements, which doesn't
+                # change relative phases (and thus doesn't change coherence).
+                # Now each element receives a correction angle scaled by its
+                # position, actively reshaping the phase structure toward order.
+                base_angle = (1.0 - fidelity) * math.pi * PHI_CONJUGATE
+                n = len(self.coherence_field)
+                for i in range(n):
+                    # Position-dependent: golden-angle spacing drives phases
+                    # toward the maximally-spread configuration
+                    target_phase = i * 2.0 * math.pi / (PHI * PHI)  # golden angle
+                    current_phase = cmath.phase(self.coherence_field[i])
+                    phase_error = target_phase - current_phase
+                    # Correction strength proportional to (1 - fidelity)
+                    correction_angle = base_angle * (1.0 + math.sin(phase_error) * PHI_CONJUGATE)
+                    correction = cmath.exp(1j * correction_angle)
+                    # Envelope: stronger correction for amplitudes further from unit circle
+                    envelope = fidelity + (1.0 - fidelity) * abs(self.coherence_field[i])
+                    self.coherence_field[i] = self.coherence_field[i] * correction * envelope
+                corrections_applied.append(f"phase_correction(base_angle={base_angle:.4f}, n={n})")
+
+        # ── 2. Decoherence compensation via targeted braiding ──
+        decoherence_fidelity = sim_result.get("decoherence_fidelity", None)
+        if decoherence_fidelity is not None:
+            decoherence_fidelity = max(0.0, min(1.0, float(decoherence_fidelity)))
+            if decoherence_fidelity < 0.9:
+                # Increase braid depth proportional to decoherence severity
+                extra_braid_ops = max(1, int((1.0 - decoherence_fidelity) * 8))
+                braid_seq = [1, -1] * extra_braid_ops  # Alternating for maximal protection
+                self._execute_braid(braid_seq)
+                protection_after = self._calculate_protection()
+                corrections_applied.append(
+                    f"decoherence_braiding(ops={extra_braid_ops * 2}, "
+                    f"protection={protection_after:.4f})"
+                )
+
+        # ── 3. Gate error noise reversal ──
+        gate_fidelity = sim_result.get("gate_fidelity", None)
+        noise_variance = sim_result.get("noise_variance", None)
+        if gate_fidelity is not None and gate_fidelity < 0.95 and self.coherence_field:
+            # Gate errors manifest as random phase kicks — apply ZPE grounding to counteract
+            noise_level = 1.0 - float(gate_fidelity)
+            for i in range(len(self.coherence_field)):
+                vac = self._calculate_vacuum_fluctuation()
+                grounding_factor = 1.0 / (1.0 + noise_level * GOD_CODE * 0.001)
+                self.coherence_field[i] *= grounding_factor
+                self.energy_surplus += vac * noise_level * 0.01
+            corrections_applied.append(f"gate_noise_grounding(noise={noise_level:.4f})")
+
+        if noise_variance is not None and float(noise_variance) > 0.01 and self.coherence_field:
+            # Direct noise variance injection uses entropy-reversal philosophy:
+            # sort amplitudes by magnitude, then PHI-interleave for maximum order.
+            # v5.0 FIX: the old lo/hi interleave started both at 0 and stepped
+            # by int(PHI*2)=3, causing index collisions (0,3,6... written twice)
+            # and leaving gaps (1,2,4,5...) as zeros.  New approach: build a
+            # golden-ratio permutation that covers every index exactly once.
+            nv = float(noise_variance)
+            amps_sorted = sorted(range(len(self.coherence_field)),
+                                 key=lambda k: abs(self.coherence_field[k]), reverse=True)
+            n = len(amps_sorted)
+            reordered = [complex(0)] * n
+            # Golden-ratio permutation: place the k-th largest amplitude at
+            # position floor(k * φ) mod n, guaranteeing full coverage.
+            for rank, src_idx in enumerate(amps_sorted):
+                target = int(rank * PHI) % n
+                # Resolve collisions via linear probing
+                while abs(reordered[target]) > 1e-30:
+                    target = (target + 1) % n
+                reordered[target] = self.coherence_field[src_idx]
+            # Blend: lerp toward reordered based on noise severity (capped at 50%)
+            blend = min(0.5, nv)
+            self.coherence_field = [
+                (1.0 - blend) * self.coherence_field[i] + blend * reordered[i]
+                for i in range(n)
+            ]
+            corrections_applied.append(f"noise_variance_reorder(blend={blend:.4f})")
+
+        # ── 4. Probability-distribution alignment ──
+        probabilities = sim_result.get("probabilities", None)
+        if probabilities and isinstance(probabilities, dict) and self.coherence_field:
+            # Use measured probability distribution to bias coherence amplitudes
+            # Map top-probability outcomes to coherence field indices
+            n = len(self.coherence_field)
+            total_prob = sum(probabilities.values())
+            if total_prob > 0:
+                sorted_probs = sorted(probabilities.items(), key=lambda x: -x[1])
+                # Apply PHI-attenuated bias to the top-N outcomes
+                for rank, (outcome, prob) in enumerate(sorted_probs[:min(n, 10)]):
+                    idx = hash(outcome) % n
+                    weight = prob / total_prob
+                    phi_attenuation = PHI_CONJUGATE ** rank  # Golden decay
+                    bias = weight * phi_attenuation * 0.1  # Gentle: max 10% of amplitude
+                    self.coherence_field[idx] *= (1.0 + bias)
+                corrections_applied.append(
+                    f"probability_alignment(outcomes={len(sorted_probs)}, "
+                    f"top_prob={sorted_probs[0][1]:.4f})"
+                )
+
+        # ── 5. Entropy cross-feedback ──
+        demon_efficiency = sim_result.get("demon_efficiency", None)
+        if demon_efficiency is not None:
+            de = float(demon_efficiency)
+            # High demon efficiency = good order → boost energy surplus
+            self.energy_surplus += de * self._calculate_vacuum_fluctuation() * 10.0
+            # Modulate COHERENCE_THRESHOLD: better demon → tighter tolerance
+            self.COHERENCE_THRESHOLD = (GOD_CODE / 1000) * PHI_CONJUGATE * (1.0 + de * 0.1)
+            corrections_applied.append(f"entropy_feedback(demon_eff={de:.4f})")
+
+        # ── Re-normalize ──
+        if self.coherence_field:
+            norm = math.sqrt(sum(abs(p) ** 2 for p in self.coherence_field))
+            if norm > 1e-30:
+                self.coherence_field = [p / norm for p in self.coherence_field]
+
+        post_coherence = self._measure_coherence()
+        post_protection = self._calculate_protection()
+
+        return {
+            "pre_coherence": round(pre_coherence, 6),
+            "post_coherence": round(post_coherence, 6),
+            "coherence_delta": round(post_coherence - pre_coherence, 6),
+            "pre_protection": round(pre_protection, 6),
+            "post_protection": round(post_protection, 6),
+            "protection_delta": round(post_protection - pre_protection, 6),
+            "corrections_applied": corrections_applied,
+            "corrections_count": len(corrections_applied),
+            "field_preserved": post_coherence > self.COHERENCE_THRESHOLD,
+            "energy_surplus": round(self.energy_surplus, 6),
+        }
+
+    def adaptive_decoherence_correction(self, fidelity: float,
+                                         circuit_depth: int = 50,
+                                         t1_us: float = 300.0,
+                                         t2_us: float = 150.0) -> Dict[str, Any]:
+        """
+        Adaptive correction based on measured decoherence parameters.
+
+        Uses T1/T2 relaxation times and measured fidelity to compute
+        optimal braid sequence that maximally restores coherence.
+
+        The correction formula:
+          braid_depth = ceil((1 - F) × D × φ)  where F=fidelity, D=depth
+          phase_kick = -(1 - F) × π/φ²  (negative = undo decoherence rotation)
+          vacuum_grounding_passes = max(1, ceil(depth / (T2 × φ)))
+        """
+        pre_coherence = self._measure_coherence()
+
+        fidelity = max(0.0, min(1.0, fidelity))
+        decoherence_rate = 1.0 - fidelity
+
+        # Optimal braid depth from decoherence severity
+        braid_ops = max(1, int(math.ceil(decoherence_rate * circuit_depth * PHI_CONJUGATE)))
+        braid_ops = min(braid_ops, 104)  # Cap at L104 grain (was 32 — Performance Limits Audit)
+        braid_seq = []
+        for i in range(braid_ops):
+            # Alternate with golden-ratio bias toward CCW (protective direction)
+            braid_seq.append(1 if (i * PHI) % 1.0 < PHI_CONJUGATE else -1)
+        self._execute_braid(braid_seq)
+
+        # Phase kick to counteract decoherence drift
+        phase_kick = -decoherence_rate * math.pi / PHI_SQUARED
+        kick = cmath.exp(1j * phase_kick)
+        if self.coherence_field:
+            self.coherence_field = [p * kick for p in self.coherence_field]
+
+        # Vacuum grounding passes for deep circuits
+        gate_time_us = circuit_depth * 0.035  # 35ns per gate layer
+        grounding_passes = max(1, int(math.ceil(gate_time_us / (t2_us * PHI_CONJUGATE))))
+        for _ in range(grounding_passes):
+            vac = self._calculate_vacuum_fluctuation()
+            self.energy_surplus += vac * decoherence_rate
+
+        post_coherence = self._measure_coherence()
+        post_protection = self._calculate_protection()
+
+        return {
+            "fidelity_input": round(fidelity, 6),
+            "decoherence_rate": round(decoherence_rate, 6),
+            "braid_ops_applied": braid_ops,
+            "phase_kick_rad": round(phase_kick, 6),
+            "grounding_passes": grounding_passes,
+            "pre_coherence": round(pre_coherence, 6),
+            "post_coherence": round(post_coherence, 6),
+            "coherence_recovered": round(post_coherence - pre_coherence, 6),
+            "topological_protection": round(post_protection, 6),
+            "energy_surplus": round(self.energy_surplus, 6),
+        }
+
+    def entropy_coherence_feedback(self, demon_efficiency: float,
+                                    coherence_gain: float,
+                                    noise_vector_var: float = 1.0) -> Dict[str, Any]:
+        """
+        Cross-link entropy reversal metrics into coherence state.
+
+        Science Engine entropy subsystem produces demon_efficiency and
+        coherence_gain from noise injection. This method feeds those
+        measurements BACK into the topological coherence field:
+
+          1. Demon efficiency scales braid protection depth
+          2. Coherence gain from entropy reversal amplifies field energy
+          3. Noise variance governs vacuum-grounding intensity
+        """
+        pre_coherence = self._measure_coherence()
+
+        # 1. Demon-driven braid reinforcement
+        demon_braid_ops = max(1, int(demon_efficiency * 4))
+        braid_seq = [1] * demon_braid_ops  # All-CCW for maximal topological protection
+        self._execute_braid(braid_seq)
+
+        # 2. Coherence gain amplification via GOD_CODE-normalized boost
+        if self.coherence_field and coherence_gain > 0:
+            gain_factor = 1.0 + (coherence_gain / GOD_CODE) * PHI_CONJUGATE
+            self.coherence_field = [p * gain_factor for p in self.coherence_field]
+            # Re-normalize
+            norm = math.sqrt(sum(abs(p) ** 2 for p in self.coherence_field))
+            if norm > 1e-30:
+                self.coherence_field = [p / norm for p in self.coherence_field]
+
+        # 3. Noise-driven vacuum grounding — higher noise = more ZPE passes
+        grounding_passes = max(1, int(noise_vector_var * 2))
+        for _ in range(grounding_passes):
+            vac = self._calculate_vacuum_fluctuation()
+            self.energy_surplus += vac * demon_efficiency
+
+        post_coherence = self._measure_coherence()
+
+        return {
+            "demon_efficiency_input": round(demon_efficiency, 6),
+            "coherence_gain_input": round(coherence_gain, 6),
+            "noise_variance_input": round(noise_vector_var, 6),
+            "demon_braid_ops": demon_braid_ops,
+            "grounding_passes": grounding_passes,
+            "pre_coherence": round(pre_coherence, 6),
+            "post_coherence": round(post_coherence, 6),
+            "coherence_delta": round(post_coherence - pre_coherence, 6),
+            "energy_surplus": round(self.energy_surplus, 6),
+            "protection": round(self._calculate_protection(), 6),
+        }
+
+    def run_feedback_loop(self, sim_results_sequence: List[Dict[str, Any]],
+                           evolve_steps: int = 5) -> Dict[str, Any]:
+        """
+        Run a full closed-loop feedback cycle over a sequence of simulation results.
+
+        For each simulation result:
+          1. Ingest result → correct coherence field
+          2. Evolve field (braiding + rotation)
+          3. Measure post-correction metrics
+          4. Compare with pre-correction → convergence tracking
+
+        This is the core method that makes the coherence ↔ simulator loop STRONG.
+
+        Returns converged metrics and per-iteration history.
+        """
+        if not self.coherence_field:
+            return {"error": "Coherence field not initialized. Call initialize() first."}
+
+        history = []
+        initial_coherence = self._measure_coherence()
+
+        for i, sim_result in enumerate(sim_results_sequence):
+            # v5.0 FIX: anchor BEFORE modifications so fidelity measures
+            # cross-iteration preservation instead of trivially comparing
+            # the state to itself (which always returned 1.0).
+            self.anchor(1.0)
+
+            # Ingest + correct
+            ingest_report = self.ingest_simulation_result(sim_result)
+
+            # Evolve with corrected field
+            evolve_report = self.evolve(evolve_steps)
+
+            # Fidelity measurement: compares current (post-evolve) to
+            # pre-iteration snapshot, giving meaningful preservation metric.
+            fidelity_report = self.coherence_fidelity()
+
+            history.append({
+                "iteration": i,
+                "ingest": {
+                    "coherence_delta": ingest_report["coherence_delta"],
+                    "corrections": ingest_report["corrections_count"],
+                },
+                "evolve": {
+                    "final_coherence": evolve_report["final_coherence"],
+                    "preserved": evolve_report["preserved"],
+                },
+                "fidelity": fidelity_report["fidelity"],
+                "fidelity_grade": fidelity_report["grade"],
+            })
+
+        final_coherence = self._measure_coherence()
+        final_protection = self._calculate_protection()
+
+        # Convergence analysis: is coherence improving iteration over iteration?
+        coherence_trend = [h["evolve"]["final_coherence"] for h in history]
+        if len(coherence_trend) >= 2:
+            diffs = [coherence_trend[j] - coherence_trend[j - 1]
+                     for j in range(1, len(coherence_trend))]
+            improving = sum(1 for d in diffs if d > 0)
+            converging = improving >= len(diffs) * 0.5
+        else:
+            converging = True
+
+        return {
+            "iterations": len(sim_results_sequence),
+            "evolve_steps_per_iter": evolve_steps,
+            "initial_coherence": round(initial_coherence, 6),
+            "final_coherence": round(final_coherence, 6),
+            "total_coherence_delta": round(final_coherence - initial_coherence, 6),
+            "final_protection": round(final_protection, 6),
+            "energy_surplus": round(self.energy_surplus, 6),
+            "converging": converging,
+            "history": history,
         }

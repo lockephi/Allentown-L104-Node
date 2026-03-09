@@ -1,12 +1,12 @@
 // ═══════════════════════════════════════════════════════════════════
 // L13_ResponsePipeline.swift
-// L104v2 — EVO_62 Pipeline-Integrated Response System V3
+// L104v2 — EVO_68 Pipeline-Integrated Response System V4
 //   ResponsePipelineOptimizer (upgraded: adaptive TTL, φ-decay eviction)
 //   ResponseConfidenceEngine (upgraded: multi-signal fusion)
 //   ResponsePlanner (upgraded: deeper plan templates)
 //
 // Response pipeline: caching, quality scoring, confidence reporting,
-// and multi-turn response planning. Streams through EVO_62 unified pipeline.
+// and multi-turn response planning. Streams through EVO_68 unified pipeline.
 // Upgraded: Feb 21, 2026 — Sovereign Node Upgrade
 // ═══════════════════════════════════════════════════════════════════
 

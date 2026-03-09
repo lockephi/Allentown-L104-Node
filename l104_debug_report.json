@@ -1,0 +1,1495 @@
+{
+  "framework_version": "3.0.0",
+  "timestamp": "2026-03-02T06:59:47.090093",
+  "invariant": 527.5184818492612,
+  "summary": {
+    "total": 152,
+    "passed": 149,
+    "failed": 3,
+    "warnings": 3
+  },
+  "by_engine": {
+    "math": {
+      "total": 8,
+      "passed": 8,
+      "failed": 0
+    },
+    "quantum_gate": {
+      "total": 18,
+      "passed": 18,
+      "failed": 0
+    },
+    "science": {
+      "total": 8,
+      "passed": 7,
+      "failed": 1
+    },
+    "intellect": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0
+    },
+    "quantum_link": {
+      "total": 7,
+      "passed": 7,
+      "failed": 0
+    },
+    "gate": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0
+    },
+    "asi": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0
+    },
+    "dual_layer": {
+      "total": 15,
+      "passed": 15,
+      "failed": 0
+    },
+    "asi_quantum": {
+      "total": 13,
+      "passed": 12,
+      "failed": 1
+    },
+    "code_quantum": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "pipeline": {
+      "total": 12,
+      "passed": 12,
+      "failed": 0
+    },
+    "code": {
+      "total": 10,
+      "passed": 10,
+      "failed": 0
+    },
+    "numerical": {
+      "total": 7,
+      "passed": 7,
+      "failed": 0
+    },
+    "agi": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "server": {
+      "total": 4,
+      "passed": 3,
+      "failed": 1
+    },
+    "cross": {
+      "total": 23,
+      "passed": 23,
+      "failed": 0
+    },
+    "canonical": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    }
+  },
+  "results": [
+    {
+      "test": "[BOOT] boot_math",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "v1.1.0 in 0.76s",
+      "elapsed_ms": 755.37,
+      "timestamp": 1772452708.7881658
+    },
+    {
+      "test": "[BOOT] boot_quantum_gate",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "v1.0.0 in 0.55s",
+      "elapsed_ms": 554.73,
+      "timestamp": 1772452709.344574
+    },
+    {
+      "test": "[BOOT] boot_science",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "v5.1.0 in 1.44s",
+      "elapsed_ms": 1441.82,
+      "timestamp": 1772452709.47424
+    },
+    {
+      "test": "[BOOT] boot_intellect",
+      "engine": "intellect",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "vunknown in 0.83s",
+      "elapsed_ms": 825.08,
+      "timestamp": 1772452709.585839
+    },
+    {
+      "test": "[BOOT] boot_quantum_link",
+      "engine": "quantum_link",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "v10.0.0 in 1.02s",
+      "elapsed_ms": 1019.51,
+      "timestamp": 1772452710.362813
+    },
+    {
+      "test": "[BOOT] boot_gate",
+      "engine": "gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "vunknown in 0.79s",
+      "elapsed_ms": 794.58,
+      "timestamp": 1772452710.381611
+    },
+    {
+      "test": "[BOOT] boot_asi",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "v9.0.0 in 2.99s",
+      "elapsed_ms": 2991.86,
+      "timestamp": 1772452711.025323
+    },
+    {
+      "test": "[BOOT] boot_dual_layer",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "v5.0.0 in 0.65s",
+      "elapsed_ms": 650.28,
+      "timestamp": 1772452711.0273721
+    },
+    {
+      "test": "[BOOT] boot_asi_quantum",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "vunknown in 0.00s",
+      "elapsed_ms": 0.02,
+      "timestamp": 1772452711.027415
+    },
+    {
+      "test": "[BOOT] boot_code_quantum",
+      "engine": "code_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "vunknown in 0.00s",
+      "elapsed_ms": 0.01,
+      "timestamp": 1772452711.027444
+    },
+    {
+      "test": "[BOOT] boot_pipeline",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "vunknown in 0.02s",
+      "elapsed_ms": 21.0,
+      "timestamp": 1772452711.046175
+    },
+    {
+      "test": "[BOOT] boot_code",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "vunknown in 3.03s",
+      "elapsed_ms": 3030.87,
+      "timestamp": 1772452711.061603
+    },
+    {
+      "test": "[BOOT] boot_numerical",
+      "engine": "numerical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "v3.1.0 in 2.54s",
+      "elapsed_ms": 2541.95,
+      "timestamp": 1772452712.016122
+    },
+    {
+      "test": "[BOOT] boot_agi",
+      "engine": "agi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "vunknown in 4.04s",
+      "elapsed_ms": 4037.2,
+      "timestamp": 1772452712.0702798
+    },
+    {
+      "test": "[BOOT] boot_server",
+      "engine": "server",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "vunknown in 18.86s",
+      "elapsed_ms": 18862.5,
+      "timestamp": 1772452729.227967
+    },
+    {
+      "test": "[STATUS] status_code",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'execution_count', 'generated_artifacts', 'languages_supported', 'paradigms_covered', 'vulnerability_patterns']",
+      "elapsed_ms": 1.14,
+      "timestamp": 1772452729.230863
+    },
+    {
+      "test": "[STATUS] status_science",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'active_domains', 'physics', 'quantum_math', 'entropy', 'multidim']",
+      "elapsed_ms": 13.08,
+      "timestamp": 1772452729.244024
+    },
+    {
+      "test": "[STATUS] status_math",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['engine', 'version', 'layers', 'constants', 'layer_status']",
+      "elapsed_ms": 0.04,
+      "timestamp": 1772452729.244116
+    },
+    {
+      "test": "[STATUS] status_agi",
+      "engine": "agi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'pipeline_evo', 'state', 'cycles', 'intellect_index', 'evolution_stage']",
+      "elapsed_ms": 30.74,
+      "timestamp": 1772452729.274903
+    },
+    {
+      "test": "[STATUS] status_asi",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['state', 'status', 'version', 'pipeline_evo', 'asi_score', 'boot_time']",
+      "elapsed_ms": 27700.26,
+      "timestamp": 1772452756.975222
+    },
+    {
+      "test": "[STATUS] status_intellect",
+      "engine": "intellect",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'engines', 'scores', 'pipeline_evo']",
+      "elapsed_ms": 0.02,
+      "timestamp": 1772452756.975277
+    },
+    {
+      "test": "[STATUS] status_quantum_gate",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'uptime_seconds', 'god_code', 'phi', 'void_constant', 'gate_library']",
+      "elapsed_ms": 0.07,
+      "timestamp": 1772452756.975369
+    },
+    {
+      "test": "[STATUS] status_quantum_link",
+      "engine": "quantum_link",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['sage_orchestrator', 'gate_engine', 'quantum_simulator', 'available']",
+      "elapsed_ms": 2768.37,
+      "timestamp": 1772452759.743815
+    },
+    {
+      "test": "[STATUS] status_numerical",
+      "engine": "numerical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'total_tokens', 'usage_counter', 'projected_22T', 'lattice_coherence', 'lattice_entropy']",
+      "elapsed_ms": 10.58,
+      "timestamp": 1772452759.7545469
+    },
+    {
+      "test": "[STATUS] status_gate",
+      "engine": "gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['environment', 'workspace', 'last_scan', 'scan_count', 'total_gates', 'total_links']",
+      "elapsed_ms": 15.54,
+      "timestamp": 1772452759.770164
+    },
+    {
+      "test": "[STATUS] status_server",
+      "engine": "server",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['connected', 'epr_links', 'chakra_coherence', 'kundalini_flow', 'bell_fidelity', 'sync_counter']",
+      "elapsed_ms": 4222.16,
+      "timestamp": 1772452763.9924102
+    },
+    {
+      "test": "[STATUS] status_dual_layer",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['engine', 'version', 'architecture', 'layer1_consciousness', 'layer2_physics', 'bridge']",
+      "elapsed_ms": 0.14,
+      "timestamp": 1772452763.992584
+    },
+    {
+      "test": "[STATUS] status_pipeline",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['hub', 'version', 'n_qubits', 'n_layers', 'total_params', 'qiskit_available']",
+      "elapsed_ms": 0.42,
+      "timestamp": 1772452763.993033
+    },
+    {
+      "test": "[STATUS] status_asi_quantum",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'qiskit_available', 'real_qpu_enabled', 'sovereign_26q', 'ibm_qpu', 'runtime_bridge']",
+      "elapsed_ms": 4538.84,
+      "timestamp": 1772452768.532609
+    },
+    {
+      "test": "[STATUS] status_code_quantum",
+      "engine": "code_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'qiskit_available', 'real_qpu_enabled', 'sovereign_26q', 'ibm_qpu', 'runtime_bridge']",
+      "elapsed_ms": 0.83,
+      "timestamp": 1772452768.533983
+    },
+    {
+      "test": "[CONSTANTS] const_GOD_CODE",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "all 13 engines agree: 527.5184818492611",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452768.544968
+    },
+    {
+      "test": "[CONSTANTS] const_OMEGA",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "all 5 engines agree: 6539.34712682",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452768.545045
+    },
+    {
+      "test": "[CONSTANTS] const_PHI",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "all 13 engines agree: 1.618033988749895",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452768.545286
+    },
+    {
+      "test": "[CONSTANTS] const_VOID_CONSTANT",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "all 9 engines agree: 1.0416180339887497",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452768.5453792
+    },
+    {
+      "test": "[CONSTANTS] formula_god_code",
+      "engine": "canonical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "286^(1/\u03c6)\u00d716 = 527.5184818492611",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452768.545417
+    },
+    {
+      "test": "[CONSTANTS] formula_void",
+      "engine": "canonical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "1.04+\u03c6/1000 = 1.04161803398875",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452768.545511
+    },
+    {
+      "test": "[CONSTANTS] formula_phi_identity",
+      "engine": "canonical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03c6\u00b2\u2212\u03c6\u22121 = 0.0",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452768.545567
+    },
+    {
+      "test": "[SELF-TEST] selftest_subsystem_count",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "31 subsystems (need \u226530)",
+      "elapsed_ms": 9.6,
+      "timestamp": 1772452768.5555022
+    },
+    {
+      "test": "[SELF-TEST] selftest_full_analysis",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['metadata', 'complexity', 'quality', 'security', 'patterns', 'sacred_alignment']",
+      "elapsed_ms": 34.92,
+      "timestamp": 1772452768.5905101
+    },
+    {
+      "test": "[SELF-TEST] selftest_demon_efficiency",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "eff=1.057070",
+      "elapsed_ms": 0.15,
+      "timestamp": 1772452768.591816
+    },
+    {
+      "test": "[SELF-TEST] selftest_coherence_evolve",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['steps', 'initial_coherence', 'final_coherence', 'avg_protection']",
+      "elapsed_ms": 0.67,
+      "timestamp": 1772452768.5925188
+    },
+    {
+      "test": "[SELF-TEST] selftest_physics_basic",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "landauer=9.15e-19, photon=1.1216596549374545",
+      "elapsed_ms": 0.22,
+      "timestamp": 1772452768.592768
+    },
+    {
+      "test": "[SELF-TEST] selftest_conservation_law",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "verify_conservation(0.0)=True",
+      "elapsed_ms": 0.11,
+      "timestamp": 1772452768.5929291
+    },
+    {
+      "test": "[SELF-TEST] selftest_sovereign_proofs",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "7 proofs returned",
+      "elapsed_ms": 41.23,
+      "timestamp": 1772452768.634194
+    },
+    {
+      "test": "[SELF-TEST] selftest_equation_verify",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "5 equations verified",
+      "elapsed_ms": 16.21,
+      "timestamp": 1772452768.650445
+    },
+    {
+      "test": "[SELF-TEST] selftest_fibonacci_20",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "F(20)=6765",
+      "elapsed_ms": 0.04,
+      "timestamp": 1772452768.650518
+    },
+    {
+      "test": "[SELF-TEST] selftest_13d_agi_score",
+      "engine": "agi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "score={'dimensions': {'intellect': 0.0, 'evolution': 0.983333, 'consciousness': 0.69646, 'autonomy': 1.0, 'research': 0.0, 'synthesis': 1.0, 'quantum_coherence': 0.0, 'resilience': 1.0, 'creativity': 0.3, 'stability': 1.0, 'entropy_reversal': 1.0, 'harmonic_resonance': 0.986318, 'wave_coherence': 0.365777, 'process_efficiency': 1.0, 'fe_sacred_coherence': 0.954545, 'fe_phi_lock': 0.916408, 'berry_phase_holonomy': 1.0, 'benchmark_capability': 0.0, 'chaos_resilience': 0.999353, 'computronium_efficiency': 0.342679, 'rayleigh_resolution': 0.382588, 'bekenstein_knowledge': 0.056, 'deep_link_resonance': 0.0}, 'weights': {'intellect': 0.161803, 'evolution': 0.123607, 'consciousness': 0.202254, 'autonomy': 0.103006, 'research': 0.134836, 'synthesis': 0.077254, 'quantum_coherence': 0.107869, 'resilience': 0.061803, 'creativity': 0.080902, 'stability': 0.093384, 'entropy_reversal': 0.04, 'harmonic_resonance': 0.03, 'wave_coherence': 0.03}, 'composite_score': 0.587699, 'god_code_harmonic': 0.019925, 'verdict': 'STANDARD'}",
+      "elapsed_ms": 906.92,
+      "timestamp": 1772452769.55751
+    },
+    {
+      "test": "[SELF-TEST] selftest_three_engine_status",
+      "engine": "agi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'engines', 'scores', 'quantum_research', 'constants']",
+      "elapsed_ms": 0.14,
+      "timestamp": 1772452769.557693
+    },
+    {
+      "test": "[SELF-TEST] selftest_asi_score",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "score=0.4179474376711122",
+      "elapsed_ms": 140.1,
+      "timestamp": 1772452769.6978638
+    },
+    {
+      "test": "[SELF-TEST] selftest_three_engine_status",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'engines', 'scores', 'quantum_research', 'metrics']",
+      "elapsed_ms": 0.04,
+      "timestamp": 1772452769.697939
+    },
+    {
+      "test": "[SELF-TEST] selftest_consciousness",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "level=0.24721672918341805",
+      "elapsed_ms": 0.48,
+      "timestamp": 1772452769.6985788
+    },
+    {
+      "test": "[SELF-TEST] selftest_three_engine_status",
+      "engine": "intellect",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['version', 'engines', 'scores', 'pipeline_evo']",
+      "elapsed_ms": 0.18,
+      "timestamp": 1772452769.6988852
+    },
+    {
+      "test": "[SELF-TEST] selftest_bell_pair",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "circuit=GateCircuit",
+      "elapsed_ms": 0.46,
+      "timestamp": 1772452769.6994119
+    },
+    {
+      "test": "[SELF-TEST] selftest_gate_library",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "25 gates loaded",
+      "elapsed_ms": 0.51,
+      "timestamp": 1772452769.699969
+    },
+    {
+      "test": "[SELF-TEST] selftest_hhl_gate_engine",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "solution=[2.0149, 0.0119], \u03ba=1.9270899838501878",
+      "elapsed_ms": 0.29,
+      "timestamp": 1772452769.700295
+    },
+    {
+      "test": "[SELF-TEST] selftest_full_quantum_analysis",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "15 algorithms returned",
+      "elapsed_ms": 3.34,
+      "timestamp": 1772452769.703674
+    },
+    {
+      "test": "[SELF-TEST] selftest_brain_state",
+      "engine": "quantum_link",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "run_count=0",
+      "elapsed_ms": 0.02,
+      "timestamp": 1772452769.703748
+    },
+    {
+      "test": "[SELF-TEST] selftest_hhl_quantum_link",
+      "engine": "quantum_link",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.2683764396899688, residual=4.47545209131181e-16",
+      "elapsed_ms": 1.24,
+      "timestamp": 1772452769.705023
+    },
+    {
+      "test": "[SELF-TEST] selftest_full_quantum_analysis",
+      "engine": "quantum_link",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "25 algorithms returned",
+      "elapsed_ms": 373.05,
+      "timestamp": 1772452770.078114
+    },
+    {
+      "test": "[SELF-TEST] selftest_lattice_summary",
+      "engine": "numerical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['total_tokens', 'projected_22T_capacity', 'virtual_projection_count', 'total_usages', 'usage_toward_22T']",
+      "elapsed_ms": 11.8,
+      "timestamp": 1772452770.089995
+    },
+    {
+      "test": "[SELF-TEST] selftest_precision_verify",
+      "engine": "numerical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "result=dict",
+      "elapsed_ms": 1605.95,
+      "timestamp": 1772452771.695997
+    },
+    {
+      "test": "[SELF-TEST] selftest_hhl_numerical",
+      "engine": "numerical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "precision=100-decimal",
+      "elapsed_ms": 0.6,
+      "timestamp": 1772452771.696633
+    },
+    {
+      "test": "[SELF-TEST] selftest_numerical_full_quantum",
+      "engine": "numerical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "11 algorithms",
+      "elapsed_ms": 2224.47,
+      "timestamp": 1772452773.92113
+    },
+    {
+      "test": "[SELF-TEST] selftest_gate_scan",
+      "engine": "gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "total_gates=1820",
+      "elapsed_ms": 11.31,
+      "timestamp": 1772452773.932518
+    },
+    {
+      "test": "[SELF-TEST] selftest_server_status",
+      "engine": "server",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['status']",
+      "elapsed_ms": 0.09,
+      "timestamp": 1772452773.932663
+    },
+    {
+      "test": "[SELF-TEST] selftest_dual_layer_status",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "layers=?, keys=['engine', 'version', 'architecture', 'layer1_consciousness', 'layer2_physics', 'bridge']",
+      "elapsed_ms": 0.97,
+      "timestamp": 1772452773.933687
+    },
+    {
+      "test": "[SELF-TEST] selftest_dual_thought",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "thought(0,0,0,0)=527.518482, near_GOD_CODE=True",
+      "elapsed_ms": 0.13,
+      "timestamp": 1772452773.933846
+    },
+    {
+      "test": "[SELF-TEST] selftest_dual_physics",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['omega', 'omega_authority', 'field_strength', 'intensity', 'equation', 'omega_equation']",
+      "elapsed_ms": 0.07,
+      "timestamp": 1772452773.933936
+    },
+    {
+      "test": "[SELF-TEST] selftest_dual_integrity",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "passed=?",
+      "elapsed_ms": 0.02,
+      "timestamp": 1772452773.93398
+    },
+    {
+      "test": "[SELF-TEST] selftest_dual_consciousness",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['error', 'fallback']",
+      "elapsed_ms": 0.04,
+      "timestamp": 1772452773.93404
+    },
+    {
+      "test": "[SELF-TEST] selftest_dual_cross_coherence",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['coherence', 'integrity_score', 'refinement_factor', 'mean_physics_error_pct', 'collision_free']",
+      "elapsed_ms": 0.69,
+      "timestamp": 1772452773.934755
+    },
+    {
+      "test": "[SELF-TEST] selftest_dual_gate_compile",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['gate_engine_available', 'check_11_compilation', 'check_12_sacred', 'all_passed']",
+      "elapsed_ms": 4.11,
+      "timestamp": 1772452773.938896
+    },
+    {
+      "test": "[SELF-TEST] selftest_dual_three_engine",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['thought_amplification', 'physics_amplification', 'thought_boost', 'physics_boost', 'engine_coverage']",
+      "elapsed_ms": 3.37,
+      "timestamp": 1772452773.942299
+    },
+    {
+      "test": "[SELF-TEST] selftest_pipeline_status",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "qubits=4, qiskit=True",
+      "elapsed_ms": 0.55,
+      "timestamp": 1772452773.9428961
+    },
+    {
+      "test": "[SELF-TEST] selftest_hhl_pipeline",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "quantum=True, \u03ba=1.61803399",
+      "elapsed_ms": 14.12,
+      "timestamp": 1772452773.95705
+    },
+    {
+      "test": "[SELF-TEST] selftest_pipeline_bell",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "fidelity=0.4999999999999999",
+      "elapsed_ms": 0.43,
+      "timestamp": 1772452773.957526
+    },
+    {
+      "test": "[SELF-TEST] selftest_pipeline_qft",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['final_state', 'probabilities', 'measurements', 'moment_trace', 'n_moments']",
+      "elapsed_ms": 1.98,
+      "timestamp": 1772452773.9595442
+    },
+    {
+      "test": "[SELF-TEST] selftest_pipeline_benchmark",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['encoder_fidelity', 'ansatz_expressibility', 'gradient_accuracy', 'simulator_correctness', 'vqc_convergence']",
+      "elapsed_ms": 8547.65,
+      "timestamp": 1772452782.507244
+    },
+    {
+      "test": "[SELF-TEST] selftest_pipeline_god_code",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "conserved=?",
+      "elapsed_ms": 0.04,
+      "timestamp": 1772452782.507327
+    },
+    {
+      "test": "[SELF-TEST] selftest_hhl_asi_quantum",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "quantum=True, \u03ba=1.61803399",
+      "elapsed_ms": 10.24,
+      "timestamp": 1772452782.51761
+    },
+    {
+      "test": "[SELF-TEST] selftest_asi_quantum_status",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0 algos, 40 caps, HHL=True",
+      "elapsed_ms": 3080.74,
+      "timestamp": 1772452785.598814
+    },
+    {
+      "test": "[SELF-TEST] selftest_asi_vqe",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "energy=-0.18494367",
+      "elapsed_ms": 249.1,
+      "timestamp": 1772452785.848227
+    },
+    {
+      "test": "[SELF-TEST] selftest_asi_26q_report",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "circuits=?",
+      "elapsed_ms": 0.24,
+      "timestamp": 1772452785.848497
+    },
+    {
+      "test": "[SELF-TEST] selftest_asi_berry_phase",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "phase=2.2816698121",
+      "elapsed_ms": 20.07,
+      "timestamp": 1772452785.868594
+    },
+    {
+      "test": "[SELF-TEST] selftest_hhl_code_quantum",
+      "engine": "code_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "quantum=True, \u03ba=1.60570331",
+      "elapsed_ms": 19.97,
+      "timestamp": 1772452785.8886988
+    },
+    {
+      "test": "[SELF-TEST] selftest_code_quantum_status",
+      "engine": "code_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "algorithms=?",
+      "elapsed_ms": 0.28,
+      "timestamp": 1772452785.8890219
+    },
+    {
+      "test": "[CROSS] sci\u2192math_entropy_inject",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03c3: 0.9867 \u2192 44986.5809",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452785.891152
+    },
+    {
+      "test": "[CROSS] sci\u2192math_primal_calculus",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "primal_calculus(44986.5809) = 10343397.458570",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452785.891287
+    },
+    {
+      "test": "[CROSS] sci\u2192math_god_code_eval",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "G(0,0,0,0)=527.5184818492611",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452785.8915951
+    },
+    {
+      "test": "[CROSS] sci\u2192math_coherence_ricci",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "Ricci(4,1.0)=11.041726464662712",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452785.8921258
+    },
+    {
+      "test": "[CROSS] math\u2192sci_fib_quantum",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "F(20)=6765, convergence=dict",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452785.892237
+    },
+    {
+      "test": "[CROSS] math\u2192sci_wave_sacred",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "wave_coh(440)=0.9908720136392022, sacred_align=True",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452785.892437
+    },
+    {
+      "test": "[CROSS] math\u2192sci_proof_research",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "proof \u2192 research cycle",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452785.931639
+    },
+    {
+      "test": "[CROSS] code\u2192science_engine_analyze",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "? lines, ? functions",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452785.962355
+    },
+    {
+      "test": "[CROSS] code\u2192math_engine_analyze",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "? lines, ? functions",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452785.9871511
+    },
+    {
+      "test": "[CROSS] code\u2192code_engine_hub_analyze",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "? lines, ? functions",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.010557
+    },
+    {
+      "test": "[CROSS] code\u2192asi_smell_check",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0 smells detected",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.013796
+    },
+    {
+      "test": "[CROSS] pipeline_sci\u2192math\u2192code",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "physics\u2192conservation(True)\u2192proof\u2192code_analysis",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.0176158
+    },
+    {
+      "test": "[CROSS] qgate_bell_compile",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "Bell pair compiled to UNIVERSAL gate set",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.01882
+    },
+    {
+      "test": "[CROSS] hhl_cross_gate_engine",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.9270899838501878, quantum=False",
+      "elapsed_ms": 0.21,
+      "timestamp": 1772452786.019246
+    },
+    {
+      "test": "[CROSS] hhl_cross_quantum_link",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.2683764396899688, quantum=False",
+      "elapsed_ms": 1.2,
+      "timestamp": 1772452786.020492
+    },
+    {
+      "test": "[CROSS] hhl_cross_asi_quantum",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.61803399, quantum=True",
+      "elapsed_ms": 1.52,
+      "timestamp": 1772452786.022519
+    },
+    {
+      "test": "[CROSS] hhl_cross_code_quantum",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.60570331, quantum=True",
+      "elapsed_ms": 6.39,
+      "timestamp": 1772452786.028951
+    },
+    {
+      "test": "[CROSS] hhl_cross_pipeline",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.61803399, quantum=True",
+      "elapsed_ms": 13.95,
+      "timestamp": 1772452786.042954
+    },
+    {
+      "test": "[CROSS] hhl_cross_numerical",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "\u03ba=1.8910007523188333932137904921055007038220286232914301004820337003566479593780712910770510203864367046, quantum=False",
+      "elapsed_ms": 1.15,
+      "timestamp": 1772452786.0441442
+    },
+    {
+      "test": "[CROSS] hhl_cross_condition_check",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "5 engines: \u03ba range [1.2684, 1.9271]",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.044288
+    },
+    {
+      "test": "[CROSS] dual_cross_thought_physics",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "thought=527.5185, coherence=0.463333",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.0462
+    },
+    {
+      "test": "[CROSS] dual_score",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "score=0.6",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.046256
+    },
+    {
+      "test": "[CROSS] dual_sacred_scaffold",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['286', '104', '416', 'golden_thread']",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.0463328
+    },
+    {
+      "test": "[CROSS] dual_deep_synthesis",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['total_pairs', 'valid_pairs', 'correlation_pairs', 'synthesis_coherence', 'min_coherence_threshold']",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.051708
+    },
+    {
+      "test": "[CROSS] pipeline_asi_hhl_cross",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pipeline \u03ba=1.61803399, asi \u03ba=1.61803399",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.063921
+    },
+    {
+      "test": "[PERF] boot_time_math",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.76s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.064137
+    },
+    {
+      "test": "[PERF] boot_time_quantum_gate",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.55s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.064181
+    },
+    {
+      "test": "[PERF] boot_time_science",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "1.44s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.0641978
+    },
+    {
+      "test": "[PERF] boot_time_intellect",
+      "engine": "intellect",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.83s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.0642402
+    },
+    {
+      "test": "[PERF] boot_time_quantum_link",
+      "engine": "quantum_link",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "1.02s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.0642838
+    },
+    {
+      "test": "[PERF] boot_time_gate",
+      "engine": "gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.79s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.0643132
+    },
+    {
+      "test": "[PERF] boot_time_asi",
+      "engine": "asi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "2.99s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.064342
+    },
+    {
+      "test": "[PERF] boot_time_dual_layer",
+      "engine": "dual_layer",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.65s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.064358
+    },
+    {
+      "test": "[PERF] boot_time_asi_quantum",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.00s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.06437
+    },
+    {
+      "test": "[PERF] boot_time_code_quantum",
+      "engine": "code_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.00s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.064384
+    },
+    {
+      "test": "[PERF] boot_time_pipeline",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "0.02s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.064411
+    },
+    {
+      "test": "[PERF] boot_time_code",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "3.03s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.0644228
+    },
+    {
+      "test": "[PERF] boot_time_numerical",
+      "engine": "numerical",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "2.54s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.064461
+    },
+    {
+      "test": "[PERF] boot_time_agi",
+      "engine": "agi",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "4.04s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.06449
+    },
+    {
+      "test": "[PERF] boot_time_server",
+      "engine": "server",
+      "severity": "WARN",
+      "passed": false,
+      "detail": "18.86s (threshold=10.0s)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.064544
+    },
+    {
+      "test": "[PERF] perf_math_ops",
+      "engine": "math",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "fib+primes+conservation in 0ms",
+      "elapsed_ms": 0.32,
+      "timestamp": 1772452786.064905
+    },
+    {
+      "test": "[PERF] perf_code_analysis",
+      "engine": "code",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "full_analysis in 5ms",
+      "elapsed_ms": 4.99,
+      "timestamp": 1772452786.069927
+    },
+    {
+      "test": "[QUANTUM] 25q_templates_complete",
+      "engine": "science",
+      "severity": "WARN",
+      "passed": false,
+      "detail": "Missing: {'random_25', 'qft_25'}",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.070368
+    },
+    {
+      "test": "[QUANTUM] 25q_hhl_template",
+      "engine": "science",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "qubits=26, depth=92, cx=96",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.070415
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_amplitude_estimation",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.0728939
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_bell_state",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.0729039
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_born_measurement",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.07291
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_deutsch_jozsa",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.0729148
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_hadamard_sample",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.07292
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_hhl_linear_solver",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.072924
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_phase_estimation",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.072929
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_quantum_fourier_transform",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.072934
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_quantum_walk",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.072938
+    },
+    {
+      "test": "[QUANTUM] gate_fqa_teleportation",
+      "engine": "quantum_gate",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "coherence=1.3096238719213355e-05",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.072953
+    },
+    {
+      "test": "[QUANTUM] qlink_full_quantum",
+      "engine": "quantum_link",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "25 algorithms in 502ms",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.575371
+    },
+    {
+      "test": "[QUANTUM] asi_qpe_sacred",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "verified=?  [21ms]",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.596119
+    },
+    {
+      "test": "[QUANTUM] asi_coherence_grover",
+      "engine": "asi_quantum",
+      "severity": "WARN",
+      "passed": false,
+      "detail": "{'algorithm': 'grover_search', 'search_space': 16, 'target_i",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.603157
+    },
+    {
+      "test": "[QUANTUM] asi_quantum_volume",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "volume=8",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452786.619895
+    },
+    {
+      "test": "[QUANTUM] asi_entanglement_fidelity",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "fidelity=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452787.0622962
+    },
+    {
+      "test": "[QUANTUM] asi_26q_validation",
+      "engine": "asi_quantum",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "status=?",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452787.062494
+    },
+    {
+      "test": "[QUANTUM] pipeline_encode",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "type=ndarray",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452787.062863
+    },
+    {
+      "test": "[QUANTUM] pipeline_ghz",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "keys=['final_state', 'probabilities', 'measurements', 'moment_trace', 'n_moments']",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452787.063203
+    },
+    {
+      "test": "[QUANTUM] pipeline_summary",
+      "engine": "pipeline",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "summary_len=81",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452787.063307
+    },
+    {
+      "test": "[QUANTUM] hhl_accuracy_pipeline",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "direction_match=1.000000",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452787.075286
+    },
+    {
+      "test": "[QUANTUM] hhl_accuracy_asi",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "direction_match=1.000000",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452787.0825548
+    },
+    {
+      "test": "[QUANTUM] hhl_accuracy_mean",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "mean cos(\u03b8)=1.000000 across 2 engines",
+      "elapsed_ms": 0.0,
+      "timestamp": 1772452787.082588
+    }
+  ],
+  "total_time_seconds": 79.06,
+  "engines_requested": [
+    "code",
+    "science",
+    "math",
+    "agi",
+    "asi",
+    "intellect",
+    "quantum_gate",
+    "quantum_link",
+    "numerical",
+    "gate",
+    "server",
+    "dual_layer",
+    "pipeline",
+    "asi_quantum",
+    "code_quantum"
+  ],
+  "phases": [
+    "boot",
+    "constants",
+    "cross",
+    "perf",
+    "quantum",
+    "self-test",
+    "status"
+  ]
+}

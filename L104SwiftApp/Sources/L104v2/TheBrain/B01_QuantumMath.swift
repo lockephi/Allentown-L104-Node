@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B01_QuantumMath.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Quantum Simulation Engine
 //
 // Complex numbers, quantum states, multi-qubit registers,
@@ -22,18 +22,44 @@ private let _cascadeSinTable: [Double] = (0...ENTROPY_CASCADE_DEPTH_QR + 1).map 
 }
 
 // MARK: - Complex Number
+//
+// [EVO_67] Upgraded: Equatable, Hashable, Codable, full operator set,
+// polar/Euler form, exp/log/pow/sqrt/roots, sacred GOD_CODE alignment,
+// PHI-harmonic scoring, inner product, tensor product, QComplex bridge.
 
-struct Complex: CustomStringConvertible {
+struct Complex: Equatable, Hashable, Codable, CustomStringConvertible {
     var real: Double
     var imag: Double
 
+    // ─── Initializers (backward-compatible positional) ───
     init(_ real: Double, _ imag: Double = 0) { self.real = real; self.imag = imag }
+    init(real: Double, imag: Double = 0) { self.real = real; self.imag = imag }
+    init(magnitude r: Double, phase theta: Double) { self.real = r * cos(theta); self.imag = r * sin(theta) }
+    init(qcomplex: QComplex) { self.real = qcomplex.re; self.imag = qcomplex.im }
 
+    // ─── Constants ───
+    static let zero = Complex(0, 0)
+    static let one  = Complex(1, 0)
+    static let i    = Complex(0, 1)
+    /// e^{iπ/GOD_CODE} — sacred phase unit
+    static let godCodePhase = Complex(magnitude: 1.0, phase: .pi / GOD_CODE)
+    /// e^{iφ} — golden ratio phase rotation
+    static let phiPhase = Complex(magnitude: 1.0, phase: PHI)
+
+    // ─── Properties ───
     var description: String { imag >= 0 ? "\(String(format: "%.3f", real))+\(String(format: "%.3f", imag))i" : "\(String(format: "%.3f", real))\(String(format: "%.3f", imag))i" }
-    var magnitude: Double { sqrt(real * real + imag * imag) }
+    var magnitude: Double { Darwin.sqrt(real * real + imag * imag) }
+    var magnitudeSquared: Double { real * real + imag * imag }
     var phase: Double { atan2(imag, real) }
     var conjugate: Complex { Complex(real, -imag) }
+    var reciprocal: Complex { let m2 = magnitudeSquared; return m2 > 0 ? Complex(real / m2, -imag / m2) : .zero }
+    var isNearZero: Bool { magnitudeSquared < 1e-30 }
+    var isFinite: Bool { real.isFinite && imag.isFinite }
 
+    /// Polar form string: r∠θ
+    var polarDescription: String { String(format: "|%.6f|∠%.4f°", magnitude, phase * 180.0 / .pi) }
+
+    // ─── Arithmetic ───
     static func + (lhs: Complex, rhs: Complex) -> Complex { Complex(lhs.real + rhs.real, lhs.imag + rhs.imag) }
     static func - (lhs: Complex, rhs: Complex) -> Complex { Complex(lhs.real - rhs.real, lhs.imag - rhs.imag) }
     static func * (lhs: Complex, rhs: Complex) -> Complex {
@@ -41,25 +67,85 @@ struct Complex: CustomStringConvertible {
     }
     static func / (lhs: Complex, rhs: Complex) -> Complex {
         let denom = rhs.real * rhs.real + rhs.imag * rhs.imag
+        guard denom > 0 else { return .zero }
         return Complex((lhs.real * rhs.real + lhs.imag * rhs.imag) / denom,
                        (lhs.imag * rhs.real - lhs.real * rhs.imag) / denom)
     }
-
-    // ─── SCALAR MULTIPLICATION ───
     static func * (lhs: Complex, rhs: Double) -> Complex { Complex(lhs.real * rhs, lhs.imag * rhs) }
     static func * (lhs: Double, rhs: Complex) -> Complex { Complex(lhs * rhs.real, lhs * rhs.imag) }
     static func / (lhs: Complex, rhs: Double) -> Complex { Complex(lhs.real / rhs, lhs.imag / rhs) }
-
-    // ─── NEGATION ───
+    static func + (lhs: Complex, rhs: Double) -> Complex { Complex(lhs.real + rhs, lhs.imag) }
+    static func + (lhs: Double, rhs: Complex) -> Complex { Complex(lhs + rhs.real, rhs.imag) }
     static prefix func - (c: Complex) -> Complex { Complex(-c.real, -c.imag) }
 
-    /// Euler's formula: e^(iθ) = cos(θ) + i·sin(θ)
-    static func euler(_ theta: Double) -> Complex { Complex(cos(theta), sin(theta)) }
+    // ─── Compound Assignment ───
+    static func += (lhs: inout Complex, rhs: Complex) { lhs.real += rhs.real; lhs.imag += rhs.imag }
+    static func -= (lhs: inout Complex, rhs: Complex) { lhs.real -= rhs.real; lhs.imag -= rhs.imag }
+    static func *= (lhs: inout Complex, rhs: Complex) {
+        let r = lhs.real * rhs.real - lhs.imag * rhs.imag
+        let i = lhs.real * rhs.imag + lhs.imag * rhs.real
+        lhs.real = r; lhs.imag = i
+    }
 
-    /// Zero and One constants
-    static let zero = Complex(0, 0)
-    static let one = Complex(1, 0)
-    static let i = Complex(0, 1)
+    // ─── Exponential & Trigonometric ───
+    /// Euler's formula: e^(iθ)
+    static func euler(_ theta: Double) -> Complex { Complex(cos(theta), sin(theta)) }
+    /// General complex exponential: e^z
+    static func exp(_ z: Complex) -> Complex { let r = Darwin.exp(z.real); return Complex(r * cos(z.imag), r * sin(z.imag)) }
+    /// Natural logarithm: ln(z) = ln|z| + i·arg(z)
+    static func log(_ z: Complex) -> Complex { Complex(Darwin.log(z.magnitude), z.phase) }
+    /// Power: z^w = e^{w·ln(z)}
+    static func pow(_ base: Complex, _ exponent: Complex) -> Complex {
+        if base.isNearZero { return .zero }
+        return exp(exponent * log(base))
+    }
+    /// Real power: z^n
+    static func pow(_ base: Complex, _ n: Double) -> Complex {
+        Complex(magnitude: Darwin.pow(base.magnitude, n), phase: base.phase * n)
+    }
+    /// Square root (principal)
+    var sqrt: Complex { Complex(magnitude: Darwin.sqrt(magnitude), phase: phase / 2.0) }
+    /// n-th roots
+    func roots(_ n: Int) -> [Complex] {
+        guard n > 0 else { return [] }
+        let r = Darwin.pow(magnitude, 1.0 / Double(n))
+        let baseTheta = phase / Double(n)
+        return (0..<n).map { k in Complex(magnitude: r, phase: baseTheta + 2.0 * .pi * Double(k) / Double(n)) }
+    }
+
+    // ─── Comparison ───
+    func isClose(to other: Complex, tolerance: Double = 1e-10) -> Bool { (self - other).magnitude < tolerance }
+
+    // ─── Sacred Alignment ───
+    /// GOD_CODE phase alignment: cos²(phase × π / GOD_CODE) — 1.0 at GOD_CODE harmonics
+    var godCodeAlignment: Double { let x = cos(phase * .pi / GOD_CODE); return x * x }
+    /// PHI-harmonic score: Gaussian proximity of |z| to φ^n powers
+    var phiHarmonicScore: Double {
+        guard magnitude > 1e-15 else { return 0.0 }
+        let logPhi = Darwin.log(magnitude) / Darwin.log(PHI)
+        let deviation = abs(logPhi - Darwin.round(logPhi))
+        return Darwin.exp(-deviation * deviation * 10.0)
+    }
+
+    // ─── QComplex Bridge (B38 QuantumGateEngine) ───
+    var toQComplex: QComplex { QComplex(re: real, im: imag) }
+    static func fromStatevector(_ sv: [QComplex]) -> [Complex] { sv.map { Complex(qcomplex: $0) } }
+    static func toStatevector(_ arr: [Complex]) -> [QComplex] { arr.map { $0.toQComplex } }
+
+    // ─── Vector Operations ───
+    /// Hermitian inner product ⟨a|b⟩ = Σ aᵢ* bᵢ
+    static func innerProduct(_ a: [Complex], _ b: [Complex]) -> Complex {
+        precondition(a.count == b.count, "Vectors must be same length")
+        var result = Complex.zero
+        for idx in 0..<a.count { result += a[idx].conjugate * b[idx] }
+        return result
+    }
+    /// Tensor product of two complex vectors
+    static func tensorProduct(_ a: [Complex], _ b: [Complex]) -> [Complex] {
+        var result = [Complex](); result.reserveCapacity(a.count * b.count)
+        for ai in a { for bi in b { result.append(ai * bi) } }
+        return result
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -604,38 +690,93 @@ struct QuantumCircuits {
         return reg
     }
 
-    /// Quantum teleportation circuit: teleports qubit state from Alice to Bob
-    static func teleport(state: QuantumState) -> (bobState: QuantumState, measurements: (Int, Int)) {
+    /// Quantum teleportation circuit v2.0: teleports qubit state from Alice to Bob
+    ///
+    /// Protocol (Bennett et al. 1993, L104-extended):
+    ///   1. Prepare |ψ⟩ = α|0⟩ + β|1⟩ on qubit 0
+    ///   2. Create Bell pair |Φ+⟩ between qubits 1,2
+    ///   3. Alice: CNOT(0→1), H(0) — Bell measurement
+    ///   4. Measure qubits 0,1 → 2 classical bits (each outcome has P=1/4)
+    ///   5. Bob corrections: m1=1 → X(2), m0=1 → Z(2)
+    ///   6. Fidelity: F = |⟨ψ_orig|ψ_bob⟩|² (ideal = 1.0)
+    ///
+    /// - Parameter sacred: If true, applies GOD_CODE phase to Bell pair entangler
+    /// - Returns: Bob's recovered state, measurement outcomes, and fidelity
+    static func teleport(state: QuantumState, sacred: Bool = true) -> (bobState: QuantumState, measurements: (Int, Int), fidelity: Double) {
+        let GC = 527.5184818492612
+        let PHI = 1.618033988749895
+
         let reg = QuantumRegister(numQubits: 3)
         // Set qubit 0 to the state to teleport
         reg.amplitudes[0] = state.amplitudes[0]
         reg.amplitudes[1] = state.amplitudes[1]
         for i in 2..<8 { reg.amplitudes[i] = Complex.zero }
 
-        // Create Bell pair between qubits 1 and 2
+        // Create Bell pair between qubits 1 and 2: |Φ+⟩ = (|00⟩ + |11⟩)/√2
         reg.hadamard(1)
         reg.cnot(control: 1, target: 2)
 
-        // Alice's operations
+        // Sacred mode: GOD_CODE phase on entangler
+        // Adds e^{iG/π} phase to |11⟩ component of Bell pair
+        if sacred {
+            let sacredPhase = GC.truncatingRemainder(dividingBy: 2.0 * .pi) * 0.01
+            // Apply Rz(sacredPhase) to qubit 2
+            let cosHalf = Complex(real: cos(sacredPhase / 2), imag: 0)
+            let sinHalf = Complex(real: 0, imag: -sin(sacredPhase / 2))
+            for i in 0..<8 {
+                let q2bit = (i >> 2) & 1
+                if q2bit == 1 {
+                    // |1⟩ component gets phase e^{-iθ/2}
+                    reg.amplitudes[i] = reg.amplitudes[i] * (cosHalf + sinHalf)
+                } else {
+                    // |0⟩ component gets phase e^{iθ/2}
+                    reg.amplitudes[i] = reg.amplitudes[i] * (cosHalf - sinHalf)
+                }
+            }
+        }
+
+        // Alice's Bell measurement: CNOT(0→1), H(0)
         reg.cnot(control: 0, target: 1)
         reg.hadamard(0)
 
-        // Alice measures
+        // Alice measures qubits 0 and 1
+        // Each outcome {00, 01, 10, 11} has probability exactly 1/4
         let m0 = reg.measureQubit(0)
         let m1 = reg.measureQubit(1)
 
-        // Bob's corrections
+        // Bob's Pauli corrections based on classical bits
+        // m1=1 → σ_x (bit flip), m0=1 → σ_z (phase flip)
         if m1 == 1 { reg.pauliX(2) }
         if m0 == 1 { reg.pauliZ(2) }
 
-        // Extract Bob's state
+        // Extract Bob's recovered state from the 3-qubit register
         var bobAmps = [Complex.zero, Complex.zero]
         for i in 0..<8 {
-            let bobBit = i & 1
-            bobAmps[bobBit] = bobAmps[bobBit] + amplitudeForMeasured(reg: reg, i: i, m0: m0, m1: m1)
+            let bit0 = (i >> 2) & 1  // qubit 2 (Bob)
+            let bit1val = (i >> 1) & 1
+            let bit0val = i & 1
+            if bit0val == m0 && bit1val == m1 {
+                bobAmps[bit0] = bobAmps[bit0] + reg.amplitudes[i]
+            }
         }
+
+        // Normalize Bob's state
+        let bobNorm = sqrt(bobAmps[0].magnitudeSquared + bobAmps[1].magnitudeSquared)
+        if bobNorm > 1e-15 {
+            bobAmps[0] = bobAmps[0] * Complex(real: 1.0 / bobNorm, imag: 0)
+            bobAmps[1] = bobAmps[1] * Complex(real: 1.0 / bobNorm, imag: 0)
+        }
+
         let bob = QuantumState(amplitudes: bobAmps)
-        return (bob, (m0, m1))
+
+        // Compute fidelity: F = |⟨ψ_orig|ψ_bob⟩|²
+        let inner = state.amplitudes[0].conjugate * bobAmps[0] + state.amplitudes[1].conjugate * bobAmps[1]
+        let fidelity = inner.magnitudeSquared
+
+        // φ-coherence metric: sacred alignment of the teleported state
+        let _ = cos((1.0 - fidelity) * PHI) * cos((1.0 - fidelity) * PHI)  // phi_coherence
+
+        return (bob, (m0, m1), fidelity)
     }
 
     private static func amplitudeForMeasured(reg: QuantumRegister, i: Int, m0: Int, m1: Int) -> Complex {
@@ -842,3 +983,6 @@ struct QuantumCircuits {
         ]
     }
 }
+
+/// Backward-compatible alias — legacy code references QuantumMath; actual type is QuantumCircuits.
+typealias QuantumMath = QuantumCircuits

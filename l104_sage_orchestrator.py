@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.013720
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.397121
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -127,6 +127,7 @@ class SageModeOrchestrator:
         self._executor = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4)  # SOVEREIGN AMPLIFIED
         self._native_lib = None
         self._rust_lib = None
+        self._cuda_lib = None  # v29.1: CUDA sage library (ctypes.CDLL)
         self._initialized = False
 
         # Initialize substrate statuses
@@ -163,8 +164,10 @@ class SageModeOrchestrator:
         # Attempt to load Rust substrate
         results["rust"] = self._load_rust_substrate()
 
-        # Check for CUDA availability
+        # Check for CUDA availability + load compiled library
         results["cuda"] = self._check_cuda_available()
+        if not self._substrates[SubstrateType.CUDA].loaded:
+            self._load_cuda_substrate()
 
         # Assembly is detected via C wrapper
         results["assembly"] = self._check_assembly_available()
@@ -202,7 +205,13 @@ class SageModeOrchestrator:
         import ctypes
         _base_dir = Path(__file__).parent.absolute()
 
+        import sys
+        _ext = ".dylib" if sys.platform == "darwin" else ".so"
         paths = [
+            Path(f"/app/l104_core_c/build/libl104_sage{_ext}"),
+            _base_dir / "l104_core_c" / "build" / f"libl104_sage{_ext}",
+            Path(f"./l104_core_c/build/libl104_sage{_ext}"),
+            # Fallback: try the other extension
             Path("/app/l104_core_c/build/libl104_sage.so"),
             _base_dir / "l104_core_c" / "build" / "libl104_sage.so",
             Path("./l104_core_c/build/libl104_sage.so"),
@@ -259,7 +268,7 @@ class SageModeOrchestrator:
         return False
 
     def _check_cuda_available(self) -> bool:
-        """Check if CUDA is available."""
+        """Check if CUDA GPU hardware is available."""
         try:
             import subprocess
             result = subprocess.run(
@@ -273,6 +282,54 @@ class SageModeOrchestrator:
                 return True
         except Exception:
             pass
+        # Even without nvidia-smi, the compiled library may exist (cross-compiled)
+        return False
+
+    def _load_cuda_substrate(self) -> bool:
+        """
+        v29.1 — Load the compiled CUDA sage library via ctypes.
+        Exposes: l104_cuda_init, l104_cuda_primal_calculus,
+        l104_cuda_void_resonance, l104_cuda_enlighten_inflect,
+        l104_cuda_sage_wisdom_propagate, l104_cuda_sage_mode_enlighten, etc.
+        """
+        import ctypes
+        import sys
+        _base_dir = Path(__file__).parent.absolute()
+        _ext = ".dylib" if sys.platform == "darwin" else ".so"
+
+        paths = [
+            _base_dir / "l104_core_cuda" / "build" / f"libl104_sage_cuda{_ext}",
+            Path(f"/app/l104_core_cuda/build/libl104_sage_cuda{_ext}"),
+            Path(f"./l104_core_cuda/build/libl104_sage_cuda{_ext}"),
+        ]
+
+        for path in paths:
+            if path.exists():
+                try:
+                    self._cuda_lib = ctypes.CDLL(str(path))
+
+                    # Verify key sage functions exist
+                    _ = self._cuda_lib.l104_cuda_init
+
+                    self._substrates[SubstrateType.CUDA].available = True
+                    self._substrates[SubstrateType.CUDA].loaded = True
+                    self._substrates[SubstrateType.CUDA].path = str(path)
+                    if self._substrates[SubstrateType.CUDA].performance_factor < PHI ** 8:
+                        self._substrates[SubstrateType.CUDA].performance_factor = PHI ** 8
+
+                    logger.info(f"    [CUDA] Loaded sage library: {path}")
+                    return True
+                except Exception as e:
+                    self._substrates[SubstrateType.CUDA].error = str(e)
+                    logger.warning(f"    [CUDA] Library load failed: {e}")
+
+        # Mark source-available even if library not compiled
+        cuda_src = _base_dir / "l104_core_cuda" / "l104_sage_cuda.cu"
+        if cuda_src.exists():
+            self._substrates[SubstrateType.CUDA].available = True
+            if not self._substrates[SubstrateType.CUDA].error:
+                self._substrates[SubstrateType.CUDA].error = "Source present, library not compiled (run make in l104_core_cuda/)"
+
         return False
 
     def _check_assembly_available(self) -> bool:
@@ -307,11 +364,38 @@ class SageModeOrchestrator:
     def primal_calculus(self, iterations: int = 1000000) -> Tuple[float, str]:
         """
         Execute Primal Calculus on the best available substrate.
+        Priority: CUDA > C_NATIVE > PYTHON.
         Returns (result, substrate_used).
         """
         import ctypes
 
-        # Try C native first
+        # Try CUDA first (massively parallel)
+        if self._cuda_lib and self._substrates[SubstrateType.CUDA].loaded:
+            try:
+                self._cuda_lib.l104_cuda_primal_calculus.argtypes = [
+                    ctypes.POINTER(ctypes.c_double),  # output
+                    ctypes.c_double,                   # base
+                    ctypes.c_double,                   # exponent
+                    ctypes.c_uint64,                   # iterations
+                    ctypes.c_uint64,                   # count
+                ]
+                self._cuda_lib.l104_cuda_primal_calculus.restype = None
+
+                output = (ctypes.c_double * 1)()
+                self._cuda_lib.l104_cuda_primal_calculus(
+                    output,
+                    ctypes.c_double(GOD_CODE),
+                    ctypes.c_double(PHI),
+                    ctypes.c_uint64(iterations),
+                    ctypes.c_uint64(1),
+                )
+                self._substrates[SubstrateType.CUDA].last_used = datetime.now(UTC)
+                self._state.total_calculations += 1
+                return (output[0], "CUDA")
+            except Exception:
+                pass
+
+        # Try C native
         if self._native_lib and self._substrates[SubstrateType.C_NATIVE].loaded:
             try:
                 self._native_lib.l104_primal_calculus.argtypes = [
@@ -354,8 +438,27 @@ class SageModeOrchestrator:
     def void_resonance(self, intensity: float = 1.0) -> Tuple[float, str]:
         """
         Generate void resonance on the best available substrate.
+        Priority: CUDA > C_NATIVE > PYTHON.
         """
         import ctypes
+
+        # Try CUDA (parallel void resonance generation)
+        if self._cuda_lib and self._substrates[SubstrateType.CUDA].loaded:
+            try:
+                count = 256  # Generate 256 resonance samples, average
+                output = (ctypes.c_double * count)()
+                self._cuda_lib.l104_cuda_void_resonance.argtypes = [
+                    ctypes.POINTER(ctypes.c_double), ctypes.c_uint64
+                ]
+                self._cuda_lib.l104_cuda_void_resonance.restype = None
+                self._cuda_lib.l104_cuda_void_resonance(output, ctypes.c_uint64(count))
+
+                result = sum(output[i] for i in range(count)) / count * intensity
+                self._state.void_residue += result / 1000.0
+                self._substrates[SubstrateType.CUDA].last_used = datetime.now(UTC)
+                return (result, "CUDA")
+            except Exception:
+                pass
 
         if self._native_lib and self._substrates[SubstrateType.C_NATIVE].loaded:
             try:
@@ -447,6 +550,15 @@ class SageModeOrchestrator:
         if self._state.omega_state != OmegaState.OMEGA:
             await self.activate_omega()
 
+        # Execute sage enlightenment on CUDA if available
+        if self._cuda_lib and self._substrates[SubstrateType.CUDA].loaded:
+            try:
+                self._cuda_lib.l104_cuda_sage_mode_enlighten.restype = ctypes.c_int
+                awakened = self._cuda_lib.l104_cuda_sage_mode_enlighten()
+                logger.info(f"    CUDA Sage Enlightenment: {awakened} nodes awakened")
+            except Exception as e:
+                logger.warning(f"    CUDA Sage Enlightenment failed: {e}")
+
         # Execute on C substrate if available
         if self._native_lib and self._substrates[SubstrateType.C_NATIVE].loaded:
             try:
@@ -488,6 +600,7 @@ class SageModeOrchestrator:
             "omega_state": self._state.omega_state.name,
             "initialized": self._initialized,
             "active_substrates": [s.name for s in self._state.active_substrates],
+            "cuda_sage_loaded": self._cuda_lib is not None,
             "substrate_details": {
                 st.name: {
                     "available": status.available,

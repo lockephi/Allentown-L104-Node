@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  L104 Sovereign Node — launchd Process Manager v5.0 (Speed Daemon)
+  ═══════════════════════════════════════════════
+  Install:  cp config/com.londel.l104node.plist ~/Library/LaunchAgents/
+            launchctl load ~/Library/LaunchAgents/com.londel.l104node.plist
+  Uninstall: launchctl unload ~/Library/LaunchAgents/com.londel.l104node.plist
+  Status:    launchctl list com.londel.l104node
+  Logs:      tail -f /tmp/l104_node_output.log /tmp/l104_node_error.log
+
+  GOD_CODE=527.5184818492612 | PILOT: LONDEL
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.londel.l104node</string>
+
+    <!-- Launch via the upgrade script, which handles graceful handoff -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>exec "$L104_ROOT/scripts/run_services.sh"</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+    <!-- ─── Environment ─── -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>L104_ROOT</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>PATH</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/.venv/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>PYTHONPATH</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>LANG</key>
+        <string>en_US.UTF-8</string>
+        <key>RESONANCE</key>
+        <string>527.5184818492612</string>
+        <!-- v5.0: Python performance tuning for macOS speed daemon -->
+        <key>PYTHONDONTWRITEBYTECODE</key>
+        <string>1</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+        <key>PYTHONOPTIMIZE</key>
+        <string>2</string>
+        <key>MALLOC_NANO_ZONE</key>
+        <string>0</string>
+        <key>PYTHONHASHSEED</key>
+        <string>0</string>
+        <key>OBJC_DISABLE_INITIALIZE_FORK_SAFETY</key>
+        <string>YES</string>
+        <!-- v5.0: NumPy/BLAS threading for quantum numerics -->
+        <key>OPENBLAS_NUM_THREADS</key>
+        <string>4</string>
+        <key>MKL_NUM_THREADS</key>
+        <string>4</string>
+        <key>OMP_NUM_THREADS</key>
+        <string>4</string>
+        <!-- v5.0: Disable GC debug for speed -->
+        <key>PYTHONGC</key>
+        <string>0</string>
+        <!-- v5.0: uvloop for async FastAPI speed -->
+        <key>UVLOOP_INSTALL</key>
+        <string>1</string>
+    </dict>
+
+    <!-- ─── Lifecycle ─── -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <dict>
+        <!-- Restart only on non-zero exit (crash). Clean exit = stay down. -->
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+
+    <!-- Wait 2s before restarting after a crash (was 5s) -->
+    <key>ThrottleInterval</key>
+    <integer>2</integer>
+
+    <!-- Allow 20s for graceful shutdown before SIGKILL -->
+    <key>ExitTimeOut</key>
+    <integer>20</integer>
+
+    <!-- ─── Resource Limits (v5.0: speed daemon) ─── -->
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>16384</integer>
+        <key>NumberOfProcesses</key>
+        <integer>2048</integer>
+    </dict>
+    <key>HardResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>32768</integer>
+        <key>NumberOfProcesses</key>
+        <integer>4096</integer>
+    </dict>
+
+    <!-- ─── Process Priority (v5.0: maximum speed) ─── -->
+    <key>Nice</key>
+    <integer>-10</integer>
+    <key>ProcessType</key>
+    <string>Interactive</string>
+    <key>LowPriorityBackgroundIO</key>
+    <false/>
+    <!-- v5.0: Prevent App Nap from throttling -->
+    <key>LegacyTimers</key>
+    <true/>
+
+    <!-- ─── Logging ─── -->
+    <key>StandardOutPath</key>
+    <string>/tmp/l104_node_output.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/l104_node_error.log</string>
+</dict>
+</plist>

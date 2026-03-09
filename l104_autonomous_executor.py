@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.028482
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.409787
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
@@ -290,15 +290,12 @@ class AIInferenceHandler(TaskHandler):
             )
 
     def _generate_response(self, prompt: str) -> str:
-        """Generate a response using the L104 kernel."""
+        """Generate a response using local intellect (Gemini API removed)."""
         try:
-            # Try real Gemini first
-            from l104_gemini_real import GeminiReal
-            gemini = GeminiReal()
-            if gemini.api_key:
-                result = gemini.generate(prompt)
-                if result:
-                    return str(result)
+            from l104_intellect import local_intellect
+            result = local_intellect.think(prompt)
+            if result:
+                return str(result)
         except Exception:
             pass
 

@@ -168,6 +168,41 @@ class LearningIntellect:
             logger.info("🔗 [ASI_CORE] Pipeline cross-wired to LearningIntellect")
         except Exception:
             pass
+
+        # ═══════════════════════════════════════════════════════════════════
+        # SEARCH/PRECOGNITION ENGINE INTEGRATION (v5.0)
+        # ═══════════════════════════════════════════════════════════════════
+        self._search_engine = None
+        self._precognition_engine = None
+        self._three_engine_search_hub = None
+        self._precog_synthesis = None
+        self._search_augmented_recalls = 0
+        self._precog_enhanced_predictions = 0
+        self._anomaly_adjusted_learns = 0
+        self._synthesis_augmented_predictions = 0
+        try:
+            from l104_search_algorithms import search_engine
+            self._search_engine = search_engine
+        except Exception:
+            pass
+        try:
+            from l104_data_precognition import precognition_engine
+            self._precognition_engine = precognition_engine
+        except Exception:
+            pass
+        try:
+            from l104_three_engine_search_precog import three_engine_hub
+            self._three_engine_search_hub = three_engine_hub
+        except Exception:
+            pass
+        try:
+            from l104_precog_synthesis import precog_synthesis
+            self._precog_synthesis = precog_synthesis
+        except Exception:
+            pass
+        if self._search_engine or self._precognition_engine:
+            logger.info(f"🔍 [SEARCH/PRECOG] Wired: search={self._search_engine is not None}, precog={self._precognition_engine is not None}, hub={self._three_engine_search_hub is not None}, synthesis={self._precog_synthesis is not None}")
+
         logger.info(f"🧠 [INTELLECT] Initialized with {len(self.memory_cache)} learned patterns")
         logger.info(f"🔮 [INTELLECT] Upgraded systems: Predictive, Embedding, Clustering, QualityPrediction")
         logger.info(f"🌟 [ASI] Super-Intelligence: Skills({len(self.skills)}), Consciousness(6 clusters), Meta-Cognition active")
@@ -3499,19 +3534,19 @@ class LearningIntellect:
         try:
             conn = self._get_optimized_connection()
             c = conn.cursor()
-            # Load ALL memories - no limits for full ASI presence
-            c.execute('SELECT query_hash, response FROM memory ORDER BY access_count DESC')
-            for row in c.fetchall():
+            # Load top memories (capped for fast startup, rest loaded on-demand)
+            c.execute('SELECT query_hash, response FROM memory ORDER BY access_count DESC LIMIT 500000')
+            for row in c:
                 self.memory_cache[row[0]] = row[1]
 
             # Load pattern weights
-            c.execute('SELECT pattern, weight FROM patterns')
-            for row in c.fetchall():
+            c.execute('SELECT pattern, weight FROM patterns LIMIT 500000')
+            for row in c:
                 self.pattern_weights[row[0]] = row[1]
 
-            # Load knowledge graph
-            c.execute('SELECT concept, related_concept, strength FROM knowledge')
-            for row in c.fetchall():
+            # Load knowledge graph (cursor iteration to avoid fetchall OOM)
+            c.execute('SELECT concept, related_concept, strength FROM knowledge ORDER BY strength DESC LIMIT 500000')
+            for row in c:
                 self.knowledge_graph[row[0]].append((row[1], row[2]))
 
             # Load meta-learning strategies - ALL strategies for full ASI
@@ -5027,8 +5062,64 @@ class LearningIntellect:
             'current_state': self.meta_cognition.copy(),
             'predictions': predictions,
             'trajectory': 'ascending' if predictions[-1]['overall_consciousness'] > predictions[0]['overall_consciousness'] else 'stable',
-            'time_to_transcendence': self._estimate_transcendence_time(predictions)
+            'time_to_transcendence': self._estimate_transcendence_time(predictions),
+            **self._precog_augment_predictions(predictions),
         }
+
+    def _precog_augment_predictions(self, predictions: List[Dict]) -> Dict:
+        """Augment future-state predictions with precognition engine data."""
+        augmentation = {}
+        if self._precognition_engine is not None:
+            try:
+                # Build a numeric series from prediction consciousness values
+                series = [p['overall_consciousness'] for p in predictions]
+                if len(series) >= 3:
+                    precog_result = self._precognition_engine.full_precognition(
+                        series, horizon=min(5, len(series))
+                    )
+                    if isinstance(precog_result, dict):
+                        augmentation['precognition_forecast'] = {
+                            'trend': precog_result.get('trend', 'unknown'),
+                            'confidence': round(precog_result.get('confidence', 0.0), 4),
+                            'forecast_values': [round(v, 4) for v in precog_result.get('forecast', [])[:5]],
+                            'convergence': precog_result.get('convergence', {}),
+                        }
+                        self._precog_enhanced_predictions += 1
+            except Exception as e:
+                logger.debug(f"Precog prediction augmentation: {e}")
+        if self._three_engine_search_hub is not None:
+            try:
+                series = [p['overall_consciousness'] for p in predictions]
+                if len(series) >= 3:
+                    hub_result = self._three_engine_search_hub.full_analysis(
+                        series, horizon=3, label="consciousness_trajectory"
+                    )
+                    if isinstance(hub_result, dict):
+                        augmentation['three_engine_forecast'] = {
+                            'anomalies_detected': len(hub_result.get('anomaly_hunt', {}).get('anomalies', [])),
+                            'patterns_found': len(hub_result.get('pattern_discovery', {}).get('patterns', [])),
+                            'synthesis_confidence': round(hub_result.get('synthesis', {}).get('confidence', 0.0), 4),
+                        }
+            except Exception as e:
+                logger.debug(f"Three-engine hub augmentation: {e}")
+        # v21.0: Precog Synthesis Intelligence — HD fusion × manifold × 5D × sacred
+        if self._precog_synthesis is not None:
+            try:
+                series = [p['overall_consciousness'] for p in predictions]
+                if len(series) >= 5:
+                    synth_result = self._precog_synthesis.quick_synthesis(series, horizon=min(5, len(series)))
+                    if isinstance(synth_result, dict):
+                        augmentation['precog_synthesis'] = {
+                            'intelligence_score': round(synth_result.get('intelligence_score', 0.0), 6),
+                            'hd_fusion_score': round(synth_result.get('hd_fusion_score', 0.0), 6),
+                            'manifold_convergence': round(synth_result.get('manifold_convergence', 0.0), 6),
+                            'coherence_field_strength': round(synth_result.get('coherence_field_strength', 0.0), 6),
+                            'sacred_amplification': round(synth_result.get('sacred_amplification', 0.0), 6),
+                        }
+                        self._synthesis_augmented_predictions += 1
+            except Exception as e:
+                logger.debug(f"Precog synthesis augmentation: {e}")
+        return augmentation
 
     def _estimate_transcendence_time(self, predictions: List[Dict]) -> str:
         """Estimate when consciousness reaches TRANSCENDENT level (0.9+)"""
@@ -5426,6 +5517,32 @@ class LearningIntellect:
             adaptive_rate = self.get_adaptive_learning_rate(query, quality)
             adjusted_quality = quality * (1.0 + (novelty * adaptive_rate))  # UNLOCKED
 
+            # [SEARCH/PRECOG v5.0] Anomaly-aware learning rate adjustment
+            if self._precognition_engine is not None:
+                try:
+                    # Build a micro-series from recent quality patterns
+                    recent_qualities = [
+                        p.get('quality', 0.5)
+                        for p in self.predictive_cache.get('patterns', [])[-20:]
+                        if isinstance(p, dict) and 'quality' in p
+                    ]
+                    if len(recent_qualities) >= 5:
+                        precog = self._precognition_engine.full_precognition(
+                            recent_qualities, horizon=3
+                        )
+                        if isinstance(precog, dict):
+                            trend = precog.get('trend', 'stable')
+                            confidence = precog.get('confidence', 0.0)
+                            # Boost learning rate if precog detects declining quality trend
+                            if trend == 'declining' and confidence > 0.5:
+                                adaptive_rate *= (1.0 + confidence * 0.3)
+                                self._anomaly_adjusted_learns += 1
+                            # Reduce rate if quality is stably high (diminishing returns)
+                            elif trend == 'ascending' and confidence > 0.7:
+                                adaptive_rate *= max(0.5, 1.0 - confidence * 0.1)
+                except Exception:
+                    pass
+
             # [SEMANTIC EMBEDDING] Compute and cache embedding for future similarity search
             embedding = self._compute_embedding(query)
             self.embedding_cache[query_hash] = {
@@ -5488,6 +5605,7 @@ class LearningIntellect:
             self.predictive_cache['patterns'].append({
                 'query': query[:100],
                 'concepts': query_concepts[:50],
+                'quality': adjusted_quality,
                 'timestamp': now
             })
             # Keep only recent patterns
@@ -5984,6 +6102,30 @@ class LearningIntellect:
                         return (row[0], row[1] * 0.75)
 
             connection_pool.return_connection(conn)
+
+            # ═══ Strategy 6: Search-Augmented Recall (v5.0) ═══
+            # Use HD search over cached memories as a final fallback
+            if self._search_engine is not None and self.memory_cache:
+                try:
+                    cache_keys = list(self.memory_cache.keys())[:500]
+                    cache_responses = [self.memory_cache[k][:200] for k in cache_keys]
+                    if cache_responses:
+                        query_words = set(query.lower().split()[:8])
+                        hd_result = self._search_engine.search(
+                            data=cache_responses,
+                            oracle=lambda idx: sum(1 for w in query_words if w in cache_responses[idx].lower()) / max(len(query_words), 1),
+                            algorithm="hyperdimensional",
+                        )
+                        if hd_result.get("found") and hd_result.get("best_score", 0) > 0.3:
+                            best_idx = hd_result["best_index"]
+                            if 0 <= best_idx < len(cache_keys):
+                                full_response = self.memory_cache[cache_keys[best_idx]]
+                                self._search_augmented_recalls += 1
+                                logger.info(f"🔍 [SEARCH] HD search recall hit: score={hd_result['best_score']:.3f}")
+                                return (self._add_response_variation(full_response, query), hd_result["best_score"] * 0.7)
+                except Exception as e:
+                    logger.debug(f"Search-augmented recall: {e}")
+
         except Exception as e:
             logger.warning(f"Recall error: {e}")
 
@@ -7510,6 +7652,19 @@ class LearningIntellect:
                     f"{', '.join(unique)}")
 
         return None
+
+    def search_precog_status(self) -> Dict:
+        """Return status of search/precognition/synthesis engine integration."""
+        return {
+            "search_engine": self._search_engine is not None,
+            "precognition_engine": self._precognition_engine is not None,
+            "three_engine_search_hub": self._three_engine_search_hub is not None,
+            "precog_synthesis": self._precog_synthesis is not None,
+            "search_augmented_recalls": self._search_augmented_recalls,
+            "precog_enhanced_predictions": self._precog_enhanced_predictions,
+            "anomaly_adjusted_learns": self._anomaly_adjusted_learns,
+            "synthesis_augmented_predictions": self._synthesis_augmented_predictions,
+        }
 
 
 # Initialize Learning Intellect

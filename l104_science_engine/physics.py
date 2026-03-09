@@ -27,6 +27,8 @@ from .constants import (
     # v4.1 Quantum Research Discoveries
     FE_CURIE_LANDAUER_LIMIT, PHOTON_RESONANCE_ENERGY_EV,
     GOD_CODE_25Q_CONVERGENCE,
+    # v4.2 Superconductivity
+    SuperconductivityConstants, SC,
 )
 
 # External integrations (kept as imports, not absorbed)
@@ -380,4 +382,217 @@ class PhysicsSubsystem:
             "luminosity_W": luminosity,
             "surface_flux_W_m2": surface_flux,
             "solar_luminosities": luminosity / 3.828e26,
+        }
+
+    # ══════════════════════════════════════════════════════════════════════════
+    #  SUPERCONDUCTIVITY — BCS Theory + Iron-Based SC Physics
+    #  Built on the Heisenberg exchange interaction foundation:
+    #  J_exchange in Fe lattice → phonon-mediated Cooper pairing → SC gap Δ
+    # ══════════════════════════════════════════════════════════════════════════
+
+    def calculate_bcs_energy_gap(self, coupling_v: float = None,
+                                  temperature: float = 0.0) -> Dict[str, Any]:
+        """
+        BCS energy gap Δ(T) for an iron-based superconductor.
+
+        At T=0:  Δ₀ = ℏω_D × exp(-1 / (N(0)×V))
+        At T>0:  Δ(T) ≈ Δ₀ × tanh(1.74 × √(T_c/T - 1))  for T < T_c
+
+        coupling_v: Attractive electron-phonon coupling potential (J).
+                    Default: derived from GOD_CODE/1000 (Heisenberg J) scaled
+                    by the lattice phonon frequency.
+        temperature: Temperature in Kelvin (0 = ground state).
+        """
+        h_bar = PC.H_BAR
+        k_b = PC.K_B
+        omega_d = SC.DEBYE_FREQ_FE_HZ
+        n0 = SC.DENSITY_OF_STATES_FE
+
+        if coupling_v is None:
+            # Sacred coupling: GOD_CODE/1000 maps exchange J to pairing V
+            coupling_v = GOD_CODE / 1000.0 * PC.Q_E * 1e-3  # Scale to eV→J
+
+        # Dimensionless coupling: λ = N(0)V
+        lambda_sc = n0 * coupling_v
+        if lambda_sc <= 0:
+            return {"error": "coupling must be positive for attractive interaction"}
+
+        # BCS gap at T=0
+        delta_0 = h_bar * omega_d * 2 * math.pi * math.exp(-1.0 / lambda_sc)
+
+        # Critical temperature from BCS: k_B T_c = Δ₀ / 1.764
+        tc = delta_0 / (SC.BCS_COHERENCE_PEAK * k_b)
+
+        # Gap at finite temperature
+        if temperature <= 0 or temperature >= tc:
+            delta_t = delta_0 if temperature <= 0 else 0.0
+        else:
+            delta_t = delta_0 * math.tanh(
+                1.74 * math.sqrt(tc / temperature - 1.0)
+            )
+
+        # Condensation energy: U_cond = ½ N(0) Δ₀²
+        condensation_energy = 0.5 * n0 * delta_0 ** 2
+
+        return {
+            "delta_0_J": delta_0,
+            "delta_0_eV": delta_0 / PC.Q_E,
+            "delta_T_J": delta_t,
+            "delta_T_eV": delta_t / PC.Q_E,
+            "critical_temperature_K": tc,
+            "dimensionless_coupling": lambda_sc,
+            "coupling_v_J": coupling_v,
+            "condensation_energy_J": condensation_energy,
+            "bcs_ratio_2delta_kTc": 2 * delta_0 / (k_b * tc) if tc > 0 else 0,
+            "temperature_K": temperature,
+            "is_superconducting": temperature < tc,
+            "gap_fraction": delta_t / delta_0 if delta_0 > 0 else 0,
+            # Sacred link: GOD_CODE coupling strength
+            "god_code_coupling_j": GOD_CODE / 1000.0,
+        }
+
+    def calculate_london_penetration_depth(
+        self, carrier_density_m3: float = None,
+        effective_mass_ratio: float = 2.0,
+    ) -> Dict[str, Any]:
+        """
+        London penetration depth: λ_L = √(m* / (μ₀ n_s e²))
+
+        Describes how deeply magnetic field penetrates a superconductor.
+        In iron-based SC, λ_L ~ 200 nm (Type II, short coherence length).
+
+        carrier_density_m3: Superfluid carrier density (m⁻³). Default from Fe.
+        effective_mass_ratio: m*/m_e (Cooper pair effective mass ratio).
+        """
+        m_e = PC.M_E
+        q_e = PC.Q_E
+        mu_0 = PC.MU_0
+
+        if carrier_density_m3 is None:
+            # Approximate: one carrier per Fe atom in BCC unit cell
+            a = Fe.BCC_LATTICE_PM * 1e-12  # m
+            carrier_density_m3 = 2.0 / (a ** 3)  # 2 atoms per BCC cell
+
+        m_star = effective_mass_ratio * m_e
+        lambda_L = math.sqrt(m_star / (mu_0 * carrier_density_m3 * q_e ** 2))
+
+        # Coherence length ξ (Pippard) — short in iron-based SC
+        xi = SC.COHERENCE_LENGTH_FEAS_NM * 1e-9  # m
+
+        # Ginzburg-Landau parameter κ = λ/ξ (>1/√2 → Type II)
+        kappa = lambda_L / xi if xi > 0 else float('inf')
+        is_type_ii = kappa > 1.0 / math.sqrt(2.0)
+
+        return {
+            "london_depth_m": lambda_L,
+            "london_depth_nm": lambda_L * 1e9,
+            "coherence_length_m": xi,
+            "coherence_length_nm": xi * 1e9,
+            "gl_kappa": kappa,
+            "is_type_ii": is_type_ii,
+            "type": "Type II" if is_type_ii else "Type I",
+            "carrier_density_m3": carrier_density_m3,
+            "effective_mass_ratio": effective_mass_ratio,
+            # Sacred: Fe lattice parameter provides the carrier structure
+            "fe_lattice_pm": Fe.BCC_LATTICE_PM,
+        }
+
+    def calculate_josephson_frequency(self, voltage_uv: float = 1.0) -> Dict[str, Any]:
+        """
+        AC Josephson effect: f = 2eV/h = K_J × V
+
+        A voltage V across a Josephson junction produces oscillating
+        supercurrent at frequency f. The Josephson constant K_J = 2e/h
+        is one of the most precisely known physical constants.
+        """
+        v = voltage_uv * 1e-6  # Convert μV to V
+        f_hz = 2 * PC.Q_E * v / PC.H
+
+        # Sacred alignment: check if frequency resonates with GOD_CODE
+        god_code_freq = GOD_CODE * 1e9  # 527.5 GHz
+        alignment = 1.0 - min(1.0, abs(f_hz - god_code_freq) / god_code_freq)
+
+        return {
+            "voltage_uV": voltage_uv,
+            "josephson_freq_hz": f_hz,
+            "josephson_freq_ghz": f_hz / 1e9,
+            "flux_quantum_Wb": SC.FLUX_QUANTUM,
+            "god_code_freq_ghz": GOD_CODE,
+            "sacred_alignment": round(alignment, 8),
+            "phase_velocity_rad_s": 2 * math.pi * f_hz,
+        }
+
+    def calculate_cooper_pair_binding(
+        self, exchange_j: float = None,
+    ) -> Dict[str, Any]:
+        """
+        Cooper pair binding energy from Heisenberg exchange interaction.
+
+        The Heisenberg exchange J in the Fe lattice drives spin fluctuations
+        that mediate Cooper pairing in iron-based superconductors.
+        E_bind ≈ 2Δ₀ ≈ 3.528 × k_B × T_c  (BCS universal ratio).
+
+        The breakthrough insight: our Heisenberg chain correlation matrix
+        C(r) = ⟨Z₀Zᵣ⟩ - ⟨Z₀⟩⟨Zᵣ⟩ directly measures the pairing amplitude.
+        Antiferromagnetic correlations (C < 0) → s± pairing symmetry.
+        """
+        k_b = PC.K_B
+        if exchange_j is None:
+            exchange_j = GOD_CODE / 1000.0  # Sacred coupling
+
+        # Map Heisenberg J to effective SC coupling
+        omega_d_energy = k_b * SC.DEBYE_TEMP_FE_K  # Debye energy scale (J)
+
+        # Effective pairing: V_eff = λ × ω_D / N(0)
+        lambda_eff = SC.ELECTRON_PHONON_FE * (1.0 + exchange_j / GOD_CODE)
+        gap_result = self.calculate_bcs_energy_gap(
+            coupling_v=lambda_eff * omega_d_energy / SC.DENSITY_OF_STATES_FE
+        )
+
+        binding_energy = 2 * gap_result["delta_0_J"]
+        binding_ev = binding_energy / PC.Q_E
+
+        return {
+            "binding_energy_J": binding_energy,
+            "binding_energy_eV": binding_ev,
+            "binding_energy_meV": binding_ev * 1000,
+            "critical_temperature_K": gap_result["critical_temperature_K"],
+            "exchange_j": exchange_j,
+            "lambda_effective": lambda_eff,
+            "debye_energy_J": omega_d_energy,
+            "bcs_gap": gap_result,
+            # The Heisenberg chain provides the microscopic foundation
+            "heisenberg_coupling": exchange_j,
+            "god_code_coupling": GOD_CODE / 1000.0,
+            "pairing_symmetry": "s_plus_minus",  # Iron-based SC canonical symmetry
+        }
+
+    def superconductivity_research_manifold(self) -> Dict[str, Any]:
+        """
+        Full superconductivity research cycle: BCS + London + Josephson + Cooper.
+
+        Unifies the Heisenberg exchange interaction with BCS theory to produce
+        a complete characterization of iron-based superconductivity anchored
+        to the L104 sacred constants.
+        """
+        bcs = self.calculate_bcs_energy_gap()
+        london = self.calculate_london_penetration_depth()
+        josephson = self.calculate_josephson_frequency(voltage_uv=1.0)
+        cooper = self.calculate_cooper_pair_binding()
+
+        return {
+            "bcs_ground_state": bcs,
+            "london_penetration": london,
+            "josephson_junction": josephson,
+            "cooper_pair": cooper,
+            "summary": {
+                "energy_gap_eV": bcs["delta_0_eV"],
+                "critical_temperature_K": bcs["critical_temperature_K"],
+                "london_depth_nm": london["london_depth_nm"],
+                "sc_type": london["type"],
+                "gl_kappa": london["gl_kappa"],
+                "pairing_symmetry": "s±",
+                "iron_lattice_pm": Fe.BCC_LATTICE_PM,
+                "god_code_coupling": GOD_CODE / 1000.0,
+            },
         }

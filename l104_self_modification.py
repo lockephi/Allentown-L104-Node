@@ -1,10 +1,10 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.014666
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.398679
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
 # L104 SELF-MODIFICATION ENGINE - REAL CODE EVOLUTION
@@ -44,8 +44,8 @@ except Exception:
     pass
 QISKIT_AVAILABLE = False
 try:
-    from qiskit import QuantumCircuit
-    from qiskit.quantum_info import Statevector
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector
     QISKIT_AVAILABLE = True
 except ImportError:
     pass
@@ -65,6 +65,13 @@ except ImportError:
 PHI = 1.618033988749895
 TAU = (1 + math.sqrt(5)) / 2  # Golden ratio alias
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
+
+# Canonical GOD_CODE quantum phase (QPU-verified on ibm_torino)
+try:
+    from l104_god_code_simulator.god_code_qubit import GOD_CODE_PHASE
+except ImportError:
+    GOD_CODE_PHASE = GOD_CODE % (2 * math.pi)  # ≈ 6.0141 rad
+
 FEIGENBAUM = 4.669201609102990
 ALPHA_FINE = 1.0 / 137.035999084
 PLANCK_SCALE = 1.616255e-35
@@ -633,7 +640,7 @@ class QuantumMutationField:
         self.state = QuantumStateVector(dim=max(gene_length, QUANTUM_HILBERT_DIM))
         self.tunneling_count = 0
         self.mutation_log: List[Dict] = []
-        self.god_code_phase = GOD_CODE / 1000.0
+        self.god_code_coupling = GOD_CODE / 1000.0  # Attenuated coupling (NOT canonical GOD_CODE_PHASE)
 
     def quantum_mutate(self, genotype: List[float], fitness: float = 0.0) -> List[float]:
         """Apply quantum-enhanced mutation to a genotype.
@@ -647,7 +654,7 @@ class QuantumMutationField:
             self.state.apply_rotation(i, fitness_phase / (i + 1))
 
         # Apply GOD_CODE phase alignment
-        self.state.apply_phase(0, self.god_code_phase)
+        self.state.apply_phase(0, self.god_code_coupling)
 
         # Sample mutation targets from quantum distribution
         probs = self.state.get_probabilities()[:self.gene_length]

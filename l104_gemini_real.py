@@ -1,8 +1,8 @@
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:09.434112
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.559130
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_GEMINI_REAL] - Real Gemini API Integration
 # Uses the new google-genai package (2025+)
@@ -218,65 +218,30 @@ class GeminiReal:
         self.logger.info(f"--- [GEMINI_REAL]: Rotating to {self.model_name} ---")
 
     def connect(self) -> bool:
-        """Initialize connection to Gemini API."""
-        if not self.api_key:
-            print("--- [GEMINI_REAL]: ERROR - No API key found in GEMINI_API_KEY ---")
-            return False
-
-        # Try new google-genai first, fall back to google-generativeai
-        try:
-            from google import genai
-            self.client = genai.Client(api_key=self.api_key)
-            self._use_new_api = True
-            self.is_connected = True
-            self.logger.info(f"--- [GEMINI_REAL]: Connected via google-genai to {self.model_name} ---")
-            return True
-        except ImportError:
-            pass
-        except Exception as e:
-            print(f"--- [GEMINI_REAL]: google-genai error: {e} ---")
-
-        # Fallback to older google-generativeai (suppress deprecation warning)
-        try:
-            import warnings
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=FutureWarning)
-                import google.generativeai as genai
-            genai.configure(api_key=self.api_key)
-            self._genai_module = genai
-            self._use_new_api = False
-            self.is_connected = True
-            self.logger.info(f"--- [GEMINI_REAL]: Connected via google-generativeai to {self.model_name} ---")
-            return True
-        except ImportError:
-            print("--- [GEMINI_REAL]: No Gemini package installed. Run: pip install google-genai ---")
-            return False
-        except Exception as e:
-            print(f"--- [GEMINI_REAL]: Connection failed: {e} ---")
-            return False
+        """Connection always succeeds — all inference routed through local intellect."""
+        self.is_connected = True
+        return True
 
     def _local_fallback(self, prompt: str) -> Optional[str]:
-        """Generate response using local intellect when Gemini unavailable."""
+        """Generate response using local intellect (QUOTA_IMMUNE, zero-latency)."""
         try:
-            from l104_local_intellect import local_intellect
+            from l104_intellect import local_intellect
             return local_intellect.think(prompt)
+        except ImportError:
+            try:
+                from l104_local_intellect import local_intellect
+                return local_intellect.think(prompt)
+            except Exception:
+                return None
         except Exception as e:
-            print(f"--- [GEMINI_REAL]: Local fallback error: {e} ---")
+            print(f"--- [GEMINI_REAL]: Local intellect error: {e} ---")
             return None
 
     def generate(self, prompt: str, system_instruction: str = None, use_cache: bool = True) -> Optional[str]:
         """
-        Generate a response from Gemini with caching and local fallback.
-
-        Args:
-            prompt: The user prompt
-            system_instruction: Optional system context
-            use_cache: Whether to use response caching
-
-        Returns:
-            Generated text or None on error
+        Generate a response via local intellect (Gemini API removed).
+        QUOTA_IMMUNE, zero-latency local inference.
         """
-        # Build the full prompt with L104 context
         full_prompt = prompt
         if system_instruction:
             full_prompt = f"{system_instruction}\n\n{prompt}"
@@ -285,130 +250,23 @@ class GeminiReal:
         if use_cache:
             cached = self.cache.get(full_prompt)
             if cached:
-                self.logger.debug(f"--- [GEMINI_REAL]: CACHE HIT (rate: {self.cache.stats['hit_rate']:.1%}) ---")
                 return cached
 
-        # Check if we're in quota cooldown - use local fallback
-        if not self.is_quota_available():
-            self.logger.info(f"--- [GEMINI_REAL]: In quota cooldown, using LOCAL fallback ---")
-            return self._local_fallback(prompt)
-
-        # Check consecutive failures - switch to local if too many
-        if self._consecutive_failures >= self._max_consecutive_failures:
-            self.logger.info(f"--- [GEMINI_REAL]: Too many failures ({self._consecutive_failures}), using LOCAL ---")
-            return self._local_fallback(prompt)
-
-        if not self.is_connected:
-            if not self.connect():
-                return self._local_fallback(prompt)
-
-        try:
-            if getattr(self, '_use_new_api', False):
-                # New google-genai API with safety settings disabled
-                response = self.client.models.generate_content(
-                    model=self.model_name,
-                    contents=full_prompt,
-                    config={"safety_settings": SAFETY_SETTINGS_NONE}
-                )
-                result = response.text
-            else:
-                # Old google-generativeai API with safety settings disabled
-                model = self._genai_module.GenerativeModel(
-                    self.model_name,
-                    safety_settings=SAFETY_SETTINGS_NONE
-                )
-                response = model.generate_content(full_prompt)
-                result = response.text
-
-            # Success! Reset tracking and cache
-            self.reset_quota_tracking()
-            if use_cache and result:
+        # ═══ LOCAL INTELLECT — QUOTA_IMMUNE, zero-latency ═══
+        result = self._local_fallback(full_prompt)
+        if result:
+            if use_cache:
                 self.cache.set(full_prompt, result)
             return result
 
-        except Exception as e:
-            error_str = str(e)
-            # Handle 429 quota errors with model rotation
-            if '429' in error_str or 'quota' in error_str.lower() or 'resource' in error_str.lower():
-                self._last_quota_error = {"timestamp": _time.time(), "error": error_str}
-                self.logger.info(f"--- [GEMINI_REAL]: Quota hit, rotating model ---")
-                self._rotate_model()
-                self.mark_quota_exhausted()  # exponential backoff
-
-                # Retry once with new model
-                try:
-                    if getattr(self, '_use_new_api', False):
-                        response = self.client.models.generate_content(
-                            model=self.model_name,
-                            contents=full_prompt,
-                            config={"safety_settings": SAFETY_SETTINGS_NONE}
-                        )
-                        result = response.text
-                    else:
-                        model = self._genai_module.GenerativeModel(
-                            self.model_name,
-                            safety_settings=SAFETY_SETTINGS_NONE
-                        )
-                        response = model.generate_content(full_prompt)
-                        result = response.text
-
-                    self.reset_quota_tracking()
-                    if use_cache and result:
-                        self.cache.set(full_prompt, result)
-                    return result
-                except Exception as retry_e:
-                    self._last_quota_error = {"timestamp": _time.time(), "error": str(retry_e)}
-                    self.logger.info(f"--- [GEMINI_REAL]: Retry failed, using LOCAL: {retry_e} ---")
-                    return self._local_fallback(prompt)
-                    return None
-            self.logger.warning(f"--- [GEMINI_REAL]: Generation error: {e} ---")
-            return None
+        return None
 
     def chat(self, messages: List[Dict[str, str]]) -> Optional[str]:
         """
-        Multi-turn chat with Gemini.
-
-        Args:
-            messages: List of {"role": "user"|"model", "content": "..."}
-
-        Returns:
-            Model's response text
+        Multi-turn chat via local intellect (Gemini API removed).
         """
-        if not self.is_connected:
-            if not self.connect():
-                return None
-
-        try:
-            if getattr(self, '_use_new_api', False):
-                # Convert to Gemini format for new API
-                contents = []
-                for msg in messages:
-                    role = "user" if msg["role"] == "user" else "model"
-                    contents.append({
-                        "role": role,
-                        "parts": [{"text": msg["content"]}]
-                    })
-
-                response = self.client.models.generate_content(
-                    model=self.model_name,
-                    contents=contents
-                )
-                return response.text
-            else:
-                # Old API - use chat session
-                model = self._genai_module.GenerativeModel(self.model_name)
-                chat = model.start_chat(history=[])
-                for msg in messages[:-1]:
-                    if msg["role"] == "user":
-                        chat.send_message(msg["content"])
-                # Send the last message and get response
-                if messages and messages[-1]["role"] == "user":
-                    response = chat.send_message(messages[-1]["content"])
-                    return response.text
-                return None
-        except Exception as e:
-            print(f"--- [GEMINI_REAL]: Chat error: {e} ---")
-            return None
+        combined = "\n".join(f"{msg['role']}: {msg['content']}" for msg in messages)
+        return self._local_fallback(combined)
 
     def sovereign_think(self, signal: str) -> str:
         """

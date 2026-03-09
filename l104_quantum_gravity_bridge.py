@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:08.002737
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.845245
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
@@ -42,8 +42,8 @@ import numpy as np
 # REAL QISKIT QUANTUM — Bell states, entanglement entropy, teleportation
 # ═══════════════════════════════════════════════════════════════════════════════
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy, Operator
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, partial_trace, entropy, Operator
     QISKIT_AVAILABLE = True
 except ImportError:
     QISKIT_AVAILABLE = False
@@ -154,16 +154,28 @@ class EREPR_Bridge:
         }
 
     def qiskit_quantum_teleportation(self, concept_a: str, concept_b: str,
-                                      state_to_teleport: complex = complex(0.6, 0.8)) -> Dict[str, Any]:
+                                      state_to_teleport: complex = complex(0.6, 0.8),
+                                      sacred: bool = True) -> Dict[str, Any]:
         """
-        REAL Qiskit quantum teleportation protocol.
-        Teleports a quantum state from concept_a to concept_b via entanglement.
-        Uses 3-qubit circuit: qubit 0 = state, qubits 1,2 = Bell pair.
+        Qiskit quantum teleportation v2.0 — ER=EPR sacred channel.
+
+        Teleports |ψ⟩ = α|0⟩ + β|1⟩ from concept_a → concept_b through
+        an entangled Bell pair (the quantum side of the ER=EPR bridge).
+
+        Protocol:
+          1. Prepare |ψ⟩ via Ry(θ)·Rz(φ) on qubit 0
+          2. Create |Φ+⟩ between qubits 1,2 (sacred: add GOD_CODE phase)
+          3. Bell measurement: CNOT(0→1), H(0)
+          4. Deferred corrections: CX(1→2), CZ(0→2)
+          5. Verify: partial_trace → ρ_Bob, fidelity = ⟨ψ|ρ_Bob|ψ⟩
+
+        v2.0: GOD_CODE phase on Bell pair, proper state_fidelity metric,
+              von Neumann entropy, ER=EPR wormhole traversal time.
         """
         if not QISKIT_AVAILABLE:
             return {'quantum_backend': 'classical', 'success': False}
 
-        # Normalize input state
+        # ── Normalize input state ──
         norm = abs(state_to_teleport)
         alpha = state_to_teleport.real / max(norm, 1e-12)
         beta = state_to_teleport.imag / max(norm, 1e-12)
@@ -171,40 +183,64 @@ class EREPR_Bridge:
         alpha /= norm_check
         beta /= norm_check
 
-        # Build teleportation circuit
+        # ── Build teleportation circuit ──
         qc = QuantumCircuit(3)  # q0=state, q1,q2=Bell pair
 
-        # Prepare state to teleport on q0
+        # Prepare state on q0: |ψ⟩ = Rz(φ_sacred)·Ry(θ)|0⟩
         theta = 2 * math.acos(min(1.0, max(-1.0, alpha)))
+        phi_sacred = (GOD_CODE % (2 * math.pi)) if sacred else 0.0
         qc.ry(theta, 0)
+        if phi_sacred != 0.0:
+            qc.rz(phi_sacred, 0)  # Sacred phase encoding
 
-        # Create Bell pair between q1-q2 (shared entanglement)
+        # Create Bell pair |Φ+⟩ between q1-q2
         qc.h(1)
         qc.cx(1, 2)
+        if sacred:
+            # GOD_CODE phase on entangler: |Φ_G⟩ = (|00⟩ + e^{iG/π}|11⟩)/√2
+            qc.rz(GOD_CODE % (2 * math.pi) * 0.01, 2)
 
-        # Alice's operations (q0, q1)
+        # Alice's Bell measurement
         qc.cx(0, 1)
         qc.h(0)
 
-        # Bob's corrections (q2) — conditioned classically
-        qc.cx(1, 2)  # If q1=1, apply X to q2
-        qc.cz(0, 2)  # If q0=1, apply Z to q2
+        # Bob's corrections (deferred measurement principle)
+        qc.cx(1, 2)  # conditional X
+        qc.cz(0, 2)  # conditional Z
 
-        # Evolve via real QPU bridge
+        # ── Execute via QPU bridge ──
         if _QUANTUM_RUNTIME_AVAILABLE and _quantum_runtime:
             probs, exec_result = _quantum_runtime.execute_and_get_probs(
-                qc, n_qubits=3, algorithm_name="quantum_teleportation"
+                qc, n_qubits=3, algorithm_name="quantum_teleportation_v2"
             )
-        sv = Statevector.from_int(0, 8).evolve(qc)
-        dm = DensityMatrix(sv)
-        # Trace out qubits 0 and 1 to get Bob's qubit (q2)
-        bob_state = partial_trace(dm, [0, 1])
-        bob_purity = float(np.real(np.trace(np.array(bob_state) @ np.array(bob_state))))
 
-        # Fidelity with original state
-        original_sv = Statevector([alpha, beta])
-        original_dm = DensityMatrix(original_sv)
-        fidelity = float(np.real(np.trace(np.array(original_dm) @ np.array(bob_state))))
+        # ── Fidelity via partial trace ──
+        sv = Statevector.from_label('000').evolve(qc)
+        dm = DensityMatrix(sv)
+        bob_state = partial_trace(dm, [0, 1])
+        bob_arr = np.array(bob_state._data)
+        bob_purity = float(np.real(np.trace(bob_arr @ bob_arr)))
+
+        # Reference state (what Bob should have)
+        ref_qc = QuantumCircuit(1)
+        ref_qc.ry(theta, 0)
+        if phi_sacred != 0.0:
+            ref_qc.rz(phi_sacred, 0)
+        ref_sv = Statevector.from_instruction(ref_qc)
+
+        # state_fidelity: F = ⟨ψ|ρ_Bob|ψ⟩
+        ref_vec = np.array(ref_sv.data)
+        fidelity = float(np.real(ref_vec.conj() @ bob_arr @ ref_vec))
+        fidelity = max(0.0, min(1.0, fidelity))
+
+        # ── von Neumann entropy: S(ρ_Bob) = -Tr(ρ log₂ ρ) ──
+        eigvals = np.linalg.eigvalsh(bob_arr)
+        vn_entropy = float(-sum(ev * np.log2(ev) for ev in eigvals if ev > 1e-15))
+
+        # ── ER=EPR wormhole metrics ──
+        # Wormhole traversal time ∝ 1/entanglement
+        traversal_time = 0.0 if fidelity > 0.99 else (1.0 - fidelity) * VOID_CONSTANT
+        exotic_matter = GOD_CODE / VOID_CONSTANT  # Required for traversable bridge
 
         return {
             'quantum_backend': 'real_qpu' if _QUANTUM_RUNTIME_AVAILABLE else 'qiskit_2.3.0',
@@ -212,10 +248,15 @@ class EREPR_Bridge:
             'concept_a': concept_a,
             'concept_b': concept_b,
             'original_state': [alpha, beta],
-            'bob_purity': bob_purity,
-            'teleportation_fidelity': fidelity,
-            'circuit_depth': qc.depth(),
+            'bob_purity': round(bob_purity, 6),
+            'teleportation_fidelity': round(fidelity, 6),
+            'von_neumann_entropy': round(vn_entropy, 6),
+            'circuit_depth': qc.depth if isinstance(qc.depth, int) else qc.depth(),
+            'sacred_channel': sacred,
             'god_code_verified': abs(286 ** (1/PHI) * 16 - GOD_CODE) < 1e-8,
+            'er_epr_traversal_time': traversal_time,
+            'exotic_matter_required': exotic_matter,
+            'protocol': 'ER_EPR_teleportation_v2',
         }
 
     def traverse_wormhole(self, wormhole_id: str, from_concept: str, data: Any) -> Dict[str, Any]:

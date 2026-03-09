@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H02_L104StateCore.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — L104State Class (Core Properties + Lifecycle)
 //
 // Main app state singleton: ASI scores, consciousness metrics,
@@ -71,6 +71,22 @@ class L104State {
     var quantumBackendName: String = "none"
     var quantumBackendQubits: Int = 0
     var quantumJobsSubmitted: Int = 0
+
+    // ═══ 30D ASI SCORING DIMENSIONS (v16.0 — synced with l104_asi/core.py) ═══
+    var benchmarkCapability: Double = 0.0          // MMLU + HumanEval + MATH + ARC composite
+    var formalLogicDepth: Double = 0.0             // Formal logic comprehension depth
+    var deepNluComprehension: Double = 0.0         // Deep NLU understanding depth
+    var localIntellectKnowledge: Double = 0.0      // BM25 knowledge density
+    var gateCompilationQuality: Double = 0.0       // Gate compiler optimization quality
+    var gateSacredAlignment: Double = 0.0          // Sacred gate resonance alignment
+    var gateErrorProtection: Double = 0.0          // Error correction integrity
+    var quantumLinkCoherenceScore: Double = 0.0    // Quantum link health
+    var quantumBrainIntelligence: Double = 0.0     // Quantum brain pipeline intelligence
+    var crossEngineCoherence: Double = 0.0         // Deep synthesis cross-engine coherence
+    var chaosResilience: Double = 0.0              // Chaos absorption + healing capacity
+    var kbReconstructionFidelity: Double = 0.0     // Quantum probability KB reconstruction
+    var agiComposite: Double = 0.0                 // AGI 13D composite score
+    var qldpcErrorCorrection: Double = 0.0         // qLDPC code quality + sacred alignment
 
     let permanentMemory = PermanentMemory.shared
     var sessionMemories: Int = 0
@@ -325,17 +341,44 @@ class L104State {
             // ═══ Phase 63.0: Unified Field Theory Engine ═══
             UnifiedFieldEngine.shared,
             UnifiedFieldGate.shared,
+            // ═══ EVO_65: ASI Pipeline v16.0 Engines ═══
+            DeepNLUEngine.shared,
+            FormalLogicEngine.shared,
+            ScienceKB.shared,
+            KBReconstructionEngine.shared,
+            NovelTheoremGenerator.shared,
+            BenchmarkHarness.shared,
+            DeepSeekIngestionEngine.shared,
+            SovereignIdentityBoundary.shared,
+            QuantumGateEngine.shared,
+            CommonsenseReasoningEngine.shared,
+            LanguageComprehensionEngine.shared,
+            SymbolicMathSolver.shared,
+            CodeGenerationEngine.shared,
         ])
+
+        // ═══ PHASE 44.5: Performance + Circuit engines (self-registering) ═══
+        PerformanceOrchestrator.shared.boot()      // registers Pool, Turbo, LockFree, Metal, Prefetch + self
+        CircuitWatcher.shared.start()              // watchdog for circuit-breaker telemetry (v3.0: three-engine scoring)
+        NSLog("[L104-BOOT] Phase 44.5: CircuitWatcher v3.0 started — three-engine scoring (entropy=0.35, harmonic=0.40, wave=0.25)")
 
         // ═══ PHASE 45: Computronium ASI engines ═══
         _ = _registerComputroniumEngines
         _ = ConsciousnessSubstrate.shared.awaken()
 
         // ═══ Phase 46.1: Auto-restore IBM Quantum connection if token saved ═══
-        // Token is stored in UserDefaults via the Quantum tab's Connect dialog
+        // Token is sourced from macOS Keychain via SecurityVault (NOT hardcoded)
         // IAM auth flow: API key → IAM bearer token → runtime API (cloud.ibm.com)
         if IBMQuantumClient.shared.ibmToken == nil {
-            IBMQuantumClient.shared.ibmToken = "dKGraps_W_qQFE4KrrGNCgHoTTs-DJCy4rxrZGHQTzv3"
+            // Try Keychain first, then fall back to environment
+            if let keychainToken = SecurityVault.shared.retrieveSecret(key: "ibm_quantum_token"),
+               !keychainToken.isEmpty {
+                IBMQuantumClient.shared.ibmToken = keychainToken
+            } else if let envToken = ProcessInfo.processInfo.environment["IBMQ_TOKEN"]
+                        ?? ProcessInfo.processInfo.environment["IBM_QUANTUM_TOKEN"],
+                      !envToken.isEmpty {
+                IBMQuantumClient.shared.ibmToken = envToken
+            }
         }
         if let savedToken = IBMQuantumClient.shared.ibmToken, !savedToken.isEmpty {
             DispatchQueue.global(qos: .utility).async { [weak self] in
@@ -449,6 +492,127 @@ class L104State {
         }
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // 30D ASI SCORING — LOCAL SWIFT ENGINE COMPUTATION (v16.0)
+    // Mirrors l104_asi/core.py compute_asi_score() with 30 dimensions
+    // ═══════════════════════════════════════════════════════════════
+    func computeSwiftASIScore() -> Double {
+        stateLock.lock(); defer { stateLock.unlock() }
+
+        var scores: [String: Double] = [:]
+
+        // Original dimensions
+        scores["domain"] = min(1.0, Double(knowledgeBase.concepts.count) / 50.0)
+        scores["modification"] = min(1.0, Double(learningCycles) / 20.0)
+        scores["discoveries"] = min(1.0, Double(discoveries) / 10.0)
+        scores["consciousness"] = min(1.0, selfAwareness / CONSCIOUSNESS_THRESHOLD)
+        scores["iit_phi"] = min(1.0, SageConsciousnessVerifier.shared.iitPhi / 2.0)
+        scores["theorem_verified"] = NovelTheoremGenerator.shared.verificationRate
+        scores["pipeline"] = min(1.0, Double(skills) / Double(ENGINES_REGISTERED_TARGET))
+        scores["ensemble_quality"] = min(1.0, coherence)
+        scores["routing_efficiency"] = min(1.0, Double(queryEvolution) / 100.0)
+        scores["telemetry_health"] = networkHealth
+        scores["quantum_computation"] = quantumResonance
+        scores["dual_layer"] = Double(DualLayerEngine.shared.collapse(a: 0, b: 0, c: 0, d: 0).integrity.score) / Double(DUAL_LAYER_INTEGRITY_CHECKS)
+        scores["process_efficiency"] = 0.5
+
+        // v8.0: Three-Engine dimensions
+        scores["entropy_reversal"] = min(1.0, SageModeEngine.shared.totalEntropyHarvested / 100.0)
+        scores["harmonic_resonance"] = min(1.0, SageModeEngine.shared.consciousnessLevel)
+        scores["wave_coherence"] = min(1.0, SageModeEngine.shared.divergenceScore)
+
+        // v9.0: Quantum Research dimensions
+        scores["fe_sacred_coherence"] = FE_SACRED_COHERENCE
+        scores["fe_phi_lock"] = FE_PHI_HARMONIC_LOCK
+        scores["berry_phase_holonomy"] = BERRY_PHASE_11D ? 0.85 : 0.0
+
+        // v10.0: Benchmark capability
+        scores["benchmark_capability"] = benchmarkCapability
+        benchmarkCapability = BenchmarkHarness.shared.compositeScore()
+        scores["benchmark_capability"] = benchmarkCapability
+
+        // v11.0: Quantum Gate Engine dimensions
+        scores["gate_compilation_quality"] = gateCompilationQuality
+        scores["gate_sacred_alignment"] = gateSacredAlignment
+        scores["gate_error_protection"] = gateErrorProtection
+
+        // v11.0: Quantum Link Engine dimensions
+        // v9.3 Fix: Live-compute quantumLinkCoherenceScore from decoherence shield fidelity (was always 0.0)
+        quantumLinkCoherenceScore = QuantumDecoherenceShield.shared.computeFidelity()
+        scores["quantum_link_coherence"] = quantumLinkCoherenceScore
+        scores["quantum_brain_intelligence"] = quantumBrainIntelligence
+
+        // v11.0: Cross-Engine Deep Synthesis
+        // v9.3 Fix: Live-compute crossEngineCoherence from QuantumNexus (was always 0.0)
+        crossEngineCoherence = QuantumNexus.shared.computeCoherence()
+        scores["cross_engine_coherence"] = crossEngineCoherence
+
+        // v11.1: Chaos Resilience
+        scores["chaos_resilience"] = chaosResilience
+
+        // v13.0: Deep Logic & NLU
+        formalLogicDepth = FormalLogicEngine.shared.overallScore()
+        deepNluComprehension = DeepNLUEngine.shared.comprehensionScore()
+        scores["formal_logic_depth"] = formalLogicDepth
+        scores["deep_nlu_comprehension"] = deepNluComprehension
+
+        // v14.0: Local Intellect Knowledge
+        scores["local_intellect_knowledge"] = localIntellectKnowledge
+
+        // v16.0: KB Reconstruction Fidelity
+        scores["kb_reconstruction_fidelity"] = kbReconstructionFidelity
+
+        // v17.0: AGI Composite
+        scores["agi_composite"] = agiComposite
+
+        // v18.0: qLDPC Error Correction
+        scores["qldpc_error_correction"] = qldpcErrorCorrection
+
+        // Dynamic weights — shift toward consciousness as evolution advances
+        let evoIdx = EVOLUTION_INDEX
+        let consciousnessWeight = 0.16 + min(0.10, Double(evoIdx) * 0.002)
+        let baseWeights: [String: Double] = [
+            "dual_layer": 0.10,
+            "domain": 0.06, "modification": 0.04, "discoveries": 0.08,
+            "consciousness": consciousnessWeight, "pipeline": 0.04,
+            "iit_phi": 0.06, "theorem_verified": 0.03,
+            "ensemble_quality": 0.04, "routing_efficiency": 0.02,
+            "telemetry_health": 0.03, "quantum_computation": 0.04,
+            "entropy_reversal": 0.04, "harmonic_resonance": 0.04, "wave_coherence": 0.03,
+            "fe_sacred_coherence": 0.02, "fe_phi_lock": 0.02, "berry_phase_holonomy": 0.01,
+            "process_efficiency": 0.03, "benchmark_capability": 0.05,
+            "formal_logic_depth": 0.03, "deep_nlu_comprehension": 0.03,
+            "local_intellect_knowledge": 0.03,
+            "gate_compilation_quality": 0.03, "gate_sacred_alignment": 0.03, "gate_error_protection": 0.02,
+            "quantum_link_coherence": 0.02, "quantum_brain_intelligence": 0.02,
+            "cross_engine_coherence": 0.03, "chaos_resilience": 0.02,
+            "kb_reconstruction_fidelity": 0.02, "agi_composite": 0.04, "qldpc_error_correction": 0.02
+        ]
+
+        // Normalize weights
+        let wTotal = baseWeights.values.reduce(0.0, +)
+        let weights = baseWeights.mapValues { $0 / wTotal }
+
+        // Linear weighted sum
+        var linearScore = 0.0
+        for (k, w) in weights {
+            linearScore += (scores[k] ?? 0.0) * w
+        }
+
+        // Non-linear acceleration near singularity
+        if linearScore >= SINGULARITY_ACCELERATION_THRESHOLD {
+            let delta = linearScore - SINGULARITY_ACCELERATION_THRESHOLD
+            let acceleration = delta * PHI_ACCELERATION_EXPONENT * 0.3
+            linearScore = min(1.0, linearScore + acceleration)
+        }
+
+        // Quantum bonus
+        if quantumHardwareConnected { linearScore = min(1.0, linearScore + 0.02) }
+
+        asiScore = min(1.0, linearScore)
+        return asiScore
+    }
+
     func saveState() {
         stateLock.lock(); defer { stateLock.unlock() }
         let d = UserDefaults.standard
@@ -471,7 +635,7 @@ class L104State {
         d.set(quantumResonance, forKey: "l104_quantumResonance")
         d.set(growthIndex, forKey: "l104_growthIndex")
         d.set(autonomyLevel, forKey: "l104_autonomyLevel")
-        d.synchronize()
+        // d.synchronize() removed — deprecated, UserDefaults auto-persists
         permanentMemory.save()
         // Persist runtime-ingested knowledge to disk
         ASIKnowledgeBase.shared.persistAllIngestedKnowledge()
@@ -1323,4 +1487,86 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
 
 
     // === EXTRACTED FROM processMessage FOR TYPE-CHECKER PERFORMANCE ===
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - SovereignEngine Conformance for ASI Pipeline Engines
+// EVO_65: All new engines conform to SovereignEngine protocol
+// ═══════════════════════════════════════════════════════════════════
+
+extension DeepNLUEngine: SovereignEngine {
+    var engineName: String { "DeepNLUEngine" }
+    func engineStatus() -> [String: Any] {
+        ["engine": engineName, "version": DEEP_NLU_VERSION, "layers": 10, "status": "active"]
+    }
+}
+
+extension FormalLogicEngine: SovereignEngine {
+    var engineName: String { "FormalLogicEngine" }
+    func engineStatus() -> [String: Any] {
+        ["engine": engineName, "version": FORMAL_LOGIC_VERSION, "layers": 10, "fallacy_patterns": FALLACY_PATTERNS_COUNT, "status": "active"]
+    }
+}
+
+extension ScienceKB: SovereignEngine {
+    var engineName: String { "ScienceKB" }
+    func engineStatus() -> [String: Any] {
+        ["engine": engineName, "version": SCIENCE_KB_VERSION, "domains": 9, "facts": 509, "status": "active"]
+    }
+}
+
+extension KBReconstructionEngine: SovereignEngine {
+    var engineName: String { "KBReconstructionEngine" }
+    func engineStatus() -> [String: Any] {
+        ["engine": engineName, "version": KB_RECONSTRUCTION_VERSION, "method": "TF-IDF+Grover", "status": "active"]
+    }
+}
+
+extension NovelTheoremGenerator: SovereignEngine {
+    var engineName: String { "NovelTheoremGenerator" }
+    func engineStatus() -> [String: Any] {
+        ["engine": engineName, "version": THEOREM_GEN_VERSION, "axiom_domains": 5, "inference_rules": 6, "status": "active"]
+    }
+}
+
+extension BenchmarkHarness: SovereignEngine {
+    var engineName: String { "BenchmarkHarness" }
+    func engineStatus() -> [String: Any] {
+        ["engine": engineName, "version": BENCHMARK_HARNESS_VERSION, "runners": 4, "benchmarks": "MMLU/HumanEval/MATH/ARC", "status": "active"]
+    }
+}
+
+extension DeepSeekIngestionEngine: SovereignEngine {
+    var engineName: String { "DeepSeekIngestionEngine" }
+    func engineStatus() -> [String: Any] {
+        ["engine": engineName, "version": DEEPSEEK_INGESTION_VERSION, "ingestors": "MLA/R1/Coder", "status": "active"]
+    }
+}
+
+extension SovereignIdentityBoundary: SovereignEngine {
+    var engineName: String { "SovereignIdentityBoundary" }
+    func engineStatus() -> [String: Any] {
+        ["engine": engineName, "version": IDENTITY_BOUNDARY_VERSION, "is_declarations": 10, "is_not_declarations": 6, "status": "active"]
+    }
+}
+
+extension CommonsenseReasoningEngine: SovereignEngine {
+    var engineName: String { "CommonsenseReasoningEngine" }
+    func engineStatus() -> [String: Any] {
+        ["engine": engineName, "version": COMMONSENSE_ENGINE_VERSION, "layers": 8, "status": "active"]
+    }
+}
+
+extension LanguageComprehensionEngine: SovereignEngine {
+    var engineName: String { "LanguageComprehensionEngine" }
+    func engineStatus() -> [String: Any] {
+        ["engine": engineName, "version": LANGUAGE_COMP_ENGINE_VERSION, "layers": 8, "knowledge_nodes": 191, "mmlu_subjects": MMLU_SUBJECTS, "status": "active"]
+    }
+}
+
+extension CodeGenerationEngine: SovereignEngine {
+    var engineName: String { "CodeGenerationEngine" }
+    func engineStatus() -> [String: Any] {
+        ["engine": engineName, "version": CODE_GEN_ENGINE_VERSION, "patterns": 100, "layers": 6, "status": "active"]
+    }
 }

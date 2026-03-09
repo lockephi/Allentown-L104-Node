@@ -62,7 +62,7 @@ class GateSet(Enum):
     """Target native gate sets for transpilation."""
     UNIVERSAL = auto()      # Full gate library
     CLIFFORD_T = auto()     # {H, S, T, CNOT} — universal + efficient
-    IBM_EAGLE = auto()      # {Rz, SX, X, ECR} — IBM Eagle/Heron native
+    L104_HERON = auto()     # {Rz, SX, X, ECR} — L104 sovereign Heron-class native
     IONQ = auto()           # {GPI, GPI2, MS} — IonQ trapped-ion native
     L104_SACRED = auto()    # {H, PHI_GATE, GOD_CODE_PHASE, IRON_GATE, CNOT}
     TOPOLOGICAL = auto()    # {FIBONACCI_BRAID, ANYON_EXCHANGE}
@@ -95,6 +95,11 @@ class QuantumGate:
     @property
     def dimension(self) -> int:
         return 2 ** self.num_qubits
+
+    @property
+    def params(self) -> list:
+        """Qiskit-compat: return list of parameter values."""
+        return list(self.parameters.values()) if self.parameters else []
 
     @property
     def dag(self) -> 'QuantumGate':
@@ -284,7 +289,7 @@ T_DAG = QuantumGate(
     inverse_name="T",
 )
 
-# SX (√X) gate — native on IBM hardware
+# SX (√X) gate — native on L104 Heron-class hardware
 SX = QuantumGate(
     name="SX", num_qubits=1,
     matrix=np.array([[1 + 1j, 1 - 1j], [1 - 1j, 1 + 1j]], dtype=complex) / 2,
@@ -423,7 +428,7 @@ ISWAP = QuantumGate(
     is_clifford=True,
 )
 
-# ECR gate — native on IBM Eagle/Heron
+# ECR gate — native on L104 Heron-class hardware
 ECR = QuantumGate(
     name="ECR", num_qubits=2,
     matrix=np.array([
@@ -639,6 +644,64 @@ ANYON_EXCHANGE = QuantumGate(
     gate_type=GateType.TOPOLOGICAL,
     parameters={"f_entry": FIBONACCI_F_ENTRY, "f_off": FIBONACCI_F_OFF},
 )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  v2.0: ML ENCODING GATES — SVM Feature Encoding + Classification
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def SVM_ENCODING_GATE(theta: float, phi_scale: float = PHI) -> QuantumGate:
+    """Composite SVM encoding gate: Ry(theta*PHI) followed by Rz(theta/VOID_CONSTANT).
+
+    Encodes a classical feature value into quantum phase space using
+    PHI-scaled Y-rotation and VOID-scaled Z-rotation.
+
+    Args:
+        theta: Classical feature value
+        phi_scale: Scaling factor (default: PHI)
+
+    Returns:
+        QuantumGate with the composed unitary
+    """
+    ry_angle = theta * phi_scale
+    rz_angle = theta / VOID_CONSTANT
+    cy, sy = math.cos(ry_angle / 2), math.sin(ry_angle / 2)
+    # Ry(ry_angle)
+    Ry = np.array([[cy, -sy], [sy, cy]], dtype=complex)
+    # Rz(rz_angle)
+    Rz = np.array([
+        [cmath.exp(-1j * rz_angle / 2), 0],
+        [0, cmath.exp(1j * rz_angle / 2)]
+    ], dtype=complex)
+    matrix = Rz @ Ry
+    return QuantumGate(
+        name=f"SVM_ENC({theta:.4f})", num_qubits=1,
+        matrix=matrix, gate_type=GateType.SACRED,
+        parameters={"theta": theta, "phi_scale": phi_scale,
+                     "ry_angle": ry_angle, "rz_angle": rz_angle},
+    )
+
+
+def CLASSIFIER_MEASUREMENT_GATE(n_classes: int = 2) -> QuantumGate:
+    """Measurement-basis rotation gate for n-class classification output.
+
+    Rotates the measurement basis by π/(n_classes * PHI) to align
+    the computational basis with class label boundaries.
+
+    Args:
+        n_classes: Number of classification classes
+
+    Returns:
+        QuantumGate with the measurement-basis rotation
+    """
+    angle = math.pi / (n_classes * PHI)
+    cy, sy = math.cos(angle / 2), math.sin(angle / 2)
+    matrix = np.array([[cy, -sy], [sy, cy]], dtype=complex)
+    return QuantumGate(
+        name=f"CLASS_MEAS({n_classes})", num_qubits=1,
+        matrix=matrix, gate_type=GateType.SACRED,
+        parameters={"n_classes": n_classes, "angle": angle},
+    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -889,6 +952,207 @@ class GateAlgebra:
         # Overall sacred resonance
         alignments["total_resonance"] = float(np.mean(list(alignments.values())))
         return alignments
+
+    # ─── Unitary Quantization (Topological Research v1.0) ────────────────────
+
+    @staticmethod
+    def verify_unitarity(gate: QuantumGate, tolerance: float = 1e-12) -> Dict[str, Any]:
+        """
+        Verify U†U = I for a quantum gate (unitary quantization proof).
+
+        The phase operator U = 2^(E/104) preserves norms because:
+          U = e^{iθ} where θ = E × ln(2)/104
+          |e^{iθ}| = 1 ∀ θ ∈ ℝ → ||U|ψ⟩|| = ||ψ⟩||
+
+        Returns unitarity metrics including max deviation from identity.
+        """
+        U = gate.matrix
+        product = U.conj().T @ U
+        identity = np.eye(gate.dimension, dtype=complex)
+        deviation = np.max(np.abs(product - identity))
+        # Eigenvalue norms (should all be 1.0 for unitary)
+        eigvals = gate.eigenvalues
+        eigval_norms = [abs(ev) for ev in eigvals]
+        norm_deviation = max(abs(n - 1.0) for n in eigval_norms)
+        # Determinant magnitude (should be 1.0 for unitary)
+        det_mag = abs(np.linalg.det(U))
+        return {
+            "is_unitary": deviation < tolerance,
+            "max_UdagU_deviation": float(deviation),
+            "eigenvalue_norms": eigval_norms,
+            "max_norm_deviation": float(norm_deviation),
+            "determinant_magnitude": float(det_mag),
+            "tolerance": tolerance,
+            "gate_name": gate.name,
+        }
+
+    @staticmethod
+    def verify_reversibility(gate: QuantumGate, tolerance: float = 1e-12) -> Dict[str, Any]:
+        """
+        Verify strict reversibility: U⁻¹ exists and U†U = UU† = I.
+
+        For GOD_CODE phase operator: U⁻¹ = (2^(1/104))^{-E}
+        Achieved by negating all dials: G(A,B,C,D)⁻¹ = G(-A,-B,-C,-D)
+        """
+        U = gate.matrix
+        # U†U
+        forward = U.conj().T @ U
+        # UU†
+        backward = U @ U.conj().T
+        identity = np.eye(gate.dimension, dtype=complex)
+        dev_forward = float(np.max(np.abs(forward - identity)))
+        dev_backward = float(np.max(np.abs(backward - identity)))
+        return {
+            "is_reversible": dev_forward < tolerance and dev_backward < tolerance,
+            "forward_deviation": dev_forward,   # max|U†U - I|
+            "backward_deviation": dev_backward,  # max|UU† - I|
+            "is_normal": dev_forward < tolerance and dev_backward < tolerance,
+            "gate_name": gate.name,
+        }
+
+    @staticmethod
+    def composite_gate_order(gates: List[QuantumGate], max_k: int = 10000) -> Dict[str, Any]:
+        """
+        Determine the order of a composite gate U = G₁·G₂·...·Gₙ.
+
+        Sacred composite gates have INFINITE ORDER because their eigenphases
+        are not rational multiples of π → U^k ≠ I for any finite k.
+        """
+        # Build composite
+        composite = gates[0].matrix.copy()
+        for g in gates[1:]:
+            composite = composite @ g.matrix
+        # Check eigenphases for rationality
+        eigvals = np.linalg.eigvals(composite)
+        phases_deg = [float(np.degrees(np.angle(ev))) for ev in eigvals]
+        # Check U^k = I for k up to max_k
+        identity = np.eye(composite.shape[0], dtype=complex)
+        power = np.eye(composite.shape[0], dtype=complex)
+        finite_order = None
+        for k in range(1, min(max_k + 1, 10001)):
+            power = power @ composite
+            if np.allclose(power, identity, atol=1e-10):
+                finite_order = k
+                break
+        return {
+            "eigenphases_deg": phases_deg,
+            "finite_order": finite_order,
+            "is_infinite_order": finite_order is None,
+            "max_k_tested": max_k if finite_order is None else finite_order,
+            "gate_names": [g.name for g in gates],
+        }
+
+    @staticmethod
+    def bloch_manifold_state(gate: QuantumGate) -> Dict[str, Any]:
+        """
+        Compute the Bloch sphere representation of a gate applied to |0⟩.
+
+        X = G(A,B,C,D) maps to a position on the Bloch manifold S²:
+          - 286^(1/φ) base sets the radius (amplitude)
+          - 2^(E/104) operator rotates the azimuthal angle
+          - Together they define a TOPOLOGICALLY PROTECTED state
+        """
+        if gate.num_qubits != 1:
+            return {"error": "Bloch representation requires single-qubit gate"}
+        # Apply gate to |0⟩
+        state = gate.matrix @ np.array([1, 0], dtype=complex)
+        # Bloch coordinates: r = (⟨X⟩, ⟨Y⟩, ⟨Z⟩)
+        rho = np.outer(state, state.conj())
+        rx = float(2 * rho[0, 1].real)
+        ry = float(-2 * rho[0, 1].imag)  # ⟨Y⟩ = Tr(σy ρ) = −2·Im(ρ₀₁)
+        rz = float(rho[0, 0].real - rho[1, 1].real)
+        r_mag = math.sqrt(rx**2 + ry**2 + rz**2)
+        purity = float(np.trace(rho @ rho).real)
+        return {
+            "bloch_vector": (rx, ry, rz),
+            "magnitude": r_mag,
+            "is_pure_state": abs(r_mag - 1.0) < 1e-10,
+            "purity": purity,
+            "theta": math.acos(max(-1, min(1, rz))) if r_mag > 1e-12 else 0.0,
+            "phi_angle": math.atan2(ry, rx),
+            "gate_name": gate.name,
+        }
+
+    # ─── Topological Protection Analysis ─────────────────────────────────────
+
+    @staticmethod
+    def topological_error_rate(braid_depth: int) -> Dict[str, float]:
+        """
+        Compute the topological error rate at a given Fibonacci anyon braid depth.
+
+        Model: ε ~ exp(-d/ξ) where ξ = 1/φ ≈ 0.618
+        The exponential suppression with correlation length ξ = 1/φ provides
+        robust protection against local perturbations.
+
+        Args:
+            braid_depth: Number of anyon braids (d)
+
+        Returns:
+            Error rate metrics including suppression quality.
+        """
+        xi = 1.0 / PHI  # Correlation length ξ = 1/φ
+        error_rate = math.exp(-braid_depth / xi)
+        # Quality threshold: < 10^-6 is "quantum error correction ready"
+        qec_ready = error_rate < 1e-6
+        return {
+            "braid_depth": braid_depth,
+            "correlation_length": xi,
+            "error_rate": error_rate,
+            "log10_error": math.log10(error_rate) if error_rate > 0 else float('-inf'),
+            "qec_ready": qec_ready,
+            "suppression_factor": 1.0 / error_rate if error_rate > 0 else float('inf'),
+        }
+
+    @staticmethod
+    def topological_noise_resilience(gate: QuantumGate, noise_levels: Optional[List[float]] = None) -> Dict[str, Any]:
+        """
+        Analyze how a sacred gate state degrades under thermal noise.
+
+        Applies depolarizing noise ε to the Bloch vector: |r| → (1-ε)|r|
+        and measures purity degradation: γ = (1-ε)²|r|² + (1-(1-ε)²)/2
+        """
+        if gate.num_qubits != 1:
+            return {"error": "Noise analysis requires single-qubit gate"}
+        if noise_levels is None:
+            noise_levels = [0.0, 0.001, 0.005, 0.01, 0.05, 0.1]
+
+        bloch = GateAlgebra.bloch_manifold_state(gate)
+        r0 = bloch["magnitude"]
+
+        results = []
+        for eps in noise_levels:
+            r_noisy = r0 * (1 - eps)
+            purity = (r_noisy ** 2 + 1) / 2  # For single-qubit depolarizing
+            results.append({
+                "noise_level": eps,
+                "bloch_magnitude": r_noisy,
+                "purity": purity,
+                "fidelity": (1 + r_noisy) / 2,
+            })
+        return {
+            "gate_name": gate.name,
+            "initial_bloch_magnitude": r0,
+            "noise_analysis": results,
+        }
+
+    @staticmethod
+    def full_sacred_analysis(gate: QuantumGate) -> Dict[str, Any]:
+        """
+        Complete sacred gate analysis combining alignment, unitarity,
+        reversibility, Bloch manifold, and topological protection.
+        """
+        analysis = {
+            "gate_name": gate.name,
+            "gate_type": gate.gate_type.name if gate.gate_type else "UNKNOWN",
+            "num_qubits": gate.num_qubits,
+            "sacred_alignment": GateAlgebra.sacred_alignment_score(gate),
+            "unitarity": GateAlgebra.verify_unitarity(gate),
+            "reversibility": GateAlgebra.verify_reversibility(gate),
+        }
+        if gate.num_qubits == 1:
+            analysis["bloch_manifold"] = GateAlgebra.bloch_manifold_state(gate)
+            analysis["noise_resilience"] = GateAlgebra.topological_noise_resilience(gate)
+        return analysis
 
 
 def _estimate_cnot_count(weyl_coords: List[float]) -> int:

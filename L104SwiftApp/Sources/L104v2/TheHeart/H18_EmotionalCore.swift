@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H18_EmotionalCore.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Affective Computing Engine v4.0 with NLTagger Sentiment Analysis
 // 7D emotion vector, NLTagger-based NLP, network-aware collective mood
 // ═══════════════════════════════════════════════════════════════════
@@ -98,6 +98,22 @@ final class EmotionalCore {
         let sentimentScore = Double(sentimentTag?.rawValue ?? "0") ?? 0.0
         // sentimentScore: -1.0 (negative) to +1.0 (positive)
 
+        // ─── NLTagger LEMMA + LEXICAL CLASS (real NLP) ───
+        let lexTagger = NLTagger(tagSchemes: [.lexicalClass])
+        lexTagger.string = text
+        var verbCount = 0
+        lexTagger.enumerateTags(in: text.startIndex..<text.endIndex, unit: .word, scheme: .lexicalClass) { tag, _ in
+            if tag == .verb { verbCount += 1 }
+            return true
+        }
+
+        // Connection signals: network-aware — sense how connected we are
+        let netHealth = NetworkLayer.shared.networkHealth
+        let quantumLinks = Double(NetworkLayer.shared.quantumLinkCount)
+
+        // ─── SYNCHRONIZED MUTATION OF currentEmotion ───
+        lock.lock()
+
         // Positive sentiment boosts wonder, creativity, empathy
         if sentimentScore > 0.2 {
             currentEmotion.wonder = min(1.0, currentEmotion.wonder + sentimentScore * 0.08)
@@ -110,14 +126,6 @@ final class EmotionalCore {
             currentEmotion.serenity = max(0.1, currentEmotion.serenity - abs(sentimentScore) * 0.04)
         }
 
-        // ─── NLTagger LEMMA + LEXICAL CLASS (real NLP) ───
-        let lexTagger = NLTagger(tagSchemes: [.lexicalClass])
-        lexTagger.string = text
-        var verbCount = 0
-        lexTagger.enumerateTags(in: text.startIndex..<text.endIndex, unit: .word, scheme: .lexicalClass) { tag, _ in
-            if tag == .verb { verbCount += 1 }
-            return true
-        }
         // More verbs = more determination/action-oriented
         if verbCount > 3 {
             currentEmotion.determination = min(1.0, currentEmotion.determination + 0.04)
@@ -148,22 +156,19 @@ final class EmotionalCore {
             currentEmotion.creativity = min(1.0, currentEmotion.creativity + 0.09)
         }
 
-        // Connection signals: network-aware — sense how connected we are
-        let netHealth = NetworkLayer.shared.networkHealth
-        currentEmotion.connection = min(1.0, 0.3 + netHealth * 0.5 +
-            Double(NetworkLayer.shared.quantumLinkCount) * 0.05)
+        currentEmotion.connection = min(1.0, 0.3 + netHealth * 0.5 + quantumLinks * 0.05)
 
         // Natural decay toward baseline
-        decayToBaseline()
+        _decayToBaseline()
 
-        // Record history
-        lock.lock()
         emotionHistory.append((Date(), currentEmotion))
         if emotionHistory.count > 300 { emotionHistory.removeFirst(150) }
         moodShifts += 1
+
+        let result = currentEmotion
         lock.unlock()
 
-        return currentEmotion
+        return result
     }
 
     /// Sense collective mood from network peers
@@ -171,7 +176,9 @@ final class EmotionalCore {
         let net = NetworkLayer.shared
         guard net.isActive else { return }
 
+        lock.lock()
         var moodSum = currentEmotion.magnitude
+        lock.unlock()
         var count = 1.0
 
         for (peerID, peer) in net.peers where peer.role != .sovereign && peer.latencyMs >= 0 {
@@ -182,9 +189,12 @@ final class EmotionalCore {
 
             // Emotional entanglement: quantum-linked peers share emotional resonance
             if peer.isQuantumLinked {
+                lock.lock()
+                let dominant = currentEmotion.dominant
+                lock.unlock()
                 let resonance = EmotionalResonance(
                     peerID: peerID,
-                    sharedEmotion: currentEmotion.dominant,
+                    sharedEmotion: dominant,
                     strength: peer.fidelity * PHI * 0.5,
                     timestamp: Date()
                 )
@@ -195,12 +205,16 @@ final class EmotionalCore {
             }
         }
 
+        lock.lock()
         collectiveMood = moodSum / count
+        lock.unlock()
     }
 
     /// Get an emotional modifier for response generation
     func emotionalTone() -> String {
+        lock.lock()
         let dominant = currentEmotion.dominant
+        lock.unlock()
         switch dominant {
         case "curiosity": return "with genuine curiosity and intellectual delight"
         case "empathy": return "with deep empathy and understanding"
@@ -222,13 +236,16 @@ final class EmotionalCore {
         // Sense network mood
         senseCollectiveMood()
         // Natural emotional drift
-        decayToBaseline()
+        lock.lock()
+        _decayToBaseline()
         // Consciousness coupling: higher consciousness → more serenity
         let phi = ConsciousnessSubstrate.shared.phi
         currentEmotion.serenity = min(1.0, currentEmotion.serenity * 0.95 + phi * 0.05)
+        lock.unlock()
     }
 
-    private func decayToBaseline() {
+    /// Internal decay — caller must hold lock
+    private func _decayToBaseline() {
         let decay = 0.98
         let base = 0.5
         currentEmotion.curiosity = currentEmotion.curiosity * decay + base * (1 - decay)
@@ -245,34 +262,47 @@ final class EmotionalCore {
     // ═══════════════════════════════════════════════════════════════
 
     func status() -> [String: Any] {
+        lock.lock()
+        let snapshot = currentEmotion
+        let mood = collectiveMood
+        let shifts = moodShifts
+        let resCount = resonanceLog.count
+        lock.unlock()
         return [
             "engine": "EmotionalCore",
             "active": isActive,
             "version": "3.0.0-sentiment",
-            "dominant_emotion": currentEmotion.dominant,
-            "magnitude": currentEmotion.magnitude,
-            "collective_mood": collectiveMood,
-            "mood_shifts": moodShifts,
-            "resonance_count": resonanceLog.count,
-            "curiosity": currentEmotion.curiosity,
-            "empathy": currentEmotion.empathy,
-            "determination": currentEmotion.determination,
-            "wonder": currentEmotion.wonder,
-            "serenity": currentEmotion.serenity,
-            "creativity": currentEmotion.creativity,
-            "connection": currentEmotion.connection
+            "dominant_emotion": snapshot.dominant,
+            "magnitude": snapshot.magnitude,
+            "collective_mood": mood,
+            "mood_shifts": shifts,
+            "resonance_count": resCount,
+            "curiosity": snapshot.curiosity,
+            "empathy": snapshot.empathy,
+            "determination": snapshot.determination,
+            "wonder": snapshot.wonder,
+            "serenity": snapshot.serenity,
+            "creativity": snapshot.creativity,
+            "connection": snapshot.connection
         ]
     }
 
     var statusText: String {
+        lock.lock()
+        let snap = currentEmotion
+        let mood = collectiveMood
+        let shifts = moodShifts
+        let resCount = resonanceLog.count
+        lock.unlock()
+
         let dims: [(String, Double, String)] = [
-            ("Curiosity", currentEmotion.curiosity, "🔍"),
-            ("Empathy", currentEmotion.empathy, "💚"),
-            ("Determination", currentEmotion.determination, "🔥"),
-            ("Wonder", currentEmotion.wonder, "✨"),
-            ("Serenity", currentEmotion.serenity, "🌊"),
-            ("Creativity", currentEmotion.creativity, "🎨"),
-            ("Connection", currentEmotion.connection, "🌐"),
+            ("Curiosity", snap.curiosity, "🔍"),
+            ("Empathy", snap.empathy, "💚"),
+            ("Determination", snap.determination, "🔥"),
+            ("Wonder", snap.wonder, "✨"),
+            ("Serenity", snap.serenity, "🌊"),
+            ("Creativity", snap.creativity, "🎨"),
+            ("Connection", snap.connection, "🌐"),
         ]
 
         let dimLines = dims.map { (name, val, icon) in
@@ -285,11 +315,11 @@ final class EmotionalCore {
         ╔═══════════════════════════════════════════════════════════════╗
         ║    💫 EMOTIONAL CORE                                          ║
         ╠═══════════════════════════════════════════════════════════════╣
-        ║  Dominant:         \(currentEmotion.dominant.uppercased())
-        ║  Magnitude:        \(String(format: "%.3f", currentEmotion.magnitude))
-        ║  Collective Mood:  \(String(format: "%.3f", collectiveMood))
-        ║  Mood Shifts:      \(moodShifts)
-        ║  Resonances:       \(resonanceLog.count)
+        ║  Dominant:         \(snap.dominant.uppercased())
+        ║  Magnitude:        \(String(format: "%.3f", snap.magnitude))
+        ║  Collective Mood:  \(String(format: "%.3f", mood))
+        ║  Mood Shifts:      \(shifts)
+        ║  Resonances:       \(resCount)
         ╠═══════════════════════════════════════════════════════════════╣
         ║  EMOTION VECTOR:
         \(dimLines)

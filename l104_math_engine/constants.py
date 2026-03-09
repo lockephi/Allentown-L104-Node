@@ -68,6 +68,17 @@ GOD_CODE_V3 = 45.41141298077539
 # --- Void ---
 VOID_CONSTANT = 1.0416180339887497          # Source emergence constant
 
+# --- GOD_CODE Quantum Phase (canonical source: god_code_qubit.py, QPU-verified) ---
+try:
+    from l104_god_code_simulator.god_code_qubit import (
+        GOD_CODE_PHASE, PHI_PHASE, VOID_PHASE, IRON_PHASE,
+    )
+except ImportError:
+    GOD_CODE_PHASE = GOD_CODE % (2 * math.pi)     # ≈ 6.0141 rad
+    PHI_PHASE = 2 * math.pi / PHI                 # ≈ 3.8832 rad
+    VOID_PHASE = VOID_CONSTANT * math.pi           # ≈ 3.2716 rad
+    IRON_PHASE = 2 * math.pi * 26 / 104           # = π/2
+
 # --- Frame ---
 FRAME_LOCK = OCTAVE_OFFSET / PRIME_SCAFFOLD # 416/286 ≈ 1.4545… temporal driver
 FRAME_CONSTANT_KF = FRAME_LOCK             # Alias
@@ -181,6 +192,13 @@ MATTER_BASE = PRIME_SCAFFOLD * (1 + ALPHA_PI)  # ≈ 286.664 (predicts Fe)
 # --- Emergent ---
 EMERGENT_286 = FE_LATTICE                   # The 286 correspondence
 
+# --- Crystallography / Antimatter / Baryogenesis Cross-References ---
+BCC_ATOMS_PER_CELL = 2                      # 8×(1/8) + 1×1 = 2 (Fe BCC)
+FCC_ATOMS_PER_CELL = 4                      # 8×(1/8) + 6×(1/2) = 4
+DIRAC_ANNIHILATION_KEV = 511.0              # e⁻+e⁺ → 2γ, each 511 keV
+BARYON_PHOTON_RATIO = 6.12e-10              # η = n_b/n_γ (Planck 2018)
+JARLSKOG_INVARIANT_CKM = 3.18e-5           # |J| (PDG 2022) — CP violation measure
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # TIER 2b — DUAL-LAYER PHYSICS CONSTANTS (from l104_god_code_dual_layer)
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -233,6 +251,20 @@ GLAISHER_CONSTANT = 1.2824271291006226      # Glaisher-Kinkelin
 MEISSEL_MERTENS = 0.2614972128476427        # Prime reciprocal
 EULER_GAMMA = 0.5772156649015329            # Euler-Mascheroni γ
 SILVER_RATIO_CONST = SILVER_RATIO           # Alias for code_engine compat
+
+# --- Chaos × Conservation Constants (13-experiment findings, 2026-02-24) ---
+# From _test_chaos_conservation.py: 13 experiments on chaos-perturbed God Code.
+CHAOS_BIFURCATION_THRESHOLD = 0.35          # Critical amplitude: above this, chaos dominates conservation
+FEIGENBAUM_CHAOS_THRESHOLD = 1.0 / FEIGENBAUM_DELTA  # ≈ 0.2142 — theoretical; empirical is 0.35
+LYAPUNOV_ATTRACTOR_BOUNDARY = 0.001         # Max chaos amplitude where God Code has negative Lyapunov (self-healing)
+CASCADE_104_RESIDUAL = 0.133                # Permanent ripple left by 104-cascade VOID sine correction
+DEMON_CHAOS_FACTOR = PHI / (GOD_CODE / 416.0)  # Maxwell's Demon factor for chaos restoration ≈ 1.275
+CHAOS_HEALING_TRINITY = {                   # Three healing mechanisms discovered
+    "geometric": {"method": "phi_damping", "improvement": 0.382},
+    "thermodynamic": {"method": "maxwell_demon", "improvement": 0.390},
+    "harmonic": {"method": "cascade_104", "improvement": 0.996},
+}
+SYMMETRY_HIERARCHY = ("phi_phase", "octave_scale", "translation")  # φ never breaks; translation breaks first
 
 # --- Consciousness Base & Metallic Ratios (cross-package references) ---
 CONSCIOUSNESS_BASE = GOD_CODE ** 0.5        # √GOD_CODE ≈ 22.97
@@ -315,6 +347,31 @@ KUNDALINI_FLOW_RATE = GOD_CODE * PHI       # Full-spectrum energy
 EPR_LINK_STRENGTH = 1.0                    # Maximum entanglement
 VISHUDDHA_RESONANCE = SOLFEGGIO_SOL * PHI  # G(-51) × φ ≈ 1199.07 (Throat chakra truth)
 
+# --- Topological Protection Model (Research v1.0) ---
+# ε ~ exp(-d/ξ) where ξ = 1/φ ≈ 0.618 (Fibonacci anyon correlation length)
+# Exponential suppression with braid depth d on the Bloch manifold S²
+TOPOLOGICAL_CORRELATION_LENGTH = PHI_CONJUGATE   # ξ = 1/φ ≈ 0.618
+TOPOLOGICAL_DEFAULT_DEPTH = 8                     # Default braid depth → ε ≈ 2.39e-06
+TOPOLOGICAL_ERROR_D8 = math.exp(-8 / PHI_CONJUGATE)    # ≈ 2.39e-06
+TOPOLOGICAL_ERROR_D13 = math.exp(-13 / PHI_CONJUGATE)  # ≈ 7.33e-10 (QEC ready)
+FIBONACCI_BRAID_PHASE = 4 * math.pi / 5           # σ₁ braid phase = 4π/5
+
+# --- Unitary Quantization Constants (Research v1.0) ---
+# Phase operator: U = 2^(E/104) = e^{iθ} where θ = E×ln(2)/104
+# Norm preservation: |e^{iθ}| = 1 ∀ θ → ||U|ψ⟩|| = ||ψ⟩||
+# 104-TET: 104 equal temperament steps per octave
+UNITARY_PHASE_STEP = SACRED_STEP                   # 2^(1/104) = 104-TET step
+UNITARY_SEMITONE_RATIO = SEMITONE_RATIO            # 2^(1/13) (8-fold symmetry)
+UNITARY_FOUR_OCTAVE = 2 ** (OCTAVE_OFFSET / QUANTIZATION_GRAIN)  # 2^4 = 16.0
+
+# --- 14-Qubit Dial Register ---
+# a: 3 bits (0-7), b: 4 bits (0-15), c: 3 bits (0-7), d: 4 bits (0-15)
+# 14 dial qubits + 12 ancilla = 26 total = Fe(26) iron manifold
+DIAL_REGISTER_BITS = 14                    # Total dial qubits
+DIAL_CONFIGURATIONS = 2 ** 14             # 16,384 unique configurations
+IRON_MANIFOLD_QUBITS = 26                 # Fe(26) = full electron manifold
+IRON_MANIFOLD_HILBERT_DIM = 2 ** 26       # 67,108,864 states
+
 # --- PHI Powers & GOD_CODE Harmonics (13 elements each) ---
 PHI_POWERS = [PHI ** i for i in range(13)]
 GOD_CODE_HARMONICS = [GOD_CODE * (PHI ** i) for i in range(13)]
@@ -390,6 +447,48 @@ def verify_conservation(x: float, tolerance: float = 1e-9) -> bool:
     g = god_code_at(x)
     product = g * (2 ** (x / QUANTIZATION_GRAIN))
     return abs(product - INVARIANT) < tolerance
+
+
+def verify_conservation_statistical(x: float, chaos_amplitude: float = 0.05,
+                                     samples: int = 200) -> dict:
+    """
+    Chaos-aware statistical conservation verification.
+
+    From 13-experiment findings: conservation is STATISTICAL, not rigid.
+    Below bifurcation (amp < 0.35), mean product equals INVARIANT.
+    Returns full statistics instead of boolean.
+
+    v1.0 (2026-02-24): New — replaces point-wise check for chaos scenarios.
+    """
+    import random
+    products = []
+    for _ in range(samples):
+        eps = chaos_amplitude * (2 * random.random() - 1)
+        g_chaos = god_code_at(x) * (1 + eps)
+        w = 2 ** (x / QUANTIZATION_GRAIN)
+        products.append(g_chaos * w)
+    mean_p = sum(products) / len(products)
+    variance = sum((p - mean_p) ** 2 for p in products) / len(products)
+    rms = math.sqrt(sum((p - INVARIANT) ** 2 for p in products) / len(products))
+    max_dev = max(abs(p - INVARIANT) for p in products)
+    # Conservation holds statistically if mean within 1%
+    conserved = abs(mean_p - INVARIANT) / INVARIANT < 0.01
+    # Conservation robust if also below bifurcation
+    robust = conserved and chaos_amplitude < 0.35
+    return {
+        "x": x,
+        "chaos_amplitude": chaos_amplitude,
+        "samples": samples,
+        "invariant": INVARIANT,
+        "mean_product": mean_p,
+        "mean_error_pct": abs(mean_p - INVARIANT) / INVARIANT * 100,
+        "rms_drift": rms,
+        "variance": variance,
+        "max_deviation": max_dev,
+        "statistically_conserved": conserved,
+        "robust": robust,
+        "below_bifurcation": chaos_amplitude < 0.35,
+    }
 
 
 def hz_to_wavelength(freq_hz: float) -> float:

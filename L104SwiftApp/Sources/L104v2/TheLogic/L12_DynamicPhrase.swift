@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L12_DynamicPhrase.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104v2 — Extracted from L104Native.swift (lines 11527-12106)
 //
 // DYNAMIC PHRASE ENGINE — Logic-gate-driven phrase generation

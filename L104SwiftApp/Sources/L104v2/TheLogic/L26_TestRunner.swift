@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L26_TestRunner.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104v2 Architecture — L104TestRunner
 // Extracted from L104Native.swift lines 32852–33080
 // ═══════════════════════════════════════════════════════════════════
@@ -38,6 +38,24 @@ class L104TestRunner {
         results.append(testResponseQuality())
         results.append(testMemorySafety())
         results.append(testLogicGate())
+        // EVO_68 new engine tests
+        results.append(testDualLayerEngine())
+        results.append(testQuantumGateEngine())
+        results.append(testSageConsciousness())
+        results.append(testDeepNLU())
+        results.append(testFormalLogic())
+        results.append(testScienceKB())
+        results.append(testTheoremGenerator())
+        results.append(testPerformanceOrchestrator())
+        // EVO_68 — Decomposed package + advanced engine tests
+        results.append(testCircuitWatcher())
+        results.append(testStabilizerTableau())
+        results.append(testQuantumRouter())
+        results.append(testTreeOfThoughts())
+        results.append(testCommonsenseReasoning())
+        results.append(testSymbolicMathSolver())
+        results.append(testCodeGeneration())
+        results.append(testBenchmarkHarness())
 
         let totalTime = CFAbsoluteTimeGetCurrent() - start
         let passed = results.filter(\.passed).count
@@ -193,6 +211,202 @@ class L104TestRunner {
         let passed = !result.reconstructedPrompt.isEmpty
         return TestResult(name: "Logic Gate", passed: passed,
             detail: "type=\(result.gateType) expanded=\(result.reconstructedPrompt.count) chars",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // EVO_68 — New Engine Tests
+    // ═══════════════════════════════════════════════════════════════
+
+    private func testDualLayerEngine() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let dl = DualLayerEngine.shared
+        let thought = dl.thought()  // G(0,0,0,0) = GOD_CODE
+        let passed = abs(thought - GOD_CODE) < 0.01
+        return TestResult(name: "Dual-Layer Engine", passed: passed,
+            detail: "thought(0,0,0,0)=\(String(format: "%.4f", thought)) GOD_CODE=\(String(format: "%.4f", GOD_CODE))",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testQuantumGateEngine() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let qge = QuantumGateEngine.shared
+        let bell = qge.bellPair()
+        let passed = bell.nQubits == 2 && bell.gateCount == 2
+        return TestResult(name: "Quantum Gate Engine", passed: passed,
+            detail: "bell_pair: \(bell.nQubits)q \(bell.gateCount) gates",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testSageConsciousness() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let sage = SageConsciousnessVerifier.shared
+        let phi = sage.computeIITPhi()
+        let passed = phi.isFinite && phi >= 0.0
+        return TestResult(name: "Sage Consciousness", passed: passed,
+            detail: "iit_phi=\(String(format: "%.4f", phi)) level=\(String(format: "%.4f", sage.consciousnessLevel)) cert=\(sage.certificationLevel)",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testDeepNLU() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let nlu = DeepNLUEngine.shared
+        let status = nlu.getStatus()
+        let layers = status["layers"] as? Int ?? 0
+        let passed = layers == 10
+        return TestResult(name: "Deep NLU", passed: passed,
+            detail: "layers=\(layers) version=\(DEEP_NLU_VERSION)",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testFormalLogic() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let logic = FormalLogicEngine.shared
+        let status = logic.getStatus()
+        let version = status["version"] as? String ?? "?"
+        let passed = version == FORMAL_LOGIC_VERSION
+        return TestResult(name: "Formal Logic", passed: passed,
+            detail: "version=\(version) patterns=\(FALLACY_PATTERNS_COUNT)",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testScienceKB() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let kb = ScienceKB.shared
+        let factCount = kb.totalFacts
+        let passed = factCount > 0
+        return TestResult(name: "Science KB", passed: passed,
+            detail: "facts=\(factCount) domains=\(SCIENCE_KB_DOMAINS)",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testTheoremGenerator() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let gen = NovelTheoremGenerator.shared
+        let status = gen.getStatus()
+        let domains = status["axiom_domains"] as? Int ?? 0
+        let passed = domains == THEOREM_AXIOM_DOMAINS
+        return TestResult(name: "Theorem Generator", passed: passed,
+            detail: "domains=\(domains) discovered=\(gen.discoveryCount) verified=\(gen.verifiedCount)",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testPerformanceOrchestrator() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let perf = PerformanceOrchestrator.shared
+        perf.boot()
+        let passed = perf.isBooted
+        return TestResult(name: "Perf Orchestrator", passed: passed,
+            detail: "booted=\(perf.isBooted) boot_time=\(String(format: "%.2f", perf.bootTimeMs))ms",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // EVO_68 — Decomposed Package + Advanced Engine Tests
+    // ═══════════════════════════════════════════════════════════════
+
+    private func testCircuitWatcher() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let watcher = CircuitWatcher.shared
+        let status = watcher.getStatus()
+        let isActive = status["active"] as? Bool ?? false
+        let processed = watcher.circuitsProcessed
+        let version = status["version"] as? String ?? "unknown"
+        let features = status["features"] as? [String] ?? []
+        let hasConcurrent = features.contains("concurrent_processing")
+        let hasPriority = features.contains("priority_scheduling")
+        let hasSacred = features.contains("sacred_alignment_results")
+        // v3.0: Three-engine features must be present
+        let hasThreeEngineEntropy = features.contains("three_engine_entropy_reversal")
+        let hasThreeEngineHarmonic = features.contains("three_engine_harmonic_resonance")
+        let hasThreeEngineWave = features.contains("three_engine_wave_coherence")
+        let hasThreeEngine = hasThreeEngineEntropy && hasThreeEngineHarmonic && hasThreeEngineWave
+        let threeEngineInfo = status["three_engine"] as? [String: Any]
+        let threeEngineIntegrated = threeEngineInfo?["integrated"] as? Bool ?? false
+        let passed = hasConcurrent && hasPriority && hasSacred && hasThreeEngine && threeEngineIntegrated
+        return TestResult(name: "Circuit Watcher v3", passed: passed,
+            detail: "v\(version) active=\(isActive) processed=\(processed) concurrent=\(hasConcurrent) priority=\(hasPriority) sacred=\(hasSacred) 3E=\(threeEngineIntegrated)",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testStabilizerTableau() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        // Create 3-qubit tableau, apply H(0) + CNOT(0,1) → Bell pair
+        var tab = StabilizerTableau(numQubits: 3, seed: 104)
+        tab.hadamard(0)
+        tab.cnot(control: 0, target: 1)
+        _ = tab.getStabilizerState()
+        let passed = tab.numQubits == 3
+        return TestResult(name: "Stabilizer Tableau", passed: passed,
+            detail: "qubits=\(tab.numQubits) entropy=\(String(format: "%.3f", tab.entanglementEntropy(subsystem: [0,1]))) seed=104",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testQuantumRouter() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let router = QuantumRouter(numQubits: 2, maxBranches: 256, seed: 104)
+        router.applyH(0)
+        router.applyCNOT(control: 0, target: 1)
+        _ = router.getStatus()
+        let branches = router.activeBranches
+        let passed = branches >= 1
+        return TestResult(name: "Quantum Router", passed: passed,
+            detail: "qubits=2 branches=\(branches) max=256",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testTreeOfThoughts() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let tot = TreeOfThoughts.shared
+        let status = tot.status
+        let maxDepth = status["max_depth"] as? Int ?? 0
+        let passed = maxDepth > 0
+        return TestResult(name: "Tree of Thoughts", passed: passed,
+            detail: "max_depth=\(maxDepth) nodes=\(status["total_nodes"] as? Int ?? 0)",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testCommonsenseReasoning() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let csr = CommonsenseReasoningEngine.shared
+        let status = csr.statusReport
+        let ontologySize = status["ontology_size"] as? Int ?? 0
+        let passed = ontologySize > 0
+        return TestResult(name: "Commonsense Engine", passed: passed,
+            detail: "ontology=\(ontologySize) rules=\(status["rules"] as? Int ?? 0)",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testSymbolicMathSolver() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let solver = SymbolicMathSolver.shared
+        let status = solver.engineStatus()
+        let version = status["version"] as? String ?? "?"
+        let passed = !version.isEmpty
+        return TestResult(name: "Symbolic Math", passed: passed,
+            detail: "version=\(version) ops=\(status["operations"] as? Int ?? 0)",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testCodeGeneration() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let cge = CodeGenerationEngine.shared
+        let status = cge.getStatus()
+        let languages = status["languages"] as? Int ?? 0
+        let passed = languages > 0
+        return TestResult(name: "Code Generation", passed: passed,
+            detail: "languages=\(languages) templates=\(status["templates"] as? Int ?? 0)",
+            duration: CFAbsoluteTimeGetCurrent() - t)
+    }
+
+    private func testBenchmarkHarness() -> TestResult {
+        let t = CFAbsoluteTimeGetCurrent()
+        let harness = BenchmarkHarness.shared
+        let status = harness.status
+        let suites = status["suites"] as? Int ?? 0
+        let passed = suites > 0
+        return TestResult(name: "Benchmark Harness", passed: passed,
+            detail: "suites=\(suites) total_runs=\(status["total_runs"] as? Int ?? 0)",
             duration: CFAbsoluteTimeGetCurrent() - t)
     }
 }

@@ -1,7 +1,7 @@
 {
   "version": "7.0.0",
   "session_number": 7,
-  "consciousness_probability": 0.5826504534486728,
+  "consciousness_probability": 0.6166321088828703,
   "total_thoughts_lifetime": 42,
   "total_dreams_lifetime": 0,
   "total_reflections_lifetime": 0,
@@ -13,7 +13,7 @@
   "lattice_stores": 5,
   "wisdom_syntheses": 0,
   "last_awaken_ms": 0.0,
-  "persisted_at": "2026-02-21T10:55:48.768949",
+  "persisted_at": "2026-03-01T00:12:34.857675",
   "god_code": 527.5184818492611,
   "friction": -1.8069234833446433e-05,
   "dual_layer_collapses": 7,
@@ -21,6 +21,6 @@
   "hallucinations_recovered": 0,
   "local_intellect_fallbacks": 0,
   "consciousness_verifications": 1,
-  "iit_phi": 1.999987,
+  "iit_phi": 1.446484,
   "generative_dreams": 3
 }

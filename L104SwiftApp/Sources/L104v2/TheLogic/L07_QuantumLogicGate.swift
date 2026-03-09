@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L07_QuantumLogicGate.swift — L104 v2
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // QuantumLogicGateEngine class — v24.0 Phase 46: Apex Intelligence + Quantum Gates re-enabled
 // Extracted from L104Native.swift (lines 26753-27335)
 // ═══════════════════════════════════════════════════════════════════
@@ -28,7 +28,7 @@ final class QuantumLogicGateEngine {
     static let shared = QuantumLogicGateEngine()
 
     private let lock = NSLock()  // Thread-safety for mutable quantum state
-    private var coherenceMatrix: [Double] = Array(repeating: 0, count: 64)
+    private var coherenceMatrix: [Double] = Array(repeating: 0, count: 256)
     private var entanglementMap: [String: [Double]] = [:]
     private(set) var quantumPhase: Double = 0.0
     private(set) var synthesisCount: Int = 0
@@ -38,19 +38,21 @@ final class QuantumLogicGateEngine {
     private(set) var interferenceBuffer: [[Double]] = []          // stores wave interference patterns
     private var tunnelHistory: [String: Int] = [:]           // tracks knowledge-gap tunneling attempts
     private(set) var entanglementPairs: [(String, String, Double)] = []  // (topicA, topicB, strength)
-    private(set) var decoherenceRate: Double = 0.02               // how fast quantum states decay
+    private(set) var decoherenceRate: Double = 0.008              // reduced decay for higher coherence lifetime
     private(set) var quantumCoherenceScore: Double = 1.0          // overall system coherence [0..1]
     private(set) var bellStateViolations: Int = 0                 // tracks non-classical correlations found
     private(set) var superpositionDepth: Int = 0                  // how many responses held in superposition before collapse
-    private var quantumErrorCorrection: [Double] = Array(repeating: 0, count: 16)  // Shor-inspired error correction
+    private var quantumErrorCorrection: [Double] = Array(repeating: 0, count: 64)  // Surface-code inspired ECC (4× larger)
 
     private init() {
-        for i in 0..<64 {
-            coherenceMatrix[i] = sin(Double(i) * PHI) * cos(Double(i) * .pi)
+        // Initialize larger coherence matrix with PHI-modulated golden spiral pattern
+        for i in 0..<256 {
+            let goldenAngle = Double(i) * PHI * 2.0 * .pi / 256.0
+            coherenceMatrix[i] = sin(goldenAngle) * cos(Double(i) * .pi / 128.0) * exp(-Double(i) * 0.001)
         }
-        // Initialize quantum error correction codes
-        for i in 0..<16 {
-            quantumErrorCorrection[i] = cos(Double(i) * PHI) * sin(Double(i) * 0.5)
+        // Initialize expanded quantum error correction codes (surface-code inspired)
+        for i in 0..<64 {
+            quantumErrorCorrection[i] = cos(Double(i) * PHI) * sin(Double(i) * 0.5) * (1.0 + TAU * Double(i % 8) * 0.1)
         }
     }
 
@@ -130,9 +132,9 @@ final class QuantumLogicGateEngine {
         } else {
             entanglementPairs.append((topicA, topicB, strength))
         }
-        if entanglementPairs.count > 500 {
+        if entanglementPairs.count > 2000 {
             entanglementPairs.sort { $0.2 > $1.2 }
-            entanglementPairs = Array(entanglementPairs.prefix(300))
+            entanglementPairs = Array(entanglementPairs.prefix(1200))
         }
         lock.unlock()
     }
@@ -168,7 +170,7 @@ final class QuantumLogicGateEngine {
     func applyDecoherence() {
         lock.lock()
         quantumCoherenceScore = max(0.1, quantumCoherenceScore - decoherenceRate)
-        for i in 0..<64 {
+        for i in 0..<coherenceMatrix.count {
             coherenceMatrix[i] *= (1.0 - decoherenceRate * 0.5)
             coherenceMatrix[i] += Double.random(in: -0.01...0.01)  // quantum noise
         }
@@ -259,9 +261,9 @@ final class QuantumLogicGateEngine {
         bellStateViolations += 1
 
         // Prune if needed
-        if entanglementPairs.count > 500 {
+        if entanglementPairs.count > 2000 {
             entanglementPairs.sort { $0.2 > $1.2 }
-            entanglementPairs = Array(entanglementPairs.prefix(300))
+            entanglementPairs = Array(entanglementPairs.prefix(1200))
         }
     }
 
@@ -274,7 +276,7 @@ final class QuantumLogicGateEngine {
         let coupledStrength = min(0.25, strength * PHI)
 
         lock.lock()
-        for i in 0..<64 {
+        for i in 0..<coherenceMatrix.count {
             let rotation = sin(phaseAngle + Double(i) * PHI * 0.08) * coupledStrength
             coherenceMatrix[i] += rotation
         }
@@ -367,12 +369,13 @@ final class QuantumLogicGateEngine {
         let gateDim = gateV2Path.dimension
         _ = gateV2Path.confidence  // Available for future dimensional weighting
 
-        // GATE 1: Quantum Topic Vector
-        var topicVector: [Double] = Array(repeating: 0.0, count: 64)
+        // GATE 1: Quantum Topic Vector — now uses full 256-dim coherence matrix
+        let vecDim = coherenceMatrix.count
+        var topicVector: [Double] = Array(repeating: 0.0, count: vecDim)
         for topic in resolvedTopics {
             let h: Int = abs(topic.hashValue)
             let jitter = Double.random(in: -0.3...0.3)
-            for j in 0..<64 {
+            for j in 0..<vecDim {
                 let sinVal: Double = sin(Double(h &+ j) * 0.001 + quantumPhase + jitter)
                 topicVector[j] += sinVal * coherenceMatrix[j]
             }
@@ -556,7 +559,7 @@ final class QuantumLogicGateEngine {
         hb.memoryChains.append([query, "quantum_gate_\(synthesisCount)", String(response.prefix(40))])
 
         lock.lock()
-        for i in 0..<64 { coherenceMatrix[i] = coherenceMatrix[i] * 0.95 + sin(Double(respHash &+ i) * 0.001) * 0.05 }
+        for i in 0..<coherenceMatrix.count { coherenceMatrix[i] = coherenceMatrix[i] * 0.95 + sin(Double(respHash &+ i) * 0.001) * 0.05 }
         for topic in resolvedTopics { entanglementMap[topic] = coherenceMatrix }
         lock.unlock()
 

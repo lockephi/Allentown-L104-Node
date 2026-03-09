@@ -1,9 +1,9 @@
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.746859
+UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.392669
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
@@ -73,13 +73,21 @@ except ImportError:
 
 # Qiskit imports for REAL quantum computing
 try:
-    from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
-    from qiskit.circuit.library import GroverOperator, MCMT, ZGate
-    from qiskit_aer import AerSimulator
-    from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+QuantumRegister = None  # Registers handled by GateCircuit qubit ranges
+ClassicalRegister = None
+    GroverOperator = None  # Use l104_quantum_gate_engine orchestrator
+MCMT = None
+ZGate = None
+    AerSimulator = None  # Use l104_qiskit_utils.L104AerBackend (sovereign local)
+    QiskitRuntimeService = None  # IBM runtime removed — sovereign only
+Session = None
+SamplerV2 = None
+    generate_preset_pass_manager = None  # Use l104_quantum_gate_engine.GateCompiler
     QISKIT_AVAILABLE = True
 except ImportError:
     QISKIT_AVAILABLE = False
+    # Define stub types for when Qiskit is not available
     QuantumCircuit = type('QuantumCircuit', (), {})
     QuantumRegister = type('QuantumRegister', (), {})
     ClassicalRegister = type('ClassicalRegister', (), {})
@@ -87,22 +95,11 @@ except ImportError:
     MCMT = type('MCMT', (), {})
     ZGate = type('ZGate', (), {})
     AerSimulator = type('AerSimulator', (), {})
+    QiskitRuntimeService = type('QiskitRuntimeService', (), {})
+    Session = type('Session', (), {})
+    SamplerV2 = type('SamplerV2', (), {})
     generate_preset_pass_manager = None
     print("[QUANTUM] WARNING: Qiskit not available - quantum mining disabled")
-# IBM runtime removed — stubs for backward compat
-QiskitRuntimeService = type('QiskitRuntimeService', (), {})
-Session = type('Session', (), {})
-SamplerV2 = type('SamplerV2', (), {})
-
-# ═══ L104 QUANTUM RUNTIME BRIDGE — Real IBM QPU Execution ═══
-_QUANTUM_RUNTIME_AVAILABLE = False
-_quantum_runtime = None
-try:
-    from l104_quantum_runtime import get_runtime as _get_quantum_runtime, ExecutionMode
-    _quantum_runtime = _get_quantum_runtime()
-    _QUANTUM_RUNTIME_AVAILABLE = True
-except Exception:
-    pass
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -422,8 +419,7 @@ class QuantumBackend(Enum):
     IBM_REAL = "ibm_quantum"           # Real IBM quantum hardware
     IBM_SIMULATOR = "ibm_simulator"     # IBM cloud simulator
     LOCAL_SIMULATOR = "local_aer"       # Local Qiskit Aer simulator
-    RUNTIME_BRIDGE = "l104_runtime"     # L104 quantum runtime bridge (real QPU)
-    NONE = "classical_approximation"    # No quantum available
+    NONE = "classical_fallback"         # No quantum available
 
 
 @dataclass
@@ -455,14 +451,13 @@ class QuantumHardwareManager:
             self._setup_local_simulator()
 
     def _initialize_quantum_connection(self) -> None:
-        """Initialize connection to IBM Quantum Platform (2025+ API)."""
+        """Initialize connection to IBM Quantum."""
         token = os.environ.get('IBMQ_TOKEN') or os.environ.get('IBM_QUANTUM_TOKEN')
-        channel = os.environ.get('IBM_QUANTUM_CHANNEL', 'ibm_cloud')
 
         if token and self.prefer_real:
             try:
                 self.service = QiskitRuntimeService(
-                    channel=channel,
+                    channel="ibm_quantum",
                     token=token
                 )
 
@@ -495,7 +490,7 @@ class QuantumHardwareManager:
         self._setup_local_simulator()
 
     def _setup_local_simulator(self) -> None:
-        """Setup local Aer engine as QPU-unavailable fallback."""
+        """Setup local Aer simulator as fallback."""
         if QISKIT_AVAILABLE:
             self.backend = AerSimulator()
             self.status = QuantumHardwareStatus(
@@ -507,7 +502,7 @@ class QuantumHardwareManager:
                 error_rate=0.0,
                 queue_depth=0
             )
-            print("[QUANTUM] Using local Aer engine (set IBMQ_TOKEN for real IBM QPU hardware)")
+            print("[QUANTUM] Using local Aer simulator (set IBMQ_TOKEN for real hardware)")
         else:
             self.status = QuantumHardwareStatus(
                 backend=QuantumBackend.NONE,
@@ -1144,7 +1139,7 @@ class QuantumMiningEngine:
                 # On real hardware, use hybrid for better noise tolerance
                 strategy = "hybrid"
             else:
-                # On local engine, use Grover for speed
+                # On simulator, use Grover for speed
                 strategy = "grover"
 
         print(f"[QUANTUM] Mining strategy: {strategy}")
@@ -1987,7 +1982,7 @@ class VQEMiningOptimizer:
 
         Uses L104-inspired structure with PHI-based rotation angles.
         """
-        from qiskit.circuit import Parameter
+        from l104_quantum_gate_engine.quantum_info import Parameter
 
         qc = QuantumCircuit(n_qubits, name='L104_Ansatz')
         params = []
@@ -2346,7 +2341,7 @@ class QAOAMiningOptimizer:
         if not QISKIT_AVAILABLE:
             return None
 
-        from qiskit import QuantumCircuit
+        from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
 
         qc = QuantumCircuit(n_qubits, n_qubits)
 
@@ -2485,7 +2480,7 @@ class QuantumMLDifficultyPredictor:
         if not QISKIT_AVAILABLE:
             return None
 
-        from qiskit import QuantumCircuit
+        from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
 
         qc = QuantumCircuit(n_qubits, 1)
 
@@ -2696,7 +2691,7 @@ class QuantumErrorCorrectedMiner:
         if not QISKIT_AVAILABLE:
             return None
 
-        from qiskit import QuantumCircuit
+        from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
 
         n_physical = n_logical_qubits * self.code_distance
         n_ancilla = n_logical_qubits  # Syndrome measurement ancillas
@@ -2825,20 +2820,19 @@ class QuantumErrorCorrectedMiner:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# QUANTUM ANNEALING ENGINE FOR L104 MINING
+# QUANTUM ANNEALING SIMULATION FOR L104 MINING
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class QuantumAnnealingMiner:
     """
-    Real quantum annealing for mining optimization via IBM QPU bridge.
+    Simulates quantum annealing for mining optimization.
 
     Quantum annealing maps the mining problem to an Ising model:
     - Spins represent nonce bits
     - Interactions encode L104 resonance preferences
     - Ground state = optimal nonce
 
-    This uses gate-based quantum circuits executed on real IBM QPU hardware
-    via l104_quantum_runtime bridge.
+    This uses gate-based simulation of annealing dynamics.
     """
 
     def __init__(self, hw_manager: 'QuantumHardwareManager'):
@@ -2847,14 +2841,14 @@ class QuantumAnnealingMiner:
 
     def build_annealing_circuit(self, n_qubits: int, n_steps: int) -> 'QuantumCircuit':
         """
-        Build circuit for quantum annealing.
+        Build circuit simulating quantum annealing.
 
         Uses Trotterized evolution from transverse field to Ising Hamiltonian.
         """
         if not QISKIT_AVAILABLE:
             return None
 
-        from qiskit import QuantumCircuit
+        from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
 
         qc = QuantumCircuit(n_qubits, n_qubits)
 

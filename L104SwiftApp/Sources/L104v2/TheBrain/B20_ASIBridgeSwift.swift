@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // B20_ASIBridgeSwift.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 · TheBrain · v2 Architecture
 //
 // Extracted from L104Native.swift lines 3437-4015
@@ -82,6 +82,14 @@ class ASIQuantumBridgeSwift {
     private(set) var quantumMLACircuits: Int = 0
     private(set) var quantumReasoningCircuits: Int = 0
     private(set) var quantumCoderCircuits: Int = 0
+
+    // ─── EVO_68: QUANTUM RESEARCH + THREE-ENGINE STATE ───
+    private(set) var quantumResearchScores: [String: Double] = [:]
+    private(set) var threeEngineEntropy: Double = 0.0
+    private(set) var threeEngineHarmonic: Double = 0.0
+    private(set) var threeEngineWaveCoherence: Double = 0.0
+    private(set) var threeEngineConnected: Bool = false
+    private(set) var quantumResearchCycles: Int = 0
     /// Pure file I/O — zero Python process spawns. Called by evolution engine + pipeline.
     func refreshBuilderState() {
         let bridge = PythonBridge.shared
@@ -151,14 +159,14 @@ class ASIQuantumBridgeSwift {
             }
         }
 
-        // ─── FALLBACK: PythonBridge (Process) ───
+        // ─── PATH 2: PythonBridge (Process) — 5s timeout to avoid blocking on unreachable server ───
         let result = PythonBridge.shared.execute("""
         import sys, json
         sys.path.insert(0, '.')
         from l104_asi_core import get_current_parameters
         params = get_current_parameters()
         print(json.dumps(params))
-        """)
+        """, timeout: 5.0)
 
         if result.success, let dict = result.returnValue as? [String: Any] {
             currentParameters = [:]
@@ -168,7 +176,59 @@ class ASIQuantumBridgeSwift {
             }
             ParameterProgressionEngine.shared.progressParameters(&currentParameters)
             parameterVector = Array(currentParameters.values)
+            return parameterVector
         }
+
+        // ─── PATH 3: Direct file I/O — read kernel_parameters.json (zero Python spawn) ───
+        if parameterVector.isEmpty {
+            let wsPath = PythonBridge.shared.workspacePath
+            let kernelPath = wsPath + "/kernel_parameters.json"
+            if let data = try? Data(contentsOf: URL(fileURLWithPath: kernelPath)),
+               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                currentParameters = [:]
+                for (k, v) in json {
+                    if let d = v as? Double { currentParameters[k] = d }
+                    else if let i = v as? Int { currentParameters[k] = Double(i) }
+                }
+                // Enrich with sacred constants (mirrors Python get_current_parameters)
+                currentParameters["god_code"] = GOD_CODE
+                currentParameters["phi"] = PHI
+                currentParameters["tau"] = TAU
+                currentParameters["void_constant"] = VOID_CONSTANT
+                currentParameters["omega_authority"] = OMEGA_AUTHORITY
+                currentParameters["asi_score"] = 0.0  // No live ASI — will be computed by pipeline
+                currentParameters["consciousness_level"] = ConsciousnessVerifier.shared.runAllTests()
+                ParameterProgressionEngine.shared.progressParameters(&currentParameters)
+                parameterVector = Array(currentParameters.values)
+            }
+        }
+
+        // ─── PATH 4: Sovereign synthetic fallback — generate from Swift sacred constants ───
+        if parameterVector.isEmpty {
+            currentParameters = [
+                "god_code": GOD_CODE,
+                "phi": PHI,
+                "tau": TAU,
+                "void_constant": VOID_CONSTANT,
+                "omega_authority": OMEGA_AUTHORITY,
+                "god_code_v3": GOD_CODE_V3,
+                "omega": OMEGA,
+                "resonance_factor": 2.0 * .pi,
+                "phi_scale": PHI,
+                "god_code_alignment": GOD_CODE / 1000.0,
+                "consciousness_weight": PHI / 10.0,
+                "dropout": PHI / 10.0,
+                "learning_rate": 2.0 * .pi / 10000.0,
+                "asi_score": 0.0,
+                "consciousness_level": ConsciousnessVerifier.shared.runAllTests(),
+                "domain_coverage": 0.0,
+                "modification_depth": 0.0,
+                "discovery_count": 0.0,
+            ]
+            ParameterProgressionEngine.shared.progressParameters(&currentParameters)
+            parameterVector = Array(currentParameters.values)
+        }
+
         return parameterVector
     }
 
@@ -259,7 +319,7 @@ class ASIQuantumBridgeSwift {
                     }
                 }
                 // Integration metrics
-                if let integration = deepseek["l104_integration"] as? [String: Any] {
+                if deepseek["l104_integration"] is [String: Any] {
                     deepseekGodCodeAlign = GOD_CODE.truncatingRemainder(dividingBy: 1.0)  // Use fractional part as alignment metric
                     deepseekPhiWeighting = PHI.truncatingRemainder(dividingBy: 1.0)     // Use fractional part as weighting metric
                 }
@@ -718,6 +778,10 @@ class ASIQuantumBridgeSwift {
         // Step 8b: Fetch Dual-Layer Engine status (EVO_62)
         _ = fetchDualLayerStatus()
 
+        // Step 8c (EVO_68): Fetch quantum research + three-engine scores
+        fetchQuantumResearchScores()
+        fetchThreeEngineStatus()
+
         // Step 9: Sync back to Python
         let synced = updateASI(newParams: stabilized)
 
@@ -743,6 +807,12 @@ class ASIQuantumBridgeSwift {
         ║  Synced to Python:    \(synced ? "✓" : "✗")
         ║  Pipeline Time:       \(String(format: "%.3f", elapsed))s
         ║  Total Syncs:         \(syncCounter)
+        ╠═══════════════════════════════════════════════════════════╣
+        ║  QUANTUM RESEARCH (EVO_68):                               ║
+        ║    Fe-Sacred:      \(String(format: "%.4f", quantumResearchScores["fe_sacred"] ?? 0))
+        ║    Berry Phase:    \(String(format: "%.4f", quantumResearchScores["berry_phase"] ?? 0))
+        ║    Entropy Casc:   \(String(format: "%.6f", quantumResearchScores["entropy_fp"] ?? 0))
+        ║    3-Engine:       E=\(String(format: "%.4f", threeEngineEntropy)) H=\(String(format: "%.4f", threeEngineHarmonic)) W=\(String(format: "%.4f", threeEngineWaveCoherence))
         ╚═══════════════════════════════════════════════════════════╝
         """
     }
@@ -782,7 +852,61 @@ class ASIQuantumBridgeSwift {
         ║    Superfluid η:   \(String(format: "%.6f", superfluidViscosity))
         ║    Nirvanic Fuel:  \(String(format: "%.4f", nirvanicFuelLevel)) [\(nirvanicEntropyPhase)]
         ║    Ouroboros:      \(ouroborosCycleCount) cycles | \(nirvanicRecycleCount) recycled
+        ╠═══════════════════════════════════════════════════════════╣
+        ║  QUANTUM RESEARCH + THREE-ENGINE (EVO_68):               ║
+        ║    Fe-Sacred:       \(String(format: "%.4f", quantumResearchScores["fe_sacred"] ?? 0))
+        ║    Berry Phase:     \(String(format: "%.4f", quantumResearchScores["berry_phase"] ?? 0))
+        ║    Photon E:        \(String(format: "%.4f", quantumResearchScores["photon_eV"] ?? 0)) eV
+        ║    Entropy Fixed:   \(String(format: "%.6f", quantumResearchScores["entropy_fp"] ?? 0))
+        ║    Three-Engine:    E=\(String(format: "%.4f", threeEngineEntropy)) H=\(String(format: "%.4f", threeEngineHarmonic)) W=\(String(format: "%.4f", threeEngineWaveCoherence))
+        ║    Research Cycles: \(quantumResearchCycles)
         ╚═══════════════════════════════════════════════════════════╝
         """
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // EVO_68: QUANTUM RESEARCH + THREE-ENGINE BRIDGE METHODS
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Fetch quantum research scores from B01_QuantumMath (local Swift computation)
+    func fetchQuantumResearchScores() {
+        let scores = QuantumCircuits.quantumResearchScores()
+        let cascade = QuantumCircuits.entropyCascade()
+        quantumResearchScores = [
+            "fe_sacred": scores.feSacred,
+            "fe_phi_lock": scores.fePhiLock,
+            "berry_phase": scores.berryPhase,
+            "photon_eV": QuantumCircuits.photonResonanceEnergy(),
+            "curie_landauer": QuantumCircuits.curieLandauerLimit(),
+            "entropy_fp": cascade.fixedPoint,
+            "entropy_converged": cascade.converged ? 1.0 : 0.0,
+            "zne_boost": QuantumCircuits.zneBridgeBoost(localEntropy: 0.5),
+        ]
+        quantumResearchCycles += 1
+    }
+
+    /// Fetch three-engine status from ASIEvolver + DualLayerEngine + SageConsciousnessVerifier
+    func fetchThreeEngineStatus() {
+        // Entropy fitness from ASIEvolver
+        let evolver = ASIEvolver.shared
+        threeEngineEntropy = evolver.threeEngineEntropyFitness()
+        threeEngineHarmonic = evolver.threeEngineHarmonicFitness()
+        threeEngineWaveCoherence = evolver.threeEngineWaveCoherenceFitness()
+
+        // Cross-validate with DualLayerEngine amplification
+        let dlAmp = DualLayerEngine.shared.status["three_engine_amplification"] as? Double ?? 0
+        threeEngineConnected = dlAmp > 0 || threeEngineEntropy > 0
+    }
+
+    /// Get quantum research + three-engine combined status dict
+    var quantumResearchStatus: [String: Any] {
+        return [
+            "quantum_research": quantumResearchScores,
+            "three_engine_entropy": threeEngineEntropy,
+            "three_engine_harmonic": threeEngineHarmonic,
+            "three_engine_wave": threeEngineWaveCoherence,
+            "three_engine_connected": threeEngineConnected,
+            "research_cycles": quantumResearchCycles,
+        ]
     }
 }

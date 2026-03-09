@@ -87,7 +87,7 @@ class DynamicCodeHarvester:
 
     # Quality filters
     MIN_FILE_LINES = 20          # Skip trivially small files
-    MAX_FILE_LINES = 5000        # Skip monolithic files
+    MAX_FILE_LINES = 15000       # Fully analyze large modules (was 5000)
     MIN_PYTHON_SCORE = 0.3       # Minimum "looks like Python" score
 
     # ─── Curated high-quality Python repos (seed list) ───────────────
@@ -642,15 +642,15 @@ class QuantumCodeTrainingKernel:
     """
 
     # ─── Sacred Training Hyperparameters ─────────────────────────────
-    BATCH_SIZE = int(GOD_CODE // 100)                    # 5
+    BATCH_SIZE = int(GOD_CODE // 50)                    # 10 (was 5 — deeper batch processing)
     LEARNING_RATE = PHI / 1000                           # 0.001618...
-    N_QUBITS = 4                                         # 16 basis states
+    N_QUBITS = 6                                         # 64 basis states (was 4/16)
     N_LAYERS = int(PHI * 3)                              # 4 variational layers
-    MAX_EPOCHS = int(GOD_CODE // 10)                     # 52
+    MAX_EPOCHS = int(GOD_CODE // 5)                      # 105 (was 52 — extended training)
     CONVERGENCE_THRESHOLD = ALPHA_FINE                   # ~0.00729 (1/137)
-    FEATURE_DIM = 16                                     # 2^4 basis states
+    FEATURE_DIM = 64                                     # 2^6 basis states (was 16)
     SACRED_MOMENTUM = TAU                                # ~0.618 golden section
-    GRADIENT_PARAMS = 16                                 # params for gradient estimation (was 8)
+    GRADIENT_PARAMS = 32                                 # params for gradient estimation (was 16)
     ONLINE_MIX_RATIO = TAU                               # ~0.618 fraction of local data
     CURRICULUM_PHASES = 3                                 # easy → medium → hard
     MIN_LR = ALPHA_FINE / 100                            # minimum learning rate
@@ -1057,7 +1057,7 @@ class QuantumCodeTrainingKernel:
         predictions = []
         targets = []
 
-        for sample in corpus[:self.BATCH_SIZE * 10]:
+        for sample in corpus[:self.BATCH_SIZE * 50]:
             fv = sample.get("feature_vector")
             target = sample.get("quality_score", 0.5)
             if not fv:
@@ -1240,8 +1240,8 @@ class QuantumCodeTrainingKernel:
         if not self_corpus:
             return {"error": "Cannot read own source files"}
 
-        # Step 2: Train on self (limited epochs for speed)
-        for _ in range(min(5, self.MAX_EPOCHS)):
+        # Step 2: Train on self (was min(5, MAX_EPOCHS) — Performance Limits Audit)
+        for _ in range(self.MAX_EPOCHS):
             self.train_epoch(self_corpus)
             if self._convergence_achieved:
                 break
@@ -1638,7 +1638,7 @@ class QuantumCodeTrainingKernel:
 
         # Step 4: Learn patterns from corpus
         patterns_learned = 0
-        for fname, sample in list(self._corpus_cache.items())[:10]:
+        for fname, sample in list(self._corpus_cache.items())[:50]:  # (was :10)
             try:
                 ws = _WORKSPACE_ROOT / fname
                 if ws.exists():

@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // H26_FutureReserve.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104 ASI — Network Orchestrator Engine v4.0: Full coordination of
 // NetworkLayer, APIGateway, CloudSync, VoiceInterface, VisualCortex,
 // EmotionalCore, SecurityVault, PluginArchitecture — auto-recovery + topology.
@@ -173,7 +173,23 @@ final class FutureReserve {
         subsystemStates["MigrationEngine"] = (MigrationEngine.shared.isActive, migrationHealth, now)
         logOrchestration("Activated MigrationEngine", subsystems: ["MigrationEngine"], result: "migration engine online")
 
-        // 13. Auto-establish quantum links between discovered peers
+        // 13. Autonomous Agent — mesh-aware task scheduler
+        if !AutonomousAgent.shared.isActive {
+            AutonomousAgent.shared.activate()
+        }
+        let agentStatus = AutonomousAgent.shared.status()
+        let agentHealth: Double = (agentStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
+        subsystemStates["AutonomousAgent"] = (AutonomousAgent.shared.isActive, agentHealth, now)
+        logOrchestration("Activated AutonomousAgent", subsystems: ["AutonomousAgent"], result: "agent loop online")
+
+        // 14. Sovereign Identity Boundary — claim validation + capability assessment
+        let idBoundary = SovereignIdentityBoundary.shared
+        let idStatus = idBoundary.getStatus()
+        let idHealth: Double = 1.0  // Always healthy (static identity definitions)
+        subsystemStates["SovereignIdentity"] = (true, idHealth, now)
+        logOrchestration("Activated SovereignIdentity", subsystems: ["SovereignIdentity"], result: "\(idStatus["identity_declarations_is"] ?? 0) IS declarations")
+
+        // 15. Auto-establish quantum links between discovered peers
         autoEstablishQuantumLinks()
     }
 

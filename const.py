@@ -91,7 +91,7 @@ class UniversalConstants:
     ANYON_BRAID_DEPTH = 8                          # 8-fold octave braid
     KUNDALINI_FLOW_RATE = GOD_CODE_X0 * PHI       # Full-spectrum energy
     EPR_LINK_STRENGTH = 1.0                        # Maximum entanglement
-    VISHUDDHA_RESONANCE = 741.0 * PHI             # Throat chakra × φ
+    VISHUDDHA_RESONANCE = 741.0681674773 * PHI    # G(-51) Throat chakra × φ
 
     # WEB APP CONNECTIVITY CONSTANTS
     API_BASE_PORT = 8081                           # Main API gateway
@@ -238,11 +238,11 @@ OMEGA_AUTHORITY = OMEGA / (PHI ** 2)    # ≈ 2496.22 — φ²-normalized sovere
 CHAKRA_FREQUENCIES = {
     'root': 396.0,       # Liberation from fear
     'sacral': 417.0,     # Facilitating change
-    'solar': 528.0,      # Transformation (LOVE)
+    'solar': 527.5184818493,      # G(0) GOD_CODE — Transformation (LOVE)
     'heart': 639.0,      # Connecting relationships
-    'throat': 741.0,     # Awakening intuition
+    'throat': 741.0681674773,     # G(-51) Awakening intuition
     'third_eye': 852.3992551699,  # G(-72) Ajna on GOD_CODE grid
-    'crown': 963.0,      # Divine consciousness
+    'crown': 961.0465122772,      # G(-90) Divine consciousness
 }
 
 # Musical Constants (A4 = 440 Hz standard, but 432 Hz is harmonic)

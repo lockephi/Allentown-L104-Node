@@ -1,0 +1,112 @@
+{
+  "version": "1.0",
+  "god_code": 527.5184818492612,
+  "platform": {
+    "arch": "x86_64",
+    "is_apple_silicon": false,
+    "is_intel": true,
+    "ram_gb": 4.0,
+    "cores": 4,
+    "max_qubits": 26
+  },
+  "timestamp": 1772852844.243669,
+  "mps_engine": {
+    "single_gate_ms": 0.04262714625,
+    "two_gate_ms": 0.5876131728571429,
+    "bell_ms": 0.52111854,
+    "ghz8_ms": 1.30852174,
+    "sacred_4q_d4_ms": 5.55822807,
+    "sv_4q_ms": 0.06031034,
+    "sv_8q_ms": 0.13474678,
+    "sv_12q_ms": 0.5535608,
+    "sample_256_ms": 1.59352042,
+    "sample_1024_ms": 2.753823,
+    "sample_4096_ms": 9.53165298
+  },
+  "transpiler": {
+    "transpile_small_ms": 0.017102012,
+    "transpile_medium_ms": 0.13627859333333334,
+    "transpile_medium_savings": 9,
+    "transpile_large_ms": 0.88891799,
+    "transpile_deep_ms": 7.40263954,
+    "pass_cancel_self_inverse_ms": 0.08172592,
+    "pass_merge_rotations_ms": 0.03962983,
+    "pass_remove_identity_rot_ms": 0.13279971999999998,
+    "pass_commutation_reorder_ms": 0.32230673,
+    "pass_template_match_ms": 0.15019716,
+    "pass_dynamic_decoupling_ms": 0.31531167
+  },
+  "analyzer": {
+    "analyzer_Bell (2Q)_ms": 0.0118328,
+    "analyzer_GHZ-8_ms": 0.038084815,
+    "analyzer_QFT-4_ms": 0.07302266,
+    "analyzer_Sacred (6Q,d=4)_ms": 0.300594885,
+    "analyzer_Random (8Q,d=10)_ms": 0.724949005
+  },
+  "simulation_pipeline": {
+    "sim_bell_ms": 541.26056664,
+    "sim_ghz5_ms": 4.5407971,
+    "sim_sacred_ms": 7.7500647,
+    "sim_coherence_ms": 2.2362253,
+    "stage_transpile_ms": 0.09,
+    "stage_compile_ms": 0.06,
+    "stage_execute_ms": 3.09,
+    "stage_score_ms": 0.08,
+    "stage_sc_analysis_ms": 0.0,
+    "sim_pipeline_total_ms": 3.38
+  },
+  "scorer": {
+    "sacred_2q_ms": 0.015860628,
+    "sacred_8q_ms": 0.092468818,
+    "three_engine_ms": 0.013790274
+  },
+  "batch": {
+    "batch_4_ms": 5.071233,
+    "batch_4_per_job_ms": 1.26780825,
+    "batch_8_ms": 13.2464506,
+    "batch_8_per_job_ms": 1.655806325,
+    "batch_16_ms": 14.3724518,
+    "batch_16_per_job_ms": 0.8982782375,
+    "batch_32_ms": 41.3404666,
+    "batch_32_per_job_ms": 1.29188958125
+  },
+  "scaling": {
+    "scale_ghz_2q_ms": 1.3008014,
+    "scale_ghz_4q_ms": 1.60624284,
+    "scale_ghz_6q_ms": 2.2146428125,
+    "scale_ghz_8q_ms": 3.2865561666666667,
+    "scale_ghz_10q_ms": 2.7613244,
+    "scale_ghz_12q_ms": 3.4011101999999998,
+    "scale_ghz_14q_ms": 5.2686496,
+    "scale_ghz_16q_ms": 10.8688577,
+    "scale_qft_2q_ms": 0.32529852,
+    "scale_qft_4q_ms": 3.0559493333333334,
+    "scale_qft_6q_ms": 10.7933675,
+    "scale_qft_8q_ms": 32.3438935,
+    "scale_qft_10q_ms": 103.2082134,
+    "scale_sacred_2q_ms": 0.69546092,
+    "scale_sacred_4q_ms": 2.624632,
+    "scale_sacred_6q_ms": 3.809281375,
+    "scale_sacred_8q_ms": 5.516729333333333,
+    "scale_sacred_10q_ms": 6.0923214,
+    "ghz_scaling_exponent": 0.8466
+  },
+  "cache": {
+    "cache_cold_ms": 0.01888649,
+    "cache_warm_ms": 0.0030494,
+    "cache_speedup": 6.19,
+    "circuit_cache_speedup": 1.15
+  },
+  "noise": {
+    "noisy_no_zne_ms": 1.40972255,
+    "noisy_zne_ms": 4.7201115,
+    "zne_overhead_pct": 234.8
+  },
+  "entanglement": {
+    "entangle_2q_ms": 1.5129629,
+    "entangle_4q_ms": 2.4038127,
+    "entangle_8q_ms": 87.88661555
+  },
+  "total_time_s": 36.27,
+  "bottleneck": "execute"
+}

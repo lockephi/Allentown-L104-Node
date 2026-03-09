@@ -424,7 +424,7 @@ class L104CRDTReplicationMesh:
             "element": element,
             "tag": tag,
             "set_size": len(effective),
-            "effective_set": list(effective)[:20]
+            "effective_set": list(effective)[:50]  # (was 20)
         }
 
     def or_set_remove(self, element: str) -> Dict:
@@ -690,7 +690,7 @@ class L104KnowledgeMeshReplication:
         return {
             "round": self.mesh_metrics["gossip_rounds"],
             "hot_rumors": len(hot_rumors),
-            "spread_results": spread_results[:10],  # First 10 for brevity
+            "spread_results": spread_results[:25],  # First 25 for brevity (was 10)
             "total_rumors_spread": self.mesh_metrics["rumors_spread"],
             "quenched_this_round": sum(1 for r in self.rumor_state.values() if r["state"] == "cold")
         }
@@ -767,12 +767,12 @@ class L104KnowledgeMeshReplication:
             })
 
         return {
-            "message": message[:100],
+            "message": message[:500],  # (was 100)
             "vector_timestamp": broadcast_msg["vector_timestamp"],
             "total_shards": self.shard_count,
             "delivered": sum(1 for d in deliveries if d["delivered"]),
             "queued": sum(1 for d in deliveries if d["queued"]),
-            "deliveries": deliveries[:8]
+            "deliveries": deliveries[:20]  # (was 8)
         }
 
     def get_mesh_status(self) -> Dict:

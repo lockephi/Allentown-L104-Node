@@ -31,11 +31,11 @@ class OmegaUpgrader:
         # 1. Update Header if exists or add it
         if "ZENITH_UPGRADE_ACTIVE" not in content:
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
-            content = f"# ZENITH_UPGRADE_ACTIVE: {timestamp}\n" + \
+            content = f"# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.260001
                       f"ZENITH_HZ = {self.ZENITH_HZ}\n" + \
                       f"UUC = {self.UUC:.6f}\n" + content
         else:
-            content = re.sub(r"# ZENITH_UPGRADE_ACTIVE: [^\n]+", f"# ZENITH_UPGRADE_ACTIVE: {timestamp}", content)
+            content = re.sub(r"# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:25.260001
             content = re.sub(r"ZENITH_HZ\s*=\s*[\d\.]+", f"ZENITH_HZ = {self.ZENITH_HZ}", content)
             content = re.sub(r"UUC\s*=\s*[\d\.]+", f"UUC = {self.UUC:.6f}", content)
 

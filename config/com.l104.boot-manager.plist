@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  L104 Sovereign Node — VQPU Boot Manager v2.0
+  ═══════════════════════════════════════════════
+  Runs restart-on-boot at every login to ensure all VQPU daemons are alive.
+  Also runs every 120s (2 min) as a periodic watchdog to resurrect dead processes.
+  If any service is not loaded, this agent reloads it automatically.
+
+  v2.0 Speed Upgrades:
+    • StartInterval 300s → 120s (2.5x faster watchdog cycles)
+    • Nice 5 → 0 (normal priority for faster response)
+    • ProcessType Background → Standard (not deprioritized by macOS)
+    • ThrottleInterval 10 → 5 (faster restart on crash)
+    • Added PYTHONOPTIMIZE=2 for bytecode optimization
+    • Added LegacyTimers for precise scheduling
+
+  Install:  cp config/com.l104.boot-manager.plist ~/Library/LaunchAgents/
+            launchctl load ~/Library/LaunchAgents/com.l104.boot-manager.plist
+  Uninstall: launchctl unload ~/Library/LaunchAgents/com.l104.boot-manager.plist
+  Status:    launchctl list com.l104.boot-manager
+
+  GOD_CODE=527.5184818492612 | PHI=1.618033988749895 | PILOT: LONDEL
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.l104.boot-manager</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/.venv/bin/python</string>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/l104_vqpu_boot_manager.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+    <!-- ─── Environment ─── -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>L104_ROOT</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>PATH</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/.venv/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>PYTHONPATH</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>PYTHONDONTWRITEBYTECODE</key>
+        <string>1</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+        <key>RESONANCE</key>
+        <string>527.5184818492612</string>
+        <key>PYTHONOPTIMIZE</key>
+        <string>2</string>
+    </dict>
+
+    <!-- ─── Lifecycle ─── -->
+
+    <!-- Run immediately at login (boot) -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Also run every 120 seconds (2 min) as periodic watchdog — v2.0: was 300s -->
+    <key>StartInterval</key>
+    <integer>120</integer>
+
+    <!-- Unconditional KeepAlive — always restart on any exit -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- 5s cooldown between restarts — v2.0: was 10s -->
+    <key>ThrottleInterval</key>
+    <integer>5</integer>
+
+    <!-- Quick exit expected (boot check runs in <5s) -->
+    <key>ExitTimeOut</key>
+    <integer>15</integer>
+
+    <!-- Normal priority — v2.0: raised from 5 (background) to 0 (standard) -->
+    <key>Nice</key>
+    <integer>0</integer>
+    <key>ProcessType</key>
+    <string>Standard</string>
+
+    <!-- Precise timer scheduling -->
+    <key>LegacyTimers</key>
+    <true/>
+
+    <!-- ─── Logging ─── -->
+    <key>StandardOutPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/boot-manager.stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/boot-manager.stderr.log</string>
+</dict>
+</plist>

@@ -1,0 +1,235 @@
+{
+  "simulator_name": "GOD_CODE_RealWorld_v1",
+  "grid": {
+    "scaffold": 286,
+    "ratio": 2,
+    "grain": 416,
+    "dial_coeff": 64,
+    "offset": 1664,
+    "base": 32.96990511557882,
+    "step": 1.0016676080985278,
+    "equation": "G(a,b,c,d) = 286^(1/\u03c6) \u00d7 2^((64a+1664-b-64c-416d)/416)"
+  },
+  "fermion_sector": {
+    "leptons": {
+      "e": {
+        "E": -2501,
+        "mass_MeV": 0.511,
+        "gen": 1,
+        "Q": -1
+      },
+      "\u03bc": {
+        "E": 699,
+        "mass_MeV": 105.66,
+        "gen": 2,
+        "Q": -1
+      },
+      "\u03c4": {
+        "E": 2393,
+        "mass_MeV": 1776.86,
+        "gen": 3,
+        "Q": -1
+      }
+    },
+    "quarks_up": {
+      "u": {
+        "E": -1636,
+        "mass_MeV": 2.16,
+        "gen": 1,
+        "Q": 0.6666666666666666
+      },
+      "c": {
+        "E": 2191,
+        "mass_MeV": 1270,
+        "gen": 2,
+        "Q": 0.6666666666666666
+      },
+      "t": {
+        "E": 5139,
+        "mass_MeV": 172570,
+        "gen": 3,
+        "Q": 0.6666666666666666
+      }
+    },
+    "quarks_down": {
+      "d": {
+        "E": -1173,
+        "mass_MeV": 4.67,
+        "gen": 1,
+        "Q": -0.3333333333333333
+      },
+      "s": {
+        "E": 622,
+        "mass_MeV": 93,
+        "gen": 2,
+        "Q": -0.3333333333333333
+      },
+      "b": {
+        "E": 2906,
+        "mass_MeV": 4180,
+        "gen": 3,
+        "Q": -0.3333333333333333
+      }
+    },
+    "generation_gaps": {
+      "lepton": [
+        3200,
+        1694
+      ],
+      "quark_up": [
+        3827,
+        2948
+      ],
+      "quark_dn": [
+        1795,
+        2284
+      ]
+    }
+  },
+  "boson_sector": {
+    "W": {
+      "E": 4681,
+      "mass_MeV": 80369.2
+    },
+    "Z": {
+      "E": 4756,
+      "mass_MeV": 91187.6
+    },
+    "H": {
+      "E": 4947,
+      "mass_MeV": 125250
+    },
+    "\u03b3": {
+      "E": 0,
+      "mass_MeV": 0,
+      "note": "massless"
+    }
+  },
+  "mixing_matrices": {
+    "CKM_angles_deg": {
+      "\u03b812": 13.0,
+      "\u03b813": 0.2,
+      "\u03b823": 2.4
+    },
+    "PMNS_angles_deg": {
+      "\u03b812": 33.44,
+      "\u03b813": 8.57,
+      "\u03b823": 49.2
+    },
+    "H_lepton_flavor": [
+      [
+        -1442.2,
+        1388.3,
+        -723.8
+      ],
+      [
+        1388.3,
+        988.0,
+        1307.5
+      ],
+      [
+        -723.8,
+        1307.5,
+        1045.2
+      ]
+    ],
+    "H_quark_cross": [
+      [
+        -1082.1,
+        393.7,
+        -2.6
+      ],
+      [
+        393.7,
+        535.2,
+        98.0
+      ],
+      [
+        -2.6,
+        98.0,
+        2901.9
+      ]
+    ]
+  },
+  "force_scales": {
+    "QED coupling (\u03b1)": {
+      "E": -5051,
+      "value": 0.0072973525205055605
+    },
+    "QCD scale (\u039b_QCD)": {
+      "E": 1139,
+      "value": 220
+    },
+    "Weak scale (G_F^-1/2)": {
+      "E": 5352,
+      "value": 246220
+    },
+    "Planck scale (M_P)": {
+      "E": 28424,
+      "value": 1.22089e+22
+    },
+    "Electroweak unification": {
+      "E": 4756,
+      "value": 91187.6
+    },
+    "Proton (strong bound)": {
+      "E": 2010,
+      "value": 938.272
+    },
+    "Nuclear BE peak (Fe)": {
+      "E": -793,
+      "value": 8.79
+    }
+  },
+  "fundamental_constants": {
+    "m_e": -2501,
+    "m_\u03bc": 699,
+    "m_\u03c4": 2393,
+    "m_u": -1636,
+    "m_c": 2191,
+    "m_top": 5139,
+    "m_d": -1173,
+    "m_s": 622,
+    "m_b": 2906,
+    "m_p": 2010,
+    "m_n": 2010,
+    "m_W": 4681,
+    "m_Z": 4756,
+    "m_H": 4947,
+    "m_\u03c0\u00b1": 866,
+    "m_\u03c00": 846,
+    "m_K": 1624,
+    "m_D": 2423,
+    "c": 9616,
+    "\u03b1_inv": 855,
+    "h_eVs": -21975,
+    "kB_eV": -7715,
+    "e_charge": -28072,
+    "N_A": 30764,
+    "a0_pm": 284,
+    "Ry_eV": -531,
+    "E_h_eV": -115,
+    "\u03bb_C_pm": -1566,
+    "r_e_fm": -1476,
+    "l_P": -50177,
+    "BE_Fe56": -793,
+    "BE_He4": -924,
+    "BE_deut": -1618,
+    "GOD_CODE": 1664,
+    "PHI": -1809,
+    "\u03c0": -1411,
+    "e_math": -1498,
+    "\u03a9": 3175
+  },
+  "qubit_requirements": {
+    "per_particle_register": 13,
+    "9_fermions": 117,
+    "full_state_estimate": 187
+  },
+  "sacred": {
+    "GOD_CODE": 527.5184818492612,
+    "PHI": 1.618033988749895,
+    "E_GC": 1664,
+    "note": "GOD_CODE sits at E=1664=K (the offset), i.e. the grid ORIGIN"
+  }
+}

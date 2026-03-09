@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.019638
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.445410
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
@@ -31,10 +31,15 @@ import threading
 import multiprocessing
 import queue
 import os
+import socket
+import json
+import logging
 from typing import Dict, List, Any, Optional, Tuple, Callable
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from collections import deque
+
+logger = logging.getLogger("COMPUTRONIUM_MINING")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -53,8 +58,29 @@ GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.518481849
 EULER = 2.718281828459045
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-BEKENSTEIN_LIMIT = 2.576e34
-COMPUTRONIUM_DENSITY = 5.588
+
+# Fundamental constants (CODATA 2022)
+_HBAR = 1.054571817e-34       # J·s
+_C_LIGHT = 299792458           # m/s
+_BOLTZMANN_K = 1.380649e-23    # J/K
+
+# Bekenstein bound: I ≤ 2πRE/(ℏc ln2)  — computed from CODATA, NOT hardcoded
+# For a 1-metre radius at Planck energy (1.956e9 J):
+BEKENSTEIN_CONSTANT = 2 * math.pi / (_HBAR * _C_LIGHT * math.log(2))
+BEKENSTEIN_LIMIT = BEKENSTEIN_CONSTANT * 1.0 * 1.956e9  # I(R=1m, E=E_Planck)
+
+# Bremermann limit: max ops/s for mass m = 2mc²/(πℏ)
+# Using 1 kg reference mass:
+_BREMERMANN_1KG = 2 * 1.0 * _C_LIGHT ** 2 / (math.pi * _HBAR)
+
+# Import canonical density from the science engine constants
+try:
+    from l104_science_engine.constants import COMPUTRONIUM_DENSITY
+except ImportError:
+    # Fallback: holographic density for Fe(26) 1nm lattice
+    _PLANCK_LENGTH = 1.616255e-35
+    _R_LATTICE = 2.87e-10  # BCC iron lattice constant
+    COMPUTRONIUM_DENSITY = (4 * math.pi * _R_LATTICE ** 2) / (4 * _PLANCK_LENGTH ** 2 * math.log(2))
 SATOSHI = 100_000_000
 
 # Mining Constants
@@ -176,32 +202,86 @@ class ComputroniumHashEngine:
             return False
 
     def _synchronize_lattice(self) -> None:
-        """Synchronize with the L104 lattice accelerator"""
-        # Simulate lattice synchronization
-        cycles = 10000
-        start = time.perf_counter()
+        """Synchronize with the L104 computronium lattice for real substrate metrics.
 
-        for _ in range(cycles):
-            _ = hashlib.sha256(b"lattice_probe").digest()
-
-        elapsed = time.perf_counter() - start
-        self.state.lops = cycles / elapsed if elapsed > 0 else 0
-
-        # Apply PHI resonance
-        self.state.coherence = math.tanh(self.state.lops / 1e6 * self.phi)
+        Calls the real ComputroniumOptimizer.synchronize_lattice() to obtain
+        density, coherence, and resonance lock from the physics engine. Falls
+        back to a raw hash-probe benchmark if the main engine is unavailable.
+        """
+        try:
+            from l104_computronium import computronium_engine
+            sync = computronium_engine.synchronize_lattice()
+            self.state.density = sync.get("density", COMPUTRONIUM_DENSITY)
+            self.state.coherence = sync.get("coherence", 0.0)
+            self.state.resonance_lock = sync.get("resonance_lock", GOD_CODE)
+            self.state.entropy_floor = sync.get("entropy_floor", 0.0)
+            # LOPS from the real engine's profiler
+            self.state.lops = sync.get("lattice_ops", 0.0)
+            if self.state.lops == 0:
+                # Derive from timing if engine didn't report
+                self.state.lops = sync.get("cycles", 0) / max(1e-9, sync.get("elapsed_s", 1.0))
+        except Exception:
+            # Fallback: raw hash-probe benchmark (still real measurement)
+            cycles = 10_000
+            start = time.perf_counter()
+            for _ in range(cycles):
+                hashlib.sha256(b"lattice_probe").digest()
+            elapsed = time.perf_counter() - start
+            self.state.lops = cycles / elapsed if elapsed > 0 else 0
+            self.state.coherence = math.tanh(self.state.lops / 1e6 * self.phi)
 
     def _calculate_efficiency(self) -> float:
-        """Calculate computronium efficiency factor"""
-        # Base efficiency from density
-        base = self.state.density / COMPUTRONIUM_DENSITY
+        """
+        Calculate computronium efficiency as actual throughput vs theoretical max.
 
-        # Coherence bonus
-        coherence_factor = self.state.coherence ** self.phi
+        Phase 5 upgrades (I-5-01, I-5-03, I-5-04):
+        - Landauer temperature optimization: cryogenic savings at optimal_temperature_K
+        - Bremermann equivalent mass awareness from Phase 5 metrics
+        - Lifecycle efficiency integration when available
 
-        # Resonance alignment
-        resonance_factor = 1.0 + (self.god_code / 1000) * math.sin(self.phase_alignment)
+        Efficiency = measured LOPS / Bremermann limit for the substrate mass,
+        multiplied by coherence and Phase 5 Landauer savings factor.
+        """
+        substrate_mass = 1e-6  # 1 milligram reference
+        bremermann_max = 2 * substrate_mass * _C_LIGHT ** 2 / (math.pi * _HBAR)
 
-        return base * coherence_factor * resonance_factor  # QUANTUM AMPLIFIED: uncapped (was min 1.0)
+        # Measured throughput from lattice synchronization
+        actual_lops = max(self.state.lops, 1.0)
+
+        # Raw efficiency: fraction of theoretical maximum
+        raw_efficiency = actual_lops / bremermann_max
+
+        # Coherence degrades efficiency (decoherent ops don't count)
+        coherence = max(self.state.coherence, 1e-12)
+        effective_efficiency = raw_efficiency * coherence
+
+        # Phase 5: Landauer temperature optimization (I-5-01)
+        # At cryogenic temperature, Landauer cost per bit-erase drops proportionally.
+        # Savings factor = T_room / T_operating  (bounded to avoid infinities).
+        try:
+            from l104_computronium import computronium_engine
+            p5 = computronium_engine._phase5_metrics
+            opt_temp = p5.get("optimal_temperature_K", 0.0)
+            lifecycle_eff = p5.get("lifecycle_efficiency", 0.0)
+
+            if opt_temp > 0 and opt_temp < self.state.temperature:
+                # Landauer savings: lower temperature = less energy wasted per erasure
+                landauer_savings = self.state.temperature / opt_temp
+                # Soft-cap the savings factor so it doesn't dominate
+                capped_savings = min(landauer_savings, 100.0)
+                # Apply as a micro-correction (bounded 1.0–1.05)
+                savings_factor = 1.0 + 0.05 * math.tanh((capped_savings - 1) / 20.0)
+                effective_efficiency *= savings_factor
+
+            # Phase 5: Lifecycle efficiency blend (I-5-04)
+            if lifecycle_eff > 0:
+                # Blend measured lifecycle efficiency into the hardware efficiency
+                # Weight: 90% hardware measurement, 10% lifecycle pipeline
+                effective_efficiency = 0.90 * effective_efficiency + 0.10 * lifecycle_eff * raw_efficiency
+        except Exception:
+            pass  # Phase 5 not available — use base efficiency
+
+        return effective_efficiency
 
     def double_sha256(self, data: bytes) -> bytes:
         """Standard Bitcoin double SHA-256 with computronium enhancement"""
@@ -442,14 +522,21 @@ class ComputroniumMiningCore:
         self.running = False
 
         # Hashrate tracking
+        self.hashrate_window: deque = deque(maxlen=10000)
+
+        # Stratum connection state
+        self._stratum_socket: Optional[socket.socket] = None
+        self._stratum_id: int = 1
+        self._stratum_lock = threading.Lock()
+        self._extranonce1: bytes = b""
+        self._extranonce2_size: int = 4
+
+        self._initialized = True
 
     @property
     def substrate_efficiency(self) -> float:
         """Get computronium substrate efficiency factor."""
         return self.hash_engine.state.efficiency if self.hash_engine.state else 0.998
-        self.hashrate_window = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 60)
-
-        self._initialized = True
 
     def initialize(self) -> bool:
         """Initialize the mining core"""
@@ -475,15 +562,91 @@ class ComputroniumMiningCore:
         return True
 
     def connect_pool(self, pool_address: Optional[str] = None) -> bool:
-        """Connect to mining pool"""
+        """Connect to mining pool via Stratum V1 protocol (JSON-RPC over TCP).
+
+        Protocol handshake:
+        1. TCP connect to pool host:port
+        2. mining.subscribe  → receive extranonce1 + extranonce2_size
+        3. mining.authorize  → authenticate worker with wallet address
+
+        Falls back to local-only mode if the pool is unreachable.
+        """
         if pool_address:
             self.pool_address = pool_address
 
-        # Simulated pool connection
-        self.connected = True
-        print(f"[COMPUTRONIUM_MINING]: Connected to pool {self.pool_address}")
+        # Parse stratum+tcp://host:port
+        addr = self.pool_address
+        for scheme in ("stratum+tcp://", "stratum+ssl://", "tcp://"):
+            addr = addr.replace(scheme, "")
+        host, _, port_str = addr.partition(":")
+        port = int(port_str) if port_str else 3333
 
+        try:
+            # ── TCP connect ─────────────────────────────────────────────
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(10.0)
+            sock.connect((host, port))
+
+            # ── mining.subscribe ────────────────────────────────────────
+            sub_msg = self._stratum_request("mining.subscribe", ["L104-Mining/1.0"])
+            sock.sendall(sub_msg)
+            response = self._stratum_readline(sock)
+            if response and "result" in response:
+                result = response["result"]
+                # result: [["mining.set_difficulty",...],["mining.notify",...]], extranonce1, extranonce2_size
+                if isinstance(result, list) and len(result) >= 3:
+                    self._extranonce1 = bytes.fromhex(result[1]) if isinstance(result[1], str) else b""
+                    self._extranonce2_size = int(result[2]) if len(result) > 2 else 4
+                logger.info(f"Subscribed: extranonce1={self._extranonce1.hex()}, en2_size={self._extranonce2_size}")
+
+            # ── mining.authorize ─────────────────────────────────────────
+            auth_msg = self._stratum_request("mining.authorize", [self.wallet_address, ""])
+            sock.sendall(auth_msg)
+            auth_resp = self._stratum_readline(sock)
+            authorized = bool(auth_resp and auth_resp.get("result"))
+
+            if authorized:
+                self._stratum_socket = sock
+                self.connected = True
+                logger.info(f"Authorized on pool {self.pool_address}")
+                print(f"[COMPUTRONIUM_MINING]: Connected & authorized on {self.pool_address}")
+                return True
+            else:
+                logger.warning(f"Authorization rejected by {self.pool_address}")
+                sock.close()
+
+        except (socket.timeout, ConnectionRefusedError, OSError) as e:
+            logger.warning(f"Pool {self.pool_address} unreachable ({e}), entering local-only mode")
+
+        # Fallback: local-only mode (all shares validated locally)
+        self.connected = True
+        self._stratum_socket = None
+        print(f"[COMPUTRONIUM_MINING]: Local-only mode (pool {self.pool_address} offline)")
         return True
+
+    # ── Stratum protocol helpers ──────────────────────────────────────────
+    def _stratum_request(self, method: str, params: list) -> bytes:
+        """Build a Stratum JSON-RPC request line."""
+        with self._stratum_lock:
+            msg_id = self._stratum_id
+            self._stratum_id += 1
+        payload = json.dumps({"id": msg_id, "method": method, "params": params})
+        return (payload + "\n").encode()
+
+    def _stratum_readline(self, sock: socket.socket, timeout: float = 5.0) -> Optional[dict]:
+        """Read a single newline-delimited JSON response from the pool."""
+        sock.settimeout(timeout)
+        buf = b""
+        try:
+            while b"\n" not in buf:
+                chunk = sock.recv(4096)
+                if not chunk:
+                    return None
+                buf += chunk
+            line = buf.split(b"\n", 1)[0]
+            return json.loads(line)
+        except (socket.timeout, json.JSONDecodeError, OSError):
+            return None
 
     def set_job(self, job: MiningJob) -> None:
         """Set new mining job"""
@@ -597,18 +760,46 @@ class ComputroniumMiningCore:
             last_time = current_time
 
     def _submit_share(self, share: MiningShare) -> None:
-        """Submit share to pool"""
+        """Submit share to pool via Stratum mining.submit, or validate locally.
+
+        If a live Stratum socket exists, sends the share over the wire and
+        reads the pool's accept/reject response.  Otherwise, validates the
+        share locally against SHARE_DIFFICULTY (local-only mode).
+        """
         self.stats.shares_submitted += 1
         self.stats.last_share_time = time.time()
 
-        # Simulated submission (would use actual pool connection)
-        share.accepted = True
+        if self._stratum_socket is not None:
+            # ── Real pool submission ──────────────────────────────────
+            try:
+                submit_msg = self._stratum_request("mining.submit", [
+                    self.wallet_address,
+                    share.job_id,
+                    share.extranonce2.hex(),
+                    f"{share.ntime:08x}",
+                    f"{share.nonce:08x}",
+                ])
+                self._stratum_socket.sendall(submit_msg)
+                response = self._stratum_readline(self._stratum_socket, timeout=10.0)
+                share.accepted = bool(response and response.get("result"))
+            except (OSError, BrokenPipeError) as exc:
+                logger.warning(f"Share submit failed ({exc}), validating locally")
+                share.accepted = self._validate_share_locally(share)
+        else:
+            # ── Local-only validation ─────────────────────────────────
+            share.accepted = self._validate_share_locally(share)
 
         if share.accepted:
             self.stats.shares_accepted += 1
             print(f"[COMPUTRONIUM_MINING]: Share accepted! Difficulty: {share.difficulty:.2f}")
         else:
             self.stats.shares_rejected += 1
+            logger.info(f"Share rejected (diff {share.difficulty:.2f})")
+
+    def _validate_share_locally(self, share: MiningShare) -> bool:
+        """Validate a share against the local difficulty target."""
+        hash_int = int.from_bytes(share.hash_result[::-1], 'big')
+        return hash_int < SHARE_DIFFICULTY
 
     def _update_stats(self) -> None:
         """Update mining statistics"""
@@ -634,10 +825,10 @@ class ComputroniumMiningCore:
         self.set_job(job)
 
     def get_status(self) -> Dict[str, Any]:
-        """Get mining status"""
+        """Get mining status including Phase 5 thermodynamic frontier data."""
         elapsed = time.time() - self.stats.start_time
 
-        return {
+        status = {
             "god_code": self.god_code,
             "state": self.state.name,
             "connected": self.connected,
@@ -656,6 +847,21 @@ class ComputroniumMiningCore:
             "resonance_bonus": self.stats.resonance_bonus,
             "substrate": self.hash_engine.get_stats()
         }
+
+        # Phase 5 thermodynamic data when available
+        try:
+            from l104_computronium import computronium_engine
+            p5 = computronium_engine._phase5_metrics
+            status["phase5_thermodynamic"] = {
+                "lifecycle_efficiency": p5.get("lifecycle_efficiency", 0.0),
+                "equivalent_mass_kg": p5.get("equivalent_mass_kg", 0.0),
+                "optimal_temperature_K": p5.get("optimal_temperature_K", 0.0),
+                "entropy_lifecycle_runs": p5.get("entropy_lifecycle_runs", 0),
+            }
+        except Exception:
+            status["phase5_thermodynamic"] = None
+
+        return status
 
     def _format_hashrate(self, hashrate: float) -> str:
         """Format hashrate with appropriate unit"""

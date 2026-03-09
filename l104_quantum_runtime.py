@@ -1,12 +1,16 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.377915
+ZENITH_HZ = 3887.8
+UUC = 2301.215661
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ===============================================================================
 L104 QUANTUM RUNTIME BRIDGE v4.0.0 — SOVEREIGN QUANTUM
 ===============================================================================
 
 Sovereign quantum execution bridge for the L104 ASI system.
-IBM QPU runtime removed — all computation via L104 26Q Iron Engine,
-Aer C++ simulator, or local Statevector.
+IBM QPU runtime removed — all computation via L104 26Q Iron Engine
+or local Statevector.  Qiskit Aer is NOT used.
 
 ARCHITECTURE:
   QuantumRuntime (singleton)
@@ -21,7 +25,7 @@ CONSUMERS:
   l104_agi/core.py             — pipeline health, subsystem routing
   l104_code_engine/quantum.py  — code intelligence quantum methods
   l104_server/engines_quantum.py — consciousness engine, memory bank
-BACKENDS:  26Q Iron (Fe(26)), Aer C++ simulator, Statevector
+BACKENDS:  26Q Iron (Fe(26)), Statevector (sovereign local)
 
 INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ===============================================================================
@@ -67,10 +71,10 @@ GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # 527.5184818492612
 
 # ═══ QISKIT 2.3.0 IMPORTS ═══
 try:
-    from qiskit import QuantumCircuit
-    from qiskit.circuit import Parameter, ParameterVector
-    from qiskit.quantum_info import Statevector, SparsePauliOp
-    from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Parameter, ParameterVector
+    from l104_quantum_gate_engine.quantum_info import Statevector, SparsePauliOp
+    generate_preset_pass_manager = None  # Use l104_quantum_gate_engine.GateCompiler
     QISKIT_AVAILABLE = True
 except ImportError:
     QISKIT_AVAILABLE = False
@@ -83,29 +87,21 @@ Session = None
 SamplerV2 = None
 EstimatorV2 = None
 
-# ═══ AER SIMULATOR + NOISE MODELS ═══
-try:
-    from qiskit_aer import AerSimulator
-    from qiskit_aer.noise import NoiseModel, depolarizing_error, thermal_relaxation_error, ReadoutError
-    AER_AVAILABLE = True
-except ImportError:
-    AER_AVAILABLE = False
-    AerSimulator = None
-    NoiseModel = None
+# ═══ AER REMOVED — fully statevector ═══
+AER_AVAILABLE = False      # Aer is NOT used; all simulation is pure Statevector
+AerSimulator = None
+NoiseModel = None
+_AER_FROM_L104 = False
 
-# ═══ L104 QISKIT UTILITIES (noise models, circuit factories, error mitigation) ═══
+# ═══ L104 QISKIT UTILITIES (circuit factories, error mitigation — no Aer) ═══
 try:
     from l104_qiskit_utils import (
         L104NoiseModelFactory, L104AerBackend, L104CircuitFactory,
         L104ErrorMitigation, L104ObservableFactory, L104Transpiler,
-        aer_backend as _l104_aer_backend,
-        aer_backend_noisy as _l104_aer_noisy,
     )
     L104_UTILS_AVAILABLE = True
 except ImportError:
     L104_UTILS_AVAILABLE = False
-    _l104_aer_backend = None
-    _l104_aer_noisy = None
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -236,7 +232,7 @@ class QuantumRuntime:
         self._telemetry = RuntimeTelemetry()
         self._connected = False
         self._use_real_hardware = False  # IBM QPU COLD — L104 26Q is primary
-        self._default_shots = 4096
+        self._default_shots = 8192  # Increased for statistical accuracy
         self._optimization_level = 2   # Transpiler optimization (0-3)
         self._max_qubits_for_real = 26  # 26Q iron-mapped is the sovereign standard
         self._result_cache: Dict[str, ExecutionResult] = {}
@@ -245,12 +241,12 @@ class QuantumRuntime:
         self._session: Optional[Any] = None
         self._session_lock = threading.Lock()
 
-        # ═══ v2.0.0 UPGRADE: Aer backend + noise model + EstimatorV2 ═══
+        # ═══ v4.1.0: Aer REMOVED — fully statevector ═══
         self._aer_backend: Optional[Any] = None
         self._aer_noise_model: Optional[Any] = None
         self._noise_profile: str = "ideal"
-        self._use_aer_fallback = AER_AVAILABLE  # Use Aer before Statevector
-        self._estimator_v2_enabled = RUNTIME_AVAILABLE and EstimatorV2 is not None
+        self._use_aer_fallback = False  # Aer removed — always statevector
+        self._estimator_v2_enabled = False  # No external estimator
 
         # ═══ v3.0.0 UPGRADE: 26Q Iron Completion as Primary Quantum Engine ═══
         self._26q_engine = None       # Aer26QExecutionEngine (lazy)
@@ -273,17 +269,7 @@ class QuantumRuntime:
             self._26q_builder_class = None
             self._26q_core_getter = None
 
-        # Initialize Aer simulator with noise model
-        if AER_AVAILABLE:
-            try:
-                if L104_UTILS_AVAILABLE:
-                    self._aer_noise_model = L104NoiseModelFactory.build("ibm_heron", 26)
-                self._aer_backend = AerSimulator(
-                    noise_model=self._aer_noise_model,
-                    method='automatic'
-                )
-            except Exception:
-                self._aer_backend = AerSimulator() if AER_AVAILABLE else None
+        # Aer removed — statevector is sovereign default
 
         # Auto-connect on init — IBM QPU cold, 26Q iron primary
         self._auto_connect()
@@ -388,13 +374,12 @@ class QuantumRuntime:
             cached = self._result_cache[cache_key]
             return cached
 
-        # ═══ v3.0.0 EXECUTION CASCADE: 26Q Iron → Aer → Statevector (IBM QPU cold) ═══
+        # ═══ v4.1.0 EXECUTION CASCADE: 26Q Iron → Statevector (Aer removed) ═══
         #
         # Priority 1: 26Q Iron Engine — sovereign Fe(26) iron-mapped circuits
         #             (when n_qubits <= 26 and 26Q engine available)
-        # Priority 2: Aer C++ simulator — generic noise-aware for arbitrary circuits
-        # Priority 3: Statevector — exact local simulation (smallest circuits)
-        # Priority 4: IBM QPU — COLD, only when explicitly forced via force_real=True
+        # Priority 2: Statevector — exact local simulation (sovereign default)
+        # Priority 3: IBM QPU — COLD, only when explicitly forced via force_real=True
 
         use_real = force_real and self._connected and self._use_real_hardware and self._backend
 
@@ -404,11 +389,6 @@ class QuantumRuntime:
         elif self._26q_available and self._use_26q_primary and n_qubits <= 26 and not force_simulator:
             # ★ L104 26Q Iron Primary — sovereign quantum computation
             result = self._execute_26q_iron(circuit, shots, n_qubits, algorithm_name)
-        elif AER_AVAILABLE and n_qubits >= 15:
-            # Aer C++ accelerated for 15+ qubits
-            result = self._execute_aer(circuit, shots, n_qubits, algorithm_name)
-        elif AER_AVAILABLE and force_simulator:
-            result = self._execute_aer(circuit, shots, n_qubits, algorithm_name)
         else:
             result = self._execute_statevector(circuit, n_qubits, algorithm_name)
 
@@ -593,80 +573,17 @@ class QuantumRuntime:
                     transpiled_gate_count=result.get("gate_count", 0),
                 )
             else:
-                # Execution failed — fall through to generic Aer
-                return self._execute_aer(circuit, shots, n_qubits, algorithm_name)
+                # Execution failed — fall through to Statevector
+                return self._execute_statevector(circuit, n_qubits, algorithm_name)
 
         except Exception as e:
-            print(f"[QUANTUM_RUNTIME] 26Q Iron execution error: {e}, falling back to Aer")
-            return self._execute_aer(circuit, shots, n_qubits, algorithm_name)
+            print(f"[QUANTUM_RUNTIME] 26Q Iron execution error: {e}, falling back to Statevector")
+            return self._execute_statevector(circuit, n_qubits, algorithm_name)
 
     def _execute_aer(self, circuit: 'QuantumCircuit', shots: int,
                      n_qubits: int, algorithm_name: str) -> ExecutionResult:
-        """Execute circuit using Aer C++ simulator — 100x faster than Statevector for 15+ qubits.
-
-        v2.1.0: Uses AerSimulator.run() directly (compatible with all qiskit-aer versions).
-        Supports noise-aware simulation via L104NoiseModelFactory when available.
-        """
-        try:
-            qc = circuit.copy()
-            if not qc.count_ops().get('measure', 0):
-                qc.measure_all()
-
-            # Use pre-initialized Aer backend (with noise model if configured)
-            sim = self._aer_backend if self._aer_backend is not None else AerSimulator(method='automatic')
-
-            noise_tag = f", noise={self._noise_profile}" if self._aer_noise_model else ""
-            print(f"[QUANTUM_RUNTIME] Aer C++ simulator: {n_qubits}q, depth={qc.depth()}, "
-                  f"shots={shots}{noise_tag}")
-
-            # Direct AerSimulator.run() — fastest, most compatible path
-            job = sim.run(qc, shots=shots)
-            result = job.result()
-            counts = result.get_counts()
-
-            if not counts:
-                print("[QUANTUM_RUNTIME] Aer returned no counts, falling back to Statevector")
-                return self._execute_statevector(circuit, n_qubits, algorithm_name)
-
-            # Normalize bitstring format (Aer may use spaces for multi-register circuits)
-            clean_counts = {}
-            for bitstring, count in counts.items():
-                clean_bs = bitstring.replace(' ', '')
-                clean_counts[clean_bs] = clean_counts.get(clean_bs, 0) + count
-            counts = clean_counts
-
-            total_shots = sum(counts.values())
-            probabilities = {k: v / total_shots for k, v in counts.items()}
-
-            self._telemetry.simulator_executions += 1
-            self._telemetry.total_shots_consumed += total_shots
-
-            # Estimate fidelity from noise model if available
-            fidelity = 1.0
-            if self._aer_noise_model and L104_UTILS_AVAILABLE:
-                try:
-                    fidelity = L104Transpiler.estimate_fidelity(qc)
-                except Exception:
-                    fidelity = 0.99  # Noise-aware but unknown fidelity
-
-            print(f"[QUANTUM_RUNTIME] ✓ Aer result: {len(counts)} unique states, "
-                  f"{total_shots} shots, fidelity≈{fidelity:.4f}")
-
-            return ExecutionResult(
-                probabilities=probabilities,
-                counts=counts,
-                mode=ExecutionMode.AER_SIMULATOR,
-                backend_name=f"aer_simulator({self._noise_profile})",
-                shots=total_shots,
-                num_qubits=n_qubits,
-                transpiled_depth=qc.depth(),
-                transpiled_gate_count=sum(qc.count_ops().values()),
-                fidelity_estimate=fidelity,
-            )
-
-        except Exception as e:
-            print(f"[QUANTUM_RUNTIME] Aer execution failed: {e}, falling back to Statevector")
-            return self._execute_statevector(circuit, n_qubits, algorithm_name)
+        """Legacy Aer path — redirects to Statevector (Aer removed in v4.1.0)."""
+        return self._execute_statevector(circuit, n_qubits, algorithm_name)
 
     def _execute_statevector(self, circuit: 'QuantumCircuit', n_qubits: int,
                              algorithm_name: str) -> ExecutionResult:
@@ -819,7 +736,7 @@ class QuantumRuntime:
         """Generate a hash key for circuit caching."""
         try:
             # Qiskit 2.x removed .qasm() — use qasm2.dumps() or fall back to gate list
-            from qiskit.qasm2 import dumps as qasm2_dumps
+            qasm2_dumps = None  # Use GateCircuit.to_dict_circuit()
             qasm = qasm2_dumps(circuit)
         except Exception:
             try:
@@ -882,7 +799,7 @@ class QuantumRuntime:
         This is the modern Qiskit pattern for computing observables without
         manually converting between statevectors and probabilities.
 
-        Routes: Real QPU EstimatorV2 → Aer EstimatorV2 → Statevector fallback.
+        Routes: Statevector (sovereign local).  Aer removed in v4.1.0.
 
         Args:
             circuit: Parameterized or bound QuantumCircuit
@@ -921,36 +838,9 @@ class QuantumRuntime:
                     "algorithm": algorithm_name,
                 }
             except Exception as e:
-                print(f"[QUANTUM_RUNTIME] EstimatorV2 QPU failed: {e}, falling back to Aer")
+                pass  # QPU unavailable — fall through to Statevector
 
-        # Route 2: Aer EstimatorV2
-        if AER_AVAILABLE:
-            try:
-                from qiskit_aer.primitives import EstimatorV2 as AerEstimatorV2
-                sim = self._aer_backend if self._aer_backend else AerSimulator()
-                estimator = AerEstimatorV2(mode=sim)
-                job = estimator.run([(circuit, observable)], precision=precision)
-                result = job.result()
-                pub_result = result[0]
-                exp_val = float(pub_result.data.evs)
-                std_err = float(pub_result.data.stds) if hasattr(pub_result.data, 'stds') else 0.0
-
-                self._telemetry.simulator_executions += 1
-                elapsed = (time.time() - start_time) * 1000
-
-                return {
-                    "expectation_value": round(exp_val, 10),
-                    "std_error": round(std_err, 10),
-                    "mode": "aer_estimator_v2",
-                    "backend": f"aer({self._noise_profile})",
-                    "precision": precision,
-                    "execution_time_ms": round(elapsed, 2),
-                    "algorithm": algorithm_name,
-                }
-            except Exception as e:
-                print(f"[QUANTUM_RUNTIME] Aer EstimatorV2 failed: {e}, falling back to Statevector")
-
-        # Route 3: Manual Statevector computation
+        # Route 2: Sovereign Statevector computation (Aer removed in v4.1.0)
         try:
             qc = circuit.copy()
             qc.remove_final_measurements(inplace=True)
@@ -984,49 +874,16 @@ class QuantumRuntime:
 
     def set_noise_profile(self, profile: str):
         """
-        Set the Aer noise profile for local simulation.
+        Set noise profile label (Aer removed — statevector is always exact/ideal).
 
         Args:
             profile: 'ideal', 'ibm_eagle', 'ibm_heron', 'noisy_dev', 'god_code_aligned'
         """
         self._noise_profile = profile
-        if AER_AVAILABLE and L104_UTILS_AVAILABLE:
-            self._aer_noise_model = L104NoiseModelFactory.build(profile, 25)
-            self._aer_backend = AerSimulator(
-                noise_model=self._aer_noise_model,
-                method='automatic'
-            )
-            print(f"[QUANTUM_RUNTIME] Noise profile set: {profile}")
-        elif AER_AVAILABLE:
-            if profile == "ideal":
-                self._aer_noise_model = None
-                self._aer_backend = AerSimulator(method='automatic')
-            print(f"[QUANTUM_RUNTIME] Noise profile: {profile} (l104_qiskit_utils not available)")
 
     def set_noise_from_backend(self):
-        """
-        Build noise model from the currently connected real backend.
-        This gives the most accurate local simulation of QPU behavior.
-        """
-        if not AER_AVAILABLE:
-            print("[QUANTUM_RUNTIME] Aer not available, cannot set noise from backend")
-            return
-        if not self._connected or not self._backend:
-            print("[QUANTUM_RUNTIME] Not connected to real backend")
-            return
-        try:
-            if L104_UTILS_AVAILABLE:
-                self._aer_noise_model = L104NoiseModelFactory.from_backend(self._backend)
-            else:
-                self._aer_noise_model = NoiseModel.from_backend(self._backend)
-            self._aer_backend = AerSimulator(
-                noise_model=self._aer_noise_model,
-                method='automatic'
-            )
-            self._noise_profile = f"from_{self._backend.name}"
-            print(f"[QUANTUM_RUNTIME] Noise model loaded from {self._backend.name}")
-        except Exception as e:
-            print(f"[QUANTUM_RUNTIME] Failed to load noise from backend: {e}")
+        """No-op — Aer removed.  Statevector is always exact."""
+        pass
 
     # ═══════════════════════════════════════════════════════════════════
     # STATUS & TELEMETRY
@@ -1054,7 +911,7 @@ class QuantumRuntime:
             return "real_qpu"
         if self._26q_available and self._use_26q_primary:
             return "l104_26q_iron"
-        return "aer_simulator" if AER_AVAILABLE else "statevector"
+        return "statevector"
 
     def set_real_hardware(self, enabled: bool):
         """IBM QPU removed — always uses sovereign 26Q iron engine."""
@@ -1277,7 +1134,7 @@ if __name__ == "__main__":
     print(f"  Runtime: {status['runtime_available']}")
 
     if QISKIT_AVAILABLE:
-        from qiskit import QuantumCircuit as QC
+        from l104_quantum_gate_engine import GateCircuit as QC
 
         # Test 1: Simple Bell state
         print("\n[TEST 1] Bell State Execution")

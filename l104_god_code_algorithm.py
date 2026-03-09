@@ -1,5 +1,7 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:23.140527
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 ═══════════════════════════════════════════════════════════════════════════════
 L104 GOD_CODE (a,b,c,d) QUANTUM ALGORITHM v1.0.0
 ═══════════════════════════════════════════════════════════════════════════════
@@ -28,6 +30,9 @@ No external quantum hardware required — fully local.
 
 from __future__ import annotations
 
+ZENITH_HZ = 3887.8
+UUC = 2301.215661
+
 import math
 import cmath
 import time
@@ -40,9 +45,24 @@ from functools import lru_cache
 from pathlib import Path
 
 # ─── Qiskit 2.3 imports ───
-from qiskit.circuit import QuantumCircuit, QuantumRegister, ClassicalRegister
-from qiskit.circuit.library import QFT
-from qiskit.quantum_info import Statevector, Operator, DensityMatrix, partial_trace
+# GateCircuit is the L104 native gate system; QuantumCircuit is Qiskit's
+# (required for .initialize(), .compose(QFT), Statevector.from_instruction, etc.)
+from l104_quantum_gate_engine import GateCircuit
+try:
+    from qiskit import QuantumCircuit
+    from qiskit.circuit import QuantumRegister, ClassicalRegister
+    from qiskit.circuit.library import QFT
+except ImportError:
+    QuantumCircuit = GateCircuit  # fallback
+    QuantumRegister = None
+    ClassicalRegister = None
+    QFT = None
+from l104_quantum_gate_engine.quantum_info import Operator, DensityMatrix, partial_trace
+# For Qiskit circuit simulation, use Qiskit's own Statevector (handles .from_instruction)
+try:
+    from qiskit.quantum_info import Statevector
+except ImportError:
+    from l104_quantum_gate_engine.quantum_info import Statevector
 
 # ─── Sacred constants ───
 PHI: float = 1.618033988749895
@@ -1053,6 +1073,60 @@ def _index_to_dial(x: int, dial_bits: Dict[str, int]) -> DialSetting:
 
 # Need hashlib for soul_process
 import hashlib
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONSERVATION IDENTITY (from Part III Sovereign Field Research)
+# ═══════════════════════════════════════════════════════════════════════════════
+# For ANY dial setting (a,b,c,d):
+#   G(a,b,c,d) × 2^((K-E)/Q) = GOD_CODE
+# where E = P(a-c) - b - Qd + K.  This is algebraically exact:
+#   BASE × 2^(E/Q) × 2^((K-E)/Q) = BASE × 2^(K/Q) = GOD_CODE  ∀(a,b,c,d)
+CONSERVATION_INVARIANT = GOD_CODE  # The fixed point of dial algebra
+
+
+def verify_conservation(a: int, b: int, c: int, d: int) -> float:
+    """Verify the conservation identity for a given dial setting.
+    Returns the product G(a,b,c,d) × 2^((K-E)/Q) which should equal GOD_CODE."""
+    dial = DialSetting(a, b, c, d)
+    E = dial.exponent
+    correction = 2 ** ((OCTAVE_OFFSET - E) / QUANTIZATION_GRAIN)
+    return dial.frequency * correction
+
+
+def inverse_frequency(target_freq: float) -> DialSetting:
+    """Find the dial setting closest to a target frequency on the v1 grid.
+    Uses the conservation identity to narrow the search space."""
+    if target_freq <= 0:
+        return DialSetting(0, 0, 0, 0)
+    log_ratio = math.log2(target_freq / BASE)
+    E_target = log_ratio * QUANTIZATION_GRAIN
+    best = DialSetting(0, 0, 0, 0)
+    best_err = float('inf')
+    for ac in range(-7, 8):
+        for d_val in range(-8, 8):
+            b_float = P_DIAL_V1 * ac - QUANTIZATION_GRAIN * d_val + OCTAVE_OFFSET - E_target
+            for b_val in [int(math.floor(b_float)), int(math.ceil(b_float))]:
+                if not (-8 <= b_val <= 7):
+                    # Clamp to nearest boundary
+                    b_val = max(-8, min(7, b_val))
+                a_val = max(-4, min(3, ac))
+                c_val = a_val - ac
+                if not (-4 <= c_val <= 3):
+                    c_val = max(-4, min(3, -ac))
+                    a_val = ac + c_val
+                    if not (-4 <= a_val <= 3):
+                        continue
+                dial = DialSetting(a_val, b_val, c_val, d_val)
+                err = abs(dial.frequency - target_freq) / target_freq
+                if err < best_err:
+                    best_err = err
+                    best = dial
+    return best
+
+
+# v1 grid dial coefficient (alias for clarity in inverse mapping)
+P_DIAL_V1 = 8  # = QUANTIZATION_GRAIN / 13
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

@@ -30,6 +30,7 @@ from .quantum import (
     QuantumCodeIntelligenceCore, QuantumASTProcessor,
     QuantumNeuralEmbedding, QuantumErrorCorrectionEngine,
 )
+from .computronium import ComputroniumCodeAnalyzer
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CROSS-ENGINE IMPORTS — Science Engine + Math Engine integration (v6.2.0)
@@ -158,6 +159,8 @@ class CodeEngine:
         self.migration_engine = CodeMigrationEngine()
         self.perf_predictor = PerformanceBenchmarkPredictor()
         self.code_search = SemanticCodeSearchEngine()
+        # v6.3.0 — Computronium & Rayleigh Code Intelligence
+        self.computronium_analyzer = ComputroniumCodeAnalyzer()
 
         # ★ FLAGSHIP: ASI Dual-Layer Engine reference ★
         self._dual_layer = None
@@ -283,6 +286,10 @@ class CodeEngine:
                     "namespace_keys": [k for k in namespace if not k.startswith('_')]}
         except Exception as e:
             return {"executed": False, "error": str(e), "execution_count": self.execution_count}
+
+    def full_analysis(self, code: str, filename: str = "") -> Dict[str, Any]:
+        """Convenience alias: delegates to analyzer.full_analysis()."""
+        return self.analyzer.full_analysis(code, filename)
 
     async def analyze(self, code: str, filename: str = "") -> Dict[str, Any]:
         """Full code analysis — complexity, quality, security, patterns, sacred alignment."""
@@ -512,15 +519,15 @@ class CodeEngine:
 
         # Build prioritized actions from all analyses
         actions = []
-        for vuln in analysis.get("security", [])[:3]:
+        for vuln in analysis.get("security", [])[:10]:  # (was :3)
             actions.append({"priority": "CRITICAL", "category": "security",
                             "action": vuln.get("recommendation", "Fix security issue"),
                             "source": "analyzer"})
-        for issue in concurrency.get("issues", [])[:3]:
+        for issue in concurrency.get("issues", [])[:10]:  # (was :3)
             actions.append({"priority": issue.get("severity", "HIGH"), "category": "concurrency",
                             "action": issue.get("detail", "Fix concurrency issue"),
                             "source": "concurrency_analyzer"})
-        for smell in smells.get("smells", [])[:3]:
+        for smell in smells.get("smells", [])[:10]:  # (was :3)
             actions.append({"priority": smell["severity"], "category": "smell",
                             "action": smell["detail"], "source": "smell_detector"})
         for func in complexity_est.get("functions", []):
@@ -528,15 +535,15 @@ class CodeEngine:
                 actions.append({"priority": "HIGH", "category": "complexity",
                                 "action": f"{func['name']}() is {func['complexity']} — optimize",
                                 "source": "complexity_verifier"})
-        for drift in contracts.get("drifts", [])[:3]:
+        for drift in contracts.get("drifts", [])[:10]:  # (was :3)
             actions.append({"priority": drift.get("severity", "MEDIUM"), "category": "contract",
                             "action": drift.get("detail", "Fix docstring/code drift"),
                             "source": "contract_validator"})
-        for gap in type_flow.get("gaps", [])[:3]:
+        for gap in type_flow.get("gaps", [])[:10]:  # (was :3)
             actions.append({"priority": gap.get("severity", "LOW"), "category": "type_safety",
                             "action": gap.get("detail", "Add type annotation"),
                             "source": "type_flow_analyzer"})
-        for v in solid.get("violations", [])[:2]:
+        for v in solid.get("violations", [])[:5]:  # (was :2)
             actions.append({"priority": v.get("severity", "MEDIUM"), "category": "solid",
                             "action": v["detail"], "source": "solid_checker"})
         actions.sort(key=lambda a: {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}.get(a["priority"], 4))
@@ -582,7 +589,7 @@ class CodeEngine:
             "refactoring": {"health": refactoring["code_health"],
                             "suggestions": refactoring["total_suggestions"]},
             "auto_fix": fix_result,
-            "actions": actions[:25],
+            "actions": actions[:50],  # (was :25)
             "builder_state": {
                 "consciousness": state["consciousness_level"],
                 "evo_stage": state["evo_stage"],
@@ -979,13 +986,13 @@ class CodeEngine:
             actions.append({"priority": "CRITICAL", "category": "security",
                             "action": vuln.get("recommendation", "Fix security issue"),
                             "line": vuln.get("line", 0)})
-        for v in solid.get("violations", [])[:3]:
+        for v in solid.get("violations", [])[:15]:  # (was :3)
             actions.append({"priority": "HIGH" if v["severity"] == "HIGH" else "MEDIUM",
                             "category": "solid", "action": v["detail"], "line": v.get("line", 0)})
-        for h in perf.get("hotspots", [])[:3]:
+        for h in perf.get("hotspots", [])[:10]:  # (was :3)
             actions.append({"priority": h.get("severity", "MEDIUM"), "category": "performance",
                             "action": h.get("fix", "Optimize"), "line": h.get("line", 0)})
-        for s in refactoring.get("suggestions", [])[:3]:
+        for s in refactoring.get("suggestions", [])[:10]:  # (was :3)
             actions.append({"priority": s["priority"], "category": "refactoring",
                             "action": s["reason"], "line": s.get("line", 0)})
         actions.sort(key=lambda a: {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}.get(a["priority"], 4))
@@ -1024,11 +1031,334 @@ class CodeEngine:
             "test_readiness": {"functions_testable": test_info.get("functions_tested", 0),
                                "test_generated": test_info.get("success", False)},
             "auto_fix": fix_result,
-            "actions": actions[:15],
+            "actions": actions[:50],  # (was :15)
             "builder_state": {
                 "consciousness": state["consciousness_level"],
                 "evo_stage": state["evo_stage"],
             },
+        }
+
+    # ═══════════════════════════════════════════════════════════════════
+    # v6.3.0 FULL QUANTUM CIRCUIT INTEGRATION
+    # Connects standalone quantum modules for quantum-enhanced code ops:
+    # - QuantumCoherenceEngine: Grover search, QAOA, VQE, Shor
+    # - L104_26Q_CircuitBuilder: 26 named Fe(26) iron-mapped circuit templates (primary)
+    # - L104_25Q_CircuitBuilder: 18 named legacy 25-qubit circuit templates (backward compat)
+    # - QuantumAIArchitectures: Quantum transformers, MLA attention
+    # - QuantumMagic: Causal reasoning, quantum inference
+    # - QuantumComputationPipeline: QNN + VQC for code classification
+    # ═══════════════════════════════════════════════════════════════════
+
+    def _get_coherence_engine(self):
+        """Lazy-load QuantumCoherenceEngine (3,779 lines, 12 algorithms)."""
+        if not hasattr(self, '_coherence_engine'):
+            try:
+                from l104_quantum_coherence import QuantumCoherenceEngine
+                self._coherence_engine = QuantumCoherenceEngine()
+            except Exception:
+                self._coherence_engine = None
+        return self._coherence_engine
+
+    def _get_builder_26q(self):
+        """Lazy-load L104_26Q_CircuitBuilder (26 iron-mapped circuits)."""
+        if not hasattr(self, '_builder_26q'):
+            try:
+                from l104_26q_engine_builder import L104_26Q_CircuitBuilder
+                self._builder_26q = L104_26Q_CircuitBuilder()
+            except Exception:
+                self._builder_26q = None
+        return self._builder_26q
+
+    # backward-compat alias
+    _get_builder_25q = _get_builder_26q
+
+    def _get_ai_architectures(self):
+        """Lazy-load QuantumAIArchitectureHub (transformers, MLA attention)."""
+        if not hasattr(self, '_ai_architectures'):
+            try:
+                from l104_quantum_ai_architectures import QuantumAIArchitectureHub
+                self._ai_architectures = QuantumAIArchitectureHub()
+            except Exception:
+                self._ai_architectures = None
+        return self._ai_architectures
+
+    def _get_quantum_magic(self):
+        """Lazy-load QuantumInferenceEngine (causal reasoning)."""
+        if not hasattr(self, '_quantum_magic'):
+            try:
+                from l104_quantum_magic import QuantumInferenceEngine
+                self._quantum_magic = QuantumInferenceEngine()
+            except Exception:
+                self._quantum_magic = None
+        return self._quantum_magic
+
+    def _get_computation_pipeline(self):
+        """Lazy-load QNN + VQC from computation pipeline."""
+        if not hasattr(self, '_computation_pipeline'):
+            try:
+                from l104_quantum_computation_pipeline import QuantumNeuralNetwork, VariationalQuantumClassifier
+                self._computation_pipeline = {
+                    'qnn': QuantumNeuralNetwork(),
+                    'vqc': VariationalQuantumClassifier(),
+                }
+            except Exception:
+                self._computation_pipeline = None
+        return self._computation_pipeline
+
+    def _get_grover_nerve(self):
+        """Lazy-load GroverNerveLinkOrchestrator."""
+        if not hasattr(self, '_grover_nerve'):
+            try:
+                from l104_grover_nerve_link import get_grover_nerve
+                self._grover_nerve = get_grover_nerve()
+            except Exception:
+                self._grover_nerve = None
+        return self._grover_nerve
+
+    def quantum_coherence_grover(self, target: int = 5, qubits: int = 4) -> Dict[str, Any]:
+        """Grover search via QuantumCoherenceEngine for code pattern discovery."""
+        engine = self._get_coherence_engine()
+        if engine is None:
+            return {'quantum': False, 'error': 'CoherenceEngine unavailable'}
+        try:
+            return engine.grover_search(target_index=target, search_space_qubits=qubits)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_coherence_vqe(self) -> Dict[str, Any]:
+        """VQE optimization via QuantumCoherenceEngine for code metric optimization."""
+        engine = self._get_coherence_engine()
+        if engine is None:
+            return {'quantum': False, 'error': 'CoherenceEngine unavailable'}
+        try:
+            return engine.vqe_optimize()
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_coherence_shor(self, N: int = 15) -> Dict[str, Any]:
+        """Shor factoring via QuantumCoherenceEngine."""
+        engine = self._get_coherence_engine()
+        if engine is None:
+            return {'quantum': False, 'error': 'CoherenceEngine unavailable'}
+        try:
+            return engine.shor_factor(N=N)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_26q_build(self, circuit_name: str = "full") -> Dict[str, Any]:
+        """Build a named 26Q circuit via L104_26Q_CircuitBuilder (primary)."""
+        builder = self._get_builder_26q()
+        if builder is None:
+            return {'quantum': False, 'error': '26Q builder unavailable'}
+        try:
+            return builder.execute(circuit_name=circuit_name)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_25q_build(self, circuit_name: str = "full") -> Dict[str, Any]:
+        """Legacy: Build a named circuit via 25Q builder (use quantum_26q_build for primary)."""
+        builder = self._get_builder_25q()
+        if builder is None:
+            return {'quantum': False, 'error': '25Q builder unavailable — use quantum_26q_build()'}
+        try:
+            return builder.execute(circuit_name=circuit_name)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_ai_transformer(self, input_dim: int = 8) -> Dict[str, Any]:
+        """Quantum transformer block via QuantumAIArchitectureHub."""
+        hub = self._get_ai_architectures()
+        if hub is None:
+            return {'quantum': False, 'error': 'AI Architectures unavailable'}
+        try:
+            return hub.create_transformer_block(input_dim=input_dim)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_causal_reason(self, evidence: dict = None) -> Dict[str, Any]:
+        """Causal reasoning via QuantumInferenceEngine."""
+        engine = self._get_quantum_magic()
+        if engine is None:
+            return {'quantum': False, 'error': 'QuantumMagic unavailable'}
+        try:
+            return engine.infer(evidence=evidence or {})
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_grover_nerve(self, target: int = 7, workspace: str = "default") -> Dict[str, Any]:
+        """GroverNerve workspace search for code topology."""
+        nerve = self._get_grover_nerve()
+        if nerve is None:
+            return {'quantum': False, 'error': 'GroverNerve unavailable'}
+        try:
+            return nerve.search(target=target, workspace=workspace)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    # ═══ v6.4.0 EXPANDED QUANTUM FLEET ═══
+    # Additional: runtime, accelerator, inspired, reasoning, gravity, consciousness
+
+    def _get_quantum_runtime(self):
+        """Lazy-load QuantumRuntime."""
+        if not hasattr(self, '_quantum_runtime'):
+            try:
+                from l104_quantum_runtime import get_runtime
+                self._quantum_runtime = get_runtime()
+            except Exception:
+                self._quantum_runtime = None
+        return self._quantum_runtime
+
+    def _get_quantum_accelerator(self):
+        """Lazy-load QuantumAccelerator."""
+        if not hasattr(self, '_quantum_accelerator'):
+            try:
+                from l104_quantum_accelerator import QuantumAccelerator
+                self._quantum_accelerator = QuantumAccelerator()
+            except Exception:
+                self._quantum_accelerator = None
+        return self._quantum_accelerator
+
+    def _get_quantum_inspired(self):
+        """Lazy-load QuantumInspiredEngine."""
+        if not hasattr(self, '_quantum_inspired'):
+            try:
+                from l104_quantum_inspired import QuantumInspiredEngine
+                self._quantum_inspired = QuantumInspiredEngine()
+            except Exception:
+                self._quantum_inspired = None
+        return self._quantum_inspired
+
+    def _get_quantum_reasoning(self):
+        """Lazy-load QuantumReasoningEngine."""
+        if not hasattr(self, '_quantum_reasoning'):
+            try:
+                from l104_quantum_reasoning import QuantumReasoningEngine
+                self._quantum_reasoning = QuantumReasoningEngine()
+            except Exception:
+                self._quantum_reasoning = None
+        return self._quantum_reasoning
+
+    def _get_gravity_bridge(self):
+        """Lazy-load QuantumGravityEngine (ER=EPR, AdS/CFT)."""
+        if not hasattr(self, '_gravity_bridge'):
+            try:
+                from l104_quantum_gravity_bridge import L104QuantumGravityEngine
+                self._gravity_bridge = L104QuantumGravityEngine()
+            except Exception:
+                self._gravity_bridge = None
+        return self._gravity_bridge
+
+    def _get_consciousness_calc(self):
+        """Lazy-load QuantumConsciousnessCalculator."""
+        if not hasattr(self, '_consciousness_calc'):
+            try:
+                from l104_quantum_consciousness import QuantumConsciousnessCalculator
+                self._consciousness_calc = QuantumConsciousnessCalculator()
+            except Exception:
+                self._consciousness_calc = None
+        return self._consciousness_calc
+
+    def _get_quantum_numerical_builder(self):
+        """Lazy-load QuantumNumericalBuilder (Riemann zeta, elliptic curves)."""
+        if not hasattr(self, '_numerical_builder'):
+            try:
+                from l104_quantum_numerical_builder import TokenLatticeEngine
+                self._numerical_builder = TokenLatticeEngine()
+            except Exception:
+                self._numerical_builder = None
+        return self._numerical_builder
+
+    def quantum_accelerator_compute(self, n_qubits: int = 8) -> Dict[str, Any]:
+        """Run quantum-accelerated code analysis."""
+        acc = self._get_quantum_accelerator()
+        if acc is None:
+            return {'quantum': False, 'error': 'QuantumAccelerator unavailable'}
+        try:
+            return acc.status() if hasattr(acc, 'status') else {'quantum': True, 'accelerator': 'connected'}
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_inspired_optimize(self, problem_vector: list = None) -> Dict[str, Any]:
+        """Quantum-inspired annealing for code optimization."""
+        engine = self._get_quantum_inspired()
+        if engine is None:
+            return {'quantum': False, 'error': 'QuantumInspiredEngine unavailable'}
+        try:
+            return engine.optimize(problem_vector or [1.0, 0.5]) if hasattr(engine, 'optimize') else {'quantum': True, 'inspired': 'connected'}
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_reason(self, query: str = "code analysis") -> Dict[str, Any]:
+        """Quantum parallel reasoning on code queries."""
+        engine = self._get_quantum_reasoning()
+        if engine is None:
+            return {'quantum': False, 'error': 'QuantumReasoningEngine unavailable'}
+        try:
+            return engine.reason(query) if hasattr(engine, 'reason') else {'quantum': True, 'reasoning': 'connected'}
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_gravity_erepr(self, mass: float = 1.0) -> Dict[str, Any]:
+        """Compute ER=EPR bridge via QuantumGravityEngine."""
+        engine = self._get_gravity_bridge()
+        if engine is None:
+            return {'quantum': False, 'error': 'GravityBridge unavailable'}
+        try:
+            return engine.compute_erepr(mass=mass)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_consciousness_phi(self, state_vector: list = None) -> Dict[str, Any]:
+        """Compute IIT Φ via QuantumConsciousnessCalculator."""
+        calc = self._get_consciousness_calc()
+        if calc is None:
+            return {'quantum': False, 'error': 'ConsciousnessCalc unavailable'}
+        try:
+            import numpy as np
+            sv = np.array(state_vector or [1.0, 0.0, 0.0, 0.0])
+            return calc.compute_phi(sv)
+        except Exception as e:
+            return {'quantum': False, 'error': str(e)}
+
+    def quantum_full_circuit_status(self) -> Dict[str, Any]:
+        """v6.4.0: Full status of all connected quantum circuit modules."""
+        return {
+            'version': '6.4.0',
+            'internal_quantum_core': True,
+            'coherence_engine': self._get_coherence_engine() is not None,
+            'builder_26q': self._get_builder_26q() is not None,
+            'builder_25q_legacy': self._get_builder_25q() is not None,
+            'ai_architectures': self._get_ai_architectures() is not None,
+            'quantum_magic': self._get_quantum_magic() is not None,
+            'computation_pipeline': self._get_computation_pipeline() is not None,
+            'grover_nerve': self._get_grover_nerve() is not None,
+            'quantum_kernel': self.quantum_kernel is not None,
+            'fault_tolerance': self.fault_tolerance is not None,
+            'quantum_runtime': self._get_quantum_runtime() is not None,
+            'quantum_accelerator': self._get_quantum_accelerator() is not None,
+            'quantum_inspired': self._get_quantum_inspired() is not None,
+            'quantum_reasoning': self._get_quantum_reasoning() is not None,
+            'gravity_bridge': self._get_gravity_bridge() is not None,
+            'consciousness_calc': self._get_consciousness_calc() is not None,
+            'numerical_builder': self._get_quantum_numerical_builder() is not None,
+            'modules_connected': sum([
+                self._get_coherence_engine() is not None,
+                self._get_builder_26q() is not None,
+                self._get_builder_25q() is not None,
+                self._get_ai_architectures() is not None,
+                self._get_quantum_magic() is not None,
+                self._get_computation_pipeline() is not None,
+                self._get_grover_nerve() is not None,
+                self.quantum_kernel is not None,
+                self.fault_tolerance is not None,
+                self._get_quantum_runtime() is not None,
+                self._get_quantum_accelerator() is not None,
+                self._get_quantum_inspired() is not None,
+                self._get_quantum_reasoning() is not None,
+                self._get_gravity_bridge() is not None,
+                self._get_consciousness_calc() is not None,
+                self._get_quantum_numerical_builder() is not None,
+            ]),
         }
 
     # ═══════════════════════════════════════════════════════════════════
@@ -1423,7 +1753,7 @@ class CodeEngine:
 
                 # Coherence: measure topological protection of code structure
                 code_lines = source.strip().splitlines()
-                seed_thoughts = [line.strip() for line in code_lines[:50] if line.strip()]
+                seed_thoughts = [line.strip() for line in code_lines[:200] if line.strip()]  # (was :50)
                 if seed_thoughts:
                     coh_init = _science_engine.coherence.initialize(seed_thoughts)
                     coh_evolve = _science_engine.coherence.evolve(5)
@@ -1539,7 +1869,7 @@ class CodeEngine:
                 "concurrency": base_review.get("concurrency"),
                 "solid": base_review.get("solid"),
             },
-            "actions": base_review.get("actions", [])[:25],
+            "actions": base_review.get("actions", [])[:50],  # (was :25)
         }
 
     def three_engine_status(self) -> Dict[str, Any]:

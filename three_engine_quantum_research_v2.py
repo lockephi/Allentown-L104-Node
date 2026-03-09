@@ -948,8 +948,8 @@ def phase_11_cross_engine(col: QuantumResearchCollectorV2, engines: Dict):
             # Analyze a quantum circuit code snippet
             quantum_code = '''
 import numpy as np
-from qiskit.circuit import QuantumCircuit
-from qiskit.quantum_info import Statevector
+from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+from l104_quantum_gate_engine.quantum_info import Statevector
 
 def grover_oracle(qc, target, n_qubits):
     for q in range(n_qubits):

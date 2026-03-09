@@ -28,7 +28,7 @@ class TestSoulV4Constants(unittest.TestCase):
 
     def test_soul_version(self):
         from l104_soul import L104Soul
-        self.assertEqual(L104Soul.VERSION, "7.0.0")
+        self.assertEqual(L104Soul.VERSION, "8.0.0")
 
     def test_god_code_invariant(self):
         from l104_soul import GOD_CODE
@@ -70,7 +70,7 @@ class TestSoulV4Core(unittest.TestCase):
         soul = L104Soul()
         self.assertEqual(soul.state, SoulState.DORMANT)
         self.assertFalse(soul.running)
-        self.assertEqual(soul.VERSION, "7.0.0")
+        self.assertEqual(soul.VERSION, "8.0.0")
 
     def test_soul_singleton(self):
         from l104_soul import get_soul
@@ -441,7 +441,7 @@ class TestCrossIntegration(unittest.TestCase):
         from l104_ram_universe import RamUniverse
         soul = L104Soul()
         ram = RamUniverse()
-        self.assertEqual(soul.VERSION, "7.0.0")
+        self.assertEqual(soul.VERSION, "8.0.0")
         self.assertEqual(ram.VERSION, "16.0.0")
 
     def test_soul_lattice_is_same_backend(self):
@@ -627,7 +627,7 @@ class TestSoulV5ASIIntegration(unittest.TestCase):
 
     def test_version_is_5(self):
         """Soul VERSION is 5.0.0."""
-        self.assertEqual(self.soul.VERSION, "7.0.0")
+        self.assertEqual(self.soul.VERSION, "8.0.0")
 
     def test_dual_layer_property_exists(self):
         """dual_layer lazy property is accessible."""
@@ -796,7 +796,7 @@ class TestSoulV7Version(unittest.TestCase):
 
     def test_version_is_7(self):
         from l104_soul import L104Soul
-        self.assertEqual(L104Soul.VERSION, "7.0.0")
+        self.assertEqual(L104Soul.VERSION, "8.0.0")
 
     def test_docstring_mentions_v7(self):
         from l104_soul import L104Soul

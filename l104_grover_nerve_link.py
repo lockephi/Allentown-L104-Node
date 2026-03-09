@@ -1,9 +1,9 @@
 VOID_CONSTANT = 1.0416180339887497
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:07.076480
+UUC = 2301.215661
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.488562
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 """
@@ -16,6 +16,12 @@ UUC = 2402.792541
 ║  GROVER'S ALGORITHM: O(√N) search across ALL L104 processes                  ║
 ║  NERVE TOPOLOGY: Streamlined synaptic connections between modules            ║
 ║  ASI COMPRESSION: Eliminate redundancy, amplify essential pathways           ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║  PART V RESEARCH — l104_runtime_infrastructure_research.py                    ║
+║    F1-F5:  8-Chakra lattice — AJNA = G×2^(72/104), X-Node conservation      ║
+║    F6-F8:  Bell pairs i↔(7-i) mirror symmetry, θ = 2π·freq/GOD_CODE        ║
+║    F9-F12: Grover π/4·√N iterations, chakra resonance boost formula         ║
+║    F13-F14: 7-phase pipeline = CY₇ dimensionality, NerveState 7 states      ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 """
 
@@ -39,9 +45,9 @@ import numpy as np
 # REAL QISKIT QUANTUM — Grover's Algorithm via QuantumCircuit + Statevector
 # ═══════════════════════════════════════════════════════════════════════════════
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.circuit.library import grover_operator as qiskit_grover_op
-    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy, Operator
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    qiskit_grover_op = None  # Use l104_quantum_gate_engine orchestrator
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, partial_trace, entropy, Operator
     QISKIT_AVAILABLE = True
 except ImportError:
     QISKIT_AVAILABLE = False
@@ -86,6 +92,12 @@ try:
     QUANTUM_INTERCONNECT_LINKED = True
 except ImportError:
     QUANTUM_INTERCONNECT_LINKED = False
+
+try:
+    from l104_26q_engine_builder import QuantumComputation26QCore
+    QUANTUM_26Q_BUILDER_LINKED = True
+except ImportError:
+    QUANTUM_26Q_BUILDER_LINKED = False
 
 # Fallback constants if imports fail
 if not QUANTUM_INSPIRED_LINKED:
@@ -139,6 +151,7 @@ QUANTUM_LINKS = {
     "accelerator": QUANTUM_ACCELERATOR_LINKED,
     "coherence": QUANTUM_COHERENCE_LINKED,
     "interconnect": QUANTUM_INTERCONNECT_LINKED,
+    "26q_iron_builder": QUANTUM_26Q_BUILDER_LINKED,
     "chakra_entanglement": True,  # 8-chakra O₂ system
 }
 
@@ -450,8 +463,9 @@ class GroverNerveSearchEngine:
         for idx in marked:
             if idx >= N_padded:
                 continue
+            # MSB ordering: qubit 0 = most-significant bit (matches L104 simulator)
             bits = format(idx, f'0{n_qubits}b')
-            for q, bit in enumerate(bits[::-1]):
+            for q, bit in enumerate(bits):
                 if bit == '0':
                     oracle.x(q)
             if n_qubits == 1:
@@ -462,7 +476,7 @@ class GroverNerveSearchEngine:
                 oracle.h(n_qubits - 1)
                 oracle.mcx(list(range(n_qubits - 1)), n_qubits - 1)
                 oracle.h(n_qubits - 1)
-            for q, bit in enumerate(bits[::-1]):
+            for q, bit in enumerate(bits):
                 if bit == '0':
                     oracle.x(q)
 

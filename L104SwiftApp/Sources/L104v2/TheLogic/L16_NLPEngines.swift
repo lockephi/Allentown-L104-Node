@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
 // L16_NLPEngines.swift
-// [EVO_62_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
 // L104v2 — Extracted from L104Native.swift (lines 11331-11526)
 //
 // SMART TOPIC EXTRACTOR — NLTagger-powered noun phrase extraction
@@ -19,9 +19,12 @@ class SmartTopicExtractor {
     static let shared = SmartTopicExtractor()
 
     private var knownConcepts: Set<String> = []  // Pre-seeded from KB prompts
+    private var sortedConceptsCache: [String] = []  // Pre-sorted by length (longest first), cached at init
     private var conceptAliases: [String: String] = [:]  // "ML" → "machine learning"
     private var initialized = false
     private let syncQueue = DispatchQueue(label: "com.l104.nlpengines.sync")
+    // Reusable NLTagger — avoids creating a new one per extractTopics() call (~15-40ms saved)
+    private let tagger = NLTagger(tagSchemes: [.lexicalClass])
 
     func initialize(from kb: ASIKnowledgeBase) {
         syncQueue.sync {
@@ -50,6 +53,8 @@ class SmartTopicExtractor {
                 "gpu": "graphics processing unit", "nlp": "natural language processing",
                 "cv": "computer vision", "rl": "reinforcement learning",
             ]
+            // Pre-sort concepts by length (longest first) and cache — avoids re-sorting every call
+            sortedConceptsCache = knownConcepts.sorted { $0.count > $1.count }
             initialized = true
         }
     }
@@ -61,8 +66,8 @@ class SmartTopicExtractor {
         // 1. Check for known multi-word concepts (longest match first)
         var matchedConcepts: [String] = []
         syncQueue.sync {
-            let sortedConcepts = knownConcepts.sorted { $0.count > $1.count }
-            for concept in sortedConcepts.prefix(2000) {
+            // Use pre-sorted cache instead of sorting every call
+            for concept in sortedConceptsCache.prefix(2000) {
                 if q.contains(concept) && concept.count > 4 {
                     matchedConcepts.append(concept)
                     if matchedConcepts.count >= 5 { break }
@@ -77,33 +82,37 @@ class SmartTopicExtractor {
             }
         }
 
-        // 3. NLTagger noun extraction
-        let tagger = NLTagger(tagSchemes: [.lexicalClass])
-        tagger.string = query
-        var nounPhrases: [String] = []
-        var currentPhrase: [String] = []
+        // 3. NLTagger noun extraction — reuse tagger instance
+        // NLTagger/CoreNLP CRF model is NOT thread-safe; serialize all access
+        // through syncQueue to prevent concurrent mutation crashes (SIGSEGV in crfsuite)
+        let nounPhrases: [String] = syncQueue.sync {
+            tagger.string = query
+            var phrases: [String] = []
+            var currentPhrase: [String] = []
 
-        tagger.enumerateTags(in: query.startIndex..<query.endIndex, unit: .word, scheme: .lexicalClass) { tag, range in
-            let word = String(query[range]).lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-            if let tag = tag {
-                if tag == .noun || tag == .adjective {
-                    currentPhrase.append(word)
-                } else {
-                    if !currentPhrase.isEmpty {
-                        let phrase = currentPhrase.joined(separator: " ")
-                        if phrase.count > 2 {
-                            nounPhrases.append(phrase)
+            tagger.enumerateTags(in: query.startIndex..<query.endIndex, unit: .word, scheme: .lexicalClass) { tag, range in
+                let word = String(query[range]).lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                if let tag = tag {
+                    if tag == .noun || tag == .adjective {
+                        currentPhrase.append(word)
+                    } else {
+                        if !currentPhrase.isEmpty {
+                            let phrase = currentPhrase.joined(separator: " ")
+                            if phrase.count > 2 {
+                                phrases.append(phrase)
+                            }
+                            currentPhrase = []
                         }
-                        currentPhrase = []
                     }
                 }
+                return true
             }
-            return true
-        }
-        // Flush remaining phrase
-        if !currentPhrase.isEmpty {
-            let phrase = currentPhrase.joined(separator: " ")
-            if phrase.count > 2 { nounPhrases.append(phrase) }
+            // Flush remaining phrase
+            if !currentPhrase.isEmpty {
+                let phrase = currentPhrase.joined(separator: " ")
+                if phrase.count > 2 { phrases.append(phrase) }
+            }
+            return phrases
         }
 
         // 4. Merge and deduplicate: known concepts first, then noun phrases
@@ -137,6 +146,7 @@ class PronounResolver {
     static let shared = PronounResolver()
 
     private var entityHistory: [(entity: String, timestamp: Date, type: EntityType)] = []
+    private let historyLock = NSLock()
 
     enum EntityType {
         case singular   // it, this, that
@@ -150,6 +160,7 @@ class PronounResolver {
         let extractor = SmartTopicExtractor.shared
         let topics = extractor.extractTopics(message)
         let now = Date()
+        historyLock.lock()
         for topic in topics {
             entityHistory.append((entity: topic, timestamp: now, type: classifyEntity(topic)))
         }
@@ -157,6 +168,7 @@ class PronounResolver {
         if entityHistory.count > 50 {
             entityHistory = Array(entityHistory.suffix(50))
         }
+        historyLock.unlock()
     }
 
     /// Resolve pronouns in a query using entity history
@@ -194,15 +206,18 @@ class PronounResolver {
     }
 
     private func findBestEntity(type: EntityType) -> String? {
+        historyLock.lock()
+        let snapshot = entityHistory
+        historyLock.unlock()
         // Recency-weighted: most recent entity of matching type
-        let candidates = entityHistory.reversed()
+        let candidates = snapshot.reversed()
         for entry in candidates {
             if entry.type == type || type == .singular {
                 return entry.entity
             }
         }
         // Fallback: just the most recent entity
-        return entityHistory.last?.entity
+        return snapshot.last?.entity
     }
 
     private func classifyEntity(_ entity: String) -> EntityType {

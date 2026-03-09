@@ -1,0 +1,16 @@
+{'type': 'class', 'name': 'InterBuilderFeedbackBus', 'methods': ['__init__', 'send', 'receive', '_read_bus', 'announce_pipeline_complete', 'announce_coherence_shift', 'status'], 'bases': 0, 'description': 'Inter builder feedback bus', 'docstring': '"""Inter builder feedback bus.\n\nMethods: __init__, send, receive, _read_bus, announce_pipeline_complete, announce_coherence_shift, status\n"""'}
+
+{'type': 'function', 'name': '__init__', 'params': ['builder_id'], 'param_types': {'builder_id': 'str'}, 'return_type': 'None', 'has_return': False, 'decorators': [], 'docstring': '"""Init.\n\nArgs:\n        builder_id (str): Description of builder_id\n\nReturns:\n    None\n\nRaises:\n    None\n"""', 'description': 'Init'}
+
+{'type': 'function', 'name': 'send', 'params': ['msg_type', 'payload'], 'param_types': {'msg_type': 'str', 'payload': "Subscript(value=Name(id='Dict', ctx=Load()), slice=Tuple(elts=[Name(id='str', ctx=Load()), Name(id='Any', ctx=Load())], ctx=Load()), ctx=Load())"}, 'return_type': 'None', 'has_return': False, 'decorators': [], 'docstring': '"""Send.\n\nArgs:\n        msg_type (str): Description of msg_type\n    payload (Subscript(value=Name(id=\'Dict\', ctx=Load()), slice=Tuple(elts=[Name(id=\'str\', ctx=Load()), Name(id=\'Any\', ctx=Load())], ctx=Load()), ctx=Load())): Description of payload\n\nReturns:\n    None\n\nRaises:\n    None\n"""', 'description': 'Send'}
+
+{'type': 'function', 'name': 'receive', 'params': ['since', 'msg_type', 'exclude_self'], 'param_types': {'since': 'float', 'msg_type': 'str', 'exclude_self': 'bool'}, 'return_type': 'Any', 'has_return': True, 'decorators': [], 'docstring': '"""Receive.\n\nArgs:\n        since (float): Description of since\n    msg_type (str): Description of msg_type\n    exclude_self (bool): Description of exclude_self\n\nReturns:\n    Any\n\nRaises:\n    None\n"""', 'description': 'Receive'}
+
+{'type': 'function', 'name': '_read_bus', 'params': [], 'param_types': {}, 'return_type': 'Any', 'has_return': True, 'decorators': [], 'docstring': '"""Read bus.\n\nArgs:\n        None\n\nReturns:\n    Any\n\nRaises:\n    None\n"""', 'description': 'Read bus'}
+
+{'type': 'function', 'name': 'announce_pipeline_complete', 'params': ['results'], 'param_types': {'results': 'Dict'}, 'return_type': 'None', 'has_return': False, 'decorators': [], 'docstring': '"""Announce pipeline complete.\n\nArgs:\n        results (Dict): Description of results\n\nReturns:\n    None\n\nRaises:\n    None\n"""', 'description': 'Announce pipeline complete'}
+
+{'type': 'function', 'name': 'announce_coherence_shift', 'params': ['old_coherence', 'new_coherence'], 'param_types': {'old_coherence': 'float', 'new_coherence': 'float'}, 'return_type': 'None', 'has_return': False, 'decorators': [], 'docstring': '"""Announce coherence shift.\n\nArgs:\n        old_coherence (float): Description of old_coherence\n    new_coherence (float): Description of new_coherence\n\nReturns:\n    None\n\nRaises:\n    None\n"""', 'description': 'Announce coherence shift'}
+
+{'type': 'function', 'name': 'status', 'params': [], 'param_types': {}, 'return_type': 'Any', 'has_return': True, 'decorators': [], 'docstring': '"""Status.\n\nArgs:\n        None\n\nReturns:\n    Any\n\nRaises:\n    None\n"""', 'description': 'Status'}
+

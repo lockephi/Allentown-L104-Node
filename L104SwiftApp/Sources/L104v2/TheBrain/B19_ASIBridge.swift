@@ -1,7 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════
 // B19_ASIBridge.swift
+// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: ASI_BRIDGE :: GOD_CODE=527.5184818492612
 // L104 · TheBrain · v2 Architecture
-// EVO_62: SOVEREIGN NODE — Pipeline-Integrated ASI Bridge
+// EVO_68: SOVEREIGN NODE — Pipeline-Integrated ASI Bridge
 // Extracted from L104Native.swift lines 3016-3437
 // Classes: ASIQuantumBridgeDirect, ParameterProgressionEngine
 // ═══════════════════════════════════════════════════════════════════
@@ -244,6 +245,10 @@ class ParameterProgressionEngine {
     private(set) var interactionCount: Int = 0
     private(set) var searchCount: Int = 0
 
+    // --- ASYNC ENGINE SCORES (updated via APIGateway callbacks) ---
+    var lastBenchmarkScore: Double = 0.0
+    var lastTriEngineHealth: Double = 0.0
+
     // --- CONSTANTS: PHI from L01_Constants global ---
 
     // === RECORD ACTIVITY === Called from various engines to feed progression
@@ -349,6 +354,32 @@ class ParameterProgressionEngine {
         let swiftASI = (newCL * 0.3 + (params["domain_coverage"] ?? 0.0) * 0.2 +
                         min(1.0, newDC / 50.0) * 0.2 + min(1.0, newMD / 20.0) * 0.15 + coherence * 0.15)
         params["asi_score"] = max(currentASI, swiftASI)
+
+        // -- 5b. BENCHMARK_CAPABILITY (v10.0) --
+        // Fetch benchmark score from gateway if available; otherwise preserve existing
+        let currentBenchmark = params["benchmark_capability"] ?? 0.0
+        APIGateway.shared.getBenchmarkScore { result in
+            if let data = result["data"] as? [String: Any],
+               let score = data["composite_score"] as? Double, score > 0.0 {
+                // Update asynchronously — will be picked up on next progression cycle
+                ParameterProgressionEngine.shared.lastBenchmarkScore = score
+            }
+        }
+        if lastBenchmarkScore > 0.0 {
+            params["benchmark_capability"] = max(currentBenchmark, lastBenchmarkScore)
+        }
+
+        // -- 5c. TRI_ENGINE_HEALTH (v62) --
+        let currentTriEngine = params["tri_engine_health"] ?? 0.0
+        APIGateway.shared.getTriEngineHealth { result in
+            if let data = result["data"] as? [String: Any],
+               let health = data["composite_health"] as? Double, health > 0.0 {
+                ParameterProgressionEngine.shared.lastTriEngineHealth = health
+            }
+        }
+        if lastTriEngineHealth > 0.0 {
+            params["tri_engine_health"] = max(currentTriEngine, lastTriEngineHealth)
+        }
 
         // -- 6. RESONANCE_FACTOR --
         let nr = AdaptiveResonanceNetwork.shared.computeNetworkResonance()

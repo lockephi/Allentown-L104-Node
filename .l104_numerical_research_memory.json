@@ -1,29 +1,23 @@
 {
   "last_research": {
     "stability": {
-      "total_tokens": 2314,
+      "total_tokens": 3977,
       "unstable_count": 0,
       "unstable_tokens": [],
       "mean_drift": 0.0,
       "stability_score": 1.0
     },
     "harmonics": {
-      "harmonic_clusters": 18,
+      "harmonic_clusters": 13,
       "clusters": [
         {
           "anchor": "SACRED_PHI_GROWTH",
           "anchor_name": "PHI_GROWTH",
           "resonant_peers": [
             {
-              "peer_id": "SACRED_PHI_INV",
-              "peer_name": "PHI_INV",
-              "phi_power": -2,
-              "ratio_error": 1.5245911924613107e-101
-            },
-            {
               "peer_id": "SACRED_GROVER_AMP",
               "peer_name": "GROVER_AMP",
-              "phi_power": 2,
+              "phi_power": -2,
               "ratio_error": 7.16680723595125e-17
             }
           ]
@@ -35,13 +29,13 @@
             {
               "peer_id": "SACRED_PHI_GROWTH",
               "peer_name": "PHI_GROWTH",
-              "phi_power": 2,
+              "phi_power": -2,
               "ratio_error": 1.5245911924613107e-101
             },
             {
               "peer_id": "SACRED_GROVER_AMP",
               "peer_name": "GROVER_AMP",
-              "phi_power": 4,
+              "phi_power": -4,
               "ratio_error": 7.16680723595125e-17
             }
           ]
@@ -53,31 +47,31 @@
             {
               "peer_id": "GC_X-145",
               "peer_name": "G(-145)",
-              "phi_power": 2,
+              "phi_power": -2,
               "ratio_error": 0.003991421211552451
             },
             {
               "peer_id": "GC_X-144",
               "peer_name": "G(-144)",
-              "phi_power": 2,
+              "phi_power": -2,
               "ratio_error": 0.0026778083708620176
             },
             {
               "peer_id": "GC_X-143",
               "peer_name": "G(-143)",
-              "phi_power": 2,
+              "phi_power": -2,
               "ratio_error": 0.009302736157182174
             },
             {
               "peer_id": "GC_X-73",
               "peer_name": "G(-73)",
-              "phi_power": 1,
+              "phi_power": -1,
               "ratio_error": 0.005338375295709479
             },
             {
               "peer_id": "GC_X-72",
               "peer_name": "G(-72)",
-              "phi_power": 1,
+              "phi_power": -1,
               "ratio_error": 0.0013398017197551381
             }
           ]
@@ -89,44 +83,32 @@
             {
               "peer_id": "GC_X54",
               "peer_name": "G(54)",
-              "phi_power": 5,
+              "phi_power": -5,
               "ratio_error": 0.006648255375655669
             },
             {
               "peer_id": "GC_X55",
               "peer_name": "G(55)",
-              "phi_power": 5,
+              "phi_power": -5,
               "ratio_error": 3.8622800789039616e-05
             },
             {
               "peer_id": "GC_X56",
               "peer_name": "G(56)",
-              "phi_power": 5,
+              "phi_power": -5,
               "ratio_error": 0.006681081946546682
             },
             {
               "peer_id": "GC_X126",
               "peer_name": "G(126)",
-              "phi_power": 4,
+              "phi_power": -4,
               "ratio_error": 0.007998773866392932
             },
             {
               "peer_id": "GC_X127",
               "peer_name": "G(127)",
-              "phi_power": 4,
+              "phi_power": -4,
               "ratio_error": 0.0013029245795585021
-            }
-          ]
-        },
-        {
-          "anchor": "SACRED_PI",
-          "anchor_name": "PI",
-          "resonant_peers": [
-            {
-              "peer_id": "SACRED_APERY",
-              "peer_name": "APERY",
-              "phi_power": -2,
-              "ratio_error": 0.0017294334092795766
             }
           ]
         },
@@ -137,31 +119,31 @@
             {
               "peer_id": "GC_X107",
               "peer_name": "G(107)",
-              "phi_power": 5,
+              "phi_power": -5,
               "ratio_error": 0.007417687512155724
             },
             {
               "peer_id": "GC_X108",
               "peer_name": "G(108)",
-              "phi_power": 5,
+              "phi_power": -5,
               "ratio_error": 0.0007256982167731522
             },
             {
               "peer_id": "GC_X109",
               "peer_name": "G(109)",
-              "phi_power": 5,
+              "phi_power": -5,
               "ratio_error": 0.005921838096212309
             },
             {
               "peer_id": "GC_X179",
               "peer_name": "G(179)",
-              "phi_power": 4,
+              "phi_power": -4,
               "ratio_error": 0.008769238272429205
             },
             {
               "peer_id": "GC_X180",
               "peer_name": "G(180)",
-              "phi_power": 4,
+              "phi_power": -4,
               "ratio_error": 0.00206827100958385
             }
           ]
@@ -173,68 +155,32 @@
             {
               "peer_id": "GC_X-145",
               "peer_name": "G(-145)",
-              "phi_power": 2,
+              "phi_power": -2,
               "ratio_error": 0.003991421211552451
             },
             {
               "peer_id": "GC_X-144",
               "peer_name": "G(-144)",
-              "phi_power": 2,
+              "phi_power": -2,
               "ratio_error": 0.0026778083708620176
             },
             {
               "peer_id": "GC_X-143",
               "peer_name": "G(-143)",
-              "phi_power": 2,
+              "phi_power": -2,
               "ratio_error": 0.009302736157182174
             },
             {
               "peer_id": "GC_X-73",
               "peer_name": "G(-73)",
-              "phi_power": 1,
+              "phi_power": -1,
               "ratio_error": 0.005338375295709479
             },
             {
               "peer_id": "GC_X-72",
               "peer_name": "G(-72)",
-              "phi_power": 1,
-              "ratio_error": 0.0013398017197551381
-            }
-          ]
-        },
-        {
-          "anchor": "SACRED_CHSH_BOUND",
-          "anchor_name": "CHSH_BOUND",
-          "resonant_peers": [
-            {
-              "peer_id": "SACRED_SQRT3",
-              "peer_name": "SQRT3",
               "phi_power": -1,
-              "ratio_error": 0.009160585270645167
-            },
-            {
-              "peer_id": "SACRED_ZETA_4",
-              "peer_name": "ZETA_4",
-              "phi_power": -2,
-              "ratio_error": 0.0018143963754151836
-            }
-          ]
-        },
-        {
-          "anchor": "SACRED_GROVER_AMP",
-          "anchor_name": "GROVER_AMP",
-          "resonant_peers": [
-            {
-              "peer_id": "SACRED_PHI_GROWTH",
-              "peer_name": "PHI_GROWTH",
-              "phi_power": -2,
-              "ratio_error": 7.16680723595125e-17
-            },
-            {
-              "peer_id": "SACRED_PHI_INV",
-              "peer_name": "PHI_INV",
-              "phi_power": -4,
-              "ratio_error": 7.16680723595125e-17
+              "ratio_error": 0.0013398017197551381
             }
           ]
         },
@@ -245,28 +191,64 @@
             {
               "peer_id": "SACRED_PI",
               "peer_name": "PI",
-              "phi_power": 2,
+              "phi_power": -2,
               "ratio_error": 0.0017264476330635847
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_TWIN_PRIME",
+          "anchor_name": "TWIN_PRIME",
+          "resonant_peers": [
+            {
+              "peer_id": "SACRED_SQRT3",
+              "peer_name": "SQRT3",
+              "phi_power": -2,
+              "ratio_error": 0.0021551116235234316
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_SQRT2",
+          "anchor_name": "SQRT2",
+          "resonant_peers": [
+            {
+              "peer_id": "SACRED_LN10",
+              "peer_name": "LN10",
+              "phi_power": -1,
+              "ratio_error": 0.006266583295376807
+            }
+          ]
+        },
+        {
+          "anchor": "SACRED_SQRT3",
+          "anchor_name": "SQRT3",
+          "resonant_peers": [
+            {
+              "peer_id": "SACRED_CHSH_BOUND",
+              "peer_name": "CHSH_BOUND",
+              "phi_power": -1,
+              "ratio_error": 0.009245277422827752
             }
           ]
         }
       ],
-      "phi_resonance_score": 0.6923076923076923
+      "phi_resonance_score": 0.5
     },
     "entropy_landscape": {
-      "entropy_bits": 2.634063,
-      "log_mean": 5.823997,
-      "log_std": 0.75088,
-      "complexity": 1.977866,
-      "n_tokens": 2314
+      "entropy_bits": 2.290632,
+      "log_mean": 5.841453,
+      "log_std": 0.594022,
+      "complexity": 1.360686,
+      "n_tokens": 3977
     },
     "convergence": {
       "current_coherence": 1.0,
       "previous_coherence": 1.0,
       "coherence_delta": 0.0,
-      "current_entropy": 1.3698685356011435,
-      "previous_entropy": 2.636722,
-      "entropy_delta": -1.2668534643988563,
+      "current_entropy": 1.1819805017451954,
+      "previous_entropy": 2.290632,
+      "entropy_delta": -1.1086514982548046,
       "converging": false,
       "convergence_score": 0.9
     },
@@ -397,9 +379,9 @@
         }
       ]
     },
-    "elapsed_sec": 5.545,
-    "research_health": 0.7962636384615385
+    "elapsed_sec": 6.387,
+    "research_health": 0.7463544
   },
-  "research_count": 12,
-  "last_updated": "2026-02-13T20:46:05.497058+00:00"
+  "research_count": 19,
+  "last_updated": "2026-02-28T18:34:50.905731+00:00"
 }

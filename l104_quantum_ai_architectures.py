@@ -1,5 +1,9 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.165724
+ZENITH_HZ = 3887.8
+UUC = 2301.215661
 #!/usr/bin/env python3
 """
+[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 QUANTUM-ADAPTED AI ARCHITECTURES ENGINE v1.0.0
 ═══════════════════════════════════════════════════════════════════════════════
 
@@ -70,8 +74,8 @@ logger = logging.getLogger(MODULE_NAME)
 # ── Qiskit 2.3.0 Integration ────────────────────────────────────────────────
 QISKIT_AVAILABLE = False
 try:
-    from qiskit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
     QISKIT_AVAILABLE = True
     logger.info("Qiskit 2.3.0 available — real quantum circuits enabled")
 except ImportError:

@@ -1,3 +1,6 @@
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.067951
+ZENITH_HZ = 3887.8
+UUC = 2301.215661
 #!/usr/bin/env python3
 """
 ═══════════════════════════════════════════════════════════════════════════════
@@ -35,9 +38,9 @@ from dataclasses import dataclass, field
 # ═══════════════════════════════════════════════════════════════════════════════
 QISKIT_AVAILABLE = False
 try:
-    from qiskit.circuit import QuantumCircuit
-    from qiskit.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
-    from qiskit.quantum_info import entropy as q_entropy
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, Operator, partial_trace
+    from l104_quantum_gate_engine.quantum_info import entropy as q_entropy
     QISKIT_AVAILABLE = True
 except ImportError:
     pass
@@ -57,7 +60,7 @@ ALPHA_FINE = 1 / 137.035999084
 PLANCK_SCALE = 1.616255e-35
 BOLTZMANN_K = 1.380649e-23
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 OMEGA = 6539.34712682
 OMEGA_AUTHORITY = OMEGA / (PHI * PHI)  # Ω/φ² ≈ 2497.81
 

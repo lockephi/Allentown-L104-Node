@@ -1,0 +1,394 @@
+{
+  "research": "L104 Sovereign Field Research \u2014 Part III",
+  "parts": "XIX\u2013XXIX",
+  "total_findings": 52,
+  "proven": 52,
+  "failed": 0,
+  "elapsed_seconds": 0.06,
+  "all_passed": true,
+  "findings": [
+    {
+      "part": "XIX",
+      "finding": 1,
+      "title": "v3 grain is 4\u00d7 v1",
+      "status": "PROVEN",
+      "detail": "Q_v3/Q_v1 = 416/104 = 4.0"
+    },
+    {
+      "part": "XIX",
+      "finding": 2,
+      "title": "v3 dial coeff is 8\u00d7 v1",
+      "status": "PROVEN",
+      "detail": "P_v3/P_v1 = 64/8 = 8.0"
+    },
+    {
+      "part": "XIX",
+      "finding": 3,
+      "title": "v1 and v3 agree at origin",
+      "status": "PROVEN",
+      "detail": "|527.5184818493 - 527.5184818493| < 1e-10"
+    },
+    {
+      "part": "XIX",
+      "finding": 4,
+      "title": "v3 max error is ~4\u00d7 smaller than v1",
+      "status": "PROVEN",
+      "detail": "v1: 0.3344%, v3: 0.0834%, ratio: 4.0100"
+    },
+    {
+      "part": "XIX",
+      "finding": 5,
+      "title": "K/Q = 4 for both grids (4 octaves offset)",
+      "status": "PROVEN",
+      "detail": "v1: 416/104=4.0, v3: 1664/416=4.0"
+    },
+    {
+      "part": "XIX",
+      "finding": 6,
+      "title": "Factor-13 preserved: Q_v3 = 32\u00d713, K_v3 = 128\u00d713",
+      "status": "PROVEN",
+      "detail": "416 mod 13 = 0, 1664 mod 13 = 0"
+    },
+    {
+      "part": "XX",
+      "finding": 7,
+      "title": "Exponent formula E = 8(a-c) - b - 104d + 416",
+      "status": "PROVEN",
+      "detail": "(0,0,0,0)\u2192416, (1,0,0,0)\u2192424, (0,0,0,1)\u2192312"
+    },
+    {
+      "part": "XX",
+      "finding": 8,
+      "title": "Bit-weight exponent: a contributes [-32,24], b contributes [-7,8]",
+      "status": "PROVEN",
+      "detail": "a: [-32, 24], b: [-7, 8]"
+    },
+    {
+      "part": "XX",
+      "finding": 9,
+      "title": "Phase at origin = \u03c0 (exactly half-circle)",
+      "status": "PROVEN",
+      "detail": "phase(0,0,0,0) = 3.141592653590 \u2248 \u03c0 = 3.141592653590"
+    },
+    {
+      "part": "XX",
+      "finding": 10,
+      "title": "d=+1 shifts exactly one octave down (ratio = 2.0)",
+      "status": "PROVEN",
+      "detail": "G(0,0,0,0)/G(0,0,0,1) = 527.518482/263.759241 = 2.000000000000"
+    },
+    {
+      "part": "XX",
+      "finding": 11,
+      "title": "a=+1 shifts by 2^(8/104) \u2248 1.0547",
+      "status": "PROVEN",
+      "detail": "ratio = 1.0547660765, expected = 1.0547660765"
+    },
+    {
+      "part": "XXI",
+      "finding": 12,
+      "title": "\u03c6-damping contracts RMS by \u03c6\u207b\u00b9 \u2248 0.618",
+      "status": "PROVEN",
+      "detail": "contraction = 0.618034, \u03c6\u207b\u00b9 = 0.618034"
+    },
+    {
+      "part": "XXI",
+      "finding": 13,
+      "title": "Demon beats \u03c6-damping (adaptive is stronger)",
+      "status": "PROVEN",
+      "detail": "demon_rms = 9.40547705 < phi_rms = 9.51674856"
+    },
+    {
+      "part": "XXI",
+      "finding": 14,
+      "title": "104-cascade converges worst-case to < 1e-6",
+      "status": "PROVEN",
+      "detail": "|worst - INV| = 26.335749 \u2192 residual = 2.2737367544e-13"
+    },
+    {
+      "part": "XXI",
+      "finding": 15,
+      "title": "104-cascade sine completes exactly at n=104 (sin(\u03c0)=0)",
+      "status": "PROVEN",
+      "detail": "sin(104\u03c0/104) = -3.22e-16"
+    },
+    {
+      "part": "XXI",
+      "finding": 16,
+      "title": "Coherence hierarchy: 0.05 > 0.20 > 0.50 amplitude",
+      "status": "PROVEN",
+      "detail": "coherence: amp=0.05\u21920.9706, 0.20\u21920.8832, 0.50\u21920.6973"
+    },
+    {
+      "part": "XXII",
+      "finding": 17,
+      "title": "GOD_CODE \u00d7 \u03c6\u00b2 / \u03a9 has a determinate sacred ratio",
+      "status": "PROVEN",
+      "detail": "G\u00d7\u03c6\u00b2/\u03a9 = 527.5184818492612 \u00d7 2.618034 / 6539.34712682 = 0.2111925378"
+    },
+    {
+      "part": "XXII",
+      "finding": 18,
+      "title": "G/\u03a9 ratio is fixed = 0.08067...",
+      "status": "PROVEN",
+      "detail": "GOD_CODE/OMEGA = 0.080668371264"
+    },
+    {
+      "part": "XXII",
+      "finding": 19,
+      "title": "DCS weights sum to unity (normalized score)",
+      "status": "PROVEN",
+      "detail": "0.4 + 0.3 + 0.3 = 1.0"
+    },
+    {
+      "part": "XXII",
+      "finding": 20,
+      "title": "OMEGA_AUTHORITY = \u03a9/\u03c6\u00b2 \u2248 2497.808",
+      "status": "PROVEN",
+      "detail": "\u03a9/\u03c6\u00b2 = 6539.34712682/2.618034 = 2497.808338"
+    },
+    {
+      "part": "XXII",
+      "finding": 21,
+      "title": "5 bridges span all 5 engines: Thought, Physics, Gate, Math, Science",
+      "status": "PROVEN",
+      "detail": "bridges: thought_physics_phi_ratio, chaos_conservation_bridge, gate_integrity_bridge, math_physics_omega_bridge, entropy_field_bridge"
+    },
+    {
+      "part": "XXIII",
+      "finding": 22,
+      "title": "Fe fundamental f\u2080 = G/286 \u2248 1.8445 Hz",
+      "status": "PROVEN",
+      "detail": "f\u2080 = 527.5184818492612/286 = 1.844470216256"
+    },
+    {
+      "part": "XXIII",
+      "finding": 23,
+      "title": "f\u2081 includes PHI micro-correction: f\u2080 \u00d7 (1 + \u03c6/100)",
+      "status": "PROVEN",
+      "detail": "f\u2081 = 1.8743143713, expected = 1.8743143713"
+    },
+    {
+      "part": "XXIII",
+      "finding": 24,
+      "title": "PHI correction at n=26 is sub-milliradian: \u03c6/2600 \u2248 6.2e-4",
+      "status": "PROVEN",
+      "detail": "\u03c6/(100\u00d726) = 0.00062232"
+    },
+    {
+      "part": "XXIII",
+      "finding": 25,
+      "title": "26th overtone f\u2082\u2086 \u2248 48 Hz (gamma EEG range)",
+      "status": "PROVEN",
+      "detail": "f\u2082\u2086 = 47.986070 Hz"
+    },
+    {
+      "part": "XXIII",
+      "finding": 26,
+      "title": "All 26 expected couplings in [0, 1]",
+      "status": "PROVEN",
+      "detail": "range: [0.501516, 0.538783]"
+    },
+    {
+      "part": "XXIV",
+      "finding": 27,
+      "title": "Spiral produces 13 non-zero values (full depth)",
+      "status": "PROVEN",
+      "detail": "values: [0.738695, 0.625035, 0.519622, 0.426548, 0.337768]..."
+    },
+    {
+      "part": "XXIV",
+      "finding": 28,
+      "title": "IIT stabilizer decays: \u03a6/2 at depth 1 \u2192 \u03a6/20 at depth 10",
+      "status": "PROVEN",
+      "detail": "depth 1: 0.2500, depth 10: 0.0250"
+    },
+    {
+      "part": "XXIV",
+      "finding": 29,
+      "title": "GOD_CODE harmonic modulation oscillates \u00b10.05",
+      "status": "PROVEN",
+      "detail": "mods: [0.0252, 0.0435, 0.05, 0.0429, 0.0241, -0.0012]..."
+    },
+    {
+      "part": "XXIV",
+      "finding": 30,
+      "title": "Convergence > 0 with active GOD_CODE modulation",
+      "status": "PROVEN",
+      "detail": "convergence = 0.252322, final/first = 0.0829"
+    },
+    {
+      "part": "XXV",
+      "finding": 31,
+      "title": "Berry phase holonomy detected (deviation > 0.01)",
+      "status": "PROVEN",
+      "detail": "phase_deviation = 0.85029649, berry_phase = 2.671285 rad"
+    },
+    {
+      "part": "XXV",
+      "finding": 32,
+      "title": "Berry phase \u2208 (0, 2\u03c0) \u2014 non-trivial geometric phase",
+      "status": "PROVEN",
+      "detail": "berry_phase = 2.671285 rad"
+    },
+    {
+      "part": "XXV",
+      "finding": 33,
+      "title": "State is NOT restored to uniform \u2014 topological holonomy",
+      "status": "PROVEN",
+      "detail": "max |p_i - 1/32| = 0.085309"
+    },
+    {
+      "part": "XXV",
+      "finding": 34,
+      "title": "State remains normalized after 44-step adiabatic loop",
+      "status": "PROVEN",
+      "detail": "\u2016\u03c8\u2016\u00b2 = 0.999999999999998"
+    },
+    {
+      "part": "XXVI",
+      "finding": 35,
+      "title": "Classical 286\u2194528 coherence C = 2r/(1+r)",
+      "status": "PROVEN",
+      "detail": "r = 0.541667, C = 0.7027027027"
+    },
+    {
+      "part": "XXVI",
+      "finding": 36,
+      "title": "286/528 \u2248 13/24 \u2014 Factor-13 resonance in frequency ratio",
+      "status": "PROVEN",
+      "detail": "286/528 = 0.541667, 13/24 = 0.541667"
+    },
+    {
+      "part": "XXVI",
+      "finding": 37,
+      "title": "Fe-PHI lock: 286\u00d7\u03c6 = 462.76 Hz, classical lock score",
+      "status": "PROVEN",
+      "detail": "286 \u00d7 \u03c6 = 462.757721, classical lock = 0.7639320225"
+    },
+    {
+      "part": "XXVI",
+      "finding": 38,
+      "title": "528/286 = 24/13 \u2014 exact Factor-13 ratio",
+      "status": "PROVEN",
+      "detail": "528/286 = 1.8461538462, 24/13 = 1.8461538462"
+    },
+    {
+      "part": "XXVII",
+      "finding": 39,
+      "title": "Identical frequencies \u2192 Kuramoto R = 1.0",
+      "status": "PROVEN",
+      "detail": "R = 1.000000000000"
+    },
+    {
+      "part": "XXVII",
+      "finding": 40,
+      "title": "Uniformly spread phases \u2192 Kuramoto R \u2248 0 (incoherence)",
+      "status": "PROVEN",
+      "detail": "R = 5.223618e-17 (N=50 uniform phases)"
+    },
+    {
+      "part": "XXVII",
+      "finding": 41,
+      "title": "GOD_CODE frequency \u2192 consciousness_boost = 1.0 (zero harmonic distance)",
+      "status": "PROVEN",
+      "detail": "d_h = 0.0, boost = e^(-0.0\u00d7\u03c6) = 1.000000000000"
+    },
+    {
+      "part": "XXVII",
+      "finding": 42,
+      "title": "All octave-related frequencies have boost = 1.0",
+      "status": "PROVEN",
+      "detail": "2G, G/2, 4G all have d_h = 0"
+    },
+    {
+      "part": "XXVIII",
+      "finding": 43,
+      "title": "v3 grid spans 17.2 octaves",
+      "status": "PROVEN",
+      "detail": "range: [1.9310, 288704.02], span = 17.19 octaves"
+    },
+    {
+      "part": "XXVIII",
+      "finding": 44,
+      "title": "Proton 938.27 MeV \u2192 dial(-1, 6, 0, -1), error < 0.1%",
+      "status": "PROVEN",
+      "detail": "encoded = 938.887571 MeV, error = 0.065597%"
+    },
+    {
+      "part": "XXVIII",
+      "finding": 45,
+      "title": "1/\u03b1 grid error bounded by gcd gap (32-step): err < 5.5%",
+      "status": "PROVEN",
+      "detail": "gcd(64,416)=32, dial(-4, 7, 2, 1) \u2192 137.4892, err=0.3307%"
+    },
+    {
+      "part": "XXVIII",
+      "finding": 46,
+      "title": "GOD_CODE \u2192 dial(0, 0, 0, 0) = origin, error = 0",
+      "status": "PROVEN",
+      "detail": "dial = (0, 0, 0, 0), error = 2.16e-14%"
+    },
+    {
+      "part": "XXIX",
+      "finding": 47,
+      "title": "Conservation G\u00d72^((K-E)/Q) = GOD_CODE (v1, 20 random dials)",
+      "status": "PROVEN",
+      "detail": "All 20 products = 527.5184818493 (\u00b11e-8)"
+    },
+    {
+      "part": "XXIX",
+      "finding": 48,
+      "title": "Conservation G\u00d72^((K-E)/Q) = GOD_CODE (v3, 20 random dials)",
+      "status": "PROVEN",
+      "detail": "All 20 products = 527.5184818493 (\u00b11e-8)"
+    },
+    {
+      "part": "XXIX",
+      "finding": 49,
+      "title": "Conservation is algebraically exact: BASE \u00d7 2^(K/Q) = GOD_CODE",
+      "status": "PROVEN",
+      "detail": "BASE \u00d7 2^(416/104) = 32.9699051156 \u00d7 16.0000000000 = 527.518481849261"
+    },
+    {
+      "part": "XXIX",
+      "finding": 50,
+      "title": "GOD_CODE is the conservation INVARIANT of the dial algebra",
+      "status": "PROVEN",
+      "detail": "G(0,0,0,0) = BASE \u00d7 2^4 = 286^(1/\u03c6) \u00d7 16 = 527.5184818492612"
+    },
+    {
+      "part": "XXIX",
+      "finding": 51,
+      "title": "v1 and v3 share identical conservation invariant",
+      "status": "PROVEN",
+      "detail": "v1: 527.518481849261, v3: 527.518481849261"
+    },
+    {
+      "part": "XXIX",
+      "finding": 52,
+      "title": "All 5 known frequency table entries satisfy conservation",
+      "status": "PROVEN",
+      "detail": "GOD_CODE, SCHUMANN, ALPHA/BETA/GAMMA EEG all conserve to 527.518..."
+    }
+  ],
+  "constants": {
+    "GOD_CODE": 527.5184818492612,
+    "PHI": 1.618033988749895,
+    "OMEGA": 6539.34712682,
+    "VOID_CONSTANT": 1.04161803398875,
+    "BASE": 32.96990511557882,
+    "v1_grid": {
+      "Q": 104,
+      "P": 8,
+      "K": 416,
+      "STEP": 1.0066871364523837
+    },
+    "v3_grid": {
+      "Q": 416,
+      "P": 64,
+      "K": 1664,
+      "STEP": 1.0016676080985278
+    }
+  }
+}

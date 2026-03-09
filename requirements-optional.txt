@@ -13,5 +13,5 @@ kivy>=2.3.1
 # Additional JSON library
 ujson>=5.11.0
 
-# Quantum computing (required by l104_quantum_coherence, l104_god_code_friction_analyzer)
-qiskit>=2.3.0
+# Quantum computing — now uses sovereign l104_quantum_gate_engine (no external deps)
+# qiskit>=2.3.0  # REMOVED — replaced by l104_quantum_gate_engine local simulation

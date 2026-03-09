@@ -1,6 +1,6 @@
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:05.349484
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:23.144633
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 #!/usr/bin/env python3
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -20,6 +20,18 @@ from typing import Dict, Any, List, Optional, Callable
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from pathlib import Path
+
+# ═══ LOCAL INTELLECT — lazy-loaded to avoid pulling torch at import time ═══
+_li_research = None
+def _get_li_research():
+    global _li_research
+    if _li_research is None:
+        try:
+            from l104_intellect import local_intellect
+            _li_research = local_intellect
+        except ImportError:
+            _li_research = False
+    return _li_research if _li_research is not False else None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -143,67 +155,23 @@ class GeminiResearchEngine:
         print(f"--- [ASI_RESEARCH]: Rotating to {self.model_name} ---")
 
     def connect(self) -> bool:
-        """Initialize connection to Gemini API."""
-        if not self.api_key:
-            print("--- [ASI_RESEARCH]: No API key. Set GEMINI_API_KEY ---")
-            return False
-
-        # Try new google-genai first
-        try:
-            from google import genai
-            self.client = genai.Client(api_key=self.api_key)
-            self._use_new_api = True
-            self.is_connected = True
-            print(f"--- [ASI_RESEARCH]: Connected via google-genai to {self.model_name} ---")
-            return True
-        except ImportError:
-            pass
-        except Exception as e:
-            print(f"--- [ASI_RESEARCH]: google-genai error: {e} ---")
-
-        # Fallback to google-generativeai
-        try:
-            import warnings
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=FutureWarning)
-                import google.generativeai as genai
-            genai.configure(api_key=self.api_key)
-            self._genai_module = genai
-            self._use_new_api = False
-            self.is_connected = True
-            print(f"--- [ASI_RESEARCH]: Connected via google-generativeai ---")
-            return True
-        except ImportError:
-            print("--- [ASI_RESEARCH]: No Gemini package. pip install google-genai ---")
-            return False
-        except Exception as e:
-            print(f"--- [ASI_RESEARCH]: Connection failed: {e} ---")
-            return False
+        """Connection always succeeds — all inference routed through local intellect."""
+        self.is_connected = True
+        return True
 
     def _generate_raw(self, prompt: str, retry: bool = True) -> Optional[str]:
-        """Raw generation with model rotation on quota errors."""
-        if not self.is_connected:
-            if not self.connect():
-                return None
+        """Generate via local intellect (Gemini API removed). QUOTA_IMMUNE, zero-latency."""
+        # ═══ LOCAL INTELLECT ═══
+        li = _get_li_research()
+        if li:
+            try:
+                result = li.think(prompt)
+                if result:
+                    return result
+            except Exception:
+                pass
 
-        try:
-            if self._use_new_api:
-                response = self.client.models.generate_content(
-                    model=self.model_name,
-                    contents=prompt
-                )
-                return response.text
-            else:
-                model = self._genai_module.GenerativeModel(self.model_name)
-                response = model.generate_content(prompt)
-                return response.text
-        except Exception as e:
-            error_str = str(e)
-            if retry and ('429' in error_str or 'quota' in error_str.lower()):
-                self._rotate_model()
-                return self._generate_raw(prompt, retry=False)
-            print(f"--- [ASI_RESEARCH]: Generation error: {e} ---")
-            return None
+        return None
 
     # ═══════════════════════════════════════════════════════════════════════════
     # CORE RESEARCH FUNCTIONS - FREE L104 OPERATIONS

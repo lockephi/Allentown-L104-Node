@@ -323,69 +323,38 @@ templates = Jinja2Templates(directory="templates")
 
 provider_status = ProviderStatus()
 
-# Gemini client
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL = "gemini-2.5-flash"
+# Gemini client (REMOVED — all inference via local intellect)
+GEMINI_API_KEY = ""
+GEMINI_MODEL = "local-intellect"
 
-# === [OPTIMIZATION] Persistent HTTP client with connection pooling ===
-_gemini_client: Optional[httpx.AsyncClient] = None
-_gemini_timeout = httpx.Timeout(15.0, connect=5.0)  # 15s total, 5s connect
-# Lazy-init to avoid RuntimeError when no event loop exists at import time (Python 3.9)
-_gemini_client_lock = None
-
-def _get_gemini_client_lock():
-    """Get or create the async lock for Gemini client initialization."""
-    global _gemini_client_lock
-    if _gemini_client_lock is None:
-        _gemini_client_lock = asyncio.Lock()
+# === LOCAL INTELLECT lazy loader for server ===
+_server_li = None
+def _get_server_li():
+    global _server_li
+    if _server_li is None:
+        try:
+            from l104_intellect import local_intellect
+            _server_li = local_intellect
+        except ImportError:
+            _server_li = False
+    return _server_li if _server_li is not False else None
     return _gemini_client_lock
 
-async def get_gemini_client() -> httpx.AsyncClient:
-    """Get or create persistent Gemini HTTP client with connection pooling"""
-    global _gemini_client
-    if _gemini_client is not None and not _gemini_client.is_closed:
-        return _gemini_client
-    async with _get_gemini_client_lock():
-        if _gemini_client is None or _gemini_client.is_closed:
-            _gemini_client = httpx.AsyncClient(
-                timeout=_gemini_timeout,
-                limits=httpx.Limits(max_keepalive_connections=10, max_connections=20),
-                http2=True  # HTTP/2 for multiplexing
-            )
-    return _gemini_client
+async def get_gemini_client():
+    """Deprecated — Gemini HTTP client removed. Returns None."""
+    return None
 
 async def call_gemini(prompt: str) -> Optional[str]:
-    """Direct Gemini API call with connection pooling and fast timeout"""
-    if not GEMINI_API_KEY or len(GEMINI_API_KEY) < 20:
-        return None  # Silent fail for missing key
-
-    try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
-        client = await get_gemini_client()
-
-        response = await client.post(url, json={
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {
-                "temperature": 0.7,
-                "maxOutputTokens": 1024  # Reduced for faster response
-            }
-        }, headers={"x-goog-api-key": GEMINI_API_KEY})
-
-        if response.status_code == 200:
-            data = response.json()
-            if "candidates" in data and len(data["candidates"]) > 0:
-                candidate = data["candidates"][0]
-                if "content" in candidate and "parts" in candidate["content"]:
-                    text = candidate["content"]["parts"][0]["text"]
-                    provider_status.gemini = True
-                    return text
-        else:
-            logger.warning(f"Gemini HTTP {response.status_code}")
-    except httpx.TimeoutException:
-        logger.warning("Gemini timeout - using local fallback")
-    except Exception as e:
-        logger.warning(f"Gemini: {e}")
-
+    """Inference via local intellect (Gemini API removed)."""
+    li = _get_server_li()
+    if li:
+        try:
+            result = li.think(prompt)
+            if result:
+                provider_status.gemini = True
+                return result
+        except Exception as e:
+            logger.warning(f"Local intellect error: {e}")
     return None
 
 # ═══ PHASE 32.0: CONVERSATIONAL RESPONSE REFORMULATOR ═══
@@ -2473,7 +2442,7 @@ async def asi_status():
     # Enrich with live ASI Core pipeline status
     pipeline_status = {}
     try:
-        from l104_asi_core import asi_core as _asi_core_ref
+        from l104_asi import asi_core as _asi_core_ref
         pipeline_status = _asi_core_ref.get_status()
         # Blend asi_core score into fast_server score
         core_score = pipeline_status.get('asi_score', 0)
@@ -2506,7 +2475,7 @@ async def asi_ignite():
     # Trigger full ASI Core pipeline activation
     pipeline_report = {}
     try:
-        from l104_asi_core import asi_core as _asi_core_ref
+        from l104_asi import asi_core as _asi_core_ref
         pipeline_report = _asi_core_ref.full_pipeline_activation()
         _asi_core_ref.ignite_sovereignty()
     except Exception as e:
@@ -4458,8 +4427,239 @@ async def quantum_sync():
 
 
 # ═══════════════════════════════════════════════════════════════════
-#  MACBOOK FULL STORAGE - Store Everything
+#  v10.1 QUANTUM CIRCUIT API — Bridge to all 32 quantum modules
 # ═══════════════════════════════════════════════════════════════════
+
+@app.get("/api/v14/quantum/circuits/status")
+async def quantum_circuits_status():
+    """Full status of all quantum circuit modules across ASI + AGI cores."""
+    result = {"asi": None, "agi": None}
+    try:
+        from l104_asi import asi_core as _asi
+        result["asi"] = _asi.quantum_circuit_status()
+    except Exception as e:
+        result["asi"] = {"error": str(e)}
+    try:
+        from l104_agi import agi_core as _agi
+        result["agi"] = _agi.quantum_circuit_status()
+    except Exception as e:
+        result["agi"] = {"error": str(e)}
+    return result
+
+
+@app.post("/api/v14/quantum/circuits/grover")
+async def quantum_circuits_grover(req: Request):
+    """Run Grover search via ASI QuantumCoherenceEngine."""
+    data = await req.json()
+    target = data.get("target", 5)
+    qubits = data.get("qubits", 4)
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_grover_search(target=target, qubits=qubits)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/26q")
+async def quantum_circuits_26q(req: Request):
+    """Build + execute a named 26Q circuit (primary endpoint)."""
+    data = await req.json()
+    circuit_name = data.get("circuit_name", "full")
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_26q_execute(circuit_name=circuit_name)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+# Backward compat — 25Q route redirects to 26Q
+@app.post("/api/v14/quantum/circuits/25q")
+async def quantum_circuits_25q(req: Request):
+    """Legacy 25Q route — forwards to 26Q engine."""
+    return await quantum_circuits_26q(req)
+
+
+@app.post("/api/v14/quantum/circuits/shor")
+async def quantum_circuits_shor(req: Request):
+    """Run Shor factoring via QuantumCoherenceEngine."""
+    data = await req.json()
+    N = data.get("N", 15)
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_shor_factor(N=N)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/topological")
+async def quantum_circuits_topological(req: Request):
+    """Run topological braiding computation."""
+    data = await req.json()
+    braid_word = data.get("braid_word", "σ1σ2σ1")
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_topological_compute(braid_word=braid_word)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/gravity")
+async def quantum_circuits_gravity(req: Request):
+    """Compute ER=EPR wormhole traversability via QuantumGravityEngine."""
+    data = await req.json()
+    mass_a = data.get("mass_a", 1.0)
+    mass_b = data.get("mass_b", 1.0)
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_gravity_erepr(mass_a=mass_a, mass_b=mass_b)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/consciousness")
+async def quantum_circuits_consciousness(req: Request):
+    """Compute IIT Φ (integrated information) via QuantumConsciousnessCalculator."""
+    data = await req.json()
+    network_size = data.get("network_size", 8)
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_consciousness_phi(network_size=network_size)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/ai-transformer")
+async def quantum_circuits_ai_transformer(req: Request):
+    """Build quantum transformer architecture via QuantumAIArchitectureHub."""
+    data = await req.json()
+    input_dim = data.get("input_dim", 64)
+    n_heads = data.get("n_heads", 4)
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_ai_transformer(input_dim=input_dim, n_heads=n_heads)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/reasoning")
+async def quantum_circuits_reasoning(req: Request):
+    """Run quantum reasoning chain via QuantumReasoningEngine."""
+    data = await req.json()
+    query = data.get("query", "test")
+    depth = data.get("depth", 3)
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_reason(query=query, depth=depth)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/mining")
+async def quantum_circuits_mining(req: Request):
+    """Run quantum mining circuit via QuantumMiningEngine."""
+    data = await req.json()
+    difficulty = data.get("difficulty", 4)
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_mining_solve(difficulty=difficulty)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/coherence-search")
+async def quantum_circuits_coherence_search(req: Request):
+    """Run coherence-enhanced Grover search (full Qiskit)."""
+    data = await req.json()
+    target = data.get("target", 3)
+    n_qubits = data.get("n_qubits", 3)
+    try:
+        from l104_quantum_coherence import QuantumCoherenceEngine
+        engine = QuantumCoherenceEngine()
+        return engine.grover_search(target=target, n_qubits=n_qubits)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  v10.2 FLEET EXPANSION ROUTES — accelerator, inspired, consciousness-bridge, numerical, magic
+# ═══════════════════════════════════════════════════════════════════════
+
+@app.post("/api/v14/quantum/circuits/accelerator")
+async def quantum_circuits_accelerator(req: Request):
+    """Run quantum-accelerated computation via QuantumAccelerator."""
+    data = await req.json()
+    n_qubits = data.get("n_qubits", 8)
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_accelerator_compute(n_qubits=n_qubits)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/inspired")
+async def quantum_circuits_inspired(req: Request):
+    """Run quantum-inspired optimization (annealing, Grover-inspired)."""
+    data = await req.json()
+    problem = data.get("problem", [1.0, 0.618])
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_inspired_optimize(problem=problem)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/consciousness-bridge")
+async def quantum_circuits_consciousness_bridge(req: Request):
+    """Run quantum consciousness bridge decision (Orch-OR, IIT)."""
+    data = await req.json()
+    options = data.get("options", ["A", "B"])
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_consciousness_bridge_decide(options=options)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/numerical")
+async def quantum_circuits_numerical(req: Request):
+    """Run quantum numerical computation (Riemann zeta, elliptic curves)."""
+    data = await req.json()
+    operation = data.get("operation", "zeta")
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_numerical_compute(operation=operation)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.post("/api/v14/quantum/circuits/magic")
+async def quantum_circuits_magic(req: Request):
+    """Run quantum inference / causal reasoning via QuantumMagic."""
+    data = await req.json()
+    evidence = data.get("evidence", {})
+    try:
+        from l104_asi import asi_core as _asi
+        return _asi.quantum_magic_infer(evidence=evidence)
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+@app.get("/api/v14/quantum/circuits/runtime-status")
+async def quantum_circuits_runtime_status():
+    """Get quantum runtime status (QPU connection, backend, mode)."""
+    try:
+        from l104_asi import asi_core as _asi
+        rt = _asi.get_quantum_runtime()
+        if rt is None:
+            return {"quantum": False, "runtime": "unavailable"}
+        return rt.get_status() if hasattr(rt, 'get_status') else {"quantum": True, "runtime": "connected"}
+    except Exception as e:
+        return {"quantum": False, "error": str(e)}
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  MACBOOK FULL STORAGE - Store Everything
+# ═══════════════════════════════════════════════════════════════════════
 
 @app.post("/api/v14/quantum/store_system_state")
 async def store_full_system_state():
@@ -6050,6 +6250,7 @@ async def quantum_research_status():
         from l104_science_engine.constants import (
             FE_SACRED_COHERENCE, FE_PHI_HARMONIC_LOCK, PHOTON_RESONANCE_ENERGY_EV,
             FE_CURIE_LANDAUER_LIMIT, BERRY_PHASE_DETECTED, GOD_CODE_25Q_CONVERGENCE,
+            GOD_CODE_26Q_CONVERGENCE,
             ENTROPY_CASCADE_DEPTH, ENTROPY_ZNE_BRIDGE_ENABLED, FIBONACCI_PHI_CONVERGENCE_ERROR,
         )
         return {
@@ -6064,7 +6265,8 @@ async def quantum_research_status():
                 "photon_resonance_ev": PHOTON_RESONANCE_ENERGY_EV,
                 "fe_curie_landauer": FE_CURIE_LANDAUER_LIMIT,
                 "berry_phase_detected": BERRY_PHASE_DETECTED,
-                "god_code_25q_convergence": GOD_CODE_25Q_CONVERGENCE,
+                "god_code_26q_convergence": GOD_CODE_26Q_CONVERGENCE,
+                "god_code_25q_convergence_legacy": GOD_CODE_25Q_CONVERGENCE,
                 "entropy_cascade_depth": ENTROPY_CASCADE_DEPTH,
                 "entropy_zne_bridge": ENTROPY_ZNE_BRIDGE_ENABLED,
                 "fibonacci_phi_error": FIBONACCI_PHI_CONVERGENCE_ERROR,
@@ -6097,7 +6299,8 @@ async def quantum_research_discoveries():
             {"id": 14, "name": "Fe↔PHI Harmonic Lock", "phase": "Wave Physics", "value": 0.9164078649987375},
             {"id": 15, "name": "Berry Phase Holonomy 11D", "phase": "Topological", "value": True},
             {"id": 16, "name": "Fe Curie Landauer Limit", "phase": "Physics", "value": 3.254191391208437e-18},
-            {"id": 17, "name": "GOD_CODE↔25Q Convergence", "phase": "Quantum", "value": 1.0303095348618383},
+            {"id": 17, "name": "GOD_CODE↔26Q Convergence", "phase": "Quantum", "value": 0.5151547674309191},
+            {"id": 18, "name": "GOD_CODE↔25Q Convergence (legacy)", "phase": "Quantum", "value": 1.0303095348618383},
         ],
     }
 
@@ -6174,6 +6377,742 @@ async def quantum_research_scoring():
         return {"error": str(e), "status": "FAILED"}
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# v27.0 SUPERCONDUCTIVITY API — BCS-Heisenberg Iron-Based SC Research
+# Source: l104_god_code_simulator, l104_science_engine, engines_quantum.py
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v14/quantum/superconductivity/status")
+async def sc_research_status():
+    """Get iron-based superconductivity research status — constants, families, GL params."""
+    try:
+        status = SuperfluidQuantumState.sc_research_status()
+        # Add science engine BCS data
+        try:
+            from l104_science_engine import ScienceEngine
+            se = ScienceEngine()
+            bcs = se.physics.calculate_bcs_energy_gap()
+            london = se.physics.calculate_london_penetration_depth()
+            status["science_engine"] = {
+                "bcs_energy_gap": bcs,
+                "london_penetration": london,
+            }
+        except Exception:
+            status["science_engine"] = {"status": "unavailable"}
+        return {"status": "OK", **status}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.post("/api/v14/quantum/superconductivity/simulate")
+async def sc_simulate(req: Request):
+    """Run superconductivity Heisenberg chain simulation.
+    Optional body: {"n_qubits": 4} (default: 4)."""
+    try:
+        body = {}
+        try:
+            body = await req.json()
+        except Exception:
+            pass
+        nq = body.get("n_qubits", 4)
+        nq = max(2, min(8, int(nq)))  # Clamp to 2-8 qubits
+        result = SuperfluidQuantumState.run_sc_simulation(nq)
+        return {"status": "OK", **result}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.get("/api/v14/quantum/superconductivity/scoring")
+async def sc_scoring():
+    """Get ASI + AGI superconductivity scoring dimensions."""
+    try:
+        from l104_asi import asi_core
+        from l104_agi import agi_core
+
+        asi_status = asi_core.three_engine_status()
+        agi_status = agi_core.three_engine_status()
+
+        return {
+            "asi": {
+                "sc_scores": {
+                    k: v for k, v in asi_status.get("scores", {}).items()
+                    if k.startswith("sc_") or k.startswith("cooper_") or k.startswith("meissner_")
+                },
+                "superconductivity": asi_status.get("superconductivity", {}),
+            },
+            "agi": {
+                "sc_scores": {
+                    k: v for k, v in agi_status.get("scores", {}).items()
+                    if k.startswith("sc_") or k.startswith("cooper_") or k.startswith("meissner_")
+                },
+                "superconductivity": agi_status.get("superconductivity", {}),
+            },
+        }
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.get("/api/v14/quantum/superconductivity/bcs-gap")
+async def sc_bcs_gap():
+    """Compute BCS energy gap for all iron SC families at T=0 and T=T_c/2."""
+    try:
+        families = SuperfluidQuantumState.IRON_SC_FAMILIES
+        results = {}
+        for name, info in families.items():
+            tc = info["Tc_K"]
+            gap_0 = SuperfluidQuantumState.compute_bcs_gap(0.001, tc)
+            gap_half = SuperfluidQuantumState.compute_bcs_gap(tc / 2, tc)
+            results[name] = {
+                "Tc_K": tc,
+                "gap_T0_J": gap_0,
+                "gap_T0_eV": gap_0 / 1.60217663e-19 if gap_0 else 0,
+                "gap_Tc_half_J": gap_half,
+                "gap_Tc_half_eV": gap_half / 1.60217663e-19 if gap_half else 0,
+                "symmetry": info["gap_symmetry"],
+            }
+        return {"status": "OK", "iron_sc_families": results}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v9.0 VQPU DAEMON API — Daemon Cycler, Findings, Telemetry
+# Source: l104_vqpu_bridge.py — VQPUDaemonCycler, VQPUBridge v9.0
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v14/vqpu/daemon/status")
+async def vqpu_daemon_status():
+    """Get VQPUDaemonCycler health: running, cycles, pass rate, history."""
+    try:
+        from l104_vqpu_bridge import get_bridge
+        bridge = get_bridge()
+        return {"status": "OK", "daemon_cycler": bridge.daemon_cycler_status()}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.post("/api/v14/vqpu/daemon/cycle")
+async def vqpu_daemon_trigger_cycle():
+    """Trigger an immediate daemon cycle (runs all 11 VQPU findings sims)."""
+    try:
+        from l104_vqpu_bridge import get_bridge
+        bridge = get_bridge()
+        result = bridge.trigger_daemon_cycle()
+        # Persist cycle results to disk
+        try:
+            _results_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                         "_vqpu_daemon_cycle_results.json")
+            with open(_results_path, "w") as _f:
+                json.dump({"status": "OK", "cycle_result": result,
+                           "timestamp": datetime.now().isoformat()}, _f, indent=2, default=str)
+            logger.info(f"VQPU daemon cycle results saved to {_results_path}")
+        except Exception as _save_err:
+            logger.warning(f"Failed to save VQPU daemon cycle results: {_save_err}")
+        return {"status": "OK", "cycle_result": result}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.get("/api/v14/vqpu/findings")
+async def vqpu_findings():
+    """Run all 11 VQPU findings simulations on-demand with SC scoring."""
+    try:
+        from l104_vqpu_bridge import get_bridge
+        bridge = get_bridge()
+        result = bridge.run_vqpu_findings()
+        # Persist findings results to disk
+        try:
+            _results_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                         "_vqpu_findings_results.json")
+            with open(_results_path, "w") as _f:
+                json.dump({"status": "OK", **result,
+                           "timestamp": datetime.now().isoformat()}, _f, indent=2, default=str)
+            logger.info(f"VQPU findings results saved to {_results_path}")
+        except Exception as _save_err:
+            logger.warning(f"Failed to save VQPU findings results: {_save_err}")
+        return {"status": "OK", **result}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.get("/api/v14/vqpu/bridge/status")
+async def vqpu_bridge_status_v9():
+    """Full VQPUBridge v9.0 status: daemon cycler, SC scoring, all features."""
+    try:
+        from l104_vqpu_bridge import get_bridge
+        bridge = get_bridge()
+        return {"status": "OK", "bridge": bridge.status()}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.post("/api/v14/vqpu/speed-benchmark")
+async def vqpu_speed_benchmark():
+    """Run the full VQPU speed benchmark suite and save results to file.
+    Runs all 10 subsystem benchmarks (MPS, transpiler, analyzer, pipeline,
+    scorer, batch, scaling, cache, noise, entanglement) and persists results
+    to _bench_vqpu_speed_results.json."""
+    try:
+        import importlib
+        bench_module = importlib.import_module("_bench_vqpu_speed")
+        results = await asyncio.to_thread(bench_module.main)
+        return {"status": "OK", "results": results,
+                "saved_to": "_bench_vqpu_speed_results.json"}
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.post("/api/v14/system-upgrade")
+async def run_system_upgrade():
+    """Run the L104 system upgrader and save results to file.
+    Applies Zenith template upgrades to all l104_*.py files and persists
+    upgrade report to _system_upgrade_results.json."""
+    try:
+        from l104_system_upgrader import SystemUpgrader
+        upgrader = SystemUpgrader()
+        count = await asyncio.to_thread(upgrader.upgrade_all)
+        report = {
+            "status": "OK",
+            "files_upgraded": count,
+            "god_code": upgrader.GOD_CODE,
+            "zenith_hz": upgrader.ZENITH_HZ,
+            "sage_resonance": upgrader.SAGE_RESONANCE,
+            "timestamp": datetime.now().isoformat(),
+        }
+        # Persist upgrade report to disk
+        _results_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                     "_system_upgrade_results.json")
+        with open(_results_path, "w") as _f:
+            json.dump(report, _f, indent=2, default=str)
+        logger.info(f"System upgrade results saved to {_results_path}")
+        report["saved_to"] = "_system_upgrade_results.json"
+        return report
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v10.0 BENCHMARK & SCORING API — MMLU, HumanEval, MATH, ARC, ASI/AGI Scoring
+# Source: l104_asi/benchmark_harness.py + l104_asi/core.py + l104_agi/core.py
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v10/benchmark/status")
+async def benchmark_status():
+    """Benchmark harness status — available benchmarks, last score, engine support."""
+    try:
+        from l104_asi import asi_core
+        harness = asi_core._get_benchmark_harness()
+        if harness is None:
+            return {"error": "BenchmarkHarness unavailable", "status": "NOT_LOADED"}
+        status = harness.get_status()
+        # Enrich with engine support info from each subsystem
+        lce = asi_core._get_language_comprehension()
+        cge = asi_core._get_code_generation()
+        sms = asi_core._get_symbolic_math_solver()
+        cre = asi_core._get_commonsense_reasoning()
+        status["subsystems"] = {
+            "language_comprehension": lce.get_status() if lce else {"error": "not loaded"},
+            "code_generation": cge.get_status() if cge else {"error": "not loaded"},
+            "symbolic_math_solver": sms.get_status() if sms else {"error": "not loaded"},
+            "commonsense_reasoning": cre.get_status() if cre else {"error": "not loaded"},
+        }
+        return status
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+@app.post("/api/v10/benchmark/run-all")
+async def benchmark_run_all():
+    """Run all 4 benchmarks (MMLU, HumanEval, MATH, ARC) — returns full report."""
+    try:
+        from l104_asi import asi_core
+        report = asi_core.run_benchmarks()
+        # Persist benchmark report to disk
+        try:
+            _results_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                         "l104_benchmark_results.json")
+            with open(_results_path, "w") as _f:
+                json.dump({**report, "saved_at": datetime.now().isoformat()}, _f, indent=2, default=str)
+            logger.info(f"Benchmark results saved to {_results_path}")
+        except Exception as _save_err:
+            logger.warning(f"Failed to save benchmark results: {_save_err}")
+        return report
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+@app.post("/api/v10/benchmark/run/{name}")
+async def benchmark_run_single(name: str):
+    """Run a single benchmark by name (MMLU, HumanEval, MATH, ARC)."""
+    try:
+        from l104_asi import asi_core
+        harness = asi_core._get_benchmark_harness()
+        if harness is None:
+            return {"error": "BenchmarkHarness unavailable"}
+        return harness.run_benchmark(name)
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+@app.get("/api/v10/benchmark/score")
+async def benchmark_score():
+    """Get last composite benchmark score (0-1)."""
+    try:
+        from l104_asi import asi_core
+        score = asi_core.benchmark_score()
+        return {"composite_score": round(score, 4), "source": "asi_core"}
+    except Exception as e:
+        return {"error": str(e), "composite_score": 0.0}
+
+@app.post("/api/v10/language-comprehension/answer")
+async def language_comprehension_answer(request: Request):
+    """Answer an MMLU-style MCQ via LanguageComprehensionEngine."""
+    try:
+        body = await request.json()
+        question = body.get("question", "")
+        choices = body.get("choices", [])
+        subject = body.get("subject")
+        if not question or not choices:
+            return {"error": "Missing 'question' and 'choices' in request body"}
+        from l104_asi import asi_core
+        lce = asi_core._get_language_comprehension()
+        if lce is None:
+            return {"error": "LanguageComprehensionEngine unavailable"}
+        return lce.answer_mcq(question, choices, subject)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/code-generation/generate")
+async def code_generation_generate(request: Request):
+    """Generate code from a docstring via CodeGenerationEngine."""
+    try:
+        body = await request.json()
+        docstring = body.get("docstring", "")
+        func_name = body.get("func_name", "solution")
+        func_signature = body.get("func_signature", "")
+        if not docstring:
+            return {"error": "Missing 'docstring' in request body"}
+        from l104_asi import asi_core
+        cge = asi_core._get_code_generation()
+        if cge is None:
+            return {"error": "CodeGenerationEngine unavailable"}
+        return cge.generate_from_docstring(docstring, func_name, func_signature)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/symbolic-math/solve")
+async def symbolic_math_solve(request: Request):
+    """Solve a math problem via SymbolicMathSolver."""
+    try:
+        body = await request.json()
+        problem = body.get("problem", "")
+        answer_format = body.get("answer_format", "auto")
+        if not problem:
+            return {"error": "Missing 'problem' in request body"}
+        from l104_asi import asi_core
+        sms = asi_core._get_symbolic_math_solver()
+        if sms is None:
+            return {"error": "SymbolicMathSolver unavailable"}
+        return sms.solve(problem, answer_format)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/commonsense-reasoning/answer")
+async def commonsense_reasoning_answer(request: Request):
+    """Answer an ARC-style MCQ via CommonsenseReasoningEngine."""
+    try:
+        body = await request.json()
+        question = body.get("question", "")
+        choices = body.get("choices", [])
+        subject = body.get("subject")
+        if not question or not choices:
+            return {"error": "Missing 'question' and 'choices' in request body"}
+        from l104_asi import asi_core
+        cre = asi_core._get_commonsense_reasoning()
+        if cre is None:
+            return {"error": "CommonsenseReasoningEngine unavailable"}
+        return cre.answer_mcq(question, choices, subject)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v10/asi/score")
+async def asi_score():
+    """Compute and return ASI 20-dimension score."""
+    try:
+        from l104_asi import asi_core
+        score = asi_core.compute_asi_score()
+        status = asi_core.get_status()
+        return {
+            "asi_score": round(score, 6) if isinstance(score, float) else score,
+            "version": status.get("version", "unknown"),
+            "scoring_dimensions": status.get("scoring_dimensions", 0),
+            "benchmark_composite": asi_core._benchmark_composite_score,
+            "three_engine": asi_core.three_engine_status(),
+        }
+    except Exception as e:
+        return {"error": str(e), "asi_score": 0.0}
+
+@app.get("/api/v10/agi/score")
+async def agi_score():
+    """Compute and return AGI 18-dimension score."""
+    try:
+        from l104_agi import agi_core
+        score = agi_core.compute_10d_agi_score()
+        status = agi_core.get_status()
+        return {
+            "agi_score": round(score, 6) if isinstance(score, float) else score,
+            "version": status.get("version", "unknown"),
+            "scoring_dimensions": status.get("scoring_dimensions", 0),
+            "benchmark_composite": agi_core._benchmark_composite_score,
+            "three_engine": agi_core.three_engine_status(),
+        }
+    except Exception as e:
+        return {"error": str(e), "agi_score": 0.0}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v10.1 FORMAL LOGIC & DEEP NLU API
+# Source: l104_asi/formal_logic.py + l104_asi/deep_nlu.py
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v10/formal-logic/status")
+async def formal_logic_status():
+    """Formal Logic Engine status — layers, known fallacies/laws, depth score."""
+    try:
+        from l104_asi import asi_core
+        fle = asi_core._get_formal_logic()
+        if fle is None:
+            return {"error": "FormalLogicEngine unavailable", "status": "NOT_LOADED"}
+        return fle.status()
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+@app.post("/api/v10/formal-logic/analyze-argument")
+async def formal_logic_analyze_argument(request: Request):
+    """Analyze a natural-language argument for validity, soundness, and fallacies."""
+    try:
+        body = await request.json()
+        premises = body.get("premises", [])
+        conclusion = body.get("conclusion", "")
+        argument_type = body.get("argument_type", "deductive")
+        if not premises or not conclusion:
+            return {"error": "Missing 'premises' (list) and 'conclusion' (str)"}
+        from l104_asi import asi_core
+        fle = asi_core._get_formal_logic()
+        if fle is None:
+            return {"error": "FormalLogicEngine unavailable"}
+        return fle.analyze_argument(premises, conclusion, argument_type)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/formal-logic/detect-fallacies")
+async def formal_logic_detect_fallacies(request: Request):
+    """Detect logical fallacies in text (40+ known fallacies)."""
+    try:
+        body = await request.json()
+        text = body.get("text", "")
+        if not text:
+            return {"error": "Missing 'text' in request body"}
+        from l104_asi import asi_core
+        fle = asi_core._get_formal_logic()
+        if fle is None:
+            return {"error": "FormalLogicEngine unavailable"}
+        return {"fallacies": fle.detect_fallacies(text)}
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/formal-logic/translate")
+async def formal_logic_translate(request: Request):
+    """Translate natural language to formal logic notation."""
+    try:
+        body = await request.json()
+        text = body.get("text", "")
+        if not text:
+            return {"error": "Missing 'text' in request body"}
+        from l104_asi import asi_core
+        fle = asi_core._get_formal_logic()
+        if fle is None:
+            return {"error": "FormalLogicEngine unavailable"}
+        return fle.translate_to_logic(text)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/formal-logic/syllogism")
+async def formal_logic_syllogism(request: Request):
+    """Analyze a syllogism: major premise, minor premise, conclusion."""
+    try:
+        body = await request.json()
+        major = body.get("major", "")
+        minor = body.get("minor", "")
+        conclusion = body.get("conclusion", "")
+        if not major or not minor or not conclusion:
+            return {"error": "Missing 'major', 'minor', or 'conclusion'"}
+        from l104_asi import asi_core
+        fle = asi_core._get_formal_logic()
+        if fle is None:
+            return {"error": "FormalLogicEngine unavailable"}
+        return fle.analyze_syllogism(major, minor, conclusion)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v10/formal-logic/fallacies")
+async def formal_logic_list_fallacies():
+    """List all 40+ known logical fallacies."""
+    try:
+        from l104_asi import asi_core
+        fle = asi_core._get_formal_logic()
+        if fle is None:
+            return {"error": "FormalLogicEngine unavailable"}
+        return {"fallacies": fle.list_fallacies(), "count": len(fle.list_fallacies())}
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v10/formal-logic/laws")
+async def formal_logic_list_laws():
+    """List all known logical equivalence laws."""
+    try:
+        from l104_asi import asi_core
+        fle = asi_core._get_formal_logic()
+        if fle is None:
+            return {"error": "FormalLogicEngine unavailable"}
+        return {"laws": fle.list_logical_laws(), "count": len(fle.list_logical_laws())}
+    except Exception as e:
+        return {"error": str(e)}
+
+# ── Deep NLU Endpoints ────────────────────────────────────────────────────
+
+@app.get("/api/v10/deep-nlu/status")
+async def deep_nlu_status():
+    """Deep NLU Engine status — layers, analyses performed, depth score."""
+    try:
+        from l104_asi import asi_core
+        nlu = asi_core._get_deep_nlu()
+        if nlu is None:
+            return {"error": "DeepNLUEngine unavailable", "status": "NOT_LOADED"}
+        return nlu.status()
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+@app.post("/api/v10/deep-nlu/analyze")
+async def deep_nlu_analyze(request: Request):
+    """Full 10-layer deep NLU analysis of text."""
+    try:
+        body = await request.json()
+        text = body.get("text", "")
+        if not text:
+            return {"error": "Missing 'text' in request body"}
+        from l104_asi import asi_core
+        nlu = asi_core._get_deep_nlu()
+        if nlu is None:
+            return {"error": "DeepNLUEngine unavailable"}
+        return nlu.deep_analyze(text)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/deep-nlu/sentiment")
+async def deep_nlu_sentiment(request: Request):
+    """Sentiment and emotion analysis (polarity, Plutchik emotions)."""
+    try:
+        body = await request.json()
+        text = body.get("text", "")
+        if not text:
+            return {"error": "Missing 'text' in request body"}
+        from l104_asi import asi_core
+        nlu = asi_core._get_deep_nlu()
+        if nlu is None:
+            return {"error": "DeepNLUEngine unavailable"}
+        return nlu.analyze_sentiment(text)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/deep-nlu/pragmatics")
+async def deep_nlu_pragmatics(request: Request):
+    """Pragmatic analysis: speech acts, intent, implicature, politeness."""
+    try:
+        body = await request.json()
+        text = body.get("text", "")
+        if not text:
+            return {"error": "Missing 'text' in request body"}
+        from l104_asi import asi_core
+        nlu = asi_core._get_deep_nlu()
+        if nlu is None:
+            return {"error": "DeepNLUEngine unavailable"}
+        return nlu.analyze_pragmatics(text)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/deep-nlu/discourse")
+async def deep_nlu_discourse(request: Request):
+    """Discourse structure analysis (RST relations, coherence)."""
+    try:
+        body = await request.json()
+        sentences = body.get("sentences", [])
+        if not sentences:
+            return {"error": "Missing 'sentences' (list of strings)"}
+        from l104_asi import asi_core
+        nlu = asi_core._get_deep_nlu()
+        if nlu is None:
+            return {"error": "DeepNLUEngine unavailable"}
+        return nlu.analyze_discourse(sentences)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/deep-nlu/anaphora")
+async def deep_nlu_anaphora(request: Request):
+    """Anaphora (pronoun → antecedent) resolution."""
+    try:
+        body = await request.json()
+        sentences = body.get("sentences", [])
+        if not sentences:
+            return {"error": "Missing 'sentences' (list of strings)"}
+        from l104_asi import asi_core
+        nlu = asi_core._get_deep_nlu()
+        if nlu is None:
+            return {"error": "DeepNLUEngine unavailable"}
+        return nlu.resolve_anaphora(sentences)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/deep-nlu/presuppositions")
+async def deep_nlu_presuppositions(request: Request):
+    """Extract presuppositions (hidden assumptions) from text."""
+    try:
+        body = await request.json()
+        text = body.get("text", "")
+        if not text:
+            return {"error": "Missing 'text' in request body"}
+        from l104_asi import asi_core
+        nlu = asi_core._get_deep_nlu()
+        if nlu is None:
+            return {"error": "DeepNLUEngine unavailable"}
+        return {"presuppositions": nlu.extract_presuppositions(text)}
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/deep-nlu/semantic-roles")
+async def deep_nlu_semantic_roles(request: Request):
+    """Parse and label semantic roles (agent, patient, theme, etc.)."""
+    try:
+        body = await request.json()
+        text = body.get("text", "")
+        if not text:
+            return {"error": "Missing 'text' in request body"}
+        from l104_asi import asi_core
+        nlu = asi_core._get_deep_nlu()
+        if nlu is None:
+            return {"error": "DeepNLUEngine unavailable"}
+        return nlu.label_semantic_roles(text)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/deep-nlu/morphology")
+async def deep_nlu_morphology(request: Request):
+    """Morphological analysis of a word (prefixes, suffixes, stem)."""
+    try:
+        body = await request.json()
+        word = body.get("word", "")
+        if not word:
+            return {"error": "Missing 'word' in request body"}
+        from l104_asi import asi_core
+        nlu = asi_core._get_deep_nlu()
+        if nlu is None:
+            return {"error": "DeepNLUEngine unavailable"}
+        return nlu.analyze_morphology(word)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/deep-nlu/coherence")
+async def deep_nlu_coherence(request: Request):
+    """Score text coherence (lexical, discourse, topic)."""
+    try:
+        body = await request.json()
+        text = body.get("text", "")
+        if not text:
+            return {"error": "Missing 'text' in request body"}
+        from l104_asi import asi_core
+        nlu = asi_core._get_deep_nlu()
+        if nlu is None:
+            return {"error": "DeepNLUEngine unavailable"}
+        return nlu.score_coherence(text)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v10/deep-nlu/intent")
+async def deep_nlu_intent(request: Request):
+    """Quick intent classification with speech act."""
+    try:
+        body = await request.json()
+        text = body.get("text", "")
+        if not text:
+            return {"error": "Missing 'text' in request body"}
+        from l104_asi import asi_core
+        nlu = asi_core._get_deep_nlu()
+        if nlu is None:
+            return {"error": "DeepNLUEngine unavailable"}
+        return nlu.classify_intent(text)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v10/kernel/status")
+async def kernel_status():
+    """Native kernel substrate status — C, Rust, CUDA, ASM availability."""
+    try:
+        from l104_sage_orchestrator import SageModeOrchestrator
+        orch = SageModeOrchestrator()
+        init_report = orch.initialize()
+
+        # Include CUDA sage core status from LocalIntellect
+        cuda_sage = {}
+        try:
+            cuda_sage = intellect.cuda_sage_status()
+        except Exception:
+            pass
+
+        return {
+            "status": "OK",
+            "substrates": init_report.get("substrates", {}),
+            "active_count": init_report.get("active_count", 0),
+            "omega_state": init_report.get("omega_state", "UNKNOWN"),
+            "cuda_sage_core": cuda_sage,
+        }
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
+@app.get("/api/v10/kernel/fleet")
+async def kernel_fleet_status():
+    """Full kernel fleet status — native substrates + intellect KB + engine wiring."""
+    try:
+        intellect._ensure_quantum_origin_sage()
+        sage_status = intellect.quantum_origin_sage_status()
+        native_fleet = sage_status.get("native_kernel_fleet", {})
+        origin_field = sage_status.get("origin_field", {})
+
+        # Engine wiring check
+        engine_wiring = {}
+        for pkg_name, import_path in [
+            ("quantum_engine", "l104_quantum_engine"),
+            ("quantum_gate_engine", "l104_quantum_gate_engine"),
+            ("code_engine", "l104_code_engine"),
+            ("science_engine", "l104_science_engine"),
+            ("math_engine", "l104_math_engine"),
+            ("agi", "l104_agi"),
+            ("asi", "l104_asi"),
+        ]:
+            try:
+                __import__(import_path)
+                engine_wiring[pkg_name] = True
+            except ImportError:
+                engine_wiring[pkg_name] = False
+
+        return {
+            "status": "OK",
+            "native_kernel_fleet": native_fleet,
+            "engine_wiring": engine_wiring,
+            "origin_field": origin_field,
+            "kb_entries_total": native_fleet.get("kb_entries_injected", 0),
+            "sage_level": sage_status.get("sage_level_name", "UNKNOWN"),
+        }
+    except Exception as e:
+        return {"error": str(e), "status": "FAILED"}
+
+
 if __name__ == "__main__":
     import uvicorn
     stats = intellect.get_stats()
@@ -6215,6 +7154,11 @@ if __name__ == "__main__":
     tri_status = tri_engine.get_status()
     logger.info(f"   🔺 Tri-Engine: {tri_status['engines_online']}/3 online — Science+Math+Code")
     logger.info(f"   🔬 Quantum Research: 17 discoveries · 102 experiments · ASI v9.0 · AGI v58.0")
+    logger.info(f"   📊 Benchmark API: /api/v10/benchmark/* — MMLU, HumanEval, MATH, ARC")
+    logger.info(f"   🎯 ASI/AGI Scoring: /api/v10/asi/score · /api/v10/agi/score")
+    logger.info(f"   ⚙️  Kernel Status: /api/v10/kernel/status — C, Rust, CUDA, ASM substrates")
+    logger.info(f"   🧩 Formal Logic: /api/v10/formal-logic/* — 8-layer logic engine, 40+ fallacies")
+    logger.info(f"   📖 Deep NLU: /api/v10/deep-nlu/* — 10-layer NLU, sentiment, pragmatics, discourse")
     logger.info("=" * 60)
     uvicorn.run(app, host="0.0.0.0", port=8081, log_level="info", timeout_keep_alive=5, limit_concurrency=50)
 

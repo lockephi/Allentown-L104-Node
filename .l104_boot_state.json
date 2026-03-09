@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-03-07T01:25:51",
+  "boot_sequence": "l104_vqpu_boot_manager v2.0",
+  "god_code": 527.5184818492612,
+  "phases": {
+    "1_ipc": {
+      "created": [],
+      "count": 0
+    },
+    "2_plists": {
+      "com.l104.fast-server": "exists",
+      "com.l104.node-server": "exists",
+      "com.l104.vqpu-daemon": "exists",
+      "com.l104.auto-update": "exists",
+      "com.l104.log-rotate": "exists",
+      "com.l104.health-watchdog": "exists"
+    },
+    "3_resurrect": {
+      "timestamp": "2026-03-07T01:25:52",
+      "actions": [],
+      "resurrected": 0
+    },
+    "4_verify": {
+      "timestamp": "2026-03-07T01:25:53",
+      "verified": true,
+      "issues": [],
+      "services_loaded": 6,
+      "services_total": 6,
+      "overall": "healthy"
+    }
+  },
+  "success": true,
+  "services_loaded": 6,
+  "services_total": 6
+}

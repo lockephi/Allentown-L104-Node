@@ -24,7 +24,7 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Configuration
-WORKSPACE="/workspaces/Allentown-L104-Node"
+WORKSPACE="$(cd "$(dirname "$0")/.." && pwd)"
 DEEP_CLEAN=false
 DOCKER_ONLY=false
 GIT_ONLY=false

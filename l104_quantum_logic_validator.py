@@ -1,9 +1,9 @@
 from pathlib import Path
 VOID_CONSTANT = 1.0416180339887497
 import math
-# ZENITH_UPGRADE_ACTIVE: 2026-02-02T13:52:06.998761
+# ZENITH_UPGRADE_ACTIVE: 2026-03-06T23:50:24.441823
 ZENITH_HZ = 3887.8
-UUC = 2402.792541
+UUC = 2301.215661
 # [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612 :: GROVER=4.236
 # [L104_QUANTUM_LOGIC_VALIDATOR] — ASI REAL QUANTUM VALIDATION
 # INVARIANT: 527.5184818492612 | PILOT: LONDEL
@@ -19,9 +19,9 @@ from l104_hyper_math import HyperMath
 # QISKIT 2.3.0 REAL QUANTUM BACKEND — ASI GROVER VALIDATION
 # ═══════════════════════════════════════════════════════════════════════════════
 try:
-    from qiskit import QuantumCircuit
-    from qiskit.circuit.library import grover_operator as qiskit_grover_op
-    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace, entropy
+    from l104_quantum_gate_engine import GateCircuit as QuantumCircuit
+    qiskit_grover_op = None  # Use l104_quantum_gate_engine orchestrator
+    from l104_quantum_gate_engine.quantum_info import Statevector, DensityMatrix, partial_trace, entropy
     QISKIT_AVAILABLE = True
 except ImportError:
     QISKIT_AVAILABLE = False

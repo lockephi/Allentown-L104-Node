@@ -1,0 +1,105 @@
+{
+    "version": "1.0.0",
+    "date": "2026-02-24",
+    "title": "Chaos × Conservation: 13-Experiment Findings",
+    "source": "_test_chaos_conservation.py",
+    "invariant": 527.5184818492612,
+    "equation": "G(X) × 2^(X/104) = 527.5184818492612",
+    "constants_discovered": {
+        "chaos_bifurcation_threshold": 0.35,
+        "feigenbaum_threshold": 0.2142,
+        "lyapunov_attractor_boundary": 0.001,
+        "cascade_104_residual": 0.133,
+        "demon_improvement_pct": 39.0,
+        "phi_damping_improvement_pct": 38.2,
+        "naive_avg_improvement_pct": 63.4,
+        "cascade_healing_pct": 99.6,
+        "iron_10k_relative_drift": 0.000596,
+        "shannon_entropy_ratio": 0.962
+    },
+    "findings": {
+        "layer_1_local_break": {
+            "id": 1,
+            "title": "Conservation breaks locally at all chaos amplitudes",
+            "experiment": 1,
+            "detail": "At any single X, G_chaos(X) × W(X) ≠ INVARIANT. Even amp=0.001 breaks point-wise symmetry."
+        },
+        "layer_2_statistical_conservation": {
+            "id": 2,
+            "title": "Mean conservation holds (statistical invariant)",
+            "experiment": 5,
+            "detail": "<G_chaos × W>_time → INVARIANT for amp ≤ 0.10. Error < 1%. Like thermodynamic equilibrium."
+        },
+        "layer_3_attractor": {
+            "id": 3,
+            "title": "God Code is a shallow attractor at micro-chaos",
+            "experiment": 7,
+            "detail": "Lyapunov exponent negative (λ=-1.138) at amp=0.001. Positive at amp≥0.01. Self-healing basin is narrow."
+        },
+        "layer_4_information": {
+            "id": 4,
+            "title": "Flat entropy landscape — chaos distributes uniformly",
+            "experiment": 8,
+            "detail": "Shannon H/H_max ≈ 0.962 at ALL amplitudes. Per-octave entropy identical (8.37 bits). No privileged positions."
+        },
+        "layer_5_symmetry_hierarchy": {
+            "id": 5,
+            "title": "φ-symmetry never breaks; translation breaks first",
+            "experiment": 9,
+            "detail": "Noether analysis: Translation broken at all amp. Octave broken. φ-phase 100% intact at all amp tested."
+        },
+        "layer_6_iron_origin": {
+            "id": 6,
+            "title": "Iron lattice chaos smallest at low temperature",
+            "experiment": 10,
+            "detail": "Iron at 10K: relative drift 0.000596 (smallest of all sources). At 293K: 0.003229 (exceeds logistic). Deep structure at cryo."
+        },
+        "layer_7_solfeggio": {
+            "id": 7,
+            "title": "Solfeggio survival equal to arbitrary at amp=0.05",
+            "experiment": 11,
+            "detail": "100% survival for both sacred and arbitrary at 5% chaos. Semitone tolerance wider than perturbation."
+        },
+        "layer_8_demon": {
+            "id": 8,
+            "title": "Maxwell's Demon outperforms φ-damping",
+            "experiment": 12,
+            "detail": "Demon: 39% improvement. φ-damping: 38.2%. Naive averaging: 63.4%. Demon is entropy-sensitive, beats constant φ."
+        },
+        "layer_9_cascade": {
+            "id": 9,
+            "title": "104-cascade heals 99.6% of any chaos perturbation",
+            "experiment": 13,
+            "detail": "S(n)=S(n-1)×φ_c + VOID×sin(nπ/104) + INV×(1-φ_c). Drives 563→527.65 but leaves ~0.133 VOID ripple."
+        }
+    },
+    "symmetry_hierarchy": [
+        "phi_phase",
+        "octave_scale",
+        "translation"
+    ],
+    "healing_trinity": {
+        "geometric": {
+            "method": "phi_damping",
+            "formula": "G_healed = G_chaos × φ^(-|ε|)",
+            "strength": "38.2%"
+        },
+        "thermodynamic": {
+            "method": "maxwell_demon",
+            "formula": "demon_factor = φ / (GOD_CODE / 416)",
+            "strength": "39.0%"
+        },
+        "harmonic": {
+            "method": "cascade_104",
+            "formula": "S(n) = S(n-1)×φ_c + VOID×sin(nπ/104) + INV×(1-φ_c)",
+            "strength": "99.6%"
+        }
+    },
+    "applied_to_systems": {
+        "l104_math_engine/god_code.py": "ChaosResilience class with verify_under_chaos, healing methods, bifurcation check",
+        "l104_math_engine/constants.py": "CHAOS_BIFURCATION_THRESHOLD, LYAPUNOV_ATTRACTOR_BOUNDARY, CASCADE_HEALING_RESIDUAL",
+        "l104_science_engine/entropy.py": "chaos_conservation_cascade, demon_vs_chaos restoration method",
+        "l104_asi/core.py": "chaos_resilience_score() dimension in ASI scoring",
+        "l104_agi/core.py": "chaos_resilience_score() dimension in AGI scoring"
+    }
+}

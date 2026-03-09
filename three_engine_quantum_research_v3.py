@@ -628,51 +628,55 @@ def phase_7_proofs(col: QuantumResearchCollectorV3, engines: Dict):
     except Exception as e:
         col.record("Phase 7", "Stability-Nirvana", "MathEngine", False, str(e)[:100])
 
-    # Exp 7.2: Entropy Inversion proof
-    print("\n  --- Exp 7.2: Entropy Inversion proof ---")
+    # Exp 7.2: Entropy Reduction under φ-modulation
+    print("\n  --- Exp 7.2: Entropy Reduction (φ-modulation) ---")
     try:
-        proof = me.proofs.proof_of_entropy_inversion(steps=50)
-        inverted = proof.get("inversion_proven", False)
-        col.record("Phase 7", "Entropy Inversion", "MathEngine", inverted,
-                   f"inverted={inverted}, init_S={proof.get('initial_entropy', 0):.4f}, "
-                   f"final_S={proof.get('final_entropy', 0):.4f}")
-        if inverted:
-            col.discover("Phase 7", "Entropy Inversion Proven",
-                         f"Entropy decreased from {proof.get('initial_entropy',0):.4f} → {proof.get('final_entropy',0):.4f}",
+        proof = me.proofs.proof_of_entropy_reduction(steps=50)
+        decreased = proof.get("entropy_decreased", False)
+        phi_better = proof.get("phi_more_effective", False)
+        col.record("Phase 7", "Entropy Reduction", "MathEngine", decreased,
+                   f"decreased={decreased}, phi_better={phi_better}, "
+                   f"init_S={proof.get('initial_entropy', 0):.4f}, "
+                   f"final_S_phi={proof.get('final_entropy_phi', 0):.4f}")
+        if decreased:
+            col.discover("Phase 7", "φ-Entropy Reduction Verified",
+                         f"Entropy decreased from {proof.get('initial_entropy',0):.4f} → {proof.get('final_entropy_phi',0):.4f} "
+                         f"(φ more effective than control: {phi_better})",
                          "high")
     except Exception as e:
-        col.record("Phase 7", "Entropy Inversion", "MathEngine", False, str(e)[:100])
+        col.record("Phase 7", "Entropy Reduction", "MathEngine", False, str(e)[:100])
 
-    # Exp 7.3: Collatz conjecture
-    print("\n  --- Exp 7.3: Collatz sovereign proof ---")
+    # Exp 7.3: Collatz empirical verification
+    print("\n  --- Exp 7.3: Collatz empirical verification ---")
     try:
-        proof = me.proofs.collatz_sovereign_proof(n=27, max_steps=10000)
+        proof = me.proofs.collatz_empirical_verification(n=27, max_steps=10000)
         converged = proof.get("converged_to_1", False)
-        steps = proof.get("steps", 0)
+        steps = proof.get("steps_to_convergence", 0)
         col.record("Phase 7", "Collatz (n=27)", "MathEngine", converged,
                    f"converged={converged}, steps={steps}, max_val={proof.get('max_value', 0)}")
     except Exception as e:
         col.record("Phase 7", "Collatz (n=27)", "MathEngine", False, str(e)[:100])
 
-    # Exp 7.4: Gödel-Turing meta-proof
-    print("\n  --- Exp 7.4: Gödel-Turing meta-proof ---")
+    # Exp 7.4: Gödel-Turing philosophical framework
+    print("\n  --- Exp 7.4: Gödel-Turing framework ---")
     try:
         # Access via godel_turing attribute if available
         if hasattr(me, 'godel_turing'):
-            meta = me.godel_turing.execute_meta_proof()
+            meta = me.godel_turing.execute_meta_framework()
         else:
             from l104_math_engine.proofs import GodelTuringMetaProof
-            meta = GodelTuringMetaProof.execute_meta_proof()
+            meta = GodelTuringMetaProof.execute_meta_framework()
         integrity = meta.get("proof_integrity", False)
-        col.record("Phase 7", "Gödel-Turing Meta", "MathEngine", integrity,
-                   f"integrity={integrity}, godel={str(meta.get('godel_resolution', 'N/A'))[:40]}, "
-                   f"halting={str(meta.get('halting_resolution', 'N/A'))[:40]}")
+        practical = meta.get("practical_decidability", False)
+        col.record("Phase 7", "Gödel-Turing Framework", "MathEngine", bool(integrity),
+                   f"integrity={integrity}, practical_decidability={practical}, "
+                   f"general_completeness={meta.get('general_completeness', 'N/A')}")
         if integrity:
-            col.discover("Phase 7", "Gödel-Turing Meta-Proof Integrity",
-                         f"Both Gödel incompleteness and halting problem resolved with integrity",
-                         "critical")
+            col.discover("Phase 7", "Gödel-Turing Framework Verified",
+                         f"Hierarchical witnessing active, practical decidability={practical}",
+                         "high")
     except Exception as e:
-        col.record("Phase 7", "Gödel-Turing Meta", "MathEngine", False, str(e)[:100])
+        col.record("Phase 7", "Gödel-Turing Framework", "MathEngine", False, str(e)[:100])
 
     # Exp 7.5: Goldbach verification
     print("\n  --- Exp 7.5: Goldbach verification ---")

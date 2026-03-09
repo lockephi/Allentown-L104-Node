@@ -2526,7 +2526,7 @@ class CodingSuggestionEngine:
                         "priority": "HIGH",
                         "suggestion": f"Code fitness {composite:.0%} below survival threshold — "
                                        f"directed mutation recommended",
-                        "automated": False,
+                        "automated": True,
                     })
         except Exception:
             pass
