@@ -1,35 +1,49 @@
 {
   "version": "16.1.0",
   "daemon_cycler": "VQPUDaemonCycler",
-  "last_persist": 1773206490.700178,
-  "cycles_completed": 200,
-  "total_sims_run": 1404,
-  "total_sims_passed": 1382,
+  "last_persist": 1773231877.1447701,
+  "cycles_completed": 455,
+  "total_sims_run": 2686,
+  "total_sims_passed": 2664,
   "total_sims_failed": 22,
-  "pass_rate": 0.9843,
-  "total_elapsed_ms": 5129832.73,
-  "avg_cycle_ms": 25649.16,
-  "last_cycle_ms": 3290.35,
-  "health_score": 0.888,
+  "pass_rate": 0.9918,
+  "total_elapsed_ms": 5214998.72,
+  "avg_cycle_ms": 11461.54,
+  "last_cycle_ms": 0.0,
+  "health_score": 0.8907,
   "consecutive_failures": 0,
   "watchdog_restarts": 0,
   "quarantined_sims": {},
   "sim_failure_counts": {},
   "cycle_fidelity_avg": [
+    0.750789,
+    0.750789,
+    0.750789,
+    0.750789,
+    0.750789,
     0.750274,
+    0.750789,
     0.750274,
+    0.750789,
     0.750789
   ],
   "cycle_alignment_avg": [
+    0.519448,
+    0.519448,
+    0.519448,
+    0.519448,
+    0.519448,
     0.689869,
+    0.519448,
     0.689869,
+    0.519448,
     0.519448
   ],
   "total_leaked_threads": 0,
-  "sc_history_count": 2,
+  "sc_history_count": 4,
   "sc_latest": {
-    "cycle": 198,
-    "ts": 1773205835.809945,
+    "cycle": 451,
+    "ts": 1773230627.537963,
     "cooper_pair": 0.017253,
     "order_param": 0.017253,
     "energy_gap_eV": 0.0,
@@ -38,28 +52,84 @@
   },
   "health_history": [
     {
-      "cycle": 198,
-      "ts": 1773205769.012937,
-      "passed": 11,
-      "total": 11,
-      "pass_rate": 1.0,
-      "elapsed_ms": 479.13
-    },
-    {
-      "cycle": 199,
-      "ts": 1773205835.810059,
-      "passed": 11,
-      "total": 11,
-      "pass_rate": 1.0,
-      "elapsed_ms": 671.01
-    },
-    {
-      "cycle": 200,
-      "ts": 1773206490.699678,
+      "cycle": 445,
+      "ts": 1773228761.328485,
       "passed": 5,
       "total": 5,
       "pass_rate": 1.0,
-      "elapsed_ms": 3290.35
+      "elapsed_ms": 182.11
+    },
+    {
+      "cycle": 446,
+      "ts": 1773228843.894114,
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "elapsed_ms": 116.02
+    },
+    {
+      "cycle": 447,
+      "ts": 1773228937.141979,
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "elapsed_ms": 52.86
+    },
+    {
+      "cycle": 448,
+      "ts": 1773229047.33869,
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "elapsed_ms": 157.61
+    },
+    {
+      "cycle": 449,
+      "ts": 1773229317.48852,
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "elapsed_ms": 155.36
+    },
+    {
+      "cycle": 450,
+      "ts": 1773229766.248478,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 57546.52
+    },
+    {
+      "cycle": 451,
+      "ts": 1773230258.692134,
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "elapsed_ms": 349.58
+    },
+    {
+      "cycle": 452,
+      "ts": 1773230627.538065,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 3139.78
+    },
+    {
+      "cycle": 453,
+      "ts": 1773231080.1041028,
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "elapsed_ms": 159.15
+    },
+    {
+      "cycle": 454,
+      "ts": 1773231467.730871,
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "elapsed_ms": 114.71
     }
   ],
   "god_code": 527.5184818492612,

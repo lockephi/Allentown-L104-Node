@@ -27,12 +27,11 @@ class SolutionChannel:
         # v7.0: Circuit breaker
         self._cb_state = self.CB_CLOSED
         self._cb_failure_count = 0
-        self._cb_failure_threshold = 5
-        self._cb_recovery_time = 30.0  # seconds
-        self._cb_last_failure_time = 0.0
+        self._cb_failure_threshold = 13  # (was 5)
+        self._cb_recovery_time = 13.0  # (was 30.0) seconds
         self._cb_half_open_successes = 0
         # v7.0: Cache size limit (LRU eviction)
-        self._cache_max_size = 1024
+        self._cache_max_size = 5275  # (was 1024)
         self._cache_access_order: List[str] = []
         # v7.0: Per-solver stats
         self._solver_stats: Dict[int, Dict[str, int]] = {}

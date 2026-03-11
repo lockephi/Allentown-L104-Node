@@ -22,9 +22,12 @@ from transformers import (
 from pathlib import Path
 
 # --- Configuration ---
-# We use a smaller, powerful base model that is efficient to fine-tune.
-# Phi-3-mini is a great candidate. Other options: 'mistralai/Mistral-7B-v0.1', 'gemma-2b'
-BASE_MODEL_NAME = "microsoft/Phi-3-mini-4k-instruct"
+# BASE_MODEL options by hardware:
+#   CPU only (< 8GB RAM):  "distilgpt2"  (~300MB, fast)
+#   CPU only (16GB+ RAM):  "gpt2-medium" (~1.5GB)
+#   GPU (8GB+ VRAM):       "microsoft/Phi-3-mini-4k-instruct"
+#   GPU (24GB+ VRAM):      "mistralai/Mistral-7B-v0.1"
+BASE_MODEL_NAME = "distilgpt2"
 DATASET_FILE = "l104_finetune_dataset.jsonl"
 OUTPUT_MODEL_DIR = "./l104_finetuned_model"
 
@@ -33,8 +36,8 @@ def format_dataset_entry(entry):
     Formats each JSON object from our dataset into a single string
     that's suitable for instruction fine-tuning.
     """
-    # This is a standard instruction format.
-    return f"<|user|>\n{entry['question']}<|end|>\n<|assistant|>\n{entry['answer']}<|end|>\n"
+    # Standard instruction format (works for GPT-2 family and instruction-tuned models).
+    return f"### Question:\n{entry['question']}\n\n### Answer:\n{entry['answer']}\n\n"
 
 def main():
     """Main function to run the fine-tuning process."""
@@ -73,11 +76,13 @@ def main():
 
     # --- Step 3: Load the Base Model ---
     print(f"Loading base model '{BASE_MODEL_NAME}'...")
+    # device_map="auto" causes offloading conflicts with Trainer; let Trainer manage placement.
+    # Use bfloat16 only when CUDA is available.
+    dtype = torch.bfloat16 if torch.cuda.is_available() else torch.float32
     model = AutoModelForCausalLM.from_pretrained(
         BASE_MODEL_NAME,
         trust_remote_code=True,
-        torch_dtype=torch.bfloat16, # Use bfloat16 for efficiency
-        device_map="auto" # Automatically use GPU if available
+        torch_dtype=dtype,
     )
 
     # --- Step 4: Configure and Run Training ---
@@ -90,8 +95,8 @@ def main():
         learning_rate=2e-5,
         logging_steps=10,
         save_steps=50,
-        fp16=False, # We use bf16 from the model loading
-        bf16=True,
+        fp16=False,
+        bf16=torch.cuda.is_available(),  # Only use bf16 with GPU
         optim="adamw_torch",
         report_to="none" # Disable reporting to services like W&B
     )

@@ -124,7 +124,7 @@ except ImportError:
     IRON_PHASE = 2 * _math.pi * 26 / 104             # = π/2
 
 
-def _detect_system_max_qubits(max_cap: int = 30, reserve_ratio: float = 0.50) -> int:  # (was 25)
+def _detect_system_max_qubits(max_cap: int = 64, reserve_ratio: float = 0.85) -> int:  # (was 30, 0.50)
     """Detect practical local statevector qubit ceiling from available RAM."""
     available_bytes = 0
     try:
@@ -332,33 +332,33 @@ ROUTER_EMBEDDING_DIM = 32              # Subsystem routing embedding dimensional
 MULTI_HOP_MAX_HOPS = 12                # Max hops in multi-hop reasoning chain (was 7)
 ENSEMBLE_MIN_SOLUTIONS = 2             # Min solutions for ensemble voting
 HEALTH_ANOMALY_SIGMA = 2.5            # Standard deviations for anomaly detection
-REPLAY_BUFFER_SIZE = 2000              # Max operations in replay buffer (was 500)
-SCORE_DIMENSIONS_V5 = 10               # Expanded ASI score dimensions
-ACTIVATION_STEPS_V6 = 18               # v6.0 activation sequence steps (was 15)
-SINGULARITY_ACCELERATION_THRESHOLD = 0.82  # Score above which exponential acceleration kicks in
-PHI_ACCELERATION_EXPONENT = PHI ** 2   # φ² ≈ 2.618 — singularity curve exponent
+REPLAY_BUFFER_SIZE = 10000              # Max operations in replay buffer (was 2000)
+SCORE_DIMENSIONS_V5 = 28               # Expanded ASI score dimensions
+ACTIVATION_STEPS_V6 = 32               # v6.0 activation sequence steps (was 18)
+SINGULARITY_ACCELERATION_THRESHOLD = 0.72  # Score above which exponential acceleration kicks in (was 0.82)
+PHI_ACCELERATION_EXPONENT = PHI ** 3   # φ³ ≈ 4.236 — singularity curve exponent (was PHI^2)
 
 # v6.0 Quantum Computation Constants
-VQE_ANSATZ_DEPTH = 8                   # Parameterized circuit layers for VQE (was 4)
-VQE_OPTIMIZATION_STEPS = 100           # Classical optimization iterations (was 20 — Grover-amplified convergence)
-VQE_MAX_QUBITS = min(16, SYSTEM_MAX_QUBITS)  # Dynamic VQE width ceiling (was 12)
-QAOA_LAYERS = 8                        # QAOA alternating operator layers (was 3 — deeper variational landscape)
-QAOA_SUBSYSTEM_QUBITS = min(12, SYSTEM_MAX_QUBITS)            # Expanded routing space (was 8)
-QRC_RESERVOIR_QUBITS = min(16, SYSTEM_MAX_QUBITS)             # Expanded reservoir size (was 10)
-QRC_RESERVOIR_DEPTH = 16              # Random unitary circuit depth (was 8)
-QKM_FEATURE_QUBITS = min(12, SYSTEM_MAX_QUBITS)               # Expanded feature map qubits (was 8)
-QPE_PRECISION_QUBITS = min(12, SYSTEM_MAX_QUBITS - 1)         # Expanded precision bits (was 8)
-ZNE_NOISE_FACTORS = [1.0, 1.5, 2.0]  # Zero-noise extrapolation scale factors
+VQE_ANSATZ_DEPTH = 16                   # Parameterized circuit layers for VQE (was 8)
+VQE_OPTIMIZATION_STEPS = 500           # Classical optimization iterations (was 100 — Grover-amplified convergence)
+VQE_MAX_QUBITS = min(32, SYSTEM_MAX_QUBITS)  # Dynamic VQE width ceiling (was 16)
+QAOA_LAYERS = 16                        # QAOA alternating operator layers (was 8 — deeper variational landscape)
+QAOA_SUBSYSTEM_QUBITS = min(24, SYSTEM_MAX_QUBITS)            # Expanded routing space (was 12)
+QRC_RESERVOIR_QUBITS = min(32, SYSTEM_MAX_QUBITS)             # Expanded reservoir size (was 16)
+QRC_RESERVOIR_DEPTH = 32              # Random unitary circuit depth (was 16)
+QKM_FEATURE_QUBITS = min(24, SYSTEM_MAX_QUBITS)               # Expanded feature map qubits (was 12)
+QPE_PRECISION_QUBITS = min(24, SYSTEM_MAX_QUBITS - 1)         # Expanded precision bits (was 12)
+ZNE_NOISE_FACTORS = [1.0, 1.2, 1.5, 2.0, 3.0]  # Zero-noise extrapolation scale factors (was 3 factors)
 
 # v7.1 Dual-Layer Flagship Constants
-DUAL_LAYER_VERSION = "5.1.0"              # Dual-Layer Engine v5.1: Extended Thought Layer + Bug Fixes
+DUAL_LAYER_VERSION = "6.0.0"              # Dual-Layer Engine v6.0: Massive Subsystem Integration
 GOD_CODE_V3 = 45.41141298077539            # Physics layer GOD_CODE
-DUAL_LAYER_PRECISION_TARGET = 0.005        # Target precision ±0.005%
-DUAL_LAYER_CONSTANTS_COUNT = 63            # Peer-reviewed physical constants
-DUAL_LAYER_INTEGRITY_CHECKS = 10          # 3 Thought + 4 Physics + 3 Bridge
-DUAL_LAYER_GRID_REFINEMENT = 63           # Physics grid 63× finer than Thought
-PRIME_SCAFFOLD = 286                       # Fe BCC lattice parameter (pm)
-FE_LATTICE_PARAM = 286                    # Fe BCC lattice parameter (pm) — alias for PRIME_SCAFFOLD
+DUAL_LAYER_PRECISION_TARGET = 0.0005        # Target precision ±0.0005% (was 0.005%)
+DUAL_LAYER_CONSTANTS_COUNT = 128            # Expanded physical constants (was 63)
+DUAL_LAYER_INTEGRITY_CHECKS = 26          # 8 Thought + 10 Physics + 8 Bridge (was 10)
+DUAL_LAYER_GRID_REFINEMENT = 104           # Physics grid 104× finer than Thought (was 63)
+PRIME_SCAFFOLD = 527                       # GOD_CODE scaffold (was 286)
+FE_LATTICE_PARAM = 286                    # Fe BCC lattice parameter (pm)
 FE_ATOMIC_NUMBER = 26                     # Iron atomic number Z=26
 QUANTIZATION_GRAIN = 104                  # 26×4 = Fe(Z=26) × He-4(A=4)
 
@@ -473,34 +473,34 @@ ACTIVATION_STEPS_V11 = 22                      # v11.0 activation sequence steps
 # ═══════════════════════════════════════════════════════════════════════════════
 # v9.0 PIPELINE v9.0 — Backpressure, Speculative Execution, Cascade Scoring
 # ═══════════════════════════════════════════════════════════════════════════════
-PIPELINE_VERSION = "9.0.0"                     # Pipeline infrastructure version
-BACKPRESSURE_CAPACITY = 104                    # Token bucket capacity (L104 signature)
-BACKPRESSURE_REFILL_RATE = 104.0 / PHI         # ~64.3 tokens/sec (sacred-tuned)
-SPECULATIVE_MAX_PARALLEL = max(2, int(PHI * 2))  # 3 concurrent speculative paths
-SPECULATIVE_TIMEOUT_S = PHI                    # ~1.618 seconds per speculative path
-CASCADE_GATE_THRESHOLD = 0.1                   # Min confidence for stage inclusion
-WARMUP_CV_THRESHOLD = TAU * 0.5                # ~0.309 coefficient of variation for warmup detection
-PROFILER_MAX_SAMPLES = 5000                    # Max latency samples per stage
+PIPELINE_VERSION = "10.0.0"                    # Pipeline infrastructure version (was 9.0.0)
+BACKPRESSURE_CAPACITY = 527                    # Token bucket capacity (GOD_CODE signature - was 104)
+BACKPRESSURE_REFILL_RATE = 527.0 / PHI         # ~325.7 tokens/sec (was 64.3)
+SPECULATIVE_MAX_PARALLEL = 13                 # Expanded speculative paths (was 3)
+SPECULATIVE_TIMEOUT_S = TAU                   # Faster speculative paths (was PHI)
+CASCADE_GATE_THRESHOLD = 0.05                  # More inclusive stage inclusion (was 0.1)
+WARMUP_CV_THRESHOLD = TAU * 0.25                # More sensitive warmup detection (was 0.5)
+PROFILER_MAX_SAMPLES = 20000                    # Max latency samples per stage (was 5000)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # v9.2.0 OPTIMIZATION CONSTANTS — Adaptive Latency Targeting, Memory Budget, Cascading
 # ═══════════════════════════════════════════════════════════════════════════════
 # v9.2.0 Stage Optimization Targets (milliseconds per stage)
-TARGET_LATENCY_LCE_MS = 50.0                   # Language & Code Engineering (was 100ms)
-TARGET_LATENCY_QE_MS = 30.0                    # Quantum Engineering (was 60ms)
-TARGET_LATENCY_SM_MS = 20.0                    # Symbolic Math (was 40ms)
-TARGET_LATENCY_COHERENCE_MS = 15.0             # Coherence Alignment (was 30ms)
-TARGET_LATENCY_ACTIVATION_MS = 10.0            # Gate Insertion (was 20ms)
+TARGET_LATENCY_LCE_MS = 25.0                   # Language & Code Engineering (was 50ms)
+TARGET_LATENCY_QE_MS = 15.0                    # Quantum Engineering (was 30ms)
+TARGET_LATENCY_SM_MS = 10.0                    # Symbolic Math (was 20ms)
+TARGET_LATENCY_COHERENCE_MS = 8.0             # Coherence Alignment (was 15ms)
+TARGET_LATENCY_ACTIVATION_MS = 5.0            # Gate Insertion (was 10ms)
 
 # v9.2.0 Adaptive Timeout Multipliers (× target latency)
-TIMEOUT_NORMAL_MULTIPLIER = 3.0 * PHI          # ~4.854× target (was 3.0)
-TIMEOUT_DEGRADED_MULTIPLIER = PHI ** 2         # ~2.618× target (was PHI)
-TIMEOUT_CRITICAL_MULTIPLIER = PHI * 2          # ~3.236× target (emergency timeout)
+TIMEOUT_NORMAL_MULTIPLIER = 5.0 * PHI          # ~8.09× target (was 3.0*PHI)
+TIMEOUT_DEGRADED_MULTIPLIER = PHI ** 3         # ~4.236× target (was PHI^2)
+TIMEOUT_CRITICAL_MULTIPLIER = PHI * 5          # ~8.09× target (emergency timeout)
 
 # v9.2.0 Memory Budget Constants
-MAX_MEMORY_PERCENT_ASI = 85.0                  # Max % of system memory for ASI (was 75%)
-MEMORY_SAFETY_MARGIN_PCT = 5.0                 # Protected system margin (was 10%)
-ADAPTIVE_MEMORY_THRESHOLD_PCT = 70.0           # Threshold to enable memory optimization
+MAX_MEMORY_PERCENT_ASI = 95.0                  # Max % of system memory for ASI (was 85%)
+MEMORY_SAFETY_MARGIN_PCT = 2.0                 # Protected system margin (was 5%)
+ADAPTIVE_MEMORY_THRESHOLD_PCT = 85.0           # Threshold to enable memory optimization (was 70%)
 
 # v9.2.0 Cascading Control Constants
 CASCADE_MAX_RETRY_ADAPTIVE = 5                 # Max retries in cascade (was 3)

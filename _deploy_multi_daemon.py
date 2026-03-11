@@ -36,7 +36,11 @@ class DaemonRegion(str, Enum):
     US_EAST = "us-east-1"
     US_WEST = "us-west-1"
     EU_CENTRAL = "eu-central-1"
+    EU_WEST = "eu-west-1"
     ASIA_PACIFIC = "ap-northeast-1"
+    ASIA_SOUTH = "ap-south-1"
+    SA_EAST = "sa-east-1"
+    AF_SOUTH = "af-south-1"
     LOCAL = "localhost"
 
 
@@ -46,6 +50,7 @@ class DaemonRole(str, Enum):
     RELAY = "relay"                  # Entanglement relay node
     QKD_DISTRIBUTOR = "qkd_dist"     # QKD key distribution hub
     OBSERVER = "observer"             # Network observer (telemetry only)
+    HYPER_NODE = "hyper_node"        # High-capacity compute cluster
 
 
 @dataclass
@@ -103,106 +108,69 @@ class DaemonCluster:
 # STANDARD CLUSTER TEMPLATES
 # ═══════════════════════════════════════════════════════════════════
 
-def create_distributed_cluster() -> DaemonCluster:
-    """Create a 4-region distributed daemon cluster."""
+def create_massive_cluster() -> DaemonCluster:
+    """Create a 32-node massive distributed daemon cluster."""
 
     cluster = DaemonCluster(
-        cluster_id="dist-cluster-001",
-        cluster_name="L104 Distributed Global Network"
+        cluster_id="massive-cluster-001",
+        cluster_name="L104 Massive Global Intelligence Network"
     )
 
-    # US-EAST: Primary sovereign nodes + QKD hub
-    cluster.add_node(DaemonNodeSpec(
-        name="Sovereign-US-East-1",
-        node_id="daemon-us-east-001",
-        region=DaemonRegion.US_EAST,
-        role=DaemonRole.SOVEREIGN,
-        host="10.0.1.10",
-        port=10401,
-        max_qubits=26,
-        telemetry_port=9091,
-    ))
+    regions = [
+        DaemonRegion.US_EAST, DaemonRegion.US_WEST,
+        DaemonRegion.EU_CENTRAL, DaemonRegion.EU_WEST,
+        DaemonRegion.ASIA_PACIFIC, DaemonRegion.ASIA_SOUTH,
+        DaemonRegion.SA_EAST, DaemonRegion.AF_SOUTH
+    ]
 
-    cluster.add_node(DaemonNodeSpec(
-        name="QKD-Hub-US-East",
-        node_id="daemon-us-east-002",
-        region=DaemonRegion.US_EAST,
-        role=DaemonRole.QKD_DISTRIBUTOR,
-        host="10.0.1.20",
-        port=10402,
-        max_qubits=16,
-        enable_qkd=True,
-        telemetry_port=9092,
-    ))
+    for i, region in enumerate(regions):
+        base_port = 10400 + (i * 10)
+        base_tel = 9090 + (i * 10)
+        
+        # Add 4 nodes per region
+        cluster.add_node(DaemonNodeSpec(
+            name=f"Sovereign-{region.value}-1",
+            node_id=f"daemon-{region.value}-001",
+            region=region,
+            role=DaemonRole.SOVEREIGN,
+            host=f"10.{i}.1.10",
+            port=base_port + 1,
+            max_qubits=26,
+            telemetry_port=base_tel + 1,
+        ))
 
-    # US-WEST: Sovereign + Relay
-    cluster.add_node(DaemonNodeSpec(
-        name="Sovereign-US-West-1",
-        node_id="daemon-us-west-001",
-        region=DaemonRegion.US_WEST,
-        role=DaemonRole.SOVEREIGN,
-        host="10.0.2.10",
-        port=10411,
-        max_qubits=20,
-        telemetry_port=9101,
-    ))
+        cluster.add_node(DaemonNodeSpec(
+            name=f"Relay-{region.value}-1",
+            node_id=f"daemon-{region.value}-002",
+            region=region,
+            role=DaemonRole.RELAY,
+            host=f"10.{i}.1.20",
+            port=base_port + 2,
+            max_qubits=16,
+            telemetry_port=base_tel + 2,
+        ))
 
-    cluster.add_node(DaemonNodeSpec(
-        name="Relay-US-West",
-        node_id="daemon-us-west-002",
-        region=DaemonRegion.US_WEST,
-        role=DaemonRole.RELAY,
-        host="10.0.2.20",
-        port=10412,
-        max_qubits=12,
-        telemetry_port=9102,
-    ))
+        cluster.add_node(DaemonNodeSpec(
+            name=f"QKD-Hub-{region.value}-1",
+            node_id=f"daemon-{region.value}-003",
+            region=region,
+            role=DaemonRole.QKD_DISTRIBUTOR,
+            host=f"10.{i}.1.30",
+            port=base_port + 3,
+            max_qubits=20,
+            telemetry_port=base_tel + 3,
+        ))
 
-    # EU-CENTRAL: Sovereign + Observer
-    cluster.add_node(DaemonNodeSpec(
-        name="Sovereign-EU-Central-1",
-        node_id="daemon-eu-central-001",
-        region=DaemonRegion.EU_CENTRAL,
-        role=DaemonRole.SOVEREIGN,
-        host="10.0.3.10",
-        port=10421,
-        max_qubits=20,
-        telemetry_port=9111,
-    ))
-
-    cluster.add_node(DaemonNodeSpec(
-        name="Observer-EU-Central",
-        node_id="daemon-eu-central-002",
-        region=DaemonRegion.EU_CENTRAL,
-        role=DaemonRole.OBSERVER,
-        host="10.0.3.20",
-        port=10422,
-        max_qubits=8,
-        telemetry_port=9112,
-    ))
-
-    # ASIA-PACIFIC: Sovereign + QKD
-    cluster.add_node(DaemonNodeSpec(
-        name="Sovereign-Asia-Pacific-1",
-        node_id="daemon-ap-001",
-        region=DaemonRegion.ASIA_PACIFIC,
-        role=DaemonRole.SOVEREIGN,
-        host="10.0.4.10",
-        port=10431,
-        max_qubits=20,
-        telemetry_port=9121,
-    ))
-
-    cluster.add_node(DaemonNodeSpec(
-        name="QKD-Relay-Asia-Pacific",
-        node_id="daemon-ap-002",
-        region=DaemonRegion.ASIA_PACIFIC,
-        role=DaemonRole.QKD_DISTRIBUTOR,
-        host="10.0.4.20",
-        port=10432,
-        max_qubits=16,
-        telemetry_port=9122,
-    ))
+        cluster.add_node(DaemonNodeSpec(
+            name=f"HyperNode-{region.value}-1",
+            node_id=f"daemon-{region.value}-004",
+            region=region,
+            role=DaemonRole.HYPER_NODE,
+            host=f"10.{i}.1.40",
+            port=base_port + 4,
+            max_qubits=32,
+            telemetry_port=base_tel + 4,
+        ))
 
     return cluster
 
@@ -230,6 +198,7 @@ def create_docker_deployment_manifest(cluster: DaemonCluster) -> Dict:
                 "L104_ENABLE_ERROR_CORRECTION": str(node.enable_error_correction),
                 "L104_PORT": str(node.port),
                 "L104_TELEMETRY_PORT": str(node.telemetry_port),
+                "L104_CONCURRENCY_LIMIT": "256",
             },
             "ports": [
                 f"{node.port}:{node.port}",
@@ -269,15 +238,10 @@ def create_docker_deployment_manifest(cluster: DaemonCluster) -> Dict:
 # DAEMON DEPLOYMENT & DISCOVERY
 # ═══════════════════════════════════════════════════════════════════
 
-print("\n[PHASE 1] DEFINE DISTRIBUTED CLUSTER")
+print("\n[PHASE 1] DEFINE MASSIVE CLUSTER")
 print("-" * 100)
 
-cluster = create_distributed_cluster()
-print(f"✓ Created cluster: {cluster.cluster_name}")
-print(f"  Total nodes: {len(cluster.nodes)}")
-print(f"  Total qubits: {sum(n.max_qubits for n in cluster.nodes)}")
-print(f"  Regions: {sorted(set(n.region.value for n in cluster.nodes))}")
-print(f"  Roles: {sorted(set(n.role.value for n in cluster.nodes))}")
+cluster = create_massive_cluster()
 
 # Show node breakdown
 print(f"\nNode Deployment Plan:")
