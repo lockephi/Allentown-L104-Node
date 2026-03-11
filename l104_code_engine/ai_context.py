@@ -8,12 +8,11 @@ efficiently, with token-budget-aware compression.
 Migrated from l104_coding_system.py (lines 855-1086) during package decomposition.
 """
 
-import re
-import json
 from pathlib import Path
 from typing import Dict, Any
+import json
+import re
 
-from .constants import GOD_CODE, PHI
 from ._lazy_imports import _get_code_engine
 
 _WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
@@ -243,5 +242,6 @@ Please address the task while also considering the issues listed above.
         return state
 
     def status(self) -> Dict[str, Any]:
+        """TODO: Document status."""
         return {"contexts_built": self.contexts_built,
                 "ai_profiles": list(self.AI_PROFILES.keys())}

@@ -74,6 +74,17 @@ except ImportError:
     _fast_intellect = None
     ASI_FAST_AVAILABLE = False
 
+# ═══════════════════════════════════════════════════════════════
+# OpenClaw.ai Integration (v14)
+# ═══════════════════════════════════════════════════════════════
+try:
+    from l104_openclaw_api_routes import register_openclaw_routes
+    from l104_openclaw_integration import initialize_openclaw, shutdown_openclaw
+    _openclaw_enabled = True
+except ImportError as _oc_err:
+    _openclaw_enabled = False
+    print(f"⚠️ [OPENCLAW] Import failed: {_oc_err}")
+
 # API Key Management
 API_KEYS = {
     "l104-omega-master": {
@@ -242,6 +253,18 @@ def require_permission(permission: str):
         return key_info
     return checker
 
+
+# ═══════════════════════════════════════════════════════════════
+# INITIALIZATION
+# ═══════════════════════════════════════════════════════════════
+
+# Register OpenClaw.ai Integration at startup
+if _openclaw_enabled:
+    try:
+        register_openclaw_routes(app)
+        print("✅ [OPENCLAW] Routes registered. Lifespan hooks will manage connection.")
+    except Exception as oc_err:
+        print(f"❌ [OPENCLAW] Startup failed: {oc_err}")
 
 # ═══════════════════════════════════════════════════════════════
 # ENDPOINTS
@@ -848,9 +871,16 @@ async def lifespan(app_instance):
     print(f"    Grover: {GROVER_AMPLIFICATION:.4f}× (φ³)")
     print(f"    Docs: http://localhost:5105/docs")
     print(f"{'═' * 60}\n")
+
+    if _openclaw_enabled:
+        await initialize_openclaw()
+
     yield
     # Shutdown
     print("L104 External API shutting down...")
+    if _openclaw_enabled:
+        await shutdown_openclaw()
+
     for conn in active_connections:
         try:
             await conn.close()

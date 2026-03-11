@@ -1,0 +1,333 @@
+{
+  "version": "3.9",
+  "services": {
+    "sovereign_us_east_1": {
+      "image": "l104/quantum-daemon:latest",
+      "container_name": "Sovereign-US-East-1",
+      "hostname": "Sovereign-US-East-1",
+      "environment": {
+        "L104_NODE_ID": "daemon-us-east-001",
+        "L104_NODE_NAME": "Sovereign-US-East-1",
+        "L104_REGION": "us-east-1",
+        "L104_ROLE": "sovereign",
+        "L104_MAX_QUBITS": "26",
+        "L104_QUANTUM_TOPOLOGY": "all_to_all",
+        "L104_ENABLE_QKD": "True",
+        "L104_ENABLE_ERROR_CORRECTION": "True",
+        "L104_PORT": "10401",
+        "L104_TELEMETRY_PORT": "9091"
+      },
+      "ports": [
+        "10401:10401",
+        "9091:9091"
+      ],
+      "networks": [
+        "l104_quantum_network"
+      ],
+      "restart_policy": {
+        "condition": "on-failure",
+        "delay": "5s",
+        "max_attempts": 5
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9091/health"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      }
+    },
+    "qkd_hub_us_east": {
+      "image": "l104/quantum-daemon:latest",
+      "container_name": "QKD-Hub-US-East",
+      "hostname": "QKD-Hub-US-East",
+      "environment": {
+        "L104_NODE_ID": "daemon-us-east-002",
+        "L104_NODE_NAME": "QKD-Hub-US-East",
+        "L104_REGION": "us-east-1",
+        "L104_ROLE": "qkd_dist",
+        "L104_MAX_QUBITS": "16",
+        "L104_QUANTUM_TOPOLOGY": "all_to_all",
+        "L104_ENABLE_QKD": "True",
+        "L104_ENABLE_ERROR_CORRECTION": "True",
+        "L104_PORT": "10402",
+        "L104_TELEMETRY_PORT": "9092"
+      },
+      "ports": [
+        "10402:10402",
+        "9092:9092"
+      ],
+      "networks": [
+        "l104_quantum_network"
+      ],
+      "restart_policy": {
+        "condition": "on-failure",
+        "delay": "5s",
+        "max_attempts": 5
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9092/health"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      }
+    },
+    "sovereign_us_west_1": {
+      "image": "l104/quantum-daemon:latest",
+      "container_name": "Sovereign-US-West-1",
+      "hostname": "Sovereign-US-West-1",
+      "environment": {
+        "L104_NODE_ID": "daemon-us-west-001",
+        "L104_NODE_NAME": "Sovereign-US-West-1",
+        "L104_REGION": "us-west-1",
+        "L104_ROLE": "sovereign",
+        "L104_MAX_QUBITS": "20",
+        "L104_QUANTUM_TOPOLOGY": "all_to_all",
+        "L104_ENABLE_QKD": "True",
+        "L104_ENABLE_ERROR_CORRECTION": "True",
+        "L104_PORT": "10411",
+        "L104_TELEMETRY_PORT": "9101"
+      },
+      "ports": [
+        "10411:10411",
+        "9101:9101"
+      ],
+      "networks": [
+        "l104_quantum_network"
+      ],
+      "restart_policy": {
+        "condition": "on-failure",
+        "delay": "5s",
+        "max_attempts": 5
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9101/health"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      }
+    },
+    "relay_us_west": {
+      "image": "l104/quantum-daemon:latest",
+      "container_name": "Relay-US-West",
+      "hostname": "Relay-US-West",
+      "environment": {
+        "L104_NODE_ID": "daemon-us-west-002",
+        "L104_NODE_NAME": "Relay-US-West",
+        "L104_REGION": "us-west-1",
+        "L104_ROLE": "relay",
+        "L104_MAX_QUBITS": "12",
+        "L104_QUANTUM_TOPOLOGY": "all_to_all",
+        "L104_ENABLE_QKD": "True",
+        "L104_ENABLE_ERROR_CORRECTION": "True",
+        "L104_PORT": "10412",
+        "L104_TELEMETRY_PORT": "9102"
+      },
+      "ports": [
+        "10412:10412",
+        "9102:9102"
+      ],
+      "networks": [
+        "l104_quantum_network"
+      ],
+      "restart_policy": {
+        "condition": "on-failure",
+        "delay": "5s",
+        "max_attempts": 5
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9102/health"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      }
+    },
+    "sovereign_eu_central_1": {
+      "image": "l104/quantum-daemon:latest",
+      "container_name": "Sovereign-EU-Central-1",
+      "hostname": "Sovereign-EU-Central-1",
+      "environment": {
+        "L104_NODE_ID": "daemon-eu-central-001",
+        "L104_NODE_NAME": "Sovereign-EU-Central-1",
+        "L104_REGION": "eu-central-1",
+        "L104_ROLE": "sovereign",
+        "L104_MAX_QUBITS": "20",
+        "L104_QUANTUM_TOPOLOGY": "all_to_all",
+        "L104_ENABLE_QKD": "True",
+        "L104_ENABLE_ERROR_CORRECTION": "True",
+        "L104_PORT": "10421",
+        "L104_TELEMETRY_PORT": "9111"
+      },
+      "ports": [
+        "10421:10421",
+        "9111:9111"
+      ],
+      "networks": [
+        "l104_quantum_network"
+      ],
+      "restart_policy": {
+        "condition": "on-failure",
+        "delay": "5s",
+        "max_attempts": 5
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9111/health"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      }
+    },
+    "observer_eu_central": {
+      "image": "l104/quantum-daemon:latest",
+      "container_name": "Observer-EU-Central",
+      "hostname": "Observer-EU-Central",
+      "environment": {
+        "L104_NODE_ID": "daemon-eu-central-002",
+        "L104_NODE_NAME": "Observer-EU-Central",
+        "L104_REGION": "eu-central-1",
+        "L104_ROLE": "observer",
+        "L104_MAX_QUBITS": "8",
+        "L104_QUANTUM_TOPOLOGY": "all_to_all",
+        "L104_ENABLE_QKD": "True",
+        "L104_ENABLE_ERROR_CORRECTION": "True",
+        "L104_PORT": "10422",
+        "L104_TELEMETRY_PORT": "9112"
+      },
+      "ports": [
+        "10422:10422",
+        "9112:9112"
+      ],
+      "networks": [
+        "l104_quantum_network"
+      ],
+      "restart_policy": {
+        "condition": "on-failure",
+        "delay": "5s",
+        "max_attempts": 5
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9112/health"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      }
+    },
+    "sovereign_asia_pacific_1": {
+      "image": "l104/quantum-daemon:latest",
+      "container_name": "Sovereign-Asia-Pacific-1",
+      "hostname": "Sovereign-Asia-Pacific-1",
+      "environment": {
+        "L104_NODE_ID": "daemon-ap-001",
+        "L104_NODE_NAME": "Sovereign-Asia-Pacific-1",
+        "L104_REGION": "ap-northeast-1",
+        "L104_ROLE": "sovereign",
+        "L104_MAX_QUBITS": "20",
+        "L104_QUANTUM_TOPOLOGY": "all_to_all",
+        "L104_ENABLE_QKD": "True",
+        "L104_ENABLE_ERROR_CORRECTION": "True",
+        "L104_PORT": "10431",
+        "L104_TELEMETRY_PORT": "9121"
+      },
+      "ports": [
+        "10431:10431",
+        "9121:9121"
+      ],
+      "networks": [
+        "l104_quantum_network"
+      ],
+      "restart_policy": {
+        "condition": "on-failure",
+        "delay": "5s",
+        "max_attempts": 5
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9121/health"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      }
+    },
+    "qkd_relay_asia_pacific": {
+      "image": "l104/quantum-daemon:latest",
+      "container_name": "QKD-Relay-Asia-Pacific",
+      "hostname": "QKD-Relay-Asia-Pacific",
+      "environment": {
+        "L104_NODE_ID": "daemon-ap-002",
+        "L104_NODE_NAME": "QKD-Relay-Asia-Pacific",
+        "L104_REGION": "ap-northeast-1",
+        "L104_ROLE": "qkd_dist",
+        "L104_MAX_QUBITS": "16",
+        "L104_QUANTUM_TOPOLOGY": "all_to_all",
+        "L104_ENABLE_QKD": "True",
+        "L104_ENABLE_ERROR_CORRECTION": "True",
+        "L104_PORT": "10432",
+        "L104_TELEMETRY_PORT": "9122"
+      },
+      "ports": [
+        "10432:10432",
+        "9122:9122"
+      ],
+      "networks": [
+        "l104_quantum_network"
+      ],
+      "restart_policy": {
+        "condition": "on-failure",
+        "delay": "5s",
+        "max_attempts": 5
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9122/health"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      }
+    }
+  },
+  "networks": {
+    "l104_quantum_network": {
+      "driver": "bridge"
+    }
+  },
+  "volumes": {
+    "l104_state": {}
+  }
+}

@@ -661,6 +661,13 @@ class AGICore:
         """
         print("\n--- [AGI_CORE]: INITIATING SELF-IMPROVEMENT CYCLE ---")
 
+        # --- Autonomous Task Processing ---
+        # Before the main cycle, check for and execute assigned tasks from the database.
+        try:
+            self._process_pending_tasks()
+        except Exception as e:
+            print(f"--- [AGI_CORE]: ERROR during task processing: {e} ---")
+
         # Import with protection — these can trigger heavy init
         try:
             from l104_real_math import RealMath
@@ -5001,6 +5008,106 @@ class AGICore:
         if engine is None: return {'quantum': False, 'error': 'QuantumMagic unavailable'}
         try: return engine.infer(evidence=evidence or {}) if hasattr(engine, 'infer') else {'quantum': True, 'magic': 'connected'}
         except Exception as e: return {'quantum': False, 'error': str(e)}
+
+
+        except Exception as e: return {'quantum': False, 'error': str(e)}
+
+    # ═══════════════════════════════════════════════════════════════
+    # AUTONOMOUS TASK PROCESSING (ASI/Overseer Integration)
+    # ═══════════════════════════════════════════════════════════════
+
+    def _query_db(self, query, params=()):
+        """Executes a read query on the unified DB."""
+        import sqlite3
+        from pathlib import Path
+        db_path = Path(__file__).parent.parent / "l104_unified.db"
+        if not db_path.exists(): return []
+        with sqlite3.connect(db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            return cursor.fetchall()
+
+    def _execute_db_command(self, command, params=()):
+        """Executes a write command on the unified DB."""
+        import sqlite3
+        from pathlib import Path
+        db_path = Path(__file__).parent.parent / "l104_unified.db"
+        if not db_path.exists(): return
+        with sqlite3.connect(db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute(command, params)
+            conn.commit()
+
+    def _update_task_status(self, task_id, status, result=None):
+        """Updates the status and result of a task in the database."""
+        from datetime import datetime
+        print(f"--- [AGI_TASKING]: Updating task {task_id} to {status} ---")
+        if status == "completed":
+            self._execute_db_command(
+                "UPDATE tasks SET status = ?, result = ?, completed_at = ? WHERE id = ?",
+                (status, result, datetime.now().isoformat(), task_id)
+            )
+        else:
+            self._execute_db_command("UPDATE tasks SET status = ? WHERE id = ?", (status, task_id))
+
+    def _process_pending_tasks(self):
+        """Fetches and executes the highest-priority pending task from the database.
+        v61.1: Optimized to fetch a batch of tasks, reducing database I/O.
+        Includes timing for performance analysis."""
+        TASK_BATCH_SIZE = 5
+        _start_time = time.time()
+
+        pending_tasks = self._query_db("SELECT * FROM tasks WHERE status = 'pending' ORDER BY priority ASC, created_at ASC LIMIT ?", (TASK_BATCH_SIZE,))
+        _db_query_time = (time.time() - _start_time) * 1000
+        _agi_logger.info(f"[AGI_TASKING] DB query for {TASK_BATCH_SIZE} tasks took {_db_query_time:.2f}ms. Found {len(pending_tasks)} pending tasks.")
+
+        if not pending_tasks:
+            return # No tasks to process
+
+        for task in pending_tasks:
+            task_id = task['id']
+            title = task['title'].lower()
+            _task_start_time = time.time()
+
+            _agi_logger.info(f"[AGI_TASKING] Claiming task {task_id}: '{task['title']}' ---")
+            self._update_task_status(task_id, "in_progress")
+
+            result_summary = "Task completed, but no specific action was matched."
+            try:
+                # Simple keyword-based task routing
+                if "maintenance" in title:
+                    _agi_logger.info("--- [AGI_TASKING]: Executing database maintenance... ---")
+                    db_path = Path(__file__).parent.parent / "l104_unified.db"
+                    self._execute_db_command("VACUUM")
+                    result_summary = f"Successfully performed VACUUM on {db_path.name}."
+
+                elif "investigate" in title and "performance" in title:
+                    _agi_logger.info("--- [AGI_TASKING]: Executing self-diagnostic for performance investigation... ---")
+                    diagnostic_report = self.self_diagnostic()
+                    issues = diagnostic_report.get('issues', [])
+                    if issues:
+                        result_summary = f"Self-diagnostic found {len(issues)} issues. Top issue: {issues[0]['message']}"
+                    else:
+                        result_summary = "Self-diagnostic completed. No critical issues found."
+                
+                elif "investigate" in title and "evolution" in title:
+                    _agi_logger.info("--- [AGI_TASKING]: Analyzing evolution log... ---")
+                    logs = self._query_db("SELECT * FROM evolution_log ORDER BY timestamp DESC LIMIT 5")
+                    result_summary = f"Found {len(logs)} recent evolution events. Last event: {logs[0]['improvement']}" if logs else "No evolution events found."
+
+                else:
+                    _agi_logger.info(f"--- [AGI_TASKING]: No specific handler for task '{title}'. Marking as complete. ---")
+                
+                self._update_task_status(task_id, "completed", result_summary)
+
+            except Exception as e:
+                error_message = f"An error occurred while executing task {task_id}: {e}"
+                _agi_logger.error(f"--- [AGI_TASKING]: {error_message} ---")
+                self._update_task_status(task_id, "failed", error_message)
+
+            _task_end_time = (time.time() - _task_start_time) * 1000
+            _agi_logger.info(f"[AGI_TASKING] Task {task_id} '{task['title']}' completed in {_task_end_time:.2f}ms.")
 
 
 # ═══════════════════════════════════════════════════════════

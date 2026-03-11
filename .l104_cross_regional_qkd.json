@@ -1,0 +1,141 @@
+{
+  "version": "1.0",
+  "timestamp": 1773143541.514672,
+  "hubs": {
+    "us-east-1": {
+      "hub_id": "qkd-hub-us-east-1",
+      "region": "us-east-1",
+      "node_name": "QKD-Hub-US-East",
+      "node_id": "daemon-us-east-qkd",
+      "links": [
+        {
+          "link_id": "qkd-us-east-1-us-west-1",
+          "destination_region": "us-west-1",
+          "protocol": "bb84",
+          "qber": 0.05,
+          "secure": true
+        },
+        {
+          "link_id": "qkd-us-east-1-eu-central-1",
+          "destination_region": "eu-central-1",
+          "protocol": "e91",
+          "qber": 0.03,
+          "secure": true
+        },
+        {
+          "link_id": "qkd-us-east-1-ap-northeast-1",
+          "destination_region": "ap-northeast-1",
+          "protocol": "cascading",
+          "qber": 0.08,
+          "secure": true
+        }
+      ]
+    },
+    "us-west-1": {
+      "hub_id": "qkd-hub-us-west-1",
+      "region": "us-west-1",
+      "node_name": "QKD-Hub-US-West",
+      "node_id": "daemon-us-west-qkd",
+      "links": [
+        {
+          "link_id": "qkd-us-west-1-eu-central-1",
+          "destination_region": "eu-central-1",
+          "protocol": "bb84",
+          "qber": 0.05,
+          "secure": true
+        },
+        {
+          "link_id": "qkd-us-west-1-ap-northeast-1",
+          "destination_region": "ap-northeast-1",
+          "protocol": "e91",
+          "qber": 0.03,
+          "secure": true
+        }
+      ]
+    },
+    "eu-central-1": {
+      "hub_id": "qkd-hub-eu-central-1",
+      "region": "eu-central-1",
+      "node_name": "QKD-Hub-EU-Central",
+      "node_id": "daemon-eu-central-qkd",
+      "links": [
+        {
+          "link_id": "qkd-eu-central-1-ap-northeast-1",
+          "destination_region": "ap-northeast-1",
+          "protocol": "bb84",
+          "qber": 0.05,
+          "secure": true
+        }
+      ]
+    },
+    "ap-northeast-1": {
+      "hub_id": "qkd-hub-ap-northeast-1",
+      "region": "ap-northeast-1",
+      "node_name": "QKD-Hub-Asia-Pacific",
+      "node_id": "daemon-ap-qkd",
+      "links": []
+    }
+  },
+  "links": [
+    {
+      "link_id": "qkd-us-east-1-us-west-1",
+      "source_region": "us-east-1",
+      "dest_region": "us-west-1",
+      "protocol": "bb84",
+      "qber": 0.05,
+      "fidelity": 0.98,
+      "secure": true,
+      "key_length": 256
+    },
+    {
+      "link_id": "qkd-us-east-1-eu-central-1",
+      "source_region": "us-east-1",
+      "dest_region": "eu-central-1",
+      "protocol": "e91",
+      "qber": 0.03,
+      "fidelity": 0.99,
+      "secure": true,
+      "key_length": 256
+    },
+    {
+      "link_id": "qkd-us-east-1-ap-northeast-1",
+      "source_region": "us-east-1",
+      "dest_region": "ap-northeast-1",
+      "protocol": "cascading",
+      "qber": 0.08,
+      "fidelity": 0.97,
+      "secure": true,
+      "key_length": 256
+    },
+    {
+      "link_id": "qkd-us-west-1-eu-central-1",
+      "source_region": "us-west-1",
+      "dest_region": "eu-central-1",
+      "protocol": "bb84",
+      "qber": 0.05,
+      "fidelity": 0.98,
+      "secure": true,
+      "key_length": 256
+    },
+    {
+      "link_id": "qkd-us-west-1-ap-northeast-1",
+      "source_region": "us-west-1",
+      "dest_region": "ap-northeast-1",
+      "protocol": "e91",
+      "qber": 0.03,
+      "fidelity": 0.99,
+      "secure": true,
+      "key_length": 256
+    },
+    {
+      "link_id": "qkd-eu-central-1-ap-northeast-1",
+      "source_region": "eu-central-1",
+      "dest_region": "ap-northeast-1",
+      "protocol": "bb84",
+      "qber": 0.05,
+      "fidelity": 0.98,
+      "secure": true,
+      "key_length": 256
+    }
+  ]
+}

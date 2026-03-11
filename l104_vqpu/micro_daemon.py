@@ -1,4 +1,4 @@
-"""L104 VQPU v2.3.0 — Micro Process Background Assistant (lightweight daemon).
+"""L104 VQPU v4.0.0 — Micro Process Background Assistant (lightweight daemon).
 
 A minimal, high-frequency background daemon for micro-quantum operations.
 Unlike the heavy VQPUDaemonCycler (full simulation cycles every 3 min),
@@ -151,7 +151,7 @@ from .constants import (
 # CONSTANTS
 # ═══════════════════════════════════════════════════════════════════
 
-MICRO_DAEMON_VERSION = "3.1.0"
+MICRO_DAEMON_VERSION = "4.0.0"
 
 # Tick interval (seconds) — one tick = one pass through all due micro-tasks
 # v2.1: Env-driven overrides for launchd plist configurability
@@ -208,6 +208,21 @@ MICRO_QUANTUM_RECALIBRATE_TICKS = int(os.environ.get(
     "L104_MICRO_QUANTUM_RECALIBRATE", "120"))  # Recalibrate every N ticks (~10min)
 MICRO_QUANTUM_PURIFY_TICKS = int(os.environ.get(
     "L104_MICRO_QUANTUM_PURIFY", "60"))        # Purify channels every N ticks (~5min)
+
+# v4.0: Task batching
+MICRO_BATCH_CPU_THRESHOLD = 60.0       # CPU% above which to batch low-priority tasks
+MICRO_BATCH_MAX_SIZE = 6               # Max tasks per batch
+
+# v4.0: Predictive preemption
+MICRO_PREEMPT_SLOW_THRESHOLD_MS = 3000.0  # Tasks taking >3s get preempted to end of queue
+
+# v4.0: Cross-daemon health file paths
+_DAEMON_STATE_FILES = {
+    "vqpu_cycler": ".l104_vqpu_daemon_state.json",
+    "nano_daemon": ".l104_nano_daemon_python.json",
+    "quantum_ai": ".l104_quantum_ai_daemon.json",
+    "guardian": ".l104_resource_guardian.json",
+}
 
 _logger = logging.getLogger("L104_VQPU_MICRO")
 
@@ -297,6 +312,9 @@ class MicroDaemonConfig:
     enable_vqpu_tasks: bool = True        # v2.0: enable VQPU subsystem micro-tasks
     enable_quantum_network: bool = MICRO_QUANTUM_NETWORK  # v3.0: enable quantum qubit network
     quantum_qubits: int = MICRO_QUANTUM_QUBITS            # v3.0: qubits per daemon node
+    quantum_topology: str = "all_to_all"                   # v4.0: mesh topology (linear/ring/heavy_hex/all_to_all)
+    enable_task_batching: bool = True       # v4.0: enable load-aware task batching
+    enable_predictive_preemption: bool = True  # v4.0: enable predictive task preemption
     state_file: Optional[str] = None
     telemetry_window: int = MICRO_TELEMETRY_WINDOW
     error_log_size: int = MICRO_ERROR_LOG_SIZE
@@ -1096,6 +1114,39 @@ def _micro_qubit_recalibrate(ctx: dict) -> dict:
         return {"error": str(e)[:200]}
 
 
+def _micro_topology_analysis(ctx: dict) -> dict:
+    """v4.0: Quantum topology analysis and health probe.
+
+    Analyzes the mesh topology: degree distribution, connectivity,
+    bottleneck channels, sacred topology score, and recommends
+    optimal topology based on current network size.
+    """
+    daemon = ctx.get("daemon")
+    if daemon is None or not hasattr(daemon, "_quantum_mesh") or daemon._quantum_mesh is None:
+        return {"enabled": False, "reason": "no quantum mesh"}
+    try:
+        mesh = daemon._quantum_mesh
+        analysis = mesh.topology_analysis()
+        recommendation = mesh.topology_recommendation()
+
+        return {
+            "topology": analysis.get("topology", "unknown"),
+            "detected": analysis.get("detected_topology", "unknown"),
+            "nodes": analysis.get("node_count", 0),
+            "channels": analysis.get("channel_count", 0),
+            "efficiency": analysis.get("efficiency", 0.0),
+            "diameter": analysis.get("diameter", 0),
+            "mean_degree": analysis.get("mean_degree", 0.0),
+            "is_connected": analysis.get("is_connected", False),
+            "bottleneck_count": analysis.get("bottleneck_count", 0),
+            "sacred_topology_score": analysis.get("sacred_topology_score", 0.0),
+            "recommended_topology": recommendation.get("recommended_topology", "unknown"),
+            "topology_change_advised": recommendation.get("would_change", False),
+        }
+    except Exception as e:
+        return {"error": str(e)[:200]}
+
+
 # ═══════════════════════════════════════════════════════════════════
 # v3.1: SOVEREIGN QUANTUM NETWORKER MICRO-TASKS
 # Bridge to l104_quantum_networker — sovereign QKD / entanglement network.
@@ -1210,6 +1261,7 @@ _QUANTUM_NETWORK_TASKS: Dict[str, Tuple[Callable, int, int]] = {
     "quantum_net_health":   (_micro_quantum_network_health, 12, MicroTaskPriority.NORMAL), # Every ~60s
     "channel_purification": (_micro_channel_purification, 60,  MicroTaskPriority.LOW),     # Every ~5m
     "qubit_recalibrate":    (_micro_qubit_recalibrate,   120,  MicroTaskPriority.LOW),     # Every ~10m
+    "topology_analysis":    (_micro_topology_analysis,    24,  MicroTaskPriority.NORMAL),  # Every ~2m — v4.0
 }
 
 
@@ -1418,6 +1470,18 @@ class VQPUMicroDaemon:
         self._qubit_register = None        # DaemonQubitRegister (initialized on start)
         self._quantum_mesh = None           # QuantumNetworkMesh (shared across daemons)
         self._quantum_node_id = f"micro-{os.urandom(4).hex()}"  # Unique node ID
+        self._quantum_topology = getattr(self._config, "quantum_topology", "all_to_all")  # v4.0
+
+        # v4.0: Task timing history for predictive preemption
+        self._task_timing_history: dict[str, deque] = {}  # name → deque of elapsed_ms
+
+        # v4.0: Cross-daemon health cache
+        self._cross_daemon_health: dict = {}
+        self._cross_daemon_health_ts = 0.0
+
+        # v4.0: Task batching state
+        self._batch_mode_active = False
+        self._batched_tasks: list = []
 
     # ─── BRIDGE WIRING (v2.0 + v2.5 auto-discovery) ────────────
 
@@ -1493,10 +1557,11 @@ class VQPUMicroDaemon:
     # ─── QUANTUM NETWORK (v3.0) ─────────────────────────────────
 
     def _init_quantum_network(self) -> None:
-        """v3.0: Initialize quantum qubit register and network mesh.
+        """v3.0/v4.0: Initialize quantum qubit register and network mesh.
 
         Creates a per-daemon register of N qubits with GOD_CODE calibration,
-        and bootstraps the quantum network mesh for inter-daemon entanglement.
+        and bootstraps the quantum network mesh with topology-aware channel
+        generation for inter-daemon entanglement.
         """
         try:
             DaemonQubitRegister, QuantumNetworkMesh = _get_quantum_network()
@@ -1513,14 +1578,16 @@ class VQPUMicroDaemon:
                 self._quantum_node_id, self._quantum_qubits,
                 result.get("avg_fidelity", 0), result.get("avg_sacred_alignment", 0))
 
-            # Create quantum network mesh (starts with just this node)
+            # Create quantum network mesh with topology (v4.0)
             self._quantum_mesh = QuantumNetworkMesh(
                 node_ids=[self._quantum_node_id],
                 qubits_per_node=self._quantum_qubits,
+                topology=self._quantum_topology,
             )
             mesh_result = self._quantum_mesh.establish_channels()
             _logger.info(
-                "Quantum network mesh bootstrapped: nodes=%d, channels=%d",
+                "Quantum network mesh bootstrapped: topology=%s, nodes=%d, channels=%d",
+                self._quantum_topology,
                 mesh_result.get("nodes", 0), mesh_result.get("channels", 0))
 
             # Create IPC directory for network state sharing
@@ -1595,14 +1662,16 @@ class VQPUMicroDaemon:
         }
 
     def quantum_status(self) -> dict:
-        """v3.0: Get quantum qubit register and network status.
+        """v3.0/v4.0: Get quantum qubit register and network status.
 
-        Returns combined register fidelity, network health, and mesh topology.
+        Returns combined register fidelity, network health, mesh topology,
+        and topology analysis.
         """
         result = {
             "quantum_network_enabled": self._enable_quantum_network,
             "node_id": self._quantum_node_id,
             "qubits_per_node": self._quantum_qubits,
+            "topology": self._quantum_topology,
         }
 
         if self._qubit_register is not None:
@@ -1618,6 +1687,11 @@ class VQPUMicroDaemon:
 
         if self._quantum_mesh is not None:
             result["network"] = self._quantum_mesh.network_health()
+            # v4.0: Include topology analysis
+            try:
+                result["topology_analysis"] = self._quantum_mesh.topology_analysis()
+            except Exception:
+                pass
 
         return result
 
@@ -1647,12 +1721,15 @@ class VQPUMicroDaemon:
             "aligned": abs(sacred_check - 286.0) < 1e-6,
         }
 
-        # Compute composite health score
+        # Compute composite health score (v4.0: includes topology score)
         reg_fid = result.get("register", {}).get("avg_fidelity", 0.0)
         net_score = result.get("network", {}).get("network_score", 0.0)
         sacred_ok = 1.0 if result["sacred"]["aligned"] else 0.0
+        topo_score = result.get("network", {}).get("sacred_topology_score", 0.0)
+        VOID_C = 1.0416180339887497  # VOID_CONSTANT
         result["composite_health"] = round(
-            (reg_fid * PHI + net_score + sacred_ok / PHI) / (PHI + 1.0 + 1.0 / PHI), 8
+            (reg_fid * PHI + net_score + sacred_ok / PHI + topo_score * VOID_C) /
+            (PHI + 1.0 + 1.0 / PHI + VOID_C), 8
         )
 
         return result
@@ -2242,6 +2319,11 @@ class VQPUMicroDaemon:
                     "quantum_register_active": self._qubit_register is not None,
                     "quantum_mesh_nodes": len(self._quantum_mesh.node_ids) if self._quantum_mesh else 0,
                     "quantum_mesh_channels": len(self._quantum_mesh.channels) if self._quantum_mesh else 0,
+                    # v3.1: Topology data for cross-daemon consumption
+                    "quantum_topology": self._quantum_topology,
+                    "quantum_topology_analysis": (
+                        self._quantum_mesh.topology_analysis() if self._quantum_mesh else None
+                    ),
                 }
             # JSON serialization + file I/O outside lock (no contention)
             self._state_path.write_text(
@@ -2404,6 +2486,10 @@ class VQPUMicroDaemon:
             "quantum_mesh_active": self._quantum_mesh is not None,
             "quantum_mesh_nodes": len(self._quantum_mesh.node_ids) if self._quantum_mesh else 0,
             "quantum_mesh_channels": len(self._quantum_mesh.channels) if self._quantum_mesh else 0,
+            # v4.0: Cross-daemon health, batching, predictive preemption
+            "cross_daemon_health": self._compute_cross_daemon_health(),
+            "batch_mode_active": self._batch_mode_active,
+            "task_timing_tracked": len(self._task_timing_history),
         }
 
     def force_tick(self) -> dict:
@@ -2761,8 +2847,8 @@ class VQPUMicroDaemon:
         try:
             if self._enable_quantum_network and self._quantum_mesh is not None:
                 health = self._quantum_mesh.network_health()
-                node_count = health.get("node_count", 0)
-                mean_fid = health.get("mean_fidelity", 0)
+                node_count = health.get("nodes", 0)
+                mean_fid = health.get("avg_fidelity", 0)
                 assert node_count >= 1, f"Mesh has {node_count} nodes (expected ≥1)"
                 results.append({"test": "quantum_mesh_health", "pass": True,
                                 "detail": f"nodes={node_count}, mean_fid={mean_fid:.6f}"})
@@ -2777,7 +2863,7 @@ class VQPUMicroDaemon:
             if self._enable_quantum_network and self._qubit_register is not None:
                 ctx = self._build_context()
                 probe = _micro_qubit_sacred_probe(ctx)
-                alignment = probe.get("mean_sacred_alignment", 0)
+                alignment = probe.get("avg_sacred_alignment", 0)
                 assert alignment > 0, f"Sacred alignment is {alignment}"
                 results.append({"test": "sacred_qubit_alignment", "pass": True,
                                 "detail": f"alignment={alignment:.6f}"})
@@ -2786,6 +2872,23 @@ class VQPUMicroDaemon:
                                 "detail": "skipped (qubits not active)"})
         except Exception as e:
             results.append({"test": "sacred_qubit_alignment", "pass": False, "error": str(e)})
+
+        # 16. v4.0: Quantum topology analysis
+        try:
+            if self._enable_quantum_network and self._quantum_mesh is not None:
+                topo_analysis = self._quantum_mesh.topology_analysis()
+                topo_type = topo_analysis.get("topology", "unknown")
+                detected = topo_analysis.get("detected_topology", "unknown")
+                sacred_topo = topo_analysis.get("sacred_topology_score", 0.0)
+                is_connected = topo_analysis.get("is_connected", False)
+                results.append({"test": "quantum_topology_analysis", "pass": True,
+                                "detail": f"topology={topo_type}, detected={detected}, "
+                                          f"sacred={sacred_topo:.4f}, connected={is_connected}"})
+            else:
+                results.append({"test": "quantum_topology_analysis", "pass": True,
+                                "detail": "skipped (mesh not active)"})
+        except Exception as e:
+            results.append({"test": "quantum_topology_analysis", "pass": False, "error": str(e)})
 
         elapsed_ms = round((time.monotonic() - t0) * 1000, 2)
         passed = sum(1 for r in results if r["pass"])
@@ -2802,6 +2905,63 @@ class VQPUMicroDaemon:
             "elapsed_ms": elapsed_ms,
             "god_code": GOD_CODE,
         }
+
+    # ─── v4.0: CROSS-DAEMON HEALTH, TIMING, BATCHING ────────
+
+    def _compute_cross_daemon_health(self) -> dict:
+        """v4.0: Aggregate health from all L104 daemon state files."""
+        now = time.time()
+        if (now - self._cross_daemon_health_ts) < 30.0 and self._cross_daemon_health:
+            return self._cross_daemon_health
+
+        l104_root = os.environ.get("L104_ROOT", os.getcwd())
+        scores = {}
+        for name, filename in _DAEMON_STATE_FILES.items():
+            try:
+                path = Path(l104_root) / filename
+                if path.exists():
+                    data = json.loads(path.read_text())
+                    scores[name] = {
+                        "health_score": data.get("health_score", data.get("health_trend", 0)),
+                        "version": data.get("version", "?"),
+                        "available": True,
+                    }
+                else:
+                    scores[name] = {"available": False}
+            except Exception:
+                scores[name] = {"available": False}
+
+        # Composite score: average of available daemons
+        available_scores = [v["health_score"] for v in scores.values()
+                          if v.get("available") and isinstance(v.get("health_score"), (int, float))]
+        composite = round(sum(available_scores) / max(len(available_scores), 1), 4) if available_scores else 0.0
+
+        result = {
+            "daemons": scores,
+            "composite_health": composite,
+            "daemons_available": len(available_scores),
+            "daemons_total": len(_DAEMON_STATE_FILES),
+        }
+        self._cross_daemon_health = result
+        self._cross_daemon_health_ts = now
+        return result
+
+    def _record_task_timing(self, task_name: str, elapsed_ms: float):
+        """v4.0: Record task execution time for predictive preemption."""
+        if task_name not in self._task_timing_history:
+            self._task_timing_history[task_name] = deque(maxlen=50)
+        self._task_timing_history[task_name].append(elapsed_ms)
+
+    def _predict_task_duration(self, task_name: str) -> float:
+        """v4.0: Predict task duration from historical timing."""
+        history = self._task_timing_history.get(task_name)
+        if not history or len(history) < 3:
+            return 0.0
+        return sum(history) / len(history)
+
+    def cross_daemon_health(self) -> dict:
+        """v4.0: Public API for cross-daemon health aggregation."""
+        return self._compute_cross_daemon_health()
 
     def __repr__(self) -> str:
         bridge_tag = "+bridge" if self._bridge else ""
@@ -2908,17 +3068,24 @@ def _cli_main():
             print(json.dumps(qs, indent=2, default=str))
         else:
             print(f"[QUANTUM] Quantum Network Status")
-            print(f"  Enabled:     {qs.get('enabled', False)}")
+            print(f"  Enabled:     {qs.get('quantum_network_enabled', False)}")
             print(f"  Node ID:     {qs.get('node_id', 'N/A')}")
-            print(f"  Qubits:      {qs.get('num_qubits', 0)}")
-            print(f"  Register:    fidelity={qs.get('register_fidelity', 0):.6f}")
-            mesh = qs.get("mesh_health", {})
+            print(f"  Qubits:      {qs.get('qubits_per_node', 0)}")
+            print(f"  Topology:    {qs.get('topology', 'N/A')}")
+            reg = qs.get('register', {})
+            print(f"  Register:    fidelity={reg.get('avg_fidelity', 0):.6f}")
+            mesh = qs.get("network", {})
             if mesh:
-                print(f"  Mesh Nodes:  {mesh.get('node_count', 0)}")
-                print(f"  Mesh Chans:  {mesh.get('channel_count', 0)}")
-                print(f"  Mean Fid:    {mesh.get('mean_fidelity', 0):.6f}")
+                print(f"  Mesh Nodes:  {mesh.get('nodes', 0)}")
+                print(f"  Mesh Chans:  {mesh.get('active_channels', 0)}")
+                print(f"  Mesh Topo:   {mesh.get('topology', 'N/A')} (detected={mesh.get('detected_topology', '?')})")
+                print(f"  Mean Fid:    {mesh.get('avg_fidelity', 0):.6f}")
+                print(f"  Mean Degree: {mesh.get('mean_degree', 0):.1f}")
+                print(f"  Diameter:    {mesh.get('diameter', 0)}")
                 sac = mesh.get("sacred_alignment", 0)
                 print(f"  Sacred Algn: {sac:.6f}")
+                topo_s = mesh.get("sacred_topology_score", 0)
+                print(f"  Sacred Topo: {topo_s:.6f}")
         d.stop()
         raise SystemExit(0)
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validation test for ASI v12.0 Deep Upgrade Wave."""
+"""Validation test for ASI v13.0 Deep Upgrade Wave."""
 import sys
 
 def main():
@@ -60,11 +60,11 @@ def main():
     except Exception as e:
         print(f"  FAIL: {e}")
 
-    print("\n=== Phase 5: dual_layer.py v4.0 ===")
+    print("\n=== Phase 5: dual_layer.py v5.1 ===")
     try:
         from l104_asi import dual_layer_engine
         print(f"  VERSION: {dual_layer_engine.VERSION}")
-        assert dual_layer_engine.VERSION == '4.0.0'
+        assert dual_layer_engine.VERSION == '5.1.0'
         methods = ['duality_coherence', 'cross_layer_resonance_scan', 'duality_collapse_statistics']
         for m in methods:
             assert hasattr(dual_layer_engine, m), f"Missing: {m}"

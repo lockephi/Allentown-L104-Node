@@ -1,8 +1,8 @@
-"""Quick validation of Quantum Brain v11.0.0 upgrade."""
+"""Quick validation of Quantum Brain v13.0.0 upgrade."""
 import random
 import sys
 
-print("═══ L104 QUANTUM BRAIN v11.0.0 VALIDATION ═══\n")
+print("═══ L104 QUANTUM BRAIN v13.0.0 VALIDATION ═══\n")
 
 # 1. Import validation
 from l104_quantum_engine.manifold import (
@@ -11,15 +11,15 @@ from l104_quantum_engine.manifold import (
 print("✓ manifold.py imports OK")
 
 from l104_quantum_engine import __version__
-assert __version__ == "11.0.0", f"Expected 11.0.0, got {__version__}"
+assert __version__ == "13.0.0", f"Expected 13.0.0, got {__version__}"
 print(f"✓ __init__.py version = {__version__}")
 
 from l104_quantum_engine.constants import VERSION
-assert VERSION == "11.0.0", f"Expected 11.0.0, got {VERSION}"
+assert VERSION == "13.0.0", f"Expected 13.0.0, got {VERSION}"
 print(f"✓ constants.py VERSION = {VERSION}")
 
 from l104_quantum_engine.brain import L104QuantumBrain
-assert L104QuantumBrain.VERSION == "11.0.0"
+assert L104QuantumBrain.VERSION == "13.0.0"
 print(f"✓ brain.py VERSION = {L104QuantumBrain.VERSION}")
 
 # 2. Brain init with new subsystems
@@ -96,4 +96,4 @@ assert en_empty.get("status") == "no_links"
 print("✓ Edge case: empty links handled correctly")
 
 print("\n═══ ALL 7 VALIDATION CHECKS PASSED ═══")
-print("Quantum Brain v11.0.0 upgrade is fully operational.")
+print("Quantum Brain v13.0.0 upgrade is fully operational.")

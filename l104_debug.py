@@ -44,6 +44,7 @@ import json
 import math
 import os
 import sys
+import threading
 import time
 import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -2147,32 +2148,46 @@ def _lazy_boot(name: str, engines: Dict[str, Any], diag: DiagnosticCollector,
 
 # ── Functionality probes — lightweight importability + method checks ─────────
 
-def _probe_engine(name: str) -> Dict[str, Any]:
-    """Check if an engine's package is importable and has expected entry points."""
+def _probe_engine(name: str, timeout_s: float = 30.0) -> Dict[str, Any]:
+    """Check if an engine's package is importable and has expected entry points.
+
+    Uses a threaded timeout to avoid blocking on heavy module-level init
+    (e.g. l104_server loads a large learning cache at import time).
+    """
     spec = ENGINE_REGISTRY.get(name)
     if spec is None:
         return {"importable": False, "reason": "unknown engine"}
-    try:
-        import importlib
-        mod = importlib.import_module(spec.package)
-        has_boot = spec.boot is not _noop_boot
-        # Check if constants module is importable
-        const_ok = False
+
+    result_box: List[Dict[str, Any]] = []
+
+    def _do_probe():
         try:
-            if spec.constants_module:
-                importlib.import_module(spec.constants_module)
-                const_ok = True
-        except Exception:
-            pass
-        return {
-            "importable": True,
-            "has_boot": has_boot,
-            "constants_ok": const_ok,
-            "package": spec.package,
-            "self_test_count": len(spec.self_tests),
-        }
-    except Exception as e:
-        return {"importable": False, "reason": str(e)[:60]}
+            import importlib
+            mod = importlib.import_module(spec.package)
+            has_boot = spec.boot is not _noop_boot
+            const_ok = False
+            try:
+                if spec.constants_module:
+                    importlib.import_module(spec.constants_module)
+                    const_ok = True
+            except Exception:
+                pass
+            result_box.append({
+                "importable": True,
+                "has_boot": has_boot,
+                "constants_ok": const_ok,
+                "package": spec.package,
+                "self_test_count": len(spec.self_tests),
+            })
+        except Exception as e:
+            result_box.append({"importable": False, "reason": str(e)[:60]})
+
+    t = threading.Thread(target=_do_probe, daemon=True)
+    t.start()
+    t.join(timeout=timeout_s)
+    if result_box:
+        return result_box[0]
+    return {"importable": False, "reason": f"timeout ({timeout_s}s) — heavy module init"}
 
 
 def _run_functionality_probes(diag: DiagnosticCollector, printer: _TermPrinter):
@@ -4572,8 +4587,8 @@ def run_debug(
     t_start = time.time()
     engines: Dict[str, Any] = {}
 
-    # Phase 1: Boot
-    if "boot" in active_phases:
+    # Phase 1: Boot (auto-run if self-test requested without boot)
+    if "boot" in active_phases or ("self-test" in active_phases and not engines):
         engines = phase_boot(specs, diag, printer)
 
     # Phase 2: Status
@@ -4585,7 +4600,7 @@ def run_debug(
         phase_constants(specs, diag, printer)
 
     # Phase 4: Self-tests
-    if "self-test" in active_phases and engines:
+    if "self-test" in active_phases:
         phase_self_tests(specs, engines, diag, printer)
 
     # Phase 5: Cross-engine (lazy-boots engines on demand, doesn't need prior boot)

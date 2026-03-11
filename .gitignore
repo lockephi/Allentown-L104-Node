@@ -18,6 +18,7 @@ ramnode.db
 *.apk
 *.bin
 .venv/
+venv/
 
 # Swift build artifacts
 L104SwiftApp/.build/
@@ -30,6 +31,8 @@ L104SwiftApp/.build/
 *_secret*
 credentials.json
 service_account.json
+chatobt-*.json
+gen-lang-client-*.json
 
 
 .fake

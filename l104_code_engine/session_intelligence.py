@@ -7,13 +7,13 @@ Enables cross-session learning so the coding system gets better over time.
 Migrated from l104_coding_system.py (lines 1837-2010) during package decomposition.
 """
 
-import hashlib
-import time
-import json
-from pathlib import Path
-from datetime import datetime
 from collections import Counter, defaultdict
+from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Any
+import hashlib
+import json
+import time
 
 _WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
 
@@ -179,6 +179,7 @@ class SessionIntelligence:
             pass
 
     def status(self) -> Dict[str, Any]:
+        """TODO: Document status."""
         return {
             "active_session": self.current_session is not None,
             "total_sessions": len(self.sessions),

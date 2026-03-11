@@ -74,7 +74,7 @@ class L104StreamingEngine:
         self,
         prompt: str,
         api_key: str,
-        model: str = "gpt-4o"
+        model: str = "gpt-5-mini"
     ) -> AsyncGenerator[StreamChunk, None]:
         """Stream from OpenAI API."""
         async with httpx.AsyncClient(timeout=60.0) as client:

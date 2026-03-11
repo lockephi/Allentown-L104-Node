@@ -201,12 +201,18 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     _init_ramnode_db()
 
     logger.info(f"--- [L104 v{MAIN_VERSION}]: {MAIN_PIPELINE_EVO} PIPELINE STARTING ---")
-    google_bridge.establish_link()
-    logger.info(f"--- [SOVEREIGN_NODE]: GOOGLE_LINK_ESTABLISHED: {google_bridge.account_email} ---")
     logger.info("--- [L104]: FAST START - Server is UP. Background init starting... ---")
 
     async def deferred_startup():
         await asyncio.sleep(2)
+
+        try:
+            # Establish Google link in the background to not block startup
+            google_bridge.establish_link()
+            logger.info(f"--- [SOVEREIGN_NODE]: GOOGLE_LINK_ESTABLISHED: {google_bridge.account_email} ---")
+        except Exception as e:
+            logger.error(f"Failed to establish Google link in background: {e}")
+
 
         try:
             from global_begin import rewrite_reality
@@ -224,16 +230,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
         from l104_infrastructure import start_infrastructure
         await start_infrastructure()
-
-        # Sovereign supervisor — background thread
-        from l104_sovereign_supervisor import SovereignSupervisor
-        supervisor = SovereignSupervisor()
-        def _run_supervisor():
-            import asyncio as _a
-            loop = _a.new_event_loop(); _a.set_event_loop(loop)
-            loop.run_until_complete(supervisor.start())
-        threading.Thread(target=_run_supervisor, daemon=True).start()
-        logger.info("--- [L104]: SOVEREIGN_SUPERVISOR MONITORING ACTIVE (THREAD) ---")
 
         # Hyper core — background thread
         from l104_hyper_core import hyper_core

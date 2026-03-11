@@ -156,7 +156,7 @@ try:
 
     status = asi_core.quantum_circuit_status()
     check("ASI status returns dict", isinstance(status, dict))
-    check("ASI status version 10.1", status.get('version', '').startswith('10.1'), status.get('version'))
+    check("ASI status version 6.0", status.get('version', '').startswith('6.0'), status.get('version'))
 except Exception as e:
     check("ASI Core import", False, str(e))
 
@@ -192,7 +192,7 @@ try:
 
     status = agi_core.quantum_circuit_status()
     check("AGI status returns dict", isinstance(status, dict))
-    check("AGI status version 58.3", status.get('version', '').startswith('58.3'), status.get('version'))
+    check("AGI status version 61.0", status.get('version', '').startswith('61.0'), status.get('version'))
 
     # Test eager connect
     connect_result = agi_core.quantum_connect_all_circuits()

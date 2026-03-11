@@ -1,0 +1,46 @@
+# requirements/base.in
+# Production dependencies for the L104 project.
+# Based on the original requirements.txt file.
+
+# Web framework & ASGI
+fastapi
+uvicorn[standard]
+pydantic
+jinja2
+python-multipart
+
+# HTTP client
+httpx[http2]
+
+# AI providers
+anthropic
+google-generativeai
+
+# System monitoring
+psutil
+
+# Performance
+uvloop;sys_platform!='win32'
+orjson
+
+# Networking
+websockets
+
+# Numerics & Scientific Computing
+numpy
+scipy
+pandas
+
+# Machine Learning Frameworks
+torch
+tensorflow
+scikit-learn
+
+# Utilities
+python-dotenv
+
+# Document generation
+fpdf2
+
+# Structured logging
+structlog

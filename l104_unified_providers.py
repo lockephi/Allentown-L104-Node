@@ -91,6 +91,7 @@ PROVIDER_CONFIGS = {
                 "base_url": "https://api.openai.com/v1",
                 "env_key": "OPENAI_API_KEY",
                 "models": [
+                        "gpt-5-mini",
                         "gpt-4o",
                         "gpt-4o-mini",
                         "gpt-4-turbo"

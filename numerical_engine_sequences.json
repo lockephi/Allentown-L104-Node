@@ -1,0 +1,58 @@
+[
+  {
+    "oeis_id": "A000045",
+    "name": "Fibonacci numbers",
+    "description": "F(n) = F(n-1) + F(n-2), F(0)=0, F(1)=1",
+    "terms": [
+      0,
+      1,
+      1,
+      2,
+      3,
+      5,
+      8,
+      13,
+      21,
+      34,
+      55,
+      89,
+      144,
+      233,
+      377
+    ],
+    "recurrence_relation": "a(n) = a(n-1) + a(n-2)",
+    "generating_function": "x/(1-x-x^2)",
+    "offset": [
+      0,
+      0
+    ]
+  },
+  {
+    "oeis_id": "A000040",
+    "name": "Prime numbers",
+    "description": "The prime numbers",
+    "terms": [
+      2,
+      3,
+      5,
+      7,
+      11,
+      13,
+      17,
+      19,
+      23,
+      29,
+      31,
+      37,
+      41,
+      43,
+      47
+    ],
+    "recurrence_relation": "No simple recurrence",
+    "generating_function": "Not elementary",
+    "offset": [
+      1,
+      1
+    ]
+  }
+]

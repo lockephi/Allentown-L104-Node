@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-09T15:41:53",
+  "timestamp": "2026-03-11T01:22:49",
   "boot_sequence": "l104_vqpu_boot_manager v3.0",
   "god_code": 527.5184818492612,
   "phases": {
@@ -17,37 +17,34 @@
       "com.l104.vqpu-micro-daemon": "exists"
     },
     "3_resurrect": {
-      "timestamp": "2026-03-09T15:41:54",
+      "timestamp": "2026-03-11T01:22:49",
       "actions": [],
       "resurrected": 0
     },
     "4_verify": {
-      "timestamp": "2026-03-09T15:41:57",
-      "verified": true,
-      "issues": [],
+      "timestamp": "2026-03-11T01:22:50",
+      "verified": false,
+      "issues": [
+        "com.l104.fast-server: loaded but not alive (launchd will retry)"
+      ],
       "services_loaded": 7,
       "services_total": 7,
-      "overall": "healthy"
+      "overall": "degraded"
     },
     "5_renice": [
       {
-        "service": "com.l104.fast-server",
-        "pid": 520,
-        "reniced": false
-      },
-      {
         "service": "com.londel.l104daemon",
-        "pid": 5514,
+        "pid": 458,
         "reniced": true
       },
       {
         "service": "com.l104.node-server",
-        "pid": 7162,
+        "pid": 441,
         "reniced": true
       },
       {
         "service": "com.l104.vqpu-micro-daemon",
-        "pid": 5522,
+        "pid": 444,
         "reniced": false
       }
     ]

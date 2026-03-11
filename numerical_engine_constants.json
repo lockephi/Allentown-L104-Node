@@ -1,0 +1,29 @@
+[
+  {
+    "name": "speed_of_light",
+    "symbol": "c",
+    "value_100_decimals": "299792458.0",
+    "units": "m/s",
+    "category": "physics",
+    "source": "CODATA 2022",
+    "verified": true
+  },
+  {
+    "name": "planck_constant",
+    "symbol": "h",
+    "value_100_decimals": "6.62607015e-34",
+    "units": "J*s",
+    "category": "physics",
+    "source": "CODATA 2022",
+    "verified": true
+  },
+  {
+    "name": "golden_ratio",
+    "symbol": "phi",
+    "value_100_decimals": "1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374847540880753868917521",
+    "units": "dimensionless",
+    "category": "mathematics",
+    "source": "CODATA 2022",
+    "verified": true
+  }
+]

@@ -191,7 +191,8 @@ class PythonBridge {
                     sys.stdout.flush()
                 print('__POOL_DONE__', flush=True)
             except Exception as e:
-                print(f'__POOL_ERR__:{e}', flush=True)
+                import traceback
+                print(f'__POOL_ERR__:{e}\n__POOL_TRACEBACK__:\n{"".join(traceback.format_exc())}', flush=True)
                 print('__POOL_DONE__', flush=True)
         """]
         process.environment = [
@@ -695,7 +696,8 @@ class PythonBridge {
     /// Get Python environment info
     func getEnvironmentInfo() -> PythonResult {
         let code = """
-        import sys, json, platform, os
+        import sys, json, platform, os, importlib.util
+
         info = {
             'python_version': sys.version,
             'platform': platform.platform(),
@@ -703,12 +705,19 @@ class PythonBridge {
             'prefix': sys.prefix,
             'path': sys.path[:5],
             'modules_available': len([f for f in os.listdir('\(workspacePath)') if f.startswith('l104_') and f.endswith('.py')]),
-            'cwd': os.getcwd()
+            'cwd': os.getcwd(),
+            'torch_installed': False,
+            'torch_version': 'N/A'
         }
+        # Check for torch
+        if importlib.util.find_spec("torch") is not None:
+            import torch
+            info['torch_installed'] = True
+            info['torch_version'] = torch.__version__
+        
         print(json.dumps(info))
         """
-        return execute(code, timeout: 5)
-    }
+        return execute(code, timeout: 10) // Increased timeout for module import
 
     /// List installed pip packages
     func listPackages() -> PythonResult {

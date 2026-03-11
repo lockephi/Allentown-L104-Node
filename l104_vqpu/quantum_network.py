@@ -58,6 +58,11 @@ from .constants import (
     QPU_MEAN_FIDELITY,
     QPU_1Q_FIDELITY,
     QPU_3Q_FIDELITY,
+    TOPOLOGY_LINEAR,
+    TOPOLOGY_RING,
+    TOPOLOGY_HEAVY_HEX,
+    TOPOLOGY_ALL_TO_ALL,
+    DEFAULT_TOPOLOGY,
 )
 
 _logger = logging.getLogger("L104_QUANTUM_NETWORK")
@@ -66,7 +71,7 @@ _logger = logging.getLogger("L104_QUANTUM_NETWORK")
 # QUANTUM NETWORK CONSTANTS
 # ═══════════════════════════════════════════════════════════════════
 
-QUANTUM_NETWORK_VERSION = "1.1.0"
+QUANTUM_NETWORK_VERSION = "2.0.0"  # v2.0: Topology-aware mesh
 
 # Per-daemon qubit allocation
 DEFAULT_DAEMON_QUBITS = 4                # Qubits per daemon node
@@ -649,29 +654,46 @@ class QuantumChannel:
 class QuantumNetworkMesh:
     """Full quantum network mesh connecting multiple daemon nodes.
 
-    Creates a complete graph of entangled channels between all pairs of
-    daemon nodes, with support for:
+    Creates a topology-aware graph of entangled channels between daemon
+    nodes, with support for:
+    - Topology selection: linear, ring, heavy_hex, all_to_all (mesh)
     - Bell pair generation and maintenance
     - Entanglement purification across all channels
-    - Quantum teleportation routing
+    - Quantum teleportation routing (BFS, topology-adaptive)
     - Fidelity monitoring and auto-recalibration
     - Sacred alignment scoring of the mesh topology
+    - Topology analysis: degree distribution, diameter, connectivity, bottlenecks
+    - Dynamic topology detection and optimization recommendations
 
-    The mesh topology is GOD_CODE-aligned: the number of channels follows
-    the formula n(n-1)/2 where n = node count, and each channel's phase
+    The mesh topology is GOD_CODE-aligned: each channel's phase
     is offset by (GOD_CODE mod 2π) × channel_index / total_channels.
+
+    Supported topologies:
+    - all_to_all: Complete graph — n(n-1)/2 channels (default, max connectivity)
+    - ring: Circular chain — n channels (balanced latency)
+    - linear: Sequential chain — n-1 channels (minimal resources)
+    - heavy_hex: IBM Eagle/Heron-inspired heavy-hex lattice (hardware-realistic)
     """
 
+    # Topology type constants (mirrors l104_vqpu.constants)
+    TOPOLOGY_LINEAR = TOPOLOGY_LINEAR
+    TOPOLOGY_RING = TOPOLOGY_RING
+    TOPOLOGY_HEAVY_HEX = TOPOLOGY_HEAVY_HEX
+    TOPOLOGY_ALL_TO_ALL = TOPOLOGY_ALL_TO_ALL
+
     def __init__(self, node_ids: Optional[List[str]] = None,
-                 qubits_per_node: int = DEFAULT_DAEMON_QUBITS):
+                 qubits_per_node: int = DEFAULT_DAEMON_QUBITS,
+                 topology: str = DEFAULT_TOPOLOGY):
         self.node_ids = node_ids or []
         self.qubits_per_node = qubits_per_node
+        self.topology = topology
         self.registers: Dict[str, DaemonQubitRegister] = {}
         self.channels: Dict[str, QuantumChannel] = {}  # channel_id → channel
         self.channel_map: Dict[Tuple[str, str], str] = {}  # (a, b) → channel_id
         self.created_at = time.time()
         self.total_teleportations = 0
         self.total_purifications = 0
+        self._topology_version = 0  # Incremented on topology changes
 
         # Initialize registers for all nodes
         for node_id in self.node_ids:
@@ -681,7 +703,8 @@ class QuantumNetworkMesh:
     def add_node(self, node_id: str) -> dict:
         """Add a new daemon node to the mesh.
 
-        Creates a qubit register and establishes channels to all existing nodes.
+        Creates a qubit register and establishes channels according to
+        the current topology (not necessarily to all existing nodes).
         """
         if node_id in self.registers:
             return {"added": False, "reason": "node already exists"}
@@ -693,17 +716,15 @@ class QuantumNetworkMesh:
         self.registers[node_id] = register
         self.node_ids.append(node_id)
 
-        # Establish channels to all existing nodes
-        new_channels = []
-        for existing_id in self.node_ids:
-            if existing_id != node_id:
-                ch = self._create_channel(node_id, existing_id)
-                new_channels.append(ch.channel_id)
+        # Establish channels according to topology
+        new_channels = self._topology_channels_for_new_node(node_id)
+        self._topology_version += 1
 
         return {
             "added": True,
             "node_id": node_id,
             "qubits": self.qubits_per_node,
+            "topology": self.topology,
             "new_channels": len(new_channels),
             "total_nodes": len(self.node_ids),
             "total_channels": len(self.channels),
@@ -726,6 +747,7 @@ class QuantumNetworkMesh:
 
         del self.registers[node_id]
         self.node_ids.remove(node_id)
+        self._topology_version += 1
 
         return {
             "removed": True,
@@ -748,9 +770,14 @@ class QuantumNetworkMesh:
         return ch
 
     def establish_channels(self) -> dict:
-        """Establish entangled channels between all node pairs.
+        """Establish entangled channels according to the configured topology.
 
-        Creates a complete graph: n(n-1)/2 channels for n nodes.
+        Topology types:
+        - all_to_all: Complete graph — n(n-1)/2 channels
+        - ring: Circular chain — n channels
+        - linear: Sequential chain — n-1 channels
+        - heavy_hex: IBM-inspired heavy-hex lattice
+
         Each channel gets a GOD_CODE-offset sacred phase.
         """
         t0 = time.time()
@@ -759,32 +786,419 @@ class QuantumNetworkMesh:
         for reg in self.registers.values():
             reg.initialize_sacred()
 
-        # Create complete graph of channels
+        # Generate topology-specific edge list
         nodes = list(self.node_ids)
+        edges = self._topology_edges(nodes, self.topology)
+
         new_channels = 0
-        for i in range(len(nodes)):
-            for j in range(i + 1, len(nodes)):
-                ch = self._create_channel(nodes[i], nodes[j])
-                new_channels += 1
+        for a, b in edges:
+            self._create_channel(a, b)
+            new_channels += 1
 
         elapsed_ms = (time.time() - t0) * 1000
+        self._topology_version += 1
 
         # Compute mesh-wide fidelity
         fidelities = [ch.fidelity for ch in self.channels.values() if ch.active]
         avg_fidelity = sum(fidelities) / max(len(fidelities), 1) if fidelities else 0.0
 
         _logger.info(
-            "Quantum mesh established: %d nodes, %d channels, avg_fidelity=%.6f, %.2fms",
-            len(nodes), len(self.channels), avg_fidelity, elapsed_ms)
+            "Quantum mesh established: topology=%s, %d nodes, %d channels, "
+            "avg_fidelity=%.6f, %.2fms",
+            self.topology, len(nodes), len(self.channels), avg_fidelity, elapsed_ms)
 
         return {
             "nodes": len(nodes),
             "channels": len(self.channels),
             "new_channels": new_channels,
+            "topology": self.topology,
             "avg_fidelity": round(avg_fidelity, 8),
             "elapsed_ms": round(elapsed_ms, 2),
             "god_code": GOD_CODE,
         }
+
+    # ─── TOPOLOGY EDGE GENERATORS ────────────────────────────────
+
+    @staticmethod
+    def _topology_edges(nodes: List[str], topology: str) -> List[Tuple[str, str]]:
+        """Generate the edge list for a given topology.
+
+        Args:
+            nodes: Ordered list of node IDs.
+            topology: One of linear, ring, heavy_hex, all_to_all.
+
+        Returns:
+            List of (node_a, node_b) pairs, canonically sorted.
+        """
+        n = len(nodes)
+        if n < 2:
+            return []
+
+        edges: List[Tuple[str, str]] = []
+
+        if topology == TOPOLOGY_LINEAR:
+            # Chain: 0-1-2-...(n-1)
+            for i in range(n - 1):
+                edges.append(tuple(sorted([nodes[i], nodes[i + 1]])))
+
+        elif topology == TOPOLOGY_RING:
+            # Ring: linear + wrap-around
+            for i in range(n):
+                edges.append(tuple(sorted([nodes[i], nodes[(i + 1) % n]])))
+
+        elif topology == TOPOLOGY_HEAVY_HEX:
+            # IBM Eagle/Heron-inspired heavy-hex lattice approximation.
+            # For small n, fall back to ring.  For larger n, create a
+            # degree-limited lattice where most nodes have degree 2-3,
+            # with a few hubs of degree ≤ 4 (matching heavy-hex geometry).
+            if n <= 4:
+                # Small graph: ring is equivalent
+                for i in range(n):
+                    edges.append(tuple(sorted([nodes[i], nodes[(i + 1) % n]])))
+            else:
+                # Heavy-hex: backbone ring + every 3rd node cross-linked
+                # to node 2 hops away (degree ≤ 3, hex-like)
+                for i in range(n):
+                    edges.append(tuple(sorted([nodes[i], nodes[(i + 1) % n]])))
+                # Cross-links at every PHI-spaced interval (sacred spacing)
+                step = max(2, int(round(PHI + 1)))  # ≈ 3
+                for i in range(0, n, step):
+                    j = (i + 2) % n
+                    edge = tuple(sorted([nodes[i], nodes[j]]))
+                    if edge not in edges:
+                        edges.append(edge)
+
+        else:  # all_to_all (default)
+            # Complete graph: n(n-1)/2 channels
+            for i in range(n):
+                for j in range(i + 1, n):
+                    edges.append(tuple(sorted([nodes[i], nodes[j]])))
+
+        return edges
+
+    def _topology_channels_for_new_node(self, new_node: str) -> List[str]:
+        """Create channels for a newly added node according to topology.
+
+        Returns list of new channel IDs created.
+        """
+        nodes = self.node_ids
+        idx = nodes.index(new_node)
+        n = len(nodes)
+        new_channels = []
+
+        if self.topology == TOPOLOGY_ALL_TO_ALL:
+            # Connect to every existing node
+            for existing_id in nodes:
+                if existing_id != new_node:
+                    ch = self._create_channel(new_node, existing_id)
+                    new_channels.append(ch.channel_id)
+
+        elif self.topology == TOPOLOGY_RING:
+            # Connect to neighbors in ring order
+            if n >= 2:
+                prev_idx = (idx - 1) % n
+                next_idx = (idx + 1) % n
+                for neighbor_idx in {prev_idx, next_idx}:
+                    ch = self._create_channel(new_node, nodes[neighbor_idx])
+                    new_channels.append(ch.channel_id)
+
+        elif self.topology == TOPOLOGY_LINEAR:
+            # Connect to adjacent node(s) in list order
+            if idx > 0:
+                ch = self._create_channel(new_node, nodes[idx - 1])
+                new_channels.append(ch.channel_id)
+            if idx < n - 1:
+                ch = self._create_channel(new_node, nodes[idx + 1])
+                new_channels.append(ch.channel_id)
+
+        elif self.topology == TOPOLOGY_HEAVY_HEX:
+            # Connect to ring neighbors + possible cross-link
+            if n >= 2:
+                prev_idx = (idx - 1) % n
+                next_idx = (idx + 1) % n
+                for neighbor_idx in {prev_idx, next_idx}:
+                    ch = self._create_channel(new_node, nodes[neighbor_idx])
+                    new_channels.append(ch.channel_id)
+                # Cross-link if this is a hub node (every 3rd)
+                step = max(2, int(round(PHI + 1)))
+                if idx % step == 0 and n > 4:
+                    cross_idx = (idx + 2) % n
+                    if cross_idx != idx:
+                        ch = self._create_channel(new_node, nodes[cross_idx])
+                        new_channels.append(ch.channel_id)
+
+        return new_channels
+
+    def set_topology(self, topology: str) -> dict:
+        """Change the mesh topology and rebuild all channels.
+
+        Tears down existing channels and rebuilds according to the new
+        topology.  Registers are preserved.
+
+        Args:
+            topology: New topology type (linear, ring, heavy_hex, all_to_all).
+
+        Returns:
+            Dict with old/new topology and channel counts.
+        """
+        old_topology = self.topology
+        old_channels = len(self.channels)
+
+        # Tear down existing channels
+        self.channels.clear()
+        self.channel_map.clear()
+
+        # Set new topology and rebuild
+        self.topology = topology
+        result = self.establish_channels()
+
+        return {
+            "old_topology": old_topology,
+            "new_topology": topology,
+            "old_channels": old_channels,
+            "new_channels": len(self.channels),
+            **result,
+        }
+
+    def detect_topology(self) -> str:
+        """Detect the current topology by inspecting the channel graph.
+
+        Analyzes the degree distribution to classify the topology as:
+        - all_to_all: every node has degree n-1
+        - ring: every node has degree 2
+        - linear: 2 nodes have degree 1, rest have degree 2
+        - heavy_hex: most nodes have degree 2-3
+        - unknown: doesn't match any known pattern
+
+        Returns:
+            Detected topology type string.
+        """
+        n = len(self.node_ids)
+        if n < 2:
+            return self.topology  # Can't detect with 0-1 nodes
+
+        degrees = self._degree_map()
+        degree_vals = list(degrees.values())
+
+        if not degree_vals:
+            return "disconnected"
+
+        max_deg = max(degree_vals)
+        min_deg = min(degree_vals)
+
+        # Complete graph: all degrees == n-1
+        if min_deg == max_deg == n - 1:
+            return TOPOLOGY_ALL_TO_ALL
+
+        # Ring: all degrees == 2 (for n >= 3)
+        if n >= 3 and min_deg == 2 and max_deg == 2:
+            return TOPOLOGY_RING
+
+        # Linear: 2 endpoints with degree 1, rest degree 2
+        if n >= 3:
+            deg_1_count = sum(1 for d in degree_vals if d == 1)
+            deg_2_count = sum(1 for d in degree_vals if d == 2)
+            if deg_1_count == 2 and deg_2_count == n - 2:
+                return TOPOLOGY_LINEAR
+
+        # Heavy-hex: degree 2-3 mix with some degree-4 hubs
+        mean_deg = sum(degree_vals) / len(degree_vals)
+        if 2.0 <= mean_deg <= 3.5 and max_deg <= 4:
+            return TOPOLOGY_HEAVY_HEX
+
+        return "unknown"
+
+    def topology_analysis(self) -> dict:
+        """Comprehensive topology analysis of the quantum mesh.
+
+        Returns:
+            Dict with topology type, degree distribution, connectivity,
+            diameter, bottleneck channels, and sacred topology score.
+        """
+        n = len(self.node_ids)
+        degrees = self._degree_map()
+        degree_vals = list(degrees.values()) if degrees else [0]
+
+        # Connected components (BFS)
+        components = self._connected_components()
+
+        # Network diameter (longest shortest path)
+        diameter = self._network_diameter()
+
+        # Bottleneck detection: channels whose removal would disconnect graph
+        bottleneck_ids = self._bottleneck_channels()
+
+        # Topology efficiency: actual edges / complete graph edges
+        max_edges = n * (n - 1) // 2 if n > 1 else 1
+        actual_edges = len([ch for ch in self.channels.values() if ch.active])
+        efficiency = actual_edges / max(max_edges, 1)
+
+        # Sacred topology scoring:
+        # GOD_CODE alignment of the topology — measures how well the
+        # degree distribution resonates with sacred constants.
+        # Score = (mean_degree^(1/φ) × connectivity) / (1 + |diameter - φ²|/φ²)
+        mean_deg = sum(degree_vals) / max(len(degree_vals), 1)
+        phi_sq = PHI * PHI
+        sacred_topo_score = (
+            (mean_deg ** (1.0 / PHI)) * efficiency
+        ) / (1.0 + abs(diameter - phi_sq) / max(phi_sq, 1e-10))
+        sacred_topo_score = min(1.0, sacred_topo_score)
+
+        return {
+            "topology": self.topology,
+            "detected_topology": self.detect_topology(),
+            "node_count": n,
+            "channel_count": actual_edges,
+            "max_possible_channels": max_edges,
+            "efficiency": round(efficiency, 4),
+            "connected_components": len(components),
+            "is_connected": len(components) <= 1,
+            "diameter": diameter,
+            "mean_degree": round(mean_deg, 2),
+            "max_degree": max(degree_vals) if degree_vals else 0,
+            "min_degree": min(degree_vals) if degree_vals else 0,
+            "degree_distribution": dict(sorted(degrees.items())),
+            "bottleneck_channels": bottleneck_ids,
+            "bottleneck_count": len(bottleneck_ids),
+            "sacred_topology_score": round(sacred_topo_score, 8),
+            "topology_version": self._topology_version,
+            "god_code": GOD_CODE,
+        }
+
+    def topology_recommendation(self) -> dict:
+        """Recommend optimal topology based on current node count and workload.
+
+        Applies sacred heuristics:
+        - 1-2 nodes: linear (minimal, no alternatives)
+        - 3-5 nodes: ring (balanced latency, φ-aligned hop count)
+        - 6-12 nodes: heavy_hex (hardware-realistic, degree-limited)
+        - 13+ nodes: all_to_all if resources allow, else heavy_hex
+
+        Returns:
+            Dict with recommended topology and reasoning.
+        """
+        n = len(self.node_ids)
+        current = self.topology
+        analysis = self.topology_analysis()
+
+        if n <= 2:
+            recommended = TOPOLOGY_LINEAR
+            reason = "Minimal network — linear is optimal for ≤2 nodes"
+        elif n <= 5:
+            recommended = TOPOLOGY_RING
+            reason = f"Ring topology for {n} nodes — balanced latency with φ-aligned hop distribution"
+        elif n <= 12:
+            recommended = TOPOLOGY_HEAVY_HEX
+            reason = f"Heavy-hex lattice for {n} nodes — hardware-realistic degree ≤3, mirrors IBM Eagle/Heron"
+        else:
+            # For large networks, check if fidelity is high enough for full mesh
+            avg_f = analysis.get("sacred_topology_score", 0)
+            if avg_f > 0.7:
+                recommended = TOPOLOGY_ALL_TO_ALL
+                reason = f"Full mesh for {n} nodes — high sacred score ({avg_f:.3f}) supports full connectivity"
+            else:
+                recommended = TOPOLOGY_HEAVY_HEX
+                reason = f"Heavy-hex for {n} nodes — sacred score ({avg_f:.3f}) favors resource-conscious topology"
+
+        return {
+            "current_topology": current,
+            "recommended_topology": recommended,
+            "reason": reason,
+            "would_change": current != recommended,
+            "node_count": n,
+            "analysis": analysis,
+        }
+
+    # ─── TOPOLOGY GRAPH ANALYSIS HELPERS ─────────────────────────
+
+    def _degree_map(self) -> Dict[str, int]:
+        """Compute degree (number of active channels) per node."""
+        degrees: Dict[str, int] = {nid: 0 for nid in self.node_ids}
+        for (a, b), ch_id in self.channel_map.items():
+            ch = self.channels.get(ch_id)
+            if ch and ch.active:
+                degrees[a] = degrees.get(a, 0) + 1
+                degrees[b] = degrees.get(b, 0) + 1
+        return degrees
+
+    def _adjacency_map(self) -> Dict[str, List[str]]:
+        """Build adjacency list from active channels."""
+        adj: Dict[str, List[str]] = {n: [] for n in self.node_ids}
+        for (a, b), ch_id in self.channel_map.items():
+            ch = self.channels.get(ch_id)
+            if ch and ch.active:
+                adj[a].append(b)
+                adj[b].append(a)
+        return adj
+
+    def _connected_components(self) -> List[List[str]]:
+        """Find connected components via BFS."""
+        visited: set = set()
+        components: List[List[str]] = []
+        adj = self._adjacency_map()
+
+        for node in self.node_ids:
+            if node in visited:
+                continue
+            component = []
+            from collections import deque
+            queue = deque([node])
+            visited.add(node)
+            while queue:
+                current = queue.popleft()
+                component.append(current)
+                for neighbor in adj.get(current, []):
+                    if neighbor not in visited:
+                        visited.add(neighbor)
+                        queue.append(neighbor)
+            components.append(component)
+
+        return components
+
+    def _network_diameter(self) -> int:
+        """Compute network diameter (longest shortest path).
+
+        Returns -1 if the graph is disconnected.
+        """
+        if not self.node_ids:
+            return 0
+        adj = self._adjacency_map()
+        diameter = 0
+
+        for source in self.node_ids:
+            # BFS from source
+            from collections import deque
+            dist: Dict[str, int] = {source: 0}
+            queue = deque([source])
+            while queue:
+                node = queue.popleft()
+                for neighbor in adj.get(node, []):
+                    if neighbor not in dist:
+                        dist[neighbor] = dist[node] + 1
+                        queue.append(neighbor)
+            # Check if all nodes reachable
+            if len(dist) < len(self.node_ids):
+                return -1  # Disconnected
+            diameter = max(diameter, max(dist.values()))
+
+        return diameter
+
+    def _bottleneck_channels(self) -> List[str]:
+        """Find bridge channels whose removal would disconnect the graph.
+
+        Uses edge-removal check (simplified bridge detection).
+        """
+        bridges = []
+        for ch_id, ch in self.channels.items():
+            if not ch.active:
+                continue
+            # Temporarily deactivate and check connectivity
+            ch.active = False
+            components = self._connected_components()
+            ch.active = True
+            if len(components) > 1:
+                bridges.append(ch_id)
+        return bridges
 
     def teleport(self, source: str, target: str, payload: dict,
                  error_correct: bool = False) -> dict:
@@ -886,23 +1300,18 @@ class QuantumNetworkMesh:
         if source == target:
             return [source]
 
-        # Build adjacency from channel_map
-        from collections import deque
-        adj: Dict[str, List[str]] = {n: [] for n in self.node_ids}
-        for (a, b) in self.channel_map.keys():
-            ch = self.channels.get(self.channel_map[(a, b)])
-            if ch and ch.active:
-                adj[a].append(b)
-                adj[b].append(a)
+        # Build adjacency from active channels
+        adj = self._adjacency_map()
 
         # BFS
+        from collections import deque
         visited = {source}
         queue = deque([(source, [source])])
         while queue:
             node, path = queue.popleft()
             if node == target:
                 return path
-            for neighbor in adj[node]:
+            for neighbor in adj.get(node, []):
                 if neighbor not in visited:
                     visited.add(neighbor)
                     queue.append((neighbor, path + [neighbor]))
@@ -988,23 +1397,44 @@ class QuantumNetworkMesh:
         max_channels = n * (n - 1) // 2 if n > 1 else 1
         connectivity = len(active_channels) / max(max_channels, 1)
 
-        # Composite network score
+        # Topology analysis (lightweight: degree stats + detected type)
+        degrees = self._degree_map()
+        degree_vals = list(degrees.values()) if degrees else [0]
+        mean_degree = sum(degree_vals) / max(len(degree_vals), 1)
+        detected_topo = self.detect_topology()
+
+        # Sacred topology score (integrated with network score)
+        phi_sq = PHI * PHI
+        diameter = self._network_diameter() if n > 1 else 0
+        sacred_topo_score = (
+            (mean_degree ** (1.0 / PHI)) * connectivity
+        ) / (1.0 + abs(max(0, diameter) - phi_sq) / max(phi_sq, 1e-10))
+        sacred_topo_score = min(1.0, sacred_topo_score)
+
+        # Composite network score (now includes topology health)
         network_score = (
             avg_fidelity * PHI +
             connectivity +
-            sacred_alignment / PHI
-        ) / (PHI + 1.0 + 1.0 / PHI)
+            sacred_alignment / PHI +
+            sacred_topo_score * VOID_CONSTANT
+        ) / (PHI + 1.0 + 1.0 / PHI + VOID_CONSTANT)
 
         return {
             "version": QUANTUM_NETWORK_VERSION,
             "nodes": len(self.node_ids),
             "active_channels": len(active_channels),
             "total_channels": len(self.channels),
+            "topology": self.topology,
+            "detected_topology": detected_topo,
+            "topology_version": self._topology_version,
             "avg_fidelity": round(avg_fidelity, 8),
             "min_fidelity": round(min_fidelity, 8),
             "max_fidelity": round(max_fidelity, 8),
             "connectivity": round(connectivity, 4),
+            "mean_degree": round(mean_degree, 2),
+            "diameter": diameter,
             "sacred_alignment": round(sacred_alignment, 8),
+            "sacred_topology_score": round(sacred_topo_score, 8),
             "network_score": round(network_score, 8),
             "total_teleportations": self.total_teleportations,
             "total_purifications": self.total_purifications,
@@ -1029,6 +1459,8 @@ class QuantumNetworkMesh:
             "version": QUANTUM_NETWORK_VERSION,
             "vqpu_version": VERSION,
             "timestamp": time.time(),
+            "topology": self.topology,
+            "topology_version": self._topology_version,
             "node_ids": self.node_ids,
             "qubits_per_node": self.qubits_per_node,
             "channels": {ch_id: ch.to_dict() for ch_id, ch in self.channels.items()},
@@ -1045,6 +1477,7 @@ class QuantumNetworkMesh:
         fidelities = [ch.fidelity for ch in self.channels.values() if ch.active]
         return {
             "nodes": len(self.node_ids),
+            "topology": self.topology,
             "channels_active": active,
             "channels_total": len(self.channels),
             "avg_fidelity": round(

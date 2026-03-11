@@ -217,7 +217,7 @@ def run_all():
     # D) DEEP NLU ENGINE v2.2.0 — 10 tests
     # ═══════════════════════════════════════════════════════════════════
     print("\n" + "=" * 70)
-    print("  D) DEEP NLU ENGINE v2.2.0 INTEGRATION")
+    print("  D) DEEP NLU ENGINE v3.0.0 INTEGRATION")
     print("=" * 70)
 
     from l104_asi.deep_nlu import DeepNLUEngine
@@ -225,7 +225,7 @@ def run_all():
     nlu = DeepNLUEngine()
 
     # D1: Version
-    test("D1: DeepNLUEngine VERSION=2.2.0", nlu.VERSION == "2.2.0",
+    test("D1: DeepNLUEngine VERSION=3.0.0", nlu.VERSION == "3.0.0",
          f"got {nlu.VERSION}")
 
     # D2: Has decomposer

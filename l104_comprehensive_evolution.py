@@ -594,7 +594,7 @@ class ProviderOrchestrationUpgrader:
         "openai": {
             "base_url": "https://api.openai.com/v1",
             "env_key": "OPENAI_API_KEY",
-            "models": ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"]
+            "models": ["gpt-5-mini", "gpt-4o", "gpt-4o-mini", "gpt-4-turbo"]
         },
         "anthropic": {
             "base_url": "https://api.anthropic.com/v1",
@@ -1089,7 +1089,7 @@ class L104StreamingEngine:
         self,
         prompt: str,
         api_key: str,
-        model: str = "gpt-4o"
+        model: str = "gpt-5-mini"
     ) -> AsyncGenerator[StreamChunk, None]:
         """Stream from OpenAI API."""
         async with httpx.AsyncClient(timeout=60.0) as client:

@@ -1,0 +1,77 @@
+{
+  "timestamp": "2026-03-10T08:20:28.536248",
+  "total_measurements": 6,
+  "category_distribution": {
+    "particle": 3,
+    "atomic": 2,
+    "climate": 1
+  },
+  "measurements": [
+    {
+      "name": "electron",
+      "category": "particle",
+      "quantity_name": "rest_mass",
+      "value_si": 9.109383623726025e-31,
+      "uncertainty": 9.109383623726025e-39,
+      "unit_si": "kg",
+      "source_dataset": "particle_database",
+      "measurement_count": 1000,
+      "verification_status": "verified"
+    },
+    {
+      "name": "proton",
+      "category": "particle",
+      "quantity_name": "rest_mass",
+      "value_si": 1.6726219221617147e-27,
+      "uncertainty": 1.6726219221617148e-35,
+      "unit_si": "kg",
+      "source_dataset": "particle_database",
+      "measurement_count": 1000,
+      "verification_status": "verified"
+    },
+    {
+      "name": "neutron",
+      "category": "particle",
+      "quantity_name": "rest_mass",
+      "value_si": 1.6749274965097907e-27,
+      "uncertainty": 1.6749274965097908e-35,
+      "unit_si": "kg",
+      "source_dataset": "particle_database",
+      "measurement_count": 1000,
+      "verification_status": "verified"
+    },
+    {
+      "name": "Fe_density",
+      "category": "atomic",
+      "quantity_name": "density",
+      "value_si": 7874.0,
+      "uncertainty": 78.74,
+      "unit_si": "kg/m^3",
+      "source_dataset": "atomic_properties",
+      "measurement_count": 100,
+      "verification_status": "verified"
+    },
+    {
+      "name": "H_density",
+      "category": "atomic",
+      "quantity_name": "density",
+      "value_si": 0.0708,
+      "uncertainty": 0.0007080000000000001,
+      "unit_si": "kg/m^3",
+      "source_dataset": "atomic_properties",
+      "measurement_count": 100,
+      "verification_status": "verified"
+    },
+    {
+      "name": "global_temp_2023",
+      "category": "climate",
+      "quantity_name": "temperature_anomaly",
+      "value_si": 0.78,
+      "uncertainty": 0.05,
+      "unit_si": "K",
+      "source_dataset": "climate_data",
+      "measurement_count": 1,
+      "verification_status": "verified"
+    }
+  ]
+}

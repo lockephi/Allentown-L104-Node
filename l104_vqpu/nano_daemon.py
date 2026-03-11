@@ -1,4 +1,12 @@
-"""L104 Nano Daemon — Native AI Python Substrate v2.0.0
+"""L104 Nano Daemon — Native AI Python Substrate v2.1.0
+
+v2.1.0 TOPOLOGY COHERENCE:
+  - New probe #13: topology_coherence — verifies quantum mesh topology integrity
+  - Reads micro daemon state for topology type, sacred score, diameter
+  - Detects topology mismatch (configured vs detected)
+  - Alerts on low sacred topology score (< 1/PHI)
+  - Diameter warning for routing degradation
+  - Topology data included in status() output
 
 v2.0.0 INTELLIGENCE UPGRADE:
   - Temporal fault causality: detect causal chains (fault A → B within 5s window)
@@ -71,7 +79,7 @@ from typing import Any, NamedTuple
 # SACRED CONSTANTS (Nano-Precision)
 # ═══════════════════════════════════════════════════════════════════════
 
-VERSION = "2.0.0"
+VERSION = "2.1.0"
 GOD_CODE = 527.5184818492612
 PHI = 1.618033988749895
 VOID_CONSTANT = 1.04 + PHI / 1000.0  # 1.0416180339887497
@@ -821,6 +829,79 @@ class AIAutoCorrelator:
 
 
 # ═══════════════════════════════════════════════════════════════════════
+# PROBE 13: Quantum Topology Coherence
+# ═══════════════════════════════════════════════════════════════════════
+
+def probe_topology_coherence() -> list[NanoFault]:
+    """Verify quantum mesh topology integrity from micro daemon persisted state.
+
+    Checks:
+      - Micro daemon state file exists and contains topology data
+      - Topology type matches detected topology (consistency)
+      - Sacred topology score above minimum threshold (PHI-derived)
+      - Mesh has connected nodes with valid channel counts
+    """
+    faults = []
+    ts = time.time()
+    root = os.environ.get("L104_ROOT", os.getcwd())
+    micro_state = Path(root) / ".l104_vqpu_micro_daemon.json"
+
+    if not micro_state.exists():
+        # No micro daemon state — topology data unavailable (not a fault)
+        return faults
+
+    try:
+        data = json.loads(micro_state.read_text())
+    except (json.JSONDecodeError, OSError):
+        faults.append(NanoFault(NanoFaultType.STATE_FILE, NanoSeverity.LOW,
+                                0, 1, 1, 0,
+                                "Micro daemon state unreadable for topology check", ts))
+        return faults
+
+    topology = data.get("quantum_topology", "unknown")
+    mesh_nodes = data.get("quantum_mesh_nodes", 0)
+    mesh_channels = data.get("quantum_mesh_channels", 0)
+    topo_analysis = data.get("quantum_topology_analysis")
+
+    # Check mesh has nodes
+    if mesh_nodes == 0 and data.get("quantum_network_enabled", False):
+        faults.append(NanoFault(NanoFaultType.CROSS_DAEMON, NanoSeverity.MEDIUM,
+                                0, 1, 1, 0,
+                                "Quantum mesh enabled but has 0 nodes", ts))
+
+    # Check topology analysis data if available
+    if isinstance(topo_analysis, dict):
+        detected = topo_analysis.get("detected_topology", "unknown")
+        sacred_score = topo_analysis.get("sacred_topology_score", 0)
+        diameter = topo_analysis.get("diameter", 0)
+
+        # Topology consistency: configured vs detected should match
+        if topology != "unknown" and detected != "unknown" and topology != detected:
+            faults.append(NanoFault(NanoFaultType.CROSS_DAEMON, NanoSeverity.LOW,
+                                    0, 0, 0, 0,
+                                    f"Topology mismatch: configured={topology} "
+                                    f"detected={detected}", ts))
+
+        # Sacred topology score below PHI-derived threshold
+        _min_sacred_score = 1.0 / PHI  # ~0.618
+        if sacred_score < _min_sacred_score and mesh_nodes > 0:
+            sev = NanoSeverity.LOW if sacred_score > 0.3 else NanoSeverity.MEDIUM
+            faults.append(NanoFault(NanoFaultType.CROSS_DAEMON, sev,
+                                    sacred_score, _min_sacred_score,
+                                    _min_sacred_score - sacred_score, 0,
+                                    f"Sacred topology score {sacred_score:.4f} "
+                                    f"< threshold {_min_sacred_score:.4f}", ts))
+
+        # Diameter check — excessively large diameter degrades routing
+        if diameter > 10 and mesh_nodes > 2:
+            faults.append(NanoFault(NanoFaultType.CROSS_DAEMON, NanoSeverity.LOW,
+                                    float(diameter), 5.0, float(diameter) - 5.0, 0,
+                                    f"Mesh diameter {diameter} may degrade routing", ts))
+
+    return faults
+
+
+# ═══════════════════════════════════════════════════════════════════════
 # NANO DAEMON CLASS
 # ═══════════════════════════════════════════════════════════════════════
 
@@ -879,6 +960,7 @@ class NanoDaemon:
             (self._run_ai_trend, 1, "ai_trend"),
             (self._run_ai_anomaly, 2, "ai_anomaly"),
             (self.correlator.correlate, 5, "ai_correlator"),
+            (probe_topology_coherence, 5, "topology_coherence"),
         ]
 
     def _run_stat_anomaly(self) -> list[NanoFault]:
@@ -1121,6 +1203,29 @@ class NanoDaemon:
         else:
             return  # No adjustment
         self.tick_interval = round(max(MIN_TICK, min(MAX_TICK, target)), 2)
+
+    def _read_topology_summary(self) -> dict:
+        """v2.1: Read quantum topology summary from micro daemon state."""
+        try:
+            root = os.environ.get("L104_ROOT", os.getcwd())
+            micro_state = Path(root) / ".l104_vqpu_micro_daemon.json"
+            if not micro_state.exists():
+                return {"available": False, "reason": "no_micro_state"}
+            data = json.loads(micro_state.read_text())
+            topo_analysis = data.get("quantum_topology_analysis")
+            result = {
+                "available": True,
+                "topology": data.get("quantum_topology", "unknown"),
+                "mesh_nodes": data.get("quantum_mesh_nodes", 0),
+                "mesh_channels": data.get("quantum_mesh_channels", 0),
+            }
+            if isinstance(topo_analysis, dict):
+                result["sacred_topology_score"] = topo_analysis.get("sacred_topology_score", 0)
+                result["detected_topology"] = topo_analysis.get("detected_topology", "unknown")
+                result["diameter"] = topo_analysis.get("diameter", 0)
+            return result
+        except Exception as e:
+            return {"available": False, "reason": str(e)[:60]}
 
     def _read_all_heartbeats(self) -> dict[str, dict]:
         """v2.0: Read ALL daemon heartbeats for cross-correlation.
@@ -1418,7 +1523,7 @@ class NanoDaemon:
 
     # ─── Self-Test ───
     def self_test(self) -> int:
-        """Run all 12 probes once. Returns number of failures."""
+        """Run all 13 probes once. Returns number of failures."""
         print(f"[L104 NanoDaemon/Python] Self-test — {len(self.probes)} probes")
         _ensure_dirs()
 
@@ -1518,6 +1623,8 @@ class NanoDaemon:
             # v2.0: Cross-daemon heartbeat summary
             "daemon_peers": heartbeats,
             "daemon_peers_alive": sum(1 for info in heartbeats.values() if info["alive"]),
+            # v2.1: Quantum topology summary
+            "quantum_topology": self._read_topology_summary(),
         }
 
 

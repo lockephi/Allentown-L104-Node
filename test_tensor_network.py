@@ -531,7 +531,7 @@ test("simulate_mps sacred mode works", sacred_result.probabilities is not None)
 # Simulator status
 sim = get_simulator("default")
 status = sim.status()
-test("Simulator status has version", status.get("version") == "1.0.0")
+test("Simulator status has version", status.get("version") == "4.0.0")
 test("Simulator status has memory estimates", "memory_estimates" in status)
 
 # Singleton modes

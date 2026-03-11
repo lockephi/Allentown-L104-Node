@@ -1,13 +1,20 @@
 {
   "daemon": "l104_nano_python",
-  "version": "2.0.0",
-  "tick_count": 290,
-  "total_faults": 28,
-  "health_trend": 0.9991511143087327,
-  "health_slope": -8.3e-05,
+  "version": "2.1.0",
+  "tick_count": 0,
+  "tick_interval": 3.0,
+  "total_faults": 2,
+  "health_trend": 0.984,
+  "health_slope": 0.0,
+  "slope_declining": false,
+  "slope_alerts_count": 0,
   "causal_chains_count": 0,
-  "fault_clusters_count": 1,
+  "latest_causal_chain": null,
+  "fault_clusters_count": 0,
+  "top_fault_cluster": null,
   "hw_platform": "intel_x86",
+  "hw_drift_tolerance_ulp": 2,
+  "hw_phase_iterations": 100000,
   "probes": [
     "constant_drift",
     "memory_canary",
@@ -20,6 +27,8 @@
     "cross_daemon",
     "ai_trend",
     "ai_anomaly",
-    "ai_correlator"
-  ]
+    "ai_correlator",
+    "topology_coherence"
+  ],
+  "daemon_peers_alive": 1
 }

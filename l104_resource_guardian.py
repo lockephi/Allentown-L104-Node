@@ -84,7 +84,7 @@ PHI = 1.618033988749895
 GOD_CODE = 527.5184818492612
 VOID_CONSTANT = 1.04 + PHI / 1000.0  # 1.0416180339887497
 
-VERSION = "3.0.0"
+VERSION = "3.1.0"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION — All env-overridable
@@ -2042,6 +2042,30 @@ class ResourceGuardianDaemon:
             pass
         self._cross_daemon_health = health
 
+    def _read_topology_from_micro(self) -> Dict[str, Any]:
+        """v3.1: Read quantum topology data from micro daemon state file."""
+        try:
+            l104_root = os.environ.get("L104_ROOT", os.getcwd())
+            micro_path = Path(l104_root) / ".l104_vqpu_micro_daemon.json"
+            if not micro_path.exists():
+                return {"available": False}
+            data = json.loads(micro_path.read_text())
+            result: Dict[str, Any] = {
+                "available": True,
+                "topology": data.get("quantum_topology", "unknown"),
+                "mesh_nodes": data.get("quantum_mesh_nodes", 0),
+                "mesh_channels": data.get("quantum_mesh_channels", 0),
+            }
+            topo_analysis = data.get("quantum_topology_analysis")
+            if isinstance(topo_analysis, dict):
+                result["sacred_topology_score"] = topo_analysis.get("sacred_topology_score", 0)
+                result["detected_topology"] = topo_analysis.get("detected_topology", "unknown")
+                result["diameter"] = topo_analysis.get("diameter", 0)
+                result["efficiency"] = topo_analysis.get("efficiency", 0)
+            return result
+        except Exception:
+            return {"available": False}
+
     def _log_vitals(self, v: VitalSigns) -> None:
         """Log vital signs summary (v2.0: includes new vitals + sacred scoring)."""
         color = LEVEL_COLORS.get(v.pressure_level, "")
@@ -2168,7 +2192,7 @@ class ResourceGuardianDaemon:
             "telemetry_depth": len(self._telemetry),
             "cross_daemon_health": self._cross_daemon_health,
             "vital_signs_count": 11,
-            "self_test_probes": 19,
+            "self_test_probes": 20,
             # v2.1 new status fields
             "trend_predictor": self.predictor.to_dict(),
             "process_hunter": self.hunter.to_dict(),
@@ -2181,10 +2205,12 @@ class ResourceGuardianDaemon:
             "resilience_score": self._resilience_score,
             "resilience_history": list(self._resilience_history)[-3:],
             "quota_violations": list(self._quota_violations)[-5:],
+            # v3.1: Quantum topology summary from micro daemon
+            "quantum_topology": self._read_topology_from_micro(),
         }
 
     def self_test(self) -> Dict[str, Any]:
-        """Run diagnostic self-test (v2.1: 19 probes, for l104_debug.py integration)."""
+        """Run diagnostic self-test (v3.1: 20 probes, for l104_debug.py integration)."""
         results = []
         t0 = time.time()
 
@@ -2411,6 +2437,39 @@ class ResourceGuardianDaemon:
             })
         except Exception as e:
             results.append({"probe": "cross_daemon_monitor", "ok": False, "detail": str(e)})
+
+        # Test 20: Quantum Topology Health — v3.1 probe
+        try:
+            _l104_root = os.environ.get("L104_ROOT", os.getcwd())
+            _micro_state_path = Path(_l104_root) / ".l104_vqpu_micro_daemon.json"
+            if _micro_state_path.exists():
+                _micro_data = json.loads(_micro_state_path.read_text())
+                _topo = _micro_data.get("quantum_topology", "unknown")
+                _topo_analysis = _micro_data.get("quantum_topology_analysis")
+                _sacred_score = 0.0
+                _diameter = 0
+                _detail_parts = [f"topology={_topo}"]
+                if isinstance(_topo_analysis, dict):
+                    _sacred_score = _topo_analysis.get("sacred_topology_score", 0)
+                    _diameter = _topo_analysis.get("diameter", 0)
+                    _detected = _topo_analysis.get("detected_topology", "?")
+                    _detail_parts.append(f"detected={_detected}")
+                    _detail_parts.append(f"sacred_score={_sacred_score:.4f}")
+                    _detail_parts.append(f"diameter={_diameter}")
+                topo_ok = _topo != "unknown" and _sacred_score >= 0
+                results.append({
+                    "probe": "quantum_topology_health",
+                    "ok": topo_ok,
+                    "detail": " ".join(_detail_parts),
+                })
+            else:
+                results.append({
+                    "probe": "quantum_topology_health",
+                    "ok": True,  # No micro daemon state = topology N/A, not a failure
+                    "detail": "micro_daemon state not found (topology N/A)",
+                })
+        except Exception as e:
+            results.append({"probe": "quantum_topology_health", "ok": False, "detail": str(e)[:80]})
 
         elapsed_ms = (time.time() - t0) * 1000
         passed = sum(1 for r in results if r["ok"])

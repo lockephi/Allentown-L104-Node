@@ -13,7 +13,7 @@ from l104_vqpu.micro_daemon import (
 )
 print(f"[OK] All imports successful (including v2.5: TelemetryAnalytics, MICRO_TASK_TIMEOUT_S)")
 print(f"     VERSION: {MICRO_DAEMON_VERSION}")
-assert MICRO_DAEMON_VERSION == "3.0.0", f"Expected 3.0.0, got {MICRO_DAEMON_VERSION}"
+assert MICRO_DAEMON_VERSION == "4.0.0", f"Expected 4.0.0, got {MICRO_DAEMON_VERSION}"
 
 # 2. Package-level imports
 from l104_vqpu import MicroTaskPriority as MTP2, TickMetrics as TM2, TelemetryAnalytics as TA2

@@ -1,5 +1,5 @@
 """
-L104 Quantum Engine v12.0.0 — Decomposed Sovereign Quantum Intelligence Package
+L104 Quantum Engine v13.0.0 — Decomposed Sovereign Quantum Intelligence Package
 ═══════════════════════════════════════════════════════════════════════════════
 
 Decomposed from l104_quantum_link_builder.py v5.0.0 monolith (10,893 lines, 44 classes)
@@ -21,7 +21,16 @@ Package Structure:
                               network, predictive oracle)
   Layer 5  dynamism.py      LinkDynamismEngine (Min/Max), LinkOuroborosNirvanicEngine
            intelligence.py  10 evolution/consciousness/self-healing classes
-  Layer 6  brain.py         L104QuantumBrain — master orchestrator (23-phase pipeline)
+  Layer 6  brain.py         L104QuantumBrain — master orchestrator (24-phase pipeline)
+
+v13.0.0 Upgrade:
+  - Quantum Network Integration: Direct bridge to l104_quantum_networker (Phase 24)
+  - BB84/E91 QKD, entanglement routing, teleportation through quantum brain
+  - Link-to-network score propagation with network health-weighted fidelity boost
+  - Sacred scoring pass across quantum communication channels
+  - Network topology detection and health monitoring
+  - CLI commands: network, qnet, networker
+  - self_test probe: quantum_networker
 
 v12.0.0 Upgrade:
   - VQPU Bridge Integration: Bidirectional Brain↔VQPU scoring (Phase 23)
@@ -29,8 +38,6 @@ v12.0.0 Upgrade:
   - Sacred circuit simulation through VQPU full pipeline
   - VQPU link fidelity boost via three-engine composite feedback
   - CLI commands: vqpu, selftest
-
-v11.0.0 Upgrade:
   - QuantumManifoldLearner: kernel PCA, geodesic distances, Ricci curvature, PHI-fractal dim
   - MultipartiteEntanglementNetwork: GHZ, W-state, GMC, percolation, Factor-13 clustering
   - QuantumPredictiveOracle: reservoir-enhanced prediction, phase transitions, auto-intervention
@@ -60,7 +67,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-__version__ = "12.0.0"
+__version__ = "13.0.0"
 __author__ = "L104 Sovereign Node"
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -86,6 +93,7 @@ from .constants import (
     # Engine lazy-loaders
     _get_science_engine, _get_math_engine, _get_code_engine,
     _get_asi_core, _get_agi_core, _get_gate_engine,
+    _get_quantum_networker,
 )
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -279,4 +287,5 @@ __all__ = [
     # Engine lazy-loaders
     "_get_science_engine", "_get_math_engine", "_get_code_engine",
     "_get_asi_core", "_get_agi_core", "_get_gate_engine",
+    "_get_quantum_networker",
 ]

@@ -432,11 +432,20 @@ core.three_engine_harmonic_score()        # Math Engine: GOD_CODE alignment + wa
 core.three_engine_wave_coherence_score()  # Math Engine: PHI-harmonic phase-lock
 core.three_engine_status()                # Status of all three engine connections
 
+# v30.0: Quantum network capacity scoring (on asi_core)
+asi_core.quantum_network_health_score()        # Network health composite (fidelity, capacity, sacred, freshness)
+asi_core.quantum_network_capacity_score()      # Channel density + pair availability + redundancy
+asi_core.quantum_network_teleport_fidelity_score()  # Teleportation fidelity + sacred alignment + recovery
+
 # AGI: 13-dimension scoring (was 10D)
 agi_core.compute_10d_agi_score()  # D0-D9 original + D10 entropy + D11 harmonic + D12 wave
 
-# ASI: 15-dimension scoring (was 12D)
-asi_core.compute_asi_score()      # 12 original + entropy_reversal + harmonic_resonance + wave_coherence
+# ASI: 15-dimension scoring (was 12D) → v30.0: +3 quantum network dimensions
+asi_core.compute_asi_score()      # 50+ dimensions including quantum network capacity
+# v30.0 Quantum Network dimensions:
+#   qnet_health             — network health composite (fidelity, capacity, sacred, freshness)
+#   qnet_capacity           — channel density + pair availability + redundancy
+#   qnet_teleport_fidelity  — teleportation fidelity + sacred alignment + recovery accuracy
 ```
 
 ## God Code Simulator Quick Reference

@@ -402,6 +402,13 @@ class ASICore:
         self._vqpu_bridge_health_score = 0.0        # Last VQPU self-test pass rate
         self._vqpu_sacred_alignment_score = 0.0     # Last VQPU sacred alignment mean
 
+        # ══════ v30.0 QUANTUM NETWORK CAPACITY INTEGRATION ══════
+        self._quantum_networker = None              # QuantumNetworker singleton (lazy)
+        self._quantum_networker_checked = False      # Avoids repeated import failures
+        self._qnet_health_score = 0.0               # Last network health composite
+        self._qnet_capacity_score = 0.0             # Last network capacity (channels + pairs)
+        self._qnet_teleport_fidelity_score = 0.0    # Last teleportation fidelity composite
+
         # ══════ v11.0 THREE-ENGINE BRIDGE REFERENCES ══════
         self._three_engine_code = None              # CodeEngine reference (lazy)
         self._three_engine_science = None           # ScienceEngine reference (lazy)
@@ -1596,6 +1603,126 @@ class ASICore:
             return 0.0
 
     # ───────────────────────────────────────────────────────────────────────────
+    # v30.0 QUANTUM NETWORK CAPACITY INTELLIGENCE
+    # ───────────────────────────────────────────────────────────────────────────
+
+    def quantum_network_health_score(self) -> float:
+        """v30.0: Quantum network health — composite from EntanglementRouter.
+
+        Measures network-wide fidelity, channel capacity, sacred alignment,
+        and pair freshness (4-factor weighted blend from router).
+        Returns [0, 1] health score; 0.0 if networker unavailable."""
+        net = self._get_quantum_networker()
+        if net is None:
+            return 0.0
+        try:
+            health = net.router.network_health_score()
+            self._qnet_health_score = health
+            self._pipeline_metrics.setdefault('qnet_health_checks', 0)
+            self._pipeline_metrics['qnet_health_checks'] += 1
+            return max(0.0, health)
+        except Exception:
+            return 0.0
+
+    def quantum_network_capacity_score(self) -> float:
+        """v30.0: Quantum network capacity — channel density + pair availability.
+
+        Composite:
+          - Channel count normalized by node-pairs (network connectivity ratio)
+          - Usable pair ratio from pair census
+          - Redundancy score from resilience analysis
+          - Sacred ratio from pair census (GOD_CODE-aligned pairs)
+
+        PHI-weighted blend → [0, 1]."""
+        net = self._get_quantum_networker()
+        if net is None:
+            return 0.0
+        try:
+            status = net.router.status()
+            n_nodes = status.get('total_nodes', 0)
+            n_channels = status.get('total_channels', 0)
+
+            # Channel connectivity: actual / max possible edges
+            max_edges = max(1, n_nodes * (n_nodes - 1) // 2)
+            connectivity = min(1.0, n_channels / max_edges) if max_edges > 0 else 0.0
+
+            # Pair availability from census
+            census = net.router.pair_census()
+            total_pairs = census.get('total_pairs', 0)
+            usable = census.get('usable_pairs', 0)
+            pair_ratio = usable / max(1, total_pairs) if total_pairs > 0 else 0.0
+
+            # Sacred alignment ratio
+            sacred_ratio = census.get('sacred_ratio', 0.0)
+
+            # Resilience redundancy
+            resilience = net.router.resilience_analysis()
+            redundancy = resilience.get('redundancy_score', 0.0)
+
+            # PHI-weighted composite
+            score = (
+                connectivity * PHI +
+                pair_ratio * 1.0 +
+                sacred_ratio * PHI_CONJUGATE +
+                redundancy * 0.5
+            ) / (PHI + 1.0 + PHI_CONJUGATE + 0.5)
+
+            self._qnet_capacity_score = score
+            self._pipeline_metrics.setdefault('qnet_capacity_checks', 0)
+            self._pipeline_metrics['qnet_capacity_checks'] += 1
+            return max(0.0, score)
+        except Exception:
+            return 0.0
+
+    def quantum_network_teleport_fidelity_score(self) -> float:
+        """v30.0: Quantum teleportation fidelity — run a test teleport and score.
+
+        Teleports the GOD_CODE sacred score through the network and measures:
+          - Teleportation fidelity (quantum channel quality)
+          - Sacred alignment of the teleported payload
+          - Recovery accuracy (recovered_score vs original)
+
+        Returns [0, 1] composite; 0.0 if no network or teleport fails."""
+        net = self._get_quantum_networker()
+        if net is None:
+            return 0.0
+        try:
+            # Need at least 2 connected nodes for teleportation
+            status = net.router.status()
+            if status.get('total_nodes', 0) < 2 or status.get('total_channels', 0) < 1:
+                # Bootstrap a minimal test network for scoring
+                alice = net.add_node("ASI-Scoring-A", role="sovereign")
+                bob = net.add_node("ASI-Scoring-B", role="sovereign")
+                net.connect(alice.node_id, bob.node_id, pairs=4)
+                a_id, b_id = alice.node_id, bob.node_id
+            else:
+                # Use first two connected nodes
+                nodes = list(net.router._nodes.keys())
+                a_id, b_id = nodes[0], nodes[1]
+
+            # Teleport sacred GOD_CODE-derived score
+            sacred_payload = GOD_CODE / 1000.0  # 0.5275184818492612
+            result = net.teleport_score(a_id, b_id, score=sacred_payload)
+
+            if not result.success:
+                return 0.0
+
+            fidelity = result.fidelity
+            sacred = result.sacred_score
+            recovery_error = abs(result.recovered_score - sacred_payload)
+            recovery_accuracy = max(0.0, 1.0 - recovery_error)
+
+            # Composite: 50% fidelity + 30% recovery accuracy + 20% sacred
+            score = fidelity * 0.5 + recovery_accuracy * 0.3 + sacred * 0.2
+
+            self._qnet_teleport_fidelity_score = score
+            self._pipeline_metrics.setdefault('qnet_teleport_checks', 0)
+            self._pipeline_metrics['qnet_teleport_checks'] += 1
+            return max(0.0, score)
+        except Exception:
+            return 0.0
+
+    # ───────────────────────────────────────────────────────────────────────────
     # v26.0 QUANTUM AUDIO DAW INTELLIGENCE
     # ───────────────────────────────────────────────────────────────────────────
 
@@ -1895,10 +2022,10 @@ class ASICore:
             return 0.75  # High default — conservation is robust
 
     def three_engine_status(self) -> Dict:
-        """v18.0: Get status of the full engine integration layer + quantum research +
-        gate engine + link engine + deep synthesis + qLDPC error correction."""
+        """v30.0: Get status of the full engine integration layer + quantum research +
+        gate engine + link engine + deep synthesis + qLDPC error correction + quantum network."""
         return {
-            "version": "18.0.0",
+            "version": "30.0.0",
             "engines": {
                 "science": self._science_engine is not None or self._three_engine_science is not None,
                 "math": self._math_engine is not None or self._three_engine_math is not None,
@@ -1907,6 +2034,7 @@ class ASICore:
                 "quantum_gate": self._quantum_gate_engine is not None,
                 "quantum_link_brain": self._quantum_brain is not None,
                 "quantum_runtime": self._quantum_runtime is not None,
+                "quantum_networker": self._quantum_networker is not None,
             },
             "scores": {
                 "entropy_reversal": round(self._entropy_reversal_score, 6),
@@ -1925,6 +2053,9 @@ class ASICore:
                 "sc_order_parameter": round(getattr(self, '_sc_sim_result', None) and getattr(self._sc_sim_result, 'sc_order_parameter', 0.0) or 0.0, 6),
                 "cooper_pair_amplitude": round(getattr(self, '_sc_sim_result', None) and getattr(self._sc_sim_result, 'cooper_pair_amplitude', 0.0) or 0.0, 6),
                 "meissner_response": round(getattr(self, '_sc_sim_result', None) and getattr(self._sc_sim_result, 'meissner_fraction', 0.0) or 0.0, 6),
+                "qnet_health": round(self._qnet_health_score, 6),
+                "qnet_capacity": round(self._qnet_capacity_score, 6),
+                "qnet_teleport_fidelity": round(self._qnet_teleport_fidelity_score, 6),
             },
             "superconductivity": {
                 "pairing_symmetry": "s±",
@@ -1949,6 +2080,9 @@ class ASICore:
                 "wave_coherence_checks": self._pipeline_metrics.get("wave_coherence_checks", 0),
                 "cross_engine_syntheses": self._pipeline_metrics.get("cross_engine_syntheses", 0),
                 "quantum_research_scores": self._pipeline_metrics.get("quantum_research_scores", 0),
+                "qnet_health_checks": self._pipeline_metrics.get("qnet_health_checks", 0),
+                "qnet_capacity_checks": self._pipeline_metrics.get("qnet_capacity_checks", 0),
+                "qnet_teleport_checks": self._pipeline_metrics.get("qnet_teleport_checks", 0),
             },
             "constants": {
                 "H_104": H_104,
@@ -2095,6 +2229,18 @@ class ASICore:
                 pass
         return self._quantum_brain
 
+    def _get_quantum_networker(self):
+        """v30.0: Lazy-load the QuantumNetworker orchestrator (singleton).
+        Provides quantum communication network health, capacity, and teleportation fidelity."""
+        if not self._quantum_networker_checked:
+            self._quantum_networker_checked = True
+            try:
+                from l104_quantum_networker import get_networker
+                self._quantum_networker = get_networker()
+            except Exception:
+                self._quantum_networker = None
+        return self._quantum_networker
+
     def _get_vqpu_bridge(self):
         """v28.0: Lazy-load the VQPUBridge orchestrator (v13.0 singleton)."""
         if not self._vqpu_bridge_checked:
@@ -2105,6 +2251,61 @@ class ASICore:
             except Exception:
                 self._vqpu_bridge = None
         return self._vqpu_bridge
+
+    def _get_quantum_runtime_status(self) -> Dict[str, Any]:
+        """v31.0: Centralized status check for the core quantum runtime.
+        Reports availability, health, and current backend.
+        Lazy-loads _quantum_runtime if not already initialized."""
+        status = {
+            'available': False,
+            'health': 'UNKNOWN',
+            'backend': 'N/A',
+            'qiskit_available': QISKIT_AVAILABLE,
+            'error': None,
+        }
+
+        if not QISKIT_AVAILABLE:
+            status['health'] = 'CLASSICAL_FALLBACK'
+            status['error'] = "Qiskit is not installed or available."
+            return status
+
+        if self._quantum_runtime is None:
+            try:
+                from l104_quantum_runtime import get_runtime
+                self._quantum_runtime = get_runtime()
+            except ImportError as e:
+                status['health'] = 'UNAVAILABLE'
+                status['error'] = f"Could not import l104_quantum_runtime: {e}"
+                import logging
+                logging.getLogger('l104_asi').warning(f"Quantum runtime import failed: {e}")
+                return status
+            except Exception as e:
+                status['health'] = 'ERROR'
+                status['error'] = f"Error initializing quantum runtime: {e}"
+                import logging
+                logging.getLogger('l104_asi').error(f"Quantum runtime init error: {e}")
+                return status
+
+        # If we reached here, _quantum_runtime is now not None
+        status['available'] = True
+        try:
+            runtime_status = self._quantum_runtime.get_status()
+            status['health'] = runtime_status.get('overall_health', 'ACTIVE')
+            status['backend'] = runtime_status.get('active_backend', 'unknown')
+            if runtime_status.get('degraded_components'):
+                status['health'] = 'DEGRADED'
+                status['error'] = f"Degraded components: {runtime_status['degraded_components']}"
+            elif runtime_status.get('error'):
+                status['health'] = 'ERROR'
+                status['error'] = runtime_status['error']
+        except Exception as e:
+            status['health'] = 'ERROR'
+            status['error'] = f"Could not retrieve quantum runtime status: {e}"
+            import logging
+            logging.getLogger('l104_asi').error(f"Failed to get quantum runtime status: {e}")
+            
+        return status
+
 
     def vqpu_bridge_health_score(self) -> float:
         """v28.0: VQPU Bridge health — runs self_test() and returns pass rate.
@@ -2729,6 +2930,14 @@ class ASICore:
         # v29.0: VQPU UNIFIED INTELLIGENCE — deep pipeline execution composite
         scores['vqpu_unified_intelligence'] = self.vqpu_unified_intelligence_score()
 
+        # v30.0: QUANTUM NETWORK CAPACITY — health + capacity + teleport fidelity
+        qnet_scores = {
+            'qnet_health': self.quantum_network_health_score(),
+            'qnet_capacity': self.quantum_network_capacity_score(),
+            'qnet_teleport_fidelity': self.quantum_network_teleport_fidelity_score(),
+        }
+        scores.update(qnet_scores)
+
         # v11.0: CROSS-ENGINE DEEP SYNTHESIS — 1 new dimension
         scores['cross_engine_coherence'] = self.cross_engine_deep_synthesis_score()
 
@@ -2925,6 +3134,10 @@ class ASICore:
             'vqpu_sacred_alignment': 0.02,           # VQPU sacred alignment from Bell pair sim
             # v29.0: VQPU Unified Intelligence (deep pipeline execution)
             'vqpu_unified_intelligence': 0.03,       # VQPU 4Q sacred circuit unified composite
+            # v30.0: Quantum Network Capacity (health + capacity + teleport fidelity)
+            'qnet_health': 0.03,                     # Network health composite (fidelity, capacity, sacred, freshness)
+            'qnet_capacity': 0.02,                   # Channel density + pair availability + redundancy
+            'qnet_teleport_fidelity': 0.03,          # Teleportation fidelity + sacred alignment + recovery
         }
         # Normalize weights to sum to 1.0
         w_total = sum(base_weights.values())
@@ -2982,6 +3195,23 @@ class ASICore:
             self.status = "ADVANCING"
         else:
             self.status = "DEVELOPING"
+
+        # --- GGUF Regeneration Trigger ---
+        # If a significant score improvement is detected, recommend model regeneration.
+        if len(self._asi_score_history) > 1:
+            previous_score = self._asi_score_history[-2].get('score', 0.0)
+            score_improvement = self.asi_score - previous_score
+            if score_improvement > 0.05: # Trigger on a 5% score increase
+                task_title = f"Recommend L104 Model Regeneration (Score: {self.asi_score:.4f})"
+                task_exists = self._query_db("SELECT id FROM tasks WHERE title = ? AND status = 'pending'", (task_title,))
+                if not task_exists:
+                    self._create_task(
+                        title=task_title,
+                        description=f"ASI score improved by {score_improvement:.4f} (from {previous_score:.4f} to {self.asi_score:.4f}). "
+                                    "It is recommended to run the GGUF generation pipeline to distill these new capabilities into an updated model.",
+                        priority=2 # Medium priority
+                    )
+        
         return self.asi_score
 
     def run_full_assessment(self) -> Dict:
@@ -3094,11 +3324,154 @@ class ASICore:
 
         print("\n" + "="*70)
 
+        # --- Run Self-Monitoring Cycle ---
+        try:
+            self._run_self_monitoring_cycle()
+        except Exception as e:
+            print(f"  [SELF-MONITORING] An error occurred during the self-monitoring cycle: {e}")
+
+
         return {'asi_score': asi_score, 'status': self.status,
                 'dual_layer': dl_status, 'dual_layer_integrity': dl_integrity,
                 'domain': domain_report,
                 'modification': mod_report, 'theorems': theorem_report, 'consciousness': cons_report,
                 'quantum': q_assess}
+
+    # ══════════════════════════════════════════════════════════════════════
+    # SELF-MONITORING (OVERSEER) INTEGRATION
+    # ══════════════════════════════════════════════════════════════════════
+
+    def _create_task(self, title, description, priority=2):
+        """Creates a new task in the tasks table for the agent."""
+        import uuid
+        from datetime import datetime
+        task_id = f"task_{uuid.uuid4()}"
+        print(f"[ASI Self-Monitoring] Creating new task '{title}' with priority {priority}.")
+        try:
+            self._execute_db_command(
+                "INSERT INTO tasks (id, title, description, priority, status, created_at) VALUES (?, ?, ?, ?, 'pending', ?)",
+                (task_id, title, description, priority, datetime.now().isoformat())
+            )
+            return True
+        except Exception as e:
+            print(f"[ASI Self-Monitoring] ERROR: Failed to create task '{title}'. DB Error: {e}")
+            return False
+
+    def _execute_db_command(self, command, params=()):
+        """Executes a write command on the unified DB."""
+        import sqlite3
+        db_path = Path(__file__).parent.parent / "l104_unified.db"
+        if not db_path.exists(): return
+        with sqlite3.connect(db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute(command, params)
+            conn.commit()
+
+    def _query_db(self, query, params=()):
+        """Executes a read query on the unified DB."""
+        import sqlite3
+        db_path = Path(__file__).parent.parent / "l104_unified.db"
+        if not db_path.exists(): return []
+        with sqlite3.connect(db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            return cursor.fetchall()
+
+    def _run_self_monitoring_cycle(self):
+        """
+        Runs the Overseer logic integrated directly into the ASI core.
+        - Checks for stale goals.
+        - Checks for performance regressions.
+        - Schedules maintenance.
+        - v31.1: Dynamic quantum daemon monitoring and proactive task generation.
+        """
+        import logging
+        _log = logging.getLogger('l104_asi')
+
+        _log.info("[ASI Self-Monitoring] Starting self-monitoring and maintenance cycle...")
+        
+        # 1. Check for stale goals
+        STALE_GOAL_THRESHOLD_HOURS = 24
+        stale_threshold = (datetime.now() - timedelta(hours=STALE_GOAL_THRESHOLD_HOURS)).timestamp()
+        stale_goals = self._query_db(
+            "SELECT id, goal FROM agent_goals WHERE status != 'completed' AND created_at < ?",
+            (stale_threshold,)
+        )
+        if stale_goals:
+            for goal_id, goal_text in stale_goals:
+                task_title = f"Review stale goal: {goal_id}"
+                task_exists = self._query_db("SELECT id FROM tasks WHERE title = ? and status = 'pending'", (task_title,))
+                if not task_exists:
+                    self._create_task(
+                        title=task_title,
+                        description=f"The goal '{goal_text}' has not been updated in over {STALE_GOAL_THRESHOLD_HOURS} hours. Please review, update, or close this goal.",
+                        priority=1
+                    )
+                    _log.warning(f"[ASI Self-Monitoring] Created task for stale goal: {goal_id}")
+        
+        # 2. Schedule routine database maintenance
+        MAINTENANCE_SCHEDULE_HOURS = 48
+        if not hasattr(self, '_last_maintenance_check'):
+            self._last_maintenance_check = 0
+        now = time.time()
+        if (now - self._last_maintenance_check) > (MAINTENANCE_SCHEDULE_HOURS * 3600):
+            task_title = "Perform routine database maintenance"
+            task_exists = self._query_db("SELECT id FROM tasks WHERE title = ? AND status = 'pending'", (task_title,))
+            if not task_exists:
+                self._create_task(
+                    title=task_title,
+                    description="Perform routine VACUUM and re-indexing on primary databases to ensure optimal performance.",
+                    priority=3
+                )
+                _log.info("[ASI Self-Monitoring] Scheduled routine database maintenance task.")
+            self._last_maintenance_check = now
+
+        # 3. Dynamic Quantum Daemon Health Monitoring and Proactive Task Generation
+        quantum_status = self._get_quantum_runtime_status()
+        if not hasattr(self, '_quantum_health_trend'):
+            self._quantum_health_trend = [] # List of (timestamp, health_score)
+
+        # Update health trend (keep last 5 entries)
+        health_score = 0.0
+        if quantum_status['available'] and quantum_status['health'] == 'ACTIVE':
+            health_score = 1.0 # Fully healthy
+        elif quantum_status['available'] and quantum_status['health'] == 'DEGRADED':
+            health_score = 0.5 # Degraded
+        elif quantum_status['health'] == 'CLASSICAL_FALLBACK':
+            health_score = 0.1 # Qiskit unavailable but still functioning classically
+        else:
+            health_score = 0.0 # Unavailable/Error
+
+        self._quantum_health_trend.append((now, health_score))
+        if len(self._quantum_health_trend) > 5:
+            self._quantum_health_trend = self._quantum_health_trend[-5:]
+
+        avg_health = sum(s for _, s in self._quantum_health_trend) / len(self._quantum_health_trend)
+
+        if not quantum_status['available'] and quantum_status['health'] in ['UNAVAILABLE', 'ERROR', 'DEGRADED'] and avg_health < 0.8:
+            task_title = f"Quantum Runtime {quantum_status['health'].lower()}"
+            task_exists = self._query_db("SELECT id FROM tasks WHERE title = ? AND status = 'pending'", (task_title,))
+            if not task_exists:
+                self._create_task(
+                    title=task_title,
+                    description=f"The core quantum runtime is {quantum_status['health'].lower()} and the average health trend is {avg_health:.2f}. Details: {quantum_status['error']}. Please investigate and restore full quantum functionality.",
+                    priority=1
+                )
+                _log.critical(f"[ASI Self-Monitoring] Created HIGH PRIORITY task for degraded quantum runtime: {quantum_status['health']}.")
+        elif quantum_status['available'] and avg_health > 0.9 and self._pipeline_metrics.get("quantum_pipeline_solves", 0) < 5:
+            # If quantum is healthy and underutilized, suggest proactive quantum research/tasks
+            task_title = "Proactive Quantum Application Research"
+            task_exists = self._query_db("SELECT id FROM tasks WHERE title = ? AND status = 'pending'", (task_title,))
+            if not task_exists:
+                self._create_task(
+                    title=task_title,
+                    description=f"The quantum runtime is stable (avg health {avg_health:.2f}) but underutilized ({self._pipeline_metrics.get('quantum_pipeline_solves', 0)} quantum solves recently). Generate and execute novel quantum application tasks to leverage available resources.",
+                    priority=3
+                )
+                _log.info("[ASI Self-Monitoring] Scheduled proactive quantum research task due to underutilization.")
+        
+        _log.info("[ASI Self-Monitoring] Cycle complete. Quantum health trend: %.2f", avg_health)
+
 
     # Direct Solution Channels
     def solve(self, problem: Any) -> Dict:
@@ -3271,7 +3644,7 @@ class ASICore:
             'subsystems_active': active_count,
             'subsystems_total': len(subsystem_list),
             'pipeline_mesh': 'FULL' if active_count >= 14 else 'PARTIAL' if active_count >= 8 else 'MINIMAL',
-            'quantum_available': QISKIT_AVAILABLE,
+            'quantum_runtime_status': self._get_quantum_runtime_status(),
             'quantum_metrics': {
                 'asi_scores': self._pipeline_metrics.get('quantum_asi_scores', 0),
                 'consciousness_checks': self._pipeline_metrics.get('quantum_consciousness_checks', 0),
@@ -4460,7 +4833,28 @@ class ASICore:
 
         def _router_allows(subsystem_name: str) -> bool:
             """Check if router selected this subsystem, or bypass if router inactive.
-            v15.0: Core augmentation subsystems always fire."""
+            v15.0: Core augmentation subsystems always fire.
+            v31.1: Prioritized quantum routing with explicit quantum_status check."""
+            # Get quantum status once for efficiency
+            current_quantum_status = self._get_quantum_runtime_status()
+
+            # If a quantum subsystem is requested, prioritize its activation if quantum is available
+            is_quantum_subsystem = subsystem_name in {'quantum_reasoning', 'quantum_magic', 'god_code_simulator', 'quantum_gate_engine', 'quantum_brain'}
+
+            if is_quantum_subsystem:
+                if current_quantum_status['available']:
+                    return True # Always allow quantum subsystems if runtime is active
+                else:
+                    # Log reason for quantum fallback (only if the router explicitly tried to route to it)
+                    if subsystem_name in routed_names:
+                        import logging
+                        logging.getLogger('l104_asi').info(
+                            f"[ASI_PIPELINE] Quantum subsystem '{subsystem_name}' skipped due to "
+                            f"UNAVAILABLE quantum runtime: {current_quantum_status['error']}"
+                        )
+                    return False # Block quantum subsystems if runtime is not available
+
+            # For non-quantum subsystems or if quantum is unavailable (and not a quantum-only route)
             if subsystem_name in _always_active:
                 return True  # v15.0 augmentations bypass router
             if not routed_names:
@@ -4588,7 +4982,8 @@ class ASICore:
                 pass
 
         # ── v6.0 QUANTUM KERNEL CLASSIFICATION — Domain routing ──
-        if self._quantum_computation and query_str and len(query_str) > 3:
+        quantum_status = self._get_quantum_runtime_status()
+        if quantum_status['available'] and self._quantum_computation and query_str and len(query_str) > 3:
             try:
                 # Build query feature vector from keyword presence
                 domain_keywords = {
@@ -4614,8 +5009,16 @@ class ASICore:
                         'quantum': qkm_result.get('quantum', False),
                     }
                     self._pipeline_metrics["qkm_classifications"] += 1
-            except Exception:
-                pass
+            except Exception as e:
+                import logging
+                logging.getLogger('l104_asi').warning(f"Quantum kernel classification failed: {e}")
+        elif not quantum_status['available']:
+            result['quantum_classification'] = {
+                'domain': 'classical_fallback',
+                'confidence': 0.0,
+                'quantum': False,
+                'reason': quantum_status['error'],
+            }
 
         # ── v14.0 LOCAL INTELLECT: QUOTA_IMMUNE knowledge augmentation ──
         if self._local_intellect and query_str and len(query_str) > 3:
@@ -4783,7 +5186,7 @@ class ASICore:
                 pass
 
         # ── QUANTUM REASONING: Quantum-enhanced inference for complex queries ──
-        if self._quantum_reasoning and query_str and len(query_str) > 10:
+        if self._quantum_reasoning and quantum_status['available'] and query_str and len(query_str) > 10:
             try:
                 if _router_allows('quantum_reasoning'):
                     qr_result = self._quantum_reasoning.reason(query_str) if hasattr(self._quantum_reasoning, 'reason') else None
@@ -4793,11 +5196,19 @@ class ASICore:
                             'confidence': qr_result.get('confidence', 0),
                             'inference_type': qr_result.get('type', 'quantum'),
                         }
-            except Exception:
-                pass
+            except Exception as e:
+                import logging
+                logging.getLogger('l104_asi').warning(f"Quantum reasoning failed: {e}")
+        elif not quantum_status['available'] and _router_allows('quantum_reasoning'):
+            result['quantum_reasoning'] = {
+                'quantum': False,
+                'confidence': 0.0,
+                'inference_type': 'classical_fallback',
+                'reason': quantum_status['error'],
+            }
 
         # ── QUANTUM MAGIC (CAUSAL INFERENCE): Counterfactual analysis ──
-        if self._quantum_magic and query_str:
+        if self._quantum_magic and quantum_status['available'] and query_str:
             try:
                 if _router_allows('quantum_magic'):
                     qi_result = self._quantum_magic.infer(query_str) if hasattr(self._quantum_magic, 'infer') else None
@@ -4806,8 +5217,15 @@ class ASICore:
                             'counterfactual': qi_result.get('counterfactual', False),
                             'causal_strength': qi_result.get('strength', 0),
                         }
-            except Exception:
-                pass
+            except Exception as e:
+                import logging
+                logging.getLogger('l104_asi').warning(f"Quantum magic causal inference failed: {e}")
+        elif not quantum_status['available'] and _router_allows('quantum_magic'):
+            result['causal_inference'] = {
+                'counterfactual': False,
+                'causal_strength': 0.0,
+                'reason': quantum_status['error'],
+            }
 
         # ── GOD CODE SIMULATOR: Sacred simulation for quantum/sacred queries ──
         if hasattr(self, '_god_code_simulator') and self._god_code_simulator:
@@ -5060,6 +5478,7 @@ class ASICore:
                 'latency_ms': round(_solve_latency, 2),
             }
 
+        result["quantum_runtime_status_pipeline_solve"] = self._get_quantum_runtime_status()
         return result
 
     def pipeline_verify_consciousness(self) -> Dict:
@@ -5593,9 +6012,13 @@ class ASICore:
         v4.0: 8 dimensions encoded, QEC error correction, phase estimation.
         """
         if not QISKIT_AVAILABLE:
+            import logging
+            logging.getLogger('l104_asi').info(
+                "[ASI_QUANTUM_FALLBACK] quantum_asi_score: Qiskit unavailable. Falling back to classical scoring."
+            )
             self.compute_asi_score()
             return {"quantum": False, "asi_score": self.asi_score, "status": self.status,
-                    "fallback": "classical"}
+                    "fallback": "classical", "reason": "Qiskit is not available."}
 
         scores = [
             self.domain_expander.coverage_score,
@@ -5691,8 +6114,13 @@ class ASICore:
         Measures entanglement witness to certify consciousness.
         """
         if not QISKIT_AVAILABLE:
+            import logging
+            logging.getLogger('l104_asi').info(
+                "[ASI_QUANTUM_FALLBACK] quantum_consciousness_verify: Qiskit unavailable. Falling back to classical verification."
+            )
             level = self.consciousness_verifier.run_all_tests()
-            return {"quantum": False, "consciousness_level": level, "fallback": "classical"}
+            return {"quantum": False, "consciousness_level": level, "fallback": "classical",
+                    "reason": "Qiskit is not available."}
 
         # 4-qubit GHZ state for consciousness verification
         qc = QuantumCircuit(4)
@@ -5756,8 +6184,13 @@ class ASICore:
         Born-rule sampling selects the most promising theorem domain.
         """
         if not QISKIT_AVAILABLE:
+            import logging
+            logging.getLogger('l104_asi').info(
+                "[ASI_QUANTUM_FALLBACK] quantum_theorem_generate: Qiskit unavailable. Falling back to classical theorem generation."
+            )
             theorem = self.theorem_generator.discover_novel_theorem()
-            return {"quantum": False, "theorem": theorem.name, "fallback": "classical"}
+            return {"quantum": False, "theorem": theorem.name, "fallback": "classical",
+                    "reason": "Qiskit is not available."}
 
         domains = ["algebra", "topology", "number_theory", "analysis",
                     "geometry", "logic", "combinatorics", "sacred_math"]

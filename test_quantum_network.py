@@ -468,7 +468,7 @@ _phase("Phase 6: Micro Daemon Quantum Tasks")
 
 def test_micro_daemon_import():
     from l104_vqpu.micro_daemon import VQPUMicroDaemon, MICRO_DAEMON_VERSION
-    assert MICRO_DAEMON_VERSION == "3.0.0"
+    assert MICRO_DAEMON_VERSION == "4.0.0"
 _test("micro_daemon_v3_import", test_micro_daemon_import)
 
 

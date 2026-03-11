@@ -28,8 +28,6 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 import ast
 import math
 import re
-import time
-from typing import Dict, Any, List, Optional
 
 from .constants import (
     GOD_CODE, PHI, TAU, VOID_CONSTANT, BOLTZMANN_K, PLANCK_SCALE,
@@ -164,6 +162,7 @@ class ComputroniumCodeAnalyzer:
                 func_names.add(node.name)
 
         class ComplexityVisitor(ast.NodeVisitor):
+            """TODO: Document class ComplexityVisitor."""
             def __init__(self):
                 self.depth = 0
                 self.max_depth = 0
@@ -173,6 +172,7 @@ class ComputroniumCodeAnalyzer:
                 self.binary_patterns = 0
 
             def visit_For(self, node):
+                """TODO: Document visit_For."""
                 self.depth += 1
                 self.loop_count += 1
                 self.max_depth = max(self.max_depth, self.depth)
@@ -180,6 +180,7 @@ class ComputroniumCodeAnalyzer:
                 self.depth -= 1
 
             def visit_While(self, node):
+                """TODO: Document visit_While."""
                 self.depth += 1
                 self.loop_count += 1
                 self.max_depth = max(self.max_depth, self.depth)
@@ -193,6 +194,7 @@ class ComputroniumCodeAnalyzer:
 
             def visit_Call(self, node):
                 # Detect recursive calls
+                """TODO: Document visit_Call."""
                 if isinstance(node.func, ast.Name) and node.func.id in func_names:
                     self.recursive = True
                 # Detect sort calls
@@ -730,6 +732,7 @@ class ComputroniumCodeAnalyzer:
         return prev_row[-1]
 
     def get_status(self) -> Dict[str, Any]:
+        """TODO: Document get_status."""
         return {
             "subsystem": "ComputroniumCodeAnalyzer",
             "version": "1.0.0",

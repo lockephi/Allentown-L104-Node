@@ -88,6 +88,14 @@ def _get_gate_engine():
     except Exception:
         return None
 
+def _get_quantum_networker():
+    """Lazy-load Quantum Networker orchestrator (sovereign quantum communication network)."""
+    try:
+        from l104_quantum_networker import get_networker
+        return get_networker()
+    except Exception:
+        return None
+
 def _get_format_iq():
     """Lazy-load format_iq from l104_intellect."""
     try:
@@ -364,4 +372,4 @@ ALL_REPO_FILES = _discover_all_python_files()
 STATE_FILE = WORKSPACE_ROOT / ".l104_quantum_link_state.json"
 
 # Package version
-VERSION = "12.0.0"
+VERSION = "13.0.0"

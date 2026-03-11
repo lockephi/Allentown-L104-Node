@@ -116,7 +116,7 @@ PROVIDERS: Dict[str, ProviderConfig] = {
         name="openai",
         base_url="https://api.openai.com/v1",
         api_key_env="OPENAI_API_KEY",
-        model="gpt-4o"
+        model="gpt-5-mini"
     ),
     "anthropic": ProviderConfig(
         name="anthropic",

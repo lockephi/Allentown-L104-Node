@@ -191,7 +191,7 @@ def test():
 
     nlu = DeepNLUEngine()
     check("NLU instantiation", nlu is not None)
-    check("NLU VERSION = 2.3.0", nlu.VERSION == "2.3.0")
+    check("NLU VERSION = 3.0.0", nlu.VERSION == "3.0.0")
 
     # APIs
     check("NLU has check_entailment", hasattr(nlu, "check_entailment"))
@@ -220,7 +220,7 @@ def test():
     # Status
     st = nlu.status()
     check("NLU status layers = 20", st.get("layers") == 20, f"got layers={st.get('layers')}")
-    check("NLU status version 2.3.0", st.get("version") == "2.3.0")
+    check("NLU status version 3.0.0", st.get("version") == "3.0.0")
     layer_names = st.get("layer_names", [])
     check("NLU status has textual_entailment", "textual_entailment" in layer_names)
     check("NLU status has figurative_language", "figurative_language" in layer_names)

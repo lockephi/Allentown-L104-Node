@@ -1,0 +1,6 @@
+# requirements/dev.in
+# Development and testing dependencies.
+-c base.txt
+
+pytest
+pytest-asyncio

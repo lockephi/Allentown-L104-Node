@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -o k8s/
+    kompose.version: 1.38.0 (HEAD)
+  labels:
+    io.kompose.service: l104-node
+  name: l104-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: l104-node
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml -o k8s/
+        kompose.version: 1.38.0 (HEAD)
+      labels:
+        io.kompose.service: l104-node
+    spec:
+      containers:
+        - env:
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: l104-secrets
+                  key: anthropic-api-key
+            - name: DEEPSEEK_API_KEY
+            - name: DISABLE_RATE_LIMIT
+              value: "FALSE"
+            - name: ENABLE_FAKE_GEMINI
+              value: "0"
+            - name: GEMINI_API_BASE
+              value: https://generativelanguage.googleapis.com/v1beta
+            - name: GEMINI_API_KEY
+              value: AIzaSyDugDPPf99d8e3ikF0_o9BXBOO4FoYhuW4
+            - name: GEMINI_ENDPOINT
+              value: :streamGenerateContent
+            - name: GEMINI_MODEL
+              value: gemini-2.5-flash
+            - name: GITHUB_TOKEN
+            - name: GROQ_API_KEY
+            - name: HALLUCINATION_DELTA_PCT
+              value: "0.5"
+            - name: L104_CPU_CORES
+              value: "0"
+            - name: L104_DISK_BUDGET_MB
+              value: "2097152"
+            - name: L104_HEARTBEAT_SECONDS
+              value: "3600"
+            - name: L104_HISTORY_RETENTION_DAYS
+              value: "0"
+            - name: L104_LLM_TIMEOUT
+              value: "30"
+            - name: L104_WATCHDOG_SILENT
+              value: "1"
+            - name: LATTICE_DB_PATH
+              value: /data/lattice_v2.db
+            - name: LOG_FORMAT
+              value: json
+            - name: LOG_LEVEL
+              value: info
+            - name: MEMORY_DB_PATH
+              value: /data/memory.db
+            - name: OPENAI_API_KEY
+            - name: RAMNODE_DB_PATH
+              value: /data/ramnode.db
+            - name: RESONANCE
+              value: "527.5184818492612"
+            - name: SAGE_DB_PATH
+              value: /data/sage_memory.db
+            - name: SELF_BASE_URL
+              value: http://localhost:8081
+          image: l104-node
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - -fsS
+                - http://localhost:8081/health
+            failureThreshold: 5
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            timeoutSeconds: 10
+          name: l104-node
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 4160
+              protocol: TCP
+            - containerPort: 4161
+              protocol: TCP
+            - containerPort: 2404
+              protocol: TCP
+          resources:
+            limits:
+              cpu: "2"
+              memory: "2147483648"
+            requests:
+              memory: "536870912"
+          volumeMounts:
+            - mountPath: /data
+              name: l104-data
+            - mountPath: /tmp
+              name: l104-node-tmpfs0
+      restartPolicy: Always
+      volumes:
+        - name: l104-data
+          persistentVolumeClaim:
+            claimName: l104-data
+        - emptyDir:
+            medium: Memory
+          name: l104-node-tmpfs0

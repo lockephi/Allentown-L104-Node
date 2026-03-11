@@ -481,3 +481,39 @@ SPECULATIVE_TIMEOUT_S = PHI                    # ~1.618 seconds per speculative 
 CASCADE_GATE_THRESHOLD = 0.1                   # Min confidence for stage inclusion
 WARMUP_CV_THRESHOLD = TAU * 0.5                # ~0.309 coefficient of variation for warmup detection
 PROFILER_MAX_SAMPLES = 5000                    # Max latency samples per stage
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# v9.2.0 OPTIMIZATION CONSTANTS — Adaptive Latency Targeting, Memory Budget, Cascading
+# ═══════════════════════════════════════════════════════════════════════════════
+# v9.2.0 Stage Optimization Targets (milliseconds per stage)
+TARGET_LATENCY_LCE_MS = 50.0                   # Language & Code Engineering (was 100ms)
+TARGET_LATENCY_QE_MS = 30.0                    # Quantum Engineering (was 60ms)
+TARGET_LATENCY_SM_MS = 20.0                    # Symbolic Math (was 40ms)
+TARGET_LATENCY_COHERENCE_MS = 15.0             # Coherence Alignment (was 30ms)
+TARGET_LATENCY_ACTIVATION_MS = 10.0            # Gate Insertion (was 20ms)
+
+# v9.2.0 Adaptive Timeout Multipliers (× target latency)
+TIMEOUT_NORMAL_MULTIPLIER = 3.0 * PHI          # ~4.854× target (was 3.0)
+TIMEOUT_DEGRADED_MULTIPLIER = PHI ** 2         # ~2.618× target (was PHI)
+TIMEOUT_CRITICAL_MULTIPLIER = PHI * 2          # ~3.236× target (emergency timeout)
+
+# v9.2.0 Memory Budget Constants
+MAX_MEMORY_PERCENT_ASI = 85.0                  # Max % of system memory for ASI (was 75%)
+MEMORY_SAFETY_MARGIN_PCT = 5.0                 # Protected system margin (was 10%)
+ADAPTIVE_MEMORY_THRESHOLD_PCT = 70.0           # Threshold to enable memory optimization
+
+# v9.2.0 Cascading Control Constants
+CASCADE_MAX_RETRY_ADAPTIVE = 5                 # Max retries in cascade (was 3)
+CASCADE_CONFIDENCE_THRESHOLD = 0.65            # Min confidence to cascade (was 0.75)
+CASCADE_FAILURE_THRESHOLD = 0.2                # Fail-fast if below this confidence
+
+# v9.2.0 Activation Sequence Optimization
+ACTIVATION_STEPS_V9_2 = 25                     # v9.2.0 adaptive sequence steps (was 22)
+ACTIVATION_WARMUP_SAMPLES = 3                  # Samples to establish baseline (was 2)
+ACTIVATION_COOLDOWN_ITERATIONS = 2             # Stabilization iterations after warmup
+
+# v9.2.0 Scoring Aggregation Constants
+SCORE_AGGREGATION_MODE = "adaptive"            # "average" | "harmonic" | "adaptive"
+SCORE_HARMONIC_WEIGHT = TAU                   # φ' = 0.618 harmonic weighting (was 0.5)
+SCORE_OUTLIER_DETECTION = True                 # Enable outlier detection in aggregation
+SCORE_OUTLIER_SIGMA = 2.0                     # Outliers beyond 2σ threshold (was 3σ)

@@ -1,4 +1,11 @@
-"""L104 VQPU v16.0.0 — VQPU Daemon Cycler (background findings runner + brain intelligence).
+"""L104 VQPU v16.1.0 — VQPU Daemon Cycler (background findings runner + brain intelligence).
+
+v16.1.0 TOPOLOGY-AWARE HEALTH & CROSS-DAEMON TELEMETRY:
+  - Reads quantum topology analysis from micro daemon persisted state
+  - Sacred topology score integrated into unified health metric
+  - Topology data exposed in status() under 'quantum_topology' key
+  - _read_micro_daemon_health() extracts topology, mesh nodes/channels
+  - _update_health_score() now 5-component weighted average with topology
 
 v16.0.0 CROSS-DAEMON INTELLIGENCE & GRACEFUL DEGRADATION:
   - Cross-daemon mesh telemetry: reads NanoDaemon + QuantumAIDaemon + Guardian state files
@@ -258,6 +265,17 @@ def _run_single_sim_once(sim_name: str, sim_fn) -> dict:
             raise exc_box[0]
         result = result_box[0]
         elapsed = (time.monotonic() - sim_start) * 1000.0
+
+        # v16.2: Gracefully handle sims that return None instead of a result object
+        if result is None:
+            return {
+                "name": sim_name,
+                "passed": False,
+                "error": "simulation_returned_none",
+                "elapsed_ms": round(elapsed, 2),
+                "retryable": True,
+            }
+
         entry_data = {
             "name": sim_name,
             "passed": result.passed,
@@ -960,6 +978,14 @@ class VQPUDaemonCycler:
             frac = (cpu - lo) / (hi - lo)
             interval = i_min + frac * (i_max - i_min)
 
+        # v16.0: Predictive scheduling — if fidelity is trending down, cycle faster
+        if self._cycle_fidelity_avg and len(self._cycle_fidelity_avg) >= 3:
+            recent = list(self._cycle_fidelity_avg)[-3:]
+            if recent[-1] < recent[0] * 0.95:  # 5% drop
+                # Accelerate: reduce interval by up to 40%
+                interval *= (1.0 - _PREDICTIVE_FIDELITY_WEIGHT)
+                interval = max(i_min, interval)
+
         self._adaptive_interval = round(interval, 1)
         return self._adaptive_interval
 
@@ -1164,6 +1190,10 @@ class VQPUDaemonCycler:
                 active_sims.append(entry)
         sims_to_run = active_sims
 
+        # v16.0: Priority ranking + degradation
+        sims_to_run = self._compute_sim_priorities(sims_to_run)
+        sims_to_run = self._apply_degradation(sims_to_run)
+
         # ═══════════════════════════════════════════════════════════
         # v13.4: SEQUENTIAL EXECUTION (faster than threaded — GIL-bound)
         # Python-level matrix ops (numpy small arrays) don't release GIL
@@ -1282,6 +1312,9 @@ class VQPUDaemonCycler:
         if cycle_alignments:
             self._cycle_alignment_avg.append(
                 round(sum(cycle_alignments) / len(cycle_alignments), 6))
+
+        # v16.0: Fidelity alerts
+        self._check_fidelity_alerts(cycle_results)
 
         # v15.1: Throughput metric (sims/second)
         cycle_s = cycle_elapsed / 1000.0
@@ -1438,14 +1471,81 @@ class VQPUDaemonCycler:
                     name, elapsed, avg, elapsed / avg)
         history.append(elapsed)
 
+    def _compute_sim_priorities(self, sims_to_run):
+        """v16.0: Rank simulations by historical pass rate × avg fidelity.
+
+        Sims with higher fidelity and pass rates run first, ensuring
+        degraded mode gets the best signal from fewest sims.
+        """
+        ranked = []
+        for entry in sims_to_run:
+            sim_name = entry[0]
+            # Pass rate component
+            fail_count = self._sim_failure_counts.get(sim_name, 0)
+            pass_score = max(0.1, 1.0 - (fail_count * 0.2))
+            # Fidelity component
+            fid_history = self._sim_fidelity_history.get(sim_name)
+            fid_score = (sum(fid_history) / len(fid_history)) if fid_history else 0.5
+            priority = pass_score * 0.4 + fid_score * 0.6
+            self._sim_priority_scores[sim_name] = round(priority, 4)
+            ranked.append((priority, entry))
+        ranked.sort(key=lambda x: x[0], reverse=True)
+        return [entry for _, entry in ranked]
+
+    def _apply_degradation(self, sims_to_run):
+        """v16.0: Apply graceful degradation based on health_score.
+
+        FULL (>0.7): run all sims
+        REDUCED (0.4-0.7): run top 50% by priority
+        MINIMAL (<0.4): run top 2 sims only
+        """
+        if self._health_score >= _DEGRADATION_FULL_THRESHOLD:
+            self._degradation_level = "FULL"
+            return sims_to_run
+        elif self._health_score >= _DEGRADATION_REDUCED_THRESHOLD:
+            self._degradation_level = "REDUCED"
+            count = max(2, int(len(sims_to_run) * _DEGRADATION_REDUCED_SIM_RATIO))
+            _logger.info("Degraded mode REDUCED — running %d/%d sims", count, len(sims_to_run))
+            return sims_to_run[:count]
+        else:
+            self._degradation_level = "MINIMAL"
+            count = min(len(sims_to_run), _DEGRADATION_MINIMAL_SIM_COUNT)
+            _logger.warning("Degraded mode MINIMAL — running %d/%d sims", count, len(sims_to_run))
+            return sims_to_run[:count]
+
+    def _check_fidelity_alerts(self, cycle_results):
+        """v16.0: Check for per-sim fidelity drops and emit structured alerts."""
+        for entry_data in cycle_results:
+            sim_name = entry_data.get("name", "")
+            fid = entry_data.get("fidelity", 0.0)
+            if fid <= 0 or sim_name not in self._sim_fidelity_history:
+                continue
+            history = self._sim_fidelity_history[sim_name]
+            if len(history) < 5:
+                continue
+            rolling_avg = sum(history) / len(history)
+            if rolling_avg > 0 and fid < rolling_avg * (1.0 - _FIDELITY_ALERT_DROP_PCT):
+                alert = {
+                    "ts": time.time(),
+                    "sim": sim_name,
+                    "fidelity": round(fid, 6),
+                    "rolling_avg": round(rolling_avg, 6),
+                    "drop_pct": round((1.0 - fid / rolling_avg) * 100, 2),
+                }
+                self._fidelity_alerts.append(alert)
+                _logger.warning(
+                    "FIDELITY ALERT: '%s' fidelity %.4f is %.1f%% below avg %.4f",
+                    sim_name, fid, alert["drop_pct"], rolling_avg)
+
     def _update_health_score(self):
-        """v15.1: Compute unified health score (0.0–1.0).
+        """v16.1: Compute unified health score (0.0–1.0).
 
         Components (weighted):
-          - Pass rate (30%): total_passed / total_run
-          - Timing health (20%): 1.0 if last cycle < 10s, decays to 0 at 120s
+          - Pass rate (25%): total_passed / total_run
+          - Timing health (15%): 1.0 if last cycle < 10s, decays to 0 at 120s
           - Stability (25%): exp decay based on consecutive failures
-          - Fidelity trend (25%): average fidelity of last cycle (0–1 range)
+          - Fidelity trend (20%): average fidelity of last cycle (0–1 range)
+          - Topology health (15%): sacred_topology_score from micro daemon mesh
 
         The health score is fed to brain intelligence and exposed in status().
         """
@@ -1464,9 +1564,21 @@ class VQPUDaemonCycler:
         if self._cycle_fidelity_avg:
             fidelity_health = min(1.0, self._cycle_fidelity_avg[-1])
 
+        # v16.1: Topology health from micro daemon mesh data
+        topology_health = 0.5  # neutral default (no mesh data available)
+        try:
+            micro = self._read_micro_daemon_health()
+            topo_analysis = micro.get("quantum_topology_analysis")
+            if isinstance(topo_analysis, dict):
+                topology_health = min(1.0, max(0.0,
+                    topo_analysis.get("sacred_topology_score", 0.5)))
+        except Exception:
+            pass
+
         self._health_score = round(
-            0.30 * pass_rate + 0.20 * timing_health
-            + 0.25 * stability + 0.25 * fidelity_health, 4)
+            0.25 * pass_rate + 0.15 * timing_health
+            + 0.25 * stability + 0.20 * fidelity_health
+            + 0.15 * topology_health, 4)
 
     def _harvest_brain_intelligence(self) -> Optional[dict]:
         """v13.0: Harvest intelligence from Quantum Brain before each cycle.
@@ -1583,7 +1695,8 @@ class VQPUDaemonCycler:
         try:
             with self._lock:
                 state = {
-                    "version": "15.3.0",
+                    # release 16.1.0 brings topology-aware health and cross-daemon telemetry
+                    "version": "16.1.0",
                     "daemon_cycler": "VQPUDaemonCycler",
                     "last_persist": time.time(),
                     "cycles_completed": self._cycles_completed,
@@ -1608,6 +1721,8 @@ class VQPUDaemonCycler:
                     "sc_latest": self._sc_history[-1] if self._sc_history else None,
                     "health_history": list(self._health_history)[-10:],
                     "god_code": GOD_CODE,
+                    "degradation_level": self._degradation_level,
+                    "fidelity_alerts_count": len(self._fidelity_alerts),
                 }
             self._state_path.write_text(
                 json.dumps(state, indent=2, default=str))
@@ -1690,6 +1805,11 @@ class VQPUDaemonCycler:
                     "registered_tasks": len(_data.get("registered_tasks", [])),
                     # v2.4: Staleness detection — if heartbeat is too old, flag it
                     "stale": heartbeat_age_s > 30.0 if heartbeat_age_s >= 0 else True,
+                    # v16.1: Quantum topology data from micro daemon mesh
+                    "quantum_topology": _data.get("quantum_topology", "unknown"),
+                    "quantum_mesh_nodes": _data.get("quantum_mesh_nodes", 0),
+                    "quantum_mesh_channels": _data.get("quantum_mesh_channels", 0),
+                    "quantum_topology_analysis": _data.get("quantum_topology_analysis"),
                 }
                 # v2.4: Derive approximate analytics grade from state data
                 health = _data.get("health_score", 0)
@@ -1710,6 +1830,85 @@ class VQPUDaemonCycler:
         except Exception as _e:
             return {"available": False, "pid_alive": False,
                     "heartbeat_age_s": -1, "reason": str(_e)[:60]}
+
+    def _read_cross_daemon_health(self) -> dict:
+        """v16.0: Read NanoDaemon + QuantumAIDaemon state files for cross-daemon telemetry."""
+        now = time.time()
+        if (now - self._cross_daemon_cache_ts) < 30.0 and self._cross_daemon_cache:
+            return self._cross_daemon_cache
+
+        result = {}
+        l104_root = os.environ.get("L104_ROOT", os.getcwd())
+
+        # NanoDaemon state
+        try:
+            nano_path = Path(l104_root) / _NANO_DAEMON_STATE
+            if nano_path.exists():
+                data = json.loads(nano_path.read_text())
+                result["nano_daemon"] = {
+                    "available": True,
+                    "version": data.get("version", "?"),
+                    "tick_count": data.get("tick_count", 0),
+                    "total_faults": data.get("total_faults", 0),
+                    "health_trend": data.get("health_trend", 0),
+                }
+        except Exception:
+            result["nano_daemon"] = {"available": False}
+
+        # QuantumAIDaemon state
+        try:
+            qai_path = Path(l104_root) / _QAI_DAEMON_STATE
+            if qai_path.exists():
+                data = json.loads(qai_path.read_text())
+                result["quantum_ai_daemon"] = {
+                    "available": True,
+                    "version": data.get("version", "?"),
+                    "cycles_completed": data.get("cycles_completed", 0),
+                    "health_score": data.get("health_score", 0),
+                    "fidelity_grade": data.get("fidelity_grade", "?"),
+                }
+        except Exception:
+            result["quantum_ai_daemon"] = {"available": False}
+
+        self._cross_daemon_cache = result
+        self._cross_daemon_cache_ts = now
+        return result
+
+    def _extract_topology_summary(self) -> dict:
+        """v16.1: Extract topology summary from micro daemon's persisted state.
+
+        Returns a topology dict with type, detected type, sacred score,
+        mesh node/channel count, and diagnostic status.
+        """
+        try:
+            micro = self._read_micro_daemon_health()
+            if not micro.get("available"):
+                return {"available": False, "reason": "micro_daemon_unavailable"}
+            topo_analysis = micro.get("quantum_topology_analysis")
+            if not isinstance(topo_analysis, dict):
+                return {
+                    "available": True,
+                    "topology": micro.get("quantum_topology", "unknown"),
+                    "mesh_nodes": micro.get("quantum_mesh_nodes", 0),
+                    "mesh_channels": micro.get("quantum_mesh_channels", 0),
+                    "analysis": None,
+                }
+            return {
+                "available": True,
+                "topology": topo_analysis.get("topology", "unknown"),
+                "detected_topology": topo_analysis.get("detected_topology", "unknown"),
+                "mesh_nodes": topo_analysis.get("node_count", 0),
+                "mesh_channels": topo_analysis.get("channel_count", 0),
+                "mean_degree": topo_analysis.get("mean_degree", 0),
+                "diameter": topo_analysis.get("diameter", 0),
+                "sacred_topology_score": topo_analysis.get("sacred_topology_score", 0),
+                "efficiency": topo_analysis.get("efficiency", 0),
+                "topology_match": (
+                    topo_analysis.get("topology") == topo_analysis.get("detected_topology")
+                ),
+            }
+        except Exception as e:
+            return {"available": False, "reason": str(e)[:60]}
 
     def status(self) -> dict:
         """Current daemon cycler health and run history + subconscious state.
@@ -1759,7 +1958,7 @@ class VQPUDaemonCycler:
         uptime = time.time() - snap["start_time"] if snap["active"] else 0
         td = snap["throughput_data"]
         s = {
-            "version": "15.3.0",
+            "version": "16.1.0",
             "active": snap["active"],
             "paused": snap["paused"],
             "uptime_seconds": round(uptime, 1),
@@ -1808,6 +2007,12 @@ class VQPUDaemonCycler:
                 "last_harvest": snap["cached_brain_data"],
             },
             "micro_daemon_cross_health": self._read_micro_daemon_health(),
+            "degradation_level": self._degradation_level,
+            "sim_priority_scores": dict(self._sim_priority_scores),
+            "fidelity_alerts": list(self._fidelity_alerts)[-5:],
+            "cross_daemon_health": self._read_cross_daemon_health(),
+            # v16.1: Quantum topology from micro daemon mesh
+            "quantum_topology": self._extract_topology_summary(),
         }
 
         # v12.1: Append full subconscious status if available

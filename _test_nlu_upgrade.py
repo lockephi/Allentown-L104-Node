@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Quick validation of DeepNLU v2.0.0 + LanguageComprehension v6.0.0 upgrade."""
+"""Quick validation of DeepNLU v3.0.0 + LanguageComprehension v9.0.0 upgrade."""
 
 import sys
 
 def main():
-    print("=== TEST 1: DeepNLU v2.0.0 Import ===")
+    print("=== TEST 1: DeepNLU v3.0.0 Import ===")
     from l104_asi.deep_nlu import (
         DeepNLUEngine, DeepComprehension,
         TemporalReasoner, CausalReasoner, ContextualDisambiguator,
@@ -12,9 +12,9 @@ def main():
     )
     engine = DeepNLUEngine()
     status = engine.status()
-    assert status["version"] == "2.0.0", f"Expected v2.0.0, got {status['version']}"
-    assert status["layers"] == 13, f"Expected 13 layers, got {status['layers']}"
-    assert len(status["layer_names"]) == 13
+    assert status["version"] == "3.0.0", f"Expected v3.0.0, got {status['version']}"
+    assert status["layers"] == 20, f"Expected 20 total layers, got {status['layers']}"
+    assert len(status["layer_names"]) == 20, f"Expected 20 layer names, got {len(status['layer_names'])}"
     print(f"  Version: {status['version']}")
     print(f"  Layers: {status['layers']}")
     print(f"  NLU Depth Score: {status['nlu_depth_score']}")
@@ -51,12 +51,12 @@ def main():
         print(f"    {dis['word']}: {dis['selected_sense']} (conf: {dis['confidence']})")
     print("  PASS")
 
-    print("\n=== TEST 5: Full 13-Layer Analysis ===")
+    print("\n=== TEST 5: Full 13-Layer Deep Analysis (Core NLU) ===")
     result = engine.deep_analyze(
         "Before the experiment, the scientist hypothesized that heat causes expansion. "
         "She tested this by heating a metal bar, and it expanded as predicted."
     )
-    assert result["total_layers"] == 13, f"Expected 13, got {result['total_layers']}"
+    assert result["total_layers"] == 13, f"Expected 13 core NLU layers, got {result['total_layers']}"
     assert result["layers_active"] >= 5, f"Expected >=5 active layers, got {result['layers_active']}"
     assert "temporal" in result, "Missing temporal in result"
     assert "causal" in result, "Missing causal in result"
@@ -68,10 +68,10 @@ def main():
     print(f"  Disambiguations: {result['disambiguation']['ambiguous_words_found']}")
     print("  PASS")
 
-    print("\n=== TEST 6: LanguageComprehensionEngine v6.0.0 ===")
+    print("\n=== TEST 6: LanguageComprehensionEngine v9.0.0 ===")
     from l104_asi.language_comprehension import LanguageComprehensionEngine
     lce = LanguageComprehensionEngine()
-    assert lce.VERSION == "6.0.0", f"Expected v6.0.0, got {lce.VERSION}"
+    assert lce.VERSION == "9.0.0", f"Expected v9.0.0, got {lce.VERSION}"
     lce_status = lce.get_status()
     assert "9_temporal_reasoning" in lce_status["layers"], "Missing temporal layer in status"
     assert "10_causal_reasoning" in lce_status["layers"], "Missing causal layer in status"

@@ -49,6 +49,14 @@ from .constants import (
     DEEP_SYNTHESIS_WEIGHTS,
     RESILIENCE_MAX_RETRY, RESILIENCE_BACKOFF_BASE,
     ACTIVATION_STEPS_V11,
+    # v9.2.0 Optimization Constants
+    TARGET_LATENCY_LCE_MS, TARGET_LATENCY_QE_MS, TARGET_LATENCY_SM_MS,
+    TARGET_LATENCY_COHERENCE_MS, TARGET_LATENCY_ACTIVATION_MS,
+    TIMEOUT_NORMAL_MULTIPLIER, TIMEOUT_DEGRADED_MULTIPLIER, TIMEOUT_CRITICAL_MULTIPLIER,
+    MAX_MEMORY_PERCENT_ASI, MEMORY_SAFETY_MARGIN_PCT, ADAPTIVE_MEMORY_THRESHOLD_PCT,
+    CASCADE_MAX_RETRY_ADAPTIVE, CASCADE_CONFIDENCE_THRESHOLD, CASCADE_FAILURE_THRESHOLD,
+    ACTIVATION_STEPS_V9_2, ACTIVATION_WARMUP_SAMPLES, ACTIVATION_COOLDOWN_ITERATIONS,
+    SCORE_AGGREGATION_MODE, SCORE_HARMONIC_WEIGHT, SCORE_OUTLIER_DETECTION, SCORE_OUTLIER_SIGMA,
 )
 
 # ★ FLAGSHIP: Dual-Layer Engine — The Duality of Nature ★
@@ -148,6 +156,22 @@ from .computronium import (
     asi_computronium_scoring,
 )
 
+# v9.2.0: Adaptive Optimization Engine
+from .optimization_engine import (
+    AdaptiveLatencyTargeter,
+    MemoryBudgetOptimizer,
+    CascadingOptimizationController,
+    PipelineOptimizationOrchestrator,
+)
+
+# v9.2.0: Adaptive Activation Sequencer
+from .adaptive_activation_sequencer import (
+    AdaptiveActivationSequencer,
+    ActivationMetrics,
+    ActivationPhase,
+    SequencingMode,
+)
+
 # Core + singleton
 from .core import ASICore, asi_core, main, get_current_parameters, update_parameters
 
@@ -178,6 +202,14 @@ __all__ = [
     "DEEP_SYNTHESIS_WEIGHTS",
     "RESILIENCE_MAX_RETRY", "RESILIENCE_BACKOFF_BASE",
     "ACTIVATION_STEPS_V11",
+    # v9.2.0 Optimization Constants
+    "TARGET_LATENCY_LCE_MS", "TARGET_LATENCY_QE_MS", "TARGET_LATENCY_SM_MS",
+    "TARGET_LATENCY_COHERENCE_MS", "TARGET_LATENCY_ACTIVATION_MS",
+    "TIMEOUT_NORMAL_MULTIPLIER", "TIMEOUT_DEGRADED_MULTIPLIER", "TIMEOUT_CRITICAL_MULTIPLIER",
+    "MAX_MEMORY_PERCENT_ASI", "MEMORY_SAFETY_MARGIN_PCT", "ADAPTIVE_MEMORY_THRESHOLD_PCT",
+    "CASCADE_MAX_RETRY_ADAPTIVE", "CASCADE_CONFIDENCE_THRESHOLD", "CASCADE_FAILURE_THRESHOLD",
+    "ACTIVATION_STEPS_V9_2", "ACTIVATION_WARMUP_SAMPLES", "ACTIVATION_COOLDOWN_ITERATIONS",
+    "SCORE_AGGREGATION_MODE", "SCORE_HARMONIC_WEIGHT", "SCORE_OUTLIER_DETECTION", "SCORE_OUTLIER_SIGMA",
     # Dual-Layer Engine
     "DualLayerEngine", "dual_layer_engine", "DUAL_LAYER_AVAILABLE",
     "NATURES_DUALITIES", "CONSCIOUSNESS_TO_PHYSICS_BRIDGE",
@@ -234,6 +266,11 @@ __all__ = [
     "MEASURED_PERFORMANCE", "ARCHITECTURAL_STRENGTHS", "ARCHITECTURAL_LIMITATIONS",
     # Computronium + Rayleigh (v19.0)
     "ASIComputroniumScoring", "asi_computronium_scoring",
+    # v9.2.0 Adaptive Optimization Engine
+    "AdaptiveLatencyTargeter", "MemoryBudgetOptimizer",
+    "CascadingOptimizationController", "PipelineOptimizationOrchestrator",
+    # v9.2.0 Adaptive Activation Sequencer
+    "AdaptiveActivationSequencer", "ActivationMetrics", "ActivationPhase", "SequencingMode",
     # QML v2 re-exports (v23.0)
     "QuantumMLHub", "get_qml_hub",
     # Core

@@ -1,0 +1,147 @@
+{
+  "timestamp": 1773145222.232776,
+  "ingestion_plan": {
+    "phase": "Initial Data Ingestion",
+    "timestamp": "2026-03-10T08:20:22.231126",
+    "stages": [
+      {
+        "stage": 1,
+        "name": "Foundation Constants & Ontologies",
+        "datasets": [
+          "fundamental_constants",
+          "atomic_properties",
+          "wordnet_ontology"
+        ],
+        "priority": "CRITICAL",
+        "parallel_jobs": 1,
+        "estimated_time_minutes": 5
+      },
+      {
+        "stage": 2,
+        "name": "Large Knowledge Bases",
+        "datasets": [
+          "wikipedia_abstracts",
+          "conceptnet",
+          "arxiv_metadata"
+        ],
+        "priority": "HIGH",
+        "parallel_jobs": 3,
+        "estimated_time_minutes": 120
+      },
+      {
+        "stage": 3,
+        "name": "ML Training Data",
+        "datasets": [
+          "glue_benchmark",
+          "squad_dataset"
+        ],
+        "priority": "HIGH",
+        "parallel_jobs": 2,
+        "estimated_time_minutes": 60
+      },
+      {
+        "stage": 4,
+        "name": "Mathematical Sequences",
+        "datasets": [
+          "oeis_sequences",
+          "prime_numbers"
+        ],
+        "priority": "MEDIUM",
+        "parallel_jobs": 2,
+        "estimated_time_minutes": 30
+      },
+      {
+        "stage": 5,
+        "name": "Scientific Data",
+        "datasets": [
+          "particle_database",
+          "climate_data",
+          "astronomical_objects"
+        ],
+        "priority": "MEDIUM",
+        "parallel_jobs": 1,
+        "estimated_time_minutes": 240
+      }
+    ],
+    "total_estimated_time_hours": 7.75,
+    "storage_requirement_gb": 25.0,
+    "total_records_ingested": 8500000
+  },
+  "subsystem_specs": {
+    "ASI Knowledge Base": {
+      "knowledge_base_type": "Semantic Knowledge Graph",
+      "backing_store": "asi_knowledge_base.jsonl",
+      "schema": {
+        "fact_id": "str (SHA-256 of subject+predicate+object)",
+        "subject": "str (entity name)",
+        "predicate": "str (relationship type)",
+        "object": "str | number (target value)",
+        "confidence": "float [0.0, 1.0]",
+        "source_dataset": "str (sigma_006, sigma_007, etc)",
+        "created_timestamp": "ISO8601"
+      },
+      "expected_facts": 8500000,
+      "indexing": "Full-text + entity + type",
+      "query_language": "SPARQL-like triplet queries"
+    },
+    "ML Engine": {
+      "training_corpus_type": "Multi-task NLP + Classification",
+      "backing_store": "ml_engine_training_cache/",
+      "datasets": {
+        "glue_benchmark": {
+          "tasks": 9,
+          "total_examples": 600000,
+          "input_type": "Text sequences",
+          "output_type": "Classification labels (2-3 classes)"
+        },
+        "squad": {
+          "examples": 100000,
+          "input_type": "Context + Question",
+          "output_type": "Answer span (start, end positions)"
+        }
+      },
+      "preprocessing": [
+        "Tokenization (BPE / WordPiece)",
+        "Vocabulary generation",
+        "Dataset sampling (stratified by task)"
+      ],
+      "expected_training_records": 700000
+    },
+    "Numerical Engine": {
+      "high_precision_storage": "Decimal(100 precision)",
+      "constant_tables": {
+        "fundamental_constants": {
+          "speed_of_light": "299792458 m/s",
+          "planck_constant": "6.62607015e-34 J*s",
+          "gravitational_constant": "6.67430e-11 m^3/(kg*s^2)"
+        }
+      },
+      "sequence_database": "oeis_sequences.jsonl (50K sequences)",
+      "prime_cache": "primes_1m.csv (first 1,000,000 primes)",
+      "total_mathematical_entities": 50150
+    },
+    "Science Engine": {
+      "backing_format": "HDF5 (hierarchical scientific data)",
+      "datasets": {
+        "physics": [
+          "fundamental_constants",
+          "particle_database"
+        ],
+        "chemistry": [
+          "atomic_properties",
+          "material_library"
+        ],
+        "astronomy": [
+          "astronomical_objects",
+          "exoplanet_catalog"
+        ],
+        "earth_science": [
+          "climate_data",
+          "weather_observations"
+        ]
+      },
+      "unit_system": "SI (automatic conversion from dataset native units)",
+      "calibration": "Cross-validate constants with CODATA standards"
+    }
+  }
+}

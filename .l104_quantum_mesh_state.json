@@ -1,31 +1,57 @@
 {
-  "version": "1.1.0",
+  "version": "2.0.0",
   "vqpu_version": "15.0.0",
-  "timestamp": 1773080726.171384,
+  "timestamp": 1773205361.682912,
+  "topology": "all_to_all",
+  "topology_version": 2,
   "node_ids": [
-    "micro-2d3122ae"
+    "micro-215e3eb1",
+    "micro-62ab80ee"
   ],
   "qubits_per_node": 4,
-  "channels": {},
+  "channels": {
+    "qch-micro-21-micro-62-cbda23": {
+      "channel_id": "qch-micro-21-micro-62-cbda23",
+      "node_a": "micro-215e3eb1",
+      "node_b": "micro-62ab80ee",
+      "fidelity": 0.00014823,
+      "active": true,
+      "established_at": 1773202467.741296,
+      "purification_count": 6,
+      "messages_sent": 0,
+      "messages_received": 0
+    }
+  },
   "total_teleportations": 0,
-  "total_purifications": 0,
+  "total_purifications": 6,
   "health": {
-    "version": "1.1.0",
-    "nodes": 1,
-    "active_channels": 0,
-    "total_channels": 0,
-    "avg_fidelity": 0.0,
-    "min_fidelity": 0.0,
-    "max_fidelity": 0.0,
-    "connectivity": 0.0,
+    "version": "2.0.0",
+    "nodes": 2,
+    "active_channels": 1,
+    "total_channels": 1,
+    "topology": "all_to_all",
+    "detected_topology": "all_to_all",
+    "topology_version": 2,
+    "avg_fidelity": 0.00014823,
+    "min_fidelity": 0.00014823,
+    "max_fidelity": 0.00014823,
+    "connectivity": 1.0,
+    "mean_degree": 1.0,
+    "diameter": 1,
     "sacred_alignment": 1.0,
-    "network_score": 0.19098301,
+    "sacred_topology_score": 0.61803399,
+    "network_score": 0.52879739,
     "total_teleportations": 0,
-    "total_purifications": 0,
+    "total_purifications": 6,
     "register_health": {
-      "micro-2d3122ae": {
-        "avg_fidelity": 0.98855195,
-        "degraded_qubits": 0,
+      "micro-215e3eb1": {
+        "avg_fidelity": 0.05349335,
+        "degraded_qubits": 4,
+        "total_gates": 20
+      },
+      "micro-62ab80ee": {
+        "avg_fidelity": 0.05535725,
+        "degraded_qubits": 4,
         "total_gates": 20
       }
     },

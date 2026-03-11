@@ -1,5 +1,5 @@
 """
-L104 Quantum Engine — Quantum Brain Orchestrator v12.0.0
+L104 Quantum Engine — Quantum Brain Orchestrator v13.0.0
 ═══════════════════════════════════════════════════════════════════════════════
 L104QuantumBrain: Unified orchestrator for all quantum link operations.
 Decomposed from l104_quantum_link_builder.py v5.0.0 monolith.
@@ -18,6 +18,10 @@ Three-engine integration: Science + Math + Code wired in.
 ★ v12.0: VQPU Bridge Integration — Bidirectional VQPU↔Brain scoring,
           unified pipeline scoring with VQPU three-engine + sacred alignment,
           self_test() for l104_debug.py, VQPU simulation-fed coherence loop.
+★ v13.0: Quantum Network Integration — Direct bridge to l104_quantum_networker
+          for sovereign quantum communication (BB84/E91 QKD, entanglement routing,
+          teleportation, repeater chains, fidelity monitoring, link-to-network
+          score propagation, network-assisted link healing).
 
 CLI entry: python -m l104_quantum_engine [command]
 """
@@ -36,7 +40,7 @@ from .constants import (
     GOD_CODE, GOD_CODE_HZ, GOD_CODE_SPECTRUM, GROVER_AMPLIFICATION, INVARIANT, L104,
     O2_SUPERPOSITION_STATES, PHI, PHI_GROWTH, PHI_INV, QUANTUM_LINKED_FILES, STATE_FILE, VERSION,
     WORKSPACE_ROOT, _get_agi_core, _get_asi_core, _get_code_engine, _get_gate_engine,
-    _get_math_engine, _get_science_engine,
+    _get_math_engine, _get_science_engine, _get_quantum_networker,
 )
 from .models import QuantumLink
 from .math_core import QuantumMathCore
@@ -123,9 +127,13 @@ class L104QuantumBrain:
     27. ★ VQPU Bridge Integration → Bidirectional VQPU↔Brain scoring,
          unified pipeline scoring with VQPU three-engine + sacred alignment,
          VQPU simulation-fed coherence amplification loop
+    28. ★ Quantum Network Integration → Sovereign quantum communication network
+         with BB84/E91 QKD, entanglement routing, teleportation, repeater chains,
+         fidelity monitoring, network health scoring, link-to-network score
+         propagation, and network-assisted link healing
     """
 
-    VERSION = "12.0.0"
+    VERSION = "13.0.0"
     PERSISTENCE_FILE = WORKSPACE_ROOT / ".l104_quantum_links.json"
     MAX_REFLECTION_CYCLES = 5
     CONVERGENCE_THRESHOLD = 0.005  # Score delta below this = converged
@@ -234,6 +242,13 @@ class L104QuantumBrain:
         self._vqpu_bridge = None
         self._vqpu_bridge_checked = False
 
+        # ★ v13.0 QUANTUM NETWORK INTEGRATION
+        # Direct bridge to l104_quantum_networker for sovereign quantum communication:
+        # BB84/E91 QKD, entanglement routing, teleportation, repeater chains,
+        # fidelity monitoring, network health scoring, link-to-network propagation
+        self._quantum_networker = None
+        self._quantum_networker_checked = False
+
         self.links: List[QuantumLink] = []
         self.results: Dict[str, Any] = {}
         self.run_count = 0
@@ -282,6 +297,11 @@ class L104QuantumBrain:
         Phase 22: ★ Multipartite Entanglement Network — GHZ fidelity, W-state,
                      GMC, entanglement percolation, Factor-13 clustering
                      + Quantum Predictive Oracle observation recording
+        Phase 23: ★ VQPU Bridge Integration — Bidirectional VQPU↔Brain scoring,
+                     sacred circuit simulation, three-engine composite feedback
+        Phase 24: ★ Quantum Network Integration — Sovereign communication network
+                     (BB84 QKD, entanglement routing, teleportation, repeater chains,
+                      fidelity monitoring, network health, link-to-network boost)
         """
         start_time = time.time()
         self.run_count += 1
@@ -1491,6 +1511,58 @@ class L104QuantumBrain:
             self.results["vqpu_bridge"] = {"status": "error", "error": str(e)}
         _phase_times["vqpu_bridge"] = time.time() - _t0
 
+        # ═══ PHASE 24: ★ QUANTUM NETWORK INTEGRATION ═══
+        print(f"\n  ▸ PHASE 24: Quantum Network Integration — Sovereign Communication")
+        _t0 = time.time()
+        network_result = {}
+        try:
+            net = self._get_quantum_networker()
+            if net is not None:
+                # Run full link-to-network score propagation pipeline:
+                # 1. Build network topology from link clusters
+                # 2. Run QKD (BB84) between endpoints
+                # 3. Teleport mean fidelity across network
+                # 4. Fidelity scan + auto-heal
+                # 5. Network health score + topology detection
+                # 6. Sacred scoring pass
+                # 7. Compute network-weighted link boost
+                network_result = self._network_link_score_propagation()
+                self.results["quantum_network"] = network_result
+
+                if network_result.get("status") == "ok":
+                    print(f"    ✓ Network: {network_result['nodes_created']} nodes, "
+                          f"{network_result['channels_created']} channels")
+                    qkd_r = network_result.get("qkd", {})
+                    if qkd_r:
+                        print(f"    ✓ QKD (BB84): secure={qkd_r.get('secure', False)} "
+                              f"QBER={qkd_r.get('qber', 0):.4f} "
+                              f"sacred={qkd_r.get('sacred_alignment', 0):.4f}")
+                    tp_r = network_result.get("teleportation", {})
+                    if tp_r:
+                        print(f"    ✓ Teleport: fidelity={tp_r.get('fidelity', 0):.4f} "
+                              f"recovered={tp_r.get('recovered', 0):.4f} "
+                              f"sacred={tp_r.get('sacred_score', 0):.4f}")
+                    fs_r = network_result.get("fidelity_scan", {})
+                    print(f"    ✓ Network Health: {network_result.get('network_health', 0):.4f} "
+                          f"topology={network_result.get('topology', '?')} "
+                          f"diameter={network_result.get('topology_diameter', 0)}")
+                    sp_r = network_result.get("sacred_pass", {})
+                    print(f"    ✓ Sacred Pass: mean={sp_r.get('mean_sacred', 0):.4f} "
+                          f"pairs={sp_r.get('pairs_scored', 0)}")
+                    lb_r = network_result.get("link_boost", {})
+                    if lb_r.get("links_boosted", 0) > 0:
+                        print(f"    ✓ Network Boost: {lb_r['links_boosted']} links "
+                              f"(+{lb_r['factor']:.4f} fidelity)")
+                else:
+                    print(f"    ⚠ Network propagation: {network_result.get('error', 'unknown')}")
+            else:
+                print(f"    ⊘ Quantum Networker not available — skipping")
+                self.results["quantum_network"] = {"status": "unavailable"}
+        except Exception as e:
+            print(f"    ⚠ Quantum network error: {e}")
+            self.results["quantum_network"] = {"status": "error", "error": str(e)}
+        _phase_times["quantum_network"] = time.time() - _t0
+
         elapsed = time.time() - start_time
 
         # ═══ FINAL REPORT ═══
@@ -1744,6 +1816,33 @@ class L104QuantumBrain:
                 if orc_r.get("intervention_recommended"):
                     print(f"║    ⚠ INTERVENTION: {str(orc_r.get('intervention_reason', ''))[:52]:<52}   ║")
 
+        # ★ v13.0 QUANTUM NETWORK INTEGRATION REPORT
+        net_r = self.results.get("quantum_network", {})
+        if net_r and net_r.get("status") == "ok":
+            print(f"""╠══════════════════════════════════════════════════════════════════════════════╣
+║  ★ QUANTUM NETWORK INTEGRATION v13.0:                                       ║""")
+            print(f"║    Network: {net_r.get('nodes_created', 0)} nodes  {net_r.get('channels_created', 0)} channels  "
+                  f"v{net_r.get('net_version', '?'):<6}                           ║")
+            nqkd = net_r.get("qkd", {})
+            if nqkd:
+                print(f"║    QKD: secure={str(nqkd.get('secure', False)):<6} QBER={nqkd.get('qber', 0):.4f}  "
+                      f"sacred={nqkd.get('sacred_alignment', 0):.4f}                       ║")
+            ntp = net_r.get("teleportation", {})
+            if ntp:
+                print(f"║    Teleport: fid={ntp.get('fidelity', 0):.4f}  recovered={ntp.get('recovered', 0):.4f}  "
+                      f"sacred={ntp.get('sacred_score', 0):.4f}              ║")
+            print(f"║    Health: {net_r.get('network_health', 0):.4f}  "
+                  f"topo={str(net_r.get('topology', '?')):<8}  "
+                  f"diameter={net_r.get('topology_diameter', 0):<4}                        ║")
+            nsp = net_r.get("sacred_pass", {})
+            if nsp:
+                print(f"║    Sacred: mean={nsp.get('mean_sacred', 0):.4f}  "
+                      f"pairs={nsp.get('pairs_scored', 0):<6}                                     ║")
+            nlb = net_r.get("link_boost", {})
+            if nlb and nlb.get("links_boosted", 0) > 0:
+                print(f"║    Boost: {nlb['links_boosted']} links  "
+                      f"+{nlb['factor']:.4f} fidelity                                     ║")
+
         print(f"""╠══════════════════════════════════════════════════════════════════════════════╣
 ║  Pipeline Time: {elapsed:.2f}s                                                    ║""")
 
@@ -1768,6 +1867,8 @@ class L104QuantumBrain:
                 "deep_link": "20.DLink ",
                 "manifold_learning": "21.Mfld  ",
                 "entanglement_network": "22.EntNet",
+                "vqpu_bridge": "23.VQPU  ",
+                "quantum_network": "24.QNet  ",
             }
             for key, label in phase_labels.items():
                 t = phase_times.get(key, 0)
@@ -1970,6 +2071,256 @@ class L104QuantumBrain:
             except Exception:
                 self._vqpu_bridge = None
         return self._vqpu_bridge
+
+    # ─── v13.0 QUANTUM NETWORK INTEGRATION ───
+
+    def _get_quantum_networker(self):
+        """Lazy-load QuantumNetworker orchestrator for sovereign quantum communication."""
+        if not self._quantum_networker_checked:
+            self._quantum_networker_checked = True
+            try:
+                self._quantum_networker = _get_quantum_networker()
+            except Exception:
+                self._quantum_networker = None
+        return self._quantum_networker
+
+    def network_status(self) -> Dict:
+        """Get full quantum network status from l104_quantum_networker.
+
+        Returns:
+            Dict with network status, or error/unavailability info.
+        """
+        net = self._get_quantum_networker()
+        if net is None:
+            return {"status": "unavailable", "reason": "l104_quantum_networker not loaded"}
+        try:
+            return net.status()
+        except Exception as e:
+            return {"status": "error", "error": str(e)}
+
+    def network_qkd(self, node_a: str, node_b: str,
+                    protocol: str = "bb84", num_bits: int = 256) -> Dict:
+        """Establish a QKD key between two named nodes in the quantum network.
+
+        Creates nodes if they don't exist, connects them, and runs the specified
+        QKD protocol (bb84 or e91).
+
+        Args:
+            node_a: Name for first node
+            node_b: Name for second node
+            protocol: "bb84" or "e91"
+            num_bits: Raw bits to exchange
+
+        Returns:
+            Dict with key metadata: secure, key_length, qber, sacred_alignment
+        """
+        net = self._get_quantum_networker()
+        if net is None:
+            return {"status": "unavailable"}
+        try:
+            a = net.add_node(node_a, role="sovereign")
+            b = net.add_node(node_b, role="sovereign")
+            net.connect(a.node_id, b.node_id, pairs=8)
+            key = net.establish_qkd(a.node_id, b.node_id, protocol, num_bits)
+            return {
+                "status": "ok",
+                "protocol": protocol,
+                "secure": key.secure,
+                "key_length": key.key_length,
+                "qber": key.qber,
+                "sacred_alignment": key.sacred_alignment,
+                "key_id": key.key_id,
+            }
+        except Exception as e:
+            return {"status": "error", "error": str(e)}
+
+    def network_teleport(self, source: str, dest: str,
+                         score: float = 0.618) -> Dict:
+        """Teleport a score value between two quantum network nodes.
+
+        Args:
+            source: Source node name
+            dest: Destination node name
+            score: Score value to teleport (0.0 to 1.0)
+
+        Returns:
+            Dict with teleportation result: fidelity, recovered_score, sacred_score
+        """
+        net = self._get_quantum_networker()
+        if net is None:
+            return {"status": "unavailable"}
+        try:
+            src = net.add_node(source, role="sovereign")
+            dst = net.add_node(dest, role="sovereign")
+            net.connect(src.node_id, dst.node_id, pairs=8)
+            result = net.teleport_score(src.node_id, dst.node_id, score=score)
+            return {
+                "status": "ok",
+                "success": result.success,
+                "fidelity": result.fidelity,
+                "original_score": score,
+                "recovered_score": result.recovered_score,
+                "sacred_score": result.sacred_score,
+                "hops": result.hops,
+                "route": result.route,
+            }
+        except Exception as e:
+            return {"status": "error", "error": str(e)}
+
+    def network_self_test(self) -> Dict:
+        """Run the quantum networker's comprehensive self-test.
+
+        Creates a test network with 4 nodes, runs all protocols (QKD, teleport,
+        purification, repeater chains), and reports aggregate results.
+
+        Returns:
+            Dict with test results from QuantumNetworker.self_test()
+        """
+        net = self._get_quantum_networker()
+        if net is None:
+            return {"status": "unavailable"}
+        try:
+            return net.self_test()
+        except Exception as e:
+            return {"status": "error", "error": str(e)}
+
+    def _network_link_score_propagation(self) -> Dict:
+        """Propagate quantum link scores to the network layer.
+
+        Creates a quantum network topology mirroring the strongest links,
+        runs fidelity monitoring, QKD, and teleportation to produce a
+        composite network-health-aware score for each link cluster.
+
+        Returns:
+            Dict with network health metrics and link boost information.
+        """
+        net = self._get_quantum_networker()
+        if net is None:
+            return {"status": "unavailable"}
+
+        try:
+            import math as _math
+
+            # Build a network from link clusters
+            # Create nodes for top-level file groups
+            link_files = set()
+            for link in self.links[:200]:
+                if hasattr(link, 'source'):
+                    link_files.add(getattr(link, 'source', 'unknown'))
+                if hasattr(link, 'target'):
+                    link_files.add(getattr(link, 'target', 'unknown'))
+
+            # Limit to manageable set
+            file_nodes = sorted(link_files)[:13]  # Factor-13 sacred clustering
+            if len(file_nodes) < 2:
+                file_nodes = ["Brain-Core", "Brain-Sage", "Brain-Gate",
+                              "Brain-VQPU", "Brain-Network"]
+
+            # Create quantum nodes
+            nodes = {}
+            for fn in file_nodes:
+                short = fn.replace(".py", "").replace("l104_", "")[:20]
+                nodes[fn] = net.add_node(short, role="sovereign")
+
+            # Connect adjacent nodes in chain + some cross-links
+            channels_created = 0
+            node_list = list(nodes.values())
+            for i in range(len(node_list) - 1):
+                net.connect(node_list[i].node_id, node_list[i + 1].node_id, pairs=6)
+                channels_created += 1
+
+            # Cross-links: first↔last and a mid-link for mesh resilience
+            if len(node_list) >= 3:
+                net.connect(node_list[0].node_id, node_list[-1].node_id, pairs=4)
+                channels_created += 1
+                mid = len(node_list) // 2
+                net.connect(node_list[0].node_id, node_list[mid].node_id, pairs=4)
+                channels_created += 1
+
+            # Run QKD between first and last
+            qkd_result = {}
+            if len(node_list) >= 2:
+                key = net.establish_qkd(
+                    node_list[0].node_id,
+                    node_list[-1].node_id,
+                    "bb84", 128
+                )
+                qkd_result = {
+                    "secure": key.secure,
+                    "qber": key.qber,
+                    "sacred_alignment": key.sacred_alignment,
+                }
+
+            # Teleport mean link fidelity from first node to last
+            mean_fid = 0.5
+            if self.links:
+                fids = [getattr(l, 'fidelity', 0.5) for l in self.links]
+                mean_fid = sum(fids) / len(fids)
+
+            teleport_result = {}
+            if len(node_list) >= 2:
+                tp = net.teleport_score(
+                    node_list[0].node_id,
+                    node_list[-1].node_id,
+                    score=mean_fid
+                )
+                teleport_result = {
+                    "success": tp.success,
+                    "fidelity": tp.fidelity,
+                    "original": mean_fid,
+                    "recovered": tp.recovered_score,
+                    "sacred_score": tp.sacred_score,
+                    "hops": tp.hops,
+                }
+
+            # Run fidelity scan
+            fidelity_scan = net.scan_fidelity(auto_heal=True)
+
+            # Network health
+            net_status = net.network_status()
+            router = net.router
+            network_health = router.network_health_score()
+            topology = router.detect_topology()
+
+            # Sacred scoring pass
+            sacred_pass = router.sacred_scoring_pass()
+
+            # Compute network-weighted link boost
+            # Higher network health → stronger boost to link fidelity
+            net_boost_factor = max(0.0, min(0.03, (network_health - 0.5) * 0.06))
+            boosted_links = 0
+            if net_boost_factor > 0.001:
+                for link in self.links:
+                    if hasattr(link, 'fidelity') and link.fidelity < 0.98:
+                        link.fidelity = min(1.0, link.fidelity + net_boost_factor)
+                        boosted_links += 1
+
+            return {
+                "status": "ok",
+                "nodes_created": len(nodes),
+                "channels_created": channels_created,
+                "qkd": qkd_result,
+                "teleportation": teleport_result,
+                "fidelity_scan": {
+                    "network_fidelity": fidelity_scan.get("network_fidelity", 0),
+                    "sacred_score": fidelity_scan.get("network_sacred_score", 0),
+                    "alerts": len(fidelity_scan.get("alerts", [])),
+                },
+                "network_health": round(network_health, 6),
+                "topology": topology.get("topology", "unknown"),
+                "topology_diameter": topology.get("diameter", 0),
+                "sacred_pass": {
+                    "mean_sacred": sacred_pass.get("mean_sacred_score", 0),
+                    "pairs_scored": sacred_pass.get("pairs_scored", 0),
+                },
+                "link_boost": {
+                    "factor": round(net_boost_factor, 6),
+                    "links_boosted": boosted_links,
+                },
+                "net_version": net.VERSION,
+            }
+        except Exception as e:
+            return {"status": "error", "error": str(e)}
 
     def _collect_intellect_scores(self) -> dict:
         """Collect three-engine scores from LocalIntellect for deep link input."""
@@ -3445,6 +3796,9 @@ class L104QuantumBrain:
         # 14. Results store
         _probe("results_store", lambda: isinstance(self.results, dict))
 
+        # 15. Quantum networker (v13.0)
+        _probe("quantum_networker", lambda: self._get_quantum_networker() is not None)
+
         passed = sum(1 for p in probes if p["status"] == "pass")
         failed = sum(1 for p in probes if p["status"] == "fail")
 
@@ -3490,6 +3844,7 @@ Commands:
   feedback   Inter-builder feedback bus status (alias: bus)
   qldpc      ★ Distributed qLDPC error correction (CSS, BP-OSD, sacred alignment)
   vqpu       ★ VQPU Bridge integration status + scoring (v12.0)
+  network    ★ Quantum Network integration — QKD, teleport, health (v13.0)
   selftest   Run l104_debug.py compatible self-test diagnostics
   status     Show saved state
         """,
@@ -3682,6 +4037,39 @@ Commands:
             print(f"    Stages: {' → '.join(result.get('pipeline', {}).get('stages_executed', []))}")
         else:
             print(f"    ⊘ VQPU Bridge not available (l104_vqpu package not found)")
+    elif cmd in ("network", "qnet", "networker"):
+        print(f"\n  ◉ QUANTUM NETWORK INTEGRATION (v13.0)")
+        net = brain._get_quantum_networker()
+        if net is not None:
+            print(f"    Networker v{net.VERSION} — {net.local_node.name}")
+            print(f"    Running self-test (4-node network, all protocols)...")
+            result = net.self_test()
+            print(f"    Nodes: {result.get('nodes_created', 0)} | "
+                  f"Channels: {result.get('channels_created', 0)}")
+            bb84 = result.get("bb84", {})
+            print(f"    BB84: secure={bb84.get('secure', False)} "
+                  f"QBER={bb84.get('qber', 0):.4f} "
+                  f"sacred={bb84.get('sacred_alignment', 0):.4f}")
+            e91 = result.get("e91", {})
+            print(f"    E91:  secure={e91.get('secure', False)} "
+                  f"QBER={e91.get('qber', 0):.4f} "
+                  f"sacred={e91.get('sacred_alignment', 0):.4f}")
+            ts = result.get("teleport_score", {})
+            print(f"    Teleport: fid={ts.get('fidelity', 0):.4f} "
+                  f"recovered={ts.get('recovered', 0):.4f} "
+                  f"sacred={ts.get('sacred_score', 0):.4f}")
+            fs = result.get("fidelity_scan", {})
+            print(f"    Fidelity: {fs.get('network_fidelity', 0):.4f} "
+                  f"sacred={fs.get('sacred_score', 0):.4f}")
+            rc = result.get("repeater_chain", {})
+            print(f"    Repeater: success={rc.get('success', False)} "
+                  f"fid={rc.get('fidelity', 0):.4f} "
+                  f"hops={rc.get('hops', 0)}")
+            print(f"\n    Tests: {result.get('tests_passed', 0)}/{result.get('tests_total', 0)} "
+                  f"({'ALL PASSED' if result.get('all_passed') else 'FAILURES'})")
+            print(f"    Time: {result.get('execution_time_ms', 0):.1f}ms")
+        else:
+            print(f"    ⊘ Quantum Networker not available (l104_quantum_networker package not found)")
     elif cmd == "selftest":
         print(f"\n  ◉ QUANTUM BRAIN SELF-TEST (v{VERSION})")
         result = brain.self_test()

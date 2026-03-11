@@ -1,0 +1,73 @@
+{
+  "version": "1.0",
+  "timestamp": 1773143546.273879,
+  "hardware": {
+    "total_qubits": 26,
+    "topology": "all-to-all",
+    "frequency_base_ghz": 5.0,
+    "t1_microseconds": 50.0,
+    "t2_microseconds": 45.0,
+    "gate_time_nanoseconds": 10.0
+  },
+  "error_model": {
+    "single_qubit_error_rate": 0.0008,
+    "two_qubit_error_rate": 0.0085,
+    "measurement_error_rate": 0.004,
+    "preparation_error_rate": 0.0009,
+    "readout_error_rate": 0.0095,
+    "below_threshold": true
+  },
+  "selected_code": {
+    "code": "fibonacci_anyon",
+    "logical_qubits": 6,
+    "physical_qubits": 26,
+    "distance": 4,
+    "logical_error_rate": 0.0085,
+    "improvement_factor": 1.0
+  },
+  "available_codes": [
+    {
+      "code": "surface_3",
+      "physical_qubits": 17,
+      "distance": 3,
+      "logical_error_rate": 0.0085
+    },
+    {
+      "code": "surface_5",
+      "physical_qubits": 25,
+      "distance": 5,
+      "logical_error_rate": 0.0085
+    },
+    {
+      "code": "steane_713",
+      "physical_qubits": 7,
+      "distance": 3,
+      "logical_error_rate": 0.00010837500000000002
+    },
+    {
+      "code": "fibonacci_anyon",
+      "physical_qubits": 26,
+      "distance": 4,
+      "logical_error_rate": 0.0085
+    }
+  ],
+  "sacred_circuit_protection": {
+    "circuit_name": "L104-Sacred-26Q",
+    "depth_unprotected": 32,
+    "depth_protected": 39,
+    "fidelity_unprotected": 0.891,
+    "fidelity_protected": 0.946,
+    "encoding_fidelity": 0.989,
+    "syndrome_check_fidelity": 0.985,
+    "decoding_fidelity": 0.991
+  },
+  "syndrome_monitoring": {
+    "monitoring_duration_seconds": 3600,
+    "syndromes_detected": 847,
+    "errors_corrected": 823,
+    "correction_failures": 24,
+    "success_rate": 0.972,
+    "average_correction_latency_us": 2.3,
+    "max_syndrome_chain": 5
+  }
+}

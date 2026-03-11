@@ -1,0 +1,113 @@
+{
+  "bell_pair_gen": {
+    "single_pair_ms": 30.3468923,
+    "batch_8_pairs_ms": 107.71075802,
+    "batch_32_pairs_ms": 283.4531564,
+    "replenish_ms": 1.1439085,
+    "throughput_pairs_per_sec": 74.3
+  },
+  "channel_creation": {
+    "channel_create_ms": 44.052835725,
+    "mesh_channel_ms": 29.861579444444445,
+    "mesh_channels_created": 45
+  },
+  "routing_dijkstra": {
+    "route_2hop_ms": 0.239492435,
+    "route_9hop_ms": 1.53030719,
+    "route_cached_ms": 0.475603434,
+    "mesh_route_ms": 4.157532895
+  },
+  "k_shortest": {
+    "k2_routes_ms": 1.63715482,
+    "k3_routes_ms": 5.23499354
+  },
+  "entanglement_swap": {
+    "swap_ms": 0.42709816,
+    "swap_throughput_hz": 2341.3821309836594
+  },
+  "bb84_qkd": {
+    "bb84_256_ms": 21.792154566666667,
+    "bb84_512_ms": 38.0663517,
+    "bb84_1024_ms": 74.41392555,
+    "bb84_bits_per_sec": 11747.3
+  },
+  "e91_qkd": {
+    "e91_256_ms": 32.77503023333333,
+    "e91_bits_per_sec": 7810.8
+  },
+  "teleportation": {
+    "teleport_score_ms": 7.5136554,
+    "teleport_phase_ms": 7.58271275,
+    "teleport_state_ms": 0.4361683,
+    "teleport_bitstring_ms": 0.713140025,
+    "teleport_godcode_ms": 7.795978675,
+    "teleport_throughput_hz": 133.09101186620828
+  },
+  "multihop_teleport": {
+    "multihop_2_ms": 8.040044366666667,
+    "multihop_3_ms": 10.9410318,
+    "multihop_5_ms": 11.32098835
+  },
+  "repeater_chain": {
+    "chain_3seg_ms": 1.93539508,
+    "chain_5seg_ms": 4.0046785,
+    "fidelity_estimate_ms": 0.007179708
+  },
+  "purification": {
+    "purify_1round_ms": 0.8310007666666667,
+    "purify_3rounds_ms": 1.5144788666666666,
+    "purify_5rounds_ms": 2.0889305
+  },
+  "decoherence_replenish": {
+    "decoherence_ms": 6.28871137,
+    "replenish_all_ms": 0.05100598
+  },
+  "sacred_scoring": {
+    "sacred_scoring_ms": 0.19070229,
+    "sacred_throughput_hz": 5243.775520472251
+  },
+  "network_analytics": {
+    "pair_census_ms": 0.41799715,
+    "fidelity_heatmap_ms": 0.99916015,
+    "detect_topology_ms": 0.02633785,
+    "topology_analysis_ms": 1.0995393,
+    "network_health_ms": 2.72659808,
+    "network_summary_ms": 4.75096503,
+    "bottleneck_ms": 0.92629708,
+    "fidelity_scan_ms": 3.38543634,
+    "network_status_ms": 2.78810332,
+    "full_status_ms": 7.31902762,
+    "snapshot_ms": 4.8189366
+  },
+  "scaling": {
+    "scaling_route": {
+      "5": 0.4522,
+      "10": 2.4001,
+      "20": 1.9831,
+      "40": 6.6073
+    },
+    "scaling_sacred": {
+      "5": 0.0435,
+      "10": 0.4372,
+      "20": 0.4074,
+      "40": 1.6765
+    },
+    "scaling_status": {
+      "5": 2.0252,
+      "10": 8.2077,
+      "20": 8.1834,
+      "40": 18.7455
+    }
+  },
+  "self_test": {
+    "self_test_ms": 375.1181681
+  },
+  "_meta": {
+    "benchmark": "L104 Quantum Network Speed Benchmark",
+    "version": "1.0",
+    "total_elapsed_sec": 101.383,
+    "god_code": 527.5184818492612,
+    "phi": 1.618033988749895,
+    "void_constant": 1.0416180339887497
+  }
+}

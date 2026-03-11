@@ -364,7 +364,7 @@ class InferenceEngine:
                 client = openai.OpenAI(api_key=api_key)
                 self.providers['openai'] = {
                     'client': client,
-                    'model': os.getenv('OPENAI_MODEL', 'gpt-4o-mini'),
+                    'model': os.getenv('OPENAI_MODEL', 'gpt-5-mini'),
                     'generate': self._openai_generate
                 }
                 if not self.default_provider:

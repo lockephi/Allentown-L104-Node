@@ -591,6 +591,28 @@ class QuantumAIDaemon:
                 }
         return result
 
+    def _read_topology_from_micro(self) -> dict:
+        """v2.1: Read quantum topology from micro daemon persisted state."""
+        try:
+            micro_path = Path(L104_ROOT) / ".l104_vqpu_micro_daemon.json"
+            if not micro_path.exists():
+                return {"available": False}
+            data = json.loads(micro_path.read_text())
+            result = {
+                "available": True,
+                "topology": data.get("quantum_topology", "unknown"),
+                "mesh_nodes": data.get("quantum_mesh_nodes", 0),
+                "mesh_channels": data.get("quantum_mesh_channels", 0),
+            }
+            topo_analysis = data.get("quantum_topology_analysis")
+            if isinstance(topo_analysis, dict):
+                result["sacred_topology_score"] = topo_analysis.get("sacred_topology_score", 0)
+                result["detected_topology"] = topo_analysis.get("detected_topology", "unknown")
+                result["diameter"] = topo_analysis.get("diameter", 0)
+            return result
+        except Exception:
+            return {"available": False}
+
     # ═══════════════════════════════════════════════════════════════
     # HEALTH + ADAPTIVE INTERVAL
     # ═══════════════════════════════════════════════════════════════
@@ -735,6 +757,8 @@ class QuantumAIDaemon:
             "multi_lang_files": self._multi_lang_files,
             "improvement_effectiveness_count": len(self._improvement_effectiveness),
             "rollback_count": self._rollback_count,
+            # v2.1: Quantum topology from micro daemon
+            "quantum_topology": self._read_topology_from_micro(),
         }
 
     def self_test(self) -> dict:
@@ -833,6 +857,31 @@ class QuantumAIDaemon:
                 "outbox": OUTBOX_PATH.exists(),
             }
         }
+
+        # Test 11: Quantum Topology Health — v2.1
+        try:
+            _micro_state_path = Path(L104_ROOT) / ".l104_vqpu_micro_daemon.json"
+            if _micro_state_path.exists():
+                _micro_data = json.loads(_micro_state_path.read_text())
+                _topo = _micro_data.get("quantum_topology", "unknown")
+                _topo_analysis = _micro_data.get("quantum_topology_analysis")
+                _sacred_score = 0.0
+                if isinstance(_topo_analysis, dict):
+                    _sacred_score = _topo_analysis.get("sacred_topology_score", 0)
+                results["quantum_topology"] = {
+                    "status": "PASS" if _topo != "unknown" else "WARN",
+                    "topology": _topo,
+                    "sacred_score": round(_sacred_score, 4),
+                    "mesh_nodes": _micro_data.get("quantum_mesh_nodes", 0),
+                    "mesh_channels": _micro_data.get("quantum_mesh_channels", 0),
+                }
+            else:
+                results["quantum_topology"] = {
+                    "status": "WARN",
+                    "detail": "micro_daemon state not found (topology unavailable)",
+                }
+        except Exception as e:
+            results["quantum_topology"] = {"status": "FAIL", "error": str(e)[:60]}
 
         elapsed_ms = (time.monotonic() - t0) * 1000
         passed = sum(1 for r in results.values()

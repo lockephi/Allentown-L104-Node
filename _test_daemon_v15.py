@@ -5,23 +5,31 @@ from l104_vqpu.daemon import VQPUDaemonCycler
 
 cycler = VQPUDaemonCycler(interval=999)
 
-# Test 1: Status API has all new fields
+# Test 1: Status API covers current version and includes new fields
 s = cycler.status()
-assert s["version"] == "15.3.0", f"Version mismatch: {s['version']}"
-assert "health_score" in s, "Missing health_score"
-assert "circuit_breaker_open" in s, "Missing circuit_breaker_open"
-assert "watchdog_restarts" in s, "Missing watchdog_restarts"
-assert "drift_alerts" in s, "Missing drift_alerts"
-assert "error_log" in s, "Missing error_log"
-assert "consecutive_failures" in s, "Missing consecutive_failures"
-assert "quarantined_sims" in s, "Missing quarantined_sims"
-assert "quarantined_count" in s, "Missing quarantined_count"
-assert "cycle_fidelity_avg" in s, "Missing cycle_fidelity_avg"
-assert "cycle_alignment_avg" in s, "Missing cycle_alignment_avg"
-assert "throughput_sims_per_sec" in s, "Missing throughput_sims_per_sec"
-assert "leaked_threads" in s, "Missing leaked_threads"
-assert "paused" in s, "Missing paused"
-print("PASS: Status API has all v15.1 fields")
+# daemon version incremented to 16.x with topology support
+assert s["version"] == "16.1.0", f"Version mismatch: {s['version']}"
+# core health/telemetry fields
+required = [
+    "health_score", "circuit_breaker_open", "watchdog_restarts",
+    "drift_alerts", "error_log", "consecutive_failures",
+    "quarantined_sims", "quarantined_count",
+    "cycle_fidelity_avg", "cycle_alignment_avg",
+    "throughput_sims_per_sec", "leaked_threads", "paused",
+]
+for key in required:
+    assert key in s, f"Missing {key}"
+# additional new metrics introduced in v16
+extra = [
+    "adaptive_interval_s", "last_cpu_percent", "sim_timeout_s", "execution_mode",
+    "sim_registry", "quantum_subconscious", "brain_intelligence",
+    "micro_daemon_cross_health", "degradation_level",
+    "sim_priority_scores", "fidelity_alerts", "cross_daemon_health",
+    "quantum_topology",
+]
+for key in extra:
+    assert key in s, f"Missing new field {key}"
+print("PASS: Status API has all expected fields including v16 additions")
 
 # Test 2: Run one cycle
 t0 = time.monotonic()
@@ -96,14 +104,12 @@ print(f"PASS: Force cycle OK ({r2.get('total')} sims, health={cycler._health_sco
 cycler._persist_state()
 import json
 state = json.loads(cycler._state_path.read_text())
-assert state["version"] == "15.3.0"
-assert "health_score" in state
-assert "consecutive_failures" in state
-assert "quarantined_sims" in state
-assert "sim_failure_counts" in state
-assert "cycle_fidelity_avg" in state
-assert "total_leaked_threads" in state
-print(f"PASS: Persisted state v15.1 to {cycler._state_path}")
+# state file version may lag behind status; ensure major version 16
+assert state["version"].startswith("16."), f"State version mismatch: {state['version']}"
+for key in ["health_score", "consecutive_failures", "quarantined_sims",
+            "sim_failure_counts", "cycle_fidelity_avg", "total_leaked_threads"]:
+    assert key in state, f"Missing {key} in persisted state"
+print(f"PASS: Persisted state v{state['version']} to {cycler._state_path}")
 
 # Test 13: Reload correctly restores state
 cycler2 = VQPUDaemonCycler(interval=999)

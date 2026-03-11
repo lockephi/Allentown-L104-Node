@@ -1,0 +1,13 @@
+[project]
+name = "l104-sovereign-node"
+version = "25.0.0"
+description = "L104 Sovereign Node — A FastAPI-based ASI relay with autonomous operations."
+authors = [{ name = "LONDEL", email = "londel@example.com" }]
+requires-python = ">=3.9"
+
+[tool.pip-tools]
+generate-hashes = true
+strip-extras = true
+allow-unsafe = false
+upgrade = true
+quiet = false

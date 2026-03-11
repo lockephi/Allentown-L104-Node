@@ -86,7 +86,7 @@ async def start_infrastructure():
 
     # 1. Start Port 2404 (Lattice)
     try:
-        lattice_server = await asyncio.start_server(handle_lattice_client, '0.0.0.0', 2404)
+        lattice_server = await asyncio.start_server(handle_lattice_client, '0.0.0.0', 2404, reuse_address=True)
         asyncio.create_task(lattice_server.serve_forever())
         logger.info("--- [INFRA]: PORT 2404 (LATTICE) ACTIVE ---")
     except Exception as e:
@@ -94,7 +94,7 @@ async def start_infrastructure():
 
     # 2. Start Port 4160 (AI Core)
     try:
-        ai_server = await asyncio.start_server(handle_ai_client_async, '0.0.0.0', 4160)
+        ai_server = await asyncio.start_server(handle_ai_client_async, '0.0.0.0', 4160, reuse_address=True)
         asyncio.create_task(ai_server.serve_forever())
         logger.info("--- [INFRA]: PORT 4160 (AI_CORE) ACTIVE ---")
     except Exception as e:
@@ -104,7 +104,7 @@ async def start_infrastructure():
     try:
         from sovereign_bridge import bridge_logic
         import websockets
-        ws_server = await websockets.serve(bridge_logic, "0.0.0.0", 8080)
+        ws_server = await websockets.serve(bridge_logic, "0.0.0.0", 8080, reuse_address=True)
         logger.info("--- [INFRA]: PORT 8080 (WS_BRIDGE) ACTIVE ---")
     except Exception as e:
         logger.error(f"[INFRA_ERR]: Failed to start Port 8080: {e}")

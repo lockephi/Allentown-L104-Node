@@ -60,6 +60,15 @@ from l104_server.models import ChatRequest, TrainingRequest, ProviderStatus
 from l104_advanced_processing_engine import AdvancedProcessingEngine
 from l104_advanced_process_engine import AdvancedProcessEngine
 
+# ═══ OpenClaw.ai Integration (v14) ═══
+try:
+    from l104_openclaw_api_routes import register_openclaw_routes
+    from l104_openclaw_integration import get_openclaw_client
+    _openclaw_enabled = True
+except ImportError as _oc_err:
+    _openclaw_enabled = False
+    logger.warning(f"⚠️ [OPENCLAW] Import failed: {_oc_err}")
+
 logger = logging.getLogger("L104_FAST")
 
 # ═══ Sovereign Engine Singletons (v3.0.0 Integrated) ═══
@@ -234,6 +243,17 @@ async def startup_event():
         logger.info(f"🧠 [RESONANCE] Network seeded — {resonance_network.compute_network_resonance()['active_count']} engines active")
     except Exception as res_e:
         logger.warning(f"Resonance seed: {res_e}")
+
+    # ═══ Register OpenClaw.ai Integration Routes ═══
+    if _openclaw_enabled:
+        try:
+            register_openclaw_routes(app)
+            # Bind OpenClaw client to intellect for system-wide access
+            openclaw_client = get_openclaw_client()
+            intellect._openclaw_client = openclaw_client
+            logger.info("✅ [OPENCLAW] Routes registered + bound to intellect | Ready for legal workflows")
+        except Exception as oc_err:
+            logger.error(f"❌ [OPENCLAW] Startup failed: {oc_err}")
 
     # === [BACKGROUND] Periodic entanglement + resonance ticks (every 120s) ===
     async def periodic_entanglement_resonance():

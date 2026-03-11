@@ -1,0 +1,123 @@
+{
+  "timestamp": 1773145222.229554,
+  "total_datasets": 13,
+  "datasets": {
+    "fundamental_constants": {
+      "dataset_id": "sigma_001",
+      "name": "Fundamental Physical Constants",
+      "description": "Speed of light, Planck constant, fine structure constant, etc.",
+      "records": 40,
+      "size_mb": 0.1,
+      "format": "JSON",
+      "update_frequency": "Annual (CODATA)"
+    },
+    "particle_database": {
+      "dataset_id": "sigma_002",
+      "name": "Particle Physics Database",
+      "description": "Leptons, quarks, bosons, masses, decay modes, interactions",
+      "records": 17000,
+      "size_mb": 85.5,
+      "format": "JSON",
+      "update_frequency": "Quarterly"
+    },
+    "atomic_properties": {
+      "dataset_id": "sigma_003",
+      "name": "Atomic Properties Table",
+      "description": "118 elements with atomic number, mass, electronegativity, etc.",
+      "records": 118,
+      "size_mb": 0.5,
+      "format": "CSV",
+      "update_frequency": "Annual"
+    },
+    "oeis_integer_sequences": {
+      "dataset_id": "sigma_004",
+      "name": "OEIS Integer Sequences (Subset)",
+      "description": "~50K sequences from OEIS: Fibonacci, primes, factorials, etc.",
+      "records": 50000,
+      "size_mb": 320.0,
+      "format": "JSONL",
+      "update_frequency": "Monthly"
+    },
+    "prime_number_data": {
+      "dataset_id": "sigma_005",
+      "name": "First 1 Million Prime Numbers",
+      "description": "Complete list of primes up to 15,485,863",
+      "records": 1000000,
+      "size_mb": 42.0,
+      "format": "CSV",
+      "update_frequency": "Static"
+    },
+    "wikipedia_abstracts": {
+      "dataset_id": "sigma_006",
+      "name": "Wikipedia Article Abstracts",
+      "description": "5M article titles with first 500 chars text",
+      "records": 5000000,
+      "size_mb": 1250.0,
+      "format": "JSONL",
+      "update_frequency": "Monthly"
+    },
+    "wordnet_ontology": {
+      "dataset_id": "sigma_007",
+      "name": "WordNet Semantic Network",
+      "description": "117K synsets with hypernym/hyponym relations",
+      "records": 117660,
+      "size_mb": 45.0,
+      "format": "JSON",
+      "update_frequency": "Annual"
+    },
+    "common_sense_kb": {
+      "dataset_id": "sigma_008",
+      "name": "ConceptNet Common Sense Knowledge",
+      "description": "34M assertions: ConceptA -relation-> ConceptB",
+      "records": 34000000,
+      "size_mb": 2800.0,
+      "format": "JSONL",
+      "update_frequency": "Quarterly"
+    },
+    "glue_benchmark": {
+      "dataset_id": "sigma_009",
+      "name": "GLUE NLU Benchmark Suite",
+      "description": "9 diverse NLU tasks: sentiment, entailment, similarity, etc.",
+      "records": 600000,
+      "size_mb": 185.0,
+      "format": "JSON",
+      "update_frequency": "Annually"
+    },
+    "squad_dataset": {
+      "dataset_id": "sigma_010",
+      "name": "SQuAD Reading Comprehension",
+      "description": "100K questions over Wikipedia passages, human & machine answers",
+      "records": 100000,
+      "size_mb": 550.0,
+      "format": "JSON",
+      "update_frequency": "Static (v2.0)"
+    },
+    "arxiv_metadata": {
+      "dataset_id": "sigma_011",
+      "name": "arXiv Paper Metadata",
+      "description": "2.1M papers: titles, abstracts, authors, categories, citations",
+      "records": 2100000,
+      "size_mb": 890.0,
+      "format": "JSONL",
+      "update_frequency": "Daily"
+    },
+    "climate_data": {
+      "dataset_id": "sigma_012",
+      "name": "Climate & Weather Dataset",
+      "description": "Monthly global averages: temperature, CO2, solar activity, 1850-2024",
+      "records": 2088,
+      "size_mb": 8.5,
+      "format": "CSV",
+      "update_frequency": "Monthly"
+    },
+    "astronomical_objects": {
+      "dataset_id": "sigma_013",
+      "name": "Astronomical Objects Catalog",
+      "description": "1.7B celestial objects: stars, galaxies, exoplanets coordinates",
+      "records": 1700000000,
+      "size_mb": 125000.0,
+      "format": "Parquet",
+      "update_frequency": "Quarterly"
+    }
+  }
+}
