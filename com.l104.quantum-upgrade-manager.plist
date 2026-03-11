@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- L104 Quantum Daemon Upgrade Manager -->
+    <key>Label</key>
+    <string>com.l104.quantum-upgrade-manager</string>
+
+    <!-- Program to execute -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/l104_quantum_daemon_upgrader.py</string>
+    </array>
+
+    <!-- Working directory -->
+    <key>WorkingDirectory</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+
+    <!-- Run as user -->
+    <key>UserName</key>
+    <string>carolalvarez</string>
+
+    <!-- Keep running -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- Run on login -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Standard output/error logging -->
+    <key>StandardOutPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/quantum_upgrade_manager.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/carolalvarez/Applications/Allentown-L104-Node/logs/quantum_upgrade_manager_error.log</string>
+
+    <!-- Environment variables -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+        <key>L104_NODE_PATH</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+        <key>PYTHONPATH</key>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node</string>
+    </dict>
+
+    <!-- Nice level (lower priority) -->
+    <key>Nice</key>
+    <integer>5</integer>
+
+    <!-- Soft resource limits -->
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>2048</integer>
+        <key>ResidentSetSizeMB</key>
+        <integer>4096</integer>
+    </dict>
+
+    <!-- Watch paths for changes -->
+    <key>WatchPaths</key>
+    <array>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/.l104_vqpu_daemon_state.json</string>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/.l104_vqpu_micro_daemon.json</string>
+        <string>/Users/carolalvarez/Applications/Allentown-L104-Node/.l104_quantum_ai_daemon.json</string>
+    </array>
+
+    <!-- Start interval (seconds) - throttle restarts -->
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+</dict>
+</plist>
