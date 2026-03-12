@@ -64,7 +64,7 @@ class EntropySubsystem:
         self.coherence_gain = 0.0
         self.state = "REVERSING_ENTROPY"
         # v4.2 Perf: cache the constant resonance(GOD_CODE) — it never changes
-        self._god_code_resonance: float | None = None
+        self._god_code_resonance: Optional[float] = None
 
     def calculate_demon_efficiency(self, local_entropy: float) -> float:
         """Calculates entropy reversible per logic pulse.
@@ -679,7 +679,7 @@ class EntropySubsystem:
     def renyi_spectrum(
         self,
         signal: np.ndarray,
-        alphas: List[float] | None = None,
+        alphas: Optional[List[float]] = None,
         n_bins: int = 20,
     ) -> Dict[str, Any]:
         """
@@ -1122,7 +1122,7 @@ class EntropySubsystem:
 
     def demon_energy_budget(
         self,
-        operations: List[Dict[str, float]] | None = None,
+        operations: Optional[List[Dict[str, float]]] = None,
         temperature: float = 293.15,
     ) -> Dict[str, Any]:
         """
