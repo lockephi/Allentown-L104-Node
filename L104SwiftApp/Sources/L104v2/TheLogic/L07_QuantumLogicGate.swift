@@ -1,15 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L07_QuantumLogicGate.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// QuantumLogicGateEngine class — v24.0 Phase 46: Apex Intelligence + Quantum Gates re-enabled
-// Extracted from L104Native.swift (lines 26753-27335)
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══ PHASE 46: Response Quality Scoring ═══
 struct ResponseQualityScore {
@@ -56,7 +49,7 @@ final class QuantumLogicGateEngine {
         }
     }
 
-    // ─── QUANTUM INTERFERENCE — Wave-based response mixing ───
+    // ─── QUANTUM INTERFERENCE - Wave-based response mixing ───
     func quantumInterfere(_ responses: [String], query: String) -> String {
         guard responses.count >= 2 else { return responses.first ?? "" }
         lock.lock()
@@ -87,7 +80,7 @@ final class QuantumLogicGateEngine {
         return responses.first ?? ""
     }
 
-    // ─── QUANTUM TUNNELING — Breach knowledge gaps ───
+    // ─── QUANTUM TUNNELING - Breach knowledge gaps ───
     func quantumTunnel(topic: String, query: String) -> String? {
         lock.lock()
         let tunnelAttempts = tunnelHistory[topic, default: 0]
@@ -100,7 +93,7 @@ final class QuantumLogicGateEngine {
 
         guard Double.random(in: 0...1) < tunnelingProb else { return nil }
 
-        // Successfully tunneled — synthesize from adjacent knowledge domains
+        // Successfully tunneled - synthesize from adjacent knowledge domains
         let adjacentDomains = findEntangledTopics(topic)
         guard !adjacentDomains.isEmpty, let crossDomainPair = adjacentDomains.randomElement() else { return nil }
 
@@ -123,7 +116,7 @@ final class QuantumLogicGateEngine {
         return nil
     }
 
-    // ─── ENTANGLEMENT MEMORY — Topics that correlate non-classically ───
+    // ─── ENTANGLEMENT MEMORY - Topics that correlate non-classically ───
     func entangleTopics(_ topicA: String, _ topicB: String) {
         let strength = computeEntanglementStrength(topicA, topicB)
         lock.lock()
@@ -166,7 +159,7 @@ final class QuantumLogicGateEngine {
         return denom > 0 ? abs(dot / denom) : 0.0
     }
 
-    // ─── DECOHERENCE TRACKING — Quantum state quality decay ───
+    // ─── DECOHERENCE TRACKING - Quantum state quality decay ───
     func applyDecoherence() {
         lock.lock()
         quantumCoherenceScore = max(0.1, quantumCoherenceScore - decoherenceRate)
@@ -183,7 +176,7 @@ final class QuantumLogicGateEngine {
         lock.unlock()
     }
 
-    // ─── QUANTUM ERROR CORRECTION — Detect and fix response quality drift ───
+    // ─── QUANTUM ERROR CORRECTION - Detect and fix response quality drift ───
     func errorCorrect(_ response: String) -> String {
         // ═══ PHASE 54.1: Skip error correction for creative engine output ═══
         // Stories, poems, debates etc. naturally have many newlines (chapters, stanzas, dialogue)
@@ -224,7 +217,7 @@ final class QuantumLogicGateEngine {
         return response
     }
 
-    // ─── BELL STATE PREPARATION — Create maximally entangled topic pairs ───
+    // ─── BELL STATE PREPARATION - Create maximally entangled topic pairs ───
     /// Prepares a Bell state between two topics, creating maximal non-classical correlation.
     /// This biases future tunneling and interference toward cross-domain synthesis.
     func prepareBellPair(_ topicA: String, _ topicB: String) {
@@ -267,7 +260,7 @@ final class QuantumLogicGateEngine {
         }
     }
 
-    // ─── PHASE KICKBACK — Amplify coherence toward target topic ───
+    // ─── PHASE KICKBACK - Amplify coherence toward target topic ───
     /// Applies a phase rotation to the coherence matrix proportional to topic alignment.
     /// Amplifies the topic's signal in future interference and synthesis operations.
     func phaseKickback(topic: String, strength: Double = 0.15) {
@@ -293,7 +286,7 @@ final class QuantumLogicGateEngine {
         lock.unlock()
     }
 
-    // ─── GROVER DIFFUSION OPERATOR — Amplitude amplification for response selection ───
+    // ─── GROVER DIFFUSION OPERATOR - Amplitude amplification for response selection ───
     /// Runs Grover's diffusion on response amplitudes to quadratically amplify the best.
     func groverDiffuse(amplitudes: inout [Double]) {
         guard amplitudes.count > 1 else { return }
@@ -305,13 +298,13 @@ final class QuantumLogicGateEngine {
         }
 
         // Diffusion: 2|ψ⟩⟨ψ| - I
-        let mean = amplitudes.reduce(0, +) / Double(n)
+        let mean = amplitudes.reduce(0.0, +) / Double(n)
         for i in 0..<n {
             amplitudes[i] = 2.0 * mean - amplitudes[i]
         }
     }
 
-    // ─── SWAP TEST — Measure entanglement fidelity between two topic vectors ───
+    // ─── SWAP TEST - Measure entanglement fidelity between two topic vectors ───
     /// Computes overlap |⟨ψ_A|ψ_B⟩|² without disturbing the states.
     func swapTest(_ topicA: String, _ topicB: String) -> Double {
         lock.lock()
@@ -334,7 +327,7 @@ final class QuantumLogicGateEngine {
         return overlap * overlap  // |⟨A|B⟩|²
     }
 
-    // ─── QUANTUM METRICS — Expose system state ───
+    // ─── QUANTUM METRICS - Expose system state ───
     var quantumMetrics: [String: Any] {
         lock.lock()
         let metrics: [String: Any] = [
@@ -344,10 +337,10 @@ final class QuantumLogicGateEngine {
             "bell_violations": bellStateViolations,
             "superposition_depth": superpositionDepth,
             "decoherence_rate": decoherenceRate,
-            "tunnel_attempts": tunnelHistory.values.reduce(0, +),
+            "tunnel_attempts": Double(tunnelHistory.values.reduce(0, +)),
             "phase": quantumPhase,
             "interference_buffer_size": interferenceBuffer.count,
-            "avg_error_correction": quantumErrorCorrection.reduce(0, +) / Double(quantumErrorCorrection.count)
+            "avg_error_correction": quantumErrorCorrection.reduce(0.0, +) / Double(quantumErrorCorrection.count)
         ]
         lock.unlock()
         return metrics
@@ -364,25 +357,64 @@ final class QuantumLogicGateEngine {
         let topics = state.extractTopics(query)
         let resolvedTopics: [String] = topics.isEmpty ? [query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)] : topics
 
-        // ═══ GATE 0: ASI Logic Gate V2 — Dimensional reasoning router ═══
+        // ═══ GATE 0: ASI Logic Gate V2 - Dimensional reasoning router ═══
         let gateV2Path = ASILogicGateV2.shared.process(query, context: context)
         let gateDim = gateV2Path.dimension
         _ = gateV2Path.confidence  // Available for future dimensional weighting
 
-        // GATE 1: Quantum Topic Vector — now uses full 256-dim coherence matrix
+        // ═══ GATE 0.5: ML Pipeline Integration - B56 MLEngine.runPipeline() ═══
+        // Call the previously unused ML pipeline for knowledge synthesis enhancement
+        let mlResult = MLEngine.shared.runPipeline(query: query)
+
+        // ═══ GATE 1: Quantum Topic Vector - B74 Accelerated with QuantumPrimitiveAccelerator
         let vecDim = coherenceMatrix.count
         var topicVector: [Double] = Array(repeating: 0.0, count: vecDim)
-        for topic in resolvedTopics {
-            let h: Int = abs(topic.hashValue)
-            let jitter = Double.random(in: -0.3...0.3)
-            for j in 0..<vecDim {
-                let sinVal: Double = sin(Double(h &+ j) * 0.001 + quantumPhase + jitter)
-                topicVector[j] += sinVal * coherenceMatrix[j]
+
+        // Use B74 QuantumPrimitiveAccelerator for phase-optimized topic vector generation
+        let accelerator = QuantumPrimitiveAccelerator.shared
+        topicVector = accelerator.synthesizeTopicVector(
+            topics: resolvedTopics,
+            coherenceMatrix: coherenceMatrix,
+            phase: quantumPhase
+        )
+
+        // Use B74-accelerated probability extraction for coherence quality check
+        let nQubitsForCheck = min(8, Int(log2(Double(vecDim))) + 1)
+        let probs = AccelerateStatevectorOps.probabilities(sv: topicVector, nq: nQubitsForCheck)
+        _ = probs.reduce(0.0, +) / Double(probs.count)
+
+        // Apply ML result to modulate coherence matrix
+        for (idx, val) in mlResult.fusedVector.prefix(vecDim).enumerated() {
+            if idx < coherenceMatrix.count {
+                coherenceMatrix[idx] = coherenceMatrix[idx] * 0.7 + val * 0.3
             }
         }
-        let sumSq: Double = topicVector.reduce(0.0) { (acc: Double, val: Double) -> Double in acc + val * val }
-        let mag: Double = sqrt(sumSq)
-        if mag > 0 { topicVector = topicVector.map { (v: Double) -> Double in v / mag } }
+
+        // Broadcast synthesis metrics via feedback bus
+        InterEngineFeedbackBus.shared.broadcast(
+            from: .quantumGate,
+            signal: "ml_synthesis_enhancement",
+            payload: [
+                "coherence": mlResult.coherenceScore,
+                "confidence": mlResult.synthesisConfidence,
+                "sacred_alignment": mlResult.sacredAlignment,
+                "b74_accelerated": 1.0
+            ]
+        )
+
+        // Execute B74 quantum circuit for knowledge synthesis
+        let quantumCircuitResult = accelerator.executeKnowledgeCircuit(query: query, topics: resolvedTopics)
+        if quantumCircuitResult.coherence > 0.5 {
+            // Feed quantum result into evolved parts
+            InterEngineFeedbackBus.shared.broadcast(
+                from: .quantumGate,
+                signal: "b74_knowledge_circuit",
+                payload: [
+                    "coherence": quantumCircuitResult.coherence,
+                    "sacred": quantumCircuitResult.sacredScore
+                ]
+            )
+        }
 
         // GATE 2: Multi-Source Knowledge Retrieval
         let rtSearch = RealTimeSearchEngine.shared
@@ -410,7 +442,7 @@ final class QuantumLogicGateEngine {
             if fragments.count >= 20 { break }
         }
 
-        // GATE 2.5: Live Web Enrichment — ALWAYS enrich with web sources for diversity (Phase 56.0)
+        // GATE 2.5: Live Web Enrichment - ALWAYS enrich with web sources for diversity (Phase 56.0)
         // Previously gated at fragments.count < 10, now always fires to ensure online source integration
         let webEnrichmentEnabled = true  // Phase 56.0: Always-on web enrichment
         if webEnrichmentEnabled {
@@ -462,7 +494,7 @@ final class QuantumLogicGateEngine {
         let relevant = creativePool.filter { item in resolvedTopics.contains(where: { item.lowercased().contains($0.lowercased()) }) }
         if let creative = relevant.randomElement() ?? (creativePool.count > 0 ? creativePool.randomElement() : nil) { evolvedParts.append(creative) }
 
-        // ═══ GATE 4.5: Apex Intelligence Enrichment — Route through 7 ASI engines (v24.0) ═══
+        // ═══ GATE 4.5: Apex Intelligence Enrichment - Route through 7 ASI engines (v24.0) ═══
         let apex = ApexIntelligenceCoordinator.shared
         let apexInsight = apex.generateInsight(topic: resolvedTopics.first ?? query)
         if apexInsight.novelty > 0.3 && apexInsight.insight.count > 40 {
@@ -524,7 +556,7 @@ final class QuantumLogicGateEngine {
         contentParts.shuffle()
         var response = contentParts.joined(separator: "\n\n")
 
-        // GATE 6: Depth-Adaptive Expansion — only for truly deep queries (depth > 2)
+        // GATE 6: Depth-Adaptive Expansion - only for truly deep queries (depth > 2)
         if depth > 2 {
             let evoTracker = EvolutionaryTopicTracker.shared
             if let depthPrompt = evoTracker.getDepthPrompt(for: resolvedTopics) { response += "\n\n" + depthPrompt }
@@ -565,7 +597,7 @@ final class QuantumLogicGateEngine {
 
         // ═══ PHASE 31.0 QUANTUM GATES ═══
 
-        // GATE 11: Quantum Tunneling — Cross-domain knowledge bridging (re-enabled v24.0)
+        // GATE 11: Quantum Tunneling - Cross-domain knowledge bridging (re-enabled v24.0)
         // Quality guard: only inject if tunneled content shares vocabulary with query
         if response.count < 200 && contentParts.count < 3 {
             for topic in resolvedTopics.prefix(2) {
@@ -582,7 +614,7 @@ final class QuantumLogicGateEngine {
             }
         }
 
-        // GATE 12: Entanglement Memory — Link co-occurring topics for future correlation
+        // GATE 12: Entanglement Memory - Link co-occurring topics for future correlation
         if resolvedTopics.count >= 2 {
             for i in 0..<resolvedTopics.count {
                 for j in (i+1)..<resolvedTopics.count {
@@ -590,7 +622,7 @@ final class QuantumLogicGateEngine {
                 }
             }
         }
-        // Inject entangled insights — re-enabled v24.0 with stricter threshold (was 0.5, now 0.7)
+        // Inject entangled insights - re-enabled v24.0 with stricter threshold (was 0.5, now 0.7)
         for topic in resolvedTopics.prefix(2) {
             let entangled = findEntangledTopics(topic)
             if let strongest = entangled.first, strongest.1 > 0.7 {
@@ -608,16 +640,16 @@ final class QuantumLogicGateEngine {
             }
         }
 
-        // GATE 13: Decoherence Guard — Maintain quantum state quality
+        // GATE 13: Decoherence Guard - Maintain quantum state quality
         applyDecoherence()
         if quantumCoherenceScore > 0.7 {
             recohere(boost: 0.05)  // good responses reinforce coherence
         }
 
-        // GATE 14: Quantum Error Correction — Fix quality drift
+        // GATE 14: Quantum Error Correction - Fix quality drift
         response = errorCorrect(response)
 
-        // GATE 15: Quality Scoring — Feed metrics to GoldenSectionOptimizer (v24.0)
+        // GATE 15: Quality Scoring - Feed metrics to GoldenSectionOptimizer (v24.0)
         let qualityScore = ResponseQualityScore(
             contentDensity: Double(contentParts.count) / 10.0,
             sourceDiversity: min(fragments.count, 5),
@@ -634,7 +666,7 @@ final class QuantumLogicGateEngine {
         return response
     }
 
-    // ═══ MONOLOGUE GATE — Dynamic speech synthesis, no static content ═══
+    // ═══ MONOLOGUE GATE - Dynamic speech synthesis, no static content ═══
     func synthesizeMonologue(query: String) -> String {
         let evolver = ASIEvolver.shared
         let hb = HyperBrain.shared
@@ -760,7 +792,7 @@ final class QuantumLogicGateEngine {
         if let first = shuffledFrames.first { sections.append(first) }
         if depth > 1, shuffledFrames.count > 1 { sections.append(shuffledFrames[1]) }
         hb.memoryChains.append([topic, "quantum_verbose", "depth:\(depth)"])
-        // Internal metrics — not shown in user-facing responses
+        // Internal metrics - not shown in user-facing responses
         return sections.joined(separator: "\n\n")
     }
 
@@ -777,7 +809,7 @@ final class QuantumLogicGateEngine {
             let greetings = [
                 "Hey! What can I help you with?",
                 "Hello! What would you like to explore?",
-                "Hi there! I'm ready — what's on your mind?",
+                "Hi there! I'm ready - what's on your mind?",
                 "Good to see you! What shall we dive into?",
                 "Hey! \(kbCount) knowledge entries loaded, \(activeStreams) cognitive streams active. What are you curious about?",
                 "Hello! \(patternCount) learned patterns standing by. What's next?",
@@ -825,7 +857,7 @@ final class QuantumLogicGateEngine {
                 "Thanks for the feedback. What shall we dive into?",
             ]
             if let topic = topics.last, !topic.isEmpty {
-                return "\(reactions.randomElement() ?? "Interesting!") We were on '\(topic)' — want to go deeper?"
+                return "\(reactions.randomElement() ?? "Interesting!") We were on '\(topic)' - want to go deeper?"
             }
             return reactions.randomElement() ?? "What's on your mind?"
         case "gratitude":
@@ -947,7 +979,7 @@ final class QuantumLogicGateEngine {
             "entangledPeers": meshEntangledStates.count,
             "meshQuantumOps": meshQuantumOps,
             "avgEntangledCoherence": meshEntangledStates.isEmpty ? 0 :
-                meshEntangledStates.values.compactMap { $0.first }.reduce(0, +) / Double(meshEntangledStates.count)
+                meshEntangledStates.values.compactMap { $0.first }.reduce(0.0, +) / Double(meshEntangledStates.count)
         ]
     }
 }

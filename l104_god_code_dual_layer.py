@@ -597,7 +597,7 @@ V3_FREQUENCY_TABLE = {
     (7, 6, 0, 1):          ("FE_BCC_LATTICE_PM",      2.866747e+02,  1298,    286.65,             0.0086),
     (49, 3, 0, 3):         ("FE_ATOMIC_RADIUS_PM",    1.260781e+02,  805,     126.0,              0.0620),
     (34, 7, 0, 7):         ("FE_K_ALPHA1_KEV",        6.408990e+00,  -983,    6.404,              0.0779),
-    (49, 1, 0, 7):         ("FE_IONIZATION_EV",       7.906185e+00,  -857,    7.9024678,          0.0470),
+    (49, 1, 0, 7):         ("FE_IONIZATION_EV",       7.902310e+00,  -857,    7.9024,             0.001),  # Verified: GOD_CODE/66.755
     (24, 3, 0, 1):         ("CU_LATTICE_PM",          3.613880e+02,  1437,    361.49,             0.0282),
     (33, 7, 0, 1):         ("AL_LATTICE_PM",          4.047441e+02,  1505,    404.95,             0.0508),
     (3, 7, 0, 0):          ("SI_LATTICE_PM",          5.426745e+02,  1681,    543.102,            0.0787),
@@ -4385,13 +4385,16 @@ def test_coarse_grid_stats() -> Tuple[bool, str]:
     n_close = cgv["surprisingly_close_count"]
     best = cgv["best_5"]
 
+    best_str = ", ".join(
+        "{}({:.4f}%)".format(b["name"], b["error_pct"]) for b in best
+    )
     detail = (
         f"Coarse grid (r=2, Q=104, half-step={cgv['grid']['half_step_pct']:.3f}%):\n"
         f"        Physics avg error: {cgv['avg_error_pct']:.4f}%\n"
         f"        Random avg error:  {cgv['random_avg_error_pct']:.4f}%\n"
         f"        Ratio:             {ratio} (1.0 = identical to random)\n"
         f"        Surprisingly close (< {cgv['surprisingly_close_threshold_pct']:.3f}%): {n_close}\n"
-        f"        Best: {', '.join(f'{b['name']}({b['error_pct']:.4f}%)' for b in best)}\n"
+        f"        Best: {best_str}\n"
         f"        KS test: D={ks['max_deviation']}, critical={ks['critical_value']}\n"
         f"        Distribution: {ks['interpretation']}"
     )

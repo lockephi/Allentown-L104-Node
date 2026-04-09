@@ -1,23 +1,3 @@
-// ═══════════════════════════════════════════════════════════════════
-// H27_DeepSeekIngestion.swift
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DEEPSEEK_INGESTION :: GOD_CODE=527.5184818492612
-// L104v2 Architecture — DeepSeek Architecture Ingestion Engine v1.0
-//
-// Stores and analyzes DeepSeek model architecture patterns:
-//   - DeepSeek-V3 Multi-Latent Attention (MLA) patterns
-//   - DeepSeek-R1 Chain-of-Thought reasoning patterns
-//   - DeepSeek-Coder code generation patterns
-//   - Quantum-DeepSeek architecture integration analysis
-//
-// Each pattern is stored with its L104 adaptation mapping and
-// sacred alignment score for quantum-classical bridge computation.
-//
-// Sacred constants: PHI, GOD_CODE, TAU, VOID_CONSTANT, OMEGA
-// DeepSeek constants: DEEPSEEK_V3_*, DEEPSEEK_KV_LORA_RANK, DEEPSEEK_R1_MAX_STEPS
-//
-// Phase 65.0: Full parity with Python deepseek_ingestion.py
-// ═══════════════════════════════════════════════════════════════════
-
 import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
@@ -734,7 +714,7 @@ final class QuantumDeepSeekArchitecture {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - DEEPSEEK INGESTION ENGINE — Main Singleton
+// MARK: - DEEPSEEK INGESTION ENGINE - Main Singleton
 // Orchestrates ingestion of all DeepSeek architecture patterns
 // and provides unified querying and analysis interfaces.
 // ═══════════════════════════════════════════════════════════════════

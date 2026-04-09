@@ -1,0 +1,52 @@
+# L104 Swift App - sourcekit-lsp Configuration
+# Optimized for large codebase with reduced CPU usage
+# v2.0: Aggressive CPU reduction
+
+# Background indexing - disabled to reduce CPU
+backgroundIndexing:
+  enabled: false
+  indexWhileBuilding: false
+
+# SwiftPM configuration
+swiftPM:
+  configuration: release
+  enableASTCaching: true
+  # Limit concurrent builds
+  maxConcurrentBuilds: 1
+  # Skip function bodies during indexing (faster)
+  swiftCompilerFlags:
+    - "-Xfrontend"
+    - "-experimental-skip-all-function-bodies"
+    - "-Xfrontend"
+    - "-experimental-skip-non-inlinable-function-bodies"
+    - "-Xfrontend"
+    - "-disable-type-abstract-init-cycles"
+
+# Sourcekitd configuration
+sourcekitd:
+  arguments:
+    - "-Xfrontend"
+    - "-verify-emitted-ast"
+    - "-Xfrontend"
+    - "-experimental-hermetic-sealing"
+  pluginPath: null
+
+# Logging - reduce verbosity
+logging:
+  level: error
+
+# Index configuration - use project-local paths
+index:
+  indexStorePath: .build/index/store
+  indexDatabasePath: .build/index/db
+
+# Performance limits
+performance:
+  maxMemoryMB: 256
+  maxConcurrentRequests: 2
+  requestTimeoutSec: 15
+
+# Workspace configuration
+workspace:
+  buildConfiguration: release
+  disableBuildCaching: false

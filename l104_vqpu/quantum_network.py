@@ -470,7 +470,9 @@ class QuantumChannel:
         F = |⟨Φ+|ψ⟩|² — overlap with ideal Bell state.
         """
         if self.bell_state is None:
-            return 0.0
+            # If no bell_state (e.g., after state restore), return persisted fidelity
+            # rather than 0.0 to preserve channel quality metrics
+            return getattr(self, 'fidelity', 0.0) if getattr(self, 'active', False) else 0.0
 
         # Ideal |Φ+⟩ (before GOD_CODE phase — we measure vs sacred Bell state)
         ideal = np.array([

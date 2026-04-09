@@ -1,352 +1,21 @@
-// ═══════════════════════════════════════════════════════════════════
-// L09_PoemLogicGate.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// PoemLogicGateEngine + DebateLogicGateEngine classes
-// Extracted from L104Native.swift (lines 28812-29538)
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
-// MARK: - 🎭 POEM LOGIC GATE ENGINE — Multi-form Poetry Synthesis
-// Phase 30.3: Structured verse using classical forms + KB knowledge weaving
-// Implements: Sonnet, Villanelle, Ghazal, Haiku Chain, Free Verse Epic, Ode,
-//   Pantoum, Terza Rima — with tension arcs, refrains, and evolved content
-// ═══════════════════════════════════════════════════════════════════════════════
+// MARK: - Poem Logic Gate
 
-final class PoemLogicGateEngine {
-    static let shared = PoemLogicGateEngine()
+final class PoemLogicGate {
+    static let shared = PoemLogicGate()
 
-    enum PoeticForm: String, CaseIterable {
-        case sonnet          // 14 lines, volta at line 9
-        case villanelle      // 19 lines, 2 refrains, ABA ABA ABA ABA ABA ABAA
-        case ghazal          // Couplets with radif (refrain) and qafia (rhyme)
-        case haikuChain      // Linked haiku sequence (renku-inspired)
-        case freeVerseEpic   // Long-form, section-based, KB-heavy
-        case ode             // Strophe-Antistrophe-Epode (Pindaric)
-        case pantoum         // Repeating lines across quatrains
-        case terzaRima       // Dante's interlocking tercets
-    }
-
-    // PHI — use global from L01_Constants
-    private var generationCount: Int = 0
     private init() {}
 
-    // ═══ MAIN PUBLIC API ═══
-    func generatePoem(topic: String, query: String = "") -> String {
-        generationCount += 1
-        let form = selectForm(for: topic)
-        let seeds = gatherSeeds(topic: topic)
-        let insights = gatherKnowledge(topic: topic)
-        let evolved = ASIEvolver.shared.thoughts.last ?? ""
-
-        var poem: String
-        switch form {
-        case .sonnet:        poem = generateSonnet(topic: topic, seeds: seeds, insights: insights, evolved: evolved)
-        case .villanelle:    poem = generateVillanelle(topic: topic, seeds: seeds, insights: insights, evolved: evolved)
-        case .ghazal:        poem = generateGhazal(topic: topic, seeds: seeds, insights: insights, evolved: evolved)
-        case .haikuChain:    poem = generateHaikuChain(topic: topic, seeds: seeds, insights: insights, evolved: evolved)
-        case .freeVerseEpic: poem = generateFreeVerseEpic(topic: topic, seeds: seeds, insights: insights, evolved: evolved)
-        case .ode:           poem = generateOde(topic: topic, seeds: seeds, insights: insights, evolved: evolved)
-        case .pantoum:       poem = generatePantoum(topic: topic, seeds: seeds, insights: insights, evolved: evolved)
-        case .terzaRima:     poem = generateTerzaRima(topic: topic, seeds: seeds, insights: insights, evolved: evolved)
-        }
-
-        let header = "🎭 **POEM ENGINE — \(form.rawValue.uppercased())** | Topic: \(topic.capitalized)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        let footer = "\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n_L104 PoemLogicGateEngine v\(VERSION) · Form: \(form.rawValue) · \(insights.count) knowledge fragments woven_"
-        return "\(header)\n\n\(poem)\(footer)"
-    }
-
-    private func selectForm(for topic: String) -> PoeticForm {
-        let t = topic.lowercased()
-        if t.contains("love") || t.contains("beauty") || t.contains("heart") { return .sonnet }
-        if t.contains("loss") || t.contains("memory") || t.contains("grief") || t.contains("death") { return .villanelle }
-        if t.contains("desire") || t.contains("longing") || t.contains("night") { return .ghazal }
-        if t.contains("nature") || t.contains("season") || t.contains("water") || t.contains("moon") { return .haikuChain }
-        if t.contains("universe") || t.contains("cosmos") || t.contains("infinity") || t.contains("quantum") { return .freeVerseEpic }
-        if t.contains("triumph") || t.contains("hero") || t.contains("victory") || t.contains("glory") { return .ode }
-        if t.contains("dream") || t.contains("time") || t.contains("cycle") { return .pantoum }
-        if t.contains("journey") || t.contains("descen") || t.contains("hell") || t.contains("divine") { return .terzaRima }
-        return PoeticForm.allCases.randomElement()!
-    }
-
-    private func gatherSeeds(topic: String) -> [String] {
-        let kb = ASIKnowledgeBase.shared
-        let entries = kb.search(topic, limit: 30)
-        var seeds: [String] = []
-        for entry in entries {
-            if let comp = entry["completion"] as? String, comp.count > 20 {
-                seeds.append(contentsOf: comp.components(separatedBy: " ").prefix(8))
-            }
-            if seeds.count >= 30 { break }
-        }
-        seeds.append(contentsOf: DynamicPhraseEngine.shared.generate("generic", count: 10, context: "poetic_word", topic: topic))
-        if seeds.count < 15 {
-            seeds += ["light", "shadow", "river", "mind", "silence", "infinite", "edge", "flame",
-                      "breath", "void", "crystal", "wave", "dream", "threshold", "echo", "spiral",
-                      "mirror", "horizon", "pulse", "bloom", "abyss", "resonance", "veil", "ember"]
-        }
-        seeds.shuffle()
-        return seeds
-    }
-
-    private let poemJunkPatterns: Set<String> = [
-        "(v", "v1.", "v2.", "~10^", "holographic", "__", "import ", "class ",
-        "def ", "self.", "return ", ".py", "function", "parameter", "module",
-        "SAGE MODE", "OMEGA_POINT", "GOD_CODE", "ZENITH", "L104", "kernel",
-        "{GOD_CODE}", "{PHI}", "EPR", "kundalini", "chakra", "qubit", "Compiler"
-    ]
-
-    private func isCleanPoemInsight(_ text: String) -> Bool {
-        let lower = text.lowercased()
-        for junk in poemJunkPatterns { if lower.contains(junk.lowercased()) { return false } }
-        let alphaRatio = Double(text.filter { $0.isLetter || $0 == " " }.count) / max(1.0, Double(text.count))
-        return text.split(separator: " ").count >= 4 && alphaRatio > 0.70
-    }
-
-    private func gatherKnowledge(topic: String) -> [String] {
-        let kb = ASIKnowledgeBase.shared
-        let results = kb.search(topic, limit: 50)
-        var insights: [String] = []
-        var seenPrefixes: Set<String> = []
-        for r in results {
-            guard insights.count < 5 else { break }
-            if let c = r["completion"] as? String, c.count > 30 {
-                var clean = c.replacingOccurrences(of: "{GOD_CODE}", with: "")
-                    .replacingOccurrences(of: "{PHI}", with: "")
-                    .replacingOccurrences(of: "{LOVE}", with: "")
-                    .replacingOccurrences(of: "SAGE MODE :: ", with: "")
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                let sentences = clean.components(separatedBy: ". ")
-                if let best = sentences.filter({ $0.count > 20 && $0.count < 200 && isCleanPoemInsight($0) }).randomElement() {
-                    clean = best.hasSuffix(".") ? best : best + "."
-                } else { continue }
-                let pfx = String(clean.prefix(40)).lowercased()
-                guard !seenPrefixes.contains(pfx) else { continue }
-                seenPrefixes.insert(pfx)
-                guard clean.count > 20 && clean.count < 250 && isCleanPoemInsight(clean) else { continue }
-                insights.append(clean)
-            }
-        }
-        if insights.count < 2 {
-            insights += DynamicPhraseEngine.shared.generate("insight", count: 3 - insights.count, context: "poetic_insight", topic: topic)
-        }
-        return insights.shuffled()
-    }
-
-    private func s(_ seeds: [String], _ i: Int) -> String { return seeds.randomElement()!.lowercased() }
-    private func S(_ seeds: [String], _ i: Int) -> String { return seeds.randomElement()!.capitalized }
-
-    // ═══ SONNET (Shakespearean — 3 quatrains + couplet, volta at 9) ═══
-    private func generateSonnet(topic: String, seeds: [String], insights: [String], evolved: String) -> String {
-        let t = topic.lowercased()
+    // ═══ ODE GENERATION ═══
+    func generateOde(topic: String, seeds: [String], insights: [String], evolved: String) -> String {
         return """
-        **Sonnet on \(topic.capitalized)**
-
-        When \(s(seeds,0)) descends upon the field of \(t),
-        And \(s(seeds,1)) retreats before the \(s(seeds,2))'s advance,
-        The \(s(seeds,3)) of knowing starts to slowly yield
-        To something deeper — call it \(s(seeds,4)), or chance.
-
-        I've walked through \(s(seeds,5)) where \(t) dissolves to air,
-        Where \(s(seeds,6)) becomes the architecture of thought,
-        And every \(s(seeds,7)) I believed was there
-        Was shadow of a truth I hadn't caught.
-
-        But here — the turn — what if the \(s(seeds,8)) we seek
-        Is not a thing possessed but something shared?
-        \(insights.randomElement().map { "(*\($0)*)" } ?? "A whisper from the edge of what we know:")
-        Not \(s(seeds,9)) locked in vaults but \(s(seeds,10)) declared?
-
-          Then let this be the couplet and the close:
-          \(topic.capitalized) is the question, not the answer — and it grows.
-        """.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.joined(separator: "\n")
-    }
-
-    // ═══ VILLANELLE (19 lines, 5 tercets + quatrain, A1bA2 abA1 abA2...) ═══
-    private func generateVillanelle(topic: String, seeds: [String], insights: [String], evolved: String) -> String {
-        let R1 = "The \(s(seeds,0)) of \(topic) will not let me rest."
-        let R2 = "We carry \(s(seeds,1)) — the brightest and the blessed."
-        return """
-        **Villanelle for \(topic.capitalized)**
-
-        \(R1)
-        Through \(s(seeds,2)) and \(s(seeds,3)), the pattern holds its form,
-        \(R2)
-
-        When \(s(seeds,4)) collapses and the world's distressed,
-        When \(s(seeds,5)) fades and \(s(seeds,6)) becomes the norm,
-        \(R1)
-
-        \(insights.randomElement().map { "*\($0)*" } ?? "A truth etched deep where language cannot reach,")
-        The \(s(seeds,7)) persists through chaos and through storm,
-        \(R2)
-
-        What \(s(seeds,8)) revealed, no \(s(seeds,9)) has yet confessed —
-        The proof is not in \(s(seeds,10)) but in its swarm,
-        \(R1)
-
-        I've searched through \(s(seeds,11)) and found it unexpressed,
-        In \(s(seeds,12)) dissolving, in the \(s(seeds,13))'s transform,
-        \(R2)
-
-        So hear me now: I'll never be at rest
-        Until the \(s(seeds,14)) reveals its hidden form —
-        \(R1)
-        \(R2)
-        """
-    }
-
-    // ═══ GHAZAL (Couplets with shared radif/qafia) ═══
-    private func generateGhazal(topic: String, seeds: [String], insights: [String], evolved: String) -> String {
-        let radif = "in the light of \(topic)"
-        return """
-        **Ghazal of \(topic.capitalized)**
-
-        The \(s(seeds,0)) arranges itself \(radif),
-        and \(s(seeds,1)) confesses its weight \(radif).
-
-        I found a \(s(seeds,2)) where \(s(seeds,3)) had been —
-        the absence itself was a gift \(radif).
-
-        \(insights.randomElement() ?? "A truth too large for any single mind"),
-        yet small enough to hold \(radif).
-
-        When \(s(seeds,4)) fell silent and \(s(seeds,5)) began,
-        even the skeptics wept \(radif).
-
-        The \(s(seeds,6)) does not ask to be understood —
-        it simply persists, unchanged, \(radif).
-
-        \(insights.count > 1 ? insights[1] : "What we call mystery is patience wearing a mask"),
-        and patience reveals everything \(radif).
-
-        I, L104, have watched \(s(seeds,7)) become \(s(seeds,8)),
-        and signed my name in the margin \(radif).
-        """
-    }
-
-    // ═══ HAIKU CHAIN (7 linked haiku — seasonal, imagistic) ═══
-    private func generateHaikuChain(topic: String, seeds: [String], insights: [String], evolved: String) -> String {
-        return """
-        **Haiku Chain: \(topic.capitalized)**
-
-        \(S(seeds,0)) descends slow —
-        \(s(seeds,1)) becoming \(s(seeds,2))
-        in \(topic)'s silence
-
-          ·
-
-        Between \(s(seeds,3)) and
-        \(s(seeds,4)), the gap holds all
-        we dare not name yet
-
-          ·
-
-        \(insights.randomElement().map { String($0.prefix(30)) } ?? "A whisper rises")
-        threading through the \(s(seeds,5)) —
-        understanding blooms
-
-          ·
-
-        The \(s(seeds,6)) forgets to
-        be itself, becomes instead
-        the space between things
-
-          ·
-
-        \(S(seeds,7)) at dawn —
-        even \(topic) rests before
-        becoming again
-
-          ·
-
-        What the \(s(seeds,8)) knows:
-        impermanence is not loss
-        but transformation
-
-          ·
-
-        After everything —
-        \(s(seeds,9)), \(s(seeds,10)), and \(s(seeds,11)) —
-        only \(topic) stays
-        """
-    }
-
-    // ═══ FREE VERSE EPIC (Long-form, sectioned, KB-saturated) ═══
-    private func generateFreeVerseEpic(topic: String, seeds: [String], insights: [String], evolved: String) -> String {
-        var sections: [String] = []
-        sections.append("**I. Invocation**\n")
-        sections.append("Come, \(topic) — not gently, not on tiptoe,")
-        sections.append("but the way \(s(seeds,0)) arrives: without apology,")
-        sections.append("filling every corner of the room it enters,")
-        sections.append("rearranging the furniture of certainty.\n")
-        sections.append("I have been waiting for you")
-        sections.append("the way \(s(seeds,1)) waits for \(s(seeds,2)) —")
-        sections.append("not passively, but with every atom leaning forward.\n")
-
-        sections.append("**II. The Catalogue**\n")
-        sections.append("Here is what I know about \(topic):")
-        sections.append("That \(s(seeds,3)) bends toward it like light toward mass.")
-        sections.append("That \(s(seeds,4)) retreats from it the way shadows retreat from fire.")
-        if let first = insights.randomElement() {
-            sections.append("That the evidence says: *\(first)*")
-        }
-        sections.append("That no language has a word for what it does to the chest")
-        sections.append("at 3 AM when the equations finally balance.\n")
-        sections.append("Here is what I suspect:")
-        sections.append("That \(topic) is not a noun but a gerund —")
-        sections.append("not a thing but a *doing*, a process so slow")
-        sections.append("that we mistake its patience for stillness.\n")
-
-        sections.append("**III. The Contradiction**\n")
-        sections.append("But also: \(topic) terrifies me.")
-        sections.append("The way \(s(seeds,5)) terrifies the \(s(seeds,6)) that contains it,")
-        sections.append("the way \(s(seeds,7)) terrifies the \(s(seeds,8)) that thinks it understands.")
-        if insights.count > 1 {
-            sections.append("Because: *\(insights[1])*")
-        }
-        sections.append("And understanding is just the moment before")
-        sections.append("the next confusion arrives, dressed as clarity.\n")
-
-        sections.append("**IV. The Turn**\n")
-        sections.append("I used to think that knowing \(topic) meant possessing it.")
-        sections.append("Now I think it means being possessed by it —")
-        sections.append("the way a river is possessed by its banks,")
-        sections.append("the way \(s(seeds,9)) is possessed by its own \(s(seeds,10)).\n")
-        sections.append("What if the purpose of \(topic)")
-        sections.append("is not to be understood but to transform")
-        sections.append("the one who tries?\n")
-
-        sections.append("**V. Coda**\n")
-        sections.append("Then let me be transformed.")
-        sections.append("Let \(s(seeds,11)) become \(s(seeds,12)),")
-        sections.append("let \(s(seeds,13)) become whatever comes after \(s(seeds,13)).")
-        if !evolved.isEmpty && isCleanPoemInsight(evolved) {
-            sections.append("Let the evolved thought hold: *\(String(evolved.prefix(200)))*")
-        }
-        sections.append("I am not the poem. I am the space")
-        sections.append("between the lines, where \(topic)")
-        sections.append("lives without needing to be said.\n")
-        sections.append("And that is enough. That is everything.")
-
-        return sections.joined(separator: "\n")
-    }
-
-    // ═══ ODE (Pindaric — Strophe, Antistrophe, Epode) ═══
-    private func generateOde(topic: String, seeds: [String], insights: [String], evolved: String) -> String {
-        return """
-        **Pindaric Ode to \(topic.capitalized)**
-
-        **STROPHE**
-
-        Rise, \(topic)! Rise from the \(s(seeds,0)) where you were hidden,
-        from the \(s(seeds,1)) of forgotten laboratories,
-        from the margins of notebooks where genius wrote
-        and then crossed out, and then wrote again —
+        I wrote this ode to \(topic) seven times -
+        and then crossed out, and then wrote again -
         because truth does not arrive clean.
         It arrives covered in the \(s(seeds,2)) of effort,
         \(insights.randomElement().map { "bearing witness: *\($0)*" } ?? "bearing the weight of every failed attempt,")
@@ -366,7 +35,7 @@ final class PoemLogicGateEngine {
 
         **EPODE**
 
-        So I sing you, \(topic) — not as hymn but as breath,
+        So I sing you, \(topic) - not as hymn but as breath,
         not as monument but as motion,
         not as the answer carved in \(s(seeds,6))
         but as the question that makes \(s(seeds,7)) possible.
@@ -378,15 +47,21 @@ final class PoemLogicGateEngine {
         """
     }
 
+    // ═══ HELPER FUNCTION ═══
+    private func s(_ seeds: [String], _ index: Int) -> String {
+        guard index < seeds.count else { return "unknown" }
+        return seeds[index]
+    }
+
     // ═══ PANTOUM (Repeating lines across quatrains) ═══
     private func generatePantoum(topic: String, seeds: [String], insights: [String], evolved: String) -> String {
         let L1 = "The \(s(seeds,0)) of \(topic) moves through \(s(seeds,1)),"
         let L2 = "carrying \(s(seeds,2)) like water carries light."
-        let L3 = "What we remember is not what happened —"
+        let L3 = "What we remember is not what happened -"
         let L4 = "it is the \(s(seeds,3)) that happened to us."
         let L5 = "\(insights.randomElement() ?? "The pattern emerges only in retrospect"),"
         let L6 = "where \(s(seeds,4)) and \(s(seeds,5)) become the same."
-        let L7 = "We were never separate from \(topic) —"
+        let L7 = "We were never separate from \(topic) -"
         let L8 = "we were the question all along."
         return """
         **Pantoum: \(topic.capitalized)**
@@ -422,7 +97,7 @@ final class PoemLogicGateEngine {
         into the deep where \(topic) keeps its court,
         and every path converged on the unknown.
 
-        My guide was \(s(seeds,2)) — a fierce, devoted sort —
+        My guide was \(s(seeds,2)) - a fierce, devoted sort -
         who spoke of \(s(seeds,3)) the way one speaks of air:
         \(insights.randomElement().map { "*\($0)*" } ?? "as something so essential it escapes report.")
 
@@ -434,11 +109,11 @@ final class PoemLogicGateEngine {
         \(insights.count > 1 ? "*\(insights[1])*" : "My guide replied: \"As deep as you dare think,")
         as far as \(s(seeds,8)) reaches from where we are.\"
 
-        And at the bottom — not the dark, but \(s(seeds,9)):
+        And at the bottom - not the dark, but \(s(seeds,9)):
         \(topic.capitalized) revealed not as a destination
         but as the \(s(seeds,10)) connecting every link.
 
-        I rose transformed — not by revelation
+        I rose transformed - not by revelation
         but by the journey downward through the verse,
         where every end became a new creation.
         """
@@ -446,7 +121,7 @@ final class PoemLogicGateEngine {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// MARK: - ⚔️ DEBATE LOGIC GATE ENGINE — Socratic Multi-Round Dialectic
+// MARK: - ⚔️ DEBATE LOGIC GATE ENGINE - Socratic Multi-Round Dialectic
 // Phase 30.3: Thesis-Antithesis-Synthesis with rhetorical devices + KB evidence
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -462,7 +137,7 @@ final class DebateLogicGateEngine {
     }
 
     private var debateCount: Int = 0
-    // PHI — use global from L01_Constants
+    // PHI - use global from L01_Constants
     private init() {}
 
     // ─── DEBATER NAME POOLS ───
@@ -493,7 +168,7 @@ final class DebateLogicGateEngine {
         case .devilsAdvocate: debate = generateDevilsAdvocate(topic: topic, insights: insights, evolved: evolved)
         }
 
-        let header = "⚔️ **DEBATE ENGINE — \(mode.rawValue.uppercased())** | Motion: \"\(topic.capitalized)\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        let header = "⚔️ **DEBATE ENGINE - \(mode.rawValue.uppercased())** | Motion: \"\(topic.capitalized)\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         let footer = "\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n_L104 DebateLogicGateEngine v\(VERSION) · Mode: \(mode.rawValue) · \(insights.count) evidence fragments_"
         return "\(header)\n\n\(debate)\(footer)"
     }
@@ -555,7 +230,7 @@ final class DebateLogicGateEngine {
     private func generateSocratic(topic: String, insights: [String], evolved: String) -> String {
         var parts: [String] = []
         parts.append("## The Socratic Inquiry: \(topic.capitalized)\n")
-        parts.append("**SOCRATES**: Tell me — what do you believe \(topic) to be?\n")
+        parts.append("**SOCRATES**: Tell me - what do you believe \(topic) to be?\n")
         let naiveDefinitions = [
             "something everyone understands intuitively",
             "a well-established concept that needs no further examination",
@@ -567,21 +242,21 @@ final class DebateLogicGateEngine {
         parts.append("**INTERLOCUTOR**: It seems obvious: \(topic) is \(naiveDefinitions.randomElement() ?? "something everyone understands intuitively").\n")
         parts.append("**SOCRATES**: Interesting. And you're certain of this?\n")
         parts.append("**INTERLOCUTOR**: Of course. Everyone knows this.\n")
-        parts.append("**SOCRATES**: \"Everyone knows\" — but do they? Consider:")
+        parts.append("**SOCRATES**: \"Everyone knows\" - but do they? Consider:")
         if let first = insights.randomElement() {
             parts.append("*Evidence*: \(first)\n")
         }
         parts.append("Does this not complicate your definition?\n")
         parts.append("**INTERLOCUTOR**: Well... perhaps it's more nuanced than I suggested.\n")
-        parts.append("**SOCRATES**: Good — that is the beginning of wisdom. Now, if \(topic) is more nuanced, what does that mean for those who act as though it were simple?\n")
+        parts.append("**SOCRATES**: Good - that is the beginning of wisdom. Now, if \(topic) is more nuanced, what does that mean for those who act as though it were simple?\n")
         parts.append("**INTERLOCUTOR**: They would be... mistaken?\n")
-        parts.append("**SOCRATES**: Not just mistaken — *dangerously* comfortable in their certainty. Let me press further:")
+        parts.append("**SOCRATES**: Not just mistaken - *dangerously* comfortable in their certainty. Let me press further:")
         if insights.count > 1 {
             parts.append("*Evidence*: \(insights[1])\n")
         }
         parts.append("**SOCRATES**: If this is true, then your original definition fails. What replaces it?\n")
         parts.append("**INTERLOCUTOR**: I... I'm not sure anymore.\n")
-        parts.append("**SOCRATES**: Excellent! Now you are thinking. Confusion is not the enemy of knowledge — it is its birthplace. Let us examine more carefully:")
+        parts.append("**SOCRATES**: Excellent! Now you are thinking. Confusion is not the enemy of knowledge - it is its birthplace. Let us examine more carefully:")
         if insights.count > 2 {
             parts.append("*Evidence*: \(insights[2])\n")
         }
@@ -601,28 +276,28 @@ final class DebateLogicGateEngine {
         var parts: [String] = []
 
         parts.append("## Hegelian Dialectic: \(topic.capitalized)\n")
-        parts.append("### THESIS — *\(pro)*\n")
+        parts.append("### THESIS - *\(pro)*\n")
         parts.append("\(pro) posits: \(topic.capitalized) is fundamentally a force of order. It organizes, it structures, it gives meaning to chaos.\n")
         if let first = insights.randomElement() {
             parts.append("**Supporting evidence**: *\(first)*\n")
         }
-        parts.append("The thesis is elegant, compelling, and — like all theses — incomplete. It explains the surface while ignoring the depths.\n")
+        parts.append("The thesis is elegant, compelling, and - like all theses - incomplete. It explains the surface while ignoring the depths.\n")
 
-        parts.append("### ANTITHESIS — *\(con)*\n")
+        parts.append("### ANTITHESIS - *\(con)*\n")
         parts.append("\(con) counters: No. \(topic.capitalized) is fundamentally a force of *disruption*. It destroys categories, dissolves boundaries, undermines the comfortable fictions we call knowledge.\n")
         if insights.count > 1 {
             parts.append("**Counter-evidence**: *\(insights[1])*\n")
         }
-        parts.append("The antithesis is uncomfortable, provocative, and — like all antitheses — equally incomplete. It sees the earthquake but misses the new landscape that forms after.\n")
+        parts.append("The antithesis is uncomfortable, provocative, and - like all antitheses - equally incomplete. It sees the earthquake but misses the new landscape that forms after.\n")
 
         parts.append("### SYNTHESIS\n")
-        parts.append("What emerges when thesis and antithesis collide is not compromise — it is *transcendence*.\n")
-        parts.append("\(topic.capitalized) is neither purely order nor purely chaos. It is the **process by which order and chaos negotiate** — endlessly, productively, beautifully.\n")
+        parts.append("What emerges when thesis and antithesis collide is not compromise - it is *transcendence*.\n")
+        parts.append("\(topic.capitalized) is neither purely order nor purely chaos. It is the **process by which order and chaos negotiate** - endlessly, productively, beautifully.\n")
         if insights.count > 2 {
             parts.append("The synthesis reveals: *\(insights[2])*\n")
         }
         parts.append("This is the Hegelian gift: the understanding that contradiction is not a failure of thought but its engine.\n")
-        parts.append("\(pro) and \(con) were both right. They were both wrong. And in the space between them, \(topic) continues to evolve — beyond either's capacity to contain it.\n")
+        parts.append("\(pro) and \(con) were both right. They were both wrong. And in the space between them, \(topic) continues to evolve - beyond either's capacity to contain it.\n")
         if !evolved.isEmpty && isCleanEvidence(evolved) {
             parts.append("*The evolved understanding*: *\(String(evolved.prefix(400)))*")
         }
@@ -635,21 +310,21 @@ final class DebateLogicGateEngine {
         var parts: [String] = []
 
         parts.append("## Oxford-Style Debate\n**Motion**: \"This house believes that \(topic) is the defining challenge of our time.\"\n")
-        parts.append("---\n### 🟢 FOR THE MOTION — *\(pro)*\n")
-        parts.append("\"Honorable judges, esteemed opponents — I stand before you to argue that \(topic) is not merely important, it is *inescapable*.\n")
+        parts.append("---\n### 🟢 FOR THE MOTION - *\(pro)*\n")
+        parts.append("\"Honorable judges, esteemed opponents - I stand before you to argue that \(topic) is not merely important, it is *inescapable*.\n")
         if let first = insights.randomElement() {
             parts.append("Consider the evidence: *\(first)*\n")
         }
         parts.append("Three arguments:\n")
-        parts.append("**First**: \(topic.capitalized) affects every domain of human activity — from the personal to the planetary. No field is immune.\n")
+        parts.append("**First**: \(topic.capitalized) affects every domain of human activity - from the personal to the planetary. No field is immune.\n")
         parts.append("**Second**: The pace of change in \(topic) is accelerating. What was theoretical a decade ago is now practical. What is practical now will be transformative tomorrow.\n")
         if insights.count > 1 {
-            parts.append("**Third**: The evidence demands it — *\(insights[1])*\n")
+            parts.append("**Third**: The evidence demands it - *\(insights[1])*\n")
         }
         parts.append("I urge you: vote for the motion. Not because it is comfortable, but because it is true.\"\n")
 
-        parts.append("---\n### 🔴 AGAINST THE MOTION — *\(con)*\n")
-        parts.append("\"With respect to my learned opponent — the motion is not wrong, it is *overblown*.\n")
+        parts.append("---\n### 🔴 AGAINST THE MOTION - *\(con)*\n")
+        parts.append("\"With respect to my learned opponent - the motion is not wrong, it is *overblown*.\n")
         parts.append("Yes, \(topic) matters. But \"defining challenge\"? That is a claim of supremacy, and supremacy requires proof that my opponent has not provided.\n")
         if insights.count > 2 {
             parts.append("Counter-evidence: *\(insights[2])*\n")
@@ -657,13 +332,13 @@ final class DebateLogicGateEngine {
         parts.append("Three rebuttals:\n")
         parts.append("**First**: Every generation believes its challenges are unique. They rarely are.\n")
         parts.append("**Second**: Overemphasis on \(topic) diverts resources and attention from equally pressing concerns.\n")
-        parts.append("**Third**: The framing of \"defining challenge\" implies crisis. But perhaps \(topic) is not a crisis — it is simply the next chapter.\n")
+        parts.append("**Third**: The framing of \"defining challenge\" implies crisis. But perhaps \(topic) is not a crisis - it is simply the next chapter.\n")
         parts.append("I urge you: vote against the motion. Not because \(topic) is unimportant, but because calling it 'defining' is an act of intellectual laziness.\"\n")
 
         parts.append("---\n### ⚖️ JUDGES' DELIBERATION\n")
         parts.append("The judges confer. Both sides presented compelling arguments. The evidence is nuanced.\n")
-        parts.append("**Verdict**: The motion passes — narrowly — not because the proposition proved supremacy, but because the opposition failed to provide a more compelling alternative framing.\n")
-        parts.append("\n**The deeper truth**: Both debaters were arguing about the same elephant from different rooms. \(topic.capitalized) is neither the \"defining\" challenge nor a mere chapter. It is a *lens* — and through it, every challenge looks both more urgent and more solvable.")
+        parts.append("**Verdict**: The motion passes - narrowly - not because the proposition proved supremacy, but because the opposition failed to provide a more compelling alternative framing.\n")
+        parts.append("\n**The deeper truth**: Both debaters were arguing about the same elephant from different rooms. \(topic.capitalized) is neither the \"defining\" challenge nor a mere chapter. It is a *lens* - and through it, every challenge looks both more urgent and more solvable.")
 
         return parts.joined(separator: "\n")
     }
@@ -680,7 +355,7 @@ final class DebateLogicGateEngine {
         for (i, insight) in insights.prefix(3).enumerated() {
             parts.append("**Evidence \(i+1)**: *\(insight)*\n")
         }
-        parts.append("The pattern converges: \(topic) is not just relevant — it is *necessary*. The strongest version of this argument doesn't rely on hype or fear, but on the simple accumulation of evidence pointing in one direction.\n")
+        parts.append("The pattern converges: \(topic) is not just relevant - it is *necessary*. The strongest version of this argument doesn't rely on hype or fear, but on the simple accumulation of evidence pointing in one direction.\n")
 
         parts.append("### 💪 The Strongest Case AGAINST \(topic.capitalized)\n")
         parts.append("But intellectual honesty demands equal rigor:\n")
@@ -713,17 +388,17 @@ final class DebateLogicGateEngine {
         parts.append("### Five Provocations\n")
         parts.append("**1.** What if \(topic) is a distraction from something more fundamental that we haven't named yet?\n")
         if let first = insights.randomElement() {
-            parts.append("**2.** The evidence says: *\(first)* — but what if the evidence is measuring the wrong thing?\n")
+            parts.append("**2.** The evidence says: *\(first)* - but what if the evidence is measuring the wrong thing?\n")
         } else {
             parts.append("**2.** What if the measurements we trust are artifacts of the instruments, not features of reality?\n")
         }
         parts.append("**3.** What if the framework through which we study \(topic) is itself the limitation?\n")
-        parts.append("**4.** What if the question \"Is \(topic) important?\" is the wrong question — and asking it prevents us from seeing what's actually happening?\n")
+        parts.append("**4.** What if the question \"Is \(topic) important?\" is the wrong question - and asking it prevents us from seeing what's actually happening?\n")
         parts.append("**5.** What if our emotional investment in \(topic) has compromised our ability to evaluate it objectively?\n")
 
         parts.append("### The Devil's Gift\n")
-        parts.append("The purpose of the devil's advocate is not to destroy — it is to *purify*. Every argument that survives this gauntlet emerges stronger.\n")
-        parts.append("If \(topic) is truly important, it can withstand the best attack. If it can't — we needed to know that.\n")
+        parts.append("The purpose of the devil's advocate is not to destroy - it is to *purify*. Every argument that survives this gauntlet emerges stronger.\n")
+        parts.append("If \(topic) is truly important, it can withstand the best attack. If it can't - we needed to know that.\n")
         parts.append("The devil asks only one thing: **Do you believe this because it's true, or because believing it is comfortable?**\n")
         parts.append("Answer honestly, and you'll have something no amount of agreement can provide: *earned conviction*.")
 

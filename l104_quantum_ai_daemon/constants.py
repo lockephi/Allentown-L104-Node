@@ -24,20 +24,21 @@ GOLDEN_TICK = PHI * 10                     # ≈ 16.18s sacred tick
 
 # ═══════════════════════════════════════════════════════════════════
 # DAEMON TIMING — adaptive cycle configuration
+# v2.1: Optimized for lower CPU (increased intervals)
 # ═══════════════════════════════════════════════════════════════════
 
 CYCLE_INTERVAL_S = float(os.environ.get(
-    "L104_QAI_CYCLE_INTERVAL", "120.0"))      # Full improvement cycle: 2 min
+    "L104_QAI_CYCLE_INTERVAL", "180.0"))      # Full improvement cycle: 3 min (was 2)
 CYCLE_MIN_INTERVAL_S = float(os.environ.get(
-    "L104_QAI_CYCLE_MIN", "60.0"))             # Floor: 1 min under low load
+    "L104_QAI_CYCLE_MIN", "90.0"))             # Floor: 1.5 min under low load (was 1)
 CYCLE_MAX_INTERVAL_S = float(os.environ.get(
-    "L104_QAI_CYCLE_MAX", "600.0"))            # Ceiling: 10 min under high load
+    "L104_QAI_CYCLE_MAX", "900.0"))            # Ceiling: 15 min under high load (was 10)
 LOAD_THRESHOLD_LOW = 20.0                      # CPU% → faster cycles
 LOAD_THRESHOLD_HIGH = 70.0                     # CPU% → slower cycles
 
-# Scan settings
+# Scan settings (v2.1: reduced batch for lower CPU spikes)
 SCAN_BATCH_SIZE = int(os.environ.get(
-    "L104_QAI_SCAN_BATCH", "25"))              # Files per improvement cycle
+    "L104_QAI_SCAN_BATCH", "15"))              # Files per improvement cycle (was 25)
 MAX_FILE_SIZE_KB = 500                         # Skip files > 500KB (data files)
 SCAN_DEPTH_MAX = 5                             # Max directory recursion depth
 

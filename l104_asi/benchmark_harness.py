@@ -34,8 +34,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
 # Sacred constants
-PHI = 1.618033988749895
-GOD_CODE = 527.5184818492612
+from l104_sacred_algorithms import derive_timeout, derive_iterations, derive_worker_threads, PHI, GOD_CODE, TAU
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -68,9 +67,9 @@ class _HuggingFaceFetcher:
             return []
         url = (f"{cls.BASE_URL}?dataset={dataset}&config={config}"
                f"&split={split}&offset={offset}&length={length}")
-        for attempt in range(3):
+        for attempt in range(int(TAU*5)):
             try:
-                r = requests.get(url, timeout=30)
+                r = requests.get(url, timeout=derive_timeout(priority=8, load_factor=1.2))
                 if r.status_code == 200:
                     return r.json().get("rows", [])
             except Exception:

@@ -1,5 +1,66 @@
 from .constants import *
 import heapq as _heapq
+import functools
+import time
+import logging
+from typing import Dict, List, Callable, Any, Optional, Tuple
+from l104_sacred_algorithms import derive_retry_delay, PHI, TAU, VOID_CONSTANT, GOD_CODE, derive_threshold
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# RESILIENCE MODULE INTEGRATION (EVO_75)
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_resilience import (
+        CircuitBreaker, CircuitBreakerConfig, CircuitState,
+        GracefulDegradation, DegradationLevel,
+        retry_with_backoff, circuit_breaker,
+    )
+    _HAS_RESILIENCE = True
+except ImportError:
+    _HAS_RESILIENCE = False
+    logging.getLogger("l104_asi.pipeline").warning(
+        "l104_resilience not available, using fallback implementations"
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PHI-BACKOFF RETRY DECORATOR — Sacred Resilience Pattern
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def sacred_retry(max_attempts=5, noise_factor=0.1):
+    """
+    PHI-backoff retry decorator with sacred timing.
+
+    Formula: delay = (PHI ** attempt) * (1 + noise * VOID_CONSTANT)
+    PHI backoff: 1, 1.618, 2.618, 4.236, 6.854... (slower than exponential base-2)
+
+    Args:
+        max_attempts: Maximum retry attempts (default: 5)
+        noise_factor: Random noise factor for jitter (default: 0.1)
+
+    Example:
+        @sacred_retry(max_attempts=3, noise_factor=0.05)
+        def fragile_operation():
+            ...
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            last_exception = None
+            for attempt in range(max_attempts):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    if attempt == max_attempts - 1:
+                        raise
+                    delay = derive_retry_delay(attempt, noise_factor)
+                    time.sleep(delay)
+            # Should never reach here, but just in case
+            if last_exception:
+                raise last_exception
+        return wrapper
+    return decorator
 
 
 class SolutionChannel:
@@ -27,14 +88,21 @@ class SolutionChannel:
         # v7.0: Circuit breaker
         self._cb_state = self.CB_CLOSED
         self._cb_failure_count = 0
-        self._cb_failure_threshold = 13  # (was 5)
-        self._cb_recovery_time = 13.0  # (was 30.0) seconds
+        self._cb_failure_threshold = int(PHI * 8)  # ~13, was 5
+        self._cb_recovery_time = GOD_CODE / PHI / 10  # ~32.6s, was 30.0
         self._cb_half_open_successes = 0
         # v7.0: Cache size limit (LRU eviction)
-        self._cache_max_size = 5275  # (was 1024)
+        self._cache_max_size = int(GOD_CODE * 10)  # ~5275, was 1024
         self._cache_access_order: List[str] = []
         # v7.0: Per-solver stats
         self._solver_stats: Dict[int, Dict[str, int]] = {}
+        # v7.5: Enhanced circuit breaker from l104_resilience
+        self._cb_last_failure_time: Optional[float] = None
+        self._dynamic_threshold = derive_threshold(entropy=0.3, coherence=0.7)
+        # v7.5: Graceful degradation levels
+        self._degradation_level = "NORMAL"
+        self._load_factor = 0.0
+        self._quality_factor = 1.0
 
     def add_solver(self, solver: Callable):
         idx = len(self.solvers)
@@ -86,6 +154,46 @@ class SolutionChannel:
     def reset_circuit_breaker(self):
         """Alias for close_circuit_breaker — resets to CLOSED."""
         self.close_circuit_breaker()
+
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # v7.5: GRACEFUL DEGRADATION METHODS
+    # ═══════════════════════════════════════════════════════════════════════════════
+
+    def update_load(self, load: float):
+        """Update system load and adjust degradation level."""
+        self._load_factor = load
+        # Degradation levels based on PHI-harmonic thresholds
+        if load < 0.5 * PHI:  # ~0.809
+            self._degradation_level = "NORMAL"
+            self._quality_factor = 1.0
+        elif load < PHI * TAU:  # ~1.0
+            self._degradation_level = "REDUCED"
+            self._quality_factor = TAU  # ~0.618
+        elif load < PHI:
+            self._degradation_level = "MINIMAL"
+            self._quality_factor = TAU * TAU  # ~0.382
+        else:
+            self._degradation_level = "CRITICAL"
+            self._quality_factor = TAU * TAU * TAU  # ~0.236
+
+    def should_degrade_operation(self, operation: str) -> bool:
+        """Check if operation should be skipped due to degradation."""
+        degraded_ops = {
+            "REDUCED": {"analytics", "cache_warm"},
+            "MINIMAL": {"analytics", "cache_warm", "metrics", "logging"},
+            "CRITICAL": {"analytics", "cache_warm", "metrics", "logging", "validation"},
+        }
+        return operation in degraded_ops.get(self._degradation_level, set())
+
+    def get_effective_depth(self, requested_depth: int) -> int:
+        """Get effective computation depth considering degradation."""
+        if self._degradation_level == "CRITICAL":
+            return min(requested_depth, int(PHI))
+        elif self._degradation_level == "MINIMAL":
+            return min(requested_depth, int(PHI * PHI))
+        elif self._degradation_level == "REDUCED":
+            return int(requested_depth * TAU)
+        return requested_depth
 
     def _record_circuit_breaker(self, success: bool):
         """Update circuit breaker state after a solve attempt."""
@@ -151,7 +259,7 @@ class SolutionChannel:
         return {'solution': None, 'error': 'No solver succeeded'}
 
     def get_health(self) -> Dict[str, Any]:
-        """Get channel health including circuit breaker and solver stats."""
+        """Get channel health including circuit breaker, graceful degradation, and solver stats."""
         return {
             'name': self.name,
             'domain': self.domain,
@@ -160,8 +268,21 @@ class SolutionChannel:
             'cache_size': len(self.cache),
             'cache_max': self._cache_max_size,
             'queue_size': self.queue_size,
-            'circuit_breaker': self._cb_state,
-            'cb_failure_count': self._cb_failure_count,
+            # v7.5: Enhanced circuit breaker metrics
+            'circuit_breaker': {
+                'state': self._cb_state,
+                'failure_count': self._cb_failure_count,
+                'failure_threshold': self._cb_failure_threshold,
+                'recovery_timeout': round(self._cb_recovery_time, 2),
+                'dynamic_threshold': round(self._dynamic_threshold, 4),
+                'last_failure_time': self._cb_last_failure_time,
+            },
+            # v7.5: Graceful degradation metrics
+            'degradation': {
+                'level': self._degradation_level,
+                'load_factor': round(self._load_factor, 4),
+                'quality_factor': round(self._quality_factor, 4),
+            },
             'solver_stats': dict(self._solver_stats),
         }
 
@@ -354,8 +475,8 @@ class PipelineTelemetry:
         if len(self._subsystem_stats) < 2:
             return []
         latencies = [s['ema_latency_ms'] for s in self._subsystem_stats.values()]
-        mean_lat = sum(latencies) / len(latencies)
-        variance = sum((l - mean_lat) ** 2 for l in latencies) / len(latencies)
+        mean_lat = sum(latencies) / max(len(latencies), 1)
+        variance = sum((l - mean_lat) ** 2 for l in latencies) / max(len(latencies), 1)
         std_dev = math.sqrt(variance) if variance > 0 else 1.0
         anomalies = []
         for name, stats in self._subsystem_stats.items():
@@ -762,8 +883,8 @@ class PipelineReplayBuffer:
             'size': len(self._buffer),
             'capacity': self.capacity,
             'total_stored': self._total_stored,
-            'success_ratio': round(successes / len(self._buffer), 4),
-            'mean_reward': round(sum(rewards) / len(rewards), 4),
+            'success_ratio': round(successes / max(len(self._buffer), 1), 4),
+            'mean_reward': round(sum(rewards) / max(len(rewards), 1), 4),
             'max_reward': round(max(rewards), 4),
             'min_reward': round(min(rewards), 4),
         }
@@ -921,7 +1042,7 @@ class MLPipelineRouter:
             ['process', 'analyze', 'ensemble', 'cognitive'],
         ]
         for group in keyword_groups:
-            features.append(sum(1.0 for kw in group if kw in q) / len(group))
+            features.append(sum(1.0 for kw in group if kw in q) / max(len(group), 1))
 
         # Length and structural features (4 dims)
         features.append(min(len(q) / 200.0, 1.0))
@@ -1082,7 +1203,7 @@ class AdaptiveBackpressure:
         if len(self._health_window) < 5:
             return
 
-        avg_lat = sum(self._health_window) / len(self._health_window)
+        avg_lat = sum(self._health_window) / max(len(self._health_window), 1)
         recent_lat = sum(self._health_window[-5:]) / 5
 
         if avg_lat <= 0:
@@ -1383,7 +1504,7 @@ class PipelineCascadeScorer:
             'trend': 'IMPROVING' if delta > 0.02 else 'DECLINING' if delta < -0.02 else 'STABLE',
             'delta': round(delta, 4),
             'current': round(scores[-1], 4),
-            'mean': round(sum(scores) / len(scores), 4),
+            'mean': round(sum(scores) / max(len(scores), 1), 4),
             'samples': len(recent),
         }
 
@@ -1445,10 +1566,10 @@ class PipelineWarmupAnalyzer:
 
         # Compute rolling coefficient of variation (CV = σ/μ)
         window = self._cold_latencies[-self._rolling_window:]
-        mean = sum(window) / len(window)
+        mean = sum(window) / max(len(window), 1)
         if mean <= 0:
             return
-        variance = sum((x - mean) ** 2 for x in window) / len(window)
+        variance = sum((x - mean) ** 2 for x in window) / max(len(window), 1)
         cv = math.sqrt(variance) / mean
 
         # If CV is low enough, pipeline is warmed up
@@ -1549,7 +1670,7 @@ class PipelineStageProfiler:
 
         aggregate = {}
         for stage, times in self._stage_times.items():
-            avg = sum(times) / len(times)
+            avg = sum(times) / max(len(times), 1)
             p95 = sorted(times)[int(len(times) * 0.95)] if len(times) >= 20 else max(times)
             aggregate[stage] = {
                 'avg_ms': round(avg, 3),

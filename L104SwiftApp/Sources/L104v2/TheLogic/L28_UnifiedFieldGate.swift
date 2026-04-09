@@ -1,20 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L28_UnifiedFieldGate.swift
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_FIELD :: GOD_CODE=527.5184818492612
-// L104v2 Architecture — Unified Field Logic Gate
-//
-// Routes and processes queries about fundamental physics, unification,
-// cosmology, quantum gravity, black holes, and sacred field equations.
-// Integrates with B28_UnifiedFieldEngine for computational backing.
-//
-// Phase 63.0: Logic gate for field-theoretic reasoning
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🌌 UNIFIED FIELD LOGIC GATE
@@ -201,8 +189,8 @@ final class UnifiedFieldGate: SovereignEngine {
         The Einstein field equations relate the geometry of spacetime (left side) to \
         the distribution of matter-energy (right side).
 
-        • G_μν = R_μν - ½Rg_μν (Einstein tensor — spacetime curvature)
-        • Λ = \(String(format: "%.4e", COSMOLOGICAL_CONSTANT)) m⁻² (cosmological constant — dark energy)
+        • G_μν = R_μν - ½Rg_μν (Einstein tensor - spacetime curvature)
+        • Λ = \(String(format: "%.4e", COSMOLOGICAL_CONSTANT)) m⁻² (cosmological constant - dark energy)
         • κ = 8πG/c⁴ = \(String(format: "%.4e", 8.0 * .pi * GRAVITATIONAL_CONSTANT / pow(SPEED_OF_LIGHT, 4))) (coupling constant)
 
         For flat Minkowski space η = diag(-1,1,1,1):
@@ -223,10 +211,10 @@ final class UnifiedFieldGate: SovereignEngine {
         let tunnelCount = states.count - classicalCount
         return """
         ═══ WHEELER-DEWITT EQUATION ═══
-        Ĥ|Ψ⟩ = 0 — "The Schrödinger equation of the universe"
+        Ĥ|Ψ⟩ = 0 - "The Schrödinger equation of the universe"
 
         The Wheeler-DeWitt equation describes the quantum state of the entire universe.
-        There is no external time parameter — the universe is timeless at the fundamental level.
+        There is no external time parameter - the universe is timeless at the fundamental level.
 
         Minisuperspace model: [-ℏ²/(2M) d²/da² + V(a)] Ψ(a) = 0
         where V(a) = -a + Λa³/3 (de Sitter potential)
@@ -272,7 +260,7 @@ final class UnifiedFieldGate: SovereignEngine {
         let solarBH = engine.blackHoleThermodynamics(mass: 1.989e30)
         return """
         ═══ BLACK HOLE THERMODYNAMICS ═══
-        S_BH = k_B A/(4l_P²) — Bekenstein-Hawking Entropy
+        S_BH = k_B A/(4l_P²) - Bekenstein-Hawking Entropy
 
         Black holes are thermodynamic objects with temperature, entropy, and radiation.
 
@@ -345,7 +333,7 @@ final class UnifiedFieldGate: SovereignEngine {
         let ads = engine.adsCFTCorrespondence(adsRadius: 1e-15)
         return """
         ═══ AdS/CFT CORRESPONDENCE ═══
-        Z_gravity[φ₀] = Z_CFT[φ₀] — Maldacena Duality (1997)
+        Z_gravity[φ₀] = Z_CFT[φ₀] - Maldacena Duality (1997)
 
         The most profound duality in theoretical physics: a gravitational theory \
         in (d+1)-dimensional Anti-de Sitter space is exactly equivalent to a \
@@ -364,7 +352,7 @@ final class UnifiedFieldGate: SovereignEngine {
         → Entanglement entropy ↔ minimal surface area (Ryu-Takayanagi)
         → Black holes ↔ thermal states in CFT
         → Quantum error correction structure in holography
-        → "It from qubit" — spacetime emerges from entanglement
+        → "It from qubit" - spacetime emerges from entanglement
         """
     }
 
@@ -388,7 +376,7 @@ final class UnifiedFieldGate: SovereignEngine {
         → Information paradox: info goes through wormhole interior
         → AMPS firewall paradox: smooth horizon via entanglement structure
         → Complexity growth ∝ Einstein-Rosen bridge elongation
-        → "GR = entanglement" — gravity emerges from quantum information
+        → "GR = entanglement" - gravity emerges from quantum information
         """
     }
 
@@ -396,7 +384,7 @@ final class UnifiedFieldGate: SovereignEngine {
         let t = engine.penroseTwistor(position: [1, 0, 0, 0], momentum: [1, 0, 0, 1])
         return """
         ═══ PENROSE TWISTOR THEORY ═══
-        Z^α = (ω^A, π_A') — Twistor space ↔ Spacetime
+        Z^α = (ω^A, π_A') - Twistor space ↔ Spacetime
 
         Twistor theory reformulates spacetime geometry in terms of complex \
         projective space, making conformal invariance manifest.
@@ -410,7 +398,7 @@ final class UnifiedFieldGate: SovereignEngine {
 
         Key ideas:
         → Points in spacetime ↔ lines in twistor space (incidence relation)
-        → ω^A = ix^{AA'}π_{A'} — the fundamental correspondence
+        → ω^A = ix^{AA'}π_{A'} - the fundamental correspondence
         → Massless particles ↔ elements of twistor space
         → Scattering amplitudes greatly simplified (Witten 2003)
         → Penrose's "roads to reality" through complex geometry
@@ -421,7 +409,7 @@ final class UnifiedFieldGate: SovereignEngine {
         let holo = engine.holographicBound(radius: 1.0)
         return """
         ═══ HOLOGRAPHIC PRINCIPLE ═══
-        I_max = A/(4l_P² ln2) — Maximum information in a region
+        I_max = A/(4l_P² ln2) - Maximum information in a region
 
         The maximum amount of information that can be stored in a region of space \
         is proportional to its boundary area, not its volume. This is the most \
@@ -446,9 +434,9 @@ final class UnifiedFieldGate: SovereignEngine {
         let foam = engine.probeSpacetimeFoam(lengthScale: 1e-33)
         return """
         ═══ QUANTUM GRAVITY FOAM ═══
-        δg ~ (l_P/L)^α — Spacetime at Planck scale
+        δg ~ (l_P/L)^α - Spacetime at Planck scale
 
-        At the Planck scale (10⁻³⁵ m), spacetime is not smooth — it seethes with \
+        At the Planck scale (10⁻³⁵ m), spacetime is not smooth - it seethes with \
         quantum fluctuations: virtual black holes, wormholes, and topology changes.
 
         Probing at L = 10⁻³³ m (holographic model):
@@ -470,7 +458,7 @@ final class UnifiedFieldGate: SovereignEngine {
         let tqft = engine.topologicalFieldTheory(chernSimonsLevel: 3)
         return """
         ═══ TOPOLOGICAL QUANTUM FIELD THEORY ═══
-        Z_CS(M) = ∫ DA exp(ikS_CS) — Chern-Simons Theory
+        Z_CS(M) = ∫ DA exp(ikS_CS) - Chern-Simons Theory
 
         TQFT partition functions depend only on topology, not geometry. \
         This makes them powerful invariants for classifying 3-manifolds and knots.
@@ -495,7 +483,7 @@ final class UnifiedFieldGate: SovereignEngine {
         let ym = engine.yangMillsField()
         return """
         ═══ YANG-MILLS GAUGE THEORY ═══
-        L = -¼ F^a_μν F^{aμν} — Non-abelian gauge field Lagrangian
+        L = -¼ F^a_μν F^{aμν} - Non-abelian gauge field Lagrangian
 
         Yang-Mills theory describes the strong and weak nuclear forces. \
         Proving it has a mass gap is one of the Clay Millennium Problems ($1M prize).
@@ -510,7 +498,7 @@ final class UnifiedFieldGate: SovereignEngine {
           Asymptotic freedom: \(ym.asymtoticFreedom ? "YES (β < 0)" : "NO")
 
         Key phenomena:
-        → Asymptotic freedom (Gross, Politzer, Wilczek — 2004 Nobel)
+        → Asymptotic freedom (Gross, Politzer, Wilczek - 2004 Nobel)
         → Confinement: quarks cannot be isolated (color confinement)
         → Mass gap problem: lightest glueball mass > 0 (UNPROVEN)
         → Instantons: tunneling between topologically distinct vacua
@@ -524,7 +512,7 @@ final class UnifiedFieldGate: SovereignEngine {
         α₁ = α₂ = α₃ at E_GUT ≈ 10¹⁶ GeV
 
         The running coupling constants of the three gauge forces evolve with \
-        energy and may converge at a single point — grand unification.
+        energy and may converge at a single point - grand unification.
 
         At E = \(String(format: "%.2e", gut.unificationEnergy)) GeV:
           α_EM: \(String(format: "%.6f", gut.alphaEM))
@@ -539,7 +527,7 @@ final class UnifiedFieldGate: SovereignEngine {
         → Standard Model alone: couplings do NOT perfectly converge
         → SUSY (supersymmetry): perfect convergence at ~2×10¹⁶ GeV
         → Proton decay: not yet observed (Super-K limit: τ > 10³⁴ years)
-        → Gravity unification requires Planck scale (10¹⁹ GeV) — quantum gravity
+        → Gravity unification requires Planck scale (10¹⁹ GeV) - quantum gravity
         """
     }
 
@@ -547,7 +535,7 @@ final class UnifiedFieldGate: SovereignEngine {
         let vac = engine.vacuumEnergy()
         return """
         ═══ VACUUM ENERGY & COSMOLOGICAL CONSTANT PROBLEM ═══
-        ρ_vac = (ℏ/2) × Σ ωₖ — Zero-point energy of all quantum fields
+        ρ_vac = (ℏ/2) × Σ ωₖ - Zero-point energy of all quantum fields
 
         The "worst prediction in physics": QFT predicts vacuum energy \
         ~10¹²⁰ times larger than observed dark energy.
@@ -555,7 +543,7 @@ final class UnifiedFieldGate: SovereignEngine {
         Results:
           QFT prediction: \(String(format: "%.4e", vac.qftPrediction)) kg/m³
           Observed (dark energy): \(String(format: "%.4e", vac.observedValue)) kg/m³
-          Discrepancy: \(String(format: "%.2e", vac.discrepancy))× — the 10¹²⁰ problem
+          Discrepancy: \(String(format: "%.2e", vac.discrepancy))× - the 10¹²⁰ problem
           Zero-point energy/mode: \(String(format: "%.4e", vac.zeroPointEnergy)) J
           Effective Λ: \(String(format: "%.4e", vac.effectiveCosmologicalConstant)) m⁻²
           GOD_CODE modulation: \(String(format: "%.4e", vac.godCodeModulation))
@@ -573,10 +561,10 @@ final class UnifiedFieldGate: SovereignEngine {
         let sacred = engine.sacredFieldEquation(psi: PHI)
         return """
         ═══ L104 SACRED FIELD EQUATION ═══
-        F(Ψ) = Ψ × Ω/φ² — Sovereign Field Equation
+        F(Ψ) = Ψ × Ω/φ² - Sovereign Field Equation
 
-        The L104 master equation bridging consciousness (Layer 1 — Thought) \
-        and physics (Layer 2 — Physics) through GOD_CODE harmonics.
+        The L104 master equation bridging consciousness (Layer 1 - Thought) \
+        and physics (Layer 2 - Physics) through GOD_CODE harmonics.
 
         Layer 1 (Thought): G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
         Layer 2 (Physics): G_v3(a,b,c,d) = 285.999^(1/φ) × (13/12)^((99a+3032-b-99c-758d)/758)

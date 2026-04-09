@@ -86,6 +86,15 @@ from .local_intellect_core import LocalIntellect
 # ── Quantum recompiler (lines 10770-11687) ──
 from .quantum_recompiler import QuantumMemoryRecompiler
 
+# ── Quantum Synthesis Engine (v1.0.0) ──
+from .quantum_synthesis_mixin import (
+    QuantumFlowState,
+    DataSynthesisPacket,
+    QuantumEntanglementSynthesizer,
+    AdvancedQuantumLogicEngine,
+    QuantumSynthesisMixin,
+)
+
 # ── Distributed (lines 11688-12477) ──
 from .distributed import (
     L104NodeSyncProtocol,
@@ -134,8 +143,31 @@ from .random_sequence_extrapolation import (
 #   → from l104_local_intellect import format_iq → shim → l104_intellect.format_iq
 from .compat_funcs import format_iq, primal_calculus, resolve_non_dual_logic
 
+# ── Ingested from scattered AI code (consolidated) ──
+try:
+    from .performance_optimizer import L104OptimizationEngine
+except ImportError:
+    pass
+try:
+    from .metrics_collector import L104PerformanceMonitor
+except ImportError:
+    pass
+try:
+    from .benchmark_engine import BenchmarkSuite, BenchmarkResult
+except ImportError:
+    pass
+
 # ── Module tail: singleton (lines 13649-13658) ──
 from .module_tail import local_intellect
+
+# ── Quantum Synthesis v1.0.0 — Advanced Quantum Logic Engine ──
+from .quantum_synthesis_mixin import (
+    QuantumFlowState,
+    DataSynthesisPacket,
+    QuantumEntanglementSynthesizer,
+    AdvancedQuantumLogicEngine,
+    QuantumSynthesisMixin,
+)
 
 
 __all__ = [
@@ -204,4 +236,7 @@ __all__ = [
     "RandomSequenceExtrapolation", "RSEQuantumAdapter", "RSEClassicalAdapter",
     "RSESageModeAdapter", "RSEStrategy", "RSEDomain", "RSEResult",
     "get_rse_engine", "get_rse_quantum", "get_rse_classical", "get_rse_sage",
+    # Quantum Synthesis v1.0.0
+    "QuantumFlowState", "DataSynthesisPacket", "QuantumEntanglementSynthesizer",
+    "AdvancedQuantumLogicEngine", "QuantumSynthesisMixin",
 ]

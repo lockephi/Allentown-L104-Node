@@ -1023,6 +1023,16 @@ class HyperCore:
                 if self.metrics.trend() == "DEGRADING":
                     interval = min(interval * 1.5, 120)
 
+                # CPU-pressure scaling: yield to user workloads
+                try:
+                    import psutil as _hc_ps
+                    _hc_cpu = _hc_ps.cpu_percent(interval=0)
+                    if _hc_cpu > 50.0:
+                        _hc_scale = 1.0 + (_hc_cpu - 50.0) / 25.0  # 50%→1x, 75%→2x, 100%→3x
+                        interval = min(300, interval * _hc_scale)
+                except Exception:
+                    pass
+
                 try:
                     await asyncio.wait_for(self._shutdown_event.wait(), timeout=interval)
                     break  # Shutdown signal received

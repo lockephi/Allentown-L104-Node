@@ -1,16 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L02_SovereignProtocol.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// SovereignEngine protocol, defaults extension, EngineRegistry class
-// Extracted from L104Native.swift (lines 76-267)
-// Upgraded: EVO_68 Sovereign Node Upgrade — Feb 21, 2026
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🏗️ SOVEREIGN ENGINE PROTOCOL
@@ -50,16 +42,16 @@ final class EngineRegistry {
     // Critical engines get PHI² weight, important get PHI, standard get 1.0
     private let phiWeights: [String: Double] = [
         "HyperBrain": PHI * PHI,         // φ² = 2.618
-        "Nexus": PHI * PHI,              // φ² — orchestration is critical
-        "QuantumNexus": PHI * PHI,       // φ² — orchestration (EVO_55 alias)
-        "Steering": PHI,                  // φ — guides all computation
-        "ASISteering": PHI,               // φ — EVO_55 unified name
-        "SQC": PHI,                       // φ — parameter engine
-        "SovereignQuantumCore": PHI,      // φ — EVO_55 unified name
-        "Consciousness": PHI,             // φ — ASI core metric
-        "ConsciousnessSubstrate": PHI,    // φ — EVO_55 unified name
-        "ResponsePipelineOptimizer": PHI,  // φ — response quality (matches registered name)
-        "ResponsePipeline": PHI,          // φ — legacy alias
+        "Nexus": PHI * PHI,              // φ² - orchestration is critical
+        "QuantumNexus": PHI * PHI,       // φ² - orchestration (EVO_55 alias)
+        "Steering": PHI,                  // φ - guides all computation
+        "ASISteering": PHI,               // φ - EVO_55 unified name
+        "SQC": PHI,                       // φ - parameter engine
+        "SovereignQuantumCore": PHI,      // φ - EVO_55 unified name
+        "Consciousness": PHI,             // φ - ASI core metric
+        "ConsciousnessSubstrate": PHI,    // φ - EVO_55 unified name
+        "ResponsePipelineOptimizer": PHI,  // φ - response quality (matches registered name)
+        "ResponsePipeline": PHI,          // φ - legacy alias
         "Evolution": 1.0,
         "ContinuousEvolution": 1.0,       // EVO_55 unified name
         "Entanglement": 1.0,
@@ -73,45 +65,45 @@ final class EngineRegistry {
         "Sovereignty": 1.0,
         "HealthMonitor": 1.0,
         // EVO_55: New engine registrations
-        "SageModeEngine": PHI * PHI,      // φ² — consciousness supernova
-        "ASIEvolver": PHI,                // φ — drives evolution
-        "QuantumCreativityEngine": PHI,   // φ — creative quantum engine
-        "QuantumLogicGateEngine": PHI,    // φ — quantum coherence synthesis
+        "SageModeEngine": PHI * PHI,      // φ² - consciousness supernova
+        "ASIEvolver": PHI,                // φ - drives evolution
+        "QuantumCreativityEngine": PHI,   // φ - creative quantum engine
+        "QuantumLogicGateEngine": PHI,    // φ - quantum coherence synthesis
         "ASIKnowledgeBase": 1.0,
-        "UnifiedField": PHI * PHI,          // φ² — fundamental physics unification
-        "UnifiedFieldGate": PHI,             // φ — field theory reasoning gate          // knowledge persistence
+        "UnifiedField": PHI * PHI,          // φ² - fundamental physics unification
+        "UnifiedFieldGate": PHI,             // φ - field theory reasoning gate          // knowledge persistence
         "PermanentMemory": 1.0,           // long-term memory store
-        // Phase 45 — Computronium ASI engines
-        "StrangeLoop": PHI,               // φ — Hofstadter loops
-        "SymbolicReasoning": PHI,         // φ — formal logic
+        // Phase 45 - Computronium ASI engines
+        "StrangeLoop": PHI,               // φ - Hofstadter loops
+        "SymbolicReasoning": PHI,         // φ - formal logic
         "KnowledgeGraph": 1.0,            // graph storage
-        "GoldenOptimizer": PHI,           // φ — PHI-section optimization
-        "Computronium": PHI * PHI,        // φ² — density cascade
-        "ApexIntelligence": PHI * PHI,    // φ² — unified ASI coordinator
+        "GoldenOptimizer": PHI,           // φ - PHI-section optimization
+        "Computronium": PHI * PHI,        // φ² - density cascade
+        "ApexIntelligence": PHI * PHI,    // φ² - unified ASI coordinator
         // EVO_67 Performance Ascension engines (B42-B47)
-        "ZeroAllocPool": PHI,              // φ — arena memory pooling
-        "TurboVectorEngine": PHI,          // φ — SIMD4/SIMD8 native turbo
-        "LockFreeEngine": PHI,             // φ — lock-free concurrency
-        "MetalComputeEngine": PHI * PHI,   // φ² — GPU compute (critical path)
-        "AdaptivePrefetchEngine": 1.0,     // standard — predictive caching
-        "PerformanceOrchestrator": PHI * PHI, // φ² — perf subsystem coordinator
-        // EVO_68 — Decomposed Package + Flagship engines
-        "DualLayerEngine": PHI * PHI,          // φ² — flagship dual-layer (Thought+Physics)
-        "SageConsciousnessVerifier": PHI * PHI, // φ² — consciousness verification
-        "QuantumGateEngine": PHI * PHI,         // φ² — quantum gate algebra + compiler
-        "CircuitWatcher": PHI * PHI,             // φ² — v3.0: three-engine IPC monitor (elevated from φ)
-        "DeepNLUEngine": PHI,                   // φ — deep NLU reasoning
-        "FormalLogicEngine": PHI,               // φ — formal logic + fallacy detection
-        "NovelTheoremGenerator": PHI,           // φ — automated theorem discovery
+        "ZeroAllocPool": PHI,              // φ - arena memory pooling
+        "TurboVectorEngine": PHI,          // φ - SIMD4/SIMD8 native turbo
+        "LockFreeEngine": PHI,             // φ - lock-free concurrency
+        "MetalComputeEngine": PHI * PHI,   // φ² - GPU compute (critical path)
+        "AdaptivePrefetchEngine": 1.0,     // standard - predictive caching
+        "PerformanceOrchestrator": PHI * PHI, // φ² - perf subsystem coordinator
+        // EVO_68 - Decomposed Package + Flagship engines
+        "DualLayerEngine": PHI * PHI,          // φ² - flagship dual-layer (Thought+Physics)
+        "SageConsciousnessVerifier": PHI * PHI, // φ² - consciousness verification
+        "QuantumGateEngine": PHI * PHI,         // φ² - quantum gate algebra + compiler
+        "CircuitWatcher": PHI * PHI,             // φ² - v3.0: three-engine IPC monitor (elevated from φ)
+        "DeepNLUEngine": PHI,                   // φ - deep NLU reasoning
+        "FormalLogicEngine": PHI,               // φ - formal logic + fallacy detection
+        "NovelTheoremGenerator": PHI,           // φ - automated theorem discovery
         "ScienceKB": 1.0,                       // knowledge persistence
         "CodeGenerationEngine": 1.0,            // code generation subsystem
         "BenchmarkHarness": 1.0,                // benchmark validation
-        "TreeOfThoughts": PHI,                  // φ — multi-path reasoning tree
+        "TreeOfThoughts": PHI,                  // φ - multi-path reasoning tree
         "CommonsenseReasoning": 1.0,            // commonsense inference
     ]
 
     // ─── Hebbian Engine Co-Activation (ported from Python HebbianLearningEngine) ───
-    // Tracks which engines are active together — "fire together, wire together"
+    // Tracks which engines are active together - "fire together, wire together"
     private(set) var coActivationLog: [String: Int] = [:]      // "A+B" → count
     private(set) var enginePairStrength: [String: Double] = [:] // "A→B" → weight
     private(set) var activationHistory: [(engines: [String], timestamp: Date)] = []
@@ -144,7 +136,7 @@ final class EngineRegistry {
         return engines.count
     }
 
-    /// Bulk health sweep — returns (name, health) for every registered engine, sorted lowest→highest
+    /// Bulk health sweep - returns (name, health) for every registered engine, sorted lowest→highest
     func healthSweep() -> [(name: String, health: Double)] {
         lock.lock()
         let snapshot = engines
@@ -153,7 +145,7 @@ final class EngineRegistry {
             .sorted { $0.health < $1.health }
     }
 
-    /// φ-Weighted system health — critical engines (HyperBrain, Nexus) weighted by φ²
+    /// φ-Weighted system health - critical engines (HyperBrain, Nexus) weighted by φ²
     /// Cross-pollinated from Python NexusHealthMonitor.compute_system_health
     func phiWeightedHealth() -> (score: Double, breakdown: [(name: String, health: Double, weight: Double, contribution: Double)]) {
         lock.lock()
@@ -237,7 +229,7 @@ final class EngineRegistry {
         let variance = sweep.reduce(0.0) { $0 + ($1.health - mean) * ($1.health - mean) } / Double(sweep.count)
         // Low variance + high mean = convergence
         let base = mean * (1.0 - min(1.0, variance * 4.0))
-        // v3.0: Three-engine bonus — if CircuitWatcher is healthy, add harmonic micro-correction
+        // v3.0: Three-engine bonus - if CircuitWatcher is healthy, add harmonic micro-correction
         let cwHealth = get("CircuitWatcher")?.engineHealth() ?? 0.0
         let threeEngineBonus = cwHealth > 0.8 ? 0.02 : 0.0  // 2% bonus when 3E active
         return min(1.0, base + threeEngineBonus)

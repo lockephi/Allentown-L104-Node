@@ -1,0 +1,851 @@
+{
+  "": {
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/master.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Quantum/QuantumDaemonManager.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/Quantum/QuantumDaemonManager.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/Quantum/QuantumDaemonManager.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/Quantum/QuantumDaemonManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/Quantum/QuantumDaemonManager.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B01_QuantumMath.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B01_QuantumMath.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B01_QuantumMath.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B01_QuantumMath~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B01_QuantumMath.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B02_HyperMath.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B02_HyperMath.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B02_HyperMath.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B02_HyperMath~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B02_HyperMath.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B03_SIMDAccelerate.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B03_SIMDAccelerate.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B03_SIMDAccelerate.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B03_SIMDAccelerate~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B03_SIMDAccelerate.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B04_NeuralBridge.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B04_NeuralBridge.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B04_NeuralBridge.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B04_NeuralBridge~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B04_NeuralBridge.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B05_PowerScheduler.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B05_PowerScheduler.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B05_PowerScheduler.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B05_PowerScheduler~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B05_PowerScheduler.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B06_SystemMonitor.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B06_SystemMonitor.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B06_SystemMonitor.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B06_SystemMonitor~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B06_SystemMonitor.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B07_SovereignCore.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B07_SovereignCore.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B07_SovereignCore.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B07_SovereignCore~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B07_SovereignCore.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B08_ContinuousEvolution.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B08_ContinuousEvolution.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B08_ContinuousEvolution.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B08_ContinuousEvolution~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B08_ContinuousEvolution.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B09_ASISteering.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B09_ASISteering.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B09_ASISteering.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B09_ASISteering~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B09_ASISteering.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B10_QuantumNexus.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B10_QuantumNexus.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B10_QuantumNexus.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B10_QuantumNexus~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B10_QuantumNexus.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B11_ASIInvention.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B11_ASIInvention.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B11_ASIInvention.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B11_ASIInvention~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B11_ASIInvention.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B12_EntanglementRouter.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B12_EntanglementRouter.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B12_EntanglementRouter.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B12_EntanglementRouter~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B12_EntanglementRouter.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B13_ResonanceNetwork.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B13_ResonanceNetwork.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B13_ResonanceNetwork.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B13_ResonanceNetwork~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B13_ResonanceNetwork.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B14_QuantumInfra.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B14_QuantumInfra.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B14_QuantumInfra.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B14_QuantumInfra~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B14_QuantumInfra.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B15_DistributedSystems.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B15_DistributedSystems.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B15_DistributedSystems.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B15_DistributedSystems~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B15_DistributedSystems.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B16_HardwareProfiler.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B16_HardwareProfiler.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B16_HardwareProfiler.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B16_HardwareProfiler~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B16_HardwareProfiler.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B17_HealthMonitor.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B17_HealthMonitor.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B17_HealthMonitor.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B17_HealthMonitor~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B17_HealthMonitor.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B18_PhysicsEngines.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B18_PhysicsEngines.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B18_PhysicsEngines.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B18_PhysicsEngines~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B18_PhysicsEngines.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B19_ASIBridge.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B19_ASIBridge.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B19_ASIBridge.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B19_ASIBridge~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B19_ASIBridge.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B20_ASIBridgeSwift.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B20_ASIBridgeSwift.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B20_ASIBridgeSwift.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B20_ASIBridgeSwift~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B20_ASIBridgeSwift.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B21_MathEngines1.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B21_MathEngines1.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B21_MathEngines1.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B21_MathEngines1~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B21_MathEngines1.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B22_MathEngines2.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B22_MathEngines2.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B22_MathEngines2.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B22_MathEngines2~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B22_MathEngines2.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B23_MathEngines3.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B23_MathEngines3.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B23_MathEngines3.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B23_MathEngines3~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B23_MathEngines3.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B24_MathEngines4.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B24_MathEngines4.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B24_MathEngines4.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B24_MathEngines4~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B24_MathEngines4.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B25_Phase45Engines.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B25_Phase45Engines.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B25_Phase45Engines.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B25_Phase45Engines~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B25_Phase45Engines.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B26_HyperBrain.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B26_HyperBrain.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B26_HyperBrain.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B26_HyperBrain~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B26_HyperBrain.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B27_IBMQuantumClient.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B27_IBMQuantumClient.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B27_IBMQuantumClient.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B27_IBMQuantumClient~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B27_IBMQuantumClient.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B28_UnifiedFieldEngine.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B28_UnifiedFieldEngine.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B28_UnifiedFieldEngine.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B28_UnifiedFieldEngine~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B28_UnifiedFieldEngine.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B29_DualLayerEngine.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B29_DualLayerEngine.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B29_DualLayerEngine.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B29_DualLayerEngine~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B29_DualLayerEngine.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B30_DynamicEquations.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B30_DynamicEquations.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B30_DynamicEquations.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B30_DynamicEquations~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B30_DynamicEquations.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B31_ConsciousnessVerifier.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B31_ConsciousnessVerifier.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B31_ConsciousnessVerifier.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B31_ConsciousnessVerifier~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B31_ConsciousnessVerifier.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B32_TreeOfThoughts.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B32_TreeOfThoughts.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B32_TreeOfThoughts.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B32_TreeOfThoughts~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B32_TreeOfThoughts.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B33_CommonsenseReasoning.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B33_CommonsenseReasoning.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B33_CommonsenseReasoning.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B33_CommonsenseReasoning~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B33_CommonsenseReasoning.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B34_LanguageComprehension.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B34_LanguageComprehension.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B34_LanguageComprehension.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B34_LanguageComprehension~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B34_LanguageComprehension.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B35_SymbolicMathSolver.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B35_SymbolicMathSolver.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B35_SymbolicMathSolver.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B35_SymbolicMathSolver~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B35_SymbolicMathSolver.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B36_CodeGeneration.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B36_CodeGeneration.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B36_CodeGeneration.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B36_CodeGeneration~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B36_CodeGeneration.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B37_BenchmarkHarness.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B37_BenchmarkHarness.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B37_BenchmarkHarness.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B37_BenchmarkHarness~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B37_BenchmarkHarness.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B38_QuantumGateEngine.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B38_QuantumGateEngine.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B38_QuantumGateEngine.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B38_QuantumGateEngine~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B38_QuantumGateEngine.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B39_StabilizerTableau.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B39_StabilizerTableau.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B39_StabilizerTableau.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B39_StabilizerTableau~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B39_StabilizerTableau.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B40_QuantumRouter.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B40_QuantumRouter.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B40_QuantumRouter.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B40_QuantumRouter~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B40_QuantumRouter.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B41_UpgradesDebug.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B41_UpgradesDebug.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B41_UpgradesDebug.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B41_UpgradesDebug~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B41_UpgradesDebug.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B42_ZeroAllocPool.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B42_ZeroAllocPool.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B42_ZeroAllocPool.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B42_ZeroAllocPool~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B42_ZeroAllocPool.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B43_SIMDTurbo.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B43_SIMDTurbo.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B43_SIMDTurbo.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B43_SIMDTurbo~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B43_SIMDTurbo.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B44_LockFreeEngine.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B44_LockFreeEngine.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B44_LockFreeEngine.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B44_LockFreeEngine~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B44_LockFreeEngine.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B45_MetalCompute.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B45_MetalCompute.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B45_MetalCompute.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B45_MetalCompute~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B45_MetalCompute.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B46_AdaptivePrefetch.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B46_AdaptivePrefetch.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B46_AdaptivePrefetch.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B46_AdaptivePrefetch~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B46_AdaptivePrefetch.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B47_PerformanceOrchestrator.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B47_PerformanceOrchestrator.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B47_PerformanceOrchestrator.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B47_PerformanceOrchestrator~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B47_PerformanceOrchestrator.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B48_QuantumTypes.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B48_QuantumTypes.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B48_QuantumTypes.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B48_QuantumTypes~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B48_QuantumTypes.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B49_CircuitWatcher.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B49_CircuitWatcher.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B49_CircuitWatcher.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B49_CircuitWatcher~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B49_CircuitWatcher.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B51_AdvancedSageReasoning.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B51_AdvancedSageReasoning.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B51_AdvancedSageReasoning.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B51_AdvancedSageReasoning~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B51_AdvancedSageReasoning.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B52_EntropyReversalDemon.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B52_EntropyReversalDemon.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B52_EntropyReversalDemon.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B52_EntropyReversalDemon~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B52_EntropyReversalDemon.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B53_GeneticRefiner.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B53_GeneticRefiner.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B53_GeneticRefiner.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B53_GeneticRefiner~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B53_GeneticRefiner.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B54_DataPrecognition.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B54_DataPrecognition.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B54_DataPrecognition.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B54_DataPrecognition~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B54_DataPrecognition.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B55_ConsciousnessSync.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B55_ConsciousnessSync.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B55_ConsciousnessSync.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B55_ConsciousnessSync~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B55_ConsciousnessSync.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B56_MLEngine.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B56_MLEngine.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B56_MLEngine.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B56_MLEngine~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B56_MLEngine.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B57_QuantumDataAnalyzer.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B57_QuantumDataAnalyzer.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B57_QuantumDataAnalyzer.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B57_QuantumDataAnalyzer~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B57_QuantumDataAnalyzer.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B58_QuantumAudioDAW.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B58_QuantumAudioDAW.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B58_QuantumAudioDAW.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B58_QuantumAudioDAW~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B58_QuantumAudioDAW.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B59_RealWorldSimulator.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B59_RealWorldSimulator.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B59_RealWorldSimulator.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B59_RealWorldSimulator~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B59_RealWorldSimulator.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B60_QuantumAIDaemon.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B60_QuantumAIDaemon.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B60_QuantumAIDaemon.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B60_QuantumAIDaemon~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B60_QuantumAIDaemon.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B61_QuantumNetworker.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B61_QuantumNetworker.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B61_QuantumNetworker.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B61_QuantumNetworker~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B61_QuantumNetworker.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B62_CognitiveLoop.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B62_CognitiveLoop.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B62_CognitiveLoop.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B62_CognitiveLoop~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B62_CognitiveLoop.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B62_VQPUIntegration.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B62_VQPUIntegration.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B62_VQPUIntegration.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B62_VQPUIntegration~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B62_VQPUIntegration.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B63_SQAVerifier.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B63_SQAVerifier.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B63_SQAVerifier.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B63_SQAVerifier~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B63_SQAVerifier.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B64_NumericalLattice.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B64_NumericalLattice.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B64_NumericalLattice.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B64_NumericalLattice~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B64_NumericalLattice.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B65_MathResearchEngines.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B65_MathResearchEngines.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B65_MathResearchEngines.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B65_MathResearchEngines~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B65_MathResearchEngines.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B66_LocalIntellect.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B66_LocalIntellect.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B66_LocalIntellect.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B66_LocalIntellect~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B66_LocalIntellect.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B67_VariationalQuantum.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B67_VariationalQuantum.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B67_VariationalQuantum.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B67_VariationalQuantum~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B67_VariationalQuantum.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B68_FeedbackSynthesis.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B68_FeedbackSynthesis.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B68_FeedbackSynthesis.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B68_FeedbackSynthesis~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B68_FeedbackSynthesis.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B69_LearningLoop.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B69_LearningLoop.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B69_LearningLoop.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B69_LearningLoop~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B69_LearningLoop.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B70_AgentOrchestrator.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B70_AgentOrchestrator.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B70_AgentOrchestrator~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B70_AgentOrchestrator.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B71_SoulQubit.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B71_SoulQubit.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B71_SoulQubit.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B71_SoulQubit~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B71_SoulQubit.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B72_ConsciousnessEngine.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B72_ConsciousnessEngine.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B72_ConsciousnessEngine.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B72_ConsciousnessEngine~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B72_ConsciousnessEngine.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B73_QuantumMemory.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B73_QuantumMemory.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B73_QuantumMemory.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B73_QuantumMemory~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheBrain/B73_QuantumMemory.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H01_HyperBrainExt.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H01_HyperBrainExt.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H01_HyperBrainExt.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H01_HyperBrainExt~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H01_HyperBrainExt.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H02_L104StateCore.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H02_L104StateCore.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H02_L104StateCore.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H02_L104StateCore~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H02_L104StateCore.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H03_L104StateCommands.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H03_L104StateCommands.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H03_L104StateCommands.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H03_L104StateCommands~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H03_L104StateCommands.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H04_L104StateNCG.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H04_L104StateNCG.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H04_L104StateNCG.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H04_L104StateNCG~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H04_L104StateNCG.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H05_L104StateResponse.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H05_L104StateResponse.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H05_L104StateResponse.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H05_L104StateResponse~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H05_L104StateResponse.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H06_UIViews.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H06_UIViews.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H06_UIViews.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H06_UIViews~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H06_UIViews.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H07_ASIEvolver.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H07_ASIEvolver.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H07_ASIEvolver.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H07_ASIEvolver~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H07_ASIEvolver.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H08_SageModeEngine.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H08_SageModeEngine.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H08_SageModeEngine.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H08_SageModeEngine~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H08_SageModeEngine.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H09_QuantumCreativity.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H09_QuantumCreativity.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H09_QuantumCreativity.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H09_QuantumCreativity~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H09_QuantumCreativity.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H10_WindowController.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H10_WindowController.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H10_WindowController.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H10_WindowController~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H10_WindowController.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H11_MainView.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H11_MainView.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H11_MainView~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H11_MainView.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H12_AppDelegate.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H12_AppDelegate.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H12_AppDelegate.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H12_AppDelegate~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H12_AppDelegate.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H13_PluginArchitecture.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H13_PluginArchitecture.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H13_PluginArchitecture.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H13_PluginArchitecture~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H13_PluginArchitecture.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H14_NetworkLayer.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H14_NetworkLayer.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H14_NetworkLayer.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H14_NetworkLayer~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H14_NetworkLayer.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H15_CloudSync.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H15_CloudSync.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H15_CloudSync.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H15_CloudSync~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H15_CloudSync.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H16_VoiceInterface.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H16_VoiceInterface.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H16_VoiceInterface.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H16_VoiceInterface~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H16_VoiceInterface.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H17_VisualCortex.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H17_VisualCortex.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H17_VisualCortex.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H17_VisualCortex~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H17_VisualCortex.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H18_EmotionalCore.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H18_EmotionalCore.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H18_EmotionalCore.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H18_EmotionalCore~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H18_EmotionalCore.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H19_AutonomousAgent.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H19_AutonomousAgent.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H19_AutonomousAgent.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H19_AutonomousAgent~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H19_AutonomousAgent.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H20_SecurityVault.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H20_SecurityVault.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H20_SecurityVault.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H20_SecurityVault~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H20_SecurityVault.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H21_PerformanceProfiler.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H21_PerformanceProfiler.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H21_PerformanceProfiler.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H21_PerformanceProfiler~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H21_PerformanceProfiler.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H22_TestHarness.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H22_TestHarness.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H22_TestHarness.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H22_TestHarness~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H22_TestHarness.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H23_MigrationEngine.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H23_MigrationEngine.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H23_MigrationEngine.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H23_MigrationEngine~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H23_MigrationEngine.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H24_APIGateway.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H24_APIGateway.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H24_APIGateway.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H24_APIGateway~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H24_APIGateway.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H25_TelemetryDashboard.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H25_TelemetryDashboard.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H25_TelemetryDashboard.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H25_TelemetryDashboard~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H25_TelemetryDashboard.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H26_FutureReserve.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H26_FutureReserve.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H26_FutureReserve.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H26_FutureReserve~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H26_FutureReserve.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H27_DeepSeekIngestion.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H27_DeepSeekIngestion.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H27_DeepSeekIngestion.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H27_DeepSeekIngestion~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H27_DeepSeekIngestion.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H28_IdentityBoundary.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H28_IdentityBoundary.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H28_IdentityBoundary.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H28_IdentityBoundary~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H28_IdentityBoundary.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H29_SageModeView.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H29_SageModeView.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H29_SageModeView.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H29_SageModeView~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H29_SageModeView.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H30_SidebarNav.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H30_SidebarNav.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H30_SidebarNav.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H30_SidebarNav~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H30_SidebarNav.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H31_NaturalCommandRouter.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H31_NaturalCommandRouter.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H31_NaturalCommandRouter.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H31_NaturalCommandRouter~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheHeart/H31_NaturalCommandRouter.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L01_Constants.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L01_Constants.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L01_Constants.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L01_Constants~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L01_Constants.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L02_SovereignProtocol.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L02_SovereignProtocol.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L02_SovereignProtocol.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L02_SovereignProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L02_SovereignProtocol.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L03_SovereignConformances.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L03_SovereignConformances.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L03_SovereignConformances.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L03_SovereignConformances~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L03_SovereignConformances.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L04_LogicGateCore.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L04_LogicGateCore.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L04_LogicGateCore.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L04_LogicGateCore~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L04_LogicGateCore.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L05_LogicGateBreathing.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L05_LogicGateBreathing.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L05_LogicGateBreathing.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L05_LogicGateBreathing~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L05_LogicGateBreathing.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L06_ContextualLogicGate.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L06_ContextualLogicGate.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L06_ContextualLogicGate.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L06_ContextualLogicGate~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L06_ContextualLogicGate.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L07_QuantumLogicGate.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L07_QuantumLogicGate.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L07_QuantumLogicGate.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L07_QuantumLogicGate~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L07_QuantumLogicGate.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L08_StoryLogicGate.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L08_StoryLogicGate.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L08_StoryLogicGate.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L08_StoryLogicGate~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L08_StoryLogicGate.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L09_PoemLogicGate.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L09_PoemLogicGate.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L09_PoemLogicGate.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L09_PoemLogicGate~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L09_PoemLogicGate.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L10_HumorLogicGate.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L10_HumorLogicGate.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L10_HumorLogicGate.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L10_HumorLogicGate~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L10_HumorLogicGate.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L11_PhilosophyLogicGate.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L11_PhilosophyLogicGate.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L11_PhilosophyLogicGate.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L11_PhilosophyLogicGate~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L11_PhilosophyLogicGate.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L12_DynamicPhrase.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L12_DynamicPhrase.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L12_DynamicPhrase.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L12_DynamicPhrase~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L12_DynamicPhrase.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L13_ResponsePipeline.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L13_ResponsePipeline.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L13_ResponsePipeline.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L13_ResponsePipeline~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L13_ResponsePipeline.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L14_TextFormatter.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L14_TextFormatter.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L14_TextFormatter.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L14_TextFormatter~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L14_TextFormatter.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L15_SemanticSearch.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L15_SemanticSearch.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L15_SemanticSearch.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L15_SemanticSearch~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L15_SemanticSearch.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L16_NLPEngines.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L16_NLPEngines.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L16_NLPEngines.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L16_NLPEngines~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L16_NLPEngines.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L17_SyntacticFormatter.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L17_SyntacticFormatter.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L17_SyntacticFormatter.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L17_SyntacticFormatter~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L17_SyntacticFormatter.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L18_DataIngest.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L18_DataIngest.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L18_DataIngest.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L18_DataIngest~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L18_DataIngest.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L19_TopicTracker.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L19_TopicTracker.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L19_TopicTracker.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L19_TopicTracker~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L19_TopicTracker.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L20_KnowledgeBase.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L20_KnowledgeBase.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L20_KnowledgeBase.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L20_KnowledgeBase~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L20_KnowledgeBase.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L21_ResearchEngine.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L21_ResearchEngine.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L21_ResearchEngine.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L21_ResearchEngine~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L21_ResearchEngine.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L22_WebSearch.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L22_WebSearch.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L22_WebSearch.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L22_WebSearch~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L22_WebSearch.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L23_DirectSolver.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L23_DirectSolver.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L23_DirectSolver.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L23_DirectSolver~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L23_DirectSolver.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L24_PermanentMemory.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L24_PermanentMemory.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L24_PermanentMemory.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L24_PermanentMemory~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L24_PermanentMemory.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L25_PythonBridge.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L25_PythonBridge.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L25_PythonBridge~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L25_PythonBridge.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L26_TestRunner.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L26_TestRunner.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L26_TestRunner.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L26_TestRunner~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L26_TestRunner.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L27_AISourceAnalyzer.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L27_AISourceAnalyzer.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L27_AISourceAnalyzer.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L27_AISourceAnalyzer~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L27_AISourceAnalyzer.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L28_UnifiedFieldGate.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L28_UnifiedFieldGate.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L28_UnifiedFieldGate.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L28_UnifiedFieldGate~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L28_UnifiedFieldGate.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L29_DeepNLU.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L29_DeepNLU.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L29_DeepNLU.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L29_DeepNLU~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L29_DeepNLU.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L30_FormalLogic.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L30_FormalLogic.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L30_FormalLogic.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L30_FormalLogic~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L30_FormalLogic.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L31_ScienceKB.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L31_ScienceKB.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L31_ScienceKB.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L31_ScienceKB~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L31_ScienceKB.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L32_KBReconstruction.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L32_KBReconstruction.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L32_KBReconstruction.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L32_KBReconstruction~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L32_KBReconstruction.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L33_TheoremGenerator.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L33_TheoremGenerator.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L33_TheoremGenerator.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L33_TheoremGenerator~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L33_TheoremGenerator.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L34_GodCodeQuantumLogic.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L34_GodCodeQuantumLogic.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L34_GodCodeQuantumLogic.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L34_GodCodeQuantumLogic~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L34_GodCodeQuantumLogic.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L35_ThreeEngineSearch.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L35_ThreeEngineSearch.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L35_ThreeEngineSearch.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L35_ThreeEngineSearch~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/TheLogic/L35_ThreeEngineSearch.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/main.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/main.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/main.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/main~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104.build/L104v2/main.swiftdeps"
+  }
+}

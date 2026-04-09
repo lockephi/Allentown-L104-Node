@@ -1,17 +1,17 @@
 {
-  "framework_version": "3.3.0",
-  "timestamp": "2026-03-07T10:58:23.353272",
+  "framework_version": "3.4.0",
+  "timestamp": "2026-04-03T05:11:21.324329",
   "invariant": 527.5184818492612,
   "summary": {
-    "total": 316,
-    "passed": 315,
-    "failed": 1,
-    "warnings": 1
+    "total": 350,
+    "passed": 350,
+    "failed": 0,
+    "warnings": 0
   },
   "by_engine": {
     "math": {
-      "total": 13,
-      "passed": 13,
+      "total": 14,
+      "passed": 14,
       "failed": 0
     },
     "science": {
@@ -20,13 +20,13 @@
       "failed": 0
     },
     "code": {
-      "total": 15,
-      "passed": 14,
-      "failed": 1
+      "total": 17,
+      "passed": 17,
+      "failed": 0
     },
     "cross": {
-      "total": 52,
-      "passed": 52,
+      "total": 60,
+      "passed": 60,
       "failed": 0
     },
     "canonical": {
@@ -45,8 +45,8 @@
       "failed": 0
     },
     "quantum_link": {
-      "total": 8,
-      "passed": 8,
+      "total": 10,
+      "passed": 10,
       "failed": 0
     },
     "asi_quantum": {
@@ -65,8 +65,8 @@
       "failed": 0
     },
     "numerical": {
-      "total": 5,
-      "passed": 5,
+      "total": 14,
+      "passed": 14,
       "failed": 0
     },
     "dead_code": {
@@ -75,28 +75,28 @@
       "failed": 0
     },
     "agi": {
-      "total": 4,
-      "passed": 4,
+      "total": 9,
+      "passed": 9,
       "failed": 0
     },
     "asi": {
-      "total": 11,
-      "passed": 11,
+      "total": 12,
+      "passed": 12,
       "failed": 0
     },
     "gate": {
+      "total": 9,
+      "passed": 9,
+      "failed": 0
+    },
+    "intellect": {
       "total": 5,
       "passed": 5,
       "failed": 0
     },
-    "intellect": {
-      "total": 6,
-      "passed": 6,
-      "failed": 0
-    },
     "server": {
-      "total": 9,
-      "passed": 9,
+      "total": 12,
+      "passed": 12,
       "failed": 0
     },
     "edit": {
@@ -111,27 +111,27 @@
       "engine": "math",
       "severity": "PASS",
       "passed": true,
-      "detail": "v1.1.0 in 2.13s",
-      "elapsed_ms": 2125.39,
-      "timestamp": 1772898608.836282
+      "detail": "v1.1.0 in 0.75s",
+      "elapsed_ms": 751.04,
+      "timestamp": 1775207186.948131
     },
     {
       "test": "[BOOT] boot_science",
       "engine": "science",
       "severity": "PASS",
       "passed": true,
-      "detail": "v5.1.0 in 4.40s",
-      "elapsed_ms": 4397.17,
-      "timestamp": 1772898611.1187341
+      "detail": "v5.1.0 in 1.03s",
+      "elapsed_ms": 1031.11,
+      "timestamp": 1775207187.2277079
     },
     {
       "test": "[BOOT] boot_code",
       "engine": "code",
       "severity": "PASS",
       "passed": true,
-      "detail": "vunknown in 10.66s",
-      "elapsed_ms": 10662.86,
-      "timestamp": 1772898617.373634
+      "detail": "vunknown in 1.77s",
+      "elapsed_ms": 1766.93,
+      "timestamp": 1775207187.962755
     },
     {
       "test": "[STATUS] status_code",
@@ -139,8 +139,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "keys=['version', 'execution_count', 'generated_artifacts', 'languages_supported', 'paradigms_covered', 'vulnerability_patterns']",
-      "elapsed_ms": 8.79,
-      "timestamp": 1772898617.384012
+      "elapsed_ms": 1.71,
+      "timestamp": 1775207187.96612
     },
     {
       "test": "[STATUS] status_science",
@@ -148,8 +148,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "keys=['version', 'active_domains', 'physics', 'quantum_math', 'entropy', 'multidim']",
-      "elapsed_ms": 12.15,
-      "timestamp": 1772898617.3962681
+      "elapsed_ms": 5.81,
+      "timestamp": 1775207187.971988
     },
     {
       "test": "[STATUS] status_math",
@@ -157,8 +157,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "keys=['engine', 'version', 'layers', 'constants', 'layer_status', 'god_code_simulator']",
-      "elapsed_ms": 0.42,
-      "timestamp": 1772898617.396737
+      "elapsed_ms": 0.08,
+      "timestamp": 1775207187.9721029
     },
     {
       "test": "[CONSTANTS] const_GOD_CODE",
@@ -167,7 +167,7 @@
       "passed": true,
       "detail": "all 3 engines agree: 527.5184818492611",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898617.397014
+      "timestamp": 1775207187.972238
     },
     {
       "test": "[CONSTANTS] const_OMEGA",
@@ -176,7 +176,7 @@
       "passed": true,
       "detail": "all 3 engines agree: 6539.34712682",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898617.397057
+      "timestamp": 1775207187.972268
     },
     {
       "test": "[CONSTANTS] const_PHI",
@@ -185,7 +185,7 @@
       "passed": true,
       "detail": "all 3 engines agree: 1.618033988749895",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898617.3970869
+      "timestamp": 1775207187.972289
     },
     {
       "test": "[CONSTANTS] const_VOID_CONSTANT",
@@ -194,7 +194,7 @@
       "passed": true,
       "detail": "all 3 engines agree: 1.0416180339887497",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898617.397115
+      "timestamp": 1775207187.9723048
     },
     {
       "test": "[CONSTANTS] formula_god_code",
@@ -203,7 +203,7 @@
       "passed": true,
       "detail": "286^(1/\u03c6)\u00d716 = 527.5184818492611",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898617.397144
+      "timestamp": 1775207187.972325
     },
     {
       "test": "[CONSTANTS] formula_void",
@@ -212,7 +212,7 @@
       "passed": true,
       "detail": "1.04+\u03c6/1000 = 1.04161803398875",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898617.3971891
+      "timestamp": 1775207187.972345
     },
     {
       "test": "[CONSTANTS] formula_phi_identity",
@@ -221,7 +221,7 @@
       "passed": true,
       "detail": "\u03c6\u00b2\u2212\u03c6\u22121 = 0.0",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898617.3972201
+      "timestamp": 1775207187.972357
     },
     {
       "test": "[SELF-TEST] selftest_subsystem_count",
@@ -229,8 +229,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "31 subsystems (need \u226530)",
-      "elapsed_ms": 0.34,
-      "timestamp": 1772898617.397708
+      "elapsed_ms": 0.18,
+      "timestamp": 1775207187.9725718
     },
     {
       "test": "[SELF-TEST] selftest_full_analysis",
@@ -238,8 +238,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "keys=['metadata', 'complexity', 'quality', 'security', 'patterns', 'sacred_alignment']",
-      "elapsed_ms": 63.49,
-      "timestamp": 1772898617.461261
+      "elapsed_ms": 10.8,
+      "timestamp": 1775207187.983397
     },
     {
       "test": "[SELF-TEST] selftest_demon_efficiency",
@@ -247,8 +247,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "eff=1.000000",
-      "elapsed_ms": 0.16,
-      "timestamp": 1772898617.461479
+      "elapsed_ms": 0.04,
+      "timestamp": 1775207187.983468
     },
     {
       "test": "[SELF-TEST] selftest_coherence_evolve",
@@ -256,8 +256,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "keys=['steps', 'initial_coherence', 'final_coherence', 'avg_protection']",
-      "elapsed_ms": 8.41,
-      "timestamp": 1772898617.4699159
+      "elapsed_ms": 0.23,
+      "timestamp": 1775207187.983723
     },
     {
       "test": "[SELF-TEST] selftest_physics_basic",
@@ -265,8 +265,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "landauer=9.15e-19, photon=1.1216596549374545",
-      "elapsed_ms": 0.19,
-      "timestamp": 1772898617.4701362
+      "elapsed_ms": 0.04,
+      "timestamp": 1775207187.9837928
     },
     {
       "test": "[SELF-TEST] selftest_conservation_law",
@@ -274,8 +274,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "verify_conservation(0.0)=True",
-      "elapsed_ms": 0.07,
-      "timestamp": 1772898617.47033
+      "elapsed_ms": 0.02,
+      "timestamp": 1775207187.983836
     },
     {
       "test": "[SELF-TEST] selftest_sovereign_proofs",
@@ -283,8 +283,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "7 proofs returned",
-      "elapsed_ms": 33.86,
-      "timestamp": 1772898617.504228
+      "elapsed_ms": 22.78,
+      "timestamp": 1775207188.0066402
     },
     {
       "test": "[SELF-TEST] selftest_equation_verify",
@@ -292,8 +292,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "5 equations verified",
-      "elapsed_ms": 11.85,
-      "timestamp": 1772898617.5161228
+      "elapsed_ms": 9.22,
+      "timestamp": 1775207188.0159
     },
     {
       "test": "[SELF-TEST] selftest_fibonacci_20",
@@ -301,8 +301,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "F(20)=6765",
-      "elapsed_ms": 0.06,
-      "timestamp": 1772898617.5162141
+      "elapsed_ms": 0.02,
+      "timestamp": 1775207188.01595
     },
     {
       "test": "[CROSS] probe_code",
@@ -311,7 +311,7 @@
       "passed": true,
       "detail": "pkg=l104_code_engine, constants=OK, tests=2",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898617.516347
+      "timestamp": 1775207188.0163462
     },
     {
       "test": "[CROSS] probe_science",
@@ -320,7 +320,7 @@
       "passed": true,
       "detail": "pkg=l104_science_engine, constants=OK, tests=3",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898617.5164
+      "timestamp": 1775207188.016604
     },
     {
       "test": "[CROSS] probe_math",
@@ -329,7 +329,7 @@
       "passed": true,
       "detail": "pkg=l104_math_engine, constants=OK, tests=4",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898617.516427
+      "timestamp": 1775207188.0168252
     },
     {
       "test": "[CROSS] probe_agi",
@@ -338,7 +338,7 @@
       "passed": true,
       "detail": "pkg=l104_agi, constants=OK, tests=2",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898619.141074
+      "timestamp": 1775207188.7813601
     },
     {
       "test": "[CROSS] probe_asi",
@@ -347,7 +347,7 @@
       "passed": true,
       "detail": "pkg=l104_asi, constants=OK, tests=3",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898619.141119
+      "timestamp": 1775207188.7816262
     },
     {
       "test": "[CROSS] probe_intellect",
@@ -356,7 +356,7 @@
       "passed": true,
       "detail": "pkg=l104_intellect, constants=OK, tests=1",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898619.1411462
+      "timestamp": 1775207188.7818
     },
     {
       "test": "[CROSS] probe_quantum_gate",
@@ -365,7 +365,7 @@
       "passed": true,
       "detail": "pkg=l104_quantum_gate_engine, constants=OK, tests=4",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898619.141227
+      "timestamp": 1775207188.781947
     },
     {
       "test": "[CROSS] probe_quantum_link",
@@ -374,7 +374,7 @@
       "passed": true,
       "detail": "pkg=l104_quantum_engine, constants=OK, tests=3",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898620.6889012
+      "timestamp": 1775207189.153124
     },
     {
       "test": "[CROSS] probe_numerical",
@@ -383,7 +383,7 @@
       "passed": true,
       "detail": "pkg=l104_numerical_engine, constants=OK, tests=4",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898621.146823
+      "timestamp": 1775207189.203764
     },
     {
       "test": "[CROSS] probe_gate",
@@ -392,7 +392,7 @@
       "passed": true,
       "detail": "pkg=l104_gate_engine, constants=OK, tests=1",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898621.146871
+      "timestamp": 1775207189.204012
     },
     {
       "test": "[CROSS] probe_server",
@@ -401,7 +401,7 @@
       "passed": true,
       "detail": "pkg=l104_server, constants=OK, tests=1",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.258629
+      "timestamp": 1775207217.745985
     },
     {
       "test": "[CROSS] probe_dual_layer",
@@ -410,7 +410,7 @@
       "passed": true,
       "detail": "pkg=l104_asi, constants=OK, tests=8",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.2587168
+      "timestamp": 1775207217.746337
     },
     {
       "test": "[CROSS] probe_pipeline",
@@ -419,7 +419,7 @@
       "passed": true,
       "detail": "pkg=l104_quantum_computation_pipeline, constants=OK, tests=6",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.2587368
+      "timestamp": 1775207217.746551
     },
     {
       "test": "[CROSS] probe_asi_quantum",
@@ -428,7 +428,7 @@
       "passed": true,
       "detail": "pkg=l104_asi, constants=OK, tests=5",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.25875
+      "timestamp": 1775207217.746727
     },
     {
       "test": "[CROSS] probe_code_quantum",
@@ -437,7 +437,7 @@
       "passed": true,
       "detail": "pkg=l104_code_engine, constants=OK, tests=2",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.258762
+      "timestamp": 1775207217.746892
     },
     {
       "test": "[CROSS] probe_god_code_sim",
@@ -446,34 +446,106 @@
       "passed": true,
       "detail": "pkg=l104_god_code_simulator, constants=OK, tests=10",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.258774
+      "timestamp": 1775207217.747274
     },
     {
       "test": "[CROSS] probe_vqpu",
       "engine": "cross",
       "severity": "PASS",
       "passed": true,
-      "detail": "pkg=l104_vqpu_bridge, constants=OK, tests=5",
+      "detail": "pkg=l104_vqpu, constants=OK, tests=6",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.3866692
+      "timestamp": 1775207217.841389
+    },
+    {
+      "test": "[CROSS] probe_ml_engine",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_ml_engine, constants=OK, tests=1",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207217.841743
+    },
+    {
+      "test": "[CROSS] probe_quantum_data",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_quantum_data_analyzer, constants=OK, tests=1",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207217.845082
+    },
+    {
+      "test": "[CROSS] probe_search",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_search, constants=MISS, tests=1",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207217.84561
+    },
+    {
+      "test": "[CROSS] probe_simulator",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_simulator, constants=OK, tests=2",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207217.845817
+    },
+    {
+      "test": "[CROSS] probe_audio",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_audio_simulation, constants=OK, tests=1",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207217.846024
+    },
+    {
+      "test": "[CROSS] probe_nano_triad",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_vqpu, constants=MISS, tests=8",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207217.846251
+    },
+    {
+      "test": "[CROSS] probe_quantum_networker",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_quantum_networker, constants=OK, tests=5",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207217.882487
+    },
+    {
+      "test": "[CROSS] probe_guardian",
+      "engine": "cross",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "pkg=l104_resource_guardian, constants=MISS, tests=7",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207217.891237
     },
     {
       "test": "[CROSS] sci\u2192math_entropy_inject",
       "engine": "cross",
       "severity": "PASS",
       "passed": true,
-      "detail": "\u03c3: 1.0781 \u2192 10272.1478",
+      "detail": "\u03c3: 1.0523 \u2192 2630.7118",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.4074292
+      "timestamp": 1775207217.8928971
     },
     {
       "test": "[CROSS] sci\u2192math_primal_calculus",
       "engine": "cross",
       "severity": "PASS",
       "passed": true,
-      "detail": "primal_calculus(10272.1478) = 948027.765430",
+      "detail": "primal_calculus(2630.7118) = 104619.249261",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.4074528
+      "timestamp": 1775207217.89292
     },
     {
       "test": "[CROSS] sci\u2192math_god_code_eval",
@@ -482,7 +554,7 @@
       "passed": true,
       "detail": "G(0,0,0,0)=527.5184818492611",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.407637
+      "timestamp": 1775207217.8930418
     },
     {
       "test": "[CROSS] sci\u2192math_coherence_ricci",
@@ -491,7 +563,7 @@
       "passed": true,
       "detail": "Ricci(4,1.0)=11.041726464662712",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.4085288
+      "timestamp": 1775207217.893258
     },
     {
       "test": "[CROSS] math\u2192sci_fib_quantum",
@@ -500,7 +572,7 @@
       "passed": true,
       "detail": "F(20)=6765, convergence=dict",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.408638
+      "timestamp": 1775207217.893327
     },
     {
       "test": "[CROSS] math\u2192sci_wave_sacred",
@@ -509,7 +581,7 @@
       "passed": true,
       "detail": "wave_coh(440)=0.9908720136392022, sacred_align=True",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.4089322
+      "timestamp": 1775207217.893404
     },
     {
       "test": "[CROSS] math\u2192sci_proof_research",
@@ -518,7 +590,7 @@
       "passed": true,
       "detail": "proof \u2192 research cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.4739861
+      "timestamp": 1775207217.9421818
     },
     {
       "test": "[CROSS] code\u2192science_engine_analyze",
@@ -527,7 +599,7 @@
       "passed": true,
       "detail": "? lines, ? functions",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.550705
+      "timestamp": 1775207217.9810612
     },
     {
       "test": "[CROSS] code\u2192math_engine_analyze",
@@ -536,7 +608,7 @@
       "passed": true,
       "detail": "? lines, ? functions",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.59344
+      "timestamp": 1775207218.027891
     },
     {
       "test": "[CROSS] code\u2192code_engine_hub_analyze",
@@ -545,7 +617,7 @@
       "passed": true,
       "detail": "? lines, ? functions",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.620471
+      "timestamp": 1775207218.059886
     },
     {
       "test": "[CROSS] code\u2192asi_smell_check",
@@ -554,7 +626,7 @@
       "passed": true,
       "detail": "0 smells detected",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.6265721
+      "timestamp": 1775207218.063649
     },
     {
       "test": "[CROSS] pipeline_sci\u2192math\u2192code",
@@ -563,7 +635,7 @@
       "passed": true,
       "detail": "physics\u2192conservation(True)\u2192proof\u2192code_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.6359649
+      "timestamp": 1775207218.069035
     },
     {
       "test": "[CROSS] lazy_boot_quantum_gate",
@@ -571,8 +643,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "on-demand in 0.00s",
-      "elapsed_ms": 3.97,
-      "timestamp": 1772898723.639989
+      "elapsed_ms": 0.34,
+      "timestamp": 1775207218.069448
     },
     {
       "test": "[CROSS] qgate_bell_compile",
@@ -581,7 +653,7 @@
       "passed": true,
       "detail": "Bell pair compiled to UNIVERSAL gate set",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898723.64175
+      "timestamp": 1775207218.070864
     },
     {
       "test": "[CROSS] lazy_boot_quantum_link",
@@ -589,8 +661,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "on-demand in 0.00s",
-      "elapsed_ms": 0.82,
-      "timestamp": 1772898723.6426308
+      "elapsed_ms": 0.27,
+      "timestamp": 1775207218.071189
     },
     {
       "test": "[CROSS] lazy_boot_asi_quantum",
@@ -598,8 +670,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "on-demand in 0.00s",
-      "elapsed_ms": 0.27,
-      "timestamp": 1772898723.642962
+      "elapsed_ms": 0.21,
+      "timestamp": 1775207218.071462
     },
     {
       "test": "[CROSS] lazy_boot_code_quantum",
@@ -607,8 +679,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "on-demand in 0.00s",
-      "elapsed_ms": 0.21,
-      "timestamp": 1772898723.643224
+      "elapsed_ms": 0.17,
+      "timestamp": 1775207218.071677
     },
     {
       "test": "[CROSS] lazy_boot_pipeline",
@@ -616,17 +688,17 @@
       "severity": "PASS",
       "passed": true,
       "detail": "on-demand in 0.00s",
-      "elapsed_ms": 3.51,
-      "timestamp": 1772898723.6467829
+      "elapsed_ms": 2.95,
+      "timestamp": 1775207218.0746748
     },
     {
       "test": "[CROSS] lazy_boot_numerical",
       "engine": "cross",
       "severity": "PASS",
       "passed": true,
-      "detail": "on-demand in 0.44s",
-      "elapsed_ms": 438.25,
-      "timestamp": 1772898724.0851
+      "detail": "on-demand in 0.38s",
+      "elapsed_ms": 378.04,
+      "timestamp": 1775207218.452794
     },
     {
       "test": "[CROSS] hhl_cross_gate_engine",
@@ -634,26 +706,26 @@
       "severity": "PASS",
       "passed": true,
       "detail": "\u03ba=1.9270899838501878, quantum=False",
-      "elapsed_ms": 0.1,
-      "timestamp": 1772898724.085273
+      "elapsed_ms": 0.06,
+      "timestamp": 1775207218.452907
     },
     {
       "test": "[CROSS] hhl_cross_quantum_link",
       "engine": "cross",
       "severity": "PASS",
       "passed": true,
-      "detail": "\u03ba=1.2683764396899688, quantum=False",
-      "elapsed_ms": 5.82,
-      "timestamp": 1772898724.09115
+      "detail": "\u03ba=1.2683764396899693, quantum=False",
+      "elapsed_ms": 0.77,
+      "timestamp": 1775207218.453716
     },
     {
       "test": "[CROSS] hhl_cross_asi_quantum",
       "engine": "cross",
       "severity": "PASS",
       "passed": true,
-      "detail": "\u03ba=1.61803399, quantum=True",
-      "elapsed_ms": 294.94,
-      "timestamp": 1772898724.3861399
+      "detail": "\u03ba=1.61803399, quantum=False",
+      "elapsed_ms": 0.05,
+      "timestamp": 1775207218.453799
     },
     {
       "test": "[CROSS] hhl_cross_code_quantum",
@@ -661,8 +733,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "\u03ba=1.60570331, quantum=True",
-      "elapsed_ms": 181.28,
-      "timestamp": 1772898724.567466
+      "elapsed_ms": 48.21,
+      "timestamp": 1775207218.502055
     },
     {
       "test": "[CROSS] hhl_cross_pipeline",
@@ -670,17 +742,17 @@
       "severity": "PASS",
       "passed": true,
       "detail": "\u03ba=1.61803399, quantum=True",
-      "elapsed_ms": 3.38,
-      "timestamp": 1772898724.570936
+      "elapsed_ms": 4.79,
+      "timestamp": 1775207218.506895
     },
     {
       "test": "[CROSS] hhl_cross_numerical",
       "engine": "cross",
       "severity": "PASS",
       "passed": true,
-      "detail": "\u03ba=1.8910007523188333932137904921055007038220286232914301004820337003566479593780712910770510203864367046, quantum=False",
-      "elapsed_ms": 0.57,
-      "timestamp": 1772898724.57155
+      "detail": "\u03ba=1.8910007523188333932137904910000000000000000000000000000000000000000000000000000000000000000000000000, quantum=False",
+      "elapsed_ms": 0.29,
+      "timestamp": 1775207218.5072262
     },
     {
       "test": "[CROSS] hhl_cross_condition_check",
@@ -689,7 +761,7 @@
       "passed": true,
       "detail": "5 engines: \u03ba range [1.2684, 1.9271]",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.571635
+      "timestamp": 1775207218.507294
     },
     {
       "test": "[CROSS] lazy_boot_dual_layer",
@@ -697,8 +769,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "on-demand in 0.00s",
-      "elapsed_ms": 0.21,
-      "timestamp": 1772898724.571886
+      "elapsed_ms": 0.49,
+      "timestamp": 1775207218.507832
     },
     {
       "test": "[CROSS] dual_cross_thought_physics",
@@ -707,7 +779,7 @@
       "passed": true,
       "detail": "thought=527.5185, coherence=0.65",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.582557
+      "timestamp": 1775207218.508415
     },
     {
       "test": "[CROSS] dual_score",
@@ -716,7 +788,7 @@
       "passed": true,
       "detail": "score=1.0",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.582601
+      "timestamp": 1775207218.508446
     },
     {
       "test": "[CROSS] dual_sacred_scaffold",
@@ -725,7 +797,7 @@
       "passed": true,
       "detail": "keys=['286', '104', '416', 'golden_thread', 'crystallography']",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.5826461
+      "timestamp": 1775207218.5084832
     },
     {
       "test": "[CROSS] dual_deep_synthesis",
@@ -734,7 +806,7 @@
       "passed": true,
       "detail": "keys=['total_pairs', 'valid_pairs', 'correlation_pairs', 'synthesis_coherence', 'min_coherence_threshold']",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.764128
+      "timestamp": 1775207218.529912
     },
     {
       "test": "[CROSS] pipeline_asi_hhl_cross",
@@ -743,34 +815,34 @@
       "passed": true,
       "detail": "pipeline \u03ba=1.61803399, asi \u03ba=1.61803399",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.7686322
+      "timestamp": 1775207218.533334
     },
     {
       "test": "[PERF] boot_time_math",
       "engine": "math",
       "severity": "PASS",
       "passed": true,
-      "detail": "2.13s (threshold=10.0s)",
+      "detail": "0.75s (threshold=10.0s)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.7686899
+      "timestamp": 1775207218.5334568
     },
     {
       "test": "[PERF] boot_time_science",
       "engine": "science",
       "severity": "PASS",
       "passed": true,
-      "detail": "4.40s (threshold=10.0s)",
+      "detail": "1.03s (threshold=10.0s)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.7687092
+      "timestamp": 1775207218.5334778
     },
     {
       "test": "[PERF] boot_time_code",
       "engine": "code",
-      "severity": "WARN",
-      "passed": false,
-      "detail": "10.66s (threshold=10.0s)",
+      "severity": "PASS",
+      "passed": true,
+      "detail": "1.77s (threshold=10.0s)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.7687309
+      "timestamp": 1775207218.533491
     },
     {
       "test": "[PERF] boot_time_quantum_gate",
@@ -779,7 +851,7 @@
       "passed": true,
       "detail": "0.00s (threshold=10.0s)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.768745
+      "timestamp": 1775207218.533504
     },
     {
       "test": "[PERF] boot_time_quantum_link",
@@ -788,7 +860,7 @@
       "passed": true,
       "detail": "0.00s (threshold=10.0s)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.7687612
+      "timestamp": 1775207218.533516
     },
     {
       "test": "[PERF] boot_time_asi_quantum",
@@ -797,7 +869,7 @@
       "passed": true,
       "detail": "0.00s (threshold=10.0s)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.7687721
+      "timestamp": 1775207218.53353
     },
     {
       "test": "[PERF] boot_time_code_quantum",
@@ -806,7 +878,7 @@
       "passed": true,
       "detail": "0.00s (threshold=10.0s)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.768786
+      "timestamp": 1775207218.53354
     },
     {
       "test": "[PERF] boot_time_pipeline",
@@ -815,16 +887,16 @@
       "passed": true,
       "detail": "0.00s (threshold=10.0s)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.768796
+      "timestamp": 1775207218.5335512
     },
     {
       "test": "[PERF] boot_time_numerical",
       "engine": "numerical",
       "severity": "PASS",
       "passed": true,
-      "detail": "0.44s (threshold=10.0s)",
+      "detail": "0.38s (threshold=10.0s)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.768805
+      "timestamp": 1775207218.53356
     },
     {
       "test": "[PERF] boot_time_dual_layer",
@@ -833,25 +905,25 @@
       "passed": true,
       "detail": "0.00s (threshold=10.0s)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.768815
+      "timestamp": 1775207218.533571
     },
     {
       "test": "[PERF] perf_math_ops",
       "engine": "math",
       "severity": "PASS",
       "passed": true,
-      "detail": "fib+primes+conservation in 1ms",
-      "elapsed_ms": 0.52,
-      "timestamp": 1772898724.769362
+      "detail": "fib+primes+conservation in 0ms",
+      "elapsed_ms": 0.27,
+      "timestamp": 1775207218.533858
     },
     {
       "test": "[PERF] perf_code_analysis",
       "engine": "code",
       "severity": "PASS",
       "passed": true,
-      "detail": "full_analysis in 4ms",
-      "elapsed_ms": 4.13,
-      "timestamp": 1772898724.773531
+      "detail": "full_analysis in 5ms",
+      "elapsed_ms": 4.58,
+      "timestamp": 1775207218.538474
     },
     {
       "test": "[QUANTUM] 25q_templates_complete",
@@ -860,7 +932,7 @@
       "passed": true,
       "detail": "All 9 templates present (incl. hhl_26)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.773741
+      "timestamp": 1775207218.5387
     },
     {
       "test": "[QUANTUM] 25q_hhl_template",
@@ -869,7 +941,7 @@
       "passed": true,
       "detail": "qubits=26, depth=92, cx=96",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.77377
+      "timestamp": 1775207218.538728
     },
     {
       "test": "[QUANTUM] gate_fqa_amplitude_estimation",
@@ -878,7 +950,7 @@
       "passed": true,
       "detail": "coherence=?",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.7768362
+      "timestamp": 1775207218.5411148
     },
     {
       "test": "[QUANTUM] gate_fqa_bell_state",
@@ -887,7 +959,7 @@
       "passed": true,
       "detail": "coherence=?",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.7768471
+      "timestamp": 1775207218.541125
     },
     {
       "test": "[QUANTUM] gate_fqa_born_measurement",
@@ -896,7 +968,7 @@
       "passed": true,
       "detail": "coherence=?",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.776852
+      "timestamp": 1775207218.541131
     },
     {
       "test": "[QUANTUM] gate_fqa_deutsch_jozsa",
@@ -905,7 +977,7 @@
       "passed": true,
       "detail": "coherence=?",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.7768571
+      "timestamp": 1775207218.5411358
     },
     {
       "test": "[QUANTUM] gate_fqa_hadamard_sample",
@@ -914,7 +986,7 @@
       "passed": true,
       "detail": "coherence=?",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.776862
+      "timestamp": 1775207218.541142
     },
     {
       "test": "[QUANTUM] gate_fqa_hhl_linear_solver",
@@ -923,7 +995,7 @@
       "passed": true,
       "detail": "coherence=?",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.776866
+      "timestamp": 1775207218.541147
     },
     {
       "test": "[QUANTUM] gate_fqa_phase_estimation",
@@ -932,7 +1004,7 @@
       "passed": true,
       "detail": "coherence=?",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.7768698
+      "timestamp": 1775207218.541152
     },
     {
       "test": "[QUANTUM] gate_fqa_quantum_fourier_transform",
@@ -941,7 +1013,7 @@
       "passed": true,
       "detail": "coherence=?",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.776875
+      "timestamp": 1775207218.541157
     },
     {
       "test": "[QUANTUM] gate_fqa_quantum_walk",
@@ -950,7 +1022,7 @@
       "passed": true,
       "detail": "coherence=?",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.776882
+      "timestamp": 1775207218.541161
     },
     {
       "test": "[QUANTUM] gate_fqa_teleportation",
@@ -959,25 +1031,25 @@
       "passed": true,
       "detail": "coherence=0.95",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898724.7768881
+      "timestamp": 1775207218.5411708
     },
     {
       "test": "[QUANTUM] qlink_full_quantum",
       "engine": "quantum_link",
       "severity": "PASS",
       "passed": true,
-      "detail": "25 algorithms in 420ms",
+      "detail": "25 algorithms in 315ms",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898725.1972039
+      "timestamp": 1775207218.856143
     },
     {
       "test": "[QUANTUM] asi_qpe_sacred",
       "engine": "asi_quantum",
       "severity": "PASS",
       "passed": true,
-      "detail": "verified=?  [2788ms]",
+      "detail": "verified=?  [0ms]",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898727.9868631
+      "timestamp": 1775207218.856191
     },
     {
       "test": "[QUANTUM] asi_coherence_grover",
@@ -986,7 +1058,7 @@
       "passed": true,
       "detail": "keys=['success', 'found_index', 'target_index', 'search_space', 'iterations']",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898727.988972
+      "timestamp": 1775207218.856411
     },
     {
       "test": "[QUANTUM] asi_quantum_volume",
@@ -995,7 +1067,7 @@
       "passed": true,
       "detail": "volume=8",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898728.476814
+      "timestamp": 1775207218.859839
     },
     {
       "test": "[QUANTUM] asi_entanglement_fidelity",
@@ -1004,7 +1076,7 @@
       "passed": true,
       "detail": "fidelity=?",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898748.869283
+      "timestamp": 1775207218.860341
     },
     {
       "test": "[QUANTUM] asi_26q_validation",
@@ -1013,7 +1085,7 @@
       "passed": true,
       "detail": "status=?",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898748.973282
+      "timestamp": 1775207218.86817
     },
     {
       "test": "[QUANTUM] pipeline_encode",
@@ -1022,7 +1094,7 @@
       "passed": true,
       "detail": "type=ndarray",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898748.975671
+      "timestamp": 1775207218.8685272
     },
     {
       "test": "[QUANTUM] pipeline_ghz",
@@ -1031,7 +1103,7 @@
       "passed": true,
       "detail": "keys=['final_state', 'probabilities', 'measurements', 'moment_trace', 'n_moments']",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898748.996591
+      "timestamp": 1775207218.869641
     },
     {
       "test": "[QUANTUM] pipeline_summary",
@@ -1040,7 +1112,7 @@
       "passed": true,
       "detail": "summary_len=81",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898748.996727
+      "timestamp": 1775207218.869673
     },
     {
       "test": "[QUANTUM] hhl_accuracy_pipeline",
@@ -1049,7 +1121,7 @@
       "passed": true,
       "detail": "direction_match=1.000000",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898749.003099
+      "timestamp": 1775207218.871525
     },
     {
       "test": "[QUANTUM] hhl_accuracy_asi",
@@ -1058,7 +1130,7 @@
       "passed": true,
       "detail": "direction_match=1.000000",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898749.371168
+      "timestamp": 1775207218.8715808
     },
     {
       "test": "[QUANTUM] hhl_accuracy_mean",
@@ -1067,7 +1139,7 @@
       "passed": true,
       "detail": "mean cos(\u03b8)=1.000000 across 2 engines",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898749.37125
+      "timestamp": 1775207218.871596
     },
     {
       "test": "[DEAD_CODE] lazy_boot_intellect",
@@ -1075,8 +1147,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "on-demand in 0.00s",
-      "elapsed_ms": 1.75,
-      "timestamp": 1772898749.378793
+      "elapsed_ms": 0.21,
+      "timestamp": 1775207218.8719192
     },
     {
       "test": "[DEAD_CODE] dead_discovery_intellect",
@@ -1085,7 +1157,7 @@
       "passed": true,
       "detail": "12 registered, 12 accessible, 0 missing",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898749.3883672
+      "timestamp": 1775207218.87198
     },
     {
       "test": "[DEAD_CODE] lazy_boot_agi",
@@ -1093,8 +1165,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "on-demand in 0.00s",
-      "elapsed_ms": 0.82,
-      "timestamp": 1772898749.389251
+      "elapsed_ms": 0.14,
+      "timestamp": 1775207218.872144
     },
     {
       "test": "[DEAD_CODE] dead_discovery_agi",
@@ -1103,7 +1175,7 @@
       "passed": true,
       "detail": "8 registered, 8 accessible, 0 missing",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898749.389504
+      "timestamp": 1775207218.872179
     },
     {
       "test": "[DEAD_CODE] dead_discovery_code",
@@ -1112,7 +1184,7 @@
       "passed": true,
       "detail": "22 registered, 22 accessible, 0 missing",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898749.3896341
+      "timestamp": 1775207218.872205
     },
     {
       "test": "[DEAD_CODE] lazy_boot_code_system",
@@ -1120,8 +1192,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "on-demand in 0.00s",
-      "elapsed_ms": 3.09,
-      "timestamp": 1772898749.392781
+      "elapsed_ms": 0.13,
+      "timestamp": 1775207218.872354
     },
     {
       "test": "[DEAD_CODE] dead_discovery_code_system",
@@ -1130,7 +1202,7 @@
       "passed": true,
       "detail": "4 registered, 4 accessible, 0 missing",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898749.3929
+      "timestamp": 1775207218.8723772
     },
     {
       "test": "[DEAD_CODE] dead_discovery_science",
@@ -1139,7 +1211,7 @@
       "passed": true,
       "detail": "13 registered, 13 accessible, 0 missing",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898749.393028
+      "timestamp": 1775207218.872397
     },
     {
       "test": "[DEAD_CODE] dead_discovery_math",
@@ -1148,7 +1220,7 @@
       "passed": true,
       "detail": "10 registered, 10 accessible, 0 missing",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898749.3932009
+      "timestamp": 1775207218.872412
     },
     {
       "test": "[DEAD_CODE] dead_discovery_numerical",
@@ -1157,16 +1229,16 @@
       "passed": true,
       "detail": "3 registered, 3 accessible, 0 missing",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898749.3932722
+      "timestamp": 1775207218.872423
     },
     {
       "test": "[DEAD_CODE] lazy_boot_gate",
       "engine": "cross",
       "severity": "PASS",
       "passed": true,
-      "detail": "on-demand in 0.77s",
-      "elapsed_ms": 773.13,
-      "timestamp": 1772898750.166487
+      "detail": "on-demand in 0.00s",
+      "elapsed_ms": 3.81,
+      "timestamp": 1775207218.876265
     },
     {
       "test": "[DEAD_CODE] dead_discovery_gate",
@@ -1175,7 +1247,7 @@
       "passed": true,
       "detail": "3 registered, 3 accessible, 0 missing",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898750.166543
+      "timestamp": 1775207218.8763351
     },
     {
       "test": "[DEAD_CODE] dead_discovery_quantum_gate",
@@ -1184,7 +1256,7 @@
       "passed": true,
       "detail": "2 registered, 2 accessible, 0 missing",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898750.166641
+      "timestamp": 1775207218.876365
     },
     {
       "test": "[DEAD_CODE] lazy_boot_asi",
@@ -1192,8 +1264,8 @@
       "severity": "PASS",
       "passed": true,
       "detail": "on-demand in 0.00s",
-      "elapsed_ms": 0.26,
-      "timestamp": 1772898750.166955
+      "elapsed_ms": 0.2,
+      "timestamp": 1775207218.8766038
     },
     {
       "test": "[DEAD_CODE] dead_discovery_asi",
@@ -1202,7 +1274,7 @@
       "passed": true,
       "detail": "21 registered, 21 accessible, 0 missing",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898750.167466
+      "timestamp": 1775207218.876674
     },
     {
       "test": "[DEAD_CODE] dead_discovery_dual_layer",
@@ -1211,7 +1283,7 @@
       "passed": true,
       "detail": "14 registered, 14 accessible, 0 missing",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898750.167635
+      "timestamp": 1775207218.8767118
     },
     {
       "test": "[DEAD_CODE] logic_category_accessor",
@@ -1220,7 +1292,7 @@
       "passed": true,
       "detail": "9/10 wired (90%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898750.1682491
+      "timestamp": 1775207218.878166
     },
     {
       "test": "[DEAD_CODE] logic_category_analysis",
@@ -1229,7 +1301,7 @@
       "passed": true,
       "detail": "24/26 wired (92%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898750.168285
+      "timestamp": 1775207218.8782022
     },
     {
       "test": "[DEAD_CODE] logic_category_pipeline",
@@ -1238,7 +1310,7 @@
       "passed": true,
       "detail": "20/20 wired (100%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898750.1683059
+      "timestamp": 1775207218.878222
     },
     {
       "test": "[DEAD_CODE] logic_category_quantum",
@@ -1247,7 +1319,7 @@
       "passed": true,
       "detail": "36/37 wired (97%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898750.168324
+      "timestamp": 1775207218.878238
     },
     {
       "test": "[DEAD_CODE] logic_category_research",
@@ -1256,7 +1328,7 @@
       "passed": true,
       "detail": "19/19 wired (100%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898750.168339
+      "timestamp": 1775207218.8782551
     },
     {
       "test": "[DEAD_CODE] revive_intellect_full_system_synthesis",
@@ -1265,52 +1337,52 @@
       "passed": true,
       "detail": "SKIPPED (always-skip) \u2014 method exists",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898750.186929
+      "timestamp": 1775207218.8786151
     },
     {
       "test": "[DEAD_CODE] revive_intellect_sage_consciousness_coherence",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[13 keys] in 1035ms \u2192 three_engine_status",
+      "detail": "dict[13 keys] in 0ms \u2192 three_engine_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898751.222195
+      "timestamp": 1775207218.87946
     },
     {
       "test": "[DEAD_CODE] revive_intellect_sage_creation_void",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[7 keys] in 0ms \u2192 three_engine_status",
+      "detail": "dict[7 keys] in 8ms \u2192 three_engine_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898751.2226691
+      "timestamp": 1775207218.888375
     },
     {
       "test": "[DEAD_CODE] revive_intellect_quantum_compute_benchmark",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[7 keys] in 3809ms \u2192 three_engine_status",
+      "detail": "dict[7 keys] in 1036ms \u2192 three_engine_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.0315552
+      "timestamp": 1775207219.924821
     },
     {
       "test": "[DEAD_CODE] revive_intellect_quantum_compute_forward",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[3 keys] in 6ms \u2192 three_engine_status",
+      "detail": "dict[3 keys] in 7ms \u2192 three_engine_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.037602
+      "timestamp": 1775207219.932228
     },
     {
       "test": "[DEAD_CODE] revive_intellect_quantum_ram_store",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[5 keys] in 22ms \u2192 think",
+      "detail": "dict[5 keys] in 9ms \u2192 think",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.060693
+      "timestamp": 1775207219.941739
     },
     {
       "test": "[DEAD_CODE] revive_intellect_quantum_ram_retrieve",
@@ -1319,7 +1391,7 @@
       "passed": true,
       "detail": "dict[4 keys] in 0ms \u2192 think",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.062731
+      "timestamp": 1775207219.9420521
     },
     {
       "test": "[DEAD_CODE] revive_intellect_quantum_teleportation_bridge",
@@ -1328,16 +1400,16 @@
       "passed": true,
       "detail": "dict[16 keys] in 0ms \u2192 three_engine_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.06393
+      "timestamp": 1775207219.942347
     },
     {
       "test": "[DEAD_CODE] revive_intellect_synergy_pulse",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[2 keys] in 30ms \u2192 three_engine_status",
+      "detail": "dict[2 keys] in 27ms \u2192 three_engine_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.0946062
+      "timestamp": 1775207219.96946
     },
     {
       "test": "[DEAD_CODE] revive_intellect_restore_save_state",
@@ -1346,7 +1418,7 @@
       "passed": true,
       "detail": "bool=False in 0ms \u2192 three_engine_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.094987
+      "timestamp": 1775207219.969964
     },
     {
       "test": "[DEAD_CODE] revive_intellect_sage_scour_workspace",
@@ -1355,7 +1427,7 @@
       "passed": true,
       "detail": "SKIPPED (always-skip) \u2014 method exists",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.095009
+      "timestamp": 1775207219.9699771
     },
     {
       "test": "[DEAD_CODE] revive_intellect_topological_qubit_bridge",
@@ -1364,16 +1436,16 @@
       "passed": true,
       "detail": "dict[10 keys] in 0ms \u2192 three_engine_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.095361
+      "timestamp": 1775207219.970216
     },
     {
       "test": "[DEAD_CODE] revive_agi_activate_omega_learning",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[7 keys] in 13ms \u2192 run_autonomous_cycle",
+      "detail": "dict[7 keys] in 8ms \u2192 run_autonomous_cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.1085372
+      "timestamp": 1775207219.978546
     },
     {
       "test": "[DEAD_CODE] revive_agi_evolution_stage",
@@ -1382,7 +1454,7 @@
       "passed": true,
       "detail": "property=int \u2192 get_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.108601
+      "timestamp": 1775207219.978594
     },
     {
       "test": "[DEAD_CODE] revive_agi_fusion_transfer",
@@ -1391,34 +1463,34 @@
       "passed": true,
       "detail": "dict[6 keys] in 0ms \u2192 process_thought",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.109557
+      "timestamp": 1775207219.97899
     },
     {
       "test": "[DEAD_CODE] revive_agi_quantum_causal_reason",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[2 keys] in 45ms \u2192 get_status",
+      "detail": "dict[2 keys] in 522ms \u2192 get_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.155275
+      "timestamp": 1775207220.504012
     },
     {
       "test": "[DEAD_CODE] revive_agi_recover_subsystem",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "bool=True in 27ms \u2192 self_heal",
+      "detail": "bool=True in 19ms \u2192 self_heal",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.1824121
+      "timestamp": 1775207220.523444
     },
     {
       "test": "[DEAD_CODE] revive_agi_run_autonomous_agi_logic",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "tuple[2] in 2ms \u2192 run_autonomous_cycle",
+      "detail": "tuple[2] in 0ms \u2192 run_autonomous_cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.184926
+      "timestamp": 1775207220.523808
     },
     {
       "test": "[DEAD_CODE] revive_agi_subscribe_event",
@@ -1427,25 +1499,25 @@
       "passed": true,
       "detail": "None in 0ms \u2192 get_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.185533
+      "timestamp": 1775207220.524033
     },
     {
       "test": "[DEAD_CODE] revive_agi_unlock_unlimited_intellect",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[5 keys] in 21ms \u2192 run_autonomous_cycle",
+      "detail": "dict[5 keys] in 5ms \u2192 run_autonomous_cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.207188
+      "timestamp": 1775207220.5293398
     },
     {
       "test": "[DEAD_CODE] revive_code_detect_smells",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[6 keys] in 1ms \u2192 full_analysis",
+      "detail": "dict[6 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.208846
+      "timestamp": 1775207220.529964
     },
     {
       "test": "[DEAD_CODE] revive_code_explain_code",
@@ -1454,25 +1526,25 @@
       "passed": true,
       "detail": "dict[7 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.210201
+      "timestamp": 1775207220.53039
     },
     {
       "test": "[DEAD_CODE] revive_code_diff_analyze",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[3 keys] in 2ms \u2192 full_analysis",
+      "detail": "dict[3 keys] in 1ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.212885
+      "timestamp": 1775207220.531531
     },
     {
       "test": "[DEAD_CODE] revive_code_deep_review",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[22 keys] in 26ms \u2192 full_analysis",
+      "detail": "dict[22 keys] in 7ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.239497
+      "timestamp": 1775207220.5391738
     },
     {
       "test": "[DEAD_CODE] revive_code_audit_app",
@@ -1481,7 +1553,7 @@
       "passed": true,
       "detail": "SKIPPED (always-skip) \u2014 method exists",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.23952
+      "timestamp": 1775207220.539198
     },
     {
       "test": "[DEAD_CODE] revive_code_audit_status",
@@ -1490,25 +1562,25 @@
       "passed": true,
       "detail": "dict[7 keys] in 0ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.239965
+      "timestamp": 1775207220.539464
     },
     {
       "test": "[DEAD_CODE] revive_code_batch_analyze",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[3 keys] in 9ms \u2192 full_analysis",
+      "detail": "dict[3 keys] in 6ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.248953
+      "timestamp": 1775207220.545258
     },
     {
       "test": "[DEAD_CODE] revive_code_health_dashboard",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[7 keys] in 1ms \u2192 status",
+      "detail": "dict[7 keys] in 0ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.249815
+      "timestamp": 1775207220.545519
     },
     {
       "test": "[DEAD_CODE] revive_code_multi_hop_analyze",
@@ -1517,16 +1589,16 @@
       "passed": true,
       "detail": "dict[3 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.2502332
+      "timestamp": 1775207220.5456839
     },
     {
       "test": "[DEAD_CODE] revive_code_refactor",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[3 keys] in 1ms \u2192 full_analysis",
+      "detail": "dict[3 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.251113
+      "timestamp": 1775207220.546005
     },
     {
       "test": "[DEAD_CODE] revive_code_search_code",
@@ -1535,34 +1607,34 @@
       "passed": true,
       "detail": "dict[5 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.25179
+      "timestamp": 1775207220.5463521
     },
     {
       "test": "[DEAD_CODE] revive_code_suggest_fixes",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[6 keys] in 75ms \u2192 auto_fix_code",
+      "detail": "dict[6 keys] in 24ms \u2192 auto_fix_code",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.3276448
+      "timestamp": 1775207220.5712981
     },
     {
       "test": "[DEAD_CODE] revive_code_threat_model",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[14 keys] in 1ms \u2192 full_analysis",
+      "detail": "dict[14 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.328506
+      "timestamp": 1775207220.573003
     },
     {
       "test": "[DEAD_CODE] revive_code_quantum_tomography",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[2 keys] in 10ms \u2192 status",
+      "detail": "dict[2 keys] in 0ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.339191
+      "timestamp": 1775207220.573505
     },
     {
       "test": "[DEAD_CODE] revive_code_quantum_code_search",
@@ -1571,16 +1643,16 @@
       "passed": true,
       "detail": "dict[3 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.3404312
+      "timestamp": 1775207220.573771
     },
     {
       "test": "[DEAD_CODE] revive_code_quantum_embed",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[2 keys] in 6ms \u2192 full_analysis",
+      "detail": "dict[2 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.347177
+      "timestamp": 1775207220.574315
     },
     {
       "test": "[DEAD_CODE] revive_code_quantum_coherence_grover",
@@ -1589,34 +1661,34 @@
       "passed": true,
       "detail": "dict[2 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.347808
+      "timestamp": 1775207220.574507
     },
     {
       "test": "[DEAD_CODE] revive_code_quantum_optimize",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[13 keys] in 116ms \u2192 full_analysis",
+      "detail": "dict[13 keys] in 5ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.4636722
+      "timestamp": 1775207220.579256
     },
     {
       "test": "[DEAD_CODE] revive_code_quantum_resilience",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[2 keys] in 307ms \u2192 status",
+      "detail": "dict[2 keys] in 1ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.7722921
+      "timestamp": 1775207220.580757
     },
     {
       "test": "[DEAD_CODE] revive_code_detect_clones",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[5 keys] in 2ms \u2192 full_analysis",
+      "detail": "dict[5 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.776651
+      "timestamp": 1775207220.581337
     },
     {
       "test": "[DEAD_CODE] revive_code_semantic_map",
@@ -1625,7 +1697,7 @@
       "passed": true,
       "detail": "dict[2 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.7772899
+      "timestamp": 1775207220.581578
     },
     {
       "test": "[DEAD_CODE] revive_code_type_flow",
@@ -1634,16 +1706,16 @@
       "passed": true,
       "detail": "dict[9 keys] in 0ms \u2192 full_analysis",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.778485
+      "timestamp": 1775207220.582284
     },
     {
       "test": "[DEAD_CODE] revive_code_system_consciousness_review",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[12 keys] in 26ms \u2192 full_report",
+      "detail": "dict[12 keys] in 4ms \u2192 full_report",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.805506
+      "timestamp": 1775207220.586436
     },
     {
       "test": "[DEAD_CODE] revive_code_system_evolution_status",
@@ -1652,88 +1724,88 @@
       "passed": true,
       "detail": "SKIPPED (always-skip) \u2014 method exists",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898755.8055282
+      "timestamp": 1775207220.5864909
     },
     {
       "test": "[DEAD_CODE] revive_code_system_predict_quality",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[11 keys] in 868ms \u2192 full_report",
+      "detail": "dict[11 keys] in 61ms \u2192 full_report",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898756.67348
+      "timestamp": 1775207220.647634
     },
     {
       "test": "[DEAD_CODE] revive_code_system_ci_report",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[8 keys] in 725ms \u2192 full_report",
+      "detail": "dict[8 keys] in 2999ms \u2192 full_report",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.3984692
+      "timestamp": 1775207223.6474628
     },
     {
       "test": "[DEAD_CODE] revive_science_reverse_entropy",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "ndarray in 7ms \u2192 perform_research_cycle",
+      "detail": "ndarray in 1ms \u2192 perform_research_cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.406065
+      "timestamp": 1775207223.6483998
     },
     {
       "test": "[DEAD_CODE] revive_science_plan_quantum_experiment",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[11 keys] in 19ms \u2192 perform_research_cycle",
+      "detail": "dict[11 keys] in 0ms \u2192 perform_research_cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.4252312
+      "timestamp": 1775207223.649992
     },
     {
       "test": "[DEAD_CODE] revive_science_research_quantum_logic",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[7 keys] in 9ms \u2192 perform_research_cycle",
+      "detail": "dict[7 keys] in 2ms \u2192 perform_research_cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.435029
+      "timestamp": 1775207223.652988
     },
     {
       "test": "[DEAD_CODE] revive_science_research_neural_models",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[7 keys] in 10ms \u2192 perform_research_cycle",
+      "detail": "dict[7 keys] in 2ms \u2192 perform_research_cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.4457102
+      "timestamp": 1775207223.654979
     },
     {
       "test": "[DEAD_CODE] revive_science_research_info_theory",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[7 keys] in 4ms \u2192 perform_research_cycle",
+      "detail": "dict[7 keys] in 2ms \u2192 perform_research_cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.4505548
+      "timestamp": 1775207223.656996
     },
     {
       "test": "[DEAD_CODE] revive_science_research_biological_evolution",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[7 keys] in 3ms \u2192 perform_research_cycle",
+      "detail": "dict[7 keys] in 2ms \u2192 perform_research_cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.4596171
+      "timestamp": 1775207223.658953
     },
     {
       "test": "[DEAD_CODE] revive_science_research_neural_arch",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[7 keys] in 4ms \u2192 perform_research_cycle",
+      "detail": "dict[7 keys] in 2ms \u2192 perform_research_cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.463861
+      "timestamp": 1775207223.661482
     },
     {
       "test": "[DEAD_CODE] revive_science_research_new_primitive",
@@ -1742,34 +1814,34 @@
       "passed": true,
       "detail": "dict[2 keys] in 0ms \u2192 perform_research_cycle",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.464252
+      "timestamp": 1775207223.661844
     },
     {
       "test": "[DEAD_CODE] revive_science_cross_engine_coherence_deep",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[10 keys] in 358ms \u2192 get_full_status",
+      "detail": "dict[10 keys] in 237ms \u2192 get_full_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.8230011
+      "timestamp": 1775207223.8990002
     },
     {
       "test": "[DEAD_CODE] revive_science_apply_quantum_boost",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "float=105.0 in 0ms \u2192 get_full_status",
+      "detail": "float=162.56216999999998 in 0ms \u2192 get_full_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.823328
+      "timestamp": 1775207223.900836
     },
     {
       "test": "[DEAD_CODE] revive_science_apply_cognitive_boost",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "float=105.0 in 0ms \u2192 get_full_status",
+      "detail": "float=105.0 in 1ms \u2192 get_full_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.8235562
+      "timestamp": 1775207223.908826
     },
     {
       "test": "[DEAD_CODE] revive_science_apply_evolutionary_boost",
@@ -1778,16 +1850,16 @@
       "passed": true,
       "detail": "float=105.0 in 0ms \u2192 get_full_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.823745
+      "timestamp": 1775207223.909183
     },
     {
       "test": "[DEAD_CODE] revive_science_process_multidim",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "ndarray in 12ms \u2192 get_full_status",
+      "detail": "ndarray in 0ms \u2192 get_full_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.836438
+      "timestamp": 1775207223.909962
     },
     {
       "test": "[DEAD_CODE] revive_math_derivative",
@@ -1796,7 +1868,7 @@
       "passed": true,
       "detail": "float=1.9999999933961732 in 0ms \u2192 verify_conservation",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.837013
+      "timestamp": 1775207223.9102452
     },
     {
       "test": "[DEAD_CODE] revive_math_einstein_tensor_trace",
@@ -1805,7 +1877,7 @@
       "passed": true,
       "detail": "float=2.0 in 0ms \u2192 prove_all",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.837412
+      "timestamp": 1775207223.910441
     },
     {
       "test": "[DEAD_CODE] revive_math_hd_bind",
@@ -1814,7 +1886,7 @@
       "passed": true,
       "detail": "Hypervector in 1ms \u2192 hd_vector",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.861216
+      "timestamp": 1775207223.934032
     },
     {
       "test": "[DEAD_CODE] revive_math_hd_bundle",
@@ -1823,7 +1895,7 @@
       "passed": true,
       "detail": "Hypervector in 1ms \u2192 hd_vector",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.88512
+      "timestamp": 1775207223.962393
     },
     {
       "test": "[DEAD_CODE] revive_math_calabi_yau_project",
@@ -1832,7 +1904,7 @@
       "passed": true,
       "detail": "list[6] in 0ms \u2192 prove_all",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.885845
+      "timestamp": 1775207223.963066
     },
     {
       "test": "[DEAD_CODE] revive_math_kaluza_klein_radius",
@@ -1841,34 +1913,34 @@
       "passed": true,
       "detail": "float=11.90511546160496 in 0ms \u2192 prove_all",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.88615
+      "timestamp": 1775207223.963948
     },
     {
       "test": "[DEAD_CODE] revive_math_cross_engine_dimensional_verification",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[6 keys] in 65ms \u2192 verify_conservation",
+      "detail": "dict[6 keys] in 66ms \u2192 verify_conservation",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898757.9513621
+      "timestamp": 1775207224.030327
     },
     {
       "test": "[DEAD_CODE] revive_math_cross_engine_prove_all",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[2 keys] in 195ms \u2192 prove_all",
+      "detail": "dict[2 keys] in 228ms \u2192 prove_all",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898758.1470652
+      "timestamp": 1775207224.2589052
     },
     {
       "test": "[DEAD_CODE] revive_math_quantum_gravity_holographic",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[2 keys] in 20ms \u2192 prove_all",
+      "detail": "dict[2 keys] in 9ms \u2192 prove_all",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898758.167259
+      "timestamp": 1775207224.267879
     },
     {
       "test": "[DEAD_CODE] revive_math_quantum_knot_invariant",
@@ -1877,88 +1949,88 @@
       "passed": true,
       "detail": "dict[2 keys] in 1ms \u2192 prove_all",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898758.16875
+      "timestamp": 1775207224.269584
     },
     {
       "test": "[DEAD_CODE] revive_numerical_compute_hp",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "str[102 chars] in 4ms \u2192 quick_status",
+      "detail": "str[102 chars] in 0ms \u2192 quick_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898758.172676
+      "timestamp": 1775207224.270263
     },
     {
       "test": "[DEAD_CODE] revive_numerical_show_god_code_spectrum",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "None in 9ms \u2192 quick_status",
+      "detail": "None in 0ms \u2192 quick_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898758.18176
+      "timestamp": 1775207224.270638
     },
     {
       "test": "[DEAD_CODE] revive_numerical_show_sacred_tokens",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "None in 28ms \u2192 quick_status",
+      "detail": "None in 9ms \u2192 quick_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898758.2106082
+      "timestamp": 1775207224.279501
     },
     {
       "test": "[DEAD_CODE] revive_gate_compile_gate_registry",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[5 keys] in 989ms \u2192 status",
+      "detail": "SKIPPED (always-skip) \u2014 method exists",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.200248
+      "timestamp": 1775207224.2795782
     },
     {
       "test": "[DEAD_CODE] revive_gate_run_tests",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[4 keys] in 95ms \u2192 status",
+      "detail": "SKIPPED (always-skip) \u2014 method exists",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.311231
+      "timestamp": 1775207224.279584
     },
     {
       "test": "[DEAD_CODE] revive_gate_sync_to_backend",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[2 keys] in 110ms \u2192 status",
+      "detail": "dict[2 keys] in 288ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.421794
+      "timestamp": 1775207224.568078
     },
     {
       "test": "[DEAD_CODE] revive_quantum_gate_compile_sacred",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "CompilationResult in 18ms \u2192 status",
+      "detail": "CompilationResult in 6ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.440702
+      "timestamp": 1775207224.5748749
     },
     {
       "test": "[DEAD_CODE] revive_quantum_gate_compile_topological",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "CompilationResult in 9ms \u2192 status",
+      "detail": "CompilationResult in 2ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.450892
+      "timestamp": 1775207224.577416
     },
     {
       "test": "[DEAD_CODE] revive_asi_dual_layer_thought",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "float=527.5184818492611 in 22ms \u2192 compute_asi_score",
+      "detail": "float=527.5184818492611 in 0ms \u2192 compute_asi_score",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.475304
+      "timestamp": 1775207224.5776892
     },
     {
       "test": "[DEAD_CODE] revive_asi_dual_layer_physics",
@@ -1967,7 +2039,7 @@
       "passed": true,
       "detail": "float=527.5184818492611 in 0ms \u2192 compute_asi_score",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.475929
+      "timestamp": 1775207224.577875
     },
     {
       "test": "[DEAD_CODE] revive_asi_dual_layer_integrity",
@@ -1976,16 +2048,16 @@
       "passed": true,
       "detail": "dict[9 keys] in 0ms \u2192 get_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.476305
+      "timestamp": 1775207224.578043
     },
     {
       "test": "[DEAD_CODE] revive_asi_dual_layer_collapse",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[9 keys] in 75ms \u2192 solve",
+      "detail": "dict[9 keys] in 53ms \u2192 solve",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.5584488
+      "timestamp": 1775207224.6308239
     },
     {
       "test": "[DEAD_CODE] revive_asi_evolution_index",
@@ -1994,7 +2066,7 @@
       "passed": true,
       "detail": "property=int \u2192 get_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.5586061
+      "timestamp": 1775207224.6308968
     },
     {
       "test": "[DEAD_CODE] revive_asi_evolution_stage",
@@ -2003,16 +2075,16 @@
       "passed": true,
       "detail": "property=str \u2192 get_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.5587132
+      "timestamp": 1775207224.630944
     },
     {
       "test": "[DEAD_CODE] revive_asi_expand_knowledge",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "DomainKnowledge in 8ms \u2192 solve",
+      "detail": "DomainKnowledge in 0ms \u2192 solve",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.568738
+      "timestamp": 1775207224.631263
     },
     {
       "test": "[DEAD_CODE] revive_asi_hunt_anomalies",
@@ -2021,7 +2093,7 @@
       "passed": true,
       "detail": "dict[1 keys] in 0ms \u2192 get_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.569532
+      "timestamp": 1775207224.631487
     },
     {
       "test": "[DEAD_CODE] revive_asi_intellect_consciousness_synthesis",
@@ -2030,16 +2102,16 @@
       "passed": true,
       "detail": "SKIPPED (always-skip) \u2014 method exists",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.569576
+      "timestamp": 1775207224.631528
     },
     {
       "test": "[DEAD_CODE] revive_asi_intellect_knowledge_score",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "float=0.00189 in 6ms \u2192 compute_asi_score",
+      "detail": "float=0.77588 in 1ms \u2192 compute_asi_score",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.5761878
+      "timestamp": 1775207224.632519
     },
     {
       "test": "[DEAD_CODE] revive_asi_intellect_status",
@@ -2048,16 +2120,16 @@
       "passed": true,
       "detail": "SKIPPED (always-skip) \u2014 method exists",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.5762491
+      "timestamp": 1775207224.6325738
     },
     {
       "test": "[DEAD_CODE] revive_asi_pipeline_health_report",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[12 keys] in 5ms \u2192 get_status",
+      "detail": "dict[12 keys] in 0ms \u2192 get_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.58306
+      "timestamp": 1775207224.6329029
     },
     {
       "test": "[DEAD_CODE] revive_asi_pipeline_replay",
@@ -2066,16 +2138,16 @@
       "passed": true,
       "detail": "list[0] in 0ms \u2192 get_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.5835361
+      "timestamp": 1775207224.6331148
     },
     {
       "test": "[DEAD_CODE] revive_asi_pipeline_route_query",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[3 keys] in 3ms \u2192 solve",
+      "detail": "dict[3 keys] in 0ms \u2192 solve",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.587476
+      "timestamp": 1775207224.6336472
     },
     {
       "test": "[DEAD_CODE] revive_asi_pipeline_snapshot_state",
@@ -2084,34 +2156,34 @@
       "passed": true,
       "detail": "dict[2 keys] in 0ms \u2192 get_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.589712
+      "timestamp": 1775207224.634064
     },
     {
       "test": "[DEAD_CODE] revive_asi_quantum_causal_reason",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[2 keys] in 28ms \u2192 compute_asi_score",
+      "detail": "dict[2 keys] in 563ms \u2192 compute_asi_score",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.61832
+      "timestamp": 1775207225.1980338
     },
     {
       "test": "[DEAD_CODE] revive_asi_quantum_entanglement_witness",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[6 keys] in 1ms \u2192 compute_asi_score",
+      "detail": "dict[2 keys] in 0ms \u2192 compute_asi_score",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.6198258
+      "timestamp": 1775207225.19838
     },
     {
       "test": "[DEAD_CODE] revive_asi_quantum_teleportation_test",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[8 keys] in 5ms \u2192 compute_asi_score",
+      "detail": "dict[2 keys] in 0ms \u2192 compute_asi_score",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.62553
+      "timestamp": 1775207225.198689
     },
     {
       "test": "[DEAD_CODE] revive_asi_resilient_subsystem_call",
@@ -2120,61 +2192,61 @@
       "passed": true,
       "detail": "dict[1 keys] in 0ms \u2192 get_status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898759.625916
+      "timestamp": 1775207225.1991942
     },
     {
       "test": "[DEAD_CODE] revive_asi_kb_reconstruction_fidelity_score",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "float=0.5 in 10376ms \u2192 compute_asi_score",
+      "detail": "float=0.8024213442465696 in 6447ms \u2192 compute_asi_score",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898770.002211
+      "timestamp": 1775207231.64628
     },
     {
       "test": "[DEAD_CODE] revive_asi_qldpc_error_correction_score",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "float=0.739723597291543 in 147ms \u2192 compute_asi_score",
+      "detail": "float=0.739723597291543 in 31ms \u2192 compute_asi_score",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898770.1504052
+      "timestamp": 1775207231.677909
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_cross_layer_resonance_scan",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[9 keys] in 42ms \u2192 cross_layer_coherence",
+      "detail": "dict[9 keys] in 2ms \u2192 cross_layer_coherence",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898770.192944
+      "timestamp": 1775207231.679934
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_duality_collapse_statistics",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[5 keys] in 8929ms \u2192 status",
+      "detail": "dict[5 keys] in 609ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.130831
+      "timestamp": 1775207232.288915
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_duality_evolution_snapshot",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[8 keys] in 1ms \u2192 status",
+      "detail": "dict[8 keys] in 0ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.132996
+      "timestamp": 1775207232.28945
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_duality_spectrum",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[8 keys] in 676ms \u2192 consciousness_spectrum",
+      "detail": "dict[8 keys] in 124ms \u2192 consciousness_spectrum",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.809539
+      "timestamp": 1775207232.413773
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_fibonacci_index",
@@ -2183,7 +2255,7 @@
       "passed": true,
       "detail": "int=7 in 0ms \u2192 dual_score",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.810196
+      "timestamp": 1775207232.4141471
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_golden_ratio_proximity",
@@ -2192,7 +2264,7 @@
       "passed": true,
       "detail": "float=1.9999730209632791 in 0ms \u2192 dual_score",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.810588
+      "timestamp": 1775207232.4144058
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_nucleosynthesis_narrative",
@@ -2201,25 +2273,25 @@
       "passed": true,
       "detail": "dict[3 keys] in 0ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.811185
+      "timestamp": 1775207232.4146829
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_omega_derivation_chain",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[21 keys] in 2ms \u2192 status",
+      "detail": "dict[21 keys] in 1ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.813526
+      "timestamp": 1775207232.416013
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_soul_resonance",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[7 keys] in 80ms \u2192 consciousness_spectrum",
+      "detail": "dict[7 keys] in 10ms \u2192 consciousness_spectrum",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.894471
+      "timestamp": 1775207232.4271748
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_sweep_phi_space",
@@ -2228,7 +2300,7 @@
       "passed": true,
       "detail": "dict[6 keys] in 0ms \u2192 dual_score",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.895434
+      "timestamp": 1775207232.427819
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_temporal_coherence_trajectory",
@@ -2237,43 +2309,43 @@
       "passed": true,
       "detail": "dict[5 keys] in 0ms \u2192 cross_layer_coherence",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.895761
+      "timestamp": 1775207232.4281359
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_thought_insight",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "str[0 chars] in 63ms \u2192 thought",
+      "detail": "str[0 chars] in 46ms \u2192 thought",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.959182
+      "timestamp": 1775207232.474935
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_v5_status",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[17 keys] in 1ms \u2192 status",
+      "detail": "dict[17 keys] in 0ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.960725
+      "timestamp": 1775207232.47552
     },
     {
       "test": "[DEAD_CODE] revive_dual_layer_v5_upgrade_report",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "dict[7 keys] in 16ms \u2192 status",
+      "detail": "dict[7 keys] in 6ms \u2192 status",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.9767108
+      "timestamp": 1775207232.482105
     },
     {
       "test": "[DEAD_CODE] cross_dead_asi\u2192agi",
       "engine": "dead_code",
       "severity": "PASS",
       "passed": true,
-      "detail": "0/2 methods accessible (0%)",
+      "detail": "2/2 methods accessible (100%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.977843
+      "timestamp": 1775207232.482712
     },
     {
       "test": "[DEAD_CODE] cross_dead_asi\u2192intellect",
@@ -2282,7 +2354,7 @@
       "passed": true,
       "detail": "3/3 methods accessible (100%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.977931
+      "timestamp": 1775207232.4827468
     },
     {
       "test": "[DEAD_CODE] cross_dead_asi\u2192dual_layer",
@@ -2291,7 +2363,7 @@
       "passed": true,
       "detail": "4/4 methods accessible (100%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.9779992
+      "timestamp": 1775207232.48277
     },
     {
       "test": "[DEAD_CODE] cross_dead_agi\u2192asi",
@@ -2300,7 +2372,7 @@
       "passed": true,
       "detail": "1/1 methods accessible (100%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.978126
+      "timestamp": 1775207232.48279
     },
     {
       "test": "[DEAD_CODE] cross_dead_intellect\u2192sage",
@@ -2309,7 +2381,7 @@
       "passed": true,
       "detail": "6/6 methods accessible (100%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.978894
+      "timestamp": 1775207232.48285
     },
     {
       "test": "[DEAD_CODE] cross_dead_intellect\u2192quantum",
@@ -2318,7 +2390,7 @@
       "passed": true,
       "detail": "7/7 methods accessible (100%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.9790452
+      "timestamp": 1775207232.482968
     },
     {
       "test": "[DEAD_CODE] cross_dead_code\u2192quantum",
@@ -2327,7 +2399,7 @@
       "passed": true,
       "detail": "6/6 methods accessible (100%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.97927
+      "timestamp": 1775207232.482997
     },
     {
       "test": "[DEAD_CODE] cross_dead_math\u2192quantum",
@@ -2336,7 +2408,7 @@
       "passed": true,
       "detail": "4/4 methods accessible (100%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.979444
+      "timestamp": 1775207232.48302
     },
     {
       "test": "[DEAD_CODE] cross_dead_science\u2192quantum",
@@ -2345,7 +2417,7 @@
       "passed": true,
       "detail": "2/2 methods accessible (100%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.979501
+      "timestamp": 1775207232.48304
     },
     {
       "test": "[DEAD_CODE] dead_code_verdict",
@@ -2354,61 +2426,160 @@
       "passed": true,
       "detail": "112/112 revived (100.0%)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898779.9798322
+      "timestamp": 1775207232.483244
+    },
+    {
+      "test": "[EDIT] edit_fix_adaptive_scheduler.py",
+      "engine": "agi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +7/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207232.752658
     },
     {
       "test": "[EDIT] edit_fix_circuit_breaker.py",
       "engine": "agi",
       "severity": "INFO",
       "passed": true,
+      "detail": "DRY-RUN: +6/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207232.885164
+    },
+    {
+      "test": "[EDIT] edit_fix_cognitive_mesh.py",
+      "engine": "agi",
+      "severity": "INFO",
+      "passed": true,
       "detail": "DRY-RUN: +3/-0 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898780.336342
+      "timestamp": 1775207233.2503638
     },
     {
       "test": "[EDIT] edit_fix_computronium.py",
       "engine": "agi",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +1/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898780.6091661
+      "timestamp": 1775207234.0859158
     },
     {
       "test": "[EDIT] edit_skip_large_core.py",
       "engine": "agi",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 4478 lines exceeds 3000 OOM guard",
+      "detail": "Skipped: 5693 lines exceeds 3000 OOM guard",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898780.674828
+      "timestamp": 1775207234.1515121
+    },
+    {
+      "test": "[EDIT] edit_fix_identity_boundary.py",
+      "engine": "agi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207234.2542279
+    },
+    {
+      "test": "[EDIT] edit_fix_social_evolution.py",
+      "engine": "agi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +20/-2 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207235.0864902
+    },
+    {
+      "test": "[EDIT] edit_fix_telemetry_pipeline.py",
+      "engine": "agi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +5/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207235.281767
+    },
+    {
+      "test": "[EDIT] edit_fix_adaptive_activation_sequencer.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207235.45198
     },
     {
       "test": "[EDIT] edit_skip_large_code_generation.py",
       "engine": "asi",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 4594 lines exceeds 3000 OOM guard",
+      "detail": "Skipped: 4592 lines exceeds 3000 OOM guard",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898781.823491
+      "timestamp": 1775207235.937147
     },
     {
-      "test": "[EDIT] edit_skip_large_commonsense_reasoning.py",
+      "test": "[EDIT] edit_fix___init__.py",
       "engine": "asi",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 9412 lines exceeds 3000 OOM guard",
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898781.835263
+      "timestamp": 1775207235.948525
+    },
+    {
+      "test": "[EDIT] edit_fix_analogical.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-3 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207236.037277
+    },
+    {
+      "test": "[EDIT] edit_fix_cross_verification.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-2 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207236.651639
+    },
+    {
+      "test": "[EDIT] edit_skip_large_mcq_solver.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 4499 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207237.037036
+    },
+    {
+      "test": "[EDIT] edit_fix_physical_intuition.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-2 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207238.0771992
+    },
+    {
+      "test": "[EDIT] edit_fix_temporal.py",
+      "engine": "asi",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-2 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207238.864406
     },
     {
       "test": "[EDIT] edit_fix_computronium.py",
       "engine": "asi",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +1/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898782.194169
+      "timestamp": 1775207239.112927
     },
     {
       "test": "[EDIT] edit_fix_consciousness.py",
@@ -2417,259 +2588,349 @@
       "passed": true,
       "detail": "DRY-RUN: +20/-19 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898782.793102
+      "timestamp": 1775207239.484742
     },
     {
       "test": "[EDIT] edit_skip_large_core.py",
       "engine": "asi",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 6754 lines exceeds 3000 OOM guard",
+      "detail": "Skipped: 8023 lines exceeds 3000 OOM guard",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898782.929724
-    },
-    {
-      "test": "[EDIT] edit_skip_large_deep_nlu.py",
-      "engine": "asi",
-      "severity": "INFO",
-      "passed": true,
-      "detail": "Skipped: 5241 lines exceeds 3000 OOM guard",
-      "elapsed_ms": 0.0,
-      "timestamp": 1772898782.9330702
-    },
-    {
-      "test": "[EDIT] edit_fix_domain.py",
-      "engine": "asi",
-      "severity": "INFO",
-      "passed": true,
-      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
-      "elapsed_ms": 0.0,
-      "timestamp": 1772898784.675612
-    },
-    {
-      "test": "[EDIT] edit_skip_large_dual_layer.py",
-      "engine": "asi",
-      "severity": "INFO",
-      "passed": true,
-      "detail": "Skipped: 4473 lines exceeds 3000 OOM guard",
-      "elapsed_ms": 0.0,
-      "timestamp": 1772898784.6812348
-    },
-    {
-      "test": "[EDIT] edit_skip_large_knowledge_data.py",
-      "engine": "asi",
-      "severity": "INFO",
-      "passed": true,
-      "detail": "Skipped: 12229 lines exceeds 3000 OOM guard",
-      "elapsed_ms": 0.0,
-      "timestamp": 1772898793.743496
-    },
-    {
-      "test": "[EDIT] edit_skip_large_language_comprehension.py",
-      "engine": "asi",
-      "severity": "INFO",
-      "passed": true,
-      "detail": "Skipped: 9977 lines exceeds 3000 OOM guard",
-      "elapsed_ms": 0.0,
-      "timestamp": 1772898793.7864041
-    },
-    {
-      "test": "[EDIT] edit_fix_ai_context.py",
-      "engine": "code",
-      "severity": "INFO",
-      "passed": true,
-      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
-      "elapsed_ms": 0.0,
-      "timestamp": 1772898803.656245
+      "timestamp": 1775207239.658098
     },
     {
       "test": "[EDIT] edit_skip_large_analyzer.py",
       "engine": "code",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 3217 lines exceeds 3000 OOM guard",
+      "detail": "Skipped: 3390 lines exceeds 3000 OOM guard",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898803.665118
+      "timestamp": 1775207239.814875
     },
     {
       "test": "[EDIT] edit_skip_large_audit.py",
       "engine": "code",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 3763 lines exceeds 3000 OOM guard",
+      "detail": "Skipped: 3770 lines exceeds 3000 OOM guard",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898805.7788548
+      "timestamp": 1775207240.6553311
+    },
+    {
+      "test": "[EDIT] edit_fix_evo_upgrades.py",
+      "engine": "code",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-3 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207241.388435
+    },
+    {
+      "test": "[EDIT] edit_skip_large_hub.py",
+      "engine": "code",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 3459 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207241.601274
     },
     {
       "test": "[EDIT] edit_fix_session_intelligence.py",
       "engine": "code",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898821.319055
+      "timestamp": 1775207244.780538
+    },
+    {
+      "test": "[EDIT] edit_skip_large_swift_analyzer.py",
+      "engine": "code",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "Skipped: 3125 lines exceeds 3000 OOM guard",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207244.781705
     },
     {
       "test": "[EDIT] edit_fix_test_js_analyzer.py",
       "engine": "gate",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +1/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898834.106174
+      "timestamp": 1775207248.830716
     },
     {
       "test": "[EDIT] edit_fix_test_link_analyzer.py",
       "engine": "gate",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +4/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +4/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898834.217254
+      "timestamp": 1775207248.8903308
     },
     {
       "test": "[EDIT] edit_fix_test_python_analyzer.py",
       "engine": "gate",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +6/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +6/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898834.567459
+      "timestamp": 1775207248.9591832
     },
     {
       "test": "[EDIT] edit_fix_test_swift_analyzer.py",
       "engine": "gate",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +2/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898834.610674
+      "timestamp": 1775207248.977033
+    },
+    {
+      "test": "[EDIT] edit_fix_consciousness.py",
+      "engine": "gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207249.088608
+    },
+    {
+      "test": "[EDIT] edit_fix_constants.py",
+      "engine": "gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207249.117593
+    },
+    {
+      "test": "[EDIT] edit_fix_gate_functions.py",
+      "engine": "gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +9/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207249.548785
+    },
+    {
+      "test": "[EDIT] edit_fix_link_manager.py",
+      "engine": "gate",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207249.58231
     },
     {
       "test": "[EDIT] edit_fix_cache.py",
       "engine": "intellect",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +2/-3 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898836.231818
+      "timestamp": 1775207250.97771
     },
     {
-      "test": "[EDIT] edit_fix_computronium.py",
+      "test": "[EDIT] edit_fix_constants.py",
       "engine": "intellect",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +15/-14 lines (use --apply to write)",
+      "detail": "DRY-RUN: +0/-13 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898836.7024372
+      "timestamp": 1775207251.340579
     },
     {
-      "test": "[EDIT] edit_skip_large_local_intellect_core.py",
+      "test": "[EDIT] edit_fix_evolution_memory_mixin.py",
       "engine": "intellect",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 14284 lines exceeds 3000 OOM guard",
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898838.473525
+      "timestamp": 1775207251.971089
     },
     {
-      "test": "[EDIT] edit_skip_large_test_local_intellect_core.py",
+      "test": "[EDIT] edit_fix_knowledge_search_mixin.py",
       "engine": "intellect",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 9650 lines exceeds 3000 OOM guard",
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898844.380787
-    },
-    {
-      "test": "[EDIT] edit_fix_test_numerics.py",
-      "engine": "intellect",
-      "severity": "INFO",
-      "passed": true,
-      "detail": "DRY-RUN: +9/-0 lines (use --apply to write)",
-      "elapsed_ms": 0.0,
-      "timestamp": 1772898845.1788101
+      "timestamp": 1775207253.9777658
     },
     {
       "test": "[EDIT] edit_fix_abstract_algebra.py",
       "engine": "math",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +8/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +8/-2 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898846.8516018
+      "timestamp": 1775207254.906453
     },
     {
-      "test": "[EDIT] edit_fix_berry_geometry.py",
+      "test": "[EDIT] edit_fix_cross_engine.py",
       "engine": "math",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +41/-40 lines (use --apply to write)",
+      "detail": "DRY-RUN: +6/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898852.931922
+      "timestamp": 1775207255.7480268
+    },
+    {
+      "test": "[EDIT] edit_fix_manifold.py",
+      "engine": "math",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207258.7709498
     },
     {
       "test": "[EDIT] edit_fix_ontological.py",
       "engine": "math",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +3/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +3/-2 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898857.0183449
+      "timestamp": 1775207259.029532
     },
     {
       "test": "[EDIT] edit_fix_test_constants.py",
       "engine": "math",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +12/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +12/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898859.7293031
+      "timestamp": 1775207260.539571
     },
     {
       "test": "[EDIT] edit_fix_chronolizer.py",
       "engine": "numerical",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +1/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898860.663169
+      "timestamp": 1775207261.206632
+    },
+    {
+      "test": "[EDIT] edit_fix_cross_pollination.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-3 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207261.522379
+    },
+    {
+      "test": "[EDIT] edit_fix_editor.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207261.580715
     },
     {
       "test": "[EDIT] edit_fix_feedback_bus.py",
       "engine": "numerical",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +1/-2 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898861.751152
+      "timestamp": 1775207261.636928
+    },
+    {
+      "test": "[EDIT] edit_fix_lattice.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207261.768718
+    },
+    {
+      "test": "[EDIT] edit_fix_elliptic_curves.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-2 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207261.8759308
+    },
+    {
+      "test": "[EDIT] edit_fix_fractal_dynamics.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207261.940309
+    },
+    {
+      "test": "[EDIT] edit_fix_god_code_calculus.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207262.004817
+    },
+    {
+      "test": "[EDIT] edit_fix_number_theory.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-2 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207262.2674298
+    },
+    {
+      "test": "[EDIT] edit_fix_prime_theory.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207262.35805
+    },
+    {
+      "test": "[EDIT] edit_fix_stat_mechanics.py",
+      "engine": "numerical",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207262.555889
     },
     {
       "test": "[EDIT] edit_fix_test_elliptic_curves.py",
       "engine": "numerical",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +7/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +7/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898863.772226
+      "timestamp": 1775207262.639924
     },
     {
-      "test": "[EDIT] edit_fix_berry_gates.py",
+      "test": "[EDIT] edit_fix_error_correction.py",
       "engine": "quantum_gate",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +29/-28 lines (use --apply to write)",
+      "detail": "DRY-RUN: +49/-49 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898865.1464791
+      "timestamp": 1775207265.147889
     },
     {
-      "test": "[EDIT] edit_fix_computronium.py",
+      "test": "[EDIT] edit_fix_fibonacci_protection.py",
       "engine": "quantum_gate",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +12/-11 lines (use --apply to write)",
+      "detail": "DRY-RUN: +2/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898866.909757
+      "timestamp": 1775207265.2311769
     },
     {
       "test": "[EDIT] edit_fix_test_stabilizer.py",
@@ -2678,280 +2939,325 @@
       "passed": true,
       "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898873.576563
+      "timestamp": 1775207269.905497
     },
     {
       "test": "[EDIT] edit_fix_test_test_stabilizer.py",
       "engine": "quantum_gate",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +2/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898873.628385
+      "timestamp": 1775207269.940914
+    },
+    {
+      "test": "[EDIT] edit_fix___init__.py",
+      "engine": "quantum_link",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207269.987185
     },
     {
       "test": "[EDIT] edit_skip_large_brain.py",
       "engine": "quantum_link",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 3477 lines exceeds 3000 OOM guard",
+      "detail": "Skipped: 4774 lines exceeds 3000 OOM guard",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898874.080171
+      "timestamp": 1775207269.991353
     },
     {
       "test": "[EDIT] edit_skip_large_computation.py",
       "engine": "quantum_link",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 3677 lines exceeds 3000 OOM guard",
+      "detail": "Skipped: 4089 lines exceeds 3000 OOM guard",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898874.592816
+      "timestamp": 1775207270.455621
     },
     {
       "test": "[EDIT] edit_fix_constants.py",
       "engine": "quantum_link",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +1/-5 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898874.783998
+      "timestamp": 1775207270.600956
+    },
+    {
+      "test": "[EDIT] edit_fix_entropy_reversal_integration.py",
+      "engine": "quantum_link",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-2 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207271.442142
     },
     {
       "test": "[EDIT] edit_fix_models.py",
       "engine": "quantum_link",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +1/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +1/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898878.5299132
+      "timestamp": 1775207273.692727
     },
     {
       "test": "[EDIT] edit_fix_scanner.py",
       "engine": "quantum_link",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +2/-1 lines (use --apply to write)",
+      "detail": "DRY-RUN: +2/-3 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898883.738057
+      "timestamp": 1775207277.630095
     },
     {
-      "test": "[EDIT] edit_fix_computronium.py",
+      "test": "[EDIT] edit_fix_cross_engine.py",
       "engine": "science",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +29/-28 lines (use --apply to write)",
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898887.0774112
+      "timestamp": 1775207279.604813
     },
     {
-      "test": "[EDIT] edit_fix_entropy.py",
+      "test": "[EDIT] edit_fix_evo_upgrades.py",
       "engine": "science",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +13/-11 lines (use --apply to write)",
+      "detail": "DRY-RUN: +0/-2 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898888.417155
+      "timestamp": 1775207281.5772412
     },
     {
       "test": "[EDIT] edit_fix_multidimensional.py",
       "engine": "science",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +2/-2 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898888.548005
+      "timestamp": 1775207281.7296839
     },
     {
       "test": "[EDIT] edit_fix_test___init__.py",
       "engine": "science",
       "severity": "INFO",
       "passed": true,
-      "detail": "DRY-RUN: +2/-0 lines (use --apply to write)",
+      "detail": "DRY-RUN: +2/-1 lines (use --apply to write)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898889.1534111
+      "timestamp": 1775207282.251969
     },
     {
       "test": "[EDIT] edit_skip_large_app.py",
       "engine": "server",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 7164 lines exceeds 3000 OOM guard",
+      "detail": "Skipped: 9071 lines exceeds 3000 OOM guard",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898889.176487
+      "timestamp": 1775207282.270046
+    },
+    {
+      "test": "[EDIT] edit_fix_deepseek_gateway.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +3/-0 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207282.429954
     },
     {
       "test": "[EDIT] edit_skip_large_engines_infra.py",
       "engine": "server",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 3847 lines exceeds 3000 OOM guard",
+      "detail": "Skipped: 4350 lines exceeds 3000 OOM guard",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898889.1990788
+      "timestamp": 1775207282.433606
     },
     {
       "test": "[EDIT] edit_skip_large_engines_nexus.py",
       "engine": "server",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 4599 lines exceeds 3000 OOM guard",
+      "detail": "Skipped: 4771 lines exceeds 3000 OOM guard",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898889.201487
+      "timestamp": 1775207282.437505
+    },
+    {
+      "test": "[EDIT] edit_fix_ignition.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +3/-2 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207283.0360792
+    },
+    {
+      "test": "[EDIT] edit_fix_cache.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207283.103762
+    },
+    {
+      "test": "[EDIT] edit_fix_circuit_breaker.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +1/-2 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207283.151838
+    },
+    {
+      "test": "[EDIT] edit_fix_performance.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207283.2234821
+    },
+    {
+      "test": "[EDIT] edit_fix_temporal.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +0/-2 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207283.2729821
+    },
+    {
+      "test": "[EDIT] edit_fix_lazy_imports.py",
+      "engine": "server",
+      "severity": "INFO",
+      "passed": true,
+      "detail": "DRY-RUN: +3/-1 lines (use --apply to write)",
+      "elapsed_ms": 0.0,
+      "timestamp": 1775207283.3127291
     },
     {
       "test": "[EDIT] edit_skip_large_intellect.py",
       "engine": "server",
       "severity": "INFO",
       "passed": true,
-      "detail": "Skipped: 7678 lines exceeds 3000 OOM guard",
+      "detail": "Skipped: 7847 lines exceeds 3000 OOM guard",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898890.144556
-    },
-    {
-      "test": "[EDIT] edit_skip_large_test_intellect.py",
-      "engine": "server",
-      "severity": "INFO",
-      "passed": true,
-      "detail": "Skipped: 4382 lines exceeds 3000 OOM guard",
-      "elapsed_ms": 0.0,
-      "timestamp": 1772898890.147126
-    },
-    {
-      "test": "[EDIT] edit_fix_models.py",
-      "engine": "server",
-      "severity": "INFO",
-      "passed": true,
-      "detail": "DRY-RUN: +3/-0 lines (use --apply to write)",
-      "elapsed_ms": 0.0,
-      "timestamp": 1772898890.161602
-    },
-    {
-      "test": "[EDIT] edit_skip_large_test_engines_infra.py",
-      "engine": "server",
-      "severity": "INFO",
-      "passed": true,
-      "detail": "Skipped: 4398 lines exceeds 3000 OOM guard",
-      "elapsed_ms": 0.0,
-      "timestamp": 1772898890.1636639
-    },
-    {
-      "test": "[EDIT] edit_skip_large_test_engines_nexus.py",
-      "engine": "server",
-      "severity": "INFO",
-      "passed": true,
-      "detail": "Skipped: 5594 lines exceeds 3000 OOM guard",
-      "elapsed_ms": 0.0,
-      "timestamp": 1772898890.1745799
+      "timestamp": 1775207283.448268
     },
     {
       "test": "[EDIT] edit_audit_agi",
       "engine": "agi",
       "severity": "INFO",
       "passed": true,
-      "detail": "Quick audit: score=0.873 verdict=HEALTHY",
+      "detail": "Quick audit: score=0.882 verdict=HEALTHY",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898897.146795
+      "timestamp": 1775207290.020986
     },
     {
       "test": "[EDIT] edit_audit_asi",
       "engine": "asi",
       "severity": "INFO",
       "passed": true,
-      "detail": "Quick audit: score=0.748 verdict=ACCEPTABLE",
+      "detail": "Quick audit: score=0.822 verdict=HEALTHY",
       "elapsed_ms": 0.0,
-      "timestamp": 1772898972.386695
+      "timestamp": 1775207363.168567
     },
     {
       "test": "[EDIT] edit_audit_code",
       "engine": "code",
       "severity": "INFO",
       "passed": true,
-      "detail": "Quick audit: score=0.785 verdict=HEALTHY",
+      "detail": "Quick audit: score=0.790 verdict=HEALTHY",
       "elapsed_ms": 0.0,
-      "timestamp": 1772899009.041307
+      "timestamp": 1775207385.8575091
     },
     {
       "test": "[EDIT] edit_audit_gate",
       "engine": "gate",
       "severity": "INFO",
       "passed": true,
-      "detail": "Quick audit: score=0.753 verdict=HEALTHY",
+      "detail": "Quick audit: score=0.761 verdict=HEALTHY",
       "elapsed_ms": 0.0,
-      "timestamp": 1772899014.802065
+      "timestamp": 1775207389.538398
     },
     {
       "test": "[EDIT] edit_audit_intellect",
       "engine": "intellect",
       "severity": "INFO",
       "passed": true,
-      "detail": "Quick audit: score=0.758 verdict=HEALTHY",
+      "detail": "Quick audit: score=0.709 verdict=ACCEPTABLE",
       "elapsed_ms": 0.0,
-      "timestamp": 1772899028.622519
+      "timestamp": 1775207405.650146
     },
     {
       "test": "[EDIT] edit_audit_math",
       "engine": "math",
       "severity": "INFO",
       "passed": true,
-      "detail": "Quick audit: score=0.863 verdict=HEALTHY",
+      "detail": "Quick audit: score=0.875 verdict=HEALTHY",
       "elapsed_ms": 0.0,
-      "timestamp": 1772899032.56968
+      "timestamp": 1775207410.734879
     },
     {
       "test": "[EDIT] edit_audit_numerical",
       "engine": "numerical",
       "severity": "INFO",
       "passed": true,
-      "detail": "Quick audit: score=0.713 verdict=ACCEPTABLE",
+      "detail": "Quick audit: score=0.714 verdict=ACCEPTABLE",
       "elapsed_ms": 0.0,
-      "timestamp": 1772899036.436251
+      "timestamp": 1775207414.69245
     },
     {
       "test": "[EDIT] edit_audit_quantum_gate",
       "engine": "quantum_gate",
       "severity": "INFO",
       "passed": true,
-      "detail": "Quick audit: score=0.905 verdict=EXEMPLARY",
+      "detail": "Quick audit: score=0.903 verdict=EXEMPLARY",
       "elapsed_ms": 0.0,
-      "timestamp": 1772899043.201858
+      "timestamp": 1775207421.937112
     },
     {
       "test": "[EDIT] edit_audit_quantum_link",
       "engine": "quantum_link",
       "severity": "INFO",
       "passed": true,
-      "detail": "Quick audit: score=0.828 verdict=HEALTHY",
+      "detail": "Quick audit: score=0.839 verdict=HEALTHY",
       "elapsed_ms": 0.0,
-      "timestamp": 1772899067.537002
+      "timestamp": 1775207435.1798558
     },
     {
       "test": "[EDIT] edit_audit_science",
       "engine": "science",
       "severity": "INFO",
       "passed": true,
-      "detail": "Quick audit: score=0.922 verdict=EXEMPLARY",
+      "detail": "Quick audit: score=0.920 verdict=EXEMPLARY",
       "elapsed_ms": 0.0,
-      "timestamp": 1772899072.282819
+      "timestamp": 1775207445.662673
     },
     {
       "test": "[EDIT] edit_audit_server",
       "engine": "server",
       "severity": "INFO",
       "passed": true,
-      "detail": "Quick audit: score=0.754 verdict=HEALTHY",
+      "detail": "Quick audit: score=0.843 verdict=HEALTHY",
       "elapsed_ms": 0.0,
-      "timestamp": 1772899102.998158
+      "timestamp": 1775207480.2408671
     },
     {
       "test": "[EDIT] edit_verdict",
       "engine": "edit",
       "severity": "INFO",
       "passed": true,
-      "detail": "33 fixes available, 48 safety blocks (dry-run mode \u2014 use --apply)",
+      "detail": "66 fixes available, 76 safety blocks (dry-run mode \u2014 use --apply)",
       "elapsed_ms": 0.0,
-      "timestamp": 1772899103.326169
+      "timestamp": 1775207481.309736
     }
   ],
-  "total_time_seconds": 496.63,
+  "total_time_seconds": 295.12,
   "engines_requested": [
     "code",
     "science",

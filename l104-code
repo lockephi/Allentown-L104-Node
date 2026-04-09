@@ -1,0 +1,294 @@
+#!/usr/bin/env python3
+"""
+L104 Code Engine CLI
+Command‑line interface for the L104 Code Engine.
+Provides analysis, generation, optimization, language detection, and Swift checking.
+"""
+
+import sys
+import os
+import argparse
+import asyncio
+import json
+import glob
+from typing import Optional, List
+
+# --- ENVIRONMENT SETUP ---
+current_dir = os.path.dirname(os.path.abspath(__file__))
+os.environ["PYTHONPATH"] = f"{{os.environ.get('PYTHONPATH', '')}}:{{current_dir}}"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["L104_CPU_CORES"] = "2"
+
+# Add all l104_* directories to path
+root = current_dir
+for p in glob.glob(os.path.join(root, 'l104_*')):
+    if os.path.isdir(p) and not os.path.basename(p).startswith('l104_data'):
+        if p not in sys.path:
+            sys.path.insert(0, p)
+
+# --- ENGINE IMPORT ---
+def get_code_engine():
+    from l104_code_engine import code_engine
+    return code_engine
+
+# --- COMMAND IMPLEMENTATIONS ---
+async def analyze_code(code: str, filename: str = "", language: str = "") -> dict:
+    """Analyze code using CodeEngine."""
+    engine = get_code_engine()
+    if language:
+        # Use analyze_with_timeout?
+        result = await engine.analyze(code, filename=filename)
+    else:
+        result = await engine.analyze(code, filename=filename)
+    return result
+
+async def generate_code(prompt: str, language: str = "Python") -> str:
+    """Generate code from prompt."""
+    engine = get_code_engine()
+    result = await engine.generate(prompt, language=language)
+    return result
+
+async def execute_code(code: str) -> dict:
+    """Execute code (if supported)."""
+    engine = get_code_engine()
+    result = await engine.execute(code)
+    return result
+
+async def optimize_code(code: str, filename: str = "") -> dict:
+    """Optimize code."""
+    engine = get_code_engine()
+    result = await engine.optimize(code, filename=filename)
+    return result
+
+async def detect_language(code: str, filename: str = "") -> dict:
+    """Detect language of code."""
+    engine = get_code_engine()
+    lang = engine.detect_language(code, filename=filename)
+    return {"language": lang}
+
+async def compare_languages(lang_a: str, lang_b: str) -> dict:
+    """Compare two languages."""
+    engine = get_code_engine()
+    result = engine.compare_languages(lang_a, lang_b)
+    return result
+
+async def swift_check(code: Optional[str] = None, file_path: Optional[str] = None) -> dict:
+    """Check Swift syntax."""
+    from l104_code_engine import check_swift_syntax, check_swift_file
+    if file_path:
+        result = check_swift_file(file_path)
+    elif code:
+        result = check_swift_syntax(code)
+    else:
+        return {"error": "Either code or file_path required"}
+    return result
+
+async def batch_analyze(file_list: list) -> dict:
+    """Batch analyze multiple code files."""
+    engine = get_code_engine()
+    # Convert list of dicts to list of tuples (code, filename)
+    sources = [(item.get('code', ''), item.get('filename', '')) for item in file_list]
+    result = engine.batch_analyze(sources)
+    return result
+
+async def scour_directory(path: str, extensions: Optional[List[str]] = None, max_files: int = 1000) -> dict:
+    """Recursively scan directory and analyze all code files."""
+    import os
+    import fnmatch
+    if extensions is None:
+        extensions = ['.py', '.js', '.ts', '.java', '.go', '.rs', '.cpp', '.c', '.swift', '.rb', '.php', '.cs']
+    # Normalize extensions to start with dot
+    ext_patterns = [ext if ext.startswith('.') else '.' + ext for ext in extensions]
+    sources = []
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if any(file.endswith(ext) for ext in ext_patterns):
+                filepath = os.path.join(root, file)
+                try:
+                    with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                        content = f.read()
+                except Exception as e:
+                    content = f"# Error reading file: {e}"
+                sources.append((content, filepath))
+                if len(sources) >= max_files:
+                    break
+        if len(sources) >= max_files:
+            break
+    engine = get_code_engine()
+    result = engine.batch_analyze(sources)
+    return result
+
+async def get_engine_status() -> dict:
+    """Get engine resilience stats."""
+    engine = get_code_engine()
+    stats = engine.get_resilience_stats()
+    return stats
+
+# --- SYNC WRAPPERS FOR ARGPARSE ---
+def cmd_analyze(args):
+    async def run():
+        result = await analyze_code(args.code, filename=args.filename, language=args.language)
+        print(json.dumps(result, indent=2))
+    asyncio.run(run())
+
+def cmd_generate(args):
+    async def run():
+        result = await generate_code(args.prompt, language=args.language)
+        print(json.dumps(result, indent=2))
+    asyncio.run(run())
+
+def cmd_execute(args):
+    async def run():
+        result = await execute_code(args.code)
+        print(json.dumps(result, indent=2))
+    asyncio.run(run())
+
+def cmd_optimize(args):
+    async def run():
+        result = await optimize_code(args.code, filename=args.filename)
+        print(json.dumps(result, indent=2))
+    asyncio.run(run())
+
+def cmd_detect_language(args):
+    async def run():
+        result = await detect_language(args.code, filename=args.filename)
+        print(json.dumps(result, indent=2))
+    asyncio.run(run())
+
+def cmd_compare_languages(args):
+    async def run():
+        result = await compare_languages(args.lang_a, args.lang_b)
+        print(json.dumps(result, indent=2))
+    asyncio.run(run())
+
+def cmd_swift_check(args):
+    async def run():
+        result = await swift_check(code=args.code, file_path=args.file)
+        print(json.dumps(result, indent=2))
+    asyncio.run(run())
+
+def cmd_batch_analyze(args):
+    async def run():
+        # Read input JSON file
+        with open(args.input, 'r') as f:
+            file_list = json.load(f)
+        result = await batch_analyze(file_list)
+        print(json.dumps(result, indent=2))
+    asyncio.run(run())
+
+def cmd_scour(args):
+    async def run():
+        extensions = None
+        if args.extensions:
+            extensions = [ext.strip() for ext in args.extensions.split(',')]
+        result = await scour_directory(args.path, extensions=extensions, max_files=args.max_files)
+        print(json.dumps(result, indent=2))
+    asyncio.run(run())
+
+def cmd_status(args):
+    async def run():
+        result = await get_engine_status()
+        print(json.dumps(result, indent=2))
+    asyncio.run(run())
+
+def cmd_help(args):
+    """Print help about the Code Engine."""
+    print("""
+L104 Code Engine CLI Help
+=========================
+Available commands:
+  analyze          - Analyze code for smells, complexity, etc.
+  generate         - Generate code from a natural language prompt.
+  execute          - Execute code (if supported).
+  optimize         - Optimize code for performance/readability.
+  detect-language  - Detect programming language of given code.
+  compare-languages - Compare two languages.
+  swift-check      - Check Swift syntax (code or file).
+  batch-analyze    - Analyze multiple code files (JSON input).
+  scour            - Recursively analyze code files in a directory.
+  status           - Get engine resilience stats.
+  help             - Show this message.
+
+Each command may have additional options; use --help after the command.
+Examples:
+  l104-code analyze --code "print('hello')"
+  l104-code generate --prompt "create a fibonacci function in Python"
+  l104-code swift-check --file ./example.swift
+    """)
+
+# --- MAIN PARSER ---
+def main():
+    parser = argparse.ArgumentParser(description="L104 Code Engine CLI")
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # Analyze
+    analyze_parser = subparsers.add_parser("analyze", help="Analyze code")
+    analyze_parser.add_argument("--code", type=str, required=True, help="Code to analyze")
+    analyze_parser.add_argument("--filename", type=str, default="", help="Optional filename for context")
+    analyze_parser.add_argument("--language", type=str, default="", help="Language hint")
+    analyze_parser.set_defaults(func=cmd_analyze)
+
+    # Generate
+    generate_parser = subparsers.add_parser("generate", help="Generate code from prompt")
+    generate_parser.add_argument("--prompt", type=str, required=True, help="Natural language prompt")
+    generate_parser.add_argument("--language", type=str, default="Python", help="Target language (default Python)")
+    generate_parser.set_defaults(func=cmd_generate)
+
+    # Execute
+    execute_parser = subparsers.add_parser("execute", help="Execute code")
+    execute_parser.add_argument("--code", type=str, required=True, help="Code to execute")
+    execute_parser.set_defaults(func=cmd_execute)
+
+    # Optimize
+    optimize_parser = subparsers.add_parser("optimize", help="Optimize code")
+    optimize_parser.add_argument("--code", type=str, required=True, help="Code to optimize")
+    optimize_parser.add_argument("--filename", type=str, default="", help="Optional filename")
+    optimize_parser.set_defaults(func=cmd_optimize)
+
+    # Detect language
+    lang_parser = subparsers.add_parser("detect-language", help="Detect programming language")
+    lang_parser.add_argument("--code", type=str, required=True, help="Code snippet")
+    lang_parser.add_argument("--filename", type=str, default="", help="Optional filename")
+    lang_parser.set_defaults(func=cmd_detect_language)
+
+    # Compare languages
+    compare_parser = subparsers.add_parser("compare-languages", help="Compare two languages")
+    compare_parser.add_argument("--lang-a", type=str, required=True, help="First language")
+    compare_parser.add_argument("--lang-b", type=str, required=True, help="Second language")
+    compare_parser.set_defaults(func=cmd_compare_languages)
+
+    # Swift check
+    swift_parser = subparsers.add_parser("swift-check", help="Check Swift syntax")
+    swift_group = swift_parser.add_mutually_exclusive_group(required=True)
+    swift_group.add_argument("--code", type=str, help="Swift code string")
+    swift_group.add_argument("--file", type=str, help="Path to Swift file")
+    swift_parser.set_defaults(func=cmd_swift_check)
+
+    # Batch analyze
+    batch_parser = subparsers.add_parser("batch-analyze", help="Batch analyze multiple code files")
+    batch_parser.add_argument("--input", type=str, required=True, help="JSON file containing list of {code, filename} objects")
+    batch_parser.set_defaults(func=cmd_batch_analyze)
+
+    # Scour
+    scour_parser = subparsers.add_parser("scour", help="Recursively analyze code files in a directory")
+    scour_parser.add_argument("--path", type=str, default=".", help="Directory path to scan (default: current directory)")
+    scour_parser.add_argument("--extensions", type=str, help="Comma-separated list of file extensions (e.g., .py,.js,.ts)")
+    scour_parser.add_argument("--max-files", type=int, default=1000, help="Maximum number of files to analyze (default: 1000)")
+    scour_parser.set_defaults(func=cmd_scour)
+
+    # Status
+    status_parser = subparsers.add_parser("status", help="Get engine resilience stats")
+    status_parser.set_defaults(func=cmd_status)
+
+    # Help
+    help_parser = subparsers.add_parser("help", help="Show help about the Code Engine")
+    help_parser.set_defaults(func=cmd_help)
+
+    args = parser.parse_args()
+    if hasattr(args, 'func'):
+        args.func(args)
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    main()

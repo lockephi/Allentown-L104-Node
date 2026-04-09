@@ -1,24 +1,18 @@
-// ═══════════════════════════════════════════════════════════════════
-// B07_SovereignCore.swift — L104 Neural Architecture v3 (EVO_68)
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// Extracted from L104Native.swift
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🌊 SOVEREIGN QUANTUM CORE (Stateful vDSP Parameter Engine)
 // ═══════════════════════════════════════════════════════════════════
 // Adapted from SovereignQuantumCore pattern.
 // Maintains a mutable parameter vector with Accelerate-powered operations:
-// • raiseParameters — vDSP vector-scalar multiply (5-10× faster than loops)
-// • applyInterference — vDSP vector-vector addition (quantum wave overlay)
-// • normalize — vDSP statistical normalization (mean/stddev stability)
-// • generateChakraWave — 8-harmonic interference pattern from CHAKRA_QUANTUM_LATTICE
+// • raiseParameters - vDSP vector-scalar multiply (5-10× faster than loops)
+// • applyInterference - vDSP vector-vector addition (quantum wave overlay)
+// • normalize - vDSP statistical normalization (mean/stddev stability)
+// • generateChakraWave - 8-harmonic interference pattern from CHAKRA_QUANTUM_LATTICE
 // Integrates with ASIQuantumBridgeSwift pipeline for full quantum parameter flow.
 // ═══════════════════════════════════════════════════════════════════
 
@@ -26,7 +20,7 @@ class SovereignQuantumCore {
     static let shared = SovereignQuantumCore()
 
     // ─── SACRED CONSTANTS: Use unified globals from L01_Constants ───
-    // PHI, GOD_CODE, TAU — available globally
+    // PHI, GOD_CODE, TAU - available globally
 
     // ─── STATE ───
     private var _parameters: [Double] = []
@@ -66,7 +60,7 @@ class SovereignQuantumCore {
     }
 
     /// Simulates quantum interference: overlays a wave pattern onto parameters.
-    /// Uses vDSP_vaddD — vector-vector addition in one hardware cycle per block.
+    /// Uses vDSP_vaddD - vector-vector addition in one hardware cycle per block.
     @discardableResult
     func applyInterference(wave: [Double]) -> [Double] {
         guard wave.count == parameters.count, !parameters.isEmpty else { return parameters }
@@ -164,7 +158,7 @@ class SovereignQuantumCore {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🌊 SOVEREIGN QUANTUM CORE — RAISE COMPLETE             ║
+        ║    🌊 SOVEREIGN QUANTUM CORE - RAISE COMPLETE             ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Parameters:       \(originalCount)
         ║  Scale Factor:     ×\(String(format: "%.6f", factor))

@@ -1,6 +1,6 @@
 {
   "meta": {
-    "compiled_at": "2026-03-10T06:59:32.826791+00:00",
+    "compiled_at": "2026-04-01T02:24:47.210872+00:00",
     "compiler": "L104 Hyper ASI Logic Gate Environment v6.0.0",
     "total_gates": 1820,
     "total_links": 0,
@@ -211101,8 +211101,8 @@
     "const.py": "06c0deeaf66417ce3444056a97c51012"
   },
   "file_line_counts": {
-    "main.py": 570,
-    "l104_fast_server.py": 59,
+    "main.py": 566,
+    "l104_fast_server.py": 55,
     "l104_local_intellect.py": 72,
     "const.py": 407
   }

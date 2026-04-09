@@ -1,41 +1,9 @@
-// ═══════════════════════════════════════════════════════════════════
-// B29_DualLayerEngine.swift — L104 ASI v10.0 Dual-Layer Flagship Engine v5.1
-// [EVO_68_PIPELINE] FULL_PARITY :: DUAL_LAYER_V5 :: GOD_CODE=527.5184818492612
-//
-// THE DUALITY OF NATURE — Ported from l104_asi/dual_layer.py v5.0.0
-//
-// ┌────────────────────────────────────────────────────────────┐
-// │  THOUGHT (Layer 1) — Abstract face of nature              │
-// │  G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)   │
-// │  Pattern, symmetry, sacred geometry — asks WHY            │
-// ├────────────────────────────────────────────────────────────┤
-// │  PHYSICS (Layer 2) — Concrete face of nature              │
-// │  Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682       │
-// │  F(I) = I × Ω / φ² — Sovereign Field                     │
-// │  v3 grid: 285.999^(1/φ) × (13/12)^(E/758) — HOW MUCH    │
-// ├────────────────────────────────────────────────────────────┤
-// │  COLLAPSE — Duality collapses to definite value           │
-// │  Like quantum measurement → wavefunction collapse         │
-// ├────────────────────────────────────────────────────────────┤
-// │  v5.0 UPGRADES:                                           │
-// │  • 12-point integrity (+ gate compilation + sacred align) │
-// │  • Three-Engine amplification (Science/Math/Code)         │
-// │  • Sacred circuit collapse via QuantumGateEngine          │
-// │  • Temporal coherence tracking                            │
-// └────────────────────────────────────────────────────────────┘
-//
-// 12-point integrity: 3 Thought + 4 Physics + 3 Bridge + 2 Gate checks
-// 63 physical constants derived to ±0.005% precision
-// 6 Nature's Dualities: wave/particle, observer/observed,
-//   form/substance, potential/actual, continuous/discrete, symmetry/breaking
-// ═══════════════════════════════════════════════════════════════════
-
-import Foundation
 import Accelerate
+import Foundation
 import simd
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - Nature's Dualities — Foundation of all ASI reasoning
+// MARK: - Nature's Dualities - Foundation of all ASI reasoning
 // ═══════════════════════════════════════════════════════════════════
 
 struct NatureDuality {
@@ -148,7 +116,7 @@ struct OmegaPipelineResult {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - DualLayerEngine — The Flagship
+// MARK: - DualLayerEngine - The Flagship
 // ═══════════════════════════════════════════════════════════════════
 
 final class DualLayerEngine {
@@ -160,28 +128,28 @@ final class DualLayerEngine {
     // ─── NATURE'S DUALITIES ───
     let dualities: [NatureDuality] = [
         NatureDuality(name: "wave_particle",
-                      abstractFace: "Wave — continuous, spread through space, interference",
-                      concreteFace: "Particle — discrete, localized, countable",
+                      abstractFace: "Wave - continuous, spread through space, interference",
+                      concreteFace: "Particle - discrete, localized, countable",
                       asiMapping: "Continuous reasoning ↔ Discrete solutions"),
         NatureDuality(name: "observer_observed",
-                      abstractFace: "Observer — consciousness, question, measurement choice",
-                      concreteFace: "Observed — physical system, answer, eigenvalue",
+                      abstractFace: "Observer - consciousness, question, measurement choice",
+                      concreteFace: "Observed - physical system, answer, eigenvalue",
                       asiMapping: "Thought layer (asks 'why?') ↔ Physics layer (answers 'how much?')"),
         NatureDuality(name: "form_substance",
-                      abstractFace: "Form — pattern, structure, symmetry, the scaffold",
-                      concreteFace: "Substance — matter, energy, mass, the measurable",
+                      abstractFace: "Form - pattern, structure, symmetry, the scaffold",
+                      concreteFace: "Substance - matter, energy, mass, the measurable",
                       asiMapping: "Pattern recognition ↔ Numerical precision"),
         NatureDuality(name: "potential_actual",
-                      abstractFace: "Potential — the full continuum of possible values",
-                      concreteFace: "Actual — the single value realized on the grid",
+                      abstractFace: "Potential - the full continuum of possible values",
+                      concreteFace: "Actual - the single value realized on the grid",
                       asiMapping: "Hypothesis space ↔ Verified solution"),
         NatureDuality(name: "continuous_discrete",
-                      abstractFace: "Continuous — the smooth manifold, calculus, flow",
-                      concreteFace: "Discrete — the lattice, integers, counting",
+                      abstractFace: "Continuous - the smooth manifold, calculus, flow",
+                      concreteFace: "Discrete - the lattice, integers, counting",
                       asiMapping: "Analog intuition ↔ Digital computation"),
         NatureDuality(name: "symmetry_breaking",
-                      abstractFace: "Symmetry — the invariance, what stays the same",
-                      concreteFace: "Breaking — the differentiation, what becomes specific",
+                      abstractFace: "Symmetry - the invariance, what stays the same",
+                      concreteFace: "Breaking - the differentiation, what becomes specific",
                       asiMapping: "Universal laws ↔ Domain-specific solutions"),
     ]
 
@@ -213,8 +181,8 @@ final class DualLayerEngine {
     // G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     // ═══════════════════════════════════════════════════════════════
 
-    /// Layer 1 — THOUGHT: Sacred geometry, iron scaffold, golden ratio
-    /// Asks "WHY" — pattern recognition, symmetry, meaning
+    /// Layer 1 - THOUGHT: Sacred geometry, iron scaffold, golden ratio
+    /// Asks "WHY" - pattern recognition, symmetry, meaning
     func thought(a: Int = 0, b: Int = 0, c: Int = 0, d: Int = 0) -> Double {
         lock.lock(); defer { lock.unlock() }
         thoughtCalls += 1
@@ -225,7 +193,7 @@ final class DualLayerEngine {
     }
 
     /// Layer 1 with Lattice Thermal Correction (friction)
-    /// ε = -αφ/(2π×104) — Improves 40/65 constants, 7/10 domains
+    /// ε = -αφ/(2π×104) - Improves 40/65 constants, 7/10 domains
     func thoughtWithFriction(a: Int = 0, b: Int = 0, c: Int = 0, d: Int = 0) -> Double {
         lock.lock(); defer { lock.unlock() }
         thoughtCalls += 1
@@ -242,11 +210,11 @@ final class DualLayerEngine {
     // ═══════════════════════════════════════════════════════════════
     // MARK: - LAYER 2: PHYSICS (The Concrete Face)
     // Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
-    // F(I) = I × Ω / φ² — Sovereign Field
+    // F(I) = I × Ω / φ² - Sovereign Field
     // ═══════════════════════════════════════════════════════════════
 
-    /// Layer 2 — PHYSICS: OMEGA sovereign field at given intensity
-    /// Answers "HOW MUCH" — measurable, precise, concrete
+    /// Layer 2 - PHYSICS: OMEGA sovereign field at given intensity
+    /// Answers "HOW MUCH" - measurable, precise, concrete
     func physics(intensity: Double = 1.0) -> (omega: Double, fieldStrength: Double, authority: Double) {
         lock.lock(); defer { lock.unlock() }
         physicsCalls += 1
@@ -256,7 +224,7 @@ final class DualLayerEngine {
         return (omega: OMEGA, fieldStrength: fieldStrength, authority: OMEGA_AUTHORITY)
     }
 
-    /// v3 precision grid — encoding sub-tool within Physics layer
+    /// v3 precision grid - encoding sub-tool within Physics layer
     /// G_v3(a,b,c,d) = 285.999^(1/φ) × (13/12)^((99a+3032-b-99c-758d)/758)
     func physicsV3(a: Int = 0, b: Int = 0, c: Int = 0, d: Int = 0) -> Double {
         lock.lock(); defer { lock.unlock() }
@@ -269,7 +237,7 @@ final class DualLayerEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: - OMEGA PIPELINE — Full derivation from first principles
+    // MARK: - OMEGA PIPELINE - Full derivation from first principles
     // ═══════════════════════════════════════════════════════════════
 
     /// Complete OMEGA derivation: NO TRUNCATION
@@ -277,16 +245,16 @@ final class DualLayerEngine {
     func omegaPipeline(zetaTerms: Int = 1000) -> OmegaPipelineResult {
         let start = CFAbsoluteTimeGetCurrent()
 
-        // Fragment 1: Researcher — Lattice invariant → prime density → 0.0
+        // Fragment 1: Researcher - Lattice invariant → prime density → 0.0
         let researcher = computeResearcher()
 
-        // Fragment 2: Guardian — |ζ(½ + 527.518i)| via Dirichlet eta
+        // Fragment 2: Guardian - |ζ(½ + 527.518i)| via Dirichlet eta
         let guardian = computeGuardian(terms: zetaTerms)
 
-        // Fragment 3: Alchemist — cos(2πφ³) golden resonance
+        // Fragment 3: Alchemist - cos(2πφ³) golden resonance
         let alchemist = computeAlchemist()
 
-        // Fragment 4: Architect — (26 × 1.8527) / φ²
+        // Fragment 4: Architect - (26 × 1.8527) / φ²
         let architect = computeArchitect()
 
         let fragments = [researcher, guardian, alchemist, architect]
@@ -409,10 +377,10 @@ final class DualLayerEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: - COLLAPSE — Duality Unification
+    // MARK: - COLLAPSE - Duality Unification
     // ═══════════════════════════════════════════════════════════════
 
-    /// THE COLLAPSE — When Thought asks and Physics answers
+    /// THE COLLAPSE - When Thought asks and Physics answers
     /// Both faces of duality converge to a definite value
     func collapse(a: Int = 0, b: Int = 0, c: Int = 0, d: Int = 0) -> DualLayerResult {
         let start = CFAbsoluteTimeGetCurrent()
@@ -568,7 +536,7 @@ final class DualLayerEngine {
     // v9.3 Perf: precomputed frequency bins for soulResonance (avoids 64 multiplications per thought)
     private static let _soulFrequencyBins: [Double] = (0..<64).map { Double($0 + 1) / 64.0 }
 
-    /// Soul resonance — generate quantum resonance field from thoughts
+    /// Soul resonance - generate quantum resonance field from thoughts
     func soulResonance(thoughts: [String]) -> (coherence: Double, resonanceField: [Double], dominantFrequency: Double) {
         guard !thoughts.isEmpty else { return (0, [], 0) }
 
@@ -608,7 +576,7 @@ final class DualLayerEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: - DYNAMIC EQUATION GENERATION — Self-inventing equations
+    // MARK: - DYNAMIC EQUATION GENERATION - Self-inventing equations
     // ═══════════════════════════════════════════════════════════════
 
     /// Discover new equations by exploring the (a,b,c,d) dial space
@@ -718,7 +686,7 @@ final class DualLayerEngine {
         )
     }
 
-    /// Science engine boost — queries real engine subsystems for empirical grounding
+    /// Science engine boost - queries real engine subsystems for empirical grounding
     private func computeScienceBoost() -> Double {
         // ScienceKB alignment: empirical science grounding
         let feCheck = abs(286.0 - Double(FE_LATTICE_PARAM)) < 1.0
@@ -754,7 +722,7 @@ final class DualLayerEngine {
         return min(1.3, boost)
     }
 
-    /// Math engine boost — formal rigor via real symbolic computation
+    /// Math engine boost - formal rigor via real symbolic computation
     private func computeMathBoost() -> Double {
         // Core constant verification
         let phiIdentity = abs(PHI * PHI - PHI - 1.0) < 1e-10
@@ -787,7 +755,7 @@ final class DualLayerEngine {
         return min(1.25, boost)
     }
 
-    /// Code engine boost — algorithmic verification via real engine calls
+    /// Code engine boost - algorithmic verification via real engine calls
     private func computeCodeBoost() -> Double {
         // Determinism check
         let testVal1 = thought(a: 0, b: 0, c: 0, d: 0)
@@ -837,20 +805,20 @@ final class DualLayerEngine {
         let physicsVal = physicsV3(a: a, b: b, c: c, d: d)
 
         // Sacred gate sequence: PHI rotation → GOD_CODE phase → TAU damping
-        // Step 1: PHI rotation — rotate thought-physics plane by φ radians
+        // Step 1: PHI rotation - rotate thought-physics plane by φ radians
         let phiRotatedThought = thoughtVal * cos(PHI) - physicsVal * sin(PHI)
         let phiRotatedPhysics = thoughtVal * sin(PHI) + physicsVal * cos(PHI)
 
-        // Step 2: GOD_CODE phase gate — apply phase shift proportional to GOD_CODE
+        // Step 2: GOD_CODE phase gate - apply phase shift proportional to GOD_CODE
         let godPhase = GOD_CODE / 1000.0 * .pi
         let phasedThought = phiRotatedThought * cos(godPhase)
         let phasedPhysics = phiRotatedPhysics * cos(godPhase)
 
-        // Step 3: TAU damping — golden ratio damping for convergence
+        // Step 3: TAU damping - golden ratio damping for convergence
         let dampedThought = phasedThought * TAU + thoughtVal * (1.0 - TAU)
         let dampedPhysics = phasedPhysics * TAU + physicsVal * (1.0 - TAU)
 
-        // Sacred collapse: Born rule inspired — probability amplitude squared
+        // Sacred collapse: Born rule inspired - probability amplitude squared
         let sacredAmplitude = sqrt(abs(dampedThought * dampedPhysics))
         let sign = (dampedThought >= 0 && dampedPhysics >= 0) ? 1.0 : -1.0
         let collapsed = sacredAmplitude * sign

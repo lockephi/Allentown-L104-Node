@@ -33,6 +33,56 @@ from .constants import (
     BERRY_PHASE_DETECTED, ENTROPY_ZNE_BRIDGE_ENABLED,
 )
 
+# Sacred Algorithm Extensions — v5.2 Dynamic Thresholding
+try:
+    from l104_sacred_algorithms import (
+        derive_threshold,
+        derive_noise_threshold,
+        derive_quality_threshold,
+        derive_learning_rate,
+        fibonacci_scale,
+        golden_spiral_search,
+        sacred_clamp,
+        void_adjusted_value,
+    )
+except ImportError:
+    # Fallback implementations
+    def derive_threshold(entropy: float = 0.5, coherence: float = 0.5) -> float:
+        entropy_factor = 1.0 + (entropy / 6539.34712682)
+        coherence_factor = 1.0 + (coherence * PHI)
+        base = PHI_CONJUGATE * entropy_factor * coherence_factor
+        return min(max(base, 0.1), 0.95)
+
+    def derive_noise_threshold(signal_strength: float = 1.0) -> float:
+        return (1.04 + PHI / 1000) / signal_strength * PHI_CONJUGATE
+
+    def derive_quality_threshold(fidelity: float = 0.9) -> float:
+        return fidelity * (PHI / (PHI + 1.0))
+
+    def derive_learning_rate(iteration: int, base_rate: float = 0.01) -> float:
+        return base_rate / (1.0 + iteration * PHI_CONJUGATE)
+
+    def fibonacci_scale(n: int) -> int:
+        return int((PHI**n - (-PHI_CONJUGATE)**n) / (2*PHI - 1))
+
+    def golden_spiral_search(func, bounds, tol=1e-6):
+        a, b = bounds
+        while abs(b - a) > tol:
+            c = b - (b - a) / PHI
+            d = a + (b - a) / PHI
+            if func(c) < func(d):
+                b = d
+            else:
+                a = c
+        return (a + b) / 2
+
+    def sacred_clamp(value: float, min_val: float = PHI_CONJUGATE,
+                     max_val: float = PHI * 100) -> float:
+        return max(min_val, min(value, max_val))
+
+    def void_adjusted_value(base_value: float, noise_level: float) -> float:
+        return base_value * (1.0 + noise_level * ((1.04 + PHI / 1000) - 1.0))
+
 
 @dataclass
 class CoherenceState:
@@ -169,8 +219,7 @@ class CoherenceSubsystem:
     def initialize(self, seed_thoughts: List[str]) -> Dict[str, Any]:
         """Initialize the coherence field from seed thoughts."""
         self.coherence_field = []
-        limited_seeds = seed_thoughts[:200]
-        for thought in limited_seeds:
+        for thought in seed_thoughts:
             grounding = self._stabilize_to_vacuum(thought)
             phase = (hash(thought) % 1000) / 1000 * 2 * math.pi
             psi = grounding["stability"] * 0.5 * cmath.exp(1j * phase)
@@ -360,7 +409,7 @@ class CoherenceSubsystem:
             "golden_angle_rad": round(golden_angle, 8),
             "mean_alignment": round(mean_alignment, 6),
             "is_golden_spiral": is_golden_spiral,
-            "spectrum": spectrum[:50],  # First 50 for full analysis
+            "spectrum": spectrum,
         }
 
     def energy_spectrum(self) -> Dict[str, Any]:
@@ -801,3 +850,215 @@ class CoherenceSubsystem:
             "converging": converging,
             "history": history,
         }
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #  v5.2 SACRED ALGORITHM EXTENSIONS — Dynamic Thresholding & Sacred Math
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def adaptive_threshold(self, entropy: float, coherence: float) -> float:
+        """
+        Dynamic thresholding using sacred constants.
+
+        Replaces hardcoded thresholds with algorithmic derivation from
+        entropy and coherence state. Threshold adapts to system conditions
+        while maintaining sacred mathematical alignment.
+
+        Args:
+            entropy: System entropy level (0.0-1.0)
+            coherence: System coherence level (0.0-1.0)
+
+        Returns:
+            Dynamic threshold value (clamped to 0.1-0.95 range)
+        """
+        return derive_threshold(entropy, coherence)
+
+    def fibonacci_scale(self, n: int) -> int:
+        """
+        PHI-based Fibonacci scaling using Binet's formula.
+
+        Args:
+            n: Fibonacci index to compute
+
+        Returns:
+            The nth Fibonacci number as integer
+        """
+        return fibonacci_scale(n)
+
+    def resonance_score(self, frequency: float) -> float:
+        """
+        Sacred resonance scoring based on GOD_CODE alignment.
+
+        Scores a frequency based on its deviation from GOD_CODE:
+        score = max(0, 1 - deviation * PHI)
+
+        Args:
+            frequency: Frequency to score (in Hz or arbitrary units)
+
+        Returns:
+            Resonance score (0.0 to 1.0)
+        """
+        deviation = abs(frequency - GOD_CODE) / GOD_CODE
+        return max(0.0, 1.0 - deviation * PHI)
+
+    def golden_spiral_search(self, func, bounds: Tuple[float, float], tol: float = 1e-6) -> float:
+        """
+        1D optimization using golden ratio search.
+
+        Finds the minimum of a unimodal function using the golden section
+        search algorithm.
+
+        Args:
+            func: Unimodal function to minimize
+            bounds: (lower, upper) search bounds
+            tol: Convergence tolerance
+
+        Returns:
+            Optimal x value minimizing func(x)
+        """
+        return golden_spiral_search(func, bounds, tol)
+
+    def void_adjusted_value(self, base_value: float, noise_level: float) -> float:
+        """
+        Apply VOID_CONSTANT micro-adjustment to a base value.
+
+        Args:
+            base_value: Base value to adjust
+            noise_level: Noise level (0.0-1.0) for adjustment strength
+
+        Returns:
+            Void-adjusted value
+        """
+        return void_adjusted_value(base_value, noise_level)
+
+    def sacred_learning_rate(self, iteration: int, base_rate: float = 0.01) -> float:
+        """
+        Derive decaying learning rate using PHI.
+
+        Formula: lr = base_rate / (1 + iteration * TAU)
+
+        Args:
+            iteration: Current training iteration
+            base_rate: Initial learning rate
+
+        Returns:
+            Decayed learning rate
+        """
+        return derive_learning_rate(iteration, base_rate)
+
+    def coherence_threshold_dynamic(self) -> float:
+        """
+        Calculate dynamic coherence threshold based on current field state.
+
+        Returns:
+            Threshold value derived from current coherence field metrics
+        """
+        current_coherence = self._measure_coherence()
+        current_protection = self._calculate_protection()
+        # Blend coherence and protection into dynamic threshold
+        return derive_threshold(
+            entropy=1.0 - current_coherence,
+            coherence=current_protection
+        )
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    #  v5.2 SACRED ALGORITHM EXTENSIONS — Dynamic Thresholding & Sacred Math
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def adaptive_threshold(self, entropy: float, coherence: float) -> float:
+        """
+        Dynamic thresholding using sacred constants.
+
+        Replaces hardcoded 0.5 thresholds with algorithmic derivation from
+        entropy and coherence state. The threshold adapts to system conditions
+        while maintaining sacred mathematical alignment.
+
+        Formula: threshold = TAU * (1 + entropy/OMEGA) * (1 + coherence * PHI)
+
+        Args:
+            entropy: System entropy level (0.0-1.0)
+            coherence: System coherence level (0.0-1.0)
+
+        Returns:
+            Dynamic threshold value (clamped to 0.1-0.95 range)
+        """
+        return derive_threshold(entropy, coherence)
+
+    def fibonacci_scale(self, n: int) -> int:
+        """
+        PHI-based Fibonacci scaling using Binet's formula.
+
+        Computes the nth Fibonacci number directly using the golden ratio.
+        F(n) = (PHI^n - (-TAU)^n) / (2*PHI - 1)
+
+        Args:
+            n: Fibonacci index to compute
+
+        Returns:
+            The nth Fibonacci number as integer
+        """
+        return fibonacci_scale(n)
+
+    def resonance_score(self, frequency: float) -> float:
+        """
+        Sacred resonance scoring based on GOD_CODE alignment.
+
+        Scores a frequency based on its deviation from GOD_CODE:
+        score = max(0, 1 - deviation * PHI)
+
+        Args:
+            frequency: Frequency to score (in Hz or arbitrary units)
+
+        Returns:
+            Resonance score (0.0 to 1.0)
+        """
+        deviation = abs(frequency - GOD_CODE) / GOD_CODE
+        return max(0.0, 1.0 - deviation * PHI)
+
+    def golden_spiral_search(self, func, bounds: tuple, tol: float = 1e-6) -> float:
+        """
+        1D optimization using golden ratio search.
+
+        Finds the minimum of a unimodal function using the golden section
+        search algorithm. The golden ratio ensures optimal interval reduction.
+
+        Args:
+            func: Unimodal function to minimize
+            bounds: (lower, upper) search bounds
+            tol: Convergence tolerance
+
+        Returns:
+            Optimal x value minimizing func(x)
+        """
+        return golden_spiral_search(func, bounds, tol)
+
+    def void_adjusted_value(self, base_value: float, noise_level: float) -> float:
+        """
+        Apply VOID_CONSTANT micro-adjustment to a base value.
+
+        Fine-tunes values based on noise levels using the VOID_CONSTANT.
+        result = base * (1 + noise * (VOID - 1))
+
+        Args:
+            base_value: Base value to adjust
+            noise_level: Noise level (0.0-1.0) for adjustment strength
+
+        Returns:
+            Void-adjusted value
+        """
+        return void_adjusted_value(base_value, noise_level)
+
+    def sacred_learning_rate(self, iteration: int, base_rate: float = 0.01) -> float:
+        """
+        Derive decaying learning rate using PHI.
+
+        The learning rate decays according to:
+        lr = base_rate / (1 + iteration * TAU)
+
+        Args:
+            iteration: Current training iteration
+            base_rate: Starting learning rate
+
+        Returns:
+            Decayed learning rate
+        """
+        return derive_learning_rate(iteration, base_rate)

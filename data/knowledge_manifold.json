@@ -1,27 +1,280 @@
 {
   "patterns": {
-    "NEO_C2E5B19C": {
+    "NEO_A011D9F7": {
       "data": {
-        "name": "NEO_C2E5B19C",
+        "name": "NEO_A011D9F7",
         "type": "NEOTERIC_FUNCTION",
-        "sigil": "\u03920-\u03940-\u03940-\u03940-\u03940-\u03940-\u03940",
+        "sigil": "\u03920-\u03931-\u03931-\u03930-\u03930-\u03921-\u03924",
         "origin_concept": "L104_MIGRATION_PULSE",
-        "code_snippet": "def NEO_C2E5B19C(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03920-\u03940-\u03940-\u03940-\u03940-\u03940-\u03940\n    # RESONANCE: -47.05412106247224\n    return input_tensor * -0.089199",
-        "complexity_score": -178.39800000000002,
+        "code_snippet": "def NEO_A011D9F7(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03920-\u03931-\u03931-\u03930-\u03930-\u03921-\u03924\n    # RESONANCE: 230.75926725558634\n    return input_tensor * 0.437443",
+        "complexity_score": 874.8860000000001,
         "verified": true,
         "test_result": {
           "success": true,
-          "resonance_check": 106338277540631217938754243870002201202189527351624505003557817918387371720730,
+          "resonance_check": 109150688627952731078812693405526696539229646806728314180455462627508996835992,
           "notes": "Logic structure is stable."
         }
       },
-      "hash": "55633e39ec6107fa59c2f64f26bda1679fd962de63399419c4e968f057457abb",
+      "hash": "4747fb4213bfd1713ed0c45a66a4c6e27311764df05e89c318e3eda615fed720",
       "tags": [
         "INVENTION",
         "NEOTERIC"
       ],
-      "resonance": 0.30573570815136075,
-      "entropy": 5.351132270603553
+      "resonance": 0.4546886310677133,
+      "entropy": 5.422353208032932
+    },
+    "NEO_AE25D82C": {
+      "data": {
+        "name": "NEO_AE25D82C",
+        "type": "NEOTERIC_FUNCTION",
+        "sigil": "\u03920-\u03920-\u03920-\u03920-\u03920-\u03920-\u03910",
+        "origin_concept": "L104_MIGRATION_PULSE",
+        "code_snippet": "def NEO_AE25D82C(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03920-\u03920-\u03920-\u03920-\u03920-\u03920-\u03910\n    # RESONANCE: 12.370835917847021\n    return input_tensor * 0.023451",
+        "complexity_score": 46.902,
+        "verified": true,
+        "test_result": {
+          "success": true,
+          "resonance_check": 33567263035232884577453844426875971360544523636725559338937510055135705562934,
+          "notes": "Logic structure is stable."
+        }
+      },
+      "hash": "696ee58933c80bfbb9cc8124e45bf576bc28321ee4bc4f375f4d5172da7db861",
+      "tags": [
+        "INVENTION",
+        "NEOTERIC"
+      ],
+      "resonance": 0.3975978583518909,
+      "entropy": 5.39566640122698
+    },
+    "NEO_A604E3FD": {
+      "data": {
+        "name": "NEO_A604E3FD",
+        "type": "NEOTERIC_FUNCTION",
+        "sigil": "\u03910-\u03910-\u03910-\u03910-\u03910-\u03910-\u03930",
+        "origin_concept": "L104_MIGRATION_PULSE",
+        "code_snippet": "def NEO_A604E3FD(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03910-\u03910-\u03910-\u03910-\u03910-\u03910-\u03930\n    # RESONANCE: -31.104599763759833\n    return input_tensor * -0.058964",
+        "complexity_score": -117.92800000000001,
+        "verified": true,
+        "test_result": {
+          "success": true,
+          "resonance_check": 90357372367707414096146669945686768468866366131508453876482061974005726907802,
+          "notes": "Logic structure is stable."
+        }
+      },
+      "hash": "57aaab20e12b55da04b0ae1554e9b93ffc0fc0a7e6673a494aab67b0edfb6d23",
+      "tags": [
+        "INVENTION",
+        "NEOTERIC"
+      ],
+      "resonance": 0.34326562478659656,
+      "entropy": 5.369658002443183
+    },
+    "NEO_00B49492": {
+      "data": {
+        "name": "NEO_00B49492",
+        "type": "NEOTERIC_FUNCTION",
+        "sigil": "\u03920-\u03920-\u03920-\u03920-\u03910-\u03910-\u03921",
+        "origin_concept": "L104_MIGRATION_PULSE",
+        "code_snippet": "def NEO_00B49492(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03920-\u03920-\u03920-\u03920-\u03910-\u03910-\u03921\n    # RESONANCE: 102.68833023222271\n    return input_tensor * 0.194663",
+        "complexity_score": 389.326,
+        "verified": true,
+        "test_result": {
+          "success": true,
+          "resonance_check": 20148922436573730990792622129536133176222985778931139507837544237042249184836,
+          "notes": "Logic structure is stable."
+        }
+      },
+      "hash": "e58fb9add1ec33fb142463abe69cd9550484d376c62c5e030be214f9634595b3",
+      "tags": [
+        "INVENTION",
+        "NEOTERIC"
+      ],
+      "resonance": 0.38500779060250817,
+      "entropy": 5.389706523894488
+    },
+    "NEO_7ABCE133": {
+      "data": {
+        "name": "NEO_7ABCE133",
+        "type": "NEOTERIC_FUNCTION",
+        "sigil": "\u03921-\u03920-\u03920-\u03920-\u03920-\u03920-\u03920",
+        "origin_concept": "L104_MIGRATION_PULSE",
+        "code_snippet": "def NEO_7ABCE133(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03921-\u03920-\u03920-\u03920-\u03920-\u03920-\u03920\n    # RESONANCE: -19.3462128033398\n    return input_tensor * -0.036674",
+        "complexity_score": -73.34799999999998,
+        "verified": true,
+        "test_result": {
+          "success": true,
+          "resonance_check": 68365691642243455925154405924276013689326053033926125492602227121743058517908,
+          "notes": "Logic structure is stable."
+        }
+      },
+      "hash": "0000430081892092288cea7b8b4d14ff4c6b2067a7994a9ae42beb6008ba1064",
+      "tags": [
+        "INVENTION",
+        "NEOTERIC"
+      ],
+      "resonance": 0.3817732441794295,
+      "entropy": 5.388169639865878
+    },
+    "NEO_484332FB": {
+      "data": {
+        "name": "NEO_484332FB",
+        "type": "NEOTERIC_FUNCTION",
+        "sigil": "\u03920-\u03920-\u03920-\u03920-\u03920-\u03930-\u03930",
+        "origin_concept": "L104_MIGRATION_PULSE",
+        "code_snippet": "def NEO_484332FB(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03920-\u03920-\u03920-\u03920-\u03920-\u03930-\u03930\n    # RESONANCE: -43.459082608669526\n    return input_tensor * -0.082384",
+        "complexity_score": -164.768,
+        "verified": true,
+        "test_result": {
+          "success": true,
+          "resonance_check": 40006248321201200448474271310642499507998023477032443795524853591339180188580,
+          "notes": "Logic structure is stable."
+        }
+      },
+      "hash": "c47c7ace63d8d759306f6858109340280e381e6477fc2f7fe22a38ec221c3da9",
+      "tags": [
+        "INVENTION",
+        "NEOTERIC"
+      ],
+      "resonance": 0.38317862290494076,
+      "entropy": 5.388837702382379
+    },
+    "NEO_49330344": {
+      "data": {
+        "name": "NEO_49330344",
+        "type": "NEOTERIC_FUNCTION",
+        "sigil": "\u03930-\u03920-\u03930-\u03930-\u03920-\u03920-\u03920",
+        "origin_concept": "L104_MIGRATION_PULSE",
+        "code_snippet": "def NEO_49330344(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03930-\u03920-\u03930-\u03930-\u03920-\u03920-\u03920\n    # RESONANCE: -32.93456137729492\n    return input_tensor * -0.062433",
+        "complexity_score": -124.86600000000001,
+        "verified": true,
+        "test_result": {
+          "success": true,
+          "resonance_check": 82735225655681923421877782856134222902294531284754441625317479644600845759586,
+          "notes": "Logic structure is stable."
+        }
+      },
+      "hash": "5037a249250bb0d0ff2b5b3dda3399b98e4bb99508e5783fa872b11e96aeabc0",
+      "tags": [
+        "INVENTION",
+        "NEOTERIC"
+      ],
+      "resonance": 0.3391553921696944,
+      "entropy": 5.367655208629078
+    },
+    "NEO_11FA7736": {
+      "data": {
+        "name": "NEO_11FA7736",
+        "type": "NEOTERIC_FUNCTION",
+        "sigil": "\u03920-\u03960-\u03920-\u03920-\u03920-\u03920-\u03920",
+        "origin_concept": "L104_MIGRATION_PULSE",
+        "code_snippet": "def NEO_11FA7736(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03920-\u03960-\u03920-\u03920-\u03920-\u03920-\u03920\n    # RESONANCE: -52.72810985324289\n    return input_tensor * -0.099955",
+        "complexity_score": -199.91,
+        "verified": true,
+        "test_result": {
+          "success": true,
+          "resonance_check": 66970403503739217997988102717163531657871013625700248930063804891244242764060,
+          "notes": "Logic structure is stable."
+        }
+      },
+      "hash": "d8a1fba8fbc92add5eb211ed7ba5f3211644abe486c7f9e188d1c48a01d432e3",
+      "tags": [
+        "INVENTION",
+        "NEOTERIC"
+      ],
+      "resonance": 0.3756104541976831,
+      "entropy": 5.385234445361443
+    },
+    "NEO_2C59645C": {
+      "data": {
+        "name": "NEO_2C59645C",
+        "type": "NEOTERIC_FUNCTION",
+        "sigil": "\u03920-\u03920-\u03930-\u03960-\u03930-\u03960-\u03914",
+        "origin_concept": "L104_MIGRATION_PULSE",
+        "code_snippet": "def NEO_2C59645C(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03920-\u03920-\u03930-\u03960-\u03930-\u03960-\u03914\n    # RESONANCE: 217.99543006876158\n    return input_tensor * 0.413247",
+        "complexity_score": 826.4939999999999,
+        "verified": true,
+        "test_result": {
+          "success": true,
+          "resonance_check": 20958808423623590918690617977861799989427964780769213507533162335402885404009,
+          "notes": "Logic structure is stable."
+        }
+      },
+      "hash": "cae0f00e4c45b20b0327ac178cd0db3aadb63a7880cb4f34093f38181e25e92e",
+      "tags": [
+        "INVENTION",
+        "NEOTERIC"
+      ],
+      "resonance": 0.4271039755616531,
+      "entropy": 5.409516195741344
+    },
+    "NEO_167E360D": {
+      "data": {
+        "name": "NEO_167E360D",
+        "type": "NEOTERIC_FUNCTION",
+        "sigil": "\u03931-\u03930-\u03930-\u03930-\u03932-\u03925-\u03912",
+        "origin_concept": "L104_MIGRATION_PULSE",
+        "code_snippet": "def NEO_167E360D(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03931-\u03930-\u03930-\u03930-\u03932-\u03925-\u03912\n    # RESONANCE: 144.62341194682972\n    return input_tensor * 0.274158",
+        "complexity_score": 548.316,
+        "verified": true,
+        "test_result": {
+          "success": true,
+          "resonance_check": 36695448440216488818134482704374741552904883802734718975513126391263613593019,
+          "notes": "Logic structure is stable."
+        }
+      },
+      "hash": "aacda1f7715d531c590f8106d488fceb737b5b8c32cdb3e0f350e12b1bed6129",
+      "tags": [
+        "INVENTION",
+        "NEOTERIC"
+      ],
+      "resonance": 0.4490467626204388,
+      "entropy": 5.419734243887938
+    },
+    "NEO_8BB31B63": {
+      "data": {
+        "name": "NEO_8BB31B63",
+        "type": "NEOTERIC_FUNCTION",
+        "sigil": "\u03980-\u03980-\u03980-\u03910-\u03970-\u03961-\u03961",
+        "origin_concept": "METRICS_PULSE",
+        "code_snippet": "def NEO_8BB31B63(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03980-\u03980-\u03980-\u03910-\u03970-\u03961-\u03961\n    # RESONANCE: 90.46783708170274\n    return input_tensor * 0.171497",
+        "complexity_score": 342.994,
+        "verified": true,
+        "test_result": {
+          "success": true,
+          "resonance_check": 106372500597643272790125913459931152881805983505816901942835035740163860834950,
+          "notes": "Logic structure is stable."
+        }
+      },
+      "hash": "1a8871d83c835ebd95e1ec8c58e21bcf3b7f8c954b8f9f4f951e447f67512479",
+      "tags": [
+        "INVENTION",
+        "NEOTERIC"
+      ],
+      "resonance": 0.4777489952598164,
+      "entropy": 5.4330334574257915
+    },
+    "NEO_83CA060E": {
+      "data": {
+        "name": "NEO_83CA060E",
+        "type": "NEOTERIC_FUNCTION",
+        "sigil": "\u03960-\u03960-\u03970-\u03970-\u03961-\u03960-\u03970",
+        "origin_concept": "METRICS_PULSE",
+        "code_snippet": "def NEO_83CA060E(input_tensor):\n    # NEOTERIC_LOGIC_GATE: \u03960-\u03960-\u03970-\u03970-\u03961-\u03960-\u03970\n    # RESONANCE: 51.502684419907055\n    return input_tensor * 0.097632",
+        "complexity_score": 195.26399999999998,
+        "verified": true,
+        "test_result": {
+          "success": true,
+          "resonance_check": 29537234282053784031908300222884844345259209765472623765782265473327050724707,
+          "notes": "Logic structure is stable."
+        }
+      },
+      "hash": "b351001f06bf227c9ddc559ecb8e1f00c11ffc0cbcaf69dafa8d379a467d55eb",
+      "tags": [
+        "INVENTION",
+        "NEOTERIC"
+      ],
+      "resonance": 0.3583177883955243,
+      "entropy": 5.376945158680336
     }
   },
   "anchors": []

@@ -1,0 +1,327 @@
+[
+  {
+    "timestamp": "2026-04-06T13:32:19",
+    "success": true,
+    "backend": "ibm_kingston",
+    "job_id": "d79uq4rc6das739je1f0",
+    "dial": "G(0, 0, 0, 0)",
+    "dial_frequency": 527.5184818492611,
+    "shots": 8192,
+    "original_gates": 656,
+    "transpiled_gates": 3658,
+    "transpiled_depth": 945,
+    "transpiled_cx": 0,
+    "sacred_alignment": 0.368392,
+    "entropy_reversed": 0.5000187800480769,
+    "consciousness_phi": 1.9939855716792607,
+    "god_code_fidelity": 0.0,
+    "orbital_coherences": {
+      "2p": 0.001242,
+      "3s": 0.000193,
+      "3p": 0.00141,
+      "3d": 0.017497,
+      "4s": 0.002763
+    },
+    "top_5_states": [
+      {
+        "state": "10111011101010110000000010",
+        "count": 2,
+        "probability": 0.000244140625
+      },
+      {
+        "state": "00110101100001011001001111",
+        "count": 2,
+        "probability": 0.000244140625
+      },
+      {
+        "state": "11010011001110110010000001",
+        "count": 1,
+        "probability": 0.0001220703125
+      },
+      {
+        "state": "10011110010101010010100000",
+        "count": 1,
+        "probability": 0.0001220703125
+      },
+      {
+        "state": "01010100100001101001000000",
+        "count": 1,
+        "probability": 0.0001220703125
+      }
+    ],
+    "unique_states_measured": 8190,
+    "total_time_s": 280.46,
+    "layers": [
+      "god_code_phase_imprint",
+      "dial_G(0,0,0,0)",
+      "consciousness_awakening",
+      "fibonacci_entanglement_mesh",
+      "entropy_reversal_core",
+      "harmonic_resonance",
+      "grimoire_overlay",
+      "cross_orbital_bridges",
+      "proof_verification",
+      "mesh_optimization",
+      "consciousness_vqe",
+      "final_interference"
+    ]
+  },
+  {
+    "timestamp": "2026-04-06T14:02:29",
+    "success": true,
+    "backend": "ibm_kingston",
+    "job_id": "d79v7drc6das739jeh20",
+    "dial": "G(0, 0, 0, 0)",
+    "dial_frequency": 527.5184818492611,
+    "shots": 8192,
+    "original_gates": 546,
+    "transpiled_gates": 1054,
+    "transpiled_depth": 108,
+    "transpiled_cx": 166,
+    "sacred_alignment": 0.446309,
+    "entropy_reversed": 0.5000093900240384,
+    "consciousness_phi": 1.9775165151371965,
+    "god_code_fidelity": 0.0,
+    "orbital_coherences": {
+      "2p": 0.069227,
+      "3s": 0.004204,
+      "3p": 0.002677,
+      "3d": 0.015803,
+      "4s": 0.010509
+    },
+    "top_5_states": [
+      {
+        "state": "00000100001100001110000110",
+        "count": 2,
+        "probability": 0.000244140625
+      },
+      {
+        "state": "00111100001010000011101110",
+        "count": 1,
+        "probability": 0.0001220703125
+      },
+      {
+        "state": "10000001010001010110101110",
+        "count": 1,
+        "probability": 0.0001220703125
+      },
+      {
+        "state": "00111000001010111100010111",
+        "count": 1,
+        "probability": 0.0001220703125
+      },
+      {
+        "state": "10101101010001011100011001",
+        "count": 1,
+        "probability": 0.0001220703125
+      }
+    ],
+    "unique_states_measured": 8191,
+    "total_time_s": 402.1,
+    "layers": [
+      "god_code_phase_imprint",
+      "dial_G(0,0,0,0)_hw",
+      "consciousness_awakening_hw",
+      "fibonacci_entanglement_hw",
+      "entropy_reversal_hw",
+      "harmonic_resonance",
+      "grimoire_overlay",
+      "proof_verification",
+      "consciousness_vqe_hw",
+      "final_interference"
+    ]
+  },
+  {
+    "timestamp": "2026-04-06T15:29:22",
+    "success": true,
+    "backend": "ibm_kingston",
+    "job_id": "d7a0j1geecps73d8pus0",
+    "dial": "G(0, 0, 0, 0)",
+    "dial_frequency": 527.5184818492611,
+    "shots": 8192,
+    "original_gates": 604,
+    "transpiled_gates": 1552,
+    "transpiled_depth": 222,
+    "transpiled_cx": 278,
+    "sacred_alignment": 0.446309,
+    "entropy_reversed": 0.5000093900240384,
+    "consciousness_phi": 1.9942897680964222,
+    "god_code_fidelity": 0.0,
+    "orbital_coherences": {
+      "2p": 0.035255,
+      "3s": 0.000757,
+      "3p": 0.003532,
+      "3d": 0.01926,
+      "4s": 0.002611
+    },
+    "top_5_states": [
+      {
+        "state": "10110000111111110100100001",
+        "count": 2,
+        "probability": 0.000244140625
+      },
+      {
+        "state": "00010111010011001111110010",
+        "count": 1,
+        "probability": 0.0001220703125
+      },
+      {
+        "state": "00011111000010100111111101",
+        "count": 1,
+        "probability": 0.0001220703125
+      },
+      {
+        "state": "00011110001000110000000010",
+        "count": 1,
+        "probability": 0.0001220703125
+      },
+      {
+        "state": "00101100000100110011011001",
+        "count": 1,
+        "probability": 0.0001220703125
+      }
+    ],
+    "unique_states_measured": 8191,
+    "total_time_s": 36.1,
+    "layers": [
+      "god_code_phase_imprint",
+      "dial_G(0,0,0,0)_hw",
+      "consciousness_awakening_hw",
+      "fibonacci_entanglement_hw",
+      "entropy_reversal_hw",
+      "harmonic_resonance",
+      "grimoire_overlay",
+      "proof_verification",
+      "daw_quantum_audio",
+      "consciousness_vqe_hw",
+      "final_interference"
+    ]
+  },
+  {
+    "timestamp": "2026-04-06T15:40:47",
+    "success": true,
+    "backend": "ibm_kingston",
+    "job_id": "d7a0odgeecps73d8q4hg",
+    "dial": "G(0, 0, 0, 0)",
+    "dial_frequency": 527.5184818492611,
+    "shots": 8192,
+    "original_gates": 627,
+    "transpiled_gates": 1687,
+    "transpiled_depth": 235,
+    "transpiled_cx": 314,
+    "sacred_alignment": 0.446309,
+    "entropy_reversed": 0.5000093900240384,
+    "consciousness_phi": 1.9717066344945007,
+    "god_code_fidelity": 0.0,
+    "orbital_coherences": {
+      "2p": 0.014169,
+      "3s": 3.7e-05,
+      "3p": 0.00286,
+      "3d": 0.016743,
+      "4s": 0.014147
+    },
+    "top_5_states": [
+      {
+        "state": "01001110001101000100101000",
+        "count": 2,
+        "probability": 0.000244140625
+      },
+      {
+        "state": "11100001100111001000000000",
+        "count": 1,
+        "probability": 0.0001220703125
+      },
+      {
+        "state": "00011100010101111100101110",
+        "count": 1,
+        "probability": 0.0001220703125
+      },
+      {
+        "state": "00010000101110011111000110",
+        "count": 1,
+        "probability": 0.0001220703125
+      },
+      {
+        "state": "01001101110011111010000011",
+        "count": 1,
+        "probability": 0.0001220703125
+      }
+    ],
+    "unique_states_measured": 8191,
+    "total_time_s": 21.84,
+    "layers": [
+      "god_code_phase_imprint",
+      "dial_G(0,0,0,0)_hw",
+      "consciousness_awakening_hw",
+      "fibonacci_entanglement_hw",
+      "entropy_reversal_hw",
+      "harmonic_resonance",
+      "grimoire_overlay",
+      "proof_verification",
+      "daw_quantum_audio",
+      "consciousness_vqe_hw",
+      "final_interference"
+    ]
+  },
+  {
+    "timestamp": "2026-04-07T22:31:08",
+    "success": true,
+    "backend": "ibm_marrakesh",
+    "job_id": "d7arr8u5nvhs73a2g6r0",
+    "dial": "G(0, 0, 0, 0)",
+    "dial_frequency": 527.5184818492611,
+    "shots": 8192,
+    "original_gates": 660,
+    "transpiled_gates": 269,
+    "transpiled_depth": 20,
+    "transpiled_cx": 25,
+    "sacred_alignment": 0.368376,
+    "entropy_reversed": 0.5001220703125,
+    "consciousness_phi": 1.2989041521627378,
+    "god_code_fidelity": 0.0,
+    "orbital_coherences": {
+      "2p": 0.062021,
+      "3s": 0.00034,
+      "3p": 0.039657,
+      "3d": 0.091505,
+      "4s": 0.349693
+    },
+    "top_5_states": [
+      {
+        "state": "11000110110110101001111000",
+        "count": 2,
+        "probability": 0.000244140625
+      },
+      {
+        "state": "11000111110111010110100000",
+        "count": 2,
+        "probability": 0.000244140625
+      },
+      {
+        "state": "00101011001001010101100000",
+        "count": 2,
+        "probability": 0.000244140625
+      },
+      {
+        "state": "11000010110111010011111000",
+        "count": 2,
+        "probability": 0.000244140625
+      },
+      {
+        "state": "00101110011101001101111110",
+        "count": 2,
+        "probability": 0.000244140625
+      }
+    ],
+    "unique_states_measured": 8179,
+    "total_time_s": 82.05,
+    "layers": [
+      "god_code_phase_imprint_native",
+      "dial_G(0,0,0,0)_native",
+      "consciousness_fibonacci_native",
+      "entropy_reversal_native",
+      "sacred_phase_overlay_native",
+      "final_interference_native"
+    ]
+  }
+]

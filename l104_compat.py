@@ -21,6 +21,20 @@ from pathlib import Path
 # Ensure unified module is available
 sys.path.insert(0, str(Path(__file__).parent))
 
+# L104 Search import for wired search functionality
+try:
+    from l104_search import ThreeEngineSearchPrecog
+    L104_SEARCH_AVAILABLE = True
+except ImportError:
+    L104_SEARCH_AVAILABLE = False
+
+# L104 Search for wired WebResearch
+try:
+    from l104_search import ThreeEngineSearchPrecog
+    L104_SEARCH_AVAILABLE = True
+except ImportError:
+    L104_SEARCH_AVAILABLE = False
+
 from l104 import (
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -178,14 +192,25 @@ class L104Soul(Soul):
 
 # l104_voice.py stub
 class L104Voice:
-    """Voice synthesis placeholder."""
+    """Voice synthesis - wired to macOS say command."""
     def synthesize(self, text: str):
-        """Synthesize text to speech (stub)."""
-        return {"text": text, "status": "stub"}
+        """Synthesize text to speech using macOS say command."""
+        import subprocess
+        import platform
+
+        try:
+            if platform.system() == "Darwin":
+                # Use macOS built-in TTS
+                subprocess.run(["say", text], check=True, capture_output=True)
+                return {"text": text, "status": "spoken", "platform": "darwin"}
+            else:
+                return {"text": text, "status": "unsupported", "platform": platform.system()}
+        except Exception as e:
+            return {"text": text, "status": "error", "error": str(e)}
 
     def generate_sonic_signature(self):
         """Generate a sonic signature based on GOD_CODE."""
-        return {"frequency": GOD_CODE}
+        return {"frequency": GOD_CODE, "hz": 527.5184818492612}
 
 
 # l104_swarm.py stub
@@ -206,20 +231,69 @@ class L104Swarm:
         return soul.think(problem)
 
 
-# l104_prophecy.py stub
+# l104_prophecy.py - wired to L104 precognition
 class L104Prophecy:
-    """Prediction system placeholder."""
+    """Prediction system - wired to L104 precognition engine."""
     def predict_timeline(self, query: str):
-        """Predict a timeline for the given query (stub)."""
-        return {"events": [], "probability": 0.5}
+        """Predict a timeline using L104 precognition."""
+        if not L104_SEARCH_AVAILABLE:
+            return {"events": [], "probability": 0.5, "status": "unavailable"}
+
+        try:
+            from l104_search import PrecognitionOrchestrator
+            predictor = PrecognitionOrchestrator()
+            result = predictor.predict(query, steps=5)
+
+            if result and hasattr(result, 'predictions') and result.predictions:
+                events = []
+                for p in result.predictions[:5]:
+                    events.append({
+                        "event": getattr(p, 'value', str(p)),
+                        "timestamp": getattr(p, 'timestamp', None),
+                        "confidence": getattr(p, 'confidence', 0.5)
+                    })
+                return {
+                    "events": events,
+                    "probability": sum(e.get('confidence', 0.5) for e in events) / max(len(events), 1),
+                    "status": "success"
+                }
+            return {"events": [], "probability": 0.5, "status": "no_predictions"}
+        except Exception as e:
+            return {"events": [], "probability": 0.5, "status": "error", "error": str(e)}
 
 
 # l104_web_research.py stub
 class WebResearch:
-    """Web research placeholder."""
+    """Web research - wired to L104 search engine."""
     def search(self, query: str):
-        """Search the web for the given query (stub)."""
-        return {"results": [], "query": query}
+        """Search using L104 three-engine search with precognition."""
+        if not L104_SEARCH_AVAILABLE:
+            return {"results": [], "query": query, "status": "unavailable"}
+
+        try:
+            searcher = ThreeEngineSearchPrecog()
+            result = searcher.search(query, max_results=10)
+
+            results = []
+            if result and hasattr(result, 'results') and result.results:
+                for r in result.results[:10]:
+                    title = getattr(r, 'title', 'Unknown')
+                    snippet = getattr(r, 'snippet', getattr(r, 'content', ''))
+                    url = getattr(r, 'url', '')
+                    results.append({
+                        "title": title,
+                        "snippet": snippet[:200] if snippet else "",
+                        "url": url
+                    })
+
+            return {
+                "results": results,
+                "query": query,
+                "status": "success",
+                "count": len(results)
+            }
+        except Exception as e:
+            return {"results": [], "query": query, "status": "error", "error": str(e)}
 
 
 # l104_tool_executor.py stub
@@ -250,11 +324,43 @@ class L104ToolExecutor(ToolExecutor):
 
 # l104_code_sandbox.py stub
 class CodeSandbox:
-    """Code execution placeholder."""
+    """Code execution - wired to safe subprocess execution."""
     def execute(self, code: str, language: str = "python"):
-        """Execute code in a sandboxed environment (stub)."""
-        # Basic safety - don't actually execute
-        return {"code": code, "status": "sandboxed"}
+        """Execute code in a sandboxed environment."""
+        import subprocess
+        import tempfile
+        import os
+
+        if language != "python":
+            return {"code": code, "status": "unsupported_language", "language": language}
+
+        # Create temp file and run in subprocess with timeout
+        try:
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+                f.write(code)
+                temp_path = f.name
+
+            result = subprocess.run(
+                ["python3", temp_path],
+                capture_output=True,
+                text=True,
+                timeout=10,
+                env={**os.environ, "PYTHONPATH": ""}
+            )
+
+            os.unlink(temp_path)
+
+            return {
+                "code": code,
+                "status": "success" if result.returncode == 0 else "error",
+                "stdout": result.stdout[:2000] if result.stdout else "",
+                "stderr": result.stderr[:500] if result.stderr else "",
+                "returncode": result.returncode
+            }
+        except subprocess.TimeoutExpired:
+            return {"code": code, "status": "timeout", "error": "Execution timed out after 10 seconds"}
+        except Exception as e:
+            return {"code": code, "status": "error", "error": str(e)}
 
 
 class L104CodeSandbox(CodeSandbox):

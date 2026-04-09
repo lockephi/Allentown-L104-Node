@@ -1,0 +1,11 @@
+{
+  "": {
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104NanoDaemon.build/master.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/NanoDaemon/NanoDaemon.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104NanoDaemon.build/NanoDaemon.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104NanoDaemon.build/NanoDaemon.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104NanoDaemon.build/NanoDaemon~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104NanoDaemon.build/NanoDaemon.swiftdeps"
+  }
+}

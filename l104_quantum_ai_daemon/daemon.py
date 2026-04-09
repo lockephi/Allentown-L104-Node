@@ -68,6 +68,15 @@ from .optimizer import ProcessOptimizer, OptimizationResult
 from .harmonizer import CrossEngineHarmonizer, HarmonyReport
 from .evolver import AutonomousEvolver, EvolutionCycle
 
+# v3.0: Three-Engine Integration
+try:
+    from l104_higher_logic_engine import get_higher_logic_engine
+    from l104_three_engine_integration import get_three_engine
+    _HAS_HIGHER_LOGIC = True
+except ImportError:
+    _HAS_HIGHER_LOGIC = False
+
+
 _logger = logging.getLogger("L104_QAI_DAEMON")
 
 
@@ -208,6 +217,9 @@ class QuantumAIDaemon:
 
         # v2.0: Store config reference
         self._config = cfg
+
+        # v3.0: Three-Engine feedback state
+        self._feedback_state = {}
 
     # ═══════════════════════════════════════════════════════════════
     # LIFECYCLE
@@ -480,6 +492,14 @@ class QuantumAIDaemon:
                     _logger.debug("Cross-sync phase: %s", e)
                 self._record_phase_timing("cross_sync", time.monotonic() - phase_start)
 
+            # ── Phase 9: THREE-ENGINE FEEDBACK (v3.0) ──
+            phase_start = time.monotonic()
+            try:
+                self._run_unified_feedback_cycle()
+            except Exception:
+                pass
+            self._record_phase_timing("three_engine_feedback", time.monotonic() - phase_start)
+
             # Compute overall health score
             report.health_score = self._compute_health(
                 report.fidelity_score,
@@ -614,6 +634,59 @@ class QuantumAIDaemon:
             return {"available": False}
 
     # ═══════════════════════════════════════════════════════════════
+    # THREE-ENGINE UNIFIED SCORING (v3.0)
+    # ═══════════════════════════════════════════════════════════════
+
+    def _get_higher_logic_engine(self):
+        """Lazy-load HigherLogicEngine for unified three-engine scoring."""
+        if not hasattr(self, '_higher_logic_engine_ref'):
+            if _HAS_HIGHER_LOGIC:
+                try:
+                    self._higher_logic_engine_ref = get_higher_logic_engine()
+                except Exception:
+                    self._higher_logic_engine_ref = None
+            else:
+                self._higher_logic_engine_ref = None
+        return self._higher_logic_engine_ref
+
+    def _get_unified_three_engine_score(self) -> dict:
+        """Get unified three-engine score from HigherLogicEngine.
+
+        Returns dict with unified_score, confidence, and engine scores.
+        Uses PHI-weighted scoring: Code×1.0 + Science×PHI + Math×PHI²
+        """
+        hle = self._get_higher_logic_engine()
+        if hle is None:
+            return {"unified_score": 0.5, "confidence": 0.5}
+
+        try:
+            result = hle.compute_three_engine_score(
+                code_input=None,
+                science_input={"entropy": 1.0 - self._health_score, "sacred_alignment": SACRED_RESONANCE},
+                math_input={"god_code_target": GOD_CODE},
+                apply_quantum_enhancement=True,
+                apply_consciousness_anchor=True
+            )
+            return {
+                "unified_score": result.unified_score,
+                "confidence": result.confidence,
+                "quantum_enhanced": result.quantum_enhanced,
+                "consciousness_aware": result.consciousness_aware,
+            }
+        except Exception as e:
+            _logger.debug(f"Unified scoring error: {e}")
+            return {"unified_score": 0.5, "confidence": 0.5}
+
+    def _run_unified_feedback_cycle(self):
+        """Run unified three-engine feedback and update state."""
+        unified = self._get_unified_three_engine_score()
+        self._feedback_state["unified_score"] = unified.get("unified_score", 0.5)
+        self._feedback_state["unified_confidence"] = unified.get("confidence", 0.5)
+        self._feedback_state["quantum_enhanced"] = unified.get("quantum_enhanced", False)
+        self._feedback_state["consciousness_aware"] = unified.get("consciousness_aware", False)
+        return unified
+
+    # ═══════════════════════════════════════════════════════════════
     # HEALTH + ADAPTIVE INTERVAL
     # ═══════════════════════════════════════════════════════════════
 
@@ -621,11 +694,13 @@ class QuantumAIDaemon:
                         improved: int, analyzed: int) -> float:
         """Compute overall daemon health (0–1)."""
         improvement_rate = improved / max(1, analyzed)
+        unified = self._feedback_state.get("unified_score", 0.5)
         health = (
-            fidelity * 0.35 +
-            harmony * 0.30 +
-            min(1.0, improvement_rate + 0.5) * 0.20 +
-            (1.0 - self._consecutive_failures * 0.1) * 0.15
+            fidelity * 0.30 +
+            harmony * 0.25 +
+            unified * 0.20 +
+            min(1.0, improvement_rate + 0.5) * 0.15 +
+            (1.0 - self._consecutive_failures * 0.1) * 0.10
         )
         return max(0.0, min(1.0, health))
 

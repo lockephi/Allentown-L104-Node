@@ -1,22 +1,3 @@
-// ═══════════════════════════════════════════════════════════════════
-// B41_UpgradesDebug.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UPGRADES_DEBUG :: GOD_CODE=527.5184818492612
-// L104 ASI — Debug Suite for StabilizerTableau + measureZ + QuantumRouter + GateEngine
-//
-// Exercises all recent upgrades in 9 phases:
-//   Phase 1: StabilizerTableau core (init, gates, state inspection)
-//   Phase 2: rowSum correctness (Aaronson–Gottesman g-function)
-//   Phase 3: measureZ inlined measurement (probabilistic + deterministic)
-//   Phase 4: QuantumRouter Clifford fast lane
-//   Phase 5: QuantumRouter T-gate branching + pruning
-//   Phase 6: QuantumRouter circuit simulation + Rz decomposition
-//   Phase 7: Error Correction (Surface code, Steane [[7,1,3]], Fibonacci anyon)
-//   Phase 8: Compiler optimization levels (O0-O3, gate set targeting)
-//   Phase 9: KAK/Cartan decomposition (CNOT, SWAP, identity classification)
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
-
 import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
@@ -90,9 +71,9 @@ struct UpgradesDebug {
         results.append("  RESULTS: \(passed) PASSED  /  \(failed) FAILED  /  \(passed + failed) TOTAL")
         results.append("  TIME:    \(String(format: "%.2f ms", elapsed))")
         if failed == 0 {
-            results.append("  ✅ ALL TESTS PASSED — upgrades fully operational")
+            results.append("  ✅ ALL TESTS PASSED - upgrades fully operational")
         } else {
-            results.append("  ❌ \(failed) TEST(S) FAILED — review output above")
+            results.append("  ❌ \(failed) TEST(S) FAILED - review output above")
         }
         results.append("═══════════════════════════════════════════════════════════════")
 
@@ -106,14 +87,14 @@ struct UpgradesDebug {
     private mutating func phase1_StabilizerTableauCore() {
         header("PHASE 1: StabilizerTableau Core")
 
-        // 1.1  Init — |000⟩ state
+        // 1.1  Init - |000⟩ state
         let tab = StabilizerTableau(numQubits: 3, seed: 104)
         check("Init 3-qubit tableau", tab.numQubits == 3)
         check("numWords ≥ 1", tab.numWords >= 1)
         check("totalRows = 2n+1 = 7", tab.totalRows == 7)
         check("Memory > 0", tab.memoryUsage > 0)
 
-        // 1.2  State inspection — |000⟩ should have Z stabilizers
+        // 1.2  State inspection - |000⟩ should have Z stabilizers
         let state = tab.getStabilizerState()
         check("3 stabilizer generators", state.stabilizerGenerators.count == 3)
         check("3 destabilizer generators", state.destabilizerGenerators.count == 3)
@@ -125,7 +106,7 @@ struct UpgradesDebug {
         var tabX = StabilizerTableau(numQubits: 2, seed: 42)
         tabX.pauliX(0)
         let stateX = tabX.getStabilizerState()
-        check("X gate applied — 2 stab gens", stateX.stabilizerGenerators.count == 2)
+        check("X gate applied - 2 stab gens", stateX.stabilizerGenerators.count == 2)
 
         // 1.4  Hadamard creates superposition
         var tabH = StabilizerTableau(numQubits: 1, seed: 42)
@@ -138,7 +119,7 @@ struct UpgradesDebug {
         bell.hadamard(0)
         bell.cnot(control: 0, target: 1)
         let bellState = bell.getStabilizerState()
-        check("Bell state — 2 stabilizers", bellState.stabilizerGenerators.count == 2)
+        check("Bell state - 2 stabilizers", bellState.stabilizerGenerators.count == 2)
         // Bell state stabilizers should be +XX and +ZZ (or equivalent)
         let bellStabs = bellState.stabilizerGenerators.joined()
         let hasXX = bellStabs.contains("XX")
@@ -152,15 +133,15 @@ struct UpgradesDebug {
 
         // 1.7  Sampling
         let samples = bell.sample(shots: 1000)
-        check("Bell sampling — only 00 and 11", samples.keys.allSatisfy { $0 == "00" || $0 == "11" })
+        check("Bell sampling - only 00 and 11", samples.keys.allSatisfy { $0 == "00" || $0 == "11" })
         let total = samples.values.reduce(0, +)
-        check("Bell sampling — 1000 shots", total == 1000)
+        check("Bell sampling - 1000 shots", total == 1000)
 
         // 1.8  Description string
         let desc = tab.description
         check("Description contains 'StabilizerTableau'", desc.contains("StabilizerTableau"))
 
-        // 1.9  Large tableau (104 qubits — the L104 sacred number)
+        // 1.9  Large tableau (104 qubits - the L104 sacred number)
         let big = StabilizerTableau(numQubits: 104, seed: 527)
         check("104-qubit tableau init", big.numQubits == 104)
         check("104Q numWords = ceil(104/64) = 2", big.numWords == 2)
@@ -190,7 +171,7 @@ struct UpgradesDebug {
         check("S²: stabilizer has Z", ssPauli.contains("Z"))
         check("S²: phase inverted (= -Z)", ssState.phases[0] == 1)
 
-        // 2.2  H · S · H = phase-like — exercises cross-product in g-function
+        // 2.2  H · S · H = phase-like - exercises cross-product in g-function
         var tabHSH = StabilizerTableau(numQubits: 1, seed: 2)
         tabHSH.hadamard(0)
         tabHSH.phaseS(0)
@@ -209,7 +190,7 @@ struct UpgradesDebug {
         // Should be back to |00⟩: stabilizers +ZI, +IZ, all phases 0
         check("CNOT²·H²: phases all 0", cnState.phases.allSatisfy { $0 == 0 })
 
-        // 2.4  Large entangling circuit — stress test rowSum with many row operations
+        // 2.4  Large entangling circuit - stress test rowSum with many row operations
         var tabBig = StabilizerTableau(numQubits: 8, seed: 104)
         for q in 0..<8 { tabBig.hadamard(q) }
         for q in 0..<7 { tabBig.cnot(control: q, target: q + 1) }
@@ -236,7 +217,7 @@ struct UpgradesDebug {
     // ═══════════════════════════════════════════════════════════════
 
     private mutating func phase3_MeasureZ() {
-        header("PHASE 3: measureZ — Inlined Aaronson–Gottesman")
+        header("PHASE 3: measureZ - Inlined Aaronson–Gottesman")
 
         // 3.1  Deterministic: |0⟩ always measures 0
         var tab0 = StabilizerTableau(numQubits: 1, seed: 104)
@@ -250,7 +231,7 @@ struct UpgradesDebug {
         check("measureZ(|1⟩) = 1 (deterministic)", det1 == 1)
 
         // 3.3  Probabilistic: H|0⟩ = |+⟩ measures 0 or 1
-        //      Run 100 trials — should see both outcomes
+        //      Run 100 trials - should see both outcomes
         var seen0 = false, seen1 = false
         for seed in UInt64(1)...100 {
             var tabH = StabilizerTableau(numQubits: 1, seed: seed)
@@ -269,7 +250,7 @@ struct UpgradesDebug {
         let second = tabPost.measureZ(qubit: 0)
         check("Post-measurement: second read matches first", first == second)
 
-        // 3.5  Multi-qubit: |00⟩ — both deterministic 0
+        // 3.5  Multi-qubit: |00⟩ - both deterministic 0
         var tab00 = StabilizerTableau(numQubits: 2, seed: 104)
         let m0 = tab00.measureZ(qubit: 0)
         let m1 = tab00.measureZ(qubit: 1)
@@ -284,7 +265,7 @@ struct UpgradesDebug {
         let bellM1 = tabBell.measureZ(qubit: 1)
         check("Bell: q0 and q1 match (correlation)", bellM0 == bellM1)
 
-        // 3.7  Consistency with measure() — compare outcomes on identical states
+        // 3.7  Consistency with measure() - compare outcomes on identical states
         var tabMZ = StabilizerTableau(numQubits: 2, seed: 999)
         tabMZ.pauliX(1)
         let mzOut = tabMZ.measureZ(qubit: 1)
@@ -311,7 +292,7 @@ struct UpgradesDebug {
     // ═══════════════════════════════════════════════════════════════
 
     private mutating func phase4_RouterCliffordFastLane() {
-        header("PHASE 4: QuantumRouter — Clifford Fast Lane")
+        header("PHASE 4: QuantumRouter - Clifford Fast Lane")
 
         // 4.1  Init
         let router = QuantumRouter(numQubits: 3, seed: 104)
@@ -320,7 +301,7 @@ struct UpgradesDebug {
         check("Router init: norm ≈ 1.0", abs(router.normSquared - 1.0) < eps)
         check("Router init: T-count = 0", router.tGateCount == 0)
 
-        // 4.2  Clifford gates — should stay at 1 branch
+        // 4.2  Clifford gates - should stay at 1 branch
         let routerCliff = QuantumRouter(numQubits: 3, seed: 104)
         routerCliff.applyH(0)
         routerCliff.applyS(1)
@@ -379,7 +360,7 @@ struct UpgradesDebug {
     // ═══════════════════════════════════════════════════════════════
 
     private mutating func phase5_RouterTGateBranching() {
-        header("PHASE 5: QuantumRouter — T-Gate Branching")
+        header("PHASE 5: QuantumRouter - T-Gate Branching")
 
         // 5.1  Single T gate: 1 → 2 branches
         let routerT = QuantumRouter(numQubits: 1, seed: 104)
@@ -434,7 +415,7 @@ struct UpgradesDebug {
         // 5.7  Peak branches tracked
         check("Peak branches ≥ active", routerMT.peakBranches >= routerMT.activeBranches)
 
-        // 5.8  Stress: 6 T gates on 2 qubits — branches ≤ 2^6 = 64
+        // 5.8  Stress: 6 T gates on 2 qubits - branches ≤ 2^6 = 64
         let routerStress = QuantumRouter(numQubits: 2, maxBranches: 256, seed: 104)
         routerStress.applyH(0)
         for _ in 0..<3 { routerStress.applyT(0) }
@@ -451,7 +432,7 @@ struct UpgradesDebug {
     // ═══════════════════════════════════════════════════════════════
 
     private mutating func phase6_RouterCircuitSimulation() {
-        header("PHASE 6: QuantumRouter — Circuit Simulation & Rz")
+        header("PHASE 6: QuantumRouter - Circuit Simulation & Rz")
 
         let engine = QuantumGateEngine.shared
 
@@ -545,7 +526,7 @@ struct UpgradesDebug {
         header("PHASE 7: Error Correction (Surface / Steane / Fibonacci)")
         let engine = QuantumGateEngine.shared
 
-        // 7.1  Surface code d=3 — should need 13 physical qubits for 1 logical
+        // 7.1  Surface code d=3 - should need 13 physical qubits for 1 logical
         let surfaceResult = engine.errorCorrection(scheme: .surfaceCode, logicalQubits: 1)
         check("Surface d=3: physical qubits = 13",
               surfaceResult.physicalQubits == 13)
@@ -557,7 +538,7 @@ struct UpgradesDebug {
         check("Surface d=3: syndrome circuit non-empty",
               surfaceResult.syndromeCircuit.gateCount > 0)
 
-        // 7.2  Surface code with 2 logical qubits — should double physical
+        // 7.2  Surface code with 2 logical qubits - should double physical
         let surface2 = engine.errorCorrection(scheme: .surfaceCode, logicalQubits: 2)
         check("Surface d=3 ×2: physical = 26",
               surface2.physicalQubits == 26)
@@ -602,28 +583,28 @@ struct UpgradesDebug {
         circuit.append(engine.gate(.cnot), qubits: [0, 1])
         let originalCount = circuit.gateCount
 
-        // 8.2  O0 — no optimization, gate count preserved
+        // 8.2  O0 - no optimization, gate count preserved
         let o0 = engine.compile(circuit: circuit, target: .universal, optimization: .O0)
         check("O0 compile: has compiled circuit", o0.compiledCircuit.nQubits == 2)
         check("O0: gate count ≥ original", o0.nativeGateCount >= originalCount)
 
-        // 8.3  O1 — basic cancellation should remove H·H pair
+        // 8.3  O1 - basic cancellation should remove H·H pair
         let o1 = engine.compile(circuit: circuit, target: .universal, optimization: .O1)
         check("O1 compile: has compiled circuit", o1.compiledCircuit.nQubits == 2)
         check("O1: fewer gates than O0 (H·H cancel)", o1.nativeGateCount < o0.nativeGateCount)
 
-        // 8.4  O2 — peephole + commutation
+        // 8.4  O2 - peephole + commutation
         let o2 = engine.compile(circuit: circuit, target: .universal, optimization: .O2)
         check("O2 compile: has compiled circuit", o2.compiledCircuit.nQubits == 2)
         check("O2: gate count ≤ O1", o2.nativeGateCount <= o1.nativeGateCount)
 
-        // 8.5  O3 — full optimization + sacred alignment
+        // 8.5  O3 - full optimization + sacred alignment
         let o3 = engine.compile(circuit: circuit, target: .universal, optimization: .O3)
         check("O3 compile: has compiled circuit", o3.compiledCircuit.nQubits == 2)
         check("O3: gate count ≤ O2", o3.nativeGateCount <= o2.nativeGateCount)
         check("O3: sacred alignment score ≥ 0", o3.sacredAlignmentScore >= 0.0)
 
-        // 8.6  Gate set targeting — Clifford+T decomposition
+        // 8.6  Gate set targeting - Clifford+T decomposition
         let ctResult = engine.compile(circuit: circuit, target: .cliffordT, optimization: .O1)
         check("Clifford+T compile: targets cliffordT", ctResult.targetGateSet == .cliffordT)
 
@@ -657,7 +638,7 @@ struct UpgradesDebug {
         check("CNOT KAK: α ≈ π/4 (maximally entangling)",
               abs(cnotInteraction.alpha - .pi / 4.0) < 0.05)
 
-        // 9.2  CNOT classification — maximally entangling
+        // 9.2  CNOT classification - maximally entangling
         let cnotClass = engine.classifyTwoQubitGate(cnotGate)
         check("CNOT class: CNOT-class",
               cnotClass.contains("CNOT") || cnotClass.contains("maximal"))
@@ -670,7 +651,7 @@ struct UpgradesDebug {
         check("SWAP class: identified as SWAP",
               swapClass.contains("SWAP") || swapClass.contains("swap"))
 
-        // 9.4  Single-qubit (trivial) — KAK returns zeros for non-2-qubit gates
+        // 9.4  Single-qubit (trivial) - KAK returns zeros for non-2-qubit gates
         let hGate = engine.gate(.hadamard)  // 1-qubit
         let hKAK = engine.kakDecompose(hGate)
         let hAllZero = abs(hKAK.interaction.alpha) < eps &&
@@ -678,7 +659,7 @@ struct UpgradesDebug {
                         abs(hKAK.interaction.gamma) < eps
         check("H (1-qubit) KAK: zero interaction (guard)", hAllZero)
 
-        // 9.5  CZ gate — should be CNOT-class equivalent
+        // 9.5  CZ gate - should be CNOT-class equivalent
         let czGate = engine.gate(.cz)
         let czClass = engine.classifyTwoQubitGate(czGate)
         check("CZ class: maximally entangling",
@@ -701,13 +682,13 @@ struct UpgradesDebug {
         header("PHASE 10: Quantum Research Algorithms (EVO_68)")
         let engine = QuantumGateEngine.shared
 
-        // 10.1  HHL solver — eigenvalues → solution vector
+        // 10.1  HHL solver - eigenvalues → solution vector
         let hhlResult = engine.hhlSolve(eigenvalues: [0.5, 0.25], b: [1.0, 0.0])
         check("HHL: solution vector non-empty", !hhlResult.solution.isEmpty)
         check("HHL: gate count > 0", hhlResult.gateCount > 0)
         check("HHL: alignment in [0,1]", hhlResult.alignment >= 0 && hhlResult.alignment <= 1)
 
-        // 10.2  VQE optimizer — finds ground energy
+        // 10.2  VQE optimizer - finds ground energy
         let hamiltonian: [(pauli: String, coeff: Double)] = [("ZZ", -1.0), ("XI", 0.5)]
         let vqeResult = engine.vqeOptimize(hamiltonian: hamiltonian, nQubits: 2, maxIter: 10)
         check("VQE: energy is finite", vqeResult.energy.isFinite)

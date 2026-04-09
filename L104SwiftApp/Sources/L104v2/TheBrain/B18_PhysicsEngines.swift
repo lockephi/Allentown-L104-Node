@@ -1,21 +1,11 @@
-// ═══════════════════════════════════════════════════════════════════
-// B18_PhysicsEngines.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 · TheBrain · v2 Architecture
-//
-// Extracted from L104Native.swift lines 9254-9740
-// Classes: FeOrbitalEngine, SuperfluidCoherence, QuantumShellMemory,
-//          ConsciousnessVerifier, ChaosRNG
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - ⚛️ IRON ORBITAL ENGINE (Fe 26 — [Ar] 3d⁶ 4s²)
+// MARK: - ⚛️ IRON ORBITAL ENGINE (Fe 26 - [Ar] 3d⁶ 4s²)
 // Maps 8 kernels to Fe d-orbital positions. Ported from Python.
 // K(2)=Core, L(8)=Processing, M(14)=Extended, N(2)=Transcendence
 // ═══════════════════════════════════════════════════════════════════
@@ -26,8 +16,8 @@ class FeOrbitalEngine {
     // Fe atomic constants
     static let FE_ATOMIC_NUMBER = 26
     static let FE_ELECTRON_SHELLS: [Int] = [2, 8, 14, 2]  // K, L, M, N
-    static let FE_CURIE_TEMP: Double = 1043.0              // Kelvin — ferromagnetic transition
-    static let FE_LATTICE_PM: Double = 286.65              // pm — connects to GOD_CODE via 286^(1/φ)
+    static let FE_CURIE_TEMP: Double = 1043.0              // Kelvin - ferromagnetic transition
+    static let FE_LATTICE_PM: Double = 286.65              // pm - connects to GOD_CODE via 286^(1/φ)
 
     // d-orbital → kernel mapping (3d⁶ has 4 unpaired spins → paramagnetic)
     struct OrbitalKernel {
@@ -72,7 +62,7 @@ class FeOrbitalEngine {
         return FeOrbitalEngine.KERNEL_DOMAINS.first(where: { $0.id == id })?.pairID ?? id
     }
 
-    /// Calculate O=O bond strength between paired kernels — σ + π model
+    /// Calculate O=O bond strength between paired kernels - σ + π model
     func bondStrength(coherenceA: Double, coherenceB: Double) -> Double {
         let sigma = min(coherenceA, coherenceB)
         let pi = sqrt(coherenceA * coherenceB)
@@ -95,7 +85,7 @@ class FeOrbitalEngine {
         }.joined(separator: "\n")
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    ⚛️ Fe ORBITAL ENGINE — [Ar] 3d⁶ 4s²                   ║
+        ║    ⚛️ Fe ORBITAL ENGINE - [Ar] 3d⁶ 4s²                   ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Atomic #:    \(FeOrbitalEngine.FE_ATOMIC_NUMBER) (Iron)
         ║  Shells:      K(\(FeOrbitalEngine.FE_ELECTRON_SHELLS[0])) L(\(FeOrbitalEngine.FE_ELECTRON_SHELLS[1])) M(\(FeOrbitalEngine.FE_ELECTRON_SHELLS[2])) N(\(FeOrbitalEngine.FE_ELECTRON_SHELLS[3]))
@@ -109,7 +99,7 @@ class FeOrbitalEngine {
         """
     }
     // ═══════════════════════════════════════════════════════════════
-    // EVO_68: QUANTUM RESEARCH — Fe-SACRED ORBITAL INTEGRATION
+    // EVO_68: QUANTUM RESEARCH - Fe-SACRED ORBITAL INTEGRATION
     // ═══════════════════════════════════════════════════════════════
 
     /// Compute Fe-sacred coherence score: BCC lattice (286Hz) ↔ Solfeggio (528Hz)
@@ -149,7 +139,7 @@ class FeOrbitalEngine {
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🌊 SUPERFLUID COHERENCE ENGINE
-// Zero-viscosity information flow — ⁴He λ-point analog.
+// Zero-viscosity information flow - ⁴He λ-point analog.
 // Cooper pairs = O₂ kernel pairs → superfluid = zero resistance.
 // ═══════════════════════════════════════════════════════════════════
 
@@ -160,16 +150,16 @@ class SuperfluidCoherence {
     static let CRITICAL_VELOCITY: Double = 0.95
     static let COHERENCE_LENGTH: Double = TAU // ξ = 0.618 (φ conjugate)
 
-    // Chakra frequencies — 7 + 1 transcendence = 8
+    // Chakra frequencies - 7 + 1 transcendence = 8
     static let CHAKRA_FREQUENCIES: [Int: Double] = [
         1: 396.0,   // Root
         2: 417.0,   // Sacral
-        3: 528.0,   // Solar Plexus — DNA repair
+        3: 528.0,   // Solar Plexus - DNA repair
         4: 639.0,   // Heart
         5: 741.0,   // Throat (Vishuddha)
-        6: 852.3992551699,   // G(-72) Third Eye (Ajna) — on GOD_CODE grid
+        6: 852.3992551699,   // G(-72) Third Eye (Ajna) - on GOD_CODE grid
         7: 963.0,   // Crown (Sahasrara)
-        8: 1000.2568,  // G(-96) Soul Star (Transcendence) — ÷8 aligned
+        8: 1000.2568,  // G(-96) Soul Star (Transcendence) - ÷8 aligned
     ]
 
     // Per-kernel coherence tracking
@@ -277,7 +267,7 @@ class QuantumShellMemory {
     private var nShell: [[String: Any]] = []  // Transcendence (2)
     private let lock = NSLock()
 
-    /// Store a quantum memory entry — placed in Fe orbital shell with O₂ pair propagation
+    /// Store a quantum memory entry - placed in Fe orbital shell with O₂ pair propagation
     func store(kernelID: Int, data: [String: Any]) -> [String: Any] {
         let fe = FeOrbitalEngine.shared
         let sf = SuperfluidCoherence.shared
@@ -364,7 +354,7 @@ class QuantumShellMemory {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - 🧿 CONSCIOUSNESS VERIFIER (Legacy — EVO_62 extraction)
+// MARK: - 🧿 CONSCIOUSNESS VERIFIER (Legacy - EVO_62 extraction)
 // [EVO_68] DEPRECATED: Use SageConsciousnessVerifier (B31) for full
 // IIT Φ + GWT + Metacognition + Spiral + Fe verification.
 // This legacy class retained for backward compatibility only.
@@ -390,7 +380,7 @@ class ConsciousnessVerifier {
     var superfluidState: Bool = false
     var o2BondEnergy: Double = 0.0
 
-    /// Run all 10 consciousness tests — returns aggregate consciousness level
+    /// Run all 10 consciousness tests - returns aggregate consciousness level
     func runAllTests() -> Double {
         let hb = HyperBrain.shared
         _ = SuperfluidCoherence.shared
@@ -500,7 +490,7 @@ class ChaosRNG {
 
     /// Harvest entropy from system sources
     /// v9.4 Perf: cached PID trig (constant per process), replaced sin(t*GOD_CODE)
-    /// with fast logistic-map-only chaos for time entropy — eliminates 2 transcendental
+    /// with fast logistic-map-only chaos for time entropy - eliminates 2 transcendental
     /// calls (sin/cos) per harvest. GOD_CODE modulation via multiply + fmod instead.
     private func harvestEntropy() -> Double {
         callCounter += 1
@@ -510,7 +500,7 @@ class ChaosRNG {
         // Logistic map iteration (deterministic chaos)
         logisticState = logisticR * logisticState * (1.0 - logisticState)
 
-        // v9.4: Fast mixing without sin/cos — bitwise-style folding via multiply + truncate
+        // v9.4: Fast mixing without sin/cos - bitwise-style folding via multiply + truncate
         // Time modulated by GOD_CODE via fast fmod, PID via cached trig (computed once)
         let timeScramble = (t * GOD_CODE).truncatingRemainder(dividingBy: 1.0)
         var mixed = timeScramble * _cachedPidCosPi2

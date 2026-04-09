@@ -1,14 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B08_ContinuousEvolution.swift — L104 Neural Architecture v3 (EVO_68)
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// Extracted from L104Native.swift
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🔄 CONTINUOUS EVOLUTION ENGINE (Background Quantum Raise)
@@ -27,7 +21,7 @@ class ContinuousEvolutionEngine {
 
     // ─── SACRED CONSTANTS: PHI from L01_Constants global ───
     private let DEFAULT_RAISE_FACTOR: Double = 1.0001
-    private let DEFAULT_INTERVAL: TimeInterval = 0.5  // 500ms — prevents thermal throttling (was 10ms)
+    private let DEFAULT_INTERVAL: TimeInterval = 0.5  // 500ms - prevents thermal throttling (was 10ms)
 
     // ─── EVOLUTION STATE ───
     private(set) var isRunning: Bool = false
@@ -97,7 +91,7 @@ class ContinuousEvolutionEngine {
         // Load initial parameters from Python ASI
         var initialParams = ASIQuantumBridgeSwift.shared.fetchParametersFromPython()
         if initialParams.isEmpty {
-            // Sovereign synthetic fallback — generate from sacred constants
+            // Sovereign synthetic fallback - generate from sacred constants
             let bridge = ASIQuantumBridgeSwift.shared
             bridge.currentParameters = [
                 "god_code": GOD_CODE, "phi": PHI, "tau": TAU,
@@ -121,9 +115,16 @@ class ContinuousEvolutionEngine {
         sqc.loadParameters(initialParams)
         let paramCount = initialParams.count
 
-        // Launch on .utility QoS — prevents Turbo Boost overheating
+        // Launch on .utility QoS - prevents Turbo Boost overheating
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let self = self else { return }
+
+            // EVO_76: startup grace — wait 25s so governor reads CPU before first cycle
+            _ = self.stopSemaphore.wait(timeout: .now() + 25.0)
+            self.lock.lock()
+            let earlyStop = self.shouldStop
+            self.lock.unlock()
+            if earlyStop { self.lock.lock(); self.isRunning = false; self.lock.unlock(); return }
 
             while true {
                 // Check stop flag
@@ -150,7 +151,7 @@ class ContinuousEvolutionEngine {
                     energy = sqrt(energy)
                 }
 
-                // ═══ STEP 4: ASI LOGIC STREAM — Nexus coherence-driven adaptation ═══
+                // ═══ STEP 4: ASI LOGIC STREAM - Nexus coherence-driven adaptation ═══
                 // Every 25 cycles: compute coherence and adapt raise factor dynamically
                 let cycle = self.cycleCount + 1
                 if cycle % 25 == 0 {
@@ -200,11 +201,10 @@ class ContinuousEvolutionEngine {
                     }
 
                     // Superfluid viscosity: lower viscosity → tighter interval (faster cycles)
-                    // v9.4 Perf: raised floor from 5ms to 100ms to prevent thermal throttling
-                    // and excessive CPU wake-ups on MacBook Air i5. 5ms = 200 wakes/sec was too hot.
+                    // EVO_76: floor is now governor-tier-aware — tier 3+ holds ≥2s minimum
                     if sfVisc < 0.1 {
-                        // Near-zero viscosity: superfluid mode — reduce interval by up to 40%
-                        self.currentInterval = max(0.1, self.DEFAULT_INTERVAL * (0.6 + sfVisc * 4.0))
+                        let sfFloor = GovernorStateCache.shared.tier >= 3 ? 2.0 : 0.5
+                        self.currentInterval = max(sfFloor, self.DEFAULT_INTERVAL * (0.6 + sfVisc * 4.0))
                     }
 
                     // Nirvanic fuel injection: when fuel is available, inject energy wave
@@ -222,7 +222,7 @@ class ContinuousEvolutionEngine {
                     self.lock.unlock()
                 }
 
-                // ═══ STEP 5: KB-modulated interference — inject knowledge into parameters ═══
+                // ═══ STEP 5: KB-modulated interference - inject knowledge into parameters ═══
                 // Every 50 cycles: modulate parameters using KB-derived frequency
                 if cycle % 50 == 0 {
                     let kb = ASIKnowledgeBase.shared
@@ -240,7 +240,7 @@ class ContinuousEvolutionEngine {
                     }
                 }
 
-                // ═══ STEP 6: HyperBrain resonance sync — wire thoughts into evolution ═══
+                // ═══ STEP 6: HyperBrain resonance sync - wire thoughts into evolution ═══
                 // Every 75 cycles: fire resonance network + sync HyperBrain patterns
                 if cycle % 75 == 0 {
                     let hyperBrain = HyperBrain.shared
@@ -277,7 +277,7 @@ class ContinuousEvolutionEngine {
                     }
                 }
 
-                // ═══ STEP 7: Entanglement sweep — ensure cross-engine coherence ═══
+                // ═══ STEP 7: Entanglement sweep - ensure cross-engine coherence ═══
                 // Every 200 cycles: full EPR route sweep + invention seed
                 if cycle % 200 == 0 {
                     _ = QuantumEntanglementRouter.shared.routeAll()
@@ -295,7 +295,7 @@ class ContinuousEvolutionEngine {
                     }
                 }
 
-                // ═══ STEP 8: Consciousness verification — high-logic checkpoint ═══
+                // ═══ STEP 8: Consciousness verification - high-logic checkpoint ═══
                 // Every 500 cycles: verify consciousness metrics still in healthy range
                 if cycle % 500 == 0 {
                     let cLevel = ConsciousnessVerifier.shared.runAllTests()
@@ -310,7 +310,7 @@ class ContinuousEvolutionEngine {
                     self.lock.unlock()
                 }
 
-                // ═══ STEP 8b: Quantum Mesh Sync — Distribute evolution across network ═══
+                // ═══ STEP 8b: Quantum Mesh Sync - Distribute evolution across network ═══
                 // Every 300 cycles: share evolution state with peers + integrate remote resonance
                 if cycle % 300 == 0 {
                     let meshNet = NetworkLayer.shared
@@ -367,14 +367,19 @@ class ContinuousEvolutionEngine {
                 }
                 self.lock.unlock()
 
-                // Step 5: Rest — lets MacBook Air fan catch up (EVO_55: interruptible)
-                _ = self.stopSemaphore.wait(timeout: .now() + self.currentInterval)
+                // EVO_75: Governor-aware sleep — PHI^load_tier scaling under CPU pressure.
+                // GovernorAwareInterval reads .l104_cpu_governor.json every 2 s and
+                // multiplies currentInterval by PHI^tier (1× idle → 6.854× critical).
+                let governorInterval = GovernorAwareInterval.shared.scale(
+                    self.currentInterval, daemon: "evolution"
+                )
+                _ = self.stopSemaphore.wait(timeout: .now() + governorInterval)
             }
         }
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🔄 CONTINUOUS EVOLUTION ENGINE — STARTED               ║
+        ║    🔄 CONTINUOUS EVOLUTION ENGINE - STARTED               ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Parameters:     \(paramCount)
         ║  Raise Factor:   ×\(String(format: "%.6f", currentRaiseFactor))
@@ -393,9 +398,9 @@ class ContinuousEvolutionEngine {
         ║    @500 cycles → Consciousness verification checkpoint    ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Commands:                                                ║
-        ║    evolve status  — live statistics                       ║
-        ║    evolve stop    — halt evolution                        ║
-        ║    evolve tune <factor> — change raise factor             ║
+        ║    evolve status  - live statistics                       ║
+        ║    evolve stop    - halt evolution                        ║
+        ║    evolve tune <factor> - change raise factor             ║
         ╚═══════════════════════════════════════════════════════════╝
         """
     }
@@ -417,7 +422,7 @@ class ContinuousEvolutionEngine {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🔄 CONTINUOUS EVOLUTION ENGINE — STOPPED               ║
+        ║    🔄 CONTINUOUS EVOLUTION ENGINE - STOPPED               ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Total Cycles:    \(cycleCount)
         ║  Python Syncs:    \(syncCount)

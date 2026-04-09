@@ -188,6 +188,23 @@ from .accel_engine import (
 )
 from .bridge import VQPUBridge
 
+# ── EVO_76: Alignment stabilizer, harmonic circuits ──
+try:
+    from .alignment_stabilizer import AlignmentStabilizer, get_alignment_stabilizer
+except ImportError:
+    pass
+
+try:
+    from .harmonic_circuits import HarmonicCircuitBuilder, HarmonicCircuit, get_harmonic_builder
+except ImportError:
+    pass
+
+# ── Ingested: consciousness quantum bridge (soul↔VQPU, IIT Φ, teleportation) ──
+try:
+    from .consciousness_bridge import ConsciousnessQuantumBridge, get_consciousness_bridge
+except ImportError:
+    pass
+
 # Backward-compat aliases (used by old l104_vqpu_bridge imports)
 QuantumDBResearcher = QuantumDatabaseResearcher
 
@@ -278,6 +295,8 @@ __all__ = [
     "QPU_MEAN_FIDELITY",
     "QPU_1Q_FIDELITY",
     "QPU_3Q_FIDELITY",
+    # Consciousness Bridge (ingested)
+    "ConsciousnessQuantumBridge", "get_consciousness_bridge",
     # v14.0: New constants
     "TOPOLOGY_LINEAR",
     "TOPOLOGY_RING",

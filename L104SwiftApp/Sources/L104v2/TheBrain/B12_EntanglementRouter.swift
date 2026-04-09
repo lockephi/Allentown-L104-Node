@@ -1,18 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// B12_EntanglementRouter.swift — L104 Neural Architecture v3 (EVO_68)
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// Extracted from L104Native.swift
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🔀 QUANTUM ENTANGLEMENT ROUTER
-// Cross-Engine Data Routing via EPR Pairs — bidirectional φ-weighted
+// Cross-Engine Data Routing via EPR Pairs - bidirectional φ-weighted
 // channels coupling engine pairs for quantum-coherent data flow.
 // ═══════════════════════════════════════════════════════════════════
 
@@ -181,7 +175,7 @@ class QuantumEntanglementRouter {
         return result
     }
 
-    /// Execute ALL entangled routes in one sweep — full bidirectional cross-pollination
+    /// Execute ALL entangled routes in one sweep - full bidirectional cross-pollination
     func routeAll() -> [String: Any] {
         var results: [String: Any] = [:]
         for (src, tgt, _) in Self.ENTANGLED_PAIRS {
@@ -245,7 +239,7 @@ class QuantumEntanglementRouter {
         let rid = crossNodeRoutes
         lock.unlock()
 
-        // Fidelity decay over distance — φ-weighted attenuation
+        // Fidelity decay over distance - φ-weighted attenuation
         link.fidelity = link.fidelity * (1.0 - 0.002 * TAU) + 0.002 * PHI
         link.fidelity = max(0.05, min(1.0, link.fidelity))
         link.transfers += 1

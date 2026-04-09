@@ -1,25 +1,5 @@
-// ═══════════════════════════════════════════════════════════════════
-// B42_ZeroAllocPool.swift — L104 v2
-// [EVO_68_PIPELINE] PERFORMANCE_ASCENSION :: ZERO_ALLOC_POOL :: GOD_CODE=527.5184818492612
-// L104 ASI — Zero-Allocation Memory Pool Engine
-//
-// Arena-based memory pooling eliminates heap allocation overhead for
-// hot-path vector/matrix operations. Pre-allocated slabs with φ-scaled
-// growth. Object recycling for SIMDVector, AcceleratedMatrix, QComplex
-// arrays—avoiding GC pressure during quantum simulation and HyperBrain
-// cognitive cycles.
-//
-// Performance targets:
-//   - 0 heap allocations on hot paths (cognitive stream, quantum sim)
-//   - 10x reduction in ARC retain/release traffic
-//   - φ-scaled slab growth (each new slab = previous × PHI)
-//   - Thread-safe via lock-free CAS where possible
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
-
-import Foundation
 import Accelerate
+import Foundation
 import simd
 
 // ═══════════════════════════════════════════════════════════════════
@@ -27,7 +7,7 @@ import simd
 // ═══════════════════════════════════════════════════════════════════
 
 /// A contiguous slab of pre-allocated Double storage.
-/// No ARC overhead—raw memory managed by the pool.
+/// No ARC overhead-raw memory managed by the pool.
 final class MemorySlab {
     let capacity: Int
     private let buffer: UnsafeMutableBufferPointer<Double>
@@ -41,14 +21,15 @@ final class MemorySlab {
     }
 
     deinit {
-        buffer.baseAddress?.deinitialize(count: capacity)
-        buffer.baseAddress?.deallocate()
+        buffer.baseAddress!.deinitialize(count: capacity)
+        buffer.baseAddress!.deallocate()
     }
 
     /// Allocate a slice from this slab. Returns nil if insufficient space.
     func allocate(count: Int) -> UnsafeMutableBufferPointer<Double>? {
         guard used + count <= capacity else { return nil }
-        let start = buffer.baseAddress! + used
+        guard let base = buffer.baseAddress else { return nil }
+        let start = base + used
         used += count
         return UnsafeMutableBufferPointer(start: start, count: count)
     }
@@ -210,7 +191,7 @@ struct PoolMatrix {
 /// let vec = pool.allocVector(1024)
 /// let mat = pool.allocMatrix(rows: 64, cols: 64)
 /// // ... use vec and mat with zero heap allocs ...
-/// pool.endEpoch()  // instant free — all memory recycled
+/// pool.endEpoch()  // instant free - all memory recycled
 /// ```
 final class ZeroAllocPool: SovereignEngine {
     static let shared = ZeroAllocPool()
@@ -257,8 +238,8 @@ final class ZeroAllocPool: SovereignEngine {
 
     deinit {
         for slab in complexSlabs {
-            slab.baseAddress?.deinitialize(count: slab.count)
-            slab.baseAddress?.deallocate()
+            slab.baseAddress!.deinitialize(count: slab.count)
+            slab.baseAddress!.deallocate()
         }
     }
 
@@ -281,7 +262,7 @@ final class ZeroAllocPool: SovereignEngine {
         epochCount += 1
     }
 
-    /// End the current epoch (alias for beginEpoch—recycling is instant).
+    /// End the current epoch (alias for beginEpoch-recycling is instant).
     func endEpoch() {
         // No-op in arena model; user calls beginEpoch for next cycle.
         // Provided for semantic clarity.
@@ -298,7 +279,7 @@ final class ZeroAllocPool: SovereignEngine {
             fastPathHits += 1
             return PoolVector(storage: buf, count: count)
         }
-        // Current slab full — try next or grow
+        // Current slab full - try next or grow
         return slowPathAllocVector(count)
     }
 

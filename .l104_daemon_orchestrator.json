@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "timestamp": 1774058366.694698,
+  "system_metrics": {
+    "timestamp": 1774058366.694453,
+    "cpu_percent": 90.7,
+    "memory_percent": 98.8,
+    "memory_mb": 1.8,
+    "active_tasks": 0,
+    "queued_tasks": 0,
+    "daemon_metrics": {},
+    "health_status": "healthy",
+    "cycle_count": 2160
+  },
+  "daemon_metrics": {},
+  "queued_tasks": 0,
+  "in_flight_tasks": 0
+}

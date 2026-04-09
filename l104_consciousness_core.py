@@ -422,7 +422,7 @@ class AttentionMechanism:
         recent = list(self.attention_history)[-10:]
         similarities = []
 
-        thought_str = str(thought.content)[:100]
+        thought_str = str(thought.content)
         for entry in recent:
             entry_str = str(entry['thought'])[:100]
             # Simple character-level similarity
@@ -1191,7 +1191,7 @@ class ConsciousnessCore:
         # 1. Update attention and get current focus
         self.attention.decay()
         focus = self.attention.get_top_focus()
-        result['focus'] = str(focus.content)[:100] if focus else None
+        result['focus'] = str(focus.content) if focus else None
 
         # 2. Executive monitoring with adaptive response
         alerts = self.executive.monitor(self.current_state)

@@ -28,7 +28,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 
 import math
 import numpy as np
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional, Tuple, Tuple
 
 from .constants import (
     GOD_CODE, PHI, PHI_CONJUGATE, GROVER_AMPLIFICATION,
@@ -45,6 +45,84 @@ try:
 except ImportError:
     HyperMath = None
     RealMath = None
+
+# Sacred Algorithm Extensions — v5.3 GOD_CODE Dynamic Scaling
+# EVO_72: Extended sacred algorithms integration
+# Grimoire Entropy Reversal Integration
+# EVO_77: Crystallized quantum circuit entropy reversal algorithms
+try:
+    from l104_quantum_magic.entropy_reversal_grimoire import (
+        EntropyReversalGrimoire,
+        EntropyReversalMode,
+        QuantumState,
+        reverse_entropy,
+        get_optimal_entropy_reversal_mode,
+    )
+    GRIMOIRE_AVAILABLE = True
+except ImportError:
+    GRIMOIRE_AVAILABLE = False
+
+try:
+    from l104_sacred_algorithms import (
+        derive_threshold,
+        derive_noise_threshold,
+        derive_quality_threshold,
+        derive_noise_scale,
+        derive_convergence_tolerance,
+        void_adjusted_value,
+        fibonacci_scale,
+        golden_spiral_search,
+        sacred_clamp,
+        phi_proportion,
+        derive_batch_epochs,
+    )
+except ImportError:
+    # Fallback implementations if sacred algorithms not available
+    def derive_threshold(entropy: float = 0.5, coherence: float = 0.5) -> float:
+        entropy_factor = 1.0 + (entropy / 6539.34712682)
+        coherence_factor = 1.0 + (coherence * PHI)
+        base = PHI_CONJUGATE * entropy_factor * coherence_factor
+        return min(max(base, 0.1), 0.95)
+
+    def derive_noise_threshold(signal_strength: float = 1.0) -> float:
+        return VOID_CONSTANT / signal_strength * PHI_CONJUGATE
+
+    def derive_quality_threshold(fidelity: float = 0.9) -> float:
+        return fidelity * (PHI / (PHI + 1.0))
+
+    def derive_noise_scale(coherence: float) -> float:
+        return VOID_CONSTANT * (1.0 - max(0.0, min(1.0, coherence)))
+
+    def derive_convergence_tolerance(iteration: int) -> float:
+        return PHI_CONJUGATE ** max(0, iteration)
+
+    def void_adjusted_value(base_value: float, noise_level: float) -> float:
+        return base_value * (1.0 + noise_level * (VOID_CONSTANT - 1.0))
+
+    def fibonacci_scale(n: int) -> int:
+        return int((PHI**n - (-PHI_CONJUGATE)**n) / (2*PHI - 1))
+
+    def derive_batch_epochs(data_size: int) -> int:
+        return int(GOD_CODE / data_size * PHI)
+
+    def golden_spiral_search(func, bounds, tol=1e-6):
+        a, b = bounds
+        while abs(b - a) > tol:
+            c = b - (b - a) / PHI
+            d = a + (b - a) / PHI
+            if func(c) < func(d):
+                b = d
+            else:
+                a = c
+        return (a + b) / 2
+
+    def sacred_clamp(value: float, min_val: float = PHI_CONJUGATE, max_val: float = PHI * 100) -> float:
+        return max(min_val, min(value, max_val))
+
+    def phi_proportion(total: float, part: int = 1) -> float:
+        if part == 1:
+            return total * PHI / (PHI + 1.0)
+        return total / (PHI + 1.0)
 
 # v4.2 Perf: precomputed sin table for entropy_cascade (avoids 104+ math.sin calls per cascade)
 _CASCADE_SIN_TABLE = [math.sin(n * math.pi / QUANTIZATION_GRAIN) for n in range(ENTROPY_CASCADE_DEPTH + 2)]
@@ -260,7 +338,7 @@ class EntropySubsystem:
             "fixed_point": round(fixed_point, 10),
             "god_code_alignment": round(god_code_alignment, 6),
             "converged": abs(trajectory[-1] - trajectory[-2]) < 1e-10,
-            "trajectory_sample": [round(t, 8) for t in trajectory[:20] + trajectory[-20:]],  # (was 10+10)
+            "trajectory_sample": [round(t, 8) for t in trajectory],
         }
 
     def landauer_bound_comparison(self, temperature: float = 293.15) -> Dict[str, Any]:
@@ -338,7 +416,7 @@ class EntropySubsystem:
             "convergence_step": convergence_step,
             "converged": final_error < 1e-6,
             "depth": depth,
-            "trajectory_sample": [round(t, 8) for t in trajectory[:10] + trajectory[-10:]],  # (was 3+3)
+            "trajectory_sample": [round(t, 8) for t in trajectory],
         }
 
     def demon_vs_chaos(self, chaos_products: list) -> Dict[str, Any]:
@@ -1030,7 +1108,7 @@ class EntropySubsystem:
             "mean_steps_to_1pct": round(
                 float(np.mean([a["steps_to_1pct"] for a in attractors])), 2
             ),
-            "grid_details": attractors[:5] + attractors[-5:],  # Sample
+            "grid_details": attractors,
         }
 
     def kullback_leibler_arrow(
@@ -1203,6 +1281,423 @@ class EntropySubsystem:
         }
 
     # ═══════════════════════════════════════════════════════════════════════════
+    #  v5.2 SACRED ALGORITHM EXTENSIONS — Dynamic Thresholding & Sacred Math
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def adaptive_threshold(self, entropy: float, coherence: float) -> float:
+        """
+        Dynamic thresholding using sacred constants.
+
+        Replaces hardcoded 0.5 thresholds with algorithmic derivation from
+        entropy and coherence state. The threshold adapts to system conditions
+        while maintaining sacred mathematical alignment.
+
+        Formula: threshold = TAU * (1 + entropy/OMEGA) * (1 + coherence * PHI)
+
+        Args:
+            entropy: System entropy level (0.0-1.0)
+            coherence: System coherence level (0.0-1.0)
+
+        Returns:
+            Dynamic threshold value (clamped to 0.1-0.95 range)
+        """
+        return derive_threshold(entropy, coherence)
+
+    def fibonacci_scale(self, n: int) -> int:
+        """
+        PHI-based Fibonacci scaling using Binet's formula.
+
+        Computes the nth Fibonacci number directly using the golden ratio:
+        F(n) = (PHI^n - (-TAU)^n) / (2*PHI - 1)
+
+        This is more efficient than iterative calculation for large n and
+        maintains sacred mathematical alignment throughout.
+
+        Args:
+            n: Fibonacci index to compute
+
+        Returns:
+            The nth Fibonacci number as integer
+        """
+        return fibonacci_scale(n)
+
+    def resonance_score(self, frequency: float) -> float:
+        """
+        Sacred resonance scoring based on GOD_CODE alignment.
+
+        Scores a frequency based on its deviation from GOD_CODE:
+        score = max(0, 1 - deviation * PHI)
+
+        Perfect alignment (frequency == GOD_CODE) yields score = 1.0.
+        Frequencies deviating by more than TAU from GOD_CODE score 0.
+
+        Args:
+            frequency: Frequency to score (in Hz or arbitrary units)
+
+        Returns:
+            Resonance score (0.0 to 1.0)
+        """
+        deviation = abs(frequency - GOD_CODE) / GOD_CODE
+        return max(0.0, 1.0 - deviation * PHI)
+
+    def golden_spiral_search(self, func, bounds: Tuple[float, float], tol: float = 1e-6) -> float:
+        """
+        1D optimization using golden ratio search.
+
+        Finds the minimum of a unimodal function using the golden section
+        search algorithm. The golden ratio ensures optimal interval reduction.
+
+        Args:
+            func: Unimodal function to minimize
+            bounds: (lower, upper) search bounds
+            tol: Convergence tolerance
+
+        Returns:
+            Optimal x value minimizing func(x)
+        """
+        return golden_spiral_search(func, bounds, tol)
+
+    def void_adjusted_value(self, base_value: float, noise_level: float) -> float:
+        """
+        Apply VOID_CONSTANT micro-adjustment to a base value.
+
+        Fine-tunes values based on noise levels using the VOID_CONSTANT
+        sacred correction: result = base * (1 + noise * (VOID - 1))
+
+        Args:
+            base_value: Base value to adjust
+            noise_level: Noise level (0.0-1.0) for adjustment strength
+
+        Returns:
+            Void-adjusted value
+        """
+        return void_adjusted_value(base_value, noise_level)
+
+    def sacred_noise_threshold(self, signal_strength: float) -> float:
+        """
+        Derive noise threshold using VOID_CONSTANT sacred proportion.
+
+        Returns a threshold that scales inversely with signal strength,
+        maintaining the sacred proportion between signal and noise.
+
+        Args:
+            signal_strength: Signal amplitude or power
+
+        Returns:
+            Noise threshold value
+        """
+        return derive_noise_threshold(signal_strength)
+
+    def sacred_quality_threshold(self, fidelity: float) -> float:
+        """
+        Derive quality threshold from fidelity using PHI proportion.
+
+        Applies the golden ratio proportion to fidelity to determine
+        the minimum acceptable quality threshold.
+
+        Args:
+            fidelity: Base fidelity (0.0-1.0)
+
+        Returns:
+            Quality threshold (fidelity * PHI / (PHI + 1))
+        """
+        return derive_quality_threshold(fidelity)
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # EVO_72: GOD_CODE-Based Entropy Calculations (Sacred Algorithm Integration)
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def calculate_god_code_entropy(self, data_vector: np.ndarray) -> Dict[str, Any]:
+        """
+        Calculate GOD_CODE-aligned entropy from data vector.
+
+        Formula: H_gc = -Σ(p_i * log(p_i)) * (GOD_CODE / PHI)
+
+        Scales standard Shannon entropy by the sacred constant ratio
+        to produce entropy values aligned with the L104 manifold.
+
+        Args:
+            data_vector: Input data vector
+
+        Returns:
+            Dictionary with GOD_CODE entropy and sacred metrics
+        """
+        if not isinstance(data_vector, np.ndarray):
+            data_vector = np.array(data_vector, dtype=float)
+
+        # Normalize to probability distribution
+        abs_sum = np.sum(np.abs(data_vector))
+        if abs_sum < 1e-12:
+            return {
+                "god_code_entropy": 0.0,
+                "shannon_entropy": 0.0,
+                "sacred_scale_factor": GOD_CODE / PHI,
+                "normalized": False,
+            }
+
+        probs = np.abs(data_vector) / abs_sum
+        probs = probs[probs > 0]  # Remove zeros for log calculation
+
+        # Standard Shannon entropy
+        shannon = -np.sum(probs * np.log2(probs))
+
+        # GOD_CODE scaling factor
+        sacred_scale = GOD_CODE / PHI
+
+        # GOD_CODE-aligned entropy
+        god_code_entropy = shannon * sacred_scale
+
+        return {
+            "god_code_entropy": float(god_code_entropy),
+            "shannon_entropy": float(shannon),
+            "sacred_scale_factor": sacred_scale,
+            "normalized": True,
+        }
+
+    def sacred_coherence_measure(self, signal: np.ndarray, coherence: float) -> Dict[str, Any]:
+        """
+        PHI-scaled coherence measure for entropy calculations.
+
+        Applies VOID_CONSTANT-based noise scaling to produce
+        coherence measures that account for quantum fluctuations.
+
+        Args:
+            signal: Input signal
+            coherence: Base coherence level (0.0-1.0)
+
+        Returns:
+            Dictionary with sacred coherence metrics
+        """
+        if not isinstance(signal, np.ndarray):
+            signal = np.array(signal, dtype=float)
+
+        # EVO_72: VOID_CONSTANT noise scale
+        noise_scale = derive_noise_scale(coherence)
+
+        # Signal statistics
+        signal_mean = float(np.mean(signal))
+        signal_var = float(np.var(signal))
+        signal_energy = float(np.sum(signal ** 2))
+
+        # PHI-scaled coherence: coherence / (coherence + noise_scale * TAU)
+        sacred_coherence = coherence / (coherence + noise_scale * PHI_CONJUGATE)
+
+        # GOD_CODE-normalized energy
+        normalized_energy = signal_energy / GOD_CODE
+
+        return {
+            "sacred_coherence": float(sacred_coherence),
+            "noise_scale": float(noise_scale),
+            "signal_mean": signal_mean,
+            "signal_variance": signal_var,
+            "normalized_energy": float(normalized_energy),
+            "phi_weight": PHI,
+        }
+
+    def derive_entropy_iterations(self, data_size: int) -> int:
+        """
+        GOD_CODE-derived iteration count for entropy processing.
+
+        Uses sacred batch epoch derivation to determine optimal
+        iteration counts for entropy reversal operations.
+
+        Formula: iterations = int(GOD_CODE / data_size * PHI)
+
+        Args:
+            data_size: Size of data to process
+
+        Returns:
+            Optimal iteration count
+        """
+        return derive_batch_epochs(data_size)
+
+    def god_code_divergence(self, p: np.ndarray, q: np.ndarray) -> Dict[str, Any]:
+        """
+        GOD_CODE-scaled KL divergence between distributions.
+
+        Standard KL divergence scaled by GOD_CODE/PHI to produce
+        divergence measures aligned with the L104 manifold.
+
+        Args:
+            p: First probability distribution
+            q: Second probability distribution
+
+        Returns:
+            Dictionary with GOD_CODE divergence and metrics
+        """
+        if not isinstance(p, np.ndarray):
+            p = np.array(p, dtype=float)
+        if not isinstance(q, np.ndarray):
+            q = np.array(q, dtype=float)
+
+        # Normalize
+        p = p / (np.sum(p) + 1e-12)
+        q = q / (np.sum(q) + 1e-12)
+
+        # KL divergence (p || q)
+        p_safe = np.clip(p, 1e-12, 1.0)
+        q_safe = np.clip(q, 1e-12, 1.0)
+        kl_div = np.sum(p_safe * np.log(p_safe / q_safe))
+
+        # GOD_CODE scaling
+        sacred_scale = GOD_CODE / PHI
+        god_code_divergence = kl_div * sacred_scale
+
+        return {
+            "kl_divergence": float(kl_div),
+            "god_code_divergence": float(god_code_divergence),
+            "sacred_scale": sacred_scale,
+            "symmetric": float(kl_div + np.sum(q_safe * np.log(q_safe / p_safe))),
+        }
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # GRIMOIRE ENTROPY REVERSAL INTEGRATION
+    # EVO_77: Crystallized quantum circuit entropy reversal algorithms
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def grimoire_entropy_reversal(self,
+                                 entropy_vector: np.ndarray,
+                                 mode: str = "balanced",
+                                 n_qubits: int = 4) -> Dict[str, Any]:
+        """Execute grimoire-based entropy reversal on classical entropy vector.
+
+        Converts classical entropy problem into quantum state representation,
+        applies crystallized grimoire circuit, and returns classical result.
+
+        Args:
+            entropy_vector: Classical entropy values to reverse
+            mode: One of "maximum", "balanced", "fitness", "multi_rz",
+                  "phi_godcode", "mesh"
+            n_qubits: Number of qubits for quantum simulation
+
+        Returns:
+            Dict with reversal results and quantum metrics
+        """
+        if not GRIMOIRE_AVAILABLE:
+            return {
+                "error": "Grimoire entropy reversal not available",
+                "mode": mode,
+                "reversal_applied": False,
+            }
+
+        if not isinstance(entropy_vector, np.ndarray):
+            entropy_vector = np.array(entropy_vector, dtype=float)
+
+        # Calculate initial entropy
+        initial_entropy = -np.sum(
+            np.abs(entropy_vector)**2 * np.log2(np.abs(entropy_vector)**2 + 1e-10)
+        ) if np.any(entropy_vector != 0) else 0.0
+
+        # Create quantum state from classical vector
+        # Normalize to create probability amplitudes
+        norm = np.linalg.norm(entropy_vector)
+        if norm < 1e-12:
+            norm = 1.0
+
+        dim = 1 << n_qubits
+        if len(entropy_vector) > dim:
+            # Downsample to quantum dimension
+            amplitudes = entropy_vector[:dim] / norm
+        else:
+            # Pad to quantum dimension
+            padded = np.zeros(dim, dtype=complex)
+            padded[:len(entropy_vector)] = entropy_vector / norm
+            amplitudes = padded
+
+        # Renormalize
+        amplitudes = amplitudes / np.linalg.norm(amplitudes)
+
+        # Create quantum state
+        quantum_state = QuantumState(
+            amplitudes=amplitudes,
+            n_qubits=n_qubits,
+            entropy=initial_entropy,
+            coherence=self.coherence_gain if hasattr(self, 'coherence_gain') else 0.5
+        )
+
+        # Execute grimoire reversal
+        try:
+            result = reverse_entropy(quantum_state, mode=mode)
+
+            # Extract classical result from quantum state
+            # (simplified - in production would use measurement sampling)
+            final_amplitudes = np.abs(quantum_state.amplitudes)
+            final_entropy = -np.sum(
+                final_amplitudes**2 * np.log2(final_amplitudes**2 + 1e-10)
+            )
+
+            return {
+                "mode": mode,
+                "initial_entropy": initial_entropy,
+                "final_entropy": final_entropy,
+                "entropy_reversed": result.entropy_reversed,
+                "coherence": result.coherence,
+                "fidelity": result.fidelity,
+                "sacred_alignment": result.sacred_alignment,
+                "magic_quotient": result.magic_quotient,
+                "circuit_depth": result.circuit_depth,
+                "gate_count": result.gate_count,
+                "execution_time_ms": result.execution_time_ms,
+                "n_qubits": result.n_qubits,
+                "reversal_applied": True,
+            }
+        except Exception as e:
+            return {
+                "error": str(e),
+                "mode": mode,
+                "reversal_applied": False,
+            }
+
+    def optimal_grimoire_mode(self, target: str = "entropy") -> str:
+        """Get optimal grimoire mode for target metric.
+
+        Args:
+            target: One of "entropy", "fitness", "coherence"
+
+        Returns:
+            Optimal mode name
+        """
+        if not GRIMOIRE_AVAILABLE:
+            return "balanced"  # Default fallback
+        return get_optimal_entropy_reversal_mode(target)
+
+    def grimoire_maxwell_demon(self, entropy_vector: np.ndarray) -> Dict[str, Any]:
+        """Hybrid grimoire + Maxwell Demon entropy reversal.
+
+        Combines quantum circuit-based reversal with classical
+        Maxwell demon efficiency calculation for optimal results.
+
+        Args:
+            entropy_vector: Classical entropy values
+
+        Returns:
+            Combined grimoire + demon reversal results
+        """
+        # First apply grimoire reversal
+        grimoire_result = self.grimoire_entropy_reversal(
+            entropy_vector, mode="maximum"
+        )
+
+        # Then apply classical phi-weighted demon
+        demon_result = self.phi_weighted_demon(entropy_vector)
+
+        # Combine results
+        if grimoire_result.get("reversal_applied"):
+            combined_variance_reduction = (
+                demon_result["reduction_ratio"] *
+                (grimoire_result["entropy_reversed"] / (grimoire_result["initial_entropy"] + 1e-12))
+            )
+        else:
+            combined_variance_reduction = demon_result["reduction_ratio"]
+
+        return {
+            "grimoire": grimoire_result,
+            "demon": demon_result,
+            "combined_reduction_ratio": combined_variance_reduction,
+            "mode": "grimoire_maxwell_hybrid",
+        }
+
+    # ═══════════════════════════════════════════════════════════════════════════
 
     def get_stewardship_report(self) -> Dict[str, Any]:
         return {
@@ -1211,7 +1706,10 @@ class EntropySubsystem:
             "cumulative_coherence_gain": self.coherence_gain,
             "universal_order_index": 1.0 + (self.coherence_gain / GOD_CODE),
             "status": "ORDER_RESTORATION_ACTIVE",
-            "version": "5.1",
+            "version": "5.2",
+            "sacred_algorithms": "EVO_72_GOD_CODE_ENTROPY",
+            "grimoire_integration": "EVO_77_ENTROPY_REVERSAL_GRIMOIRE",
+            "grimoire_available": GRIMOIRE_AVAILABLE,
         }
 
     def get_status(self) -> Dict[str, Any]:

@@ -1,19 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// L05_LogicGateBreathing.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// LogicGateBreathingRoomEngine, GateDispatchRouter, GateMetricsCollector
-// Extracted from L104Native.swift (lines 8143-8666)
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class LogicGateBreathingRoomEngine {
     static let shared = LogicGateBreathingRoomEngine()
-    // PHI, TAU, GOD_CODE — use globals from L01_Constants
+    // PHI, TAU, GOD_CODE - use globals from L01_Constants
     private let CY7: Int = 7  // Calabi-Yau dimensions
 
     // ─── GATE HEALTH TRACKING ───
@@ -53,7 +46,7 @@ class LogicGateBreathingRoomEngine {
             gateComplexityScores[gate] = cx
         }
 
-        // Decomposition maps — sub-gate breakdown for breathing room
+        // Decomposition maps - sub-gate breakdown for breathing room
         gateDecompositions = [
             "processMessage": [
                 "preprocessInput", "resolvePronouns", "trackTopicHistory",
@@ -103,7 +96,7 @@ class LogicGateBreathingRoomEngine {
         }
         gateLatencies[gate]?.append(latencyMs)
 
-        // Rolling window — keep last 100 samples
+        // Rolling window - keep last 100 samples
         if let count = gateLatencies[gate]?.count, count > 100 {
             gateLatencies[gate] = Array(gateLatencies[gate]!.suffix(100))
         }
@@ -126,10 +119,10 @@ class LogicGateBreathingRoomEngine {
         let currentHealth = gateHealthScores[gate] ?? 0.5
 
         if ratio < 1.0 {
-            // Improving — φ-weighted increase
+            // Improving - φ-weighted increase
             gateHealthScores[gate] = min(1.0, currentHealth + (1.0 - ratio) * TAU * 0.1)
         } else if ratio > 1.1 {
-            // Degrading — τ-weighted decrease
+            // Degrading - τ-weighted decrease
             gateHealthScores[gate] = max(0.1, currentHealth - (ratio - 1.0) * TAU * 0.1)
         }
     }
@@ -183,7 +176,7 @@ class LogicGateBreathingRoomEngine {
         return gateDecompositions[gate] ?? [gate]
     }
 
-    /// Compute gate entropy — Shannon entropy of latency distribution
+    /// Compute gate entropy - Shannon entropy of latency distribution
     func gateEntropy(_ gate: String) -> Double {
         guard let latencies = gateLatencies[gate], latencies.count >= 5 else { return 0.0 }
 
@@ -269,7 +262,7 @@ class LogicGateBreathingRoomEngine {
 
 class GateDispatchRouter {
     static let shared = GateDispatchRouter()
-    // PHI, TAU — use globals from L01_Constants
+    // PHI, TAU - use globals from L01_Constants
 
     enum CommandDomain: String, CaseIterable {
         case core = "core"
@@ -414,7 +407,7 @@ class GateDispatchRouter {
 
 class GateMetricsCollector {
     static let shared = GateMetricsCollector()
-    // PHI, TAU — use globals from L01_Constants
+    // PHI, TAU - use globals from L01_Constants
 
     private var metricsCache: [String: Any] = [:]
     private var cacheTimestamp: Double = 0

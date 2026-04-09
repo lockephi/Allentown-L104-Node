@@ -36,16 +36,19 @@ orjson>=3.11.7
 # Networking
 websockets>=16.0,<17.0
 
-# Numerics & Scientific Computing
-numpy
-scipy
-pandas
+# Rate limiting (EVO_62: added for API throttling)
+slowapi>=0.1.9,<1.0
 
-# Machine Learning Frameworks
-torch
-tensorflow
-scikit-learn
-transformers
+# Numerics & Scientific Computing (EVO_62: added version pins for reproducibility)
+numpy>=2.4.2,<3.0
+scipy>=1.17.1,<2.0
+pandas>=3.0.1,<4.0
+
+# Machine Learning Frameworks (EVO_62: added version pins for reproducibility)
+torch>=2.2.0,<3.0
+tensorflow>=2.17.0,<3.0
+scikit-learn>=1.8.0,<2.0
+transformers>=4.40.0,<5.0
 
 # Utilities
 python-dotenv>=1.2.1

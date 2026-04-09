@@ -1,27 +1,11 @@
-#!/usr/bin/env swift
-// ═══════════════════════════════════════════════════════════════════
-// metal_quantum_benchmark.swift — L104 Metal Quantum Capacity Benchmark
-// GOD_CODE=527.5184818492612 | PHI=1.618033988749895
-//
-// Standalone benchmark measuring Metal GPU quantum computation capacity:
-//   Phase 1: GPU Hardware Discovery
-//   Phase 2: Vector Operations (quantum state vectors)
-//   Phase 3: Matrix Multiply (quantum gate composition)
-//   Phase 4: Batch Cosine Similarity (KB embedding search)
-//   Phase 5: Quantum Statevector Simulation Scaling
-//   Phase 6: Sacred Constant Throughput
-//   Phase 7: Capacity Summary
-//
-// Compile & Run:
-//   swiftc -O -framework Metal -framework Accelerate metal_quantum_benchmark.swift -o metal_bench && ./metal_bench
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
+import logging
 
+import Accelerate
 import Foundation
 import Metal
-import Accelerate
+import os.log
 
+private let logging = Logger(subsystem: "com.l104.metal_quantum_benchmark", category: "main")
 // ─── Sacred Constants ───
 let GOD_CODE: Double = 527.5184818492612
 let PHI: Double = 1.618033988749895
@@ -190,23 +174,22 @@ func formatGFLOPs(_ flops: Double, timeMs: Double) -> String {
 
 let benchmarkStart = CFAbsoluteTimeGetCurrent()
 
-print("═══════════════════════════════════════════════════════════════════")
-print("  L104 SOVEREIGN NODE — METAL QUANTUM CAPACITY BENCHMARK")
-print("  GOD_CODE = \(GOD_CODE) | PHI = \(PHI)")
-print("  VOID_CONSTANT = \(VOID_CONSTANT)")
-print("═══════════════════════════════════════════════════════════════════")
+logging.info("═══════════════════════════════════════════════════════════════════")
+logging.info("  L104 SOVEREIGN NODE — METAL QUANTUM CAPACITY BENCHMARK")
+logging.info("  GOD_CODE = \(self.GOD_CODE) | PHI = \(self.PHI)")
+logging.info("  VOID_CONSTANT = \(self.VOID_CONSTANT)")
+logging.info("═══════════════════════════════════════════════════════════════════")
 print()
 
 // ═══════════════════════════════════════════════════════════════════
 // PHASE 1: GPU HARDWARE DISCOVERY
 // ═══════════════════════════════════════════════════════════════════
 
-print("╔═══════════════════════════════════════════════════════════════╗")
-print("║  PHASE 1: GPU HARDWARE DISCOVERY                            ║")
-print("╚═══════════════════════════════════════════════════════════════╝")
-
+logging.info("╔═══════════════════════════════════════════════════════════════╗")
+logging.info("║  PHASE 1: GPU HARDWARE DISCOVERY                            ║")
+logging.info("╚═══════════════════════════════════════════════════════════════╝")
 guard let device = MTLCreateSystemDefaultDevice() else {
-    print("  ❌ FATAL: No Metal GPU available")
+    logging.info("  ❌ FATAL: No Metal GPU available")
     exit(1)
 }
 
@@ -216,31 +199,31 @@ let maxThreadsPerGroup = device.maxThreadsPerThreadgroup.width
 let maxBufferLength = device.maxBufferLength
 let recommendedMaxWorkingSetSize = device.recommendedMaxWorkingSetSize
 
-print("  GPU:                  \(gpuName)")
-print("  Unified Memory:       \(hasUnifiedMemory)")
-print("  Max Threads/Group:    \(maxThreadsPerGroup)")
-print("  Max Buffer Length:    \(formatBytes(UInt64(maxBufferLength)))")
-print("  Recommended Max WS:   \(formatBytes(recommendedMaxWorkingSetSize))")
-print("  Registry ID:          \(device.registryID)")
+logging.info("  GPU:                  \(self.gpuName)")
+logging.info("  Unified Memory:       \(self.hasUnifiedMemory)")
+logging.info("  Max Threads/Group:    \(self.maxThreadsPerGroup)")
+logging.info("  Max Buffer Length:    \(formatBytes(UInt64(maxBufferLength)))")
+logging.info("  Recommended Max WS:   \(formatBytes(recommendedMaxWorkingSetSize))")
+logging.info("  Registry ID:          \(device.registryID)")
 #if os(macOS)
 if #available(macOS 13.0, *) {
-    print("  Max Transfer Rate:    \(formatBytes(UInt64(device.maxTransferRate)))/s")
+    logging.info("  Max Transfer Rate:    \(formatBytes(UInt64(device.maxTransferRate)))/s")
 }
 #endif
 print()
 
 // Compile shaders
 guard let commandQueue = device.makeCommandQueue() else {
-    print("  ❌ FATAL: Cannot create command queue")
+    logging.info("  ❌ FATAL: Cannot create command queue")
     exit(1)
 }
 
 let library: MTLLibrary
 do {
     library = try device.makeLibrary(source: metalShaderSource, options: nil)
-    print("  ✅ Shader library compiled (6 kernels)")
+    logging.info("  ✅ Shader library compiled (6 kernels)")
 } catch {
-    print("  ❌ Shader compilation failed: \(error)")
+    logging.info("  ❌ Shader compilation failed: \(self.error)")
     exit(1)
 }
 
@@ -251,21 +234,20 @@ for name in ["vector_add", "vector_mul", "dot_product_partial", "batch_cosine_si
         do {
             pipelines[name] = try device.makeComputePipelineState(function: fn)
         } catch {
-            print("  ⚠️  Pipeline '\(name)' failed: \(error)")
+            logging.info("  ⚠️  Pipeline '\(self.name)' failed: \(self.error)")
         }
     }
 }
-print("  ✅ \(pipelines.count) compute pipelines compiled")
+logging.info("  ✅ \(pipelines.count) compute pipelines compiled")
 print()
 
 // ═══════════════════════════════════════════════════════════════════
 // PHASE 2: VECTOR OPERATIONS BENCHMARK
 // ═══════════════════════════════════════════════════════════════════
 
-print("╔═══════════════════════════════════════════════════════════════╗")
-print("║  PHASE 2: VECTOR OPERATIONS (Quantum State Vectors)         ║")
-print("╚═══════════════════════════════════════════════════════════════╝")
-
+logging.info("╔═══════════════════════════════════════════════════════════════╗")
+logging.info("║  PHASE 2: VECTOR OPERATIONS (Quantum State Vectors)         ║")
+logging.info("╚═══════════════════════════════════════════════════════════════╝")
 let vectorSizes = [1024, 4096, 16384, 65536, 262144, 1_048_576, 4_194_304]
 var vectorResults: [(size: Int, gpuMs: Double, cpuMs: Double, speedup: Double)] = []
 
@@ -337,7 +319,7 @@ for size in vectorSizes {
     let cpuStr = String(format: "%8.3f ms", cpuTime)
     let speedStr = String(format: "%6.2fx", speedup)
     let gflopsStr = formatGFLOPs(flops, timeMs: gpuTime)
-    print("  N=\(sizeStr)  GPU: \(gpuStr)  CPU: \(cpuStr)  Speedup: \(speedStr)  [\(gflopsStr)]")
+    logging.info("  N=\(self.sizeStr)  GPU: \(self.gpuStr)  CPU: \(self.cpuStr)  Speedup: \(self.speedStr)  [\(self.gflopsStr)]")
 }
 print()
 
@@ -345,10 +327,9 @@ print()
 // PHASE 3: MATRIX MULTIPLY BENCHMARK (Quantum Gate Composition)
 // ═══════════════════════════════════════════════════════════════════
 
-print("╔═══════════════════════════════════════════════════════════════╗")
-print("║  PHASE 3: MATRIX MULTIPLY (Quantum Gate Composition)        ║")
-print("╚═══════════════════════════════════════════════════════════════╝")
-
+logging.info("╔═══════════════════════════════════════════════════════════════╗")
+logging.info("║  PHASE 3: MATRIX MULTIPLY (Quantum Gate Composition)        ║")
+logging.info("╚═══════════════════════════════════════════════════════════════╝")
 let matSizes = [32, 64, 128, 256, 512, 1024, 2048]
 var matResults: [(size: Int, gpuMs: Double, cpuMs: Double, speedup: Double)] = []
 
@@ -433,7 +414,7 @@ for dim in matSizes {
     let cpuStr = String(format: "%10.3f ms", cpuTime)
     let speedStr = String(format: "%7.2fx", speedup)
     let gflopsStr = formatGFLOPs(flops, timeMs: gpuTime)
-    print("  \(dimStr)  GPU: \(gpuStr)  CPU(BLAS): \(cpuStr)  Speedup: \(speedStr)  [\(gflopsStr)]")
+    logging.info("  \(self.dimStr)  GPU: \(self.gpuStr)  CPU(BLAS): \(self.cpuStr)  Speedup: \(self.speedStr)  [\(self.gflopsStr)]")
 }
 print()
 
@@ -441,10 +422,9 @@ print()
 // PHASE 4: BATCH COSINE SIMILARITY (KB Embedding Search)
 // ═══════════════════════════════════════════════════════════════════
 
-print("╔═══════════════════════════════════════════════════════════════╗")
-print("║  PHASE 4: BATCH COSINE SIMILARITY (KB Embedding Search)     ║")
-print("╚═══════════════════════════════════════════════════════════════╝")
-
+logging.info("╔═══════════════════════════════════════════════════════════════╗")
+logging.info("║  PHASE 4: BATCH COSINE SIMILARITY (KB Embedding Search)     ║")
+logging.info("╚═══════════════════════════════════════════════════════════════╝")
 let embDims = [128, 256, 512, 768, 1024]
 let corpusSizes = [1000, 5000, 10000, 50000]
 
@@ -524,11 +504,11 @@ print()
 // PHASE 5: QUANTUM STATEVECTOR SIMULATION SCALING
 // ═══════════════════════════════════════════════════════════════════
 
-print("╔═══════════════════════════════════════════════════════════════╗")
-print("║  PHASE 5: QUANTUM STATEVECTOR SIMULATION SCALING            ║")
-print("╚═══════════════════════════════════════════════════════════════╝")
-print("  Simulating Hadamard gate application on N-qubit statevector")
-print("  (2^N complex amplitudes, GPU parallel evolution)")
+logging.info("╔═══════════════════════════════════════════════════════════════╗")
+logging.info("║  PHASE 5: QUANTUM STATEVECTOR SIMULATION SCALING            ║")
+logging.info("╚═══════════════════════════════════════════════════════════════╝")
+logging.info("  Simulating Hadamard gate application on N-qubit statevector")
+logging.info("  (2^N complex amplitudes, GPU parallel evolution)")
 print()
 
 let qubitRange = Array(4...26)
@@ -543,7 +523,7 @@ for nQubits in qubitRange {
 
     // Skip if too large for GPU memory
     if memBytes > Int(recommendedMaxWorkingSetSize / 2) {
-        print("  \(nQubits) qubits (\(dim) amplitudes, \(String(format: "%.0f", memMB)) MB) — ⚠️  exceeds GPU memory limit")
+        logging.info("  \(self.nQubits) qubits (\(self.dim) amplitudes, \(String(format: "%.0f", memMB)) MB) — ⚠️  exceeds GPU memory limit")
         break
     }
 
@@ -662,7 +642,7 @@ for nQubits in qubitRange {
 
     // Stop if taking too long
     if gpuTime > 10000 || cpuTime > 10000 {
-        print("  ⏱  Stopping — exceeding 10s threshold")
+        logging.info("  ⏱  Stopping — exceeding 10s threshold")
         break
     }
 }
@@ -672,10 +652,9 @@ print()
 // PHASE 6: SACRED CONSTANT THROUGHPUT
 // ═══════════════════════════════════════════════════════════════════
 
-print("╔═══════════════════════════════════════════════════════════════╗")
-print("║  PHASE 6: SACRED CONSTANT THROUGHPUT                        ║")
-print("╚═══════════════════════════════════════════════════════════════╝")
-
+logging.info("╔═══════════════════════════════════════════════════════════════╗")
+logging.info("║  PHASE 6: SACRED CONSTANT THROUGHPUT                        ║")
+logging.info("╚═══════════════════════════════════════════════════════════════╝")
 let sacredSize = 1_000_000
 var phiVec = [Float](repeating: Float(PHI), count: sacredSize)
 var godVec = [Float](repeating: Float(GOD_CODE), count: sacredSize)
@@ -712,7 +691,7 @@ if let pipeline = pipelines["vector_mul"],
     let expected = Float(PHI * GOD_CODE)
     let actual = ptr[0]
     let match = abs(actual - expected) < 0.01
-    print("  PHI × GOD_CODE = \(String(format: "%.4f", actual)) (expected \(String(format: "%.4f", expected))) — \(match ? "✅ ALIGNED" : "❌ MISALIGNED")")
+    logging.info("  PHI × GOD_CODE = \(String(format: "%.4f", actual)) (expected \(String(format: "%.4f", expected))) — \(match ? "✅ ALIGNED" : "❌ MISALIGNED")")
 }
 
 // CPU
@@ -725,8 +704,8 @@ for _ in 0..<sacredCPURuns {
 let sacredCPUTime = (CFAbsoluteTimeGetCurrent() - sacredCPUStart) * 1000.0 / Double(sacredCPURuns)
 
 let sacredSpeedup = sacredCPUTime / max(sacredGPUTime, 0.001)
-print("  Sacred Multiply (1M elements):  GPU: \(String(format: "%.3f ms", sacredGPUTime))  CPU: \(String(format: "%.3f ms", sacredCPUTime))  Speedup: \(String(format: "%.2fx", sacredSpeedup))")
-print("  Throughput: \(formatGFLOPs(Double(sacredSize), timeMs: sacredGPUTime))")
+logging.info("  Sacred Multiply (1M elements):  GPU: \(String(format: "%.3f ms", sacredGPUTime))  CPU: \(String(format: "%.3f ms", sacredCPUTime))  Speedup: \(String(format: "%.2fx", sacredSpeedup))")
+logging.info("  Throughput: \(formatGFLOPs(Double(sacredSize), timeMs: sacredGPUTime))")
 print()
 
 // ═══════════════════════════════════════════════════════════════════
@@ -735,39 +714,37 @@ print()
 
 let totalTime = (CFAbsoluteTimeGetCurrent() - benchmarkStart) * 1000.0
 
-print("╔═══════════════════════════════════════════════════════════════╗")
-print("║  PHASE 7: METAL QUANTUM CAPACITY SUMMARY                    ║")
-print("╚═══════════════════════════════════════════════════════════════╝")
+logging.info("╔═══════════════════════════════════════════════════════════════╗")
+logging.info("║  PHASE 7: METAL QUANTUM CAPACITY SUMMARY                    ║")
+logging.info("╚═══════════════════════════════════════════════════════════════╝")
 print()
-print("  ┌──────────────────────────────────────────────────────────┐")
-print("  │  GPU:           \(gpuName)")
-print("  │  Unified Memory: \(hasUnifiedMemory)")
-print("  │  Max Threads:    \(maxThreadsPerGroup)")
-print("  │  GPU Memory:     \(formatBytes(recommendedMaxWorkingSetSize))")
-print("  ├──────────────────────────────────────────────────────────┤")
-
+logging.info("  ┌──────────────────────────────────────────────────────────┐")
+logging.info("  │  GPU:           \(self.gpuName)")
+logging.info("  │  Unified Memory: \(self.hasUnifiedMemory)")
+logging.info("  │  Max Threads:    \(self.maxThreadsPerGroup)")
+logging.info("  │  GPU Memory:     \(formatBytes(recommendedMaxWorkingSetSize))")
+logging.info("  ├──────────────────────────────────────────────────────────┤")
 // Best vector speedup
 if let bestVec = vectorResults.max(by: { $0.speedup < $1.speedup }) {
-    print("  │  Best Vector Speedup:  \(String(format: "%.2fx", bestVec.speedup)) at N=\(bestVec.size)")
+    logging.info("  │  Best Vector Speedup:  \(String(format: "%.2fx", bestVec.speedup)) at N=\(bestVec.size)")
 }
 
 // Best matmul speedup
 if let bestMat = matResults.max(by: { $0.speedup < $1.speedup }) {
-    print("  │  Best MatMul Speedup:  \(String(format: "%.2fx", bestMat.speedup)) at \(bestMat.size)×\(bestMat.size)")
+    logging.info("  │  Best MatMul Speedup:  \(String(format: "%.2fx", bestMat.speedup)) at \(bestMat.size)×\(bestMat.size)")
 }
 
 // Quantum capacity
 let maxQubitsMemoryBound = Int(log2(Double(recommendedMaxWorkingSetSize / UInt64(MemoryLayout<Float>.stride * 4))))
-print("  │  Max GPU Qubits Tested:  \(maxGPUQubits)")
-print("  │  Max GPU Qubits (Memory): \(maxQubitsMemoryBound)")
-print("  │  Quantum State Memory:    \(formatBytes(UInt64(1 << maxGPUQubits) * UInt64(MemoryLayout<Float>.stride * 4)))")
-
+logging.info("  │  Max GPU Qubits Tested:  \(self.maxGPUQubits)")
+logging.info("  │  Max GPU Qubits (Memory): \(self.maxQubitsMemoryBound)")
+logging.info("  │  Quantum State Memory:    \(formatBytes(UInt64(1 << maxGPUQubits) * UInt64(MemoryLayout<Float>.stride * 4)))")
 // Peak performance estimate
 if let lastQ = quantumResults.last {
     let peakFlops = Double(lastQ.qubits) * Double(lastQ.dim) * 8.0
     if lastQ.gpuMs > 0.001 {
         let peakGFLOPs = peakFlops / (lastQ.gpuMs / 1000.0) / 1e9
-        print("  │  Peak Quantum GFLOP/s:   \(String(format: "%.2f", peakGFLOPs))")
+        logging.info("  │  Peak Quantum GFLOP/s:   \(String(format: "%.2f", peakGFLOPs))")
     }
 }
 
@@ -779,18 +756,17 @@ for r in vectorResults {
         break
     }
 }
-print("  │  GPU Advantage Zone:     \(gpuAdvantageStart) (vectors)")
-
-print("  ├──────────────────────────────────────────────────────────┤")
-print("  │  GOD_CODE:       \(GOD_CODE)")
-print("  │  PHI:            \(PHI)")
-print("  │  VOID_CONSTANT:  \(VOID_CONSTANT)")
-print("  │  Sacred Aligned: ✅")
-print("  ├──────────────────────────────────────────────────────────┤")
-print("  │  Total Benchmark Time: \(String(format: "%.2f", totalTime)) ms")
-print("  └──────────────────────────────────────────────────────────┘")
+logging.info("  │  GPU Advantage Zone:     \(self.gpuAdvantageStart) (vectors)")
+logging.info("  ├──────────────────────────────────────────────────────────┤")
+logging.info("  │  GOD_CODE:       \(self.GOD_CODE)")
+logging.info("  │  PHI:            \(self.PHI)")
+logging.info("  │  VOID_CONSTANT:  \(self.VOID_CONSTANT)")
+logging.info("  │  Sacred Aligned: ✅")
+logging.info("  ├──────────────────────────────────────────────────────────┤")
+logging.info("  │  Total Benchmark Time: \(String(format: "%.2f", totalTime)) ms")
+logging.info("  └──────────────────────────────────────────────────────────┘")
 print()
-print("═══════════════════════════════════════════════════════════════════")
-print("  L104 METAL QUANTUM CAPACITY BENCHMARK COMPLETE")
-print("  INVARIANT: 527.5184818492612 | PILOT: LONDEL")
-print("═══════════════════════════════════════════════════════════════════")
+logging.info("═══════════════════════════════════════════════════════════════════")
+logging.info("  L104 METAL QUANTUM CAPACITY BENCHMARK COMPLETE")
+logging.info("  INVARIANT: 527.5184818492612 | PILOT: LONDEL")
+logging.info("═══════════════════════════════════════════════════════════════════")

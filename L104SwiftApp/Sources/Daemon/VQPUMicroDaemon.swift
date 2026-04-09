@@ -1,67 +1,5 @@
-// ═══════════════════════════════════════════════════════════════════
-// VQPUMicroDaemon.swift — L104 VQPU Micro Process Background Assistant v2.1
-// GOD_CODE=527.5184818492612 | PHI=1.618033988749895
-//
-// Lightweight high-frequency background daemon for VQPU micro-operations.
-// Complements the heavy VQPUDaemonCycler (3-min simulation cycles) with
-// sub-second micro-tasks on a tight 5–15s GCD dispatch timer:
-//
-//   - Sacred heartbeat (GOD_CODE phase alignment verification)
-//   - Memory pressure monitoring (Mach kernel vm_statistics)
-//   - CPU load sampling (thread_info Mach calls — no psutil needed)
-//   - IPC micro-inbox polling (/tmp/l104_bridge/micro/)
-//   - Cache TTL maintenance (stale entry eviction)
-//   - Fidelity micro-probe (single-gate φ alignment)
-//   - Quantum noise floor estimation
-//   - Cross-engine health ping (file-based availability check)
-//   - GC/ARC memory pulse (autoreleasepool drain)
-//   - Telemetry ring buffer (200-entry rolling history)
-//
-// v2.0 improvements (parity with Python v2.3.0):
-//   - MicroTaskPriority enum (CRITICAL/HIGH/NORMAL/LOW/IDLE)
-//   - TickMetrics per-tick profiling struct
-//   - Crash recovery with crash_count (PID file detection)
-//   - Fixed ScoreCheckTask: (GOD_CODE/16)^φ ≈ 286 (was GOD_CODE^(1/φ))
-//   - Self-test method (12 probes) for debug integration
-//   - Watchdog heartbeat file at /tmp/l104_bridge/micro/heartbeat
-//   - Task auto-throttle (flaky tasks get cadence doubled)
-//   - Staleness decay — health degrades when no tasks run
-//   - PID file management for clean/unclean shutdown detection
-//   - TelemetryAnalytics — trend, anomalies, performance grade
-//
-// v2.1 improvements (bridge wiring parity with Python v2.5.0):
-//   - BridgeWiringTask — cross-process bridge connectivity check
-//   - Python heartbeat/PID freshness detection
-//   - swift_handshake.json for Python bridge discovery
-//   - Self-test expanded to 13 probes (bridge_wiring + ipc_structure)
-//   - getStatus() includes bridge_wiring sub-dict
-//   - Handshake file cleanup on stop()
-//   - 11 built-in micro-tasks (was 10)
-//
-// Architecture:
-//   - GCD DispatchSourceTimer (zero CPU when idle, microsecond precision)
-//   - MicroTask protocol — each task declares cadence + priority
-//   - Priority-sorted execution within each tick
-//   - Lock-free atomic counters where possible
-//   - State persisted to .l104_vqpu_micro_daemon_swift.json
-//   - IPC via /tmp/l104_bridge/micro/swift_inbox & swift_outbox
-//   - Integrates with main.swift daemon via shared singleton
-//
-// Usage:
-//   let micro = VQPUMicroDaemon.shared
-//   micro.start()
-//   micro.submit(taskName: "score_check")
-//   micro.status()  // → [String: Any] telemetry snapshot
-//   micro.selfTest() // → [String: Any] 13-probe diagnostic
-//   micro.stop()
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
-
-import Foundation
-#if canImport(Accelerate)
 import Accelerate
-#endif
+import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - SACRED CONSTANTS (Micro Daemon)
@@ -100,7 +38,7 @@ private let kHeartbeatFilePath    = "/tmp/l104_bridge/micro/heartbeat_swift"
 private let kAutoThrottleThreshold = 3   // consecutive failures before cadence doubles
 private let kIPCRateLimit          = 20  // max IPC jobs per tick
 
-// v2.1: Bridge wiring — cross-process (Python ↔ Swift) handshake
+// v2.1: Bridge wiring - cross-process (Python ↔ Swift) handshake
 private let kPyHeartbeatPath      = "/tmp/l104_bridge/micro/heartbeat"     // Python daemon heartbeat
 private let kPyPIDPath            = "/tmp/l104_bridge/micro/micro_daemon.pid" // Python daemon PID
 private let kSwiftHandshakePath   = "/tmp/l104_bridge/micro/swift_handshake.json" // Swift → Python handshake
@@ -200,7 +138,7 @@ struct MicroTaskContext {
 // MARK: - BUILT-IN MICRO TASKS
 // ═══════════════════════════════════════════════════════════════════
 
-/// Sacred heartbeat — verify GOD_CODE phase + VOID_CONSTANT alignment.
+/// Sacred heartbeat - verify GOD_CODE phase + VOID_CONSTANT alignment.
 final class HeartbeatTask: MicroTaskExecutable {
     let name = "heartbeat"
     let cadence = 1   // Every tick
@@ -360,7 +298,7 @@ final class ScoreCheckTask: MicroTaskExecutable {
 }
 
 /// Single-gate φ-alignment fidelity micro-probe.
-/// Applies GOD_CODE phase rotation to |0⟩ via Accelerate vDSP — native SIMD.
+/// Applies GOD_CODE phase rotation to |0⟩ via Accelerate vDSP - native SIMD.
 final class FidelityProbeTask: MicroTaskExecutable {
     let name = "fidelity_probe"
     let cadence = 6   // Every ~30s
@@ -387,7 +325,7 @@ final class FidelityProbeTask: MicroTaskExecutable {
     }
 }
 
-/// Quantum noise floor estimation — fast random sampling via arc4random.
+/// Quantum noise floor estimation - fast random sampling via arc4random.
 final class NoiseFloorTask: MicroTaskExecutable {
     let name = "noise_floor"
     let cadence = 12   // Every ~60s
@@ -421,7 +359,7 @@ final class NoiseFloorTask: MicroTaskExecutable {
     }
 }
 
-/// IPC micro-inbox poll — picks up JSON tasks from swift_inbox.
+/// IPC micro-inbox poll - picks up JSON tasks from swift_inbox.
 /// v2.0: Rate-limited to kIPCRateLimit jobs per tick.
 final class IPCPollTask: MicroTaskExecutable {
     let name = "ipc_poll"
@@ -465,7 +403,7 @@ final class IPCPollTask: MicroTaskExecutable {
                 try? fm.removeItem(atPath: path)
                 picked += 1
             }
-        } catch { /* directory read failed — skip */ }
+        } catch { /* directory read failed - skip */ }
         let elapsed = (CFAbsoluteTimeGetCurrent() - t0) * 1000.0
         return MicroTaskResult(name: name, success: true, elapsedMs: elapsed,
                                data: ["ipc_picked": picked, "inbox_exists": true,
@@ -473,7 +411,7 @@ final class IPCPollTask: MicroTaskExecutable {
     }
 }
 
-/// Cache TTL eviction — sweeps stale files from /tmp/l104_bridge/micro/swift_outbox.
+/// Cache TTL eviction - sweeps stale files from /tmp/l104_bridge/micro/swift_outbox.
 final class CacheEvictTask: MicroTaskExecutable {
     let name = "cache_evict"
     let cadence = 24   // Every ~120s
@@ -496,21 +434,21 @@ final class CacheEvictTask: MicroTaskExecutable {
                     evicted += 1
                 }
             }
-        } catch { /* no outbox yet — fine */ }
+        } catch { /* no outbox yet - fine */ }
         let elapsed = (CFAbsoluteTimeGetCurrent() - t0) * 1000.0
         return MicroTaskResult(name: name, success: true, elapsedMs: elapsed,
                                data: ["evicted_files": evicted])
     }
 }
 
-/// Cross-engine health ping — checks py micro daemon + main daemon liveness.
+/// Cross-engine health ping - checks py micro daemon + main daemon liveness.
 /// Caches root path and file paths to avoid repeated string allocs.
 final class HealthPingTask: MicroTaskExecutable {
     let name = "health_ping"
     let cadence = 12   // Every ~60s
     let priority = 4
 
-    // Cached paths — computed once on first use
+    // Cached paths - computed once on first use
     private lazy var l104Root: String = envStr("L104_ROOT", default: FileManager.default.currentDirectoryPath)
     private lazy var pyMicroStatePath: String = (l104Root as NSString).appendingPathComponent(".l104_vqpu_micro_daemon.json")
     private lazy var pidPath: String = (l104Root as NSString).appendingPathComponent("l104_daemon.pid")
@@ -520,7 +458,7 @@ final class HealthPingTask: MicroTaskExecutable {
         let t0 = CFAbsoluteTimeGetCurrent()
         let fm = FileManager.default
 
-        // Existence checks only — skip JSON parse for speed
+        // Existence checks only - skip JSON parse for speed
         let pyAlive = fm.fileExists(atPath: pyMicroStatePath)
         let mainDaemonAlive = fm.fileExists(atPath: pidPath)
         let vqpuAlive = fm.fileExists(atPath: vqpuStatePath)
@@ -546,7 +484,7 @@ final class HealthPingTask: MicroTaskExecutable {
     }
 }
 
-/// Memory pulse — trigger autoreleasepool drain and report freed count.
+/// Memory pulse - trigger autoreleasepool drain and report freed count.
 final class MemoryPulseTask: MicroTaskExecutable {
     let name = "memory_pulse"
     let cadence = 12   // Every ~60s
@@ -582,7 +520,7 @@ final class MemoryPulseTask: MicroTaskExecutable {
 // MARK: - v2.1: BRIDGE WIRING TASK (Cross-Process IPC Health)
 // ═══════════════════════════════════════════════════════════════════
 
-/// Bridge wiring task — verifies cross-process IPC connectivity with the Python VQPUBridge.
+/// Bridge wiring task - verifies cross-process IPC connectivity with the Python VQPUBridge.
 ///
 /// Checks:
 ///   1. Python micro daemon heartbeat file exists and is fresh (<30s old)
@@ -602,7 +540,7 @@ final class MemoryPulseTask: MicroTaskExecutable {
 final class BridgeWiringTask: MicroTaskExecutable {
     let name = "bridge_wiring"
     let cadence = 6    // Every ~30s
-    let priority = 3   // HIGH — wiring connectivity is important
+    let priority = 3   // HIGH - wiring connectivity is important
 
     /// Last known Python heartbeat age in seconds (updated each execution).
     private(set) var pyHeartbeatAge: Double = .infinity
@@ -681,23 +619,23 @@ final class BridgeWiringTask: MicroTaskExecutable {
 /// Lightweight high-frequency background assistant for VQPU micro-processes.
 ///
 /// Uses GCD `DispatchSourceTimer` for zero-overhead scheduling (no busy-wait).
-/// All micro-tasks run on a serial quality-of-service queue — no lock contention.
+/// All micro-tasks run on a serial quality-of-service queue - no lock contention.
 ///
 /// **v2.0**: Added MicroTaskPriority, TickMetrics, crash recovery, PID file,
 /// watchdog heartbeat file, task auto-throttle, self-test (12 probes),
 /// TelemetryAnalytics, staleness decay. Fixed ScoreCheckTask formula.
 ///
 /// **10 built-in micro-tasks** with configurable cadence:
-///   1. `heartbeat` (1) — GOD_CODE phase alignment
-///   2. `ipc_poll` (1) — Pick up IPC micro-jobs
-///   3. `score_check` (6) — GOD_CODE resonance scoring
-///   4. `fidelity_probe` (6) — Single-gate φ alignment
-///   5. `memory_probe` (4) — Mach kernel memory stats
-///   6. `cpu_probe` (4) — Mach thread CPU sampling
-///   7. `noise_floor` (12) — Quantum noise estimation
-///   8. `health_ping` (12) — Cross-daemon liveness
-///   9. `cache_evict` (24) — Stale file/cache cleanup
-///  10. `memory_pulse` (12) — ARC memory pulse
+///   1. `heartbeat` (1) - GOD_CODE phase alignment
+///   2. `ipc_poll` (1) - Pick up IPC micro-jobs
+///   3. `score_check` (6) - GOD_CODE resonance scoring
+///   4. `fidelity_probe` (6) - Single-gate φ alignment
+///   5. `memory_probe` (4) - Mach kernel memory stats
+///   6. `cpu_probe` (4) - Mach thread CPU sampling
+///   7. `noise_floor` (12) - Quantum noise estimation
+///   8. `health_ping` (12) - Cross-daemon liveness
+///   9. `cache_evict` (24) - Stale file/cache cleanup
+///  10. `memory_pulse` (12) - ARC memory pulse
 final class VQPUMicroDaemon {
 
     // ─── Singleton ───
@@ -807,7 +745,7 @@ final class VQPUMicroDaemon {
     // MARK: - LIFECYCLE
     // ═══════════════════════════════════════════════════════════════
 
-    /// Start the micro daemon — spawns a GCD timer on a serial queue.
+    /// Start the micro daemon - spawns a GCD timer on a serial queue.
     func start() {
         guard !active else { return }
         active = true
@@ -832,25 +770,25 @@ final class VQPUMicroDaemon {
         let source = DispatchSource.makeTimerSource(queue: tickQueue)
         let intervalNs = UInt64(adaptiveInterval * 1_000_000_000)
         source.schedule(deadline: .now() + adaptiveInterval,
-                        repeating: .nanoseconds(Int(intervalNs)),
+                        repeating: .nanoseconds(Int(truncatingIfNeeded: intervalNs)),
                         leeway: .milliseconds(100))
-        source.setEventHandler { [weak self] in
+        self.source.setEventHandler { [weak self] in
             self?.executeTick()
         }
-        source.setCancelHandler { [weak self] in
+        self.source.setCancelHandler { [weak self] in
             self?.persistState()
         }
         self.timer = source
         lastScheduledInterval = adaptiveInterval
         source.resume()
 
-        log("[MICRO] VQPUMicroDaemon v\(kMicroVersion) started — "
+        log("[MICRO] VQPUMicroDaemon v\(kMicroVersion) started - "
             + "tick=\(adaptiveInterval)s, \(tasks.count) tasks, "
             + "adaptive=\(enableAdaptive), ipc=\(enableIPC), "
             + "crash_count=\(crashCount)")
     }
 
-    /// Graceful shutdown — cancel timer, persist state, clean up PID file.
+    /// Graceful shutdown - cancel timer, persist state, clean up PID file.
     func stop() {
         guard active else { return }
         active = false
@@ -898,7 +836,7 @@ final class VQPUMicroDaemon {
     private func executeTick() {
         guard active && !paused else { return }
         let tickStart = CFAbsoluteTimeGetCurrent()
-        // v6.2: Cache Date() for this tick — avoids 4+ Date() allocations per tick
+        // v6.2: Cache Date() for this tick - avoids 4+ Date() allocations per tick
         let tickDate = Date()
         tick += 1
         watchdogTimestamp = tickDate
@@ -943,7 +881,7 @@ final class VQPUMicroDaemon {
                 }
             } else {
                 tickTasksFailed += 1
-                // v2.0: Auto-throttle — double cadence after N consecutive failures
+                // v2.0: Auto-throttle - double cadence after N consecutive failures
                 let streak = (taskFailStreak[task.name] ?? 0) + 1
                 taskFailStreak[task.name] = streak
                 if streak >= kAutoThrottleThreshold {
@@ -954,7 +892,7 @@ final class VQPUMicroDaemon {
                     }
                     mutableCadenceOverrides[task.name] = newCadence
                     taskThrottles[task.name] = (taskThrottles[task.name] ?? 0) + 1
-                    log("[MICRO] Auto-throttle: \(task.name) failed \(streak)× — cadence \(currentCadence)→\(newCadence)")
+                    log("[MICRO] Auto-throttle: \(task.name) failed \(streak)× - cadence \(currentCadence)→\(newCadence)")
                 }
             }
             tickResults.append(result)
@@ -1092,7 +1030,7 @@ final class VQPUMicroDaemon {
 
     private func updateHealthScore(run: Int, passed: Int) {
         if run == 0 {
-            // v2.0: Staleness decay — no work done, health degrades slowly
+            // v2.0: Staleness decay - no work done, health degrades slowly
             healthScore = max(0.0, healthScore * 0.99)
             return
         }
@@ -1117,7 +1055,7 @@ final class VQPUMicroDaemon {
         lastScheduledInterval = newInterval
         let intervalNs = UInt64(newInterval * 1_000_000_000)
         timer?.schedule(deadline: .now() + newInterval,
-                        repeating: .nanoseconds(Int(intervalNs)),
+                        repeating: .nanoseconds(Int(truncatingIfNeeded: intervalNs)),
                         leeway: .milliseconds(100))
     }
 
@@ -1179,14 +1117,14 @@ final class VQPUMicroDaemon {
         healthScore = json["health_score"] as? Double ?? 1.0
         let prevCrashCount = json["crash_count"] as? Int ?? 0
 
-        // v2.0: Smart crash detection — PID file presence = unclean shutdown
+        // v2.0: Smart crash detection - PID file presence = unclean shutdown
         let unclean = FileManager.default.fileExists(atPath: kPIDFilePath)
         if unclean {
             crashCount = prevCrashCount + 1
-            log("[MICRO] UNCLEAN restart detected (PID file present) — crash_count=\(crashCount)")
+            log("[MICRO] UNCLEAN restart detected (PID file present) - crash_count=\(crashCount)")
         } else {
             crashCount = prevCrashCount
-            log("[MICRO] Clean restart — tick=\(tick), tasks=\(totalTasksRun)")
+            log("[MICRO] Clean restart - tick=\(tick), tasks=\(totalTasksRun)")
         }
     }
 
@@ -1208,16 +1146,16 @@ final class VQPUMicroDaemon {
         // 1. Version
         probe("version", detail: kMicroVersion) { kMicroVersion == "2.1.0" }
 
-        // 2. Sacred constant — GOD_CODE
+        // 2. Sacred constant - GOD_CODE
         probe("god_code", detail: "\(kGodCode)") { abs(kGodCode - 527.5184818492612) < 1e-8 }
 
-        // 3. Sacred constant — PHI
+        // 3. Sacred constant - PHI
         probe("phi", detail: "\(kPhi)") { abs(kPhi - 1.618033988749895) < 1e-12 }
 
         // 4. VOID_CONSTANT
         probe("void_constant") { abs(kVoidConstant - (1.04 + kPhi / 1000.0)) < 1e-14 }
 
-        // 5. Score check — (GOD_CODE/16)^PHI = 286
+        // 5. Score check - (GOD_CODE/16)^PHI = 286
         let resonance = pow(kGodCode / 16.0, kPhi)
         probe("score_check", detail: String(format: "resonance=%.8f", resonance)) {
             abs(resonance - 286.0) < 1e-6
@@ -1236,7 +1174,7 @@ final class VQPUMicroDaemon {
             healthScore >= 0.0 && healthScore <= 1.0
         }
 
-        // 9. Bridge wiring — cross-process IPC connectivity
+        // 9. Bridge wiring - cross-process IPC connectivity
         do {
             // Force a wiring check now if we have the task
             let fm = FileManager.default
@@ -1273,7 +1211,7 @@ final class VQPUMicroDaemon {
             }
         }
 
-        // 10. IPC structure — inbox/outbox/pid directories
+        // 10. IPC structure - inbox/outbox/pid directories
         probe("ipc_structure") {
             let fm = FileManager.default
             let microDir = fm.fileExists(atPath: kMicroBridgeBase)
@@ -1282,7 +1220,7 @@ final class VQPUMicroDaemon {
             return microDir && inboxDir && outboxDir
         }
 
-        // 11. State file writable — quick write/read cycle
+        // 11. State file writable - quick write/read cycle
         probe("state_file") {
             let testPath = (stateFilePath as NSString).deletingLastPathComponent + "/.micro_test"
             let ok = FileManager.default.createFile(atPath: testPath, contents: "ok".data(using: .utf8))
@@ -1294,7 +1232,7 @@ final class VQPUMicroDaemon {
         probe("crash_recovery", detail: "count=\(crashCount)") { crashCount >= 0 }
 
         // 13. Auto-throttle
-        let throttled = taskThrottles.values.reduce(0, +)
+        let throttled = taskThrottles.values.reduce(0.0, +)
         probe("auto_throttle", detail: "throttled=\(throttled)") {
             taskFailStreak.values.allSatisfy { $0 >= 0 } && kAutoThrottleThreshold > 0
         }
@@ -1309,7 +1247,7 @@ final class VQPUMicroDaemon {
     // ═══════════════════════════════════════════════════════════════
 
     /// Full status snapshot for dashboard / brain telemetry.
-    /// Lock scope minimized — copies only raw counters/buffers, builds dict outside lock.
+    /// Lock scope minimized - copies only raw counters/buffers, builds dict outside lock.
     func getStatus() -> [String: Any] {
         // Snapshot mutable state under lock (fast copy)
         statsLock.lock()
@@ -1331,7 +1269,7 @@ final class VQPUMicroDaemon {
         let snapIPCTotal = _ipcTotalPicked
         statsLock.unlock()
 
-        // Build dict outside lock — no contention
+        // Build dict outside lock - no contention
         let uptime = active ? Date().timeIntervalSince(startTime) : 0.0
         return [
             "version": kMicroVersion,

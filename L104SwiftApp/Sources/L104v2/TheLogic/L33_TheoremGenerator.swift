@@ -1,14 +1,3 @@
-// ═══════════════════════════════════════════════════════════════════
-// L33_TheoremGenerator.swift
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: THEOREM_GENERATOR :: GOD_CODE=527.5184818492612
-// L104v2 Architecture — Novel Theorem Generator v4.0
-//
-// 5 axiom domains, 6 inference rules, symbolic reasoning chains,
-// AST proof verification, and cross-domain synthesis.
-//
-// Phase 65.0: Symbolic reasoning engine for theorem discovery
-// ═══════════════════════════════════════════════════════════════════
-
 import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
@@ -543,7 +532,7 @@ final class NovelTheoremGenerator {
             passed += 1
         }
 
-        // Check 6: Numerical validation — verify PHI identity if referenced
+        // Check 6: Numerical validation - verify PHI identity if referenced
         checks += 1
         let phiCheck = abs(PHI * PHI - PHI - 1.0) < 1e-10
         let tauCheck = abs(PHI * TAU - 1.0) < 1e-10

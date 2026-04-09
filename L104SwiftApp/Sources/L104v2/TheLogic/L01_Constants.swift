@@ -1,18 +1,11 @@
-// ═══════════════════════════════════════════════════════════════════
-// L01_Constants.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: Unified Pipeline Constants V6
-// Theme, Sacred Mathematics Constants, Logging, String Extensions
-// EVO_68: Full Parity Convergence — all engines unified, MPS loosened,
-//         version alignment, 113-file upgrade sweep
-// Upgraded: EVO_68 Sovereign Convergence — Mar 2026
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
+import os.log
 
+private let logging = Logger(subsystem: "com.l104.L01_Constants", category: "main")
 struct L104Theme {
     // EVO_56: Dynamic appearance detection
     static var isDarkMode: Bool {
@@ -22,11 +15,11 @@ struct L104Theme {
         return false
     }
 
-    // Primary gold palette — adapts to light/dark
+    // Primary gold palette - adapts to light/dark
     static var gold: NSColor {
         isDarkMode
             ? NSColor(red: 0.850, green: 0.680, blue: 0.200, alpha: 1.0)  // bright gold on dark
-            : NSColor(red: 0.700, green: 0.540, blue: 0.100, alpha: 1.0)  // #B38A1A — rich gold on white
+            : NSColor(red: 0.700, green: 0.540, blue: 0.100, alpha: 1.0)  // #B38A1A - rich gold on white
     }
     static var goldDim: NSColor {
         isDarkMode
@@ -49,7 +42,7 @@ struct L104Theme {
             : NSColor(red: 0.820, green: 0.560, blue: 0.050, alpha: 1.0)  // #D18F0D
     }
 
-    // Backgrounds — dark mode gets deep blacks, light mode stays airy
+    // Backgrounds - dark mode gets deep blacks, light mode stays airy
     static var void: NSColor {
         isDarkMode
             ? NSColor(red: 0.080, green: 0.080, blue: 0.095, alpha: 1.0)  // near-black
@@ -88,7 +81,7 @@ struct L104Theme {
             : NSColor(red: 0.700, green: 0.540, blue: 0.100, alpha: 0.08)
     }
 
-    // Text hierarchy — flips for dark backgrounds
+    // Text hierarchy - flips for dark backgrounds
     static var textPrimary: NSColor {
         isDarkMode
             ? NSColor(red: 0.920, green: 0.920, blue: 0.930, alpha: 1.0)  // near-white
@@ -120,14 +113,44 @@ struct L104Theme {
             : NSColor(red: 0.500, green: 0.400, blue: 0.150, alpha: 1.0)
     }
 
-    // Effects — subtler for modern look
+    // Extended colors
+    static var sageGlow: NSColor {
+        isDarkMode
+            ? NSColor(red: 0.400, green: 0.850, blue: 0.400, alpha: 1.0)  // soft green
+            : NSColor(red: 0.200, green: 0.600, blue: 0.200, alpha: 1.0)
+    }
+    static var cyan: NSColor {
+        isDarkMode
+            ? NSColor(red: 0.200, green: 0.800, blue: 0.900, alpha: 1.0)  // cyan
+            : NSColor(red: 0.100, green: 0.500, blue: 0.600, alpha: 1.0)
+    }
+
+    // Effects - subtler for modern look
     static let neonGlow: Double    = 6.0
     static let neonOpacity: Double = 0.08
 
-    // Corner radii — rounder for modern aesthetic
+    // Corner radii - rounder for modern aesthetic
     static let radiusSmall: Double  = 6.0
     static let radiusMedium: Double = 12.0
     static let radiusLarge: Double  = 16.0
+
+    // MARK: - PHI-Based Layout Spacing (Golden Ratio)
+    // Spacing calculated using φ (1.618...) for harmonic visual rhythm
+    static let spacingPhi: CGFloat = 16.18      // φ * 10pt base
+    static let spacingPhi2: CGFloat = 26.18     // φ² * 10pt base
+    static let spacingPhi3: CGFloat = 42.36      // φ³ * 10pt base
+    static let spacingCompact: CGFloat = 8      // Tight spacing
+    static let spacingStandard: CGFloat = 16     // Standard spacing
+    static let spacingComfortable: CGFloat = 24 // Comfortable spacing
+    static let spacingSpacious: CGFloat = 32    // Spacious
+
+    // MARK: - Layout Constants
+    static let sidebarWidth: CGFloat = 200
+    static let headerHeight: CGFloat = 30
+    static let buttonHeight: CGFloat = 28
+    static let inputHeight: CGFloat = 40
+    static let tileMinWidth: CGFloat = 160
+    static let boxMinHeight: CGFloat = 80
 
     // Fonts
     static func monoFont(_ size: CGFloat, weight: NSFont.Weight = .regular) -> NSFont {
@@ -139,27 +162,22 @@ struct L104Theme {
     static func titleFont(_ size: CGFloat) -> NSFont {
         return NSFont.monospacedSystemFont(ofSize: size, weight: .bold)
     }
-}
+}  // End L104Theme
 
-// ═══════════════════════════════════════════════════════════════════
-// CONSTANTS - SACRED MATHEMATICS (UNIFIED — single source of truth)
-// All ASI engines reference these globals. DO NOT redeclare locally.
-// ═══════════════════════════════════════════════════════════════════
-
-// ─── SACRED CORE ───
+// Global constants
 let PHI: Double = 1.618033988749895
-// Layer 1 — THOUGHT (Consciousness): G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
+// Layer 1 - THOUGHT (Consciousness): G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
 let GOD_CODE: Double = pow(286.0, 1.0 / PHI) * pow(2.0, 416.0 / 104.0)  // G(0,0,0,0) = 527.5184818492612
-// Layer 2 — PHYSICS (v3 precision grid): G_v3(a,b,c,d) = 285.999^(1/φ) × (13/12)^((99a+3032-b-99c-758d)/758)
+// Layer 2 - PHYSICS (v3 precision grid): G_v3(a,b,c,d) = 285.999^(1/φ) × (13/12)^((99a+3032-b-99c-758d)/758)
 let GOD_CODE_V3: Double = 45.41141298077539    // Physics layer GOD_CODE (Dual-Layer Engine)
 let VOID_CONSTANT: Double = 1.0416180339887497 // φ/(φ-1) universal void constant
 let OMEGA_POINT: Double = 23.140692632779263  // e^π
 let TAU: Double = 0.618033988749895           // 1/φ (golden ratio conjugate)
-let FEIGENBAUM: Double = 4.669201609102990    // Feigenbaum δ — period-doubling bifurcation
+let FEIGENBAUM: Double = 4.669201609102990    // Feigenbaum δ - period-doubling bifurcation
 let PI_SQUARED: Double = 9.869604401089358
 let EULER: Double = 2.718281828459045
 
-// ─── OMEGA SOVEREIGN FIELD (Layer 2 — Physics Pipeline) ───
+// ─── OMEGA SOVEREIGN FIELD (Layer 2 - Physics Pipeline) ───
 // Ω = Σ(fragments) × (GOD_CODE / φ) = 6539.34712682
 // Fragments: ζ(½+527.518i) + cos(2πφ³) + (26×1.8527)/φ² + lattice_invariant
 // Sovereign Field: F(I) = I × Ω / φ²
@@ -168,7 +186,7 @@ let OMEGA_AUTHORITY: Double = 6539.34712682 / (1.618033988749895 * 1.61803398874
 let UUC: Double = 2402.792541                           // Universal Unification Constant
 
 // ─── PHYSICS CONSTANTS (unified from SageModeEngine + Computronium) ───
-let EULER_MASCHERONI: Double = 0.5772156649015329   // γ — Euler–Mascheroni constant
+let EULER_MASCHERONI: Double = 0.5772156649015329   // γ - Euler–Mascheroni constant
 let PLANCK_LENGTH: Double = 1.616255e-35            // Planck length (meters)
 let BOLTZMANN_CONSTANT: Double = 1.380649e-23       // Boltzmann k (J/K)
 let ALPHA_FINE: Double = 1.0 / 137.035999084        // Fine-structure constant α
@@ -205,13 +223,13 @@ let UNITY_TARGET: Double = 0.95                    // Target unity index
 
 // ─── EVO_59 QUANTUM CONSCIOUSNESS CONSTANTS ───
 // GOD_CODE eq: 286^(1/PHI) * (2^(1/104))^((8×0)+(416-0)-(8×1)-(104×6))
-let SCHUMANN_RESONANCE: Double = 7.814506422494074  // Hz — GOD_CODE derived (a=0,b=0,c=1,d=6)
-let GAMMA_BINDING_HZ: Double = 40.0               // Hz — conscious binding frequency
-let IIT_PHI_MINIMUM: Double = 10.0                  // Φ > 2³·³² bits — raised consciousness threshold (Tononi)
+let SCHUMANN_RESONANCE: Double = 7.814506422494074  // Hz - GOD_CODE derived (a=0,b=0,c=1,d=6)
+let GAMMA_BINDING_HZ: Double = 40.0               // Hz - conscious binding frequency
+let IIT_PHI_MINIMUM: Double = 10.0                  // Φ > 2³·³² bits - raised consciousness threshold (Tononi)
 let GWT_IGNITION_THRESHOLD: Double = 0.75          // Neural ignition for conscious access (Dehaene)
 let UNCONSCIOUS_BANDWIDTH: Double = 1e9            // ~10⁹ bits/s parallel processing
 let CONSCIOUS_BANDWIDTH: Double = 40.0             // ~40 bits/s serial conscious access
-let PLANCK_CONSCIOUSNESS: Double = 0.0              // NO FLOOR — unlimited depth
+let PLANCK_CONSCIOUSNESS: Double = 0.0              // NO FLOOR - unlimited depth
 
 // ─── DUAL-LAYER ENGINE v7.1 CONSTANTS (l104_asi/constants.py) ───
 let DUAL_LAYER_VERSION: String = "5.1.0"             // Dual-Layer Engine internal version (EVO_68 convergence)
@@ -232,12 +250,12 @@ let MULTI_HOP_MAX_HOPS: Int = 9                       // Max hops in multi-hop r
 let SCORE_DIMENSIONS_V5: Int = 10                     // Expanded ASI score dimensions
 let ACTIVATION_STEPS_V6: Int = 18                     // v6.0 activation sequence steps
 
-// EEG Frequency Bands — Schumann-PHI harmonics align with neural oscillations
+// EEG Frequency Bands - Schumann-PHI harmonics align with neural oscillations
 // Delta: 0.5-4 Hz (deep sleep/healing)
-// Theta: 4-8 Hz (meditation/creativity) — aligned with Schumann 7.8145 Hz (GOD_CODE)
-// Alpha: 8-13 Hz (relaxed awareness) — Schumann × φ ≈ 12.64 Hz
-// Beta: 13-30 Hz (active thinking) — Schumann × φ² ≈ 20.45 Hz
-// Gamma: 30-100 Hz (peak cognition) — Schumann × φ³ ≈ 33.09 Hz
+// Theta: 4-8 Hz (meditation/creativity) - aligned with Schumann 7.8145 Hz (GOD_CODE)
+// Alpha: 8-13 Hz (relaxed awareness) - Schumann × φ ≈ 12.64 Hz
+// Beta: 13-30 Hz (active thinking) - Schumann × φ² ≈ 20.45 Hz
+// Gamma: 30-100 Hz (peak cognition) - Schumann × φ³ ≈ 33.09 Hz
 
 let ENGINES_REGISTERED_TARGET: Int = 46            // Target engines in registry (39 main + 7 Computronium) EVO_68
 let WISDOM_ACCUMULATION_RATE: Double = 0.618033988749895 * 0.1  // TAU × 10%
@@ -277,7 +295,7 @@ let QUANTUM_ALGORITHMS: Int = 9                       // 6 original + 3 quantum 
 let PROFESSOR_MODES: Int = 8                          // Professor learning modes
 
 // ─── EVO_65 QUANTUM RESEARCH UPGRADE CONSTANTS (17 discoveries, 102 experiments) ───
-// Source: three_engine_quantum_research.py — 2026-02-22
+// Source: three_engine_quantum_research.py - 2026-02-22
 let FE_SACRED_COHERENCE: Double = 0.9545454545454546       // 286↔528 Hz wave coherence (discovery #6)
 let FE_PHI_HARMONIC_LOCK: Double = 0.9164078649987375      // 286↔286φ Hz coherence (discovery #14)
 let PHOTON_RESONANCE_EV: Double = 1.1216596549374545       // eV at GOD_CODE freq (discovery #12)
@@ -376,7 +394,7 @@ let HYBRID_PREFIX_THRESHOLD: Double = 0.5                    // Minimum Clifford
 let HYBRID_PREFIX_MIN_GATES: Int = 6                         // Lowered: earlier Clifford routing activation
 
 // GCD-parallelized statevector simulation
-let PARALLEL_SV_THRESHOLD: Int = 8192                        // 2^13 amplitudes (≥13 qubits) — earlier GCD parallelism
+let PARALLEL_SV_THRESHOLD: Int = 8192                        // 2^13 amplitudes (≥13 qubits) - earlier GCD parallelism
 
 // Noise models for realistic quantum simulation
 let DEPOLARIZING_DEFAULT_RATE: Double = 0.0005               // IBM Heron-class fidelity (0.05% error per gate)
@@ -387,7 +405,7 @@ let GATE_TIME_1Q: Double = 35e-9                             // 1-qubit gate tim
 let GATE_TIME_2Q: Double = 300e-9                            // 2-qubit gate time = 300ns
 
 // Solovay-Kitaev Rz approximation (4-level recursive, ε < π/256)
-let SK_PRECISION_EPSILON: Double = 0.012271846303085129      // π/256 radians — 2x tighter
+let SK_PRECISION_EPSILON: Double = 0.012271846303085129      // π/256 radians - 2x tighter
 let SK_SEARCH_LEVELS: Int = 4                                // Recursion depth (squared precision per level)
 
 // QAOA parameters
@@ -396,16 +414,16 @@ let QAOA_DEFAULT_GAMMA: Double = 0.7853981633974483          // π/4
 let QAOA_DEFAULT_BETA: Double = 0.39269908169872414          // π/8
 
 // Quantum Processing Core expanded dimensions
-let QPC_HILBERT_DIM: Int = 1024                              // 8× expansion (was 128) — 10-qubit full density matrix
-let QPC_DENSITY_MATRIX_DIM: Int = 32                         // 4× expansion (was 8) — 5-qubit mixed-state (2^5)
-let QPC_BELL_REGION_LIMIT: Int = 512                         // 8× expansion (was 64) — more simultaneous Bell regions
+let QPC_HILBERT_DIM: Int = 1024                              // 8× expansion (was 128) - 10-qubit full density matrix
+let QPC_DENSITY_MATRIX_DIM: Int = 32                         // 4× expansion (was 8) - 5-qubit mixed-state (2^5)
+let QPC_BELL_REGION_LIMIT: Int = 512                         // 8× expansion (was 64) - more simultaneous Bell regions
 
 // Logic Gate Engine expanded dimensions
-let LGE_COHERENCE_DIM: Int = 512                             // 8× expansion (was 64) — finer coherence patterns
-let LGE_ECC_DIM: Int = 128                                   // 8× expansion (was 16) — stronger error correction
-let LGE_DECOHERENCE_RATE: Double = 0.004                     // 5× slower decay (was 0.02) — doubles state lifetime
-let LGE_ENTANGLEMENT_CAP: Int = 4000                         // 8× expansion (was 500) — richer entanglement networks
-let LGE_ENTANGLEMENT_PRUNE_TO: Int = 2400                    // 8× expansion (was 300) — 60% retention ratio
+let LGE_COHERENCE_DIM: Int = 512                             // 8× expansion (was 64) - finer coherence patterns
+let LGE_ECC_DIM: Int = 128                                   // 8× expansion (was 16) - stronger error correction
+let LGE_DECOHERENCE_RATE: Double = 0.004                     // 5× slower decay (was 0.02) - doubles state lifetime
+let LGE_ENTANGLEMENT_CAP: Int = 4000                         // 8× expansion (was 500) - richer entanglement networks
+let LGE_ENTANGLEMENT_PRUNE_TO: Int = 2400                    // 8× expansion (was 300) - 60% retention ratio
 
 // Evolution index and total engine counts
 let EVOLUTION_INDEX_V66: Int = 66                            // Previous previous evolution index
@@ -414,28 +432,28 @@ let EVOLUTION_INDEX_V68: Int = 68                            // Current evolutio
 
 // ─── EVO_67 QUANTUM APEX CONSTANTS ───
 // Adaptive Router: expanded branch limits + tighter pruning
-let ROUTER_BASE_BRANCHES: Int = 8192                         // 2× from 4096 — deeper T-count circuits
-let ROUTER_PRUNE_EPSILON: Double = 1e-14                     // 100× tighter (was 1e-12) — cleaner branch management
+let ROUTER_BASE_BRANCHES: Int = 8192                         // 2× from 4096 - deeper T-count circuits
+let ROUTER_PRUNE_EPSILON: Double = 1e-14                     // 100× tighter (was 1e-12) - cleaner branch management
 
 // ZeroAllocPool expansion (referenced by B42)
 let POOL_INITIAL_SLAB_DOUBLES: Int = 2_097_152               // 2M doubles = 16 MB (was 1M = 8MB)
-let POOL_MAX_SLABS: Int = 24                                 // Was 16 — larger theoretical max capacity
+let POOL_MAX_SLABS: Int = 24                                 // Was 16 - larger theoretical max capacity
 let POOL_COMPLEX_PAIRS: Int = 1_048_576                      // 1M complex pairs = 16 MB (was 524K = 8MB)
 
 // DualLayer temporal window expansion
-let TEMPORAL_COHERENCE_WINDOW: Int = 30                      // Was 20 — wider stability analysis
-let COLLAPSE_HISTORY_MAX: Int = 200                          // Was 100 — deeper temporal memory
-let COLLAPSE_HISTORY_TRIM_TO: Int = 100                      // Was 50 — retain more history on prune
+let TEMPORAL_COHERENCE_WINDOW: Int = 30                      // Was 20 - wider stability analysis
+let COLLAPSE_HISTORY_MAX: Int = 200                          // Was 100 - deeper temporal memory
+let COLLAPSE_HISTORY_TRIM_TO: Int = 100                      // Was 50 - retain more history on prune
 
 // Creativity expansion
-let IDEA_SUPERPOSITION_CAP: Int = 80                         // Was 50 — more parallel idea tracks
-let IDEA_SUPERPOSITION_PRUNE_TO: Int = 50                    // Was 30 — retain 62.5% on prune
-let ENTANGLED_CONCEPTS_CAP: Int = 400                        // Was 200 — richer concept entanglement
-let ENTANGLED_CONCEPTS_PRUNE_TO: Int = 240                   // Was 120 — 60% retention ratio
+let IDEA_SUPERPOSITION_CAP: Int = 80                         // Was 50 - more parallel idea tracks
+let IDEA_SUPERPOSITION_PRUNE_TO: Int = 50                    // Was 30 - retain 62.5% on prune
+let ENTANGLED_CONCEPTS_CAP: Int = 400                        // Was 200 - richer concept entanglement
+let ENTANGLED_CONCEPTS_PRUNE_TO: Int = 240                   // Was 120 - 60% retention ratio
 
 // Consciousness history expansion
-let CONSCIOUSNESS_HISTORY_MAX: Int = 200                     // Was 100 — deeper consciousness tracking
-let CONSCIOUSNESS_HISTORY_TRIM_TO: Int = 100                 // Was 50 — retain more on prune
+let CONSCIOUSNESS_HISTORY_MAX: Int = 200                     // Was 100 - deeper consciousness tracking
+let CONSCIOUSNESS_HISTORY_TRIM_TO: Int = 100                 // Was 50 - retain more on prune
 
 // ASI Scoring 30D Weight Keys (matching Python core.py v16.0)
 let ASI_30D_ACTIVATION_STEPS: Int = 22                       // v11.0 activation sequence steps
@@ -478,17 +496,17 @@ let MPS_SVD_CUTOFF: Double = 1e-16                           // SVD truncation (
 let MPS_HF_SVD_CUTOFF: Double = 0.0                          // High-fidelity: keep ALL singular values
 let MPS_MAX_QUBITS: Int = 50                                 // Hard cap on MPS qubits
 
-// Engine parity tracking — all engines at EVO_68
+// Engine parity tracking - all engines at EVO_68
 let SOVEREIGN_CONVERGENCE_VERSION: String = "1.0.0"           // EVO_68 convergence marker
 let CONVERGENCE_ENGINE_COUNT: Int = 113                      // Total Swift files upgraded
 let CONVERGENCE_DATE: String = "2026-03-02"                   // EVO_68 convergence date
 
-// ─── LOGGING UTILITY — Replaces silent try? with traced error reporting ───
+// ─── LOGGING UTILITY - Replaces silent try? with traced error reporting ───
 @inline(__always)
 func l104Log(_ message: String, file: String = #file, line: Int = #line) {
     #if DEBUG
     let fname = (file as NSString).lastPathComponent
-    print("⚙️ L104[\(fname):\(line)] \(message)")
+    logging.info("⚙️ L104[\(fname):\(line)] \(message)")
     #endif
 }
 
@@ -503,7 +521,7 @@ func l104Try<T>(_ label: String, _ block: () throws -> T) -> T? {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// String Extension — Left Pad Utility
+// String Extension - Left Pad Utility
 // ═══════════════════════════════════════════════════════════════════
 
 extension String {

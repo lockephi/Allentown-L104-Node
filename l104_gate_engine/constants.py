@@ -3,6 +3,8 @@
 import math
 from pathlib import Path
 
+from l104_sacred_algorithms import derive_state_file_path, PHI
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # VERSION
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -73,6 +75,6 @@ QUANTUM_LINKED_FILES = {
     "const.py": WORKSPACE_ROOT / "const.py",
 }
 
-STATE_FILE = WORKSPACE_ROOT / ".l104_gate_builder_state.json"
-CHRONOLOG_FILE = WORKSPACE_ROOT / ".l104_gate_chronolog.json"
-TEST_RESULTS_FILE = WORKSPACE_ROOT / ".l104_gate_test_results.json"
+STATE_FILE = derive_state_file_path("gate_builder_state")
+CHRONOLOG_FILE = derive_state_file_path("gate_chronolog")
+TEST_RESULTS_FILE = derive_state_file_path("gate_test_results")

@@ -8,11 +8,20 @@ import time
 import numpy as np
 
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List, Dict, Tuple, Any, Union
 
 from .constants import GOD_CODE, PHI, VOID_CONSTANT, VQPU_DB_RESEARCH_QUBITS, VQPU_MAX_QUBITS
 from .scoring import SacredAlignmentScorer
 from .mps_engine import ExactMPSHybridEngine
+# v15.0 acceleration engine (optional)
+try:
+    from .accel_engine import AccelStatevectorEngine
+    ACCEL_AVAILABLE = True
+except ImportError:
+    AccelStatevectorEngine = None
+    ACCEL_AVAILABLE = False
+
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 __all__ = ["QuantumDatabaseResearcher"]
 
@@ -45,9 +54,14 @@ class QuantumDatabaseResearcher:
     # v15.2: Bounded cache — evict oldest entries when limit reached
     _CACHE_MAX_SIZE = 256
 
-    def __init__(self, project_root: str = None):
+    def __init__(self, project_root: str = None, engine: str = "mps"):
         self._root = Path(project_root) if project_root else Path(os.getcwd())
-        self._mps_engine_class = ExactMPSHybridEngine
+        if engine == "accel" and ACCEL_AVAILABLE and AccelStatevectorEngine is not None:
+            self._mps_engine_class = AccelStatevectorEngine
+            self._engine_type = "accel"
+        else:
+            self._mps_engine_class = ExactMPSHybridEngine
+            self._engine_type = "mps"
         self._num_qubits = VQPU_DB_RESEARCH_QUBITS
         self._cache = {}  # LRU-style result cache
         self._cache_access_order = []  # tracks insertion order for eviction
@@ -891,6 +905,97 @@ class QuantumDatabaseResearcher:
         }
 
         return research
+
+    # ─── Batch Research ───
+
+    def batch_grover_search(self, queries: List[str], *, db: str = "all",
+                            max_results: int = 50, shots: int = 2048,
+                            max_workers: int = 4) -> dict:
+        """
+        Run Grover search on multiple queries in parallel using thread pooling.
+        """
+        results = {}
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_to_query = {
+                executor.submit(self.grover_search, q, db=db,
+                                max_results=max_results, shots=shots): q
+                for q in queries
+            }
+            for future in as_completed(future_to_query):
+                q = future_to_query[future]
+                try:
+                    results[q] = future.result()
+                except Exception as e:
+                    results[q] = {"error": str(e)}
+        return {
+            "batch_results": results,
+            "total_queries": len(queries),
+            "successful": sum(1 for r in results.values() if "error" not in r),
+        }
+
+    # ─── Circuit Derivation Mode ───
+
+    def derive_circuit(self, spec: str, **params) -> dict:
+        """
+        Derive a concrete quantum circuit from a high‑level specification.
+        Uses the CircuitDeriver module (l104_vqpu.circuit_deriver).
+        """
+        try:
+            from .circuit_deriver import derive_circuit as deriver
+            return deriver(spec, **params)
+        except ImportError as e:
+            return {"error": f"CircuitDeriver unavailable: {e}"}
+
+    # ─── Batch Quantum Processes ───
+
+    def _execute_circuit(self, operations: list, num_qubits: int, shots: int = 2048) -> dict:
+        """Execute a circuit operation list using the selected engine."""
+        engine = self._mps_engine_class(num_qubits)
+        run = engine.run_circuit(operations)
+        if run.get("completed"):
+            counts = engine.sample(shots)
+            total = sum(counts.values())
+            probs = {k: v / total for k, v in counts.items()} if total > 0 else {}
+            return {"probabilities": probs, "counts": counts}
+        else:
+            return {"error": "circuit_execution_failed", "details": run.get("error")}
+
+    def batch_quantum_processes(self, specs: List[str], *, shots: int = 2048,
+                                max_workers: int = 4) -> dict:
+        """
+        Run multiple quantum processes (derived from specifications) in parallel.
+        """
+        results = {}
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_to_spec = {
+                executor.submit(self._execute_batch_process, spec, shots): spec
+                for spec in specs
+            }
+            for future in as_completed(future_to_spec):
+                spec = future_to_spec[future]
+                try:
+                    results[spec] = future.result()
+                except Exception as e:
+                    results[spec] = {"error": str(e)}
+        return {
+            "batch_results": results,
+            "total_specs": len(specs),
+            "successful": sum(1 for r in results.values() if "error" not in r),
+        }
+
+    def _execute_batch_process(self, spec: str, shots: int) -> dict:
+        """Derive and execute a single quantum process."""
+        derived = self.derive_circuit(spec)
+        if "error" in derived:
+            return derived
+        ops = derived["operations"]
+        nq = derived["num_qubits"]
+        exec_result = self._execute_circuit(ops, nq, shots)
+        return {
+            "spec": spec,
+            "derivation": derived,
+            "execution": exec_result,
+        }
 
     # ─── Database Summary ───
 

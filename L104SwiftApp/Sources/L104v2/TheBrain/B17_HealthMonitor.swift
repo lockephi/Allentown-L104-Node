@@ -1,18 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B17_HealthMonitor.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 · TheBrain · v2 Architecture — HEALTH MONITOR V2
-//
-// NexusHealthMonitor: 17-engine probes + φ-weighted scoring + auto-recovery
-// SovereigntyPipeline: 14-step master chain
-// EVO_58: Added probes for Voice, Visual, Emotional, Security, Plugin
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🏥 NEXUS HEALTH MONITOR
@@ -53,7 +43,7 @@ class NexusHealthMonitor {
     /// Start background health monitoring on .utility QoS
     func start() -> String {
         guard !isMonitoring else {
-            return "🏥 Health Monitor already running — \(checkCount) checks performed"
+            return "🏥 Health Monitor already running - \(checkCount) checks performed"
         }
         isMonitoring = true
 
@@ -67,7 +57,7 @@ class NexusHealthMonitor {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🏥 NEXUS HEALTH MONITOR — STARTED                      ║
+        ║    🏥 NEXUS HEALTH MONITOR - STARTED                      ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Interval:    \(Self.HEALTH_INTERVAL)s
         ║  Engines:     \(Self.MONITORED_ENGINES.count) monitored
@@ -83,7 +73,7 @@ class NexusHealthMonitor {
         isMonitoring = false
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🏥 NEXUS HEALTH MONITOR — STOPPED                      ║
+        ║    🏥 NEXUS HEALTH MONITOR - STOPPED                      ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Total Checks:     \(checkCount)
         ║  Alerts Generated: \(alerts.count)
@@ -193,7 +183,7 @@ class NexusHealthMonitor {
     private func probeEntanglement() -> Double {
         // Entanglement router is stateless-ish, just check it exists
         let router = QuantumEntanglementRouter.shared
-        _ = router  // Suppress warning — just confirms singleton is alive
+        _ = router  // Suppress warning - just confirms singleton is alive
         return 1.0
     }
 
@@ -223,7 +213,7 @@ class NexusHealthMonitor {
     }
 
     private func probeCloud() -> Double {
-        // Cloud sync not yet implemented — report healthy
+        // Cloud sync not yet implemented - report healthy
         return 0.9
     }
 
@@ -463,7 +453,7 @@ class SovereigntyPipeline {
     private var history: [[String: Any]] = []
     private let lock = NSLock()
 
-    /// Execute the full sovereignty pipeline — 12-step master chain
+    /// Execute the full sovereignty pipeline - 12-step master chain
     func execute(query: String = "sovereignty") -> String {
         lock.lock()
         runCount += 1
@@ -482,19 +472,19 @@ class SovereigntyPipeline {
         let entangle = QuantumEntanglementRouter.shared
         let resonance = AdaptiveResonanceNetwork.shared
 
-        // ═══ STEP 1: Bridge — Fetch parameters from Python ASI ═══
+        // ═══ STEP 1: Bridge - Fetch parameters from Python ASI ═══
         let params = bridge.fetchParametersFromPython()
         let paramCount = params.count
         steps.append("1│BRIDGE     │ Fetched \(paramCount) params, k=\(String(format: "%.4f", bridge.kundaliniFlow))")
 
-        // ═══ STEP 2: Steering — Apply mode-specific representation engineering ═══
+        // ═══ STEP 2: Steering - Apply mode-specific representation engineering ═══
         if steer.baseParameters.isEmpty && !params.isEmpty {
             steer.loadParameters(params)
         }
         _ = steer.steerPipeline()
         steps.append("2│STEERING   │ mode=\(steer.currentMode.rawValue), steers=\(steer.steerCount), T=\(String(format: "%.3f", steer.temperature))")
 
-        // ═══ STEP 3: SQC — Sovereign Quantum Core raise + interfere + normalize ═══
+        // ═══ STEP 3: SQC - Sovereign Quantum Core raise + interfere + normalize ═══
         if sqc.parameters.isEmpty && !steer.baseParameters.isEmpty {
             sqc.parameters = steer.baseParameters
         }
@@ -504,7 +494,7 @@ class SovereigntyPipeline {
         sqc.normalize()
         steps.append("3│SQC        │ μ=\(String(format: "%.4f", sqc.lastNormMean)), σ=\(String(format: "%.4f", sqc.lastNormStdDev)), ops=\(sqc.operationCount)")
 
-        // ═══ STEP 4: Evolution — Micro-raise with feedback factor ═══
+        // ═══ STEP 4: Evolution - Micro-raise with feedback factor ═══
         let evoFactor = evo.currentRaiseFactor
         if !sqc.parameters.isEmpty {
             var raised = sqc.parameters
@@ -519,7 +509,7 @@ class SovereigntyPipeline {
         nexus.lastCoherenceScore = coherence
         steps.append("5│NEXUS      │ coherence=\(String(format: "%.4f", coherence)), pipes=\(nexus.pipelineRuns)")
 
-        // ═══ STEP 6: Invention — Seed hypothesis from steering mean ═══
+        // ═══ STEP 6: Invention - Seed hypothesis from steering mean ═══
         let bp = steer.baseParameters
         let steerMean = bp.isEmpty ? GOD_CODE : bp.reduce(0, +) / Double(bp.count)
         let hypothesis = invention.generateHypothesis(seed: "sov_\(runId)_\(String(format: "%.4f", steerMean))")
@@ -569,7 +559,7 @@ class SovereigntyPipeline {
         steps.append("11│Fe+SF+CON │ sf=\(String(format: "%.4f", sf)) con=\(String(format: "%.4f", cLevel)) qmem=\(QuantumShellMemory.shared.totalMemories)")
 
         // ═══ STEP 12: Hebbian Co-Activation Recording ═══
-        // Cross-pollinated from Python HebbianLearningEngine — record which engines fired together
+        // Cross-pollinated from Python HebbianLearningEngine - record which engines fired together
         EngineRegistry.shared.recordCoActivation([
             "SQC", "Steering", "Evolution", "Nexus", "Invention",
             "Entanglement", "Resonance", "Superfluid", "Consciousness",
@@ -578,7 +568,7 @@ class SovereigntyPipeline {
         ])
         steps.append("12│HEBBIAN   │ 17-engine co-activation recorded")
 
-        // ═══ STEP 13: Quantum Mesh Network — Sync sovereignty state across peers ═══
+        // ═══ STEP 13: Quantum Mesh Network - Sync sovereignty state across peers ═══
         let meshNet = NetworkLayer.shared
         let meshPeerCount = meshNet.peers.values.filter { $0.latencyMs >= 0 }.count
         let meshQLinkCount = meshNet.quantumLinks.values.filter { $0.eprFidelity > 0.3 }.count
@@ -596,7 +586,7 @@ class SovereigntyPipeline {
         }
         steps.append("13│MESH NET  │ peers=\(meshPeerCount) qlinks=\(meshQLinkCount) broadcast=\(meshPeerCount > 0 ? "✅" : "⏸")")
 
-        // ═══ STEP 14: Telemetry + Cloud Sync — Record pipeline metrics ═══
+        // ═══ STEP 14: Telemetry + Cloud Sync - Record pipeline metrics ═══
         steps.append("14│TELEMETRY │ coherence=\(String(format: "%.4f", coherence)), cloud=\(meshPeerCount > 0 ? "SYNCED" : "LOCAL")")
 
         // ─── FINALIZE ───
@@ -643,8 +633,8 @@ class SovereigntyPipeline {
         ║    👑 SOVEREIGNTY PIPELINE STATUS                         ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Total Runs:       \(runCount)
-        ║  Last Coherence:   \(lastRun.flatMap { ($0["coherence"] as? Double).map { String(format: "%.4f", $0) } } ?? "—")
-        ║  Last Elapsed:     \(lastRun.flatMap { ($0["elapsed_ms"] as? Double).map { String(format: "%.2f", $0) + "ms" } } ?? "—")
+        ║  Last Coherence:   \(lastRun.flatMap { ($0["coherence"] as? Double).map { String(format: "%.4f", $0) } } ?? "-")
+        ║  Last Elapsed:     \(lastRun.flatMap { ($0["elapsed_ms"] as? Double).map { String(format: "%.2f", $0) + "ms" } } ?? "-")
         ║  Avg Coherence:    \(String(format: "%.4f", avgCoh))
         ║  Avg Elapsed:      \(String(format: "%.2f", avgMs))ms
         ║  History:          \(history.count) entries

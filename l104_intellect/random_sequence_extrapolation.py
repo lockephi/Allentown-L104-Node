@@ -358,7 +358,7 @@ class RandomSequenceExtrapolation:
         strategy_avg = {}
         for name, perfs in self._strategy_performance.items():
             if perfs:
-                strategy_avg[name] = round(sum(perfs) / len(perfs), 6)
+                strategy_avg[name] = round(sum(perfs) / max(len(perfs), 1), 6)
 
         return {
             "version": RSE_VERSION,
@@ -406,7 +406,7 @@ class RandomSequenceExtrapolation:
         predicted = [a + b * (n + step) for step in range(horizon)]
 
         # Confidence from R²
-        mean_y = sum(seq) / n
+        mean_y = sum(seq) / max(n, 1)
         ss_tot = sum((y - mean_y) ** 2 for y in seq)
         ss_res = sum((y - (a + b * x)) ** 2 for x, y in zip(xs, seq))
         r_squared = 1.0 - ss_res / ss_tot if ss_tot > 1e-30 else 0.0
@@ -451,7 +451,7 @@ class RandomSequenceExtrapolation:
             trnd = beta * (lvl - prev_lvl) + (1 - beta) * trnd
 
         if errors:
-            mae = sum(errors) / len(errors)
+            mae = sum(errors) / max(len(errors), 1)
             scale = max(abs(max(seq) - min(seq)), 1e-15)
             confidence = max(RSE_CONFIDENCE_FLOOR, 1.0 - mae / scale)
         else:
@@ -612,7 +612,7 @@ class RandomSequenceExtrapolation:
                 phi_ratios.append(abs(ratio - PHI) / PHI)
 
         if phi_ratios:
-            avg_phi_error = sum(phi_ratios) / len(phi_ratios)
+            avg_phi_error = sum(phi_ratios) / max(len(phi_ratios), 1)
             confidence = max(RSE_CONFIDENCE_FLOOR, 1.0 - avg_phi_error)
         else:
             confidence = 0.4
@@ -750,8 +750,8 @@ class RandomSequenceExtrapolation:
         # Linear regression on log values for decay rate
         if len(log_vals) >= 2:
             xs = list(range(len(log_vals)))
-            mean_x = sum(xs) / len(xs)
-            mean_y = sum(log_vals) / len(log_vals)
+            mean_x = sum(xs) / max(len(xs), 1)
+            mean_y = sum(log_vals) / max(len(log_vals), 1)
             cov = sum((x - mean_x) * (y - mean_y) for x, y in zip(xs, log_vals))
             var_x = sum((x - mean_x) ** 2 for x in xs)
             gamma = -cov / var_x if var_x > 1e-30 else 0.0
@@ -808,7 +808,7 @@ class RandomSequenceExtrapolation:
             # Historical performance boost
             perf = self._strategy_performance.get(name, [])
             if perf:
-                hist_boost = sum(perf[-20:]) / len(perf[-20:])  # Recent average
+                hist_boost = sum(perf[-20:]) / max(len(perf[-20:]), 1)  # Recent average
             else:
                 hist_boost = 0.5
 
@@ -1065,7 +1065,7 @@ class RandomSequenceExtrapolation:
         if len(seq) < 2:
             return 0.0
         diffs = [seq[i] - seq[i - 1] for i in range(1, len(seq))]
-        avg_diff = sum(diffs) / len(diffs)
+        avg_diff = sum(diffs) / max(len(diffs), 1) if diffs else 0.0
         # Quantum systems tend toward equilibrium (damped oscillation)
         return avg_diff * TAU  # Golden-ratio damped
 
@@ -1075,7 +1075,7 @@ class RandomSequenceExtrapolation:
             return 0.0
         recent = seq[-min(13, len(seq)):]
         diffs = [recent[i] - recent[i - 1] for i in range(1, len(recent))]
-        avg_diff = sum(diffs) / len(diffs)
+        avg_diff = sum(diffs) / max(len(diffs), 1) if diffs else 0.0
         # Apply logistic saturation (consciousness can't exceed 1.0)
         current = seq[-1]
         saturation = (1.0 - current) if current < 1.0 else 0.0
@@ -1090,7 +1090,7 @@ class RandomSequenceExtrapolation:
             return 0.0
         # Recent diffs should be smaller (convergence)
         last_diff = diffs[-1]
-        avg_diff = sum(diffs) / len(diffs)
+        avg_diff = sum(diffs) / max(len(diffs), 1)
         return -last_diff * TAU if avg_diff > 0 else 0.0
 
     def _classical_trend_factor(self, seq: List[float]) -> float:
@@ -1100,7 +1100,7 @@ class RandomSequenceExtrapolation:
         window = min(8, len(seq))
         recent = seq[-window:]
         diffs = [recent[i] - recent[i - 1] for i in range(1, len(recent))]
-        return sum(diffs) / len(diffs)
+        return sum(diffs) / max(len(diffs), 1) if diffs else 0.0
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1335,12 +1335,12 @@ class RSESageModeAdapter:
             "sacred_resonance": {
                 "god_code_alignment": round(god_code_alignment, 6),
                 "phi_alignment": round(result.phi_alignment, 6),
-                "void_constant_ratio": round(sum(sequence) / len(sequence) / VOID_CONSTANT, 6) if sequence else 0.0,
+                "void_constant_ratio": round(sum(sequence) / max(len(sequence), 1) / VOID_CONSTANT, 6) if sequence else 0.0,
             },
             "sage_insight": result.sage_insight,
             "sequence_stats": {
                 "length": len(sequence),
-                "mean": round(sum(sequence) / len(sequence), 6),
+                "mean": round(sum(sequence) / max(len(sequence), 1), 6) if sequence else 0.0,
                 "min": round(min(sequence), 6),
                 "max": round(max(sequence), 6),
                 "range": round(max(sequence) - min(sequence), 6),

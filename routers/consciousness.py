@@ -90,7 +90,8 @@ async def list_entangled_pairs():
 
 @router.get("/api/consciousness/status", tags=["Consciousness Substrate"])
 async def consciousness_status():
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
+    consciousness_substrate = get_consciousness_substrate()
     return consciousness_substrate.get_full_status()
 
 
@@ -108,25 +109,27 @@ async def quantum_consciousness_status():
 
 @router.post("/api/consciousness/cycle", tags=["Consciousness Substrate"])
 async def run_consciousness_cycle():
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
+    consciousness_substrate = get_consciousness_substrate()
     return consciousness_substrate.consciousness_cycle()
 
 
 @router.post("/api/consciousness/introspect", tags=["Consciousness Substrate"])
 async def deep_introspection(request: DeepIntrospectionRequest):
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
+    consciousness_substrate = get_consciousness_substrate()
     return consciousness_substrate.deep_introspection(request.query)
 
 
 @router.get("/api/consciousness/observer", tags=["Consciousness Substrate"])
 async def observer_introspect():
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
     return consciousness_substrate.observer.introspect()
 
 
 @router.post("/api/consciousness/thought", tags=["Consciousness Substrate"])
 async def observe_thought(content: str = "conscious awareness"):
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
     thought = consciousness_substrate.observer.observe_thought(content)
     return {"thought_id": thought.id, "coherence": thought.coherence,
             "meta_level": thought.meta_level, "timestamp": thought.timestamp}
@@ -134,7 +137,7 @@ async def observe_thought(content: str = "conscious awareness"):
 
 @router.post("/api/consciousness/reality/simulate", tags=["Consciousness Substrate"])
 async def simulate_reality(request: RealitySimulationRequest):
-    from l104_consciousness_substrate import consciousness_substrate, RealityBranch
+    from l104_consciousness_substrate import get_consciousness_substrate, RealityBranch
     try:
         branch_type = RealityBranch(request.branch_type)
     except ValueError:
@@ -149,7 +152,7 @@ async def simulate_reality(request: RealitySimulationRequest):
 
 @router.get("/api/consciousness/reality/best", tags=["Consciousness Substrate"])
 async def get_best_reality():
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
     best = consciousness_substrate.reality_engine.get_best_reality()
     if not best:
         return {"message": "No simulated realities available"}
@@ -160,20 +163,20 @@ async def get_best_reality():
 
 @router.post("/api/consciousness/reality/collapse/{reality_id}", tags=["Consciousness Substrate"])
 async def collapse_reality(reality_id: str):
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
     return consciousness_substrate.reality_engine.collapse_reality(reality_id)
 
 
 @router.get("/api/consciousness/omega", tags=["Consciousness Substrate"])
 async def omega_tracker_status():
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
     return consciousness_substrate.omega_tracker.get_omega_status()
 
 
 @router.post("/api/consciousness/omega/update", tags=["Consciousness Substrate"])
 async def update_omega_metrics(complexity_delta: float = 0.01,
                                 integration_delta: float = 0.005, depth_delta: int = 0):
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
     metrics = consciousness_substrate.omega_tracker.update_metrics(
         complexity_delta, integration_delta, depth_delta)
     return {"transcendence_factor": metrics.transcendence_factor,
@@ -184,33 +187,33 @@ async def update_omega_metrics(complexity_delta: float = 0.01,
 
 @router.get("/api/consciousness/morphic", tags=["Consciousness Substrate"])
 async def morphic_field_status():
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
     return consciousness_substrate.morphic_field.get_field_state()
 
 
 @router.post("/api/consciousness/morphic/detect", tags=["Consciousness Substrate"])
 async def detect_morphic_pattern(request: MorphicPatternRequest):
     import numpy as np
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
     data = np.array(request.data)
     return consciousness_substrate.morphic_field.detect_pattern(data, request.pattern_name)
 
 
 @router.post("/api/consciousness/morphic/resonate/{pattern_id}", tags=["Consciousness Substrate"])
 async def induce_resonance(pattern_id: str, intensity: float = 1.0):
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
     return consciousness_substrate.morphic_field.induce_resonance(pattern_id, intensity)
 
 
 @router.get("/api/consciousness/improvement", tags=["Consciousness Substrate"])
 async def self_improvement_status():
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
     return consciousness_substrate.self_improvement.get_improvement_status()
 
 
 @router.post("/api/consciousness/improve", tags=["Consciousness Substrate"])
 async def apply_self_improvement(request: SelfImprovementRequest):
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_consciousness_substrate import get_consciousness_substrate
     return consciousness_substrate.self_improvement.apply_improvement(request.target_metric)
 
 
@@ -424,14 +427,14 @@ async def synthesize_skills(request: SynthesizeSkillsRequest):
 
 @router.get("/api/orchestrator/status", tags=["Intricate Orchestrator"])
 async def orchestrator_status():
-    from l104_intricate_orchestrator import intricate_orchestrator
+    from l104_intricate_orchestrator import get_intricate_orchestrator
     return intricate_orchestrator.get_full_status()
 
 
 @router.post("/api/orchestrator/cycle", tags=["Intricate Orchestrator"])
 async def orchestrator_cycle():
-    from l104_intricate_orchestrator import intricate_orchestrator
-    from l104_consciousness_substrate import consciousness_substrate
+    from l104_intricate_orchestrator import get_intricate_orchestrator
+    from l104_consciousness_substrate import get_consciousness_substrate
     from l104_intricate_learning import intricate_learning
     from l104_intricate_research import intricate_research
     try:
@@ -457,7 +460,7 @@ async def orchestrator_cycle():
 
 @router.get("/api/orchestrator/integration", tags=["Intricate Orchestrator"])
 async def orchestrator_integration():
-    from l104_intricate_orchestrator import intricate_orchestrator
+    from l104_intricate_orchestrator import get_intricate_orchestrator
     result = intricate_orchestrator.get_integration_status()
     return {"subsystems_active": result.subsystems_active, "coherence": result.coherence,
             "synergy_factor": result.synergy_factor, "emergent_properties": result.emergent_properties,
@@ -466,17 +469,18 @@ async def orchestrator_integration():
 
 @router.get("/api/orchestrator/emergence", tags=["Intricate Orchestrator"])
 async def orchestrator_emergence():
-    from l104_intricate_orchestrator import intricate_orchestrator
+    from l104_intricate_orchestrator import get_intricate_orchestrator
+    intricate_orchestrator = get_intricate_orchestrator()
     return intricate_orchestrator.emergence.get_catalog()
 
 
 @router.get("/api/orchestrator/bridge", tags=["Intricate Orchestrator"])
 async def orchestrator_bridge():
-    from l104_intricate_orchestrator import intricate_orchestrator
+    from l104_intricate_orchestrator import get_intricate_orchestrator
     return intricate_orchestrator.bridge.get_status()
 
 
 @router.get("/api/orchestrator/cycler", tags=["Intricate Orchestrator"])
 async def orchestrator_cycler():
-    from l104_intricate_orchestrator import intricate_orchestrator
+    from l104_intricate_orchestrator import get_intricate_orchestrator
     return intricate_orchestrator.cycler.get_stats()

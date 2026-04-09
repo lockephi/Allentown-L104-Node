@@ -1,61 +1,270 @@
 {
   "version": "2.0.0",
   "vqpu_version": "15.0.0",
-  "timestamp": 1773205361.682912,
+  "timestamp": 1775398945.021295,
   "topology": "all_to_all",
-  "topology_version": 2,
+  "topology_version": 6,
   "node_ids": [
-    "micro-215e3eb1",
-    "micro-62ab80ee"
+    "micro-9eee7e5a",
+    "micro-c09f84df",
+    "micro-48db85d5",
+    "micro-a60f45d8",
+    "micro-4693c9c8",
+    "micro-d9895ac5"
   ],
   "qubits_per_node": 4,
   "channels": {
-    "qch-micro-21-micro-62-cbda23": {
-      "channel_id": "qch-micro-21-micro-62-cbda23",
-      "node_a": "micro-215e3eb1",
-      "node_b": "micro-62ab80ee",
-      "fidelity": 0.00014823,
+    "qch-micro-9e-micro-c0-b46b48": {
+      "channel_id": "qch-micro-9e-micro-c0-b46b48",
+      "node_a": "micro-9eee7e5a",
+      "node_b": "micro-c09f84df",
+      "fidelity": 0.39972748,
       "active": true,
-      "established_at": 1773202467.741296,
-      "purification_count": 6,
+      "established_at": 1775051094.467711,
+      "purification_count": 81,
       "messages_sent": 0,
-      "messages_received": 0
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.020853,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.6h, purifications=81)"
+    },
+    "qch-micro-48-micro-9e-bc5a09": {
+      "channel_id": "qch-micro-48-micro-9e-bc5a09",
+      "node_a": "micro-48db85d5",
+      "node_b": "micro-9eee7e5a",
+      "fidelity": 0.40011678,
+      "active": true,
+      "established_at": 1775051481.90691,
+      "purification_count": 81,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.0212,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.5h, purifications=81)"
+    },
+    "qch-micro-48-micro-c0-235d98": {
+      "channel_id": "qch-micro-48-micro-c0-235d98",
+      "node_a": "micro-48db85d5",
+      "node_b": "micro-c09f84df",
+      "fidelity": 0.40011679,
+      "active": true,
+      "established_at": 1775051481.9126022,
+      "purification_count": 81,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.021208,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.5h, purifications=81)"
+    },
+    "qch-micro-9e-micro-a6-175033": {
+      "channel_id": "qch-micro-9e-micro-a6-175033",
+      "node_a": "micro-9eee7e5a",
+      "node_b": "micro-a60f45d8",
+      "fidelity": 0.40114646,
+      "active": true,
+      "established_at": 1775053000.2060301,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.021219,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
+    },
+    "qch-micro-a6-micro-c0-ad9510": {
+      "channel_id": "qch-micro-a6-micro-c0-ad9510",
+      "node_a": "micro-a60f45d8",
+      "node_b": "micro-c09f84df",
+      "fidelity": 0.40114646,
+      "active": true,
+      "established_at": 1775053000.207469,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.0212228,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
+    },
+    "qch-micro-48-micro-a6-419440": {
+      "channel_id": "qch-micro-48-micro-a6-419440",
+      "node_a": "micro-48db85d5",
+      "node_b": "micro-a60f45d8",
+      "fidelity": 0.40114647,
+      "active": true,
+      "established_at": 1775053000.2146912,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.021226,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
+    },
+    "qch-micro-46-micro-9e-089a18": {
+      "channel_id": "qch-micro-46-micro-9e-089a18",
+      "node_a": "micro-4693c9c8",
+      "node_b": "micro-9eee7e5a",
+      "fidelity": 0.40114651,
+      "active": true,
+      "established_at": 1775053000.256717,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.021229,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
+    },
+    "qch-micro-46-micro-c0-0692a6": {
+      "channel_id": "qch-micro-46-micro-c0-0692a6",
+      "node_a": "micro-4693c9c8",
+      "node_b": "micro-c09f84df",
+      "fidelity": 0.40114651,
+      "active": true,
+      "established_at": 1775053000.2585468,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.0212328,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
+    },
+    "qch-micro-46-micro-48-93a9c4": {
+      "channel_id": "qch-micro-46-micro-48-93a9c4",
+      "node_a": "micro-4693c9c8",
+      "node_b": "micro-48db85d5",
+      "fidelity": 0.40114651,
+      "active": true,
+      "established_at": 1775053000.259066,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.021235,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
+    },
+    "qch-micro-46-micro-a6-b1843c": {
+      "channel_id": "qch-micro-46-micro-a6-b1843c",
+      "node_a": "micro-4693c9c8",
+      "node_b": "micro-a60f45d8",
+      "fidelity": 0.40114651,
+      "active": true,
+      "established_at": 1775053000.259433,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.021238,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
+    },
+    "qch-micro-9e-micro-d9-e063c9": {
+      "channel_id": "qch-micro-9e-micro-d9-e063c9",
+      "node_a": "micro-9eee7e5a",
+      "node_b": "micro-d9895ac5",
+      "fidelity": 0.40114651,
+      "active": true,
+      "established_at": 1775053000.261292,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.0212412,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
+    },
+    "qch-micro-c0-micro-d9-e4ed1b": {
+      "channel_id": "qch-micro-c0-micro-d9-e4ed1b",
+      "node_a": "micro-c09f84df",
+      "node_b": "micro-d9895ac5",
+      "fidelity": 0.40114651,
+      "active": true,
+      "established_at": 1775053000.261646,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.0212438,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
+    },
+    "qch-micro-48-micro-d9-0308ea": {
+      "channel_id": "qch-micro-48-micro-d9-0308ea",
+      "node_a": "micro-48db85d5",
+      "node_b": "micro-d9895ac5",
+      "fidelity": 0.40114652,
+      "active": true,
+      "established_at": 1775053000.2620878,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.021247,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
+    },
+    "qch-micro-a6-micro-d9-d8b95e": {
+      "channel_id": "qch-micro-a6-micro-d9-d8b95e",
+      "node_a": "micro-a60f45d8",
+      "node_b": "micro-d9895ac5",
+      "fidelity": 0.40114652,
+      "active": true,
+      "established_at": 1775053000.2625148,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.021257,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
+    },
+    "qch-micro-46-micro-d9-291743": {
+      "channel_id": "qch-micro-46-micro-d9-291743",
+      "node_a": "micro-4693c9c8",
+      "node_b": "micro-d9895ac5",
+      "fidelity": 0.40114652,
+      "active": true,
+      "established_at": 1775053000.26304,
+      "purification_count": 79,
+      "messages_sent": 0,
+      "messages_received": 0,
+      "fidelity_repaired_at": 1775398945.0212622,
+      "fidelity_repair_reason": "Restored from 0.0 (age=96.1h, purifications=79)"
     }
   },
   "total_teleportations": 0,
-  "total_purifications": 6,
+  "total_purifications": 1191,
   "health": {
     "version": "2.0.0",
-    "nodes": 2,
-    "active_channels": 1,
-    "total_channels": 1,
+    "nodes": 6,
+    "active_channels": 15,
+    "total_channels": 15,
     "topology": "all_to_all",
     "detected_topology": "all_to_all",
-    "topology_version": 2,
-    "avg_fidelity": 0.00014823,
-    "min_fidelity": 0.00014823,
-    "max_fidelity": 0.00014823,
+    "topology_version": 6,
+    "avg_fidelity": 0.400915,
+    "min_fidelity": 0.0,
+    "max_fidelity": 0.0,
     "connectivity": 1.0,
-    "mean_degree": 1.0,
+    "mean_degree": 5.0,
     "diameter": 1,
     "sacred_alignment": 1.0,
-    "sacred_topology_score": 0.61803399,
-    "network_score": 0.52879739,
+    "sacred_topology_score": 1.0,
+    "network_score": 0.62175017,
     "total_teleportations": 0,
-    "total_purifications": 6,
+    "total_purifications": 1191,
     "register_health": {
-      "micro-215e3eb1": {
-        "avg_fidelity": 0.05349335,
+      "micro-9eee7e5a": {
+        "avg_fidelity": 0.0,
         "degraded_qubits": 4,
         "total_gates": 20
       },
-      "micro-62ab80ee": {
-        "avg_fidelity": 0.05535725,
+      "micro-c09f84df": {
+        "avg_fidelity": 0.0,
+        "degraded_qubits": 4,
+        "total_gates": 20
+      },
+      "micro-48db85d5": {
+        "avg_fidelity": 0.0,
+        "degraded_qubits": 4,
+        "total_gates": 20
+      },
+      "micro-a60f45d8": {
+        "avg_fidelity": 0.0,
+        "degraded_qubits": 4,
+        "total_gates": 20
+      },
+      "micro-4693c9c8": {
+        "avg_fidelity": 0.0,
+        "degraded_qubits": 4,
+        "total_gates": 20
+      },
+      "micro-d9895ac5": {
+        "avg_fidelity": 0.0,
         "degraded_qubits": 4,
         "total_gates": 20
       }
     },
     "god_code": 527.5184818492612,
-    "qpu_mean_fidelity": 0.9747593
+    "qpu_mean_fidelity": 0.9747593,
+    "repaired_at": 1775398945.021292
   }
 }

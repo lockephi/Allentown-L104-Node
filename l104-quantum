@@ -1,0 +1,168 @@
+#!/usr/bin/env python3
+"""
+L104 Quantum Command-Line Interface
+The unified tool for interacting with the core L104 Quantum Substrate.
+"""
+
+import sys
+import os
+import argparse
+import subprocess
+import json
+import time
+import glob
+
+# --- ENVIRONMENT SETUP ---
+current_dir = os.path.dirname(os.path.abspath(__file__))
+os.environ["PYTHONPATH"] = f"{os.environ.get('PYTHONPATH', '')}:{current_dir}"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["L104_CPU_CORES"] = "2"
+
+# Add all l104_* directories to path
+root = current_dir # In this context, the CLI is in the root of Allentown-L104-Node
+for p in glob.glob(os.path.join(root, 'l104_*')):
+    if os.path.isdir(p) and not os.path.basename(p).startswith('l104_data'):
+        if p not in sys.path:
+            sys.path.insert(0, p)
+
+# --- HELPER FUNCTIONS ---
+def run_python_script(script_name, args=None):
+    script_path = os.path.join(current_dir, script_name)
+    cmd = [sys.executable, script_path]
+    if args:
+        cmd.extend(args)
+
+    print(f"--- Launching {script_name} ---")
+    try:
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        print(result.stdout)
+        if result.stderr:
+            print("--- STDERR ---")
+            print(result.stderr)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {script_name} failed with code {e.returncode}")
+        print("--- STDERR ---")
+        print(e.stderr)
+        sys.exit(e.returncode)
+
+# --- COMMAND IMPLEMENTATIONS ---
+def vqpu_status(_=None):
+    try:
+        from l104_vqpu import get_bridge
+        bridge = get_bridge()
+        status = bridge.status()
+        print(json.dumps(status, indent=2))
+    except ImportError as e:
+        print(f"Error importing VQPU: {e}. Ensure L104 environment is set up.")
+    except Exception as e:
+        print(f"Error getting VQPU status: {e}")
+
+def simulate_circuit(circuit_json_path: str):
+    try:
+        from l104_vqpu import get_bridge, QuantumJob
+        with open(circuit_json_path, 'r') as f:
+            circuit_data = json.load(f)
+        job = QuantumJob(**circuit_data)
+        bridge = get_bridge()
+        result = bridge.run_simulation(job)
+        print(json.dumps(result, indent=2))
+    except FileNotFoundError:
+        print(f"Error: Circuit file not found at {circuit_json_path}")
+    except json.JSONDecodeError:
+        print(f"Error: Invalid JSON in circuit file {circuit_json_path}")
+    except Exception as e:
+        print(f"Error simulating circuit: {e}")
+
+def run_hamiltonian_simulation(_=None):
+    try:
+        from l104_vqpu.hamiltonian import HamiltonianSimulator
+        # Example: 2D Iron-Lattice Heisenberg model
+        print("Running 2D Iron-Lattice Heisenberg Model simulation...")
+        result = HamiltonianSimulator.iron_lattice_heisenberg_model(
+            rows=2, cols=2, total_time=0.5, trotter_steps=5, order=2
+        )
+        print(json.dumps(result, indent=2))
+    except ImportError as e:
+        print(f"Error importing HamiltonianSimulator: {e}")
+    except Exception as e:
+        print(f"Error running Hamiltonian simulation: {e}")
+
+def run_coherence_evolution(_=None):
+    try:
+        from l104_science_engine.coherence import CoherenceSubsystem
+        coherence_engine = CoherenceSubsystem()
+        # Initialize coherence field with a simple state for evolution
+        coherence_engine.coherence_field = [complex(1.0, 0.0) for _ in range(4)]
+        print("Running Coherence Evolution (Anyon Braiding)...")
+        result = coherence_engine.evolve(steps=10)
+        print(json.dumps(result, indent=2))
+    except ImportError as e:
+        print(f"Error importing CoherenceSubsystem: {e}")
+    except Exception as e:
+        print(f"Error running Coherence Evolution: {e}")
+
+def run_grover_search(target: int = 5, qubits: int = 4):
+    """Run Grover search via AGI QuantumCoherenceEngine."""
+    try:
+        from l104_agi.core import AGICore
+        agi = AGICore()
+        result = agi.quantum_grover_search(target=target, qubits=qubits)
+        print(json.dumps(result, indent=2))
+    except ImportError as e:
+        print(f"Error importing AGICore: {e}")
+    except Exception as e:
+        print(f"Error running Grover search: {e}")
+
+def run_shor_factor(N: int = 15):
+    """Run Shor factoring via AGI QuantumCoherenceEngine."""
+    try:
+        from l104_agi.core import AGICore
+        agi = AGICore()
+        result = agi.quantum_shor_factor(N=N)
+        print(json.dumps(result, indent=2))
+    except ImportError as e:
+        print(f"Error importing AGICore: {e}")
+    except Exception as e:
+        print(f"Error running Shor factoring: {e}")
+
+# --- MAIN PARSER ---
+def main():
+    parser = argparse.ArgumentParser(description="L104 Quantum Tool Suite")
+    subparsers = parser.add_subparsers(dest="command", help="Quantum sub-commands")
+
+    # Status
+    status_parser = subparsers.add_parser("status", help="Get VQPU Bridge and Micro Daemon status")
+    status_parser.set_defaults(func=vqpu_status)
+
+    # Simulate
+    simulate_parser = subparsers.add_parser("simulate", help="Simulate a custom quantum circuit from JSON")
+    simulate_parser.add_argument("circuit_json_path", type=str, help="Path to the JSON file defining the circuit")
+    simulate_parser.set_defaults(func=lambda args: simulate_circuit(args.circuit_json_path))
+
+    # Hamiltonian
+    hamiltonian_parser = subparsers.add_parser("hamiltonian", help="Run a 2D Iron-Lattice Heisenberg Model simulation")
+    hamiltonian_parser.set_defaults(func=run_hamiltonian_simulation)
+
+    # Coherence
+    coherence_parser = subparsers.add_parser("coherence-evolve", help="Run coherence evolution with Anyon braiding")
+    coherence_parser.set_defaults(func=run_coherence_evolution)
+
+    # Grover
+    grover_parser = subparsers.add_parser("grover", help="Run Grover search via AGI QuantumCoherenceEngine")
+    grover_parser.add_argument("--target", type=int, default=5, help="Target integer to search for (default: 5)")
+    grover_parser.add_argument("--qubits", type=int, default=4, help="Number of qubits to use (default: 4)")
+    grover_parser.set_defaults(func=lambda args: run_grover_search(target=args.target, qubits=args.qubits))
+
+    # Shor
+    shor_parser = subparsers.add_parser("shor", help="Run Shor factoring via AGI QuantumCoherenceEngine")
+    shor_parser.add_argument("--N", type=int, default=15, help="Integer to factor (default: 15)")
+    shor_parser.set_defaults(func=lambda args: run_shor_factor(N=args.N))
+
+    args = parser.parse_args()
+    if hasattr(args, 'func'):
+        args.func(args)
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    main()

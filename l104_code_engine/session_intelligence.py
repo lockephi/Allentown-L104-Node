@@ -15,7 +15,9 @@ import hashlib
 import json
 import time
 
-_WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
+from l104_sacred_algorithms import derive_workspace_root
+
+_WORKSPACE_ROOT = derive_workspace_root(__file__, depth=2)
 
 
 class SessionIntelligence:

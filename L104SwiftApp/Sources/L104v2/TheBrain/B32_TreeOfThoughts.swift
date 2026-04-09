@@ -1,29 +1,7 @@
-// ═══════════════════════════════════════════════════════════════════
-// B32_TreeOfThoughts.swift — L104 ASI v7.1 Advanced Reasoning Engine
-// [EVO_68_PIPELINE] SAGE_MODE_ASCENSION :: TREE_OF_THOUGHTS :: GRAPH_OF_THOUGHTS
-//
-// Ported from l104_asi/reasoning.py
-//
-// Tree of Thoughts (Yao et al. 2023, Princeton/DeepMind):
-//   Generalizes chain-of-thought from linear path to search tree
-//   with deliberate evaluation and pruning.
-//
-// Graph of Thoughts (Besta et al. 2024, ETH Zurich):
-//   Aggregates surviving branches into refined multi-perspective insight.
-//
-// Multi-Hop Reasoning Chain:
-//   Iterative multi-subsystem problem decomposition up to 7 hops.
-//
-// Solution Ensemble:
-//   Weighted voting across multiple reasoning paths.
-//
-// Sacred constants wired in: K=int(φ×3)=4, B=int(φ×2)=3, threshold=τ
-// ═══════════════════════════════════════════════════════════════════
-
 import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - Thought Node — A single node in the reasoning tree
+// MARK: - Thought Node - A single node in the reasoning tree
 // ═══════════════════════════════════════════════════════════════════
 
 struct ThoughtNode: Identifiable {
@@ -40,7 +18,7 @@ struct ThoughtNode: Identifiable {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - Reasoning Result — Output of any reasoning pipeline
+// MARK: - Reasoning Result - Output of any reasoning pipeline
 // ═══════════════════════════════════════════════════════════════════
 
 struct ReasoningResult {
@@ -58,7 +36,7 @@ struct ReasoningResult {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - TreeOfThoughts — Sacred Beam Search Reasoning
+// MARK: - TreeOfThoughts - Sacred Beam Search Reasoning
 // ═══════════════════════════════════════════════════════════════════
 
 final class TreeOfThoughts {
@@ -253,7 +231,7 @@ final class TreeOfThoughts {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - MultiHopReasoningChain — Iterative decomposition
+// MARK: - MultiHopReasoningChain - Iterative decomposition
 // ═══════════════════════════════════════════════════════════════════
 
 final class MultiHopReasoningChain {
@@ -288,7 +266,7 @@ final class MultiHopReasoningChain {
             chain.append("Hop \(hop + 1): \(String(subQuestion.prefix(100))) → \(String(answer.prefix(200)))")
 
             // Build next query from answer
-            currentQuery = "\(answer) — what follows from this regarding \(String(problem.prefix(100)))?"
+            currentQuery = "\(answer) - what follows from this regarding \(String(problem.prefix(100)))?"
 
             // Confidence decay per hop (φ-based)
             cumulativeConfidence *= TAU + (1.0 - TAU) * 0.5
@@ -316,7 +294,7 @@ final class MultiHopReasoningChain {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - SolutionEnsemble — Weighted voting
+// MARK: - SolutionEnsemble - Weighted voting
 // ═══════════════════════════════════════════════════════════════════
 
 final class SolutionEnsemble {
@@ -352,7 +330,7 @@ final class SolutionEnsemble {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - SageReasoningPipeline — Unified Sage reasoning interface
+// MARK: - SageReasoningPipeline - Unified Sage reasoning interface
 // ═══════════════════════════════════════════════════════════════════
 
 final class SageReasoningPipeline {

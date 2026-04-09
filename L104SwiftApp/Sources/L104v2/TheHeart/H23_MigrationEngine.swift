@@ -1,17 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// H23_MigrationEngine.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Mesh-Distributed Migration Engine v4.0
-// Schema migration, state snapshot/restore, cross-node state sync,
-// and automated version migration paths (54→55→56→57→58→60→62)
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
+private let logging = Logger(subsystem: "com.l104.H23_MigrationEngine", category: "main")
 // MARK: - Migration Record
 
 struct MigrationRecord {
@@ -35,7 +30,7 @@ struct StateSnapshot {
     let dataHash: UInt64
 }
 
-// MARK: - MigrationEngine — Full Implementation
+// MARK: - MigrationEngine - Full Implementation
 
 final class MigrationEngine {
     static let shared = MigrationEngine()
@@ -56,7 +51,7 @@ final class MigrationEngine {
         lock.lock()
         defer { lock.unlock() }
         isActive = true
-        print("[H23] MigrationEngine v4.0 activated — auto-migration + state snapshot ready")
+        logging.info("[H23] MigrationEngine v4.0 activated - auto-migration + state snapshot ready")
     }
 
     /// Run all pending migrations from a starting version to current
@@ -151,7 +146,7 @@ final class MigrationEngine {
         return record
     }
 
-    // ═══ MESH SNAPSHOT SYNC — Share snapshots with peers ═══
+    // ═══ MESH SNAPSHOT SYNC - Share snapshots with peers ═══
     func syncSnapshotWithMesh() {
         guard isActive else { return }
         let net = NetworkLayer.shared

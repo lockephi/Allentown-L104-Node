@@ -1,0 +1,40 @@
+{
+  "status": "COMPLETED",
+  "backend": "ibm_marrakesh",
+  "job_id": "d7bauhm5nvhs73a342og",
+  "shots": 8192,
+  "elapsed_time": 31.39062809944153,
+  "qfi_results": {
+    "3d": {
+      "Z_plus": -1.0,
+      "Z_minus": 0.940185546875,
+      "gradient": -0.9700927734375,
+      "F_Q_estimate": 5.646479934453964,
+      "p0_plus": 0.0,
+      "p0_minus": 0.9700927734375,
+      "total_counts": 16384
+    },
+    "SACRED": {
+      "Z_plus": 0.974365234375,
+      "Z_minus": -1.0,
+      "gradient": 0.9871826171875,
+      "F_Q_estimate": 4.872647598385811,
+      "p0_plus": 0.9871826171875,
+      "p0_minus": 0.0,
+      "total_counts": 16384
+    },
+    "PHI": {
+      "Z_plus": 0.984130859375,
+      "Z_minus": -1.0,
+      "gradient": 0.9920654296875,
+      "F_Q_estimate": 3.936775267124176,
+      "p0_plus": 0.9920654296875,
+      "p0_minus": 0.0,
+      "total_counts": 16384
+    }
+  },
+  "total_F_Q": 14.455902799963951,
+  "xi_squared": 1.798573244423367,
+  "quantum_enhanced": false,
+  "improvement_over_SQL": 0.555996261537075
+}

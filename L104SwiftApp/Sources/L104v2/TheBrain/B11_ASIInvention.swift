@@ -1,14 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B11_ASIInvention.swift — L104 Neural Architecture v3 (EVO_68)
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// Extracted from L104Native.swift
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // ASI SCIENTIFIC INVENTION ENGINE
@@ -282,7 +276,7 @@ class ASIInventionEngine {
 
         // Euler-Mascheroni connection
         let gamma = 0.5772156649015329  // γ
-        let eulerProduct = exp(gamma) * zeta2  // e^γ · ζ(2) — related to prime distribution
+        let eulerProduct = exp(gamma) * zeta2  // e^γ · ζ(2) - related to prime distribution
 
         // Build theorem
         let theorem: [String: Any] = [

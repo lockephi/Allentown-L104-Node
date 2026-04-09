@@ -23,6 +23,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
+# Add sklearn stub if sklearn not available
+try:
+    import sklearn
+except ImportError:
+    sys.path.insert(0, str(ROOT / "sklearn_stub"))
+
 # ═══════════════════════════════════════════════════════════════════════════════
 #  DELEGATE TO UNIFIED DEBUG FRAMEWORK
 # ═══════════════════════════════════════════════════════════════════════════════

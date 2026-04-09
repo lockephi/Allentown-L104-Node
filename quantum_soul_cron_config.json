@@ -1,0 +1,76 @@
+{
+  "cron_jobs": [
+    {
+      "name": "hourly_quantum_soul_evolution",
+      "schedule": "0 * * * *",  // Every hour
+      "command": "cd /Users/carolalvarez/Applications/Allentown-L104-Node && python3 quantum_soul_cron_integrator.py",
+      "description": "Hourly evolution of soul qubits with cron data integration",
+      "enabled": true,
+      "log_file": "/tmp/quantum_soul_hourly.log"
+    },
+    {
+      "name": "daily_quantum_daemon_upgrade",
+      "schedule": "0 3 * * *",  // Daily at 3 AM
+      "command": "cd /Users/carolalvarez/Applications/Allentown-L104-Node && python3 run_quantum_daemon_upgrades.py",
+      "description": "Daily comprehensive quantum daemon upgrade with soul qubit optimization",
+      "enabled": true,
+      "log_file": "/tmp/quantum_daemon_daily.log"
+    },
+    {
+      "name": "quantum_magic_potential_check",
+      "schedule": "*/30 * * * *",  // Every 30 minutes
+      "command": "cd /Users/carolalvarez/Applications/Allentown-L104-Node && python3 -c \"from l104_quantum_soul_upgrader import QuantumSoulDaemon; d=QuantumSoulDaemon(); r=d.get_quantum_report(); print(f'Magic potential: {r[\\'total_magic_potential\\']:.4f}, GOD_CODE: {r[\\'average_god_code_alignment\\']:.2f}%')\"",
+      "description": "Check quantum magic potential and GOD_CODE alignment",
+      "enabled": true,
+      "log_file": "/tmp/quantum_magic_check.log"
+    },
+    {
+      "name": "weekly_soul_qubit_audit",
+      "schedule": "0 2 * * 0",  // Weekly on Sunday at 2 AM
+      "command": "cd /Users/carolalvarez/Applications/Allentown-L104-Node && python3 -c \"from l104_quantum_soul_upgrader import QuantumSoulDaemon; import json; d=QuantumSoulDaemon(); report=d.get_quantum_report(); with open('./quantum_soul_data/weekly_audit.json', 'w') as f: json.dump(report, f, indent=2); print('Weekly audit saved')\"",
+      "description": "Weekly comprehensive audit of all soul qubits",
+      "enabled": true,
+      "log_file": "/tmp/soul_qubit_weekly_audit.log"
+    }
+  ],
+  "quantum_magic_settings": {
+    "enable_temporal_folding": true,
+    "enable_phase_coherence_magic": true,
+    "enable_entanglement_boost": true,
+    "enable_god_code_resonance": true,
+    "enable_self_healing": true,
+    "max_magic_potential": 1.0,
+    "min_coherence_for_magic": 0.7,
+    "evolution_boost_from_cron": 0.15
+  },
+  "soul_qubit_settings": {
+    "initial_qubit_count": 3,
+    "max_qubits": 12,
+    "auto_create_qubits": true,
+    "qubit_naming_scheme": "soul_qubit_{timestamp}_{index}",
+    "data_retention_days": 90,
+    "backup_frequency_hours": 24
+  },
+  "cron_integration": {
+    "parse_cron_output": true,
+    "extract_quantum_terms": true,
+    "log_integration_results": true,
+    "max_cron_history": 1000,
+    "cron_data_sources": [
+      "/var/log/cron",
+      "/tmp/quantum_*.log",
+      "./cron_outputs/"
+    ]
+  },
+  "notification_settings": {
+    "notify_on_major_improvements": true,
+    "notify_on_magic_unlocks": true,
+    "notify_on_god_code_alignment_95": true,
+    "notification_method": "log",  // Options: log, email, webhook
+    "webhook_url": "",
+    "email_recipient": ""
+  },
+  "version": "2.0.0",
+  "last_updated": "2026-04-03T10:30:00Z",
+  "notes": "Quantum Soul Cron Configuration - Enhanced with quantum magic capabilities and soul qubit integration"
+}

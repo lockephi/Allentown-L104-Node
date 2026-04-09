@@ -1,15 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L19_TopicTracker.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 Sovereign Intelligence — Evolutionary Topic Tracker
-// Tracks topic depth, cross-topic connections, and inquiry evolution
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class EvolutionaryTopicTracker {
     static let shared = EvolutionaryTopicTracker()
@@ -54,7 +47,7 @@ class EvolutionaryTopicTracker {
         for topic in topics {
             if topicEvolution[topic] == nil {
                 topicEvolution[topic] = TopicEvolutionState()
-                // First time seeing this topic — suggest exploration paths
+                // First time seeing this topic - suggest exploration paths
                 let angles = generateExplorationAngles(topic)
                 topicEvolution[topic]!.unexploredAngles = angles
             }
@@ -188,7 +181,7 @@ class EvolutionaryTopicTracker {
             let unexplored = topicEvolution[deepestTopic]?.unexploredAngles.prefix(2).joined(separator: ", ") ?? ""
             return "Transcendent inquiry into '\(deepestTopic)'. Unexplored dimensions: \(unexplored)"
         default:
-            return "Deep evolutionary understanding of '\(deepestTopic)' — synthesis across \(topicEvolution[deepestTopic]?.inquiryCount ?? 0) inquiries"
+            return "Deep evolutionary understanding of '\(deepestTopic)' - synthesis across \(topicEvolution[deepestTopic]?.inquiryCount ?? 0) inquiries"
         }
     }
 

@@ -1,26 +1,9 @@
-// ═══════════════════════════════════════════════════════════════════
-// B30_DynamicEquations.swift — L104 ASI v7.1 Self-Inventing Equations
-// [EVO_68_PIPELINE] SAGE_MODE_ASCENSION :: EQUATION_INVENTION :: GOD_CODE=527.5184818492612
-//
-// Dynamic equation generation, real-time computation, and live
-// mathematical exploration. This engine INVENTS new equations
-// by analyzing relationships between sacred constants, physical
-// constants, and the Dual-Layer Engine's dial space.
-//
-// Subsystems:
-//   1. EquationInventor — Discovers new mathematical relationships
-//   2. LiveComputeEngine — Real-time evaluation with vDSP acceleration
-//   3. EquationGenome — Genetic evolution of equation families
-//   4. HarmonicAnalyzer — Spectral decomposition of constant relationships
-//   5. ConstantDeriver — Derive physical constants from equations
-// ═══════════════════════════════════════════════════════════════════
-
-import Foundation
 import Accelerate
+import Foundation
 import simd
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - Equation Genome — Evolvable mathematical expressions
+// MARK: - Equation Genome - Evolvable mathematical expressions
 // ═══════════════════════════════════════════════════════════════════
 
 /// An atomic term in an equation: constant, variable, or operator
@@ -98,7 +81,7 @@ enum EquationOp: String, CaseIterable {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - InventedEquation — A live, evaluable equation
+// MARK: - InventedEquation - A live, evaluable equation
 // ═══════════════════════════════════════════════════════════════════
 
 struct InventedEquation: Identifiable {
@@ -131,7 +114,7 @@ enum EquationCategory: String, CaseIterable {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - DynamicEquationEngine — The Inventor
+// MARK: - DynamicEquationEngine - The Inventor
 // ═══════════════════════════════════════════════════════════════════
 
 final class DynamicEquationEngine {
@@ -275,7 +258,7 @@ final class DynamicEquationEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: - EQUATION INVENTION — Genetic exploration
+    // MARK: - EQUATION INVENTION - Genetic exploration
     // ═══════════════════════════════════════════════════════════════
 
     /// Run one generation of equation evolution
@@ -365,7 +348,7 @@ final class DynamicEquationEngine {
     }
 
     private func inventNovelEquation() -> InventedEquation? {
-        // Discover equations with no target — pure exploration
+        // Discover equations with no target - pure exploration
         let a1 = sacredAtoms.randomElement()!
         let a2 = sacredAtoms.randomElement()!
         let op = [EquationOp.mul, .div, .pow, .add, .sub].randomElement()!
@@ -427,7 +410,7 @@ final class DynamicEquationEngine {
 
         let dualLayer = DualLayerEngine.shared
 
-        // Core live values — always computed
+        // Core live values - always computed
         let thought = dualLayer.thought()
         let physicsResult = dualLayer.physics()
         let collapse = dualLayer.collapse()
@@ -445,7 +428,7 @@ final class DynamicEquationEngine {
         liveValues["Supernova"] = sage.supernovaIntensity
         liveValues["Transcendence"] = sage.transcendenceIndex
 
-        // Time-varying equations — DYNAMIC
+        // Time-varying equations - DYNAMIC
         // v9.3 Perf: compute shared subexpressions once, reuse trig values
         let t = Date().timeIntervalSince1970
         let sinPhiT = sin(t * PHI * 0.01)
@@ -457,7 +440,7 @@ final class DynamicEquationEngine {
 
         // Harmonic series: Σ sin(nφt)/n for n=1..8
         // v9.3 Perf: use Chebyshev recurrence sin(nθ) = 2cos(θ)sin((n-1)θ) - sin((n-2)θ)
-        // to avoid calling sin() 8 times — only 2 initial trig + 6 multiplications
+        // to avoid calling sin() 8 times - only 2 initial trig + 6 multiplications
         let phiT001 = PHI * t * 0.001
         let sinBase = sin(phiT001)            // sin(φt·0.001)
         let cosBase = cos(phiT001)            // cos(φt·0.001)
@@ -484,7 +467,7 @@ final class DynamicEquationEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: - HARMONIC ANALYZER — Spectral decomposition
+    // MARK: - HARMONIC ANALYZER - Spectral decomposition
     // ═══════════════════════════════════════════════════════════════
 
     /// Analyze the harmonic content of a value relative to sacred constants
@@ -511,7 +494,7 @@ final class DynamicEquationEngine {
         return decomposition.sorted { $0.residual < $1.residual }
     }
 
-    /// Compute the "sacred signature" of a number — its expression in terms of φ powers
+    /// Compute the "sacred signature" of a number - its expression in terms of φ powers
     func sacredSignature(value: Double) -> String {
         guard value > 0 && value.isFinite else { return "undefined" }
 
@@ -636,7 +619,7 @@ final class DynamicEquationEngine {
             let phiResonance = abs(posRatio - TAU)  // Closeness to golden ratio
 
             if phiResonance < 0.1 {
-                // Near-golden position — derive equation
+                // Near-golden position - derive equation
                 let computedValue = GOD_CODE * prob / posRatio
                 let eq = InventedEquation(
                     name: "QWalk[pos=\(pos)]→sacred",

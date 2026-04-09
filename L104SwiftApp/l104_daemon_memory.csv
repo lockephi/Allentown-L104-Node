@@ -1,0 +1,13 @@
+timestamp,collection_name,size_items,estimated_memory_mb,is_growing,growth_rate_items_per_sec
+2026-03-29T04:31:25Z,responseCache,0,0.00,false,0.00
+2026-03-29T04:31:25Z,concepts,0,0.00,false,0.00
+2026-03-29T04:31:25Z,trainingData,0,0.00,false,0.00
+2026-03-29T04:31:25Z,userKnowledge,0,0.00,false,0.00
+2026-03-29T04:31:25Z,responseCache,0,0.00,false,0.00
+2026-03-29T04:31:25Z,concepts,0,0.00,false,0.00
+2026-03-29T04:31:25Z,trainingData,0,0.00,false,0.00
+2026-03-29T04:31:25Z,userKnowledge,0,0.00,false,0.00
+2026-03-29T04:33:05Z,responseCache,0,0.00,false,0.00
+2026-03-29T04:33:05Z,concepts,0,0.00,false,0.00
+2026-03-29T04:33:05Z,trainingData,0,0.00,false,0.00
+2026-03-29T04:33:05Z,userKnowledge,0,0.00,false,0.00

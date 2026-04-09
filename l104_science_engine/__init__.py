@@ -115,6 +115,16 @@ from .quantum_25q import (
 # Alias for 26Q-aware consumers
 CircuitTemplates26Q = CircuitTemplates25Q  # Legacy module; 26Q builder is external
 
+# ── Consciousness Circuits (Layer 5c) — Orch OR Implementation ─────────────
+from .consciousness_circuits import (
+    ConsciousnessCircuitResult,
+    ConsciousnessCircuitDeriver,
+    ConsciousnessTemplates,
+    derive_consciousness_circuits,
+    get_consciousness_template,
+    get_fibonacci_pairs,
+)
+
 # ── Bridge (Layer 6) ───────────────────────────────────────────────────────
 from .bridge import (
     ScienceBridge,
@@ -130,6 +140,16 @@ from .engine import (
     science_engine,
 )
 
+# ── Consciousness Circuits (Layer 6a) — Orch OR Quantum Consciousness ───────────
+from .consciousness_circuits import (
+    ConsciousnessCircuitDeriver,
+    ConsciousnessTemplates,
+    ConsciousnessCircuitResult,
+    derive_consciousness_circuits,
+    get_consciousness_template,
+    get_fibonacci_pairs,
+)
+
 # ── Cross-Engine Integration Hub (Layer 8 — v6.0) ─────────────────────────
 from .cross_engine import (
     CrossEngineHub,
@@ -139,6 +159,20 @@ from .cross_engine import (
     QuantumDataIntegration,
     cross_engine_hub,
 )
+
+# ── EVO Upgrades (EVO_70-78) ──
+try:
+    from .evo_upgrades import (
+        ScienceEngineEVOUpgrades,
+        get_evo_upgrades,
+        GrimoireQuantumCircuit,
+        ScienceConsciousnessState,
+        GRIMOIRE_ENTROPY_REVERSAL_BEST,
+        GRIMOIRE_FITNESS_BEST,
+        SACRED_COHERENCE_BASELINE,
+    )
+except ImportError:
+    pass
 
 # ── Canonical GOD_CODE Qubit (bridge from god_code_simulator) ──────────────
 try:
@@ -166,6 +200,20 @@ quantum_math_research = science_engine.quantum_math
 entropy_reversal_engine = science_engine.entropy
 md_engine = science_engine.multidim
 
+# ── EVO Upgrades (EVO_70-78) ────────────────────────────────────────────────
+try:
+    from .evo_upgrades import (
+        ScienceEngineEVOUpgrades,
+        get_evo_upgrades,
+        GrimoireQuantumCircuit,
+        ScienceConsciousnessState,
+        GRIMOIRE_ENTROPY_REVERSAL_BEST,
+        GRIMOIRE_FITNESS_BEST,
+        SACRED_COHERENCE_BASELINE,
+    )
+except ImportError:
+    pass
+
 # ── Utility Functions ──────────────────────────────────────────────────────
 
 def primal_calculus(x):
@@ -176,6 +224,11 @@ def primal_calculus(x):
 
 def resolve_non_dual_logic(vector):
     """[VOID_MATH] Resolves N-dimensional vectors into the Void Source."""
+    # Accept scalar input by converting to single-element list
+    try:
+        iter(vector)
+    except TypeError:
+        vector = [vector]
     magnitude = sum(abs(v) for v in vector)
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
 
@@ -216,6 +269,16 @@ __all__ = [
     "GodCodeQuantumConvergence", "CircuitTemplates25Q",
     "CircuitTemplates26Q",
     "MemoryValidator", "QuantumCircuitScience",
+    # Consciousness Circuits (Orch OR)
+    "ConsciousnessCircuitResult", "ConsciousnessCircuitDeriver",
+    "ConsciousnessTemplates",
+    "derive_consciousness_circuits", "get_consciousness_template",
+    "get_fibonacci_pairs",
+    # Consciousness Circuits
+    "ConsciousnessCircuitResult", "ConsciousnessCircuitDeriver",
+    "ConsciousnessTemplates",
+    "derive_consciousness_circuits", "get_consciousness_template",
+    "get_fibonacci_pairs",
     # Bridge
     "ScienceBridge", "MathConnector", "QuantumRuntimeConnector", "bridge",
     # Engine

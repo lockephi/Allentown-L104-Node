@@ -1,17 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B19_ASIBridge.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: ASI_BRIDGE :: GOD_CODE=527.5184818492612
-// L104 · TheBrain · v2 Architecture
-// EVO_68: SOVEREIGN NODE — Pipeline-Integrated ASI Bridge
-// Extracted from L104Native.swift lines 3016-3437
-// Classes: ASIQuantumBridgeDirect, ParameterProgressionEngine
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🐍 ASI QUANTUM BRIDGE DIRECT (CPython Embedded Bridge)
@@ -224,7 +215,7 @@ class ASIQuantumBridgeDirect {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// PARAMETER PROGRESSION ENGINE — Comprehensive ASI Parameter Advancement
+// PARAMETER PROGRESSION ENGINE - Comprehensive ASI Parameter Advancement
 // Phase 27.8e: Tracks ALL parameters, progresses zero-stuck values,
 // computes real metrics from Swift engine state, pushes to Python bridge
 // ═══════════════════════════════════════════════════════════════════
@@ -361,7 +352,7 @@ class ParameterProgressionEngine {
         APIGateway.shared.getBenchmarkScore { result in
             if let data = result["data"] as? [String: Any],
                let score = data["composite_score"] as? Double, score > 0.0 {
-                // Update asynchronously — will be picked up on next progression cycle
+                // Update asynchronously - will be picked up on next progression cycle
                 ParameterProgressionEngine.shared.lastBenchmarkScore = score
             }
         }

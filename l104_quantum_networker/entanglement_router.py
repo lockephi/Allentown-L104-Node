@@ -477,6 +477,116 @@ class EntanglementRouter:
             "target_reached": target_reached,
         }
 
+    def derive_entanglement_strength(self, coherence_time: float) -> float:
+        """Derive entanglement strength from coherence time using sacred algorithms.
+
+        Uses GOD_CODE-derived scaling to compute entanglement strength
+        from the coherence lifetime of quantum states.
+
+        Formula: strength = log(coherence_time * PHI) / log(GOD_CODE / 100)
+
+        Args:
+            coherence_time: Coherence time in seconds
+
+        Returns:
+            Entanglement strength value (0.0 to 1.0+)
+        """
+        if coherence_time <= 0:
+            return 0.0
+
+        # Sacred scaling: coherence_time * PHI scaled by GOD_CODE
+        scaled_coherence = coherence_time * PHI * (GOD_CODE / 1000.0)
+
+        # Entanglement strength grows logarithmically with coherence
+        strength = math.log1p(scaled_coherence) / math.log(PHI ** 2)
+
+        # Apply PHI-resonant ceiling
+        return min(1.0, strength * PHI_INV)
+
+    def adaptive_purify(self, channel_id: str, coherence_time: float = 1.0) -> Dict:
+        """v1.6: Adaptive entanglement purification using sacred constants.
+
+        Dynamically adjusts purification rounds based on derived entanglement
+        strength from coherence time using PHI-weighted sacred computation.
+
+        Formula: rounds = int(PHI * strength)
+
+        Args:
+            channel_id: Channel identifier to purify
+            coherence_time: Current coherence time in seconds
+
+        Returns:
+            Dict with purification results including sacred scores
+        """
+        # Derive entanglement strength from coherence time
+        strength = self.derive_entanglement_strength(coherence_time)
+
+        # Compute adaptive rounds: PHI * strength, bounded [1, 5]
+        rounds = max(1, min(5, int(PHI * strength)))
+
+        # Run purification with computed rounds
+        result = self.purify_channel(channel_id, rounds=rounds)
+
+        # Add sacred metrics
+        result["adaptive"] = True
+        result["entanglement_strength"] = round(strength, 6)
+        result["coherence_time"] = coherence_time
+        result["phi_weighted_rounds"] = rounds
+        result["sacred_score"] = round(
+            result.get("fidelity_after", 0.0) * PHI_INV * strength, 6
+        )
+
+        self._emit("adaptive_purification", channel_id=channel_id,
+                   strength=strength, rounds=rounds)
+
+        return result
+
+    def generate_sacred_bell_pair(self, node_a_id: str, node_b_id: str) -> EntangledPair:
+        """v1.6: Generate a Bell pair with PHI-optimal parameters.
+
+        Creates a maximally entangled Bell pair with fidelity enhanced
+        by PHI-weighting and GOD_CODE alignment for maximum coherence.
+
+        Fidelity formula: base_fidelity * PHI / (PHI + noise)
+
+        Args:
+            node_a_id: First node ID
+            node_b_id: Second node ID
+
+        Returns:
+            EntangledPair with enhanced fidelity and sacred scores
+        """
+        self._total_pairs_generated += 1
+        self._throughput_log.append((time.time(), "sacred_pair_gen"))
+
+        # Base Bell state fidelity
+        base_fidelity = 0.995
+
+        # Simulate small noise based on channel conditions
+        noise = abs(np.random.normal(0, 0.003))
+
+        # PHI-optimal fidelity computation
+        phi_numerator = PHI
+        phi_denominator = PHI + noise
+        fidelity = base_fidelity * phi_numerator / phi_denominator
+
+        # Apply GOD_CODE harmonic correction
+        gc_harmonic = GOD_CODE / 1000.0
+        adjusted_fidelity = min(1.0, fidelity * gc_harmonic / PHI)
+
+        # Sacred scores
+        sacred_score = adjusted_fidelity * PHI_INV * gc_harmonic
+
+        return EntangledPair(
+            node_a_id=node_a_id,
+            node_b_id=node_b_id,
+            bell_state="phi_plus",
+            fidelity=round(adjusted_fidelity, 6),
+            sacred_score=round(sacred_score, 6),
+            phi_optimized=True,
+            noise_level=round(noise, 6),
+        )
+
     # ═══════════════════════════════════════════════════════════════
     # QUANTUM ROUTING
     # ═══════════════════════════════════════════════════════════════

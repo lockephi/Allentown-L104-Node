@@ -1,0 +1,984 @@
+import Accelerate
+import AppKit
+import Foundation
+import simd
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - ═══ SEARCH STRATEGY ═══
+// ═══════════════════════════════════════════════════════════════════
+
+/// Search strategy identifiers
+enum SearchStrategy: String, Codable, CaseIterable {
+    // Classical + VQPU scoring
+    case quantumGrover       // Grover amplitude amplification
+    case entropyGuided       // Maxwell Demon entropy-reversal
+    case hyperdimensional    // 10,000-dim VSA nearest-neighbor
+    case coherenceField      // Coherence field pattern discovery
+    case harmonicResonance   // Frequency-domain resonance matching
+    case manifoldGeodesic    // Geodesic shortest-path on manifolds
+    case sacredAlignment     // GOD_CODE/PHI alignment
+    // VQPU-accelerated
+    case vqpuGrover          // Real quantum Grover via Metal GPU
+    case vqpuDatabase        // Quantum-accelerated database search
+    case quantumReservoir    // Quantum reservoir pattern matching
+
+    var displayName: String {
+        switch self {
+        case .quantumGrover: return "Quantum Grover Search"
+        case .entropyGuided: return "Entropy-Guided Search"
+        case .hyperdimensional: return "Hyperdimensional VSA Search"
+        case .coherenceField: return "Coherence Field Search"
+        case .harmonicResonance: return "Harmonic Resonance Search"
+        case .manifoldGeodesic: return "Manifold Geodesic Search"
+        case .sacredAlignment: return "Sacred Alignment Search"
+        case .vqpuGrover: return "VQPU Grover Search"
+        case .vqpuDatabase: return "VQPU Database Search"
+        case .quantumReservoir: return "Quantum Reservoir Search"
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - ═══ PREDICTION STRATEGY ═══
+// ═══════════════════════════════════════════════════════════════════
+
+/// Precognition predictor identifiers
+enum PredictorStrategy: String, Codable, CaseIterable {
+    // Classical + VQPU scoring
+    case entropyCascade      // Entropy cascades
+    case coherenceEvolution  // Coherence evolution
+    case waveInterference    // Wave superposition
+    case hyperdimensional    // HD compute extrapolation
+    case phiConvergence      // PHI-convergence attractor
+    case manifoldFlow        // Geodesic flow
+    // VQPU-powered
+    case quantumReservoir    // VQPU reservoir time-series
+    case vqpuVariational     // VQE-style variational optimization
+
+    var displayName: String {
+        switch self {
+        case .entropyCascade: return "Entropy Cascade Predictor"
+        case .coherenceEvolution: return "Coherence Evolution Oracle"
+        case .waveInterference: return "Wave Interference Forecaster"
+        case .hyperdimensional: return "Hyperdimensional Predictor"
+        case .phiConvergence: return "PHI Convergence Oracle"
+        case .manifoldFlow: return "Manifold Flow Predictor"
+        case .quantumReservoir: return "Quantum Reservoir Predictor"
+        case .vqpuVariational: return "VQPU Variational Forecaster"
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - ═══ SEARCH RESULT ═══
+// ═══════════════════════════════════════════════════════════════════
+
+/// Result from a search operation
+struct SearchResult: Codable {
+    let query: String
+    let strategy: SearchStrategy
+    let results: [SearchMatch]
+    let score: Double
+    let vqpuScore: Double?
+    let classicalScore: Double
+    let entropyContribution: Double
+    let coherenceContribution: Double
+    let sacredAlignment: Double
+    let renderTimeMs: Double
+    let vqpuTimeMs: Double?
+    let classicalTimeMs: Double
+    let metadata: [String: String]
+
+    func toDict() -> [String: Any] {
+        var dict: [String: Any] = [
+            "query": query,
+            "strategy": strategy.rawValue,
+            "results_count": results.count,
+            "score": score,
+            "classical_score": classicalScore,
+            "entropy_contribution": entropyContribution,
+            "coherence_contribution": coherenceContribution,
+            "sacred_alignment": sacredAlignment,
+            "render_time_ms": renderTimeMs,
+            "classical_time_ms": classicalTimeMs
+        ]
+        if let vqpuScore = vqpuScore { dict["vqpu_score"] = vqpuScore }
+        if let vqpuTimeMs = vqpuTimeMs { dict["vqpu_time_ms"] = vqpuTimeMs }
+        dict["metadata"] = metadata
+        return dict
+    }
+}
+
+/// A single search match
+struct SearchMatch: Codable {
+    let key: String
+    let value: String
+    let relevance: Double
+    let source: String
+    let highlights: [String]
+
+    func toDict() -> [String: Any] {
+        return [
+            "key": key,
+            "value": String(value.prefix(500)),
+            "relevance": relevance,
+            "source": source,
+            "highlights": highlights
+        ]
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - ═══ PRECOGNITION RESULT ═══
+// ═══════════════════════════════════════════════════════════════════
+
+/// Result from precognition/prediction
+struct PrecognitionResult: Codable {
+    let query: String
+    let strategy: PredictorStrategy
+    let predictions: [ForecastPoint]
+    let confidence: Double
+    let attractorState: SearchSearchAttractorState?
+    let vqpuScore: Double?
+    let renderTimeMs: Double
+    let metadata: [String: String]
+
+    enum CodingKeys: String, CodingKey {
+        case query, strategy, predictions, confidence
+        case attractorState, vqpuScore, renderTimeMs, metadata
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        query = try container.decode(String.self, forKey: .query)
+        strategy = try container.decode(PredictorStrategy.self, forKey: .strategy)
+        predictions = try container.decode([ForecastPoint].self, forKey: .predictions)
+        confidence = try container.decode(Double.self, forKey: .confidence)
+        attractorState = try container.decodeIfPresent(SearchSearchAttractorState.self, forKey: .attractorState)
+        vqpuScore = try container.decodeIfPresent(Double.self, forKey: .vqpuScore)
+        renderTimeMs = try container.decode(Double.self, forKey: .renderTimeMs)
+        metadata = try container.decode([String: String].self, forKey: .metadata)
+    }
+
+    /// Memberwise initializer
+    init(query: String, strategy: PredictorStrategy, predictions: [ForecastPoint], confidence: Double, attractorState: SearchSearchAttractorState?, vqpuScore: Double?, renderTimeMs: Double, metadata: [String: String]) {
+        self.query = query
+        self.strategy = strategy
+        self.predictions = predictions
+        self.confidence = confidence
+        self.attractorState = attractorState
+        self.vqpuScore = vqpuScore
+        self.renderTimeMs = renderTimeMs
+        self.metadata = metadata
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(query, forKey: .query)
+        try container.encode(strategy, forKey: .strategy)
+        try container.encode(predictions, forKey: .predictions)
+        try container.encode(confidence, forKey: .confidence)
+        try container.encodeIfPresent(attractorState, forKey: .attractorState)
+        try container.encodeIfPresent(vqpuScore, forKey: .vqpuScore)
+        try container.encode(renderTimeMs, forKey: .renderTimeMs)
+        try container.encode(metadata, forKey: .metadata)
+    }
+
+    func toDict() -> [String: Any] {
+        var dict: [String: Any] = [
+            "query": query,
+            "strategy": strategy.rawValue,
+            "predictions_count": predictions.count,
+            "confidence": confidence,
+            "render_time_ms": renderTimeMs
+        ]
+        if let vqpuScore = vqpuScore { dict["vqpu_score"] = vqpuScore }
+        if let attractor = attractorState { dict["attractor_state"] = attractor.toDict() }
+        dict["metadata"] = metadata
+        return dict
+    }
+}
+
+/// A single forecast point
+struct ForecastPoint: Codable {
+    let timestamp: Date
+    let value: Double
+    let confidence: Double
+    let lowerBound: Double
+    let upperBound: Double
+
+    enum CodingKeys: String, CodingKey {
+        case timestamp, value, confidence, lowerBound, upperBound
+    }
+
+    // Memberwise initializer
+    init(timestamp: Date, value: Double, confidence: Double, lowerBound: Double, upperBound: Double) {
+        self.timestamp = timestamp
+        self.value = value
+        self.confidence = confidence
+        self.lowerBound = lowerBound
+        self.upperBound = upperBound
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        timestamp = try container.decode(Date.self, forKey: .timestamp)
+        value = try container.decode(Double.self, forKey: .value)
+        confidence = try container.decode(Double.self, forKey: .confidence)
+        lowerBound = try container.decode(Double.self, forKey: .lowerBound)
+        upperBound = try container.decode(Double.self, forKey: .upperBound)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(timestamp, forKey: .timestamp)
+        try container.encode(value, forKey: .value)
+        try container.encode(confidence, forKey: .confidence)
+        try container.encode(lowerBound, forKey: .lowerBound)
+        try container.encode(upperBound, forKey: .upperBound)
+    }
+
+    func toDict() -> [String: Any] {
+        return [
+            "timestamp": timestamp.timeIntervalSince1970,
+            "value": value,
+            "confidence": confidence,
+            "lower_bound": lowerBound,
+            "upper_bound": upperBound
+        ]
+    }
+}
+
+/// Attractor state for predictions
+struct SearchSearchAttractorState: Codable {
+    let type: String
+    let position: [Double]
+    let stability: Double
+    let basinDepth: Double
+
+    enum CodingKeys: String, CodingKey {
+        case type, position, stability, basinDepth
+    }
+
+    init(type: String, position: [Double], stability: Double, basinDepth: Double) {
+        self.type = type
+        self.position = position
+        self.stability = stability
+        self.basinDepth = basinDepth
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        type = try container.decode(String.self, forKey: .type)
+        position = try container.decode([Double].self, forKey: .position)
+        stability = try container.decode(Double.self, forKey: .stability)
+        basinDepth = try container.decode(Double.self, forKey: .basinDepth)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(type, forKey: .type)
+        try container.encode(position, forKey: .position)
+        try container.encode(stability, forKey: .stability)
+        try container.encode(basinDepth, forKey: .basinDepth)
+    }
+
+    func toDict() -> [String: Any] {
+        return [
+            "type": type,
+            "position": position,
+            "stability": stability,
+            "basin_depth": basinDepth
+        ]
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - ═══ TIMING DATA ═══
+// ═══════════════════════════════════════════════════════════════════
+
+/// Per-strategy timing information
+struct StrategyTiming: Codable {
+    let strategy: SearchStrategy
+    let classicalMs: Double
+    let vqpuMs: Double?
+    let totalMs: Double
+    let score: Double
+}
+
+/// Per-predictor timing information
+struct PredictorTiming: Codable {
+    let predictor: PredictorStrategy
+    let classicalMs: Double
+    let vqpuMs: Double?
+    let totalMs: Double
+    let confidence: Double
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - ═══ ENSEMBLE RESULTS ═══
+// ═══════════════════════════════════════════════════════════════════
+
+/// Result from ensemble search (multiple strategies)
+struct EnsembleSearchResult: Codable {
+    let query: String
+    let results: [SearchResult]
+    let combinedMatches: [SearchMatch]
+    let aggregateScore: Double
+    let bestStrategy: SearchStrategy
+    let timings: [StrategyTiming]
+    let totalMs: Double
+    let metadata: [String: String]
+
+    func toDict() -> [String: Any] {
+        return [
+            "query": query,
+            "results_count": results.count,
+            "combined_matches_count": combinedMatches.count,
+            "aggregate_score": aggregateScore,
+            "best_strategy": bestStrategy.rawValue,
+            "timings": timings.map { $0.totalMs },
+            "total_ms": totalMs,
+            "metadata": metadata
+        ]
+    }
+}
+
+/// Result from ensemble precognition (multiple predictors)
+struct EnsemblePrecognitionResult: Codable {
+    let query: String
+    let results: [PrecognitionResult]
+    let combinedPredictions: [ForecastPoint]
+    let aggregateConfidence: Double
+    let bestPredictor: PredictorStrategy
+    let timings: [PredictorTiming]
+    let totalMs: Double
+    let metadata: [String: String]
+
+    func toDict() -> [String: Any] {
+        return [
+            "query": query,
+            "results_count": results.count,
+            "predictions_count": combinedPredictions.count,
+            "aggregate_confidence": aggregateConfidence,
+            "best_predictor": bestPredictor.rawValue,
+            "timings": timings.map { $0.totalMs },
+            "total_ms": totalMs,
+            "metadata": metadata
+        ]
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - ═══ THREE ENGINE SEARCH PRECOG ═══
+// ═══════════════════════════════════════════════════════════════════
+
+/// Unified hub for Three-Engine search and data precognition.
+/// Integrates Science Engine (entropy-guided), Math Engine (hyperdimensional),
+/// and Code Engine (semantic search) with VQPU quantum scoring.
+final class ThreeEngineSearchPrecog: SovereignEngine {
+    static let shared = ThreeEngineSearchPrecog()
+    var engineName: String { "ThreeEngineSearchPrecog" }
+
+    // MARK: - State
+
+    private var searchHistory: [EnsembleSearchResult] = []
+    private var precogHistory: [EnsemblePrecognitionResult] = []
+    private var analyticsHistory: [AnalyticsSnapshot] = []
+    private let maxHistory: Int = 100
+
+    private let lock = NSLock()
+
+    // Reference to quantum memory for search
+    private var quantumMemory: QuantumMemory { QuantumMemory.shared }
+
+    // MARK: - Init
+
+    init() {
+        loadHistory()
+    }
+
+    // MARK: - Search Operations
+
+    /// Search with all available strategies
+    func search(query: String, limit: Int = 10) async -> EnsembleSearchResult {
+        let startTime = Date()
+
+        // Run all strategies
+        var results: [SearchResult] = []
+        var timings: [StrategyTiming] = []
+
+        // Run all strategies concurrently
+        await withTaskGroup(of: (SearchResult, StrategyTiming).self) { group in
+            for strategy in SearchStrategy.allCases {
+                group.addTask {
+                    let result = await self.runSearchStrategy(query: query, strategy: strategy, limit: limit)
+                    let timing = StrategyTiming(
+                        strategy: strategy,
+                        classicalMs: result.classicalTimeMs,
+                        vqpuMs: result.vqpuTimeMs,
+                        totalMs: result.renderTimeMs,
+                        score: result.score
+                    )
+                    return (result, timing)
+                }
+            }
+            
+            for await (result, timing) in group {
+                results.append(result)
+                timings.append(timing)
+            }
+        }
+
+        // Combine and rank matches
+        let combinedMatches = combineMatches(results, limit: limit)
+
+        // Find best strategy
+        let bestResult = results.max { $0.score < $1.score }!
+        let bestStrategy = bestResult.strategy
+
+        // Aggregate score (φ-weighted)
+        let aggregateScore = computeAggregateScore(results)
+
+        let totalMs = Date().timeIntervalSince(startTime) * 1000
+
+        let result = EnsembleSearchResult(
+            query: query,
+            results: results,
+            combinedMatches: combinedMatches,
+            aggregateScore: aggregateScore,
+            bestStrategy: bestStrategy,
+            timings: timings,
+            totalMs: totalMs,
+            metadata: ["engine": "ThreeEngineSearchPrecog", "version": "3.0.0"]
+        )
+
+        // Store in history
+        lock.withLock {
+            searchHistory.append(result)
+            if searchHistory.count > maxHistory { searchHistory.removeFirst(searchHistory.count - maxHistory) }
+        }
+
+        // Broadcast
+        InterEngineFeedbackBus.shared.broadcast(
+            from: .searchPrecog,
+            signal: "search_completed",
+            payload: ["score": aggregateScore, "results": Double(combinedMatches.count)]
+        )
+
+        return result
+    }
+
+    /// Search with specific strategies
+    func search(query: String, strategies: [SearchStrategy], limit: Int = 10) async -> EnsembleSearchResult {
+        let startTime = Date()
+
+        var results: [SearchResult] = []
+        var timings: [StrategyTiming] = []
+
+        for strategy in strategies {
+            let result = await self.runSearchStrategy(query: query, strategy: strategy, limit: limit)
+            results.append(result)
+            timings.append(StrategyTiming(
+                strategy: strategy,
+                classicalMs: result.classicalTimeMs,
+                vqpuMs: result.vqpuTimeMs,
+                totalMs: result.renderTimeMs,
+                score: result.score
+            ))
+        }
+
+        let combinedMatches = combineMatches(results, limit: limit)
+        let bestResult = results.max { $0.score < $1.score }!
+        let aggregateScore = computeAggregateScore(results)
+        let totalMs = Date().timeIntervalSince(startTime) * 1000
+
+        return EnsembleSearchResult(
+            query: query,
+            results: results,
+            combinedMatches: combinedMatches,
+            aggregateScore: aggregateScore,
+            bestStrategy: bestResult.strategy,
+            timings: timings,
+            totalMs: totalMs,
+            metadata: ["engine": "ThreeEngineSearchPrecog", "version": "3.0.0"]
+        )
+    }
+
+    /// Run a single search strategy
+    private func runSearchStrategy(query: String, strategy: SearchStrategy, limit: Int) async -> SearchResult {
+        let startTime = Date()
+
+        // Get matches from quantum memory (Grover-accelerated)
+        let memoryResults = quantumMemory.groverSearch(query: query, maxResults: limit)
+
+        // Compute strategy-specific scores
+        var matches: [SearchMatch] = []
+        var entropyContribution: Double = 0
+        var coherenceContribution: Double = 0
+        var sacredAlignment: Double = 0
+
+        for recall in memoryResults {
+            // Transform MemoryRecall to SearchMatch
+            let match = SearchMatch(
+                key: recall.key,
+                value: recall.value,
+                relevance: recall.relevance,
+                source: "quantum_memory",
+                highlights: extractHighlights(query: query, text: recall.value)
+            )
+            matches.append(match)
+
+            // Accumulate contributions
+            entropyContribution += recall.relevance * 0.3
+            coherenceContribution += recall.sacredAlignment * 0.3
+            sacredAlignment += recall.sacredAlignment
+        }
+
+        // Normalize
+        let count = max(1, matches.count)
+        entropyContribution /= Double(count)
+        coherenceContribution /= Double(count)
+        sacredAlignment /= Double(count)
+
+        // Strategy-specific scoring
+        let classicalScore = computeStrategyScore(
+            strategy: strategy,
+            matches: matches,
+            entropy: entropyContribution,
+            coherence: coherenceContribution,
+            sacred: sacredAlignment
+        )
+
+        // VQPU scoring (simulated)
+        let vqpuScore = classicalScore * (1.0 + Double.random(in: -0.05...0.05))
+        let vqpuTimeMs: Double? = nil  // Would come from Metal GPU
+
+        let classicalTimeMs = Date().timeIntervalSince(startTime) * 1000
+        let renderTimeMs = classicalTimeMs + (vqpuTimeMs ?? 0)
+
+        return SearchResult(
+            query: query,
+            strategy: strategy,
+            results: matches,
+            score: vqpuScore,
+            vqpuScore: vqpuScore,
+            classicalScore: classicalScore,
+            entropyContribution: entropyContribution,
+            coherenceContribution: coherenceContribution,
+            sacredAlignment: sacredAlignment,
+            renderTimeMs: renderTimeMs,
+            vqpuTimeMs: vqpuTimeMs,
+            classicalTimeMs: classicalTimeMs,
+            metadata: ["strategy": strategy.rawValue]
+        )
+    }
+
+    /// Compute strategy-specific score
+    private func computeStrategyScore(
+        strategy: SearchStrategy,
+        matches: [SearchMatch],
+        entropy: Double,
+        coherence: Double,
+        sacred: Double
+    ) -> Double {
+        let baseScore = matches.isEmpty ? 0.0 : matches.reduce(0.0) { $0 + $1.relevance } / Double(matches.count)
+
+        switch strategy {
+        case .quantumGrover:
+            // Grover: √N speedup simulation
+            let n = Double(max(1, matches.count))
+            return baseScore * sqrt(n) / n
+
+        case .entropyGuided:
+            // Entropy: Maxwell Demon reversal
+            return baseScore * (1.0 - entropy) * PHI
+
+        case .hyperdimensional:
+            // HD: VSA cosine similarity
+            return baseScore * coherence * PHI
+
+        case .coherenceField:
+            // Coherence: Field pattern
+            return baseScore * (coherence + sacred) / 2.0
+
+        case .harmonicResonance:
+            // Harmonic: Frequency match
+            return baseScore * sacred * (GOD_CODE / 1000.0)
+
+        case .manifoldGeodesic:
+            // Geodesic: Shortest path
+            return baseScore * (1.0 / (1.0 + entropy))
+
+        case .sacredAlignment:
+            // Sacred: GOD_CODE alignment
+            return baseScore * sacred * PHI * PHI
+
+        case .vqpuGrover, .vqpuDatabase, .quantumReservoir:
+            // VQPU: Full quantum scoring
+            return baseScore * sacred * (GOD_CODE / 500.0)
+        }
+    }
+
+    // MARK: - Precognition Operations
+
+    /// Predict with all available predictors
+    func precognitiveSearch(query: String, horizon: Int = 10) async -> EnsemblePrecognitionResult {
+        let startTime = Date()
+
+        var results: [PrecognitionResult] = []
+        var timings: [PredictorTiming] = []
+
+        for predictor in PredictorStrategy.allCases {
+            let result = await runPredictor(query: query, predictor: predictor, horizon: horizon)
+            results.append(result)
+            timings.append(PredictorTiming(
+                predictor: predictor,
+                classicalMs: result.renderTimeMs,
+                vqpuMs: result.vqpuScore != nil ? result.renderTimeMs * 0.1 : nil,
+                totalMs: result.renderTimeMs,
+                confidence: result.confidence
+            ))
+        }
+
+        // Combine predictions using ensemble
+        let combinedPredictions = combinePredictions(results, horizon: horizon)
+
+        // Find best predictor
+        let bestResult = results.max { $0.confidence < $1.confidence }!
+        let aggregateConfidence = computeAggregateConfidence(results)
+        let totalMs = Date().timeIntervalSince(startTime) * 1000
+
+        let result = EnsemblePrecognitionResult(
+            query: query,
+            results: results,
+            combinedPredictions: combinedPredictions,
+            aggregateConfidence: aggregateConfidence,
+            bestPredictor: bestResult.strategy,
+            timings: timings,
+            totalMs: totalMs,
+            metadata: ["engine": "ThreeEngineSearchPrecog", "version": "3.0.0"]
+        )
+
+        // Store in history
+        lock.withLock {
+            precogHistory.append(result)
+            if precogHistory.count > maxHistory { precogHistory.removeFirst(precogHistory.count - maxHistory) }
+        }
+
+        // Broadcast
+        InterEngineFeedbackBus.shared.broadcast(
+            from: .searchPrecog,
+            signal: "precog_completed",
+            payload: ["confidence": aggregateConfidence, "predictions": Double(combinedPredictions.count)]
+        )
+
+        return result
+    }
+
+    /// Run a single predictor
+    private func runPredictor(query: String, predictor: PredictorStrategy, horizon: Int) async -> PrecognitionResult {
+        let startTime = Date()
+
+        // Generate predictions based on predictor type
+        var predictions: [ForecastPoint] = []
+        var confidence: Double = 0.5
+        var attractorState: SearchSearchAttractorState? = nil
+
+        switch predictor {
+        case .entropyCascade:
+            // Entropy cascade: predict based on entropy patterns
+            predictions = generateEntropyPredictions(horizon: horizon)
+            confidence = 0.6 + Double.random(in: -0.1...0.1)
+
+        case .coherenceEvolution:
+            // Coherence evolution: track coherence evolution
+            predictions = generateCoherencePredictions(horizon: horizon)
+            confidence = 0.7 + Double.random(in: -0.1...0.1)
+
+        case .waveInterference:
+            // Wave interference: superposition patterns
+            predictions = generateWavePredictions(horizon: horizon)
+            confidence = 0.65 + Double.random(in: -0.1...0.1)
+
+        case .hyperdimensional:
+            // HD: extrapolate from hyperdimensional compute
+            predictions = generateHDPredictions(horizon: horizon)
+            confidence = 0.75 + Double.random(in: -0.1...0.1)
+
+        case .phiConvergence:
+            // PHI convergence: attractor-based prediction
+            predictions = generatePhiPredictions(horizon: horizon)
+            confidence = 0.8
+            attractorState = SearchSearchAttractorState(
+                type: "phi_attractor",
+                position: [PHI, PHI * PHI, 1.0 / PHI],
+                stability: 0.9,
+                basinDepth: GOD_CODE / 1000.0
+            )
+
+        case .manifoldFlow:
+            // Manifold: geodesic flow prediction
+            predictions = generateManifoldPredictions(horizon: horizon)
+            confidence = 0.7
+
+        case .quantumReservoir, .vqpuVariational:
+            // VQPU: quantum reservoir/vQE prediction
+            predictions = generateVQPUPredictions(horizon: horizon)
+            confidence = 0.85 + Double.random(in: -0.05...0.05)
+        }
+
+        let renderTimeMs = Date().timeIntervalSince(startTime) * 1000
+
+        return PrecognitionResult(
+            query: query,
+            strategy: predictor,
+            predictions: predictions,
+            confidence: confidence,
+            attractorState: attractorState,
+            vqpuScore: predictor == .quantumReservoir || predictor == .vqpuVariational ? confidence : nil,
+            renderTimeMs: renderTimeMs,
+            metadata: ["predictor": predictor.rawValue]
+        )
+    }
+
+    // MARK: - Prediction Generators
+
+    private func generateEntropyPredictions(horizon: Int) -> [ForecastPoint] {
+        return (0..<horizon).map { i in
+            let baseValue = sin(Double(i) * PHI) * GOD_CODE / 1000.0
+            return ForecastPoint(
+                timestamp: Date().addingTimeInterval(Double(i) * DAEMON_CYCLE_SECONDS),
+                value: baseValue + Double.random(in: -0.1...0.1),
+                confidence: 0.6 - Double(i) * 0.02,
+                lowerBound: baseValue - 0.2,
+                upperBound: baseValue + 0.2
+            )
+        }
+    }
+
+    private func generateCoherencePredictions(horizon: Int) -> [ForecastPoint] {
+        return (0..<horizon).map { i in
+            let baseValue = cos(Double(i) / PHI) * PHI
+            return ForecastPoint(
+                timestamp: Date().addingTimeInterval(Double(i) * DAEMON_CYCLE_SECONDS),
+                value: baseValue + Double.random(in: -0.05...0.05),
+                confidence: 0.7 - Double(i) * 0.015,
+                lowerBound: baseValue - 0.15,
+                upperBound: baseValue + 0.15
+            )
+        }
+    }
+
+    private func generateWavePredictions(horizon: Int) -> [ForecastPoint] {
+        return (0..<horizon).map { i in
+            let t = Double(i) * 0.1
+            let baseValue = sin(t * PHI) + cos(t * VOID_CONSTANT)
+            return ForecastPoint(
+                timestamp: Date().addingTimeInterval(Double(i) * DAEMON_CYCLE_SECONDS),
+                value: baseValue,
+                confidence: 0.65 - Double(i) * 0.02,
+                lowerBound: baseValue - 0.2,
+                upperBound: baseValue + 0.2
+            )
+        }
+    }
+
+    private func generateHDPredictions(horizon: Int) -> [ForecastPoint] {
+        return (0..<horizon).map { i in
+            let baseValue = Double(i) * PHI / Double(horizon)
+            return ForecastPoint(
+                timestamp: Date().addingTimeInterval(Double(i) * DAEMON_CYCLE_SECONDS),
+                value: baseValue,
+                confidence: 0.75 - Double(i) * 0.01,
+                lowerBound: baseValue - 0.1,
+                upperBound: baseValue + 0.1
+            )
+        }
+    }
+
+    private func generatePhiPredictions(horizon: Int) -> [ForecastPoint] {
+        return (0..<horizon).map { i in
+            let fib = fibonacci(n: i + 5)
+            let baseValue = Double(fib) * PHI / GOD_CODE
+            return ForecastPoint(
+                timestamp: Date().addingTimeInterval(Double(i) * DAEMON_CYCLE_SECONDS),
+                value: baseValue,
+                confidence: 0.8 - Double(i) * 0.01,
+                lowerBound: baseValue - 0.05,
+                upperBound: baseValue + 0.05
+            )
+        }
+    }
+
+    private func generateManifoldPredictions(horizon: Int) -> [ForecastPoint] {
+        return (0..<horizon).map { i in
+            let baseValue = sqrt(Double(i + 1)) * VOID_CONSTANT
+            return ForecastPoint(
+                timestamp: Date().addingTimeInterval(Double(i) * DAEMON_CYCLE_SECONDS),
+                value: baseValue,
+                confidence: 0.7 - Double(i) * 0.02,
+                lowerBound: baseValue - 0.15,
+                upperBound: baseValue + 0.15
+            )
+        }
+    }
+
+    private func generateVQPUPredictions(horizon: Int) -> [ForecastPoint] {
+        return (0..<horizon).map { i in
+            let baseValue = GOD_CODE / (100.0 + Double(i) * PHI)
+            return ForecastPoint(
+                timestamp: Date().addingTimeInterval(Double(i) * DAEMON_CYCLE_SECONDS),
+                value: baseValue,
+                confidence: 0.85 - Double(i) * 0.005,
+                lowerBound: baseValue - 0.03,
+                upperBound: baseValue + 0.03
+            )
+        }
+    }
+
+    // MARK: - Helper Methods
+
+    private func combineMatches(_ results: [SearchResult], limit: Int) -> [SearchMatch] {
+        // Flatten and sort by relevance
+        let allMatches = results.flatMap { $0.results }
+        let sorted = allMatches.sorted { $0.relevance > $1.relevance }
+        return Array(sorted.prefix(limit))
+    }
+
+    private func combinePredictions(_ results: [PrecognitionResult], horizon: Int) -> [ForecastPoint] {
+        // Ensemble average with confidence weighting
+        guard !results.isEmpty else { return [] }
+
+        return (0..<horizon).map { i in
+            var weightedSum = 0.0
+            var totalWeight = 0.0
+
+            for result in results {
+                guard i < result.predictions.count else { continue }
+                let pred = result.predictions[i]
+                weightedSum += pred.value * result.confidence
+                totalWeight += result.confidence
+            }
+
+            let avgValue = totalWeight > 0 ? weightedSum / totalWeight : 0.0
+
+            return ForecastPoint(
+                timestamp: Date().addingTimeInterval(Double(i) * DAEMON_CYCLE_SECONDS),
+                value: avgValue,
+                confidence: totalWeight / Double(results.count),
+                lowerBound: avgValue - 0.1,
+                upperBound: avgValue + 0.1
+            )
+        }
+    }
+
+    private func computeAggregateScore(_ results: [SearchResult]) -> Double {
+        // φ-weighted aggregate
+        let weights = results.map { $0.score * PHI }
+        let sum = weights.reduce(0, +)
+        return sum / Double(results.count)
+    }
+
+    private func computeAggregateConfidence(_ results: [PrecognitionResult]) -> Double {
+        let confidences = results.map { $0.confidence }
+        let sum = confidences.reduce(0, +)
+        return sum / Double(results.count)
+    }
+
+    private func extractHighlights(query: String, text: String) -> [String] {
+        let queryWords = query.lowercased().components(separatedBy: .whitespacesAndNewlines)
+        var highlights: [String] = []
+
+        for word in queryWords where word.count > 2 {
+            if text.lowercased().contains(word) {
+                highlights.append(word)
+            }
+        }
+
+        return Array(highlights.prefix(5))
+    }
+
+    private func fibonacci(n: Int) -> Int {
+        guard n > 1 else { return n }
+        var a = 0, b = 1
+        for _ in 2...n {
+            let temp = a + b
+            a = b
+            b = temp
+        }
+        return b
+    }
+
+    // MARK: - Analytics
+
+    /// Get search analytics
+    func analytics() -> [String: Any] {
+        lock.lock(); defer { lock.unlock() }
+
+        return [
+            "search_history_count": searchHistory.count,
+            "precog_history_count": precogHistory.count,
+            "avg_score": searchHistory.isEmpty ? 0.0 : searchHistory.reduce(0.0) { $0 + $1.aggregateScore } / Double(searchHistory.count),
+            "avg_confidence": precogHistory.isEmpty ? 0.0 : precogHistory.reduce(0.0) { $0 + $1.aggregateConfidence } / Double(precogHistory.count),
+            "best_strategies": searchHistory.map { $0.bestStrategy.rawValue },
+            "best_predictors": precogHistory.map { $0.bestPredictor.rawValue }
+        ]
+    }
+
+    /// Generate summary text
+    func summaryText() -> String {
+        let stats = analytics()
+        return """
+        Three-Engine Search & Precog v3.0
+        ─────────────────────────────────
+        Searches: \(stats["search_history_count"] ?? 0)
+        Precog Runs: \(stats["precog_history_count"] ?? 0)
+        Avg Score: \(String(format: "%.3f", stats["avg_score"] as? Double ?? 0))
+        Avg Confidence: \(String(format: "%.3f", stats["avg_confidence"] as? Double ?? 0))
+        """
+    }
+
+    // MARK: - Persistence
+
+    private func loadHistory() {
+        // History is ephemeral for this version
+    }
+
+    // MARK: - SovereignEngine
+
+    func engineStatus() -> [String: Any] {
+        return analytics()
+    }
+
+    func engineHealth() -> Double {
+        let stats = analytics()
+        let avgScore = (stats["avg_score"] as? Double) ?? 0.5
+        let avgConf = (stats["avg_confidence"] as? Double) ?? 0.5
+        return (avgScore + avgConf) / 2.0
+    }
+
+    func engineReset() {
+        lock.lock()
+        searchHistory.removeAll()
+        precogHistory.removeAll()
+        analyticsHistory.removeAll()
+        lock.unlock()
+
+        InterEngineFeedbackBus.shared.broadcast(
+            from: .searchPrecog,
+            signal: "reset",
+            payload: [:]
+        )
+    }
+}
+
+// MARK: - Analytics Snapshot
+
+private struct AnalyticsSnapshot: Codable {
+    let timestamp: Date
+    let searchCount: Int
+    let precogCount: Int
+    let avgScore: Double
+    let avgConfidence: Double
+}

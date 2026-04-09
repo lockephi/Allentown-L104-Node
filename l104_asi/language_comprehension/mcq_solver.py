@@ -804,7 +804,7 @@ class MCQSolver:
                 spread = max_s - min_s
                 amplification = max(1.0, 0.5 / max(spread, 0.01))
                 amplification = min(amplification, 5.0)
-                mean_s = sum(scores_vals) / len(scores_vals)
+                mean_s = sum(scores_vals) / max(len(scores_vals), 1)
                 for cs in choice_scores:
                     deviation = cs["score"] - mean_s
                     cs["score"] = mean_s - deviation * amplification

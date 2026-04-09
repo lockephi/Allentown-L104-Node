@@ -1,14 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B14_QuantumInfra.swift — L104 Neural Architecture v3 (EVO_68)
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// Extracted from L104Native.swift
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🌌 QUANTUM DECOHERENCE SHIELD (Bucket B: Quantum Bridges)
@@ -19,7 +13,7 @@ import NaturalLanguage
 
 class QuantumDecoherenceShield {
     static let shared = QuantumDecoherenceShield()
-    // PHI, TAU, GOD_CODE — use globals from L01_Constants
+    // PHI, TAU, GOD_CODE - use globals from L01_Constants
     static let CALABI_YAU_DIM: Int = 7
     static let SHOR_REDUNDANCY: Int = 9  // 9-qubit Shor code
 
@@ -110,7 +104,8 @@ class QuantumDecoherenceShield {
         }
 
         // Identify error type from syndrome pattern
-        let syndromeNorm = sqrt(syndrome.map { $0 * $0 }.reduce(0, +))
+        var snSq = 0.0; vDSP_svesqD(syndrome, 1, &snSq, vDSP_Length(syndrome.count))
+        let syndromeNorm = sqrt(snSq)
         let errorType: ErrorType
         var errorLocation = -1
 
@@ -181,7 +176,8 @@ class QuantumDecoherenceShield {
 
         case .depolarizing:
             // Re-project onto code space
-            let norm = sqrt(ancillaRegister.map { $0 * $0 }.reduce(0, +))
+            var aSq = 0.0; vDSP_svesqD(ancillaRegister, 1, &aSq, vDSP_Length(ancillaRegister.count))
+            let norm = sqrt(aSq)
             if norm > 1e-15 {
                 for i in 0..<ancillaRegister.count {
                     ancillaRegister[i] /= norm
@@ -317,7 +313,7 @@ class QuantumDecoherenceShield {
             synced += 1
         }
 
-        // Distributed error correction — if peer fidelity drifts, correct
+        // Distributed error correction - if peer fidelity drifts, correct
         for (peerId, peerFid) in peerShieldStates {
             if peerFid < 0.5 {
                 distributedCorrections += 1

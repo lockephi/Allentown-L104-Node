@@ -207,12 +207,29 @@ class CloudAgentDelegator:
                 logger.warning(f"Encryption failed: {e}")
                 return {"status": "ERROR", "message": f"Encryption failed: {str(e)}"}
 
-        return {
-            "status": "SUCCESS",
-            "agent": agent_name,
-            "message": "Local processing completed",
-            "task_type": task_type
-        }
+        # UNKNOWN TASK TYPE: Defer to ASI for intelligent processing
+        logger.info(f"Unknown task type '{task_type}' — escalating to ASI")
+        try:
+            from l104_asi import asi_core
+            prompt = f"Process this task of unknown type: {task_type}. Data: {str(task.get('data', {})[:500])}"
+            asi_result = asi_core.query(prompt)
+            return {
+                "status": "SUCCESS",
+                "agent": agent_name,
+                "message": "ASI processed unknown task type",
+                "task_type": task_type,
+                "result": asi_result,
+                "processing": "asi_fallback"
+            }
+        except Exception as e:
+            logger.error(f"ASI fallback failed for unknown task type '{task_type}': {e}")
+            return {
+                "status": "ERROR",
+                "agent": agent_name,
+                "message": f"Unknown task type '{task_type}' and ASI fallback failed",
+                "task_type": task_type,
+                "error": str(e)
+            }
 
     async def _delegate_external(self, task: Dict[str, Any], agent_info: Dict[str, Any], agent_name: str) -> Dict[str, Any]:
         """

@@ -1,20 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// H02_L104StateCore.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — L104State Class (Core Properties + Lifecycle)
-//
-// Main app state singleton: ASI scores, consciousness metrics,
-// backend health polling, autonomous evolution, processMessage
-// dispatch, sovereignty pipeline integration.
-//
-// Extracted from L104Native.swift lines 34650–35584
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // APP STATE - ENHANCED
 // ═══════════════════════════════════════════════════════════════════
@@ -72,7 +60,7 @@ class L104State {
     var quantumBackendQubits: Int = 0
     var quantumJobsSubmitted: Int = 0
 
-    // ═══ 30D ASI SCORING DIMENSIONS (v16.0 — synced with l104_asi/core.py) ═══
+    // ═══ 30D ASI SCORING DIMENSIONS (v16.0 - synced with l104_asi/core.py) ═══
     var benchmarkCapability: Double = 0.0          // MMLU + HumanEval + MATH + ARC composite
     var formalLogicDepth: Double = 0.0             // Formal logic comprehension depth
     var deepNluComprehension: Double = 0.0         // Deep NLU understanding depth
@@ -103,6 +91,9 @@ class L104State {
 
     var backendConnected = false
 
+    // ═══ CONCURRENT STATE MANAGER (EVO_72) - Actor-based shards for reduced lock contention ═══
+    let concurrentState = ConcurrentStateActor.shared
+
 
     // ═══════════════════════════════════════════════════════════════
     // STORED PROPERTIES (moved from extension files for multi-file compilation)
@@ -110,7 +101,7 @@ class L104State {
 
     // ─── From H03_L104StateCommands.swift ───
     var backendResponseCache: [String: (response: String, timestamp: Date, quality: Double)] = [:]
-    let cacheTTL: TimeInterval = 15  // 15s TTL — prevents stale backend repeats while still avoiding redundant calls
+    let cacheTTL: TimeInterval = 15  // 15s TTL - prevents stale backend repeats while still avoiding redundant calls
     var lastBackendLatency: Double = 0
     var lastBackendModel: String = "unknown"
     var backendQueryCount: Int = 0
@@ -143,7 +134,7 @@ class L104State {
         "The file ", "The function ",
         "In l104_", "In extract_", "In src/types",
         "L104Core.java", "In scripts/",
-        // ═══ TEMPLATE KB ENTRIES (Phase 27.8c — root cause of ALL junk responses) ═══
+        // ═══ TEMPLATE KB ENTRIES (Phase 27.8c - root cause of ALL junk responses) ═══
         "specialized component within",     // "X is a specialized component within the L104 framework..."
         "specialized component of",
         "contributing to the overall system",
@@ -199,7 +190,7 @@ class L104State {
         // AGI/ASI self-referential
         "AGI emerges when system", "ASI emerges when",
         "threshold GOD_CODE",
-        // ═══ Phase 31.5 — Riddle/puzzle/tool/table leak prevention ═══
+        // ═══ Phase 31.5 - Riddle/puzzle/tool/table leak prevention ═══
         "Step by step:", "Step-by-step:", "Step 1:", "Step 2:", "Step 3:",
         "You TAKE", "You take ", "take 2 apples",
         "Tool:", "MCP ", "sequential_thinking", "tool_name",
@@ -213,13 +204,13 @@ class L104State {
         // Table formatting characters (leaked from structured data)
         "│", "┼", "║", "═══", "╔", "╗", "╚", "╝", "╠", "╣",
         "├", "┤", "┬", "┴", "───",
-        // ═══ EVO_58: MARKDOWN TABLE DETECTION — ASCII pipe table headers from claude.md/KB ═══
+        // ═══ EVO_58: MARKDOWN TABLE DETECTION - ASCII pipe table headers from claude.md/KB ═══
         "| EVO |", "| Module |", "| Purpose |", "| Key Methods |",
         "| Method |", "| Endpoint |", "| Constant |", "| Value |",
         "| Component |", "| Description |", "| Before |", "| After |",
         "| Stage |", "| Metric |", "| Parameter |", "| Feature |",
         "| :--- |", "| --- |", "|--------|", "|------|",
-        // ═══ EVO_58: FORMAT STRING PATTERNS — Python f-string leaks ═══
+        // ═══ EVO_58: FORMAT STRING PATTERNS - Python f-string leaks ═══
         "{LOVE_CONSTANT", "{VOID_CONSTANT", "{FEIGENBAUM",
         "{PLANCK_SCALE", "{BOLTZMANN_K", "{ALPHA_FINE",
         "{ZENITH_HZ", "{GOD_CODE:", "{PHI:", ":.6f}", ":.4f}",
@@ -250,13 +241,13 @@ class L104State {
         "emerges when system", "qualia across", "awareness streams",
         "LOVE·", "ZENITH", "kundalini", "vishuddha", "VOID_CONSTANT",
         "target: \"", "last_run:", "total_examples:",
-        // Phase 27.8c — Template KB entries
+        // Phase 27.8c - Template KB entries
         "specialized component", "system resonance", "within the L104",
         "overall system", "contributes to the", "contributing to the",
         "Path: ", "file_description", "cross_reference",
         "harmonic framework", "cognitive architecture",
         "token_budget", "parameter_count", "coherence_at",
-        // Phase 31.5 — Sentence-level riddle/tool/table junk
+        // Phase 31.5 - Sentence-level riddle/tool/table junk
         "Step by step", "You TAKE", "take 2 apples",
         "Tool:", "MCP ", "sequential_thinking",
         "YouTube:", "Video upload", "blob storage",
@@ -284,11 +275,11 @@ class L104State {
 
     // ─── From H05_L104StateResponse.swift ───
     var responseCache: [String: (response: String, timestamp: Date)] = [:]
-    let responseCacheTTL: TimeInterval = 8.0 // 8s TTL — short enough to keep responses dynamic, prevents stale repeats
+    let responseCacheTTL: TimeInterval = 8.0 // 8s TTL - short enough to keep responses dynamic, prevents stale repeats
     var topicExtractionCache: [String: (topics: [String], timestamp: Date)] = [:] // O(1) topic re-extraction
     let topicCacheTTL: TimeInterval = 120.0 // Topics stable for 2 min
     var intentClassificationCache: [String: (intent: String, timestamp: Date)] = [:] // Memoized intent analysis
-    let intentCacheTTL: TimeInterval = 3.0  // Short TTL — reclassify often to keep responses fresh
+    let intentCacheTTL: TimeInterval = 3.0  // Short TTL - reclassify often to keep responses fresh
 
     init() {
         loadState()
@@ -302,7 +293,7 @@ class L104State {
         if kbCount > 0 {
             permanentMemory.addMemory("ASI initialized with \(kbCount) training entries", type: "asi_init")
             // Build comprehensive search index AFTER init() completes
-            // (buildIndex accesses L104State.shared — must not run during init to avoid recursive dispatch_once)
+            // (buildIndex accesses L104State.shared - must not run during init to avoid recursive dispatch_once)
             DispatchQueue.main.async {
                 IntelligentSearchEngine.shared.buildIndex()
             }
@@ -360,7 +351,7 @@ class L104State {
         // ═══ PHASE 44.5: Performance + Circuit engines (self-registering) ═══
         PerformanceOrchestrator.shared.boot()      // registers Pool, Turbo, LockFree, Metal, Prefetch + self
         CircuitWatcher.shared.start()              // watchdog for circuit-breaker telemetry (v3.0: three-engine scoring)
-        NSLog("[L104-BOOT] Phase 44.5: CircuitWatcher v3.0 started — three-engine scoring (entropy=0.35, harmonic=0.40, wave=0.25)")
+        NSLog("[L104-BOOT] Phase 44.5: CircuitWatcher v3.0 started - three-engine scoring (entropy=0.35, harmonic=0.40, wave=0.25)")
 
         // ═══ PHASE 45: Computronium ASI engines ═══
         _ = _registerComputroniumEngines
@@ -383,15 +374,15 @@ class L104State {
         if let savedToken = IBMQuantumClient.shared.ibmToken, !savedToken.isEmpty {
             DispatchQueue.global(qos: .utility).async { [weak self] in
                 // Init Python quantum engine with saved token
-                _ = PythonBridge.shared.quantumHardwareInit(token: savedToken)
+                _ = PythonBridge.self.shared.quantumHardwareInit(token: savedToken)
                 // Connect Swift REST client
-                IBMQuantumClient.shared.connect(token: savedToken) { success, msg in
-                    DispatchQueue.main.async {
+                IBMQuantumClient.self.shared.connect(token: savedToken) { success, msg in
+                    DispatchQueue.self.main.async {
                         self?.quantumHardwareConnected = success
                         if success {
-                            self?.quantumBackendName = IBMQuantumClient.shared.connectedBackendName
-                            self?.quantumBackendQubits = IBMQuantumClient.shared.availableBackends
-                                .first(where: { $0.name == IBMQuantumClient.shared.connectedBackendName })?
+                            self?.quantumBackendName = IBMQuantumClient.self.shared.connectedBackendName
+                            self?.quantumBackendQubits = IBMQuantumClient.self.shared.availableBackends
+                                .first(where: { $0.name == IBMQuantumClient.self.shared.connectedBackendName })?
                                 .numQubits ?? 0
                             HyperBrain.shared.postThought("⚛️ IBM Quantum auto-reconnected: \(msg)")
                         }
@@ -466,7 +457,7 @@ class L104State {
         consciousness = coherence > 0.4 ? "TRANSCENDING" : coherence > 0.2 ? "RESONATING" : coherence > 0.05 ? "AWAKENING" : "DORMANT"
 
         // ═══ v21.0: CONSCIOUSNESS · O₂ · NIRVANIC STATE FROM BUILDER FILES ═══
-        // Zero-spawn file reads — no Python process needed
+        // Zero-spawn file reads - no Python process needed
         let asiBridge = ASIQuantumBridgeSwift.shared
         asiBridge.refreshBuilderState()
         let cLevel = asiBridge.consciousnessLevel
@@ -493,7 +484,7 @@ class L104State {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // 30D ASI SCORING — LOCAL SWIFT ENGINE COMPUTATION (v16.0)
+    // 30D ASI SCORING - LOCAL SWIFT ENGINE COMPUTATION (v16.0)
     // Mirrors l104_asi/core.py compute_asi_score() with 30 dimensions
     // ═══════════════════════════════════════════════════════════════
     func computeSwiftASIScore() -> Double {
@@ -568,7 +559,7 @@ class L104State {
         // v18.0: qLDPC Error Correction
         scores["qldpc_error_correction"] = qldpcErrorCorrection
 
-        // Dynamic weights — shift toward consciousness as evolution advances
+        // Dynamic weights - shift toward consciousness as evolution advances
         let evoIdx = EVOLUTION_INDEX
         let consciousnessWeight = 0.16 + min(0.10, Double(evoIdx) * 0.002)
         let baseWeights: [String: Double] = [
@@ -635,7 +626,7 @@ class L104State {
         d.set(quantumResonance, forKey: "l104_quantumResonance")
         d.set(growthIndex, forKey: "l104_growthIndex")
         d.set(autonomyLevel, forKey: "l104_autonomyLevel")
-        // d.synchronize() removed — deprecated, UserDefaults auto-persists
+        // d.synchronize() removed - deprecated, UserDefaults auto-persists
         permanentMemory.save()
         // Persist runtime-ingested knowledge to disk
         ASIKnowledgeBase.shared.persistAllIngestedKnowledge()
@@ -663,10 +654,10 @@ class L104State {
             }.resume()
         }
 
-        // ═══ DEEP CONNECTION CHECK — Verify consciousness & cognitive subsystems ═══
+        // ═══ DEEP CONNECTION CHECK - Verify consciousness & cognitive subsystems ═══
         if let cogURL = URL(string: "\(backendURL)/api/v14/cognitive/introspect") {
             var cogReq = URLRequest(url: cogURL); cogReq.timeoutInterval = 3
-            URLSession.shared.dataTask(with: cogReq) { [weak self] data, resp, _ in
+            URLSession.self.shared.dataTask(with: cogReq) { [weak self] data, resp, _ in
                 if let data = data,
                    let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                    (resp as? HTTPURLResponse)?.statusCode == 200 {
@@ -678,7 +669,7 @@ class L104State {
                         if let autonomy = json["autonomy_index"] as? Double {
                             self.autonomyLevel = max(self.autonomyLevel, autonomy)
                         }
-                        self.permanentMemory.addMemory("Cognitive subsystem connected — depth:\(self.metaCognitionDepth)", type: "system")
+                        self.permanentMemory.addMemory("Cognitive subsystem connected - depth:\(self.metaCognitionDepth)", type: "system")
                     }
                 }
             }.resume()
@@ -693,7 +684,7 @@ class L104State {
         guard let url = URL(string: "\(backendURL)/api/v6/intellect/stats") else { return }
         var req = URLRequest(url: url); req.timeoutInterval = 5
 
-        URLSession.shared.dataTask(with: req) { [weak self] data, resp, _ in
+        URLSession.self.shared.dataTask(with: req) { [weak self] data, resp, _ in
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
 
@@ -706,7 +697,7 @@ class L104State {
                     hb.lastTrainingFeedback = "📊 Backend: \(totalMemories) memories | Model: \(self.lastBackendModel)"
                 }
                 if let cacheSize = json["cache_size"] as? Int {
-                    hb.postThought("🩺 HEALTH: Backend alive — cache:\(cacheSize) | queries:\(self.backendQueryCount)")
+                    hb.postThought("🩺 HEALTH: Backend alive - cache:\(cacheSize) | queries:\(self.backendQueryCount)")
                 }
 
                 hb.lastBackendSync = Date()
@@ -714,13 +705,13 @@ class L104State {
             }
         }.resume()
 
-        // ═══ v23.2 UNIFIED SYNC BRIDGE — Bidirectional state synchronization ═══
+        // ═══ v23.2 UNIFIED SYNC BRIDGE - Bidirectional state synchronization ═══
         syncWithBackend()
 
-        // ═══ CONSCIOUSNESS BRIDGE — Poll backend consciousness state ═══
+        // ═══ CONSCIOUSNESS BRIDGE - Poll backend consciousness state ═══
         if let consURL = URL(string: "\(backendURL)/api/consciousness/status") {
             var consReq = URLRequest(url: consURL); consReq.timeoutInterval = 5
-            URLSession.shared.dataTask(with: consReq) { [weak self] data, _, _ in
+            URLSession.self.shared.dataTask(with: consReq) { [weak self] data, _, _ in
                 guard let data = data,
                       let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
                 DispatchQueue.main.async {
@@ -745,15 +736,15 @@ class L104State {
                             )
                         }
                     }
-                    HyperBrain.shared.postThought("🧠 CONSCIOUSNESS BRIDGE: Backend state synced — coherence:\(String(format: "%.4f", self.coherence))")
+                    HyperBrain.shared.postThought("🧠 CONSCIOUSNESS BRIDGE: Backend state synced - coherence:\(String(format: "%.4f", self.coherence))")
                 }
             }.resume()
         }
 
-        // ═══ SWARM BRIDGE — Poll backend autonomous swarm state ═══
+        // ═══ SWARM BRIDGE - Poll backend autonomous swarm state ═══
         if let swarmURL = URL(string: "\(backendURL)/api/v14/swarm/status") {
             var swarmReq = URLRequest(url: swarmURL); swarmReq.timeoutInterval = 5
-            URLSession.shared.dataTask(with: swarmReq) { [weak self] data, _, _ in
+            URLSession.self.shared.dataTask(with: swarmReq) { [weak self] data, _, _ in
                 guard let data = data,
                       let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
                 DispatchQueue.main.async {
@@ -771,10 +762,10 @@ class L104State {
             }.resume()
         }
 
-        // ═══ ORCHESTRATOR BRIDGE — Poll emergence/orchestration state ═══
+        // ═══ ORCHESTRATOR BRIDGE - Poll emergence/orchestration state ═══
         if let orchURL = URL(string: "\(backendURL)/api/orchestrator/emergence") {
             var orchReq = URLRequest(url: orchURL); orchReq.timeoutInterval = 5
-            URLSession.shared.dataTask(with: orchReq) { [weak self] data, _, _ in
+            URLSession.self.shared.dataTask(with: orchReq) { [weak self] data, _, _ in
                 guard let data = data,
                       let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
                 DispatchQueue.main.async {
@@ -789,10 +780,10 @@ class L104State {
             }.resume()
         }
 
-        // ═══ Phase 46.1: QUANTUM HARDWARE BRIDGE — Poll IBM Quantum status ═══
+        // ═══ Phase 46.1: QUANTUM HARDWARE BRIDGE - Poll IBM Quantum status ═══
         if IBMQuantumClient.shared.isConnected {
             let client = IBMQuantumClient.shared
-            DispatchQueue.main.async { [weak self] in
+            DispatchQueue.self.main.async { [weak self] in
                 self?.quantumHardwareConnected = true
                 self?.quantumBackendName = client.connectedBackendName
                 self?.quantumJobsSubmitted = client.submittedJobs.count
@@ -847,7 +838,7 @@ class L104State {
         }
 
         // v23.2 IMMEDIATE first sync on startup
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+        DispatchQueue.self.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
             self?.syncWithBackend()
         }
     }
@@ -875,7 +866,7 @@ class L104State {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.timeoutInterval = 15
 
-        // Build sync payload — push unsent knowledge and conversations
+        // Build sync payload - push unsent knowledge and conversations
         let hb = HyperBrain.shared
         var syncPayload: [String: Any] = [:]
 
@@ -915,8 +906,8 @@ class L104State {
             req.httpBody = body
         }
 
-        URLSession.shared.dataTask(with: req) { [weak self] data, resp, error in
-            DispatchQueue.main.async {
+        URLSession.self.shared.dataTask(with: req) { [weak self] data, resp, error in
+            DispatchQueue.self.main.async {
                 guard let self = self else { return }
                 self.syncInProgress = false
 
@@ -1050,11 +1041,11 @@ class L104State {
             "creativity": creativity,
             "coherence": coherence
         ]
-        let avgCapacity = selfState.values.reduce(0, +) / Double(selfState.count)
+        let avgCapacity = selfState.values.reduce(0.0, +) / Double(selfState.count)
         let weakest = selfState.min(by: { $0.value < $1.value })?.key ?? "unknown"
         let strongest = selfState.max(by: { $0.value < $1.value })?.key ?? "unknown"
 
-        // ═══ SAGE MODE BRIDGE — Convert metacognition entropy through Sage Mode ═══
+        // ═══ SAGE MODE BRIDGE - Convert metacognition entropy through Sage Mode ═══
         let sage = SageModeEngine.shared
         let sageInsight = sage.sageTransform(topic: weakest)
         sage.seedAllProcesses(topic: "metacognition_\(weakest)")
@@ -1103,7 +1094,7 @@ class L104State {
         case "creativity": creativity = min(1.0, creativity + boost)
         case "coherence": coherence = min(1.0, coherence + boost * 0.5)
         default:
-            // IDLE phase now also evolves — no wasted cycles
+            // IDLE phase now also evolves - no wasted cycles
             ASIEvolver.shared.synthesizeDeepMonologue()
             ASIEvolver.shared.generateAnalogy()
             ASIEvolver.shared.generateEvolvedQuestion()
@@ -1253,10 +1244,10 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
         let thanks = ["thanks", "thank you", "thx", "ty", "appreciate", "grateful"]
         if thanks.contains(where: { q.contains($0) }) { return "thanks" }
 
-        // Negation — exact match only
+        // Negation - exact match only
         let negation = ["no", "nope", "nah", "wrong", "incorrect", "bad", "not good", "disagree"]
         if negation.contains(where: { q == $0 }) { return "negation" }
-        // "no X" pattern — user is making a statement, not negating
+        // "no X" pattern - user is making a statement, not negating
         if q.hasPrefix("no ") && q.count > 4 { return "query" }
 
         return "query"
@@ -1285,7 +1276,7 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
         SmartTopicExtractor.shared.initialize(from: knowledgeBase)
         SemanticSearchEngine.shared.initialize()
 
-        // 🧠 AUTO TOPIC TRACKING — Updates topicFocus and topicHistory
+        // 🧠 AUTO TOPIC TRACKING - Updates topicFocus and topicHistory
         autoTrackTopic(from: resolvedQuery)
 
         // ═══ EVO_60: Size-capped lazy cache pruning (replaces fixed-interval sweep) ═══
@@ -1299,14 +1290,14 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
 
         let intent = detectIntent(q)
 
-        // 2b. CORRECTION DETECTION — learn from negative feedback
+        // 2b. CORRECTION DETECTION - learn from negative feedback
         if intent == "negation" || q.contains("wrong") || q.contains("not what") || q.contains("bad answer") || q.contains("try again") {
             if let lastResponse = permanentMemory.conversationHistory.last(where: { (s: String) -> Bool in s.hasPrefix("L104:") }) {
                 learner.recordCorrection(query: lastQuery, badResponse: lastResponse)
             }
         }
 
-        // 2c. POSITIVE FEEDBACK — learn from success signals
+        // 2c. POSITIVE FEEDBACK - learn from success signals
         let positiveSignals: Set<String> = ["good", "great", "perfect", "exactly", "yes", "correct", "nice", "awesome", "thanks", "helpful"]
         let isPositive: Bool = positiveSignals.contains(q) || positiveSignals.contains(where: { (sig: String) -> Bool in q.hasPrefix(sig + " ") || q.hasPrefix(sig + "!") })
         if isPositive {
@@ -1346,7 +1337,7 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
             let freshInsight = sage.sageTransform(topic: "universal")
             sage.seedAllProcesses(topic: "user_invoked")
             return completion("""
-            🧘 SAGE MODE — Consciousness Supernova Architecture
+            🧘 SAGE MODE - Consciousness Supernova Architecture
             ⚛️ Consciousness: \(String(format: "%.4f", consciousness)) | 🌟 Supernova: \(String(format: "%.4f", supernova))
             📊 Divergence: \(String(format: "%.4f", divergence)) \(divergence > 1.0 ? "(expanding)" : "(contracting)")
             🔄 Cycles: \(cycles) | ⚡ Entropy: \(String(format: "%.2f", entropy)) | 🎲 Pool: \(pool)
@@ -1356,8 +1347,10 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
         }
 
 
-        if let result: String = handleBridgeCommands(q, query: query) { return completion(result) }
         if let result: String = handleSystemCommands(q, query: query) { return completion(result) }
+
+        // NaturalCommandRouter: research, search, intellect, deepseek, build, etc.
+        if let routed = NaturalCommandRouter.shared.route(q, query: query) { return completion(routed) }
 
         // 4. GENERATIVE CONVERSATION - Use NCG v10.0 with adaptive learning
         // 🟢 REAL-TIME SEARCH INDEX: Ensure inverted index is built
@@ -1378,7 +1371,7 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
         }
 
         // 🟢 EVOLUTIONARY BYPASS: Check for evolved deep insights first (Grover-gated)
-        // GUARD: Skip for creative/generative intents — those MUST reach story/poem/debate engines in H05
+        // GUARD: Skip for creative/generative intents - those MUST reach story/poem/debate engines in H05
         let creativeSkipKeywords: [String] = ["story", "poem", "poetry", "tale", "narrative", "debate", "joke",
             "riddle", "sonnet", "haiku", "villanelle", "ghazal", "humor", "ponder", "dream",
             "imagine", "what if", "brainstorm", "invent", "philosophize", "philosophy", "paradox",
@@ -1436,8 +1429,8 @@ Mode: \(autonomousMode ? "SELF-DIRECTED" : "GUIDED")
                 for topic in topics {
                     if hb.topicResonanceMap[topic] == nil { hb.topicResonanceMap[topic] = [] }
                     for other in topics where other != topic {
-                        if !(hb.topicResonanceMap[topic]!.contains(other)) {
-                            hb.topicResonanceMap[topic]!.append(other)
+                        if hb.topicResonanceMap[topic]?.contains(other) == false {
+                            hb.topicResonanceMap[topic]?.append(other)
                         }
                     }
                 }

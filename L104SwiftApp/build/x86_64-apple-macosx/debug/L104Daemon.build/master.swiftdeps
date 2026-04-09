@@ -1,0 +1,8 @@
+version: "Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)"
+options: "e3570a392e72d6a36ea8a562708c130c"
+build_time: [1774804095, 316069000]
+inputs:
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/Daemon/CircuitWatcher.swift": !dirty [1774792194, 627356726]
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/Daemon/MetalVQPU.swift": !dirty [1774792194, 633376582]
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/Daemon/VQPUMicroDaemon.swift": !dirty [1774792194, 634256487]
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/Daemon/main.swift": !dirty [1774792194, 637988191]

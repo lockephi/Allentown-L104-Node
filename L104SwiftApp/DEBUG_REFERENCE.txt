@@ -1,0 +1,230 @@
+╔════════════════════════════════════════════════════════════════════╗
+║                  L104 DEBUG SUITE - QUICK REFERENCE                ║
+║                                                                    ║
+║               🚀 Launch from Swift Code or Terminal               ║
+╚════════════════════════════════════════════════════════════════════╝
+
+────────────────────────────────────────────────────────────────────
+📋 LAUNCH OPTIONS
+────────────────────────────────────────────────────────────────────
+
+FULL SUITE (All 5 Tools)
+    launchFullDebugSuite()
+    ⏱️  Time: ~30 seconds
+    📊 Output: 5 reports (txt, json, csv)
+
+QUICK HEALTH CHECK
+    quickHealthCheck()
+    ⏱️  Time: 10 seconds
+    📊 Output: Summary stats
+
+INDIVIDUAL TOOLS
+    launchDebugToolkit()           → Find duplicates & error swallows
+    launchThreadSafetyCheck()      → Unprotected shared state
+    launchDiagnostics()            → Real-time health metrics
+    launchMemoryProfiling()        → Track array growth
+    launchErrorLogging()           → Catch silent errors
+
+────────────────────────────────────────────────────────────────────
+🛠️  TOOL DETAILS
+────────────────────────────────────────────────────────────────────
+
+[1] DEBUG TOOLKIT (D01_DebugToolkit.swift)
+    ├─ Finds: Duplicate constants, silent try? swallows
+    ├─ Output: l104_debug_toolkit.txt
+    ├─ Time: 5 seconds
+    └─ API: DebugToolkit.shared.generateFullReport()
+
+[2] THREAD SAFETY CHECKER (D02_ThreadSafetyChecker.swift)
+    ├─ Finds: Unprotected mutable state, unsafe async ops
+    ├─ Output: l104_thread_safety.txt
+    ├─ Time: 10 seconds
+    └─ API: ThreadSafetyChecker.shared.analyzeThreadSafety()
+
+[3] DIAGNOSTIC DAEMON (D03_DiagnosticDaemon.swift)
+    ├─ Monitors: CPU, Memory, Threads, Cache, Errors, Response time
+    ├─ Output: l104_diagnostics.json
+    ├─ Time: 30+ seconds (continuous)
+    ├─ Start: DiagnosticDaemon.shared.startMonitoring(interval: 5.0)
+    └─ Record: .recordRequest(), .recordCacheHit(), .recordError()
+
+[4] MEMORY PROFILER (D04_MemoryProfiler.swift)
+    ├─ Tracks: Collection sizes, growth patterns, potential leaks
+    ├─ Output: l104_memory_profile.csv
+    ├─ Time: 20 seconds
+    └─ API: MemoryProfiler.shared.registerCollection("name")
+
+[5] ERROR LOGGING OVERLAY (D05_ErrorLoggingOverlay.swift)
+    ├─ Logs: All errors (JSON parsing, File I/O, Network, Regex, URLs)
+    ├─ Output: l104_error_log.json
+    ├─ Time: Real-time
+    └─ Safe wrappers: safeJSONDecode(), safeFileRead(), safeURLFetch()
+
+────────────────────────────────────────────────────────────────────
+📂 OUTPUT FILES LOCATION
+────────────────────────────────────────────────────────────────────
+
+~/Applications/Allentown-L104-Node/L104SwiftApp/
+
+├─ l104_debug_toolkit.txt           (Duplicate constants & swallows)
+├─ l104_thread_safety.txt           (Thread safety analysis)
+├─ l104_diagnostics.json            (Health metrics time-series)
+├─ l104_memory_profile.csv          (Memory growth tracking)
+└─ l104_error_log.json              (Complete error catalog)
+
+────────────────────────────────────────────────────────────────────
+🎯 WHAT TO FIX (Priority Order)
+────────────────────────────────────────────────────────────────────
+
+🔴 CRITICAL (Fix First)
+   1. 🔴 Critical errors in error log (red alerts)
+   2. High thread safety violations
+   3. Duplicate constants (consolidate)
+
+🟡 HIGH (Fix Next)
+   4. High-severity errors
+   5. Memory monotonic growth (leaks)
+   6. Thread safety warnings
+
+🟢 MEDIUM (Fix Later)
+   7. Medium-severity errors
+   8. Silent error swallows (add safe wrappers)
+   9. Regex compilation patterns
+
+────────────────────────────────────────────────────────────────────
+💡 USAGE EXAMPLES
+────────────────────────────────────────────────────────────────────
+
+STARTUP DIAGNOSTIC
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        #if DEBUG
+            launchFullDebugSuite()
+        #endif
+    }
+
+CONTINUOUS MONITORING
+    let daemon = DiagnosticDaemon.shared
+    daemon.startMonitoring(interval: 5.0)
+    // ... app runs ...
+    daemon.exportMetricsToJSON()
+
+SAFE ERROR HANDLING (Replace try?)
+    // OLD: let data = try? JSONDecoder().decode(Type.self, from: json)
+    // NEW: let data = ErrorLoggingOverlay.shared.safeJSONDecode(json, as: Type.self)
+
+TRACK COLLECTIONS
+    let profiler = MemoryProfiler.shared
+    profiler.registerCollection("myArray")
+    // ... in code ...
+    profiler.updateCollectionSize("myArray", size: data.count)
+
+────────────────────────────────────────────────────────────────────
+📊 EXAMPLE OUTPUT SNIPPETS
+────────────────────────────────────────────────────────────────────
+
+DEBUG TOOLKIT RESULT:
+    ❌ GOD_CODE (4 occurrences)
+       Value: 527.5184818492612
+       ├─ L104State.swift:42
+       ├─ Constants.swift:15
+       ├─ MathEngine.swift:88
+       └─ ASICore.swift:103
+
+THREAD SAFETY RESULT:
+    ⚠️  Property: 'trainingData' (3 unsafe accesses)
+       Pattern: read/write
+       Risk: Mutable array accessed without synchronization
+
+DIAGNOSTICS RESULT:
+    🟢 [14:23:45] L104 Health Report
+       CPU: 12.5% | Mem: 245MB | Threads: 23 | Active: 3
+       Cache: 87.2% hit | Errors: 0.002/sec | Response: 23.4ms
+
+MEMORY PROFILER RESULT:
+    ⚠️  trainingData: 125,000 items (exceeds limit of 50,000)
+    📈 responseCache: Growing at 523 items/sec
+    💾 Total collection memory: 456MB (exceeds 300MB)
+
+ERROR LOGGING RESULT:
+    🔴 JSON Parsing (23 instances)
+    🟠 File I/O (12 instances)
+    🟡 Network Request (8 instances)
+
+────────────────────────────────────────────────────────────────────
+⚡ PERFORMANCE NOTES
+────────────────────────────────────────────────────────────────────
+
+CPU Cost:   <5% for full suite
+Memory:     ~100MB temporary overhead
+Time:       ~30 seconds for full scan
+Impact:     Negligible during normal operation
+
+Safe for:   DEBUG builds
+Not for:    Production/Release builds
+
+────────────────────────────────────────────────────────────────────
+📚 FULL DOCUMENTATION
+────────────────────────────────────────────────────────────────────
+
+Quick Start Guide:    DEBUG_QUICK_START.md
+Full Guide:          DEBUG_SUITE_GUIDE.md
+File Manifest:       DEBUG_MANIFEST.md
+This Reference:      DEBUG_REFERENCE.txt
+
+────────────────────────────────────────────────────────────────────
+✅ INTEGRATION CHECKLIST
+────────────────────────────────────────────────────────────────────
+
+□ Swift build complete (swift build)
+□ Added launchFullDebugSuite() to initialization
+□ Tested individual tool launches
+□ Reviewed generated reports
+□ Identified critical issues
+□ Fixed highest-priority items
+□ Re-ran suite to verify fixes
+□ Documented findings
+
+────────────────────────────────────────────────────────────────────
+🔗 KEY FILES
+────────────────────────────────────────────────────────────────────
+
+D00_DebugCoordinator.swift     350 lines | Master launcher
+D01_DebugToolkit.swift         380 lines | Constants & swallows
+D02_ThreadSafetyChecker.swift  310 lines | Thread analysis
+D03_DiagnosticDaemon.swift     420 lines | Health monitoring
+D04_MemoryProfiler.swift       440 lines | Memory tracking
+D05_ErrorLoggingOverlay.swift  460 lines | Error logging
+
+Documentation:                 730+ lines | Guides & references
+
+────────────────────────────────────────────────────────────────────
+🎯 QUICK COMMANDS
+────────────────────────────────────────────────────────────────────
+
+Build:
+    cd ~/Applications/Allentown-L104-Node/L104SwiftApp
+    swift build
+
+Test Full Suite:
+    swift build && swift run L104 << 'EOF'
+    launchFullDebugSuite()
+    EOF
+
+View Reports:
+    open ~/Applications/Allentown-L104-Node/L104SwiftApp/
+
+────────────────────────────────────────────────────────────────────
+📞 SUPPORT
+────────────────────────────────────────────────────────────────────
+
+For issues:
+  1. Check DEBUG_SUITE_GUIDE.md (comprehensive reference)
+  2. Review generated .txt/.json/.csv files
+  3. Check error_log.json for runtime issues
+  4. Verify thread_safety.txt for concurrency issues
+  5. Use memory_profile.csv to track growth patterns
+
+────────────────────────────────────────────────────────────────────
+
+✨ L104 Debug Suite v1.0 | Created 2026-03-20
+   Sovereign Node Quantum Intelligence System

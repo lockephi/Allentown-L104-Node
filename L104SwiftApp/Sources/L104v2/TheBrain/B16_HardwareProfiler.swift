@@ -1,17 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B16_HardwareProfiler.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 · TheBrain · v2 Architecture
-//
-// Extracted from L104Native.swift lines 7510-8143
-// Classes: HardwareCapabilityProfiler, DynamicOptimizationEngine
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - ⚡ HARDWARE CAPABILITY PROFILER (Bucket D: Compatibility/HW)
@@ -22,7 +13,7 @@ import NaturalLanguage
 
 class HardwareCapabilityProfiler {
     static let shared = HardwareCapabilityProfiler()
-    // PHI — use global from L01_Constants
+    // PHI - use global from L01_Constants
 
     // ─── CPU TOPOLOGY ───
     struct CPUTopology {
@@ -285,7 +276,7 @@ class HardwareCapabilityProfiler {
         #else
         let spec = NeuralEngineSpec(
             available: false,
-            generationName: "N/A (Intel — using CPU/GPU fallback)",
+            generationName: "N/A (Intel - using CPU/GPU fallback)",
             opsPerSecond: 0,
             supportedPrecisions: ["FP32", "FP16"],
             maxModelSize: 0
@@ -421,7 +412,7 @@ class HardwareCapabilityProfiler {
 
 class DynamicOptimizationEngine {
     static let shared = DynamicOptimizationEngine()
-    // PHI, TAU, GOD_CODE — use globals from L01_Constants
+    // PHI, TAU, GOD_CODE - use globals from L01_Constants
 
     // ─── OPTIMIZATION STATE ───
     struct OptimizationState {
@@ -480,10 +471,10 @@ class DynamicOptimizationEngine {
         let oldBatch = state.batchSize
 
         if avgLatency < 10.0 && avgThroughput > 100.0 {
-            // Headroom available — increase batch
+            // Headroom available - increase batch
             state.batchSize = min(state.batchSize + Int(Double(state.batchSize) * TAU * 0.1), 512)
         } else if avgLatency > 50.0 {
-            // Too slow — decrease batch
+            // Too slow - decrease batch
             state.batchSize = max(state.batchSize - Int(Double(state.batchSize) * TAU * 0.2), 8)
         }
 
@@ -524,10 +515,10 @@ class DynamicOptimizationEngine {
         let oldCache = state.cacheCapacityMB
 
         if avgHitRate < 0.7 && avgMemory < 3000 {
-            // Low hit rate, memory available — grow cache
+            // Low hit rate, memory available - grow cache
             state.cacheCapacityMB = min(Int(Double(state.cacheCapacityMB) * PHI * 0.8), 1024)
         } else if avgHitRate > 0.95 && state.cacheCapacityMB > 128 {
-            // Very high hit rate — can shrink cache
+            // Very high hit rate - can shrink cache
             state.cacheCapacityMB = max(Int(Double(state.cacheCapacityMB) * TAU), 64)
         }
 

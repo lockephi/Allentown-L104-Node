@@ -1,16 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// H15_CloudSync.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Cloud State Synchronization: Knowledge distribution,
-// state replication, cross-node coherence maintenance, and
-// entangled-state checkpoint management.
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
+
+private let logging = Logger(subsystem: "com.l104.H15_CloudSync", category: "main")
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - ☁️ CLOUD STATE SYNCHRONIZATION ENGINE
@@ -70,7 +66,7 @@ final class CloudSync {
             self?.periodicSync()
         }
 
-        print("[H15] CloudSync activated — vector clock initialized")
+        logging.info("[H15] CloudSync activated - vector clock initialized")
     }
 
     func deactivate() {
@@ -192,12 +188,12 @@ final class CloudSync {
     func mergeIncoming(from peerID: String, remoteState: [String: Any], remoteClock: [String: Int]) -> [SyncConflict] {
         var newConflicts: [SyncConflict] = []
 
-        // Compare vector clocks — if remote is strictly ahead, accept
+        // Compare vector clocks - if remote is strictly ahead, accept
         let localTime = vectorClock[peerID] ?? 0
         let remoteTime = remoteClock[peerID] ?? 0
 
         if remoteTime > localTime {
-            // Remote is newer — merge fields
+            // Remote is newer - merge fields
             if let remoteCoh = remoteState["coherence"] as? Double {
                 let localCoh = L104State.shared.coherence
                 if abs(remoteCoh - localCoh) > 0.01 {

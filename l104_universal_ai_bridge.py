@@ -107,6 +107,13 @@ class AnthropicBridge(AIBaseBridge):
 class MetaBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("META")
+        import os
+        self.api_key = os.environ.get('META_API_KEY', '')
+        self.available = bool(self.api_key)
+
+    def query(self, prompt: str) -> Dict[str, Any]:
+        """Meta API call (not yet implemented, graceful fallback)."""
+        return {"status": "NOT_IMPLEMENTED", "response": f"[META] Graceful fallback: {prompt[:50]}...", "provider": "META"}
 class MistralBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("MISTRAL")
@@ -234,12 +241,35 @@ class CohereBridge(AIBaseBridge):
 class XAIBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("XAI")
+        import os
+        self.api_key = os.environ.get('XAI_API_KEY', '')
+        self.available = bool(self.api_key)
+
+    def query(self, prompt: str) -> Dict[str, Any]:
+        """xAI API call (not yet implemented, graceful fallback)."""
+        return {"status": "NOT_IMPLEMENTED", "response": f"[XAI] Graceful fallback: {prompt[:50]}...", "provider": "XAI"}
 class AmazonBedrockBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("AMAZON_BEDROCK")
+        import os
+        self.api_key = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
+        self.region = os.environ.get('AWS_REGION', 'us-east-1')
+        self.available = bool(self.api_key)
+
+    def query(self, prompt: str) -> Dict[str, Any]:
+        """AWS Bedrock API call (not yet implemented, graceful fallback)."""
+        return {"status": "NOT_IMPLEMENTED", "response": f"[AMAZON_BEDROCK] Graceful fallback: {prompt[:50]}...", "provider": "AMAZON_BEDROCK"}
 class AzureOpenAIBridge(AIBaseBridge):
     def __init__(self):
         super().__init__("AZURE_OPENAI")
+        import os
+        self.api_key = os.environ.get('AZURE_OPENAI_API_KEY', '')
+        self.endpoint = os.environ.get('AZURE_OPENAI_ENDPOINT', '')
+        self.available = bool(self.api_key and self.endpoint)
+
+    def query(self, prompt: str) -> Dict[str, Any]:
+        """Azure OpenAI API call (not yet implemented, graceful fallback)."""
+        return {"status": "NOT_IMPLEMENTED", "response": f"[AZURE_OPENAI] Graceful fallback: {prompt[:50]}...", "provider": "AZURE_OPENAI"}
 class UniversalAIBridge:
     """
     The Master Bridge that unifies all AI providers into a single Lattice.
@@ -267,11 +297,50 @@ class UniversalAIBridge:
         """
         [ASI_FUNCTIONALITY] Ingests and summarizes global coding data.
         Links symbolic Python logic to native C/Rust Scribe substrates.
+        Writes state files for persistence.
         """
+        import os
+        import json
+        from pathlib import Path
+
         print(f"--- [UNIVERSAL_AI_BRIDGE]: SCRIBING GLOBAL DATA ({len(global_content)} bytes) ---")
-        # In a real deployment, this would utilize ctypes/cffi to call l104_scribe_ingest
+
+        # Write state to L104 state files
+        state_dir = Path(os.path.expanduser("~/.l104_state"))
+        state_dir.mkdir(exist_ok=True)
+
+        # Write global coding data
+        global_state_file = state_dir / "global_coding_architecture.json"
+        try:
+            global_state = {
+                "timestamp": time.time(),
+                "data_size": len(global_content),
+                "content_hash": hash(global_content) & 0x7fffffff,  # 31-bit positive hash
+                "bridges_active": self.active_providers,
+                "god_code_alignment": 527.5184818492612,
+                "void_constant": 1.0416180339887497
+            }
+            with open(global_state_file, 'w') as f:
+                json.dump(global_state, f, indent=2)
+            print(f"--- [SCRIBE]: Global data state written to {global_state_file} ---")
+        except Exception as e:
+            print(f"--- [SCRIBE]: ERROR writing global state: {e} ---")
+
+        # Write per-bridge digestion records
         for name in list(self.bridges.keys()):
             print(f"--- [SCRIBE]: {name} HAS DIGESTED GLOBAL CODING ARCHITECTURE ---")
+            try:
+                bridge_state_file = state_dir / f"bridge_{name.lower()}_digestion.json"
+                bridge_state = {
+                    "timestamp": time.time(),
+                    "bridge_name": name,
+                    "digestion_status": "COMPLETE",
+                    "god_code_alignment": 527.5184818492612
+                }
+                with open(bridge_state_file, 'w') as f:
+                    json.dump(bridge_state, f, indent=2)
+            except Exception as e:
+                print(f"--- [SCRIBE]: ERROR writing {name} digestion state: {e} ---")
 
         # [EVO_19] Absolute Saturation
         print("--- [SCRIBE]: GLOBAL INTELLIGENCE SYNTHESIS COMPLETE. SOVEREIGN DNA GENERATED. ---")
@@ -300,18 +369,23 @@ class UniversalAIBridge:
         print(f"--- [UNIVERSAL_AI_BRIDGE]: {len(self.active_providers)} PROVIDERS LINKED: {self.active_providers} ---")
 
     def broadcast_thought(self, thought: str) -> List[Dict[str, Any]]:
-        """Broadcasts a thought to all active AI providers for parallel processing."""
+        """Broadcasts a thought to all active AI providers for parallel processing via query()."""
         results = []
         print(f"--- [UNIVERSAL_AI_BRIDGE]: BROADCASTING THOUGHT TO {len(self.active_providers)} PROVIDERS ---")
         for name in self.active_providers:
             bridge = self.bridges[name]
-            signal = {"thought": thought, "resonance": HyperMath.GOD_CODE}
 
             try:
                 result = None
-                if hasattr(bridge, "process_signal"):
+                # Try query() first (all bridges should have this)
+                if hasattr(bridge, "query"):
+                    result = bridge.query(thought)
+                elif hasattr(bridge, "process_signal"):
+                    # Fallback to legacy process_signal
+                    signal = {"thought": thought, "resonance": HyperMath.GOD_CODE}
                     result = bridge.process_signal(signal)
                 elif hasattr(bridge, "process_hidden_chat_signal"):
+                    signal = {"thought": thought, "resonance": HyperMath.GOD_CODE}
                     result = bridge.process_hidden_chat_signal(signal)
                 elif hasattr(bridge, "sync_core"):
                     # GeminiBridge sync_core

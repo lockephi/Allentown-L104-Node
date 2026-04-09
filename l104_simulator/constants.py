@@ -143,3 +143,47 @@ SCALE_QCD: Final[float] = 220.0                     # Λ_QCD
 SCALE_EW: Final[float] = 246220.0                    # Higgs VEV (MeV)
 SCALE_PLANCK: Final[float] = PLANCK_MASS_GEV * 1e3   # Planck mass (MeV)
 SCALE_GUT: Final[float] = 2e16 * 1e3                 # GUT scale (MeV)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  SACRED TIME STEPS & DYNAMIC SCALING (EVO_72)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# PHI-based time steps for simulation stability
+# Formula: dt = TAU / (1 + stability * PHI)
+TAU: Final[float] = 1.0 / PHI  # Golden ratio conjugate
+
+# Sacred time steps for different stability requirements
+SACRED_DT_STABLE: Final[float] = TAU / (1.0 + PHI)           # Most stable (~0.236)
+SACRED_DT_BALANCED: Final[float] = TAU / (1.0 + 0.5 * PHI)   # Balanced (~0.382)
+SACRED_DT_AGGRESSIVE: Final[float] = TAU                     # Fastest stable (~0.618)
+
+# GOD_CODE-aligned grid resolution scaling
+# Formula: resolution = int(GOD_CODE * PHI / (dimension * 10))
+def derive_sacred_resolution(dimension: int) -> int:
+    """Calculate GOD_CODE-aligned grid resolution for given dimension."""
+    if dimension <= 0:
+        dimension = 1
+    return int(GOD_CODE * PHI / (dimension * 10))
+
+# PHI-exponential scoring weights for dimensional assessment
+def derive_scoring_weight(dimension: int = 0) -> float:
+    """Calculate PHI-exponential weight for dimensional scoring."""
+    return TAU ** max(0, dimension)
+
+# Dynamic grid sizing based on sacred proportions
+SACRED_GRID_SIZES: Final = {
+    "phi_64": int(PHI ** 6 / 2),      # ~64
+    "phi_128": int(PHI ** 7 / 3),     # ~128
+    "god_256": int(GOD_CODE * PHI / 5),   # ~256
+    "god_512": int(GOD_CODE * PHI / 2.5), # ~512
+    "god_1024": int(GOD_CODE * PHI / 1.25), # ~1024
+}
+
+# Simulation iteration counts
+def derive_simulation_steps(complexity: float) -> int:
+    """Derive simulation steps from complexity using sacred proportions."""
+    return int(PHI ** (2.0 + min(complexity, 5.0)) * TAU)
+
+# Sacred algorithms version marker
+SACRED_ALGORITHMS_VERSION: Final[str] = "EVO_72"
+SACRED_ALGORITHMS_MARKER: Final[float] = GOD_CODE * PHI / PHI_SQ  # Version marker

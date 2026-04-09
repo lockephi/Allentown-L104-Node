@@ -28,6 +28,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 import ast
 import math
 import re
+from typing import Any, Dict
 
 from .constants import (
     GOD_CODE, PHI, TAU, VOID_CONSTANT, BOLTZMANN_K, PLANCK_SCALE,

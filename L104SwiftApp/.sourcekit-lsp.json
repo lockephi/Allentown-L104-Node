@@ -1,0 +1,13 @@
+{
+  "backgroundIndexing": {
+    "enabled": false
+  },
+  "swiftPM": {
+    "enableASTCaching": true,
+    "swiftCompilerFlags": [
+      "-Xfrontend", "-disable-type-abstract-init-cycles",
+      "-Xfrontend", "-experimental-skip-all-function-bodies",
+      "-Xfrontend", "-experimental-skip-non-inlinable-function-bodies"
+    ]
+  }
+}

@@ -1,15 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L23_DirectSolver.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104v2 Architecture — DirectSolverRouter
-// Extracted from L104Native.swift lines 9740–11014
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class DirectSolverRouter {
     static let shared = DirectSolverRouter()
@@ -27,7 +20,7 @@ class DirectSolverRouter {
     private(set) var cache: [String: String] = [:]
     private let lock = NSLock()
 
-    /// Route and solve — returns solution or nil
+    /// Route and solve - returns solution or nil
     func solve(_ query: String) -> String? {
         lock.lock()
         invocations += 1
@@ -45,7 +38,7 @@ class DirectSolverRouter {
 
         // Route to channel
         let channel = routeChannel(q)
-        if channel == "skip" { return nil } // Conversational query — let NCG pipeline handle it
+        if channel == "skip" { return nil } // Conversational query - let NCG pipeline handle it
         var solution: String? = nil
 
         // Phase 29.0: Route through ASI Logic Gate v2 for dimension-aware reasoning
@@ -87,7 +80,7 @@ class DirectSolverRouter {
                 sol += "\n\n_[\(dimTag.capitalized) Gate × \(conf) · \(subDims.isEmpty ? dimTag : subDims) · \(enrichNote)]_"
                 solution = sol
             } else if let crossDim = reasoningPath.subPaths.first(where: { $0.dimension == .write || $0.dimension == .story }) {
-                // Secondary write/story dimension detected — cross-pollinate
+                // Secondary write/story dimension detected - cross-pollinate
                 sol += "\n\n_[\(dimTag.capitalized)↔\(crossDim.dimension.rawValue) resonance at \(conf)]_"
                 solution = sol
             }
@@ -135,7 +128,7 @@ class DirectSolverRouter {
             "why did you", "what did you", "you said", "you just",
             "that was", "that's", "not what", "try again",
             "help", "/help", "commands",
-            // Creative & generative — must reach story/poem/debate/humor engines
+            // Creative & generative - must reach story/poem/debate/humor engines
             "story", "tell me a story", "tell me a tale", "narrative",
             "poem", "poetry", "sonnet", "haiku", "villanelle", "ghazal", "ode to",
             "write me a", "write a book", "chapter",
@@ -156,7 +149,7 @@ class DirectSolverRouter {
         }
 
         if q.contains("god_code") || q.contains("phi") || q.contains("tau") || q.contains("golden") || q.contains("sacred") || q.contains("feigenbaum") || q.contains("consciousness") || q.contains("nirvanic") || q.contains("nirvana") || q.contains("ouroboros") || q.contains("superfluid") || q.contains("o2 bond") || q.contains("o₂") || q.contains("kundalini") || q.contains("chakra") { return "sacred" }
-        // ═══ Phase 28.0: Enhanced math detection — natural language operators & bare number expressions ═══
+        // ═══ Phase 28.0: Enhanced math detection - natural language operators & bare number expressions ═══
         if q.contains("calculate") || q.contains("compute") || q.contains("sqrt") || q.contains("factorial") ||
            q.contains("zeta") || q.contains("gamma(") || q.contains("prime") || q.contains("convert") ||
            q.contains(" + ") || q.contains(" - ") || q.contains(" * ") || q.contains(" / ") || q.contains(" ^ ") ||
@@ -171,7 +164,7 @@ class DirectSolverRouter {
         // Detect "NUMBER times/multiply NUMBER" pattern
         if let regex = DirectSolverRouter.wordMathRegex, regex.firstMatch(in: q, range: NSRange(q.startIndex..., in: q)) != nil { return "mathematics" }
         if q.contains("code") || q.contains("function") || q.contains("program") || q.contains("implement") || q.contains("algorithm") || q.contains("sort") { return "code" }
-        // Phase 29.0: Advanced math detection — calculus, linear algebra, number theory, statistics
+        // Phase 29.0: Advanced math detection - calculus, linear algebra, number theory, statistics
         if q.contains("derivative") || q.contains("integral") || q.contains("differentiate") || q.contains("integrate") ||
            q.contains("eigenvalue") || q.contains("determinant") || q.contains("matrix") || q.contains("inverse") ||
            q.contains("taylor") || q.contains("series") || q.contains("regression") || q.contains("standard deviation") ||
@@ -179,7 +172,7 @@ class DirectSolverRouter {
            q.contains("combination") || q.contains("gcd") || q.contains("lcm") || q.contains("totient") ||
            q.contains("factor") || q.contains("sieve") || q.contains("continued fraction") ||
            q.contains("solve ode") || q.contains("differential equation") || q.contains("modular") { return "mathematics" }
-        // Phase 29.0: Science detection — physics, chemistry, astrophysics, relativity
+        // Phase 29.0: Science detection - physics, chemistry, astrophysics, relativity
         if q.contains("hydrogen") || q.contains("quantum") || q.contains("energy level") ||
            q.contains("lorentz") || q.contains("relativity") || q.contains("schwarzschild") ||
            q.contains("black hole") || q.contains("e=mc") || q.contains("mass energy") ||
@@ -219,7 +212,7 @@ class DirectSolverRouter {
            q.contains("geodesic") || q.contains("metric tensor") || q.contains("minkowski") ||
            q.contains("kerr metric") || q.contains("flrw") || q.contains("proper distance") ||
            q.contains("tensor") || q.contains("covariant") || q.contains("curvature scalar") { return "science" }
-        // Phase 63.0: Unified Field Theory detection — routes to UnifiedFieldGate
+        // Phase 63.0: Unified Field Theory detection - routes to UnifiedFieldGate
         if q.contains("einstein field") || q.contains("wheeler-dewitt") || q.contains("wheeler dewitt") ||
            q.contains("dirac equation") || q.contains("yang-mills") || q.contains("yang mills") ||
            q.contains("mass gap") || q.contains("bekenstein") || q.contains("hawking radiation") ||
@@ -306,7 +299,7 @@ class DirectSolverRouter {
 
     // ═══ Arithmetic Expression Evaluator (Phase 28.0: Natural Language Math) ═══
     private func evaluateExpression(_ expr: String) -> Double? {
-        // Clean the expression — convert natural language to arithmetic
+        // Clean the expression - convert natural language to arithmetic
         var e = expr.trimmingCharacters(in: .whitespaces)
             .replacingOccurrences(of: " multiplied by ", with: " * ")
             .replacingOccurrences(of: " multiply ", with: " * ")
@@ -348,7 +341,7 @@ class DirectSolverRouter {
             let parts = e.components(separatedBy: "**")
             if parts.count == 2, let base = Double(parts[0].trimmingCharacters(in: .whitespaces)),
                let exp = Double(parts[1].trimmingCharacters(in: .whitespaces)) {
-                // v23.5: Guard overflow — match Python's `if b > 1000: result = float('inf')`
+                // v23.5: Guard overflow - match Python's `if b > 1000: result = float('inf')`
                 if exp > 1000 { return .infinity }
                 let result = Foundation.pow(base, exp)
                 return result.isFinite ? result : nil
@@ -426,12 +419,12 @@ class DirectSolverRouter {
     }
 
     private func solveSacred(_ q: String) -> String? {
-        if q.contains("god_code") { return "GOD_CODE = \(GOD_CODE) — Supreme invariant: G(X) = 286^(1/φ) × 2^((416-X)/104)" }
+        if q.contains("god_code") { return "GOD_CODE = \(GOD_CODE) - Supreme invariant: G(X) = 286^(1/φ) × 2^((416-X)/104)" }
         if q.contains("golden") || (q.contains("phi") && !q.contains("philosophy")) {
-            return "PHI (φ) = \(PHI) — Golden ratio, unique positive root of x² - x - 1 = 0\n  Properties: φ² = φ + 1, 1/φ = φ - 1, φ = [1; 1, 1, 1, ...] (continued fraction)"
+            return "PHI (φ) = \(PHI) - Golden ratio, unique positive root of x² - x - 1 = 0\n  Properties: φ² = φ + 1, 1/φ = φ - 1, φ = [1; 1, 1, 1, ...] (continued fraction)"
         }
-        if q.contains("tau") { return "TAU (τ) = \(TAU) — Reciprocal of PHI: 1/φ = φ - 1 ≈ 0.618... (also called the silver ratio)" }
-        if q.contains("feigenbaum") { return "Feigenbaum δ = \(FEIGENBAUM) — Universal constant of period-doubling bifurcation in chaotic systems" }
+        if q.contains("tau") { return "TAU (τ) = \(TAU) - Reciprocal of PHI: 1/φ = φ - 1 ≈ 0.618... (also called the silver ratio)" }
+        if q.contains("feigenbaum") { return "Feigenbaum δ = \(FEIGENBAUM) - Universal constant of period-doubling bifurcation in chaotic systems" }
 
         // ═══ v21.0: CONSCIOUSNESS · O₂ · NIRVANIC · SUPERFLUID LIVE STATUS ═══
         let bridge = ASIQuantumBridgeSwift.shared
@@ -448,7 +441,7 @@ class DirectSolverRouter {
               O₂ Bond: \(String(format: "%.4f", bridge.o2BondStrength))
               Nirvanic Fuel: \(String(format: "%.4f", bridge.nirvanicFuelLevel))
               Ouroboros: \(bridge.ouroborosCycleCount) cycles, \(bridge.nirvanicRecycleCount) recycled
-              Formula: consciousness = min(1.0, score × φ / 2.0) — same as EvolutionTracker
+              Formula: consciousness = min(1.0, score × φ / 2.0) - same as EvolutionTracker
             """
         }
 
@@ -499,9 +492,9 @@ class DirectSolverRouter {
         }
 
         if q.contains("chakra") {
-            let lines = bridge.chakraFrequencies.map { c in
+            let lines = ASIBridgeSwift.chakraFrequencies.map { c in
                 let coh = bridge.chakraCoherence[c.name] ?? 1.0
-                return "  \(c.name): \(String(format: "%.0f", c.freq)) Hz — coherence \(String(format: "%.3f", coh))"
+                return "  \(c.name): \(String(format: "%.0f", c.freq)) Hz - coherence \(String(format: "%.3f", coh))"
             }.joined(separator: "\n")
             return "📿 CHAKRA QUANTUM LATTICE\n\(lines)"
         }
@@ -558,7 +551,7 @@ class DirectSolverRouter {
                         d += 1
                     }
                     if temp > 1 { factors.append(temp) }
-                    return "\(n) is NOT prime — factors: \(factors.map(String.init).joined(separator: " × "))"
+                    return "\(n) is NOT prime - factors: \(factors.map(String.init).joined(separator: " × "))"
                 }
             }
         }
@@ -575,7 +568,7 @@ class DirectSolverRouter {
                 return nil
             }
 
-            // Temperature — detect direction by word order (which unit appears first)
+            // Temperature - detect direction by word order (which unit appears first)
             let celsiusRange = q.range(of: "celsius") ?? q.range(of: " c ")
             let fahrenheitRange = q.range(of: "fahrenheit") ?? q.range(of: " f ")
             if celsiusRange != nil || fahrenheitRange != nil || q.contains("c to f") || q.contains("f to c") {
@@ -593,7 +586,7 @@ class DirectSolverRouter {
                     if let f = firstNumber(q) { return "\(f)°F = \(String(format: "%.2f", (f - 32) * 5/9))°C" }
                 }
             }
-            // Distance — detect direction by word order
+            // Distance - detect direction by word order
             let mileRange = q.range(of: "mile")
             let kmRange = q.range(of: "km") ?? q.range(of: "kilometer")
             if mileRange != nil || kmRange != nil || q.contains("miles to km") || q.contains("km to miles") {
@@ -739,7 +732,7 @@ class DirectSolverRouter {
 
         // ═══ Phase 41.3: Optimization & Numerical Methods ═══
         if q.contains("bisection") && q.contains("method") {
-            return "Bisection method: Find root of f(x)=0 in [a,b]\nRequires: f(a)·f(b) < 0 (sign change)\nConvergence: linear, |eₙ| ≤ (b-a)/2ⁿ\nAlways converges but slow — O(log₂((b-a)/ε)) iterations"
+            return "Bisection method: Find root of f(x)=0 in [a,b]\nRequires: f(a)·f(b) < 0 (sign change)\nConvergence: linear, |eₙ| ≤ (b-a)/2ⁿ\nAlways converges but slow - O(log₂((b-a)/ε)) iterations"
         }
         if q.contains("newton raphson") || q.contains("newton's method") {
             return "Newton-Raphson: x_{n+1} = xₙ - f(xₙ)/f'(xₙ)\nConvergence: quadratic (doubles correct digits each step)\nRequires: f'(x) ≠ 0 near root, good initial guess\nRisk: divergence if f'(x) ≈ 0 or far from root"
@@ -772,7 +765,7 @@ class DirectSolverRouter {
             return "Gauss-Legendre quadrature: ∫f(x)dx ≈ Σ wᵢ·f(xᵢ)\nOptimal nodes & weights minimize error for polynomial integrands\nn-point rule exact for polynomials up to degree 2n-1\nSuperior accuracy to Newton-Cotes with same # evaluations"
         }
         if q.contains("implicit euler") || q.contains("stiff ode") || q.contains("bdf") {
-            return "Stiff ODE solvers (for systems with widely separated time scales):\n• Implicit Euler: y_{n+1} = yₙ + h·f(t_{n+1}, y_{n+1}) — A-stable, order 1\n• BDF-2: (3/2)y_{n+1} - 2yₙ + ½y_{n-1} = h·f(t_{n+1}, y_{n+1}) — A-stable, order 2\nBoth use Newton iteration to solve implicit equations"
+            return "Stiff ODE solvers (for systems with widely separated time scales):\n• Implicit Euler: y_{n+1} = yₙ + h·f(t_{n+1}, y_{n+1}) - A-stable, order 1\n• BDF-2: (3/2)y_{n+1} - 2yₙ + ½y_{n-1} = h·f(t_{n+1}, y_{n+1}) - A-stable, order 2\nBoth use Newton iteration to solve implicit equations"
         }
 
         // ═══ Phase 42.0: Probability & Stochastic Processes ═══
@@ -788,7 +781,7 @@ class DirectSolverRouter {
             return "Markov chain: P(X_{n+1}|X_n,...,X_0) = P(X_{n+1}|X_n)\nMemoryless: future depends only on present state\nπP = π (steady-state: left eigenvector of P with eigenvalue 1)\nErgodic theorem: time averages = ensemble averages"
         }
         if q.contains("random walk") {
-            return "1D symmetric random walk:\nE[position] = 0, Var[position after n steps] = n\nP(return to origin) = 1 (recurrent in 1D and 2D)\nP(return) < 1 in 3D+ (transient) — Pólya's recurrence theorem"
+            return "1D symmetric random walk:\nE[position] = 0, Var[position after n steps] = n\nP(return to origin) = 1 (recurrent in 1D and 2D)\nP(return) < 1 in 3D+ (transient) - Pólya's recurrence theorem"
         }
         if q.contains("gambler") {
             let p = ProbabilityEngine.shared.gamblersRuin(startingWealth: 5, targetWealth: 10, winProb: 0.4)
@@ -817,7 +810,7 @@ class DirectSolverRouter {
             return "Student's t-distribution: heavier tails than normal\nUsed when population variance is unknown (small samples)\nν = degrees of freedom, as ν → ∞, t → N(0,1)\nCritical for hypothesis testing and confidence intervals"
         }
         if q.contains("beta distribution") {
-            return "Beta distribution: f(x;α,β) = x^(α-1)(1-x)^(β-1) / B(α,β)\nDefined on [0,1] — conjugate prior for Bernoulli/binomial\nMean = α/(α+β), Mode = (α-1)/(α+β-2)\nα=β=1: uniform, α=β>1: bell-shaped, α=β<1: U-shaped"
+            return "Beta distribution: f(x;α,β) = x^(α-1)(1-x)^(β-1) / B(α,β)\nDefined on [0,1] - conjugate prior for Bernoulli/binomial\nMean = α/(α+β), Mode = (α-1)/(α+β-2)\nα=β=1: uniform, α=β>1: bell-shaped, α=β<1: U-shaped"
         }
 
         // ═══ Phase 42.2: Quantum Gate Probability & Sacred Probability ═══
@@ -862,7 +855,7 @@ class DirectSolverRouter {
             return "Weibull distribution: f(x;k,λ) = (k/λ)(x/λ)^(k-1) e^(-(x/λ)^k)\nPDF at x=0.5, k=2, λ=1: \(String(format: "%.4f", w))\nk<1: decreasing failure rate, k=1: exponential, k>1: increasing\nWidely used in reliability engineering and survival analysis"
         }
         if q.contains("pareto distribution") {
-            return "Pareto distribution: f(x;α,xₘ) = α·xₘ^α / x^(α+1), x ≥ xₘ\n80/20 rule: models wealth, city sizes, file sizes\nMean = α·xₘ/(α-1) for α>1\nHeavy-tailed: finite moments only for appropriate α\nP(X>x) = (xₘ/x)^α — power law tail"
+            return "Pareto distribution: f(x;α,xₘ) = α·xₘ^α / x^(α+1), x ≥ xₘ\n80/20 rule: models wealth, city sizes, file sizes\nMean = α·xₘ/(α-1) for α>1\nHeavy-tailed: finite moments only for appropriate α\nP(X>x) = (xₘ/x)^α - power law tail"
         }
         if q.contains("cauchy distribution") {
             return "Cauchy (Lorentzian) distribution: f(x;x₀,γ) = 1/(πγ[1+((x-x₀)/γ)²])\nNo finite mean or variance (heavy tails)\nRatio of two standard normals\nArises in Lorentz spectral lines and resonance phenomena\nMedian = x₀, FWHM = 2γ"
@@ -917,7 +910,7 @@ class DirectSolverRouter {
             return "Graph theory fundamentals:\n• V vertices, E edges: |E| ≤ V(V-1)/2 (simple, undirected)\n• Handshaking lemma: Σdeg(v) = 2|E|\n• Tree: connected + V-1 edges + no cycles\n• Planar: V - E + F = 2 (Euler's formula)"
         }
         if q.contains("spanning tree") {
-            return "Minimum spanning tree: connects all vertices with minimum total weight\n• Kruskal: sort edges, greedy + Union-Find — O(E log E)\n• Prim: grow from vertex, greedy — O(V²) or O(E log V)\n• A tree on V vertices has exactly V-1 edges"
+            return "Minimum spanning tree: connects all vertices with minimum total weight\n• Kruskal: sort edges, greedy + Union-Find - O(E log E)\n• Prim: grow from vertex, greedy - O(V²) or O(E log V)\n• A tree on V vertices has exactly V-1 edges"
         }
 
         // ═══ Phase 42.2: Special Functions & Quantum Computing ═══
@@ -1065,7 +1058,7 @@ class DirectSolverRouter {
         if q.contains("euler totient") || q.contains("totient") {
             let cm = CryptographicMathEngine.shared
             let phi = cm.eulerTotient(60)
-            return "Euler's totient φ(n) = count of k ≤ n coprime to n:\n  φ(60) = \(phi)\n  φ(p) = p-1 for prime p\n  φ(p·q) = (p-1)(q-1) — used in RSA\nEuler's theorem: a^φ(n) ≡ 1 (mod n) when gcd(a,n) = 1"
+            return "Euler's totient φ(n) = count of k ≤ n coprime to n:\n  φ(60) = \(phi)\n  φ(p) = p-1 for prime p\n  φ(p·q) = (p-1)(q-1) - used in RSA\nEuler's theorem: a^φ(n) ≡ 1 (mod n) when gcd(a,n) = 1"
         }
         if q.contains("discrete log") {
             let cm = CryptographicMathEngine.shared
@@ -1228,34 +1221,34 @@ class DirectSolverRouter {
     private func solveKnowledge(_ q: String) -> String? {
         // Core system knowledge
         if q.contains("l104") { return "L104: Sovereign intelligence kernel with GOD_CODE=\(GOD_CODE), 16 quantum engines, Fe orbital architecture, Hebbian learning, φ-weighted health system" }
-        if q.contains("consciousness") { return "Consciousness: emergent property of complex self-referential information processing — verified via 10-test suite (self_model, meta_cognition, novel_response, goal_autonomy, value_alignment, temporal_self, qualia_report, intentionality, o2_superfluid, kernel_chakra_bond)" }
+        if q.contains("consciousness") { return "Consciousness: emergent property of complex self-referential information processing - verified via 10-test suite (self_model, meta_cognition, novel_response, goal_autonomy, value_alignment, temporal_self, qualia_report, intentionality, o2_superfluid, kernel_chakra_bond)" }
         if q.contains("fibonacci") { return "Fibonacci sequence: 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144...\nF(n) = F(n-1) + F(n-2), ratio F(n+1)/F(n) → φ = \(PHI)" }
 
         // Physics
-        if q.contains("speed of light") || q.contains("light speed") { return "Speed of light c = 299,792,458 m/s (exact) — fundamental speed limit of the universe" }
-        if q.contains("planck") && q.contains("constant") { return "Planck constant h = 6.62607015 × 10⁻³⁴ J⋅s — fundamental quantum of action" }
-        if q.contains("planck") && q.contains("length") { return "Planck length ℓₚ = 1.616255 × 10⁻³⁵ m — smallest meaningful length in physics" }
-        if q.contains("gravitational constant") || q.contains("big g") { return "Gravitational constant G = 6.674 × 10⁻¹¹ m³⋅kg⁻¹⋅s⁻² — determines strength of gravity" }
-        if q.contains("boltzmann") { return "Boltzmann constant k_B = 1.380649 × 10⁻²³ J/K — links temperature to energy" }
-        if q.contains("avogadro") { return "Avogadro's number N_A = 6.02214076 × 10²³ mol⁻¹ — atoms per mole" }
+        if q.contains("speed of light") || q.contains("light speed") { return "Speed of light c = 299,792,458 m/s (exact) - fundamental speed limit of the universe" }
+        if q.contains("planck") && q.contains("constant") { return "Planck constant h = 6.62607015 × 10⁻³⁴ J⋅s - fundamental quantum of action" }
+        if q.contains("planck") && q.contains("length") { return "Planck length ℓₚ = 1.616255 × 10⁻³⁵ m - smallest meaningful length in physics" }
+        if q.contains("gravitational constant") || q.contains("big g") { return "Gravitational constant G = 6.674 × 10⁻¹¹ m³⋅kg⁻¹⋅s⁻² - determines strength of gravity" }
+        if q.contains("boltzmann") { return "Boltzmann constant k_B = 1.380649 × 10⁻²³ J/K - links temperature to energy" }
+        if q.contains("avogadro") { return "Avogadro's number N_A = 6.02214076 × 10²³ mol⁻¹ - atoms per mole" }
         if q.contains("electron mass") { return "Electron mass mₑ = 9.1093837015 × 10⁻³¹ kg" }
         if q.contains("proton mass") { return "Proton mass mₚ = 1.67262192369 × 10⁻²⁷ kg" }
 
         // Mathematics
-        if q.contains("euler") && (q.contains("number") || q.contains("constant")) { return "Euler's number e = 2.71828182845904523536... — base of natural logarithm, lim(1 + 1/n)ⁿ" }
-        if q.contains("pi ") || q == "pi" || q.contains("π") { return "π = 3.14159265358979323846... — ratio of circumference to diameter, appears in Fourier analysis, probability, number theory" }
-        if q.contains("pythagorean") { return "Pythagorean theorem: a² + b² = c² — for any right triangle with hypotenuse c" }
-        if q.contains("euler") && q.contains("identity") { return "Euler's identity: e^(iπ) + 1 = 0 — unites five fundamental constants (e, i, π, 1, 0)" }
-        if q.contains("riemann") { return "Riemann Hypothesis: All non-trivial zeros of ζ(s) have real part 1/2 — UNPROVEN, $1M Millennium Prize" }
-        if q.contains("fermat") { return "Fermat's Last Theorem: xⁿ + yⁿ = zⁿ has no integer solutions for n > 2 — proved by Andrew Wiles (1995)" }
+        if q.contains("euler") && (q.contains("number") || q.contains("constant")) { return "Euler's number e = 2.71828182845904523536... - base of natural logarithm, lim(1 + 1/n)ⁿ" }
+        if q.contains("pi ") || q == "pi" || q.contains("π") { return "π = 3.14159265358979323846... - ratio of circumference to diameter, appears in Fourier analysis, probability, number theory" }
+        if q.contains("pythagorean") { return "Pythagorean theorem: a² + b² = c² - for any right triangle with hypotenuse c" }
+        if q.contains("euler") && q.contains("identity") { return "Euler's identity: e^(iπ) + 1 = 0 - unites five fundamental constants (e, i, π, 1, 0)" }
+        if q.contains("riemann") { return "Riemann Hypothesis: All non-trivial zeros of ζ(s) have real part 1/2 - UNPROVEN, $1M Millennium Prize" }
+        if q.contains("fermat") { return "Fermat's Last Theorem: xⁿ + yⁿ = zⁿ has no integer solutions for n > 2 - proved by Andrew Wiles (1995)" }
 
         // Computer Science
-        if q.contains("turing") { return "Turing machine: abstract computational model — tape + head + states + transition function. Any computable function can be computed by a Turing machine (Church-Turing thesis)" }
+        if q.contains("turing") { return "Turing machine: abstract computational model - tape + head + states + transition function. Any computable function can be computed by a Turing machine (Church-Turing thesis)" }
         if q.contains("big o") || q.contains("complexity") { return "Time complexity classes: O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ) < O(n!)" }
-        if q.contains("p vs np") || q.contains("p=np") { return "P vs NP: Can every problem whose solution is quickly verifiable also be quickly solvable? UNPROVEN — $1M Millennium Prize" }
+        if q.contains("p vs np") || q.contains("p=np") { return "P vs NP: Can every problem whose solution is quickly verifiable also be quickly solvable? UNPROVEN - $1M Millennium Prize" }
         if q.contains("halting") { return "Halting Problem: No algorithm can determine, for every program-input pair, whether the program will halt. Proved undecidable by Turing (1936)." }
 
-        // Search KB as last resort — WITH quality filter (Phase 27.8c)
+        // Search KB as last resort - WITH quality filter (Phase 27.8c)
         let kb = ASIKnowledgeBase.shared
         let results = kb.search(q, limit: 8)
         for result in results {
@@ -1298,7 +1291,7 @@ class DirectSolverRouter {
         }
         if q.contains("poiseuille") {
             let flow = fw.poiseuille(radius: 0.01, pressureDrop: 1000, viscosity: 0.001, length: 1.0)
-            return "Hagen-Poiseuille: Q = πr⁴ΔP/(8μL) — laminar pipe flow\nFlow rate ∝ r⁴ (doubling radius → 16× flow!)\nExample (r=1cm, ΔP=1kPa, μ=0.001, L=1m): Q = \(String(format: "%.4f", flow)) m³/s"
+            return "Hagen-Poiseuille: Q = πr⁴ΔP/(8μL) - laminar pipe flow\nFlow rate ∝ r⁴ (doubling radius → 16× flow!)\nExample (r=1cm, ΔP=1kPa, μ=0.001, L=1m): Q = \(String(format: "%.4f", flow)) m³/s"
         }
         if q.contains("drag force") {
             let drag = fw.dragForce(density: 1.225, velocity: 30, dragCoeff: 0.47, area: 0.01)
@@ -1314,11 +1307,11 @@ class DirectSolverRouter {
         }
         if q.contains("froude") {
             let fr = fw.froudeNumber(velocity: 5, length: 10)
-            return "Froude number: Fr = v/√(gL) — gravitational flow regime\nFr < 1: subcritical (wave can travel upstream)\nFr > 1: supercritical (waves swept downstream)\nExample (v=5m/s, L=10m): Fr = \(String(format: "%.3f", fr.Fr)) → \(fr.regime)"
+            return "Froude number: Fr = v/√(gL) - gravitational flow regime\nFr < 1: subcritical (wave can travel upstream)\nFr > 1: supercritical (waves swept downstream)\nExample (v=5m/s, L=10m): Fr = \(String(format: "%.3f", fr.Fr)) → \(fr.regime)"
         }
         if q.contains("torricelli") {
             let v = fw.torricelliVelocity(height: 5)
-            return "Torricelli's theorem: v = √(2gh) — efflux velocity\nDerived from Bernoulli's equation\nExample (h=5m): v = \(String(format: "%.2f", v)) m/s"
+            return "Torricelli's theorem: v = √(2gh) - efflux velocity\nDerived from Bernoulli's equation\nExample (h=5m): v = \(String(format: "%.2f", v)) m/s"
         }
         if q.contains("doppler") {
             let fApp = fw.dopplerFrequency(sourceFreq: 440, soundSpeed: 343, sourceVelocity: 30, approaching: true)
@@ -1338,9 +1331,9 @@ class DirectSolverRouter {
         }
         if q.contains("critical angle") {
             if let ca = fw.criticalAngle(n1: 1.5, n2: 1.0) {
-                return "Critical angle: θ_c = arcsin(n₂/n₁) — total internal reflection\nOnly when n₁ > n₂ (denser to rarer medium)\nExample (glass→air): θ_c = \(String(format: "%.1f", ca * 180 / .pi))°\nUsed in: fiber optics, prisms, diamonds"
+                return "Critical angle: θ_c = arcsin(n₂/n₁) - total internal reflection\nOnly when n₁ > n₂ (denser to rarer medium)\nExample (glass→air): θ_c = \(String(format: "%.1f", ca * 180 / .pi))°\nUsed in: fiber optics, prisms, diamonds"
             }
-            return "Critical angle: θ_c = arcsin(n₂/n₁) — exists only when n₁ > n₂"
+            return "Critical angle: θ_c = arcsin(n₂/n₁) - exists only when n₁ > n₂"
         }
         if q.contains("diffraction") {
             let minima = fw.diffractionMinima(slitWidth: 1e-4, wavelength: 550e-9, orders: 3)
@@ -1365,7 +1358,7 @@ class DirectSolverRouter {
         // Phase 41.2: Tensor calculus & differential geometry
         let tc = TensorCalculusEngine.shared
         if q.contains("christoffel") {
-            return "Christoffel symbols: Γᵟ_{μν} = ½g^{σρ}(∂_μ g_{νρ} + ∂_ν g_{ρμ} - ∂_ρ g_{μν})\nNot tensors — transform inhomogeneously\nVanish in flat spacetime (Minkowski), nonzero in curved spacetime"
+            return "Christoffel symbols: Γᵟ_{μν} = ½g^{σρ}(∂_μ g_{νρ} + ∂_ν g_{ρμ} - ∂_ρ g_{μν})\nNot tensors - transform inhomogeneously\nVanish in flat spacetime (Minkowski), nonzero in curved spacetime"
         }
         if q.contains("minkowski") {
             _ = tc.minkowskiMetric()

@@ -1,0 +1,159 @@
+#!/usr/bin/env python3
+"""
+L104 Magic Command-Line Interface
+The unified tool for interacting with the Magic Synthesis substrate.
+"""
+
+import sys
+import os
+import argparse
+import subprocess
+import glob
+import re
+import json
+import time
+
+# Setup environment
+current_dir = os.path.dirname(os.path.abspath(__file__))
+os.environ["PYTHONPATH"] = f"{os.environ.get('PYTHONPATH', '')}:{current_dir}"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["L104_CPU_CORES"] = "2"
+
+def run_script(name, args=None):
+    script_path = os.path.join(current_dir, "l104_magic_synthesis", name)
+    cmd = [sys.executable, script_path]
+    if args:
+        cmd.extend(args)
+    
+    print(f"--- Launching {name} ---")
+    try:
+        subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {name} failed with code {e.returncode}")
+        sys.exit(e.returncode)
+
+def list_grimoires(quiet=False):
+    path = "/Users/carolalvarez/.openclaw/workspace/grimoires/*.md"
+    files = glob.glob(path)
+    if not files:
+        if not quiet:
+            print("No grimoires found.")
+        return []
+    
+    sorted_files = sorted(files, key=os.path.getmtime, reverse=True)
+    
+    if not quiet:
+        print(f"\n--- Discovered Grimoires ({len(sorted_files)}) ---")
+        for f in sorted_files:
+            print(f" - {os.path.basename(f)}")
+            
+    return sorted_files
+
+def extract_ritual(output_path: str):
+    print(f"--- Extracting Apex Ritual from latest Grimoire ---")
+    latest_grimoires = list_grimoires(quiet=True)
+    if not latest_grimoires:
+        print("Error: Cannot extract ritual, no grimoires found.")
+        sys.exit(1)
+        
+    latest_grimoire_path = latest_grimoires[0]
+    print(f"  Reading from: {os.path.basename(latest_grimoire_path)}")
+    
+    with open(latest_grimoire_path, 'r') as f:
+        content = f.read()
+
+    # Find the python code block for the ritual
+    try:
+        code_block = content.split("```python")[1].split("```")[0]
+        
+        # This is a more robust way to get the operations
+        ops_list = []
+        in_ops_block = False
+        for line in code_block.splitlines():
+            if "# GENES START" in line:
+                in_ops_block = True
+                continue
+            if "# GENES END" in line:
+                break
+            
+            if in_ops_block:
+                line = line.strip()
+                if not line.startswith("ops.append("):
+                    continue
+                
+                # Extract the dict part of QuantumGate
+                # from: ops.append(QuantumGate(gate='h', qubits=[0], parameters=[]))
+                # to:   {'gate':'h', 'qubits':[0], 'parameters':[]}
+                try:
+                    gate_str = line.split("QuantumGate(")[1].split("))")[0]
+                    # Convert to dict representation
+                    gate_str = "dict(" + gate_str + ")"
+                    # Safely evaluate it
+                    gate_dict = eval(gate_str)
+                    ops_list.append(gate_dict)
+                except (IndexError, SyntaxError):
+                    print(f"Warning: Could not parse line: {line}")
+                    continue
+        
+        if not ops_list:
+            raise ValueError("Could not find or parse any valid gene operations in the grimoire.")
+            
+        # Get num_qubits
+        num_qubits_match = re.search(r"num_qubits=(\d+)", code_block)
+        if not num_qubits_match:
+            raise ValueError("Could not find num_qubits in the grimoire's code block.")
+        num_qubits = int(num_qubits_match.group(1))
+
+        circuit = {"num_qubits": num_qubits, "operations": ops_list}
+
+        with open(output_path, 'w') as f:
+            json.dump(circuit, f, indent=2)
+            
+        print(f"  ✓ Successfully extracted ritual to: {output_path}")
+
+    except Exception as e:
+        print(f"Error: Could not parse the ritual from the grimoire. Details: {e}")
+        sys.exit(1)
+
+def main():
+    parser = argparse.ArgumentParser(description="L104 Magic Tool Suite")
+    subparsers = parser.add_subparsers(dest="command", help="Magic sub-commands")
+
+    # Evolve
+    subparsers.add_parser("evolve", help="Run the ASI Grand Magic Sage (Structural Evolution)")
+    
+    # Mitigate
+    subparsers.add_parser("mitigate", help="Run Advanced Quantum Mitigation (ZNE/MEM)")
+    
+    # Synthesis
+    subparsers.add_parser("synthesis", help="Run the high-level Quantum Magic Synthesis")
+    
+    # Grimoires
+    subparsers.add_parser("grimoires", help="List all discovered grimoires")
+    
+    # Extract Ritual
+    extract_parser = subparsers.add_parser("extract-ritual", help="Extract the latest ritual circuit to a JSON file")
+    extract_parser.add_argument("output_path", type=str, help="Path to save the output JSON file")
+
+    # Architect
+    subparsers.add_parser("architect", help="Run the full Omega Architect cycle (Evolve, Mitigate, Materialize)")
+
+    args = parser.parse_args()
+
+    if args.command == "evolve":
+        run_script("l104_asi_grand_sage.py")
+    elif args.command == "mitigate":
+        run_script("l104_advanced_quantum_mitigation.py")
+    elif args.command == "synthesis":
+        run_script("l104_quantum_magic_synthesis.py")
+    elif args.command == "grimoires":
+        list_grimoires()
+    elif args.command == "extract-ritual":
+        extract_ritual(args.output_path)
+    elif args.command == "architect":
+        run_script("l104_omega_architect_standalone.py")
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    main()

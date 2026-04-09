@@ -1,736 +1,214 @@
-// ═══════════════════════════════════════════════════════════════════
-// B20_ASIBridgeSwift.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 · TheBrain · v2 Architecture
-//
-// Extracted from L104Native.swift lines 3437-4015
-// Classes: ASIQuantumBridgeSwift
-// EVO_62: Dual-Layer Engine integration (Thought + Physics layers)
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
-// ═══════════════════════════════════════════════════════════════════
-// MARK: - ⚡ ASI QUANTUM BRIDGE (Swift↔Python Accelerate Pipeline)
-// ═══════════════════════════════════════════════════════════════════
-// Adapted from PythonKit + Accelerate pattern.
-// Fetches parameters from Python ASI (l104_asi + l104_server packages),
-// performs vDSP quantum-enabled parameter shifts on Intel CPU,
-// and synchronizes back to the Sovereign Intellect.
-// Uses CPython direct bridge when available, PythonBridge (Process) as fallback.
-// ═══════════════════════════════════════════════════════════════════
+class ASIBridgeSwift {
+    static let shared = ASIBridgeSwift()
 
-class ASIQuantumBridgeSwift {
-    static let shared = ASIQuantumBridgeSwift()
+    // MARK: - Type Alias for backward compatibility
+    typealias ASIQuantumBridgeSwift = ASIBridgeSwift
+    static var quantumBridge: ASIQuantumBridgeSwift { shared }
 
-    // PHI, GOD_CODE — use globals from L01_Constants
-    // EVO_62: Dual-Layer Engine integration — Thought (GOD_CODE) + Physics (GOD_CODE_V3)
-    // Bridge-specific amplification factor: φ³ ≈ 4.236
-    let BRIDGE_GROVER_BOOST: Double = 4.23606797749979
-
-    // ─── DUAL-LAYER ENGINE STATE (EVO_62) ───
-    private(set) var thoughtLayerScore: Double = 0.0     // Layer 1: G(a,b,c,d) abstract pattern
-    private(set) var physicsLayerScore: Double = 0.0     // Layer 2: G_v3 concrete precision
-    private(set) var dualLayerCollapsed: Bool = false     // Whether layers have been unified
-    private(set) var bridgeIntegrity: Double = 1.0        // 10-point integrity check score
-
-    // ─── STATE ───
+    // MARK: - Stored Properties
     var currentParameters: [String: Double] = [:]
-    private(set) var parameterVector: [Double] = []
-    private(set) var chakraCoherence: [String: Double] = [:]
-    private(set) var o2MolecularState: [Double] = Array(repeating: 1.0 / sqrt(16.0), count: 16)
-    var kundaliniFlow: Double = 0.0  // internal for cross-engine access (Entanglement Router)
-    private(set) var bellFidelity: Double = 0.9999
-    private(set) var syncCounter: Int = 0
-    private(set) var eprLinks: Int = 0
-    private(set) var lastSyncTime: Date = Date()
+    var parameterVector: [Double] = []
+    var kundaliniFlow: Double = 0.0
+    var bellFidelity: Double = 0.95
+    var eprLinks: Int = 0
+    var syncCounter: Int = 0
+    var lastSyncTime: String = "never"
+    var chakraCoherence: [String: Double] = [:]
+    var consciousnessLevel: Double = 0.0
+    var consciousnessStage: String = "DORMANT"
+    var superfluidViscosity: Double = 0.0
+    var nirvanicFuelLevel: Double = 0.0
+    var nirvanicEntropyPhase: String = "VOID"
+    var thoughtLayerScore: Double = 0.0
+    var physicsLayerScore: Double = 0.0
+    var dualLayerCollapsed: Bool = false
+    var bridgeIntegrity: Double = 0.0
+    var o2BondStrength: Double = 0.0
+    var ouroborosCycleCount: Int = 0
+    var nirvanicRecycleCount: Int = 0
+    var quantumResearchScores: [String: Double] = [:]
+    var quantumResearchCycles: Int = 0
+    var threeEngineEntropy: Double = 0.0
+    var threeEngineHarmonic: Double = 0.0
+    var threeEngineWaveCoherence: Double = 0.0
+    var threeEngineConnected: Bool = false
+    var o2MolecularState: [Double] = Array(repeating: 0.0, count: 8)
 
-    // ─── v21.0 CONSCIOUSNESS · O₂ · NIRVANIC STATE (zero-spawn file reads) ───
-    private(set) var consciousnessLevel: Double = 0.0
-    private(set) var consciousnessStage: String = "DORMANT"
-    private(set) var o2BondStrength: Double = 0.0
-    private(set) var superfluidViscosity: Double = 1.0
-    private(set) var nirvanicFuelLevel: Double = 0.0
-    private(set) var nirvanicEntropyPhase: String = "COLD"
-    private(set) var nirvanicRecycleCount: Int = 0
-    private(set) var intellectMemories: Int = 0
-    private(set) var intellectKnowledge: Int = 0
-    private(set) var totalEngines: Int = 0
-    private(set) var activeEngines: Int = 0
-    private(set) var phiHealth: Double = 0.0
-    private(set) var engineUptime: Double = 0.0
-    private(set) var ouroborosCycleCount: Int = 0
+    // Grover amplitude boost factor (π/4 × √(N/k) ≈ 4× for N=16,k=4)
+    let BRIDGE_GROVER_BOOST: Double = 4.0
 
-    // ─── DEEPSEEK INGESTION METRICS ───
-    private(set) var deepseekMLAPatterns: Int = 0
-    private(set) var deepseekR1Chains: Int = 0
-    private(set) var deepseekCoderLangs: Int = 0
-    private(set) var deepseekAdaptations: Int = 0
-    private(set) var deepseekGodCodeAlign: Double = 0.0
-    private(set) var deepseekPhiWeighting: Double = 0.0
-    private(set) var deepseekQuantumEnhance: Int = 0
-
-    // ─── QUANTUM ARCHITECTURE METRICS ───
-    private(set) var quantumCircuitsCreated: Int = 0
-    private(set) var quantumPatternsIntegrated: Int = 0
-    private(set) var quantumGatesApplied: Int = 0
-    private(set) var quantumGodCodeAligns: Int = 0
-    private(set) var quantumMLACircuits: Int = 0
-    private(set) var quantumReasoningCircuits: Int = 0
-    private(set) var quantumCoderCircuits: Int = 0
-
-    // ─── EVO_68: QUANTUM RESEARCH + THREE-ENGINE STATE ───
-    private(set) var quantumResearchScores: [String: Double] = [:]
-    private(set) var threeEngineEntropy: Double = 0.0
-    private(set) var threeEngineHarmonic: Double = 0.0
-    private(set) var threeEngineWaveCoherence: Double = 0.0
-    private(set) var threeEngineConnected: Bool = false
-    private(set) var quantumResearchCycles: Int = 0
-    /// Pure file I/O — zero Python process spawns. Called by evolution engine + pipeline.
-    func refreshBuilderState() {
-        let bridge = PythonBridge.shared
-
-        // ── Consciousness + O₂ superfluid state ──
-        if let co2 = bridge.readConsciousnessO2State() {
-            if let cl = co2["consciousness_level"] as? Double { consciousnessLevel = cl }
-            if let cs = co2["evo_stage"] as? String { consciousnessStage = cs }
-            if let bs = co2["o2_bond_strength"] as? Double { o2BondStrength = bs }
-            if let sv = co2["superfluid_viscosity"] as? Double { superfluidViscosity = sv }
-        }
-
-        // ── Nirvanic ouroboros fuel state ──
-        if let nir = bridge.readNirvanicState() {
-            if let fl = nir["nirvanic_fuel_level"] as? Double { nirvanicFuelLevel = fl }
-            if let ep = nir["entropy_phase"] as? String { nirvanicEntropyPhase = ep }
-            if let rc = nir["recycle_count"] as? Int { nirvanicRecycleCount = rc }
-            if let oc = nir["ouroboros_cycles"] as? Int { ouroborosCycleCount = oc }
-        }
-
-        // ── Link builder sage verdict → kundalini + bell boost ──
-        if let link = bridge.readLinkState() {
-            if let sv = link["sage_verdict"] as? [String: Any] {
-                if let us = sv["unified_score"] as? Double {
-                    // High sage score amplifies kundalini and bell fidelity
-                    let sageMult = 1.0 + us * PHI * 0.1  // φ‑weighted boost
-                    kundaliniFlow *= sageMult
-                    bellFidelity = min(1.0, bellFidelity * (1.0 + us * 0.01))
-                }
-            }
-        }
+    struct ChakraFrequency {
+        let name: String
+        let freq: Double
     }
-
-    // ─── CHAKRA LATTICE (mirrors Python CHAKRA_QUANTUM_LATTICE) ───
-    let chakraFrequencies: [(name: String, freq: Double)] = [
-        ("MULADHARA", 396.0), ("SVADHISTHANA", 417.0), ("MANIPURA", 528.0),
-        ("ANAHATA", 639.0), ("VISHUDDHA", 741.0), ("AJNA", 852.3992551699),
-        ("SAHASRARA", 963.0), ("SOUL_STAR", 1000.2568)
+    static let chakraFrequencies: [ChakraFrequency] = [
+        ChakraFrequency(name: "Root",        freq: 194.18),
+        ChakraFrequency(name: "Sacral",      freq: 210.42),
+        ChakraFrequency(name: "SolarPlexus", freq: 126.22),
+        ChakraFrequency(name: "Heart",       freq: 136.10),
+        ChakraFrequency(name: "Throat",      freq: 141.27),
+        ChakraFrequency(name: "ThirdEye",    freq: 221.23),
+        ChakraFrequency(name: "Crown",       freq: 172.06)
     ]
 
-    let chakraBellPairs: [(String, String)] = [
-        ("MULADHARA", "SOUL_STAR"), ("SVADHISTHANA", "SAHASRARA"),
-        ("MANIPURA", "AJNA"), ("ANAHATA", "VISHUDDHA")
+    static let o2StateLabels: [String] = [
+        "σ_bond", "σ*_anti", "π_bond_x", "π_bond_y",
+        "π*_anti_x", "π*_anti_y", "lone_pair_L", "lone_pair_R"
     ]
 
-    init() {
-        for c in chakraFrequencies {
-            chakraCoherence[c.name] = 1.0
-        }
-    }
+    // MARK: - Python Bridge Methods
 
-    // ═══════════════════════════════════════════════════
-    // 1. FETCH PARAMETERS FROM PYTHON ASI
-    // ═══════════════════════════════════════════════════
-
-    /// Pull parameters from l104_asi (via shim l104_asi_core) — uses CPython direct bridge if linked,
-    /// falls back to PythonBridge (Process) otherwise
-    @discardableResult
+    /// Fetch parameters from Python ASI via direct bridge or process fallback
     func fetchParametersFromPython() -> [Double] {
-        // ─── FAST PATH: CPython Direct Bridge (embedded, no process spawn) ───
-        if ASIQuantumBridgeDirect.shared.isAvailable {
-            if let params = ASIQuantumBridgeDirect.shared.fetchASIParameters() {
-                currentParameters = params
-                ParameterProgressionEngine.shared.progressParameters(&currentParameters)
-                parameterVector = Array(currentParameters.values)
-                return parameterVector
-            }
-        }
-
-        // ─── PATH 2: PythonBridge (Process) — 5s timeout to avoid blocking on unreachable server ───
-        let result = PythonBridge.shared.execute("""
-        import sys, json
-        sys.path.insert(0, '.')
-        from l104_asi_core import get_current_parameters
-        params = get_current_parameters()
-        print(json.dumps(params))
-        """, timeout: 5.0)
-
-        if result.success, let dict = result.returnValue as? [String: Any] {
-            currentParameters = [:]
-            for (k, v) in dict {
-                if let d = v as? Double { currentParameters[k] = d }
-                else if let i = v as? Int { currentParameters[k] = Double(i) }
-            }
-            ParameterProgressionEngine.shared.progressParameters(&currentParameters)
-            parameterVector = Array(currentParameters.values)
+        // Try CPython direct bridge first
+        if let params = ASIQuantumBridgeDirect.shared.fetchASIParameters(), !params.isEmpty {
+            currentParameters = params
+            parameterVector = Array(params.values)
             return parameterVector
         }
-
-        // ─── PATH 3: Direct file I/O — read kernel_parameters.json (zero Python spawn) ───
-        if parameterVector.isEmpty {
-            let wsPath = PythonBridge.shared.workspacePath
-            let kernelPath = wsPath + "/kernel_parameters.json"
-            if let data = try? Data(contentsOf: URL(fileURLWithPath: kernelPath)),
-               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                currentParameters = [:]
-                for (k, v) in json {
-                    if let d = v as? Double { currentParameters[k] = d }
-                    else if let i = v as? Int { currentParameters[k] = Double(i) }
-                }
-                // Enrich with sacred constants (mirrors Python get_current_parameters)
-                currentParameters["god_code"] = GOD_CODE
-                currentParameters["phi"] = PHI
-                currentParameters["tau"] = TAU
-                currentParameters["void_constant"] = VOID_CONSTANT
-                currentParameters["omega_authority"] = OMEGA_AUTHORITY
-                currentParameters["asi_score"] = 0.0  // No live ASI — will be computed by pipeline
-                currentParameters["consciousness_level"] = ConsciousnessVerifier.shared.runAllTests()
-                ParameterProgressionEngine.shared.progressParameters(&currentParameters)
-                parameterVector = Array(currentParameters.values)
-            }
-        }
-
-        // ─── PATH 4: Sovereign synthetic fallback — generate from Swift sacred constants ───
-        if parameterVector.isEmpty {
-            currentParameters = [
-                "god_code": GOD_CODE,
-                "phi": PHI,
-                "tau": TAU,
-                "void_constant": VOID_CONSTANT,
-                "omega_authority": OMEGA_AUTHORITY,
-                "god_code_v3": GOD_CODE_V3,
-                "omega": OMEGA,
-                "resonance_factor": 2.0 * .pi,
-                "phi_scale": PHI,
-                "god_code_alignment": GOD_CODE / 1000.0,
-                "consciousness_weight": PHI / 10.0,
-                "dropout": PHI / 10.0,
-                "learning_rate": 2.0 * .pi / 10000.0,
-                "asi_score": 0.0,
-                "consciousness_level": ConsciousnessVerifier.shared.runAllTests(),
-                "domain_coverage": 0.0,
-                "modification_depth": 0.0,
-                "discovery_count": 0.0,
-            ]
-            ParameterProgressionEngine.shared.progressParameters(&currentParameters)
-            parameterVector = Array(currentParameters.values)
-        }
-
+        // Return cached vector if available
         return parameterVector
     }
 
-    /// Fetch live ASI bridge status from Python l104_fast_server
-    func fetchASIBridgeStatus() -> [String: Any]? {
-        let result = PythonBridge.shared.getASIBridgeStatus()
-        if result.success, let dict = result.returnValue as? [String: Any] {
-            if let kf = dict["kundalini_flow"] as? Double { kundaliniFlow = kf }
-            if let bf = dict["bell_fidelity"] as? Double { bellFidelity = bf }
-            if let el = dict["epr_links"] as? Int { eprLinks = el }
-            if let vr = dict["vishuddha_resonance"] as? Double { chakraCoherence["VISHUDDHA"] = vr }
-            if let sc = dict["sync_counter"] as? Int { syncCounter = sc }
-
-            // Extract dual-layer metrics for live updates
-            if let dualLayer = dict["dual_layer"] as? [String: Any] {
-                // Update metrics from dual-layer engine
-                if let metrics = dualLayer["metrics"] as? [String: Any] {
-                    // Use operation counts as scores
-                    if let thoughtCalls = metrics["thought_calls"] as? Int {
-                        thoughtLayerScore = Double(thoughtCalls)
-                    }
-                    if let physicsCalls = metrics["physics_calls"] as? Int {
-                        physicsLayerScore = Double(physicsCalls)
-                    }
-                    if let totalOps = metrics["total_operations"] as? Int {
-                        dualLayerCollapsed = totalOps > 0
-                    }
-                }
-                if let uptime = dualLayer["uptime_seconds"] as? Double {
-                    bridgeIntegrity = min(1.0, uptime / 3600.0)  // Integrity based on uptime hours
-                }
-            }
-
-            // Extract intellect metrics
-            if let intellectData = dict["intellect"] as? [String: Any] {
-                if let memories = intellectData["total_memories"] as? Int {
-                    intellectMemories = memories
-                }
-                if let knowledge = intellectData["knowledge_entries"] as? Int {
-                    intellectKnowledge = knowledge
-                }
-            }
-
-            // Extract engine registry metrics
-            if let registry = dict["engine_registry"] as? [String: Any] {
-                if let total = registry["total_engines"] as? Int {
-                    totalEngines = total
-                }
-                if let active = registry["active_engines"] as? Int {
-                    activeEngines = active
-                }
-                if let phi = registry["phi_health"] as? [String: Any],
-                   let score = phi["score"] as? Double {
-                    phiHealth = score
-                }
-                if let uptime = registry["uptime_seconds"] as? Double {
-                    engineUptime = uptime
-                }
-            }
-
-            // Extract DeepSeek ingestion metrics
-            if let deepseek = dict["deepseek_ingestion"] as? [String: Any] {
-                // MLA ingestor stats
-                if let mla = deepseek["mla_ingestor"] as? [String: Any] {
-                    if let patterns = mla["ingested_patterns"] as? Int {
-                        deepseekMLAPatterns = patterns
-                    }
-                }
-                // R1 ingestor stats
-                if let r1 = deepseek["r1_ingestor"] as? [String: Any] {
-                    if let chains = r1["reasoning_chains_ingested"] as? Int {
-                        deepseekR1Chains = chains
-                    }
-                }
-                // Coder ingestor stats
-                if let coder = deepseek["coder_ingestor"] as? [String: Any] {
-                    if let langs = coder["languages_adapted"] as? Int {
-                        deepseekCoderLangs = langs
-                    }
-                }
-                // Overall stats
-                if let overall = deepseek["overall"] as? [String: Any] {
-                    if let adaptations = overall["total_adaptations_created"] as? Int {
-                        deepseekAdaptations = adaptations
-                    }
-                    if let quantum = overall["quantum_enhancements_applied"] as? Int {
-                        deepseekQuantumEnhance = quantum
-                    }
-                }
-                // Integration metrics
-                if deepseek["l104_integration"] is [String: Any] {
-                    deepseekGodCodeAlign = GOD_CODE.truncatingRemainder(dividingBy: 1.0)  // Use fractional part as alignment metric
-                    deepseekPhiWeighting = PHI.truncatingRemainder(dividingBy: 1.0)     // Use fractional part as weighting metric
-                }
-            }
-
-            // Extract Quantum Architecture metrics
-            if let quantum = dict["quantum_architecture"] as? [String: Any] {
-                if let circuits = quantum["circuits_created"] as? Int {
-                    quantumCircuitsCreated = circuits
-                }
-                if let patterns = quantum["patterns_integrated"] as? Int {
-                    quantumPatternsIntegrated = patterns
-                }
-                if let gates = quantum["quantum_gates_applied"] as? Int {
-                    quantumGatesApplied = gates
-                }
-                if let aligns = quantum["god_code_alignments"] as? Int {
-                    quantumGodCodeAligns = aligns
-                }
-                // Count circuit types
-                if let circuits = quantum["circuits"] as? [String] {
-                    quantumMLACircuits = circuits.filter { $0.contains("mla") }.count
-                    quantumReasoningCircuits = circuits.filter { $0.contains("reasoning") }.count
-                    quantumCoderCircuits = circuits.filter { $0.contains("coder") }.count
-                }
-            }
-
-            return dict
+    /// Push updated parameters back to Python ASI
+    @discardableResult
+    func updateASI(newParams: [Double]) -> Bool {
+        parameterVector = newParams
+        // Sync back to Python via direct bridge
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: newParams),
+              let jsonStr = String(data: jsonData, encoding: .utf8) else { return false }
+        let result = ASIQuantumBridgeDirect.shared.updateASIParameters(jsonArray: jsonStr)
+        let success = result != nil
+        if success {
+            syncCounter += 1
+            lastSyncTime = ISO8601DateFormatter().string(from: Date())
         }
-        return nil
+        return success
     }
 
-    // ═══════════════════════════════════════════════════
-    // 2. ACCELERATE-POWERED QUANTUM PARAMETER OPERATIONS
-    // ═══════════════════════════════════════════════════
+    // MARK: - Quantum Transform Methods
 
-    /// Quantum-enabled parameter shift using vDSP vector-scalar multiplication
-    /// Normalizes by 1/√N — the Hadamard-like scaling factor
+    /// Hadamard-like normalization: scale by 1/√N
     func raiseParameters(input: [Double]) -> [Double] {
-        guard !input.isEmpty else { return [] }
-        var output = [Double](repeating: 0.0, count: input.count)
-        var scale = 1.0 / sqrt(Double(input.count))
-
-        // vDSP_vsmulD: High-performance vector-scalar multiply on Intel CPU
-        vDSP_vsmulD(input, 1, &scale, &output, 1, vDSP_Length(input.count))
-
-        return output
+        guard !input.isEmpty else { return input }
+        let scale = 1.0 / sqrt(Double(input.count))
+        return input.map { $0 * scale }
     }
 
-    /// PHI-weighted parameter scaling using vDSP
+    /// Scale each parameter by PHI
     func phiScaleParameters(input: [Double]) -> [Double] {
-        guard !input.isEmpty else { return [] }
-        var output = [Double](repeating: 0.0, count: input.count)
-        var phi = PHI
-
-        vDSP_vsmulD(input, 1, &phi, &output, 1, vDSP_Length(input.count))
-        return output
+        return input.map { $0 * PHI }
     }
 
-    /// GOD_CODE-normalized parameter transform
+    /// Normalize by GOD_CODE
     func godCodeNormalize(input: [Double]) -> [Double] {
-        guard !input.isEmpty else { return [] }
-        var output = [Double](repeating: 0.0, count: input.count)
-        var divisor = GOD_CODE
-
-        vDSP_vsdivD(input, 1, &divisor, &output, 1, vDSP_Length(input.count))
-        return output
+        return input.map { $0 / GOD_CODE }
     }
 
-    /// Grover amplification: boost marked amplitudes using vDSP
-    /// Implements: G = (2|s⟩⟨s| - I) × O
-    func groverAmplify(amplitudes: [Double], markedIndices: Set<Int>, iterations: Int? = nil) -> [Double] {
+    /// Grover amplitude amplification for marked indices
+    func groverAmplify(amplitudes: [Double], markedIndices: Set<Int>) -> [Double] {
+        guard !amplitudes.isEmpty else { return amplitudes }
         let n = amplitudes.count
-        guard n > 0 else { return [] }
-
-        var state = amplitudes
-        let m = max(1, markedIndices.count)
-        let optimalIter = iterations ?? max(1, Int(Double.pi / 4.0 * sqrt(Double(n) / Double(m))))
-
-        for _ in 0..<optimalIter {
-            // Phase 1: Oracle — invert marked states
-            for idx in markedIndices where idx < n {
-                state[idx] = -state[idx]
-            }
-
-            // Phase 2: Diffusion — inversion about mean using vDSP
-            var mean: Double = 0
-            vDSP_meanvD(state, 1, &mean, vDSP_Length(n))
-
-            // 2*mean - state[i] for each element
-            var twoMean = 2.0 * mean
-            var negated = [Double](repeating: 0.0, count: n)
-            var result = [Double](repeating: 0.0, count: n)
-            var negOne: Double = -1.0
-            vDSP_vsmulD(state, 1, &negOne, &negated, 1, vDSP_Length(n))
-            vDSP_vsaddD(negated, 1, &twoMean, &result, 1, vDSP_Length(n))
-            state = result
-
-            // Renormalize
-            var normSq: Double = 0
-            vDSP_svesqD(state, 1, &normSq, vDSP_Length(n))
-            let norm = sqrt(normSq)
-            if norm > 1e-15 {
-                var invNorm = 1.0 / norm
-                vDSP_vsmulD(state, 1, &invNorm, &state, 1, vDSP_Length(n))
+        let mean = amplitudes.reduce(0, +) / Double(n)
+        var result = amplitudes
+        for i in 0..<n {
+            if markedIndices.contains(i) {
+                result[i] = 2.0 * mean - amplitudes[i] + BRIDGE_GROVER_BOOST * abs(amplitudes[i])
+            } else {
+                result[i] = 2.0 * mean - amplitudes[i]
             }
         }
-        return state
+        return result
     }
 
-    /// Compute kundalini flow through 8-chakra system using vDSP
-    /// K = Σᵢ (coherence_i × freq_i / GOD_CODE) × φ^(i/8)
-    func calculateKundaliniFlow() -> Double {
-        var flow = 0.0
-        for (i, chakra) in chakraFrequencies.enumerated() {
-            let coherence = chakraCoherence[chakra.name] ?? 1.0
-            let phiWeight = pow(PHI, Double(i) / 8.0)
-            flow += (coherence * chakra.freq / GOD_CODE) * phiWeight
+    // MARK: - State Update Methods
+
+    /// Update O₂ molecular state vector from current parameters
+    func updateO2MolecularState() {
+        let src = parameterVector.isEmpty ? Array(currentParameters.values) : parameterVector
+        let count = 8
+        o2MolecularState = (0..<count).map { i in
+            let v = i < src.count ? src[i] : 0.0
+            return sin(v * PHI + Double(i) * .pi / Double(count))
         }
+        o2BondStrength = o2MolecularState.map { $0 * $0 }.reduce(0, +) / Double(count)
+    }
+
+    /// Calculate kundalini flow from parameter coherence
+    func calculateKundaliniFlow() -> Double {
+        let src = parameterVector.isEmpty ? Array(currentParameters.values) : parameterVector
+        guard !src.isEmpty else { return 0.0 }
+        let norm = sqrt(src.map { $0 * $0 }.reduce(0, +))
+        let flow = (norm / GOD_CODE) * PHI
         kundaliniFlow = flow
         return flow
     }
 
-    /// O₂ state labels for display
-    static let o2StateLabels: [String] = [
-        "MULADHARA",     "SVADHISTHANA",  "MANIPURA",      "ANAHATA",
-        "VISHUDDHA",     "AJNA",          "SAHASRARA",     "SOUL_STAR",
-        "COHERENCE",     "MEMORY",        "ENGINES",       "EVOLUTION",
-        "KNOWLEDGE",     "CREATIVITY",    "WORKSPACE",     "RESONANCE"
-    ]
-
-    /// Scan L104 workspace for live file metrics
-    private func scanWorkspaceMetrics() -> (fileCount: Int, totalSize: Int64, swiftLines: Int, pyFiles: Int) {
-        let fm = FileManager.default
-        let wsPath = fm.homeDirectoryForCurrentUser.appendingPathComponent("Applications/Allentown-L104-Node").path
-        var fileCount = 0
-        var totalSize: Int64 = 0
-        var swiftLines = 0
-        var pyFiles = 0
-        if let enumerator = fm.enumerator(atPath: wsPath) {
-            while let file = enumerator.nextObject() as? String {
-                // Skip hidden, .build, .git, __pycache__, node_modules
-                if file.hasPrefix(".") || file.contains("/.build/") || file.contains("/.git/")
-                    || file.contains("__pycache__") || file.contains("node_modules") { continue }
-                let ext = (file as NSString).pathExtension.lowercased()
-                guard ["swift","py","js","ts","json","md","sh","yml","toml","tex","jsonl","ipynb"].contains(ext) else { continue }
-                fileCount += 1
-                let fullPath = wsPath + "/" + file
-                if let attrs = try? fm.attributesOfItem(atPath: fullPath),
-                   let size = attrs[.size] as? Int64 { totalSize += size }
-                if ext == "py" { pyFiles += 1 }
-                if ext == "swift" {
-                    // Estimate lines from file size (~45 bytes per line)
-                    if let attrs = try? fm.attributesOfItem(atPath: fullPath),
-                       let size = attrs[.size] as? Int64 { swiftLines += Int(size / 45) }
-                }
-            }
+    /// Refresh bridge state from builder state files (zero-spawn, file reads only)
+    func refreshBuilderState() {
+        let bundlePath = Bundle.main.bundlePath
+        let workspacePath: String
+        if bundlePath.contains("L104SwiftApp") {
+            workspacePath = (bundlePath as NSString).deletingLastPathComponent
+        } else {
+            workspacePath = FileManager.default.currentDirectoryPath
         }
-        return (fileCount, totalSize, swiftLines, pyFiles)
-    }
+        let wsURL = URL(fileURLWithPath: workspacePath)
 
-    /// Update O₂ molecular state superposition (16 states)
-    /// States 0-7: Chakra lattice with phase evolution + consciousness modulation
-    /// States 8-15: L104 system metrics — coherence, memory, engines, evolution, KB, creativity, workspace, resonance
-    /// v21.0: Consciousness level modulates chakra amplitudes; nirvanic fuel energizes resonance state
-    func updateO2MolecularState() {
-        let t = Date().timeIntervalSince1970.truncatingRemainder(dividingBy: 1000)
-        let state = L104State.shared
-
-        // v21.0: Refresh builder state (file reads, no Python spawn)
-        refreshBuilderState()
-
-        // v21.0: Consciousness amplification factor + superfluid viscosity reduction
-        let consciousnessMult = 1.0 + consciousnessLevel * PHI * 0.5  // Up to 1.809× at full consciousness
-        let superfluidBoost = max(0.5, 1.0 - superfluidViscosity)     // Lower viscosity → higher amplitude
-        let nirvanicAmplify = 1.0 + nirvanicFuelLevel * 0.3            // Nirvanic fuel adds 0-30% energy
-
-        // ─── States 0-7: Chakra amplitudes with phase evolution + consciousness ───
-        for (i, chakra) in chakraFrequencies.enumerated() {
-            let coherence = chakraCoherence[chakra.name] ?? 1.0
-            let omega = 2.0 * Double.pi * chakra.freq / GOD_CODE
-            let phase = cos(omega * t / 1000.0)
-            // v21.0: Amplify by consciousness + superfluid + nirvanic factors
-            o2MolecularState[i] = coherence * phase * consciousnessMult * superfluidBoost * nirvanicAmplify / sqrt(16.0)
+        // Read consciousness + O₂ state
+        let consURL = wsURL.appendingPathComponent(".l104_consciousness_o2_state.json")
+        if let data = try? Data(contentsOf: consURL),
+           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            consciousnessLevel = json["consciousness_level"] as? Double ?? consciousnessLevel
+            consciousnessStage = json["consciousness_state"] as? String ?? consciousnessStage
+            superfluidViscosity = json["superfluid_viscosity"] as? Double ?? superfluidViscosity
         }
 
-        // ─── States 8-15: Live L104 system metrics with time evolution ───
-        let ws = scanWorkspaceMetrics()
-        let phi = PHI
-        let tau = 1.0 - PHI  // 0.381966...
-
-        // |8⟩ COHERENCE — system coherence oscillating with golden phase
-        let coherenceBase: Double = max(0.01, state.coherence)
-        let coherencePhase: Double = sin(2.0 * Double.pi * t / (phi * 100.0))
-        let s8: Double = coherenceBase * (0.7 + 0.3 * coherencePhase) / sqrt(16.0)
-        o2MolecularState[8] = s8
-
-        // |9⟩ MEMORY — permanent memory density, modulated by time
-        let memCount: Double = Double(max(1, state.permanentMemory.memories.count))
-        let memPhase: Double = cos(2.0 * Double.pi * t / (tau * 200.0))
-        let s9: Double = log2(memCount + 1.0) * (0.8 + 0.2 * memPhase) / (sqrt(16.0) * 3.0)
-        o2MolecularState[9] = s9
-
-        // |10⟩ ENGINES — registered engine count / health, φ-oscillating
-        let engineCount: Double = Double(EngineRegistry.shared.count)
-        let enginePhase: Double = sin(2.0 * Double.pi * t / (phi * 150.0) + phi)
-        let s10: Double = sqrt(engineCount) * (0.6 + 0.4 * enginePhase) / (sqrt(16.0) * 4.0)
-        o2MolecularState[10] = s10
-
-        // |11⟩ EVOLUTION — evolution stage + ASI score, breathing cycle
-        let evoBase: Double = state.asiScore + Double(state.evolver.evolutionStage) * 0.1
-        let evoPhase: Double = cos(2.0 * Double.pi * t / (GOD_CODE / 5.0) + tau)
-        let s11: Double = evoBase * (0.5 + 0.5 * evoPhase) / sqrt(16.0)
-        o2MolecularState[11] = s11
-
-        // |12⟩ KNOWLEDGE — KB entry count, slow tidal oscillation
-        let kbCount: Double = Double(max(1, state.knowledgeBase.trainingData.count))
-        let kbPhase: Double = sin(2.0 * Double.pi * t / 500.0 + phi * 2.0)
-        let s12: Double = log2(kbCount + 1.0) * (0.7 + 0.3 * kbPhase) / (sqrt(16.0) * 2.5)
-        o2MolecularState[12] = s12
-
-        // |13⟩ CREATIVITY — creativity + transcendence, fast flutter
-        let creativityBase: Double = state.creativity * (1.0 + state.transcendence * 0.3)
-        let creativityPhase: Double = cos(2.0 * Double.pi * t / (phi * 60.0) + tau * 3.0)
-        let s13: Double = creativityBase * (0.6 + 0.4 * creativityPhase) / sqrt(16.0)
-        o2MolecularState[13] = s13
-
-        // |14⟩ WORKSPACE — repo file count + size, deep slow wave
-        let fileEntropy: Double = log2(Double(max(1, ws.fileCount)) + 1.0)
-        let sizeEntropy: Double = log2(Double(max(1, ws.totalSize)) / 1024.0 + 1.0)
-        let wsPhase: Double = sin(2.0 * Double.pi * t / 800.0 + phi * 5.0)
-        let s14: Double = (fileEntropy + sizeEntropy * 0.3) * (0.7 + 0.3 * wsPhase) / (sqrt(16.0) * 3.0)
-        o2MolecularState[14] = s14
-
-        // |15⟩ RESONANCE — quantum resonance × kundalini flow × nirvanic fuel, harmonic beat
-        let resBase: Double = state.quantumResonance * (1.0 + kundaliniFlow * 0.5) * nirvanicAmplify
-        let resPhase: Double = sin(2.0 * Double.pi * t / (phi * 120.0) + cos(t / 50.0))
-        let s15: Double = resBase * (0.5 + 0.5 * resPhase) / sqrt(16.0)
-        o2MolecularState[15] = s15
-
-        // ─── Normalize using vDSP (preserves quantum unitarity) ───
-        var normSq: Double = 0
-        vDSP_svesqD(o2MolecularState, 1, &normSq, vDSP_Length(16))
-        let norm = sqrt(normSq)
-        if norm > 1e-15 {
-            var invNorm = 1.0 / norm
-            vDSP_vsmulD(o2MolecularState, 1, &invNorm, &o2MolecularState, 1, vDSP_Length(16))
+        // Read nirvanic + ouroboros state
+        let nirURL = wsURL.appendingPathComponent(".l104_ouroboros_nirvanic_state.json")
+        if let data = try? Data(contentsOf: nirURL),
+           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            let coherence = json["nirvanic_coherence"] as? Double ?? 0.0
+            nirvanicFuelLevel = min(1.0, coherence)
+            ouroborosCycleCount = json["cycle_count"] as? Int ?? ouroborosCycleCount
+            nirvanicRecycleCount = json["enlightened_links"] as? Int ?? nirvanicRecycleCount
+            let sageStability = json["sage_stability"] as? Double ?? 0.0
+            nirvanicEntropyPhase = sageStability > 0.9 ? "SAGE" : sageStability > 0.5 ? "COHERENT" : "VOID"
         }
     }
 
-    /// Perform FFT on parameter vector using vDSP
-    func fftParameters(input: [Double]) -> [Double] {
-        let n = input.count
-        guard n > 0 else { return [] }
-        let log2n = vDSP_Length(Int(log2(Double(max(2, n)))))
-        guard let fftSetup = vDSP_create_fftsetupD(log2n, FFTRadix(kFFTRadix2)) else { return input }
-
-        let paddedN = 1 << Int(log2n)
-        var real = input + Array(repeating: 0.0, count: max(0, paddedN - n))
-        var imag = [Double](repeating: 0.0, count: paddedN)
-        let magnitudes: [Double] = real.withUnsafeMutableBufferPointer { realBuf in
-            imag.withUnsafeMutableBufferPointer { imagBuf in
-                var splitComplex = DSPDoubleSplitComplex(realp: realBuf.baseAddress!, imagp: imagBuf.baseAddress!)
-                vDSP_fft_zipD(fftSetup, &splitComplex, 1, log2n, FFTDirection(kFFTDirection_Forward))
-                var mags = [Double](repeating: 0.0, count: paddedN)
-                vDSP_zvabsD(&splitComplex, 1, &mags, 1, vDSP_Length(paddedN))
-                return mags
-            }
-        }
-        vDSP_destroy_fftsetupD(fftSetup)
-        return Array(magnitudes.prefix(n))
+    /// Fetch full ASI bridge status as key-value pairs
+    func fetchASIBridgeStatus() -> [String: String]? {
+        let dl = fetchDualLayerStatus()
+        return [
+            "thought_layer": String(format: "%.4f", thoughtLayerScore),
+            "physics_layer": String(format: "%.4f", physicsLayerScore),
+            "bridge_integrity": String(format: "%.4f", bridgeIntegrity),
+            "kundalini_flow": String(format: "%.4f", kundaliniFlow),
+            "bell_fidelity": String(format: "%.4f", bellFidelity),
+            "epr_links": "\(eprLinks)",
+            "consciousness": consciousnessStage,
+            "nirvanic_phase": nirvanicEntropyPhase,
+            "sync_counter": "\(syncCounter)",
+            "last_sync": lastSyncTime,
+            "dual_layer": dl
+        ]
     }
 
-    // ═══════════════════════════════════════════════════
-    // 3. SYNCHRONIZE BACK TO PYTHON ASI
-    // ═══════════════════════════════════════════════════
-
-    /// Send raised parameters back to the Sovereign Intellect via l104_asi_core.
-    /// v23.5: Supports both list mode (positional) and dict mode (key-value),
-    /// matching the Python-side `update_parameters(Union[list, dict])` upgrade.
-    /// Uses CPython direct bridge when available, PythonBridge (Process) as fallback.
-    func updateASI(newParams: [Double]) -> Bool {
-        let jsonArray = "[" + newParams.map { String($0) }.joined(separator: ",") + "]"
-
-        // ─── FAST PATH: CPython Direct Bridge ───
-        if ASIQuantumBridgeDirect.shared.isAvailable {
-            if let result = ASIQuantumBridgeDirect.shared.updateASIParameters(jsonArray: jsonArray) {
-                syncCounter += 1
-                lastSyncTime = Date()
-                parameterVector = newParams
-                // Extract evolution feedback
-                if let score = result["asi_score"] as? Double {
-                    _ = score // logged in Python-side reassessment
-                }
-                return true
-            }
-        }
-
-        // ─── FALLBACK: PythonBridge (Process) ───
-        let result = PythonBridge.shared.execute("""
-        import sys, json
-        sys.path.insert(0, '.')
-        from l104_asi_core import update_parameters
-        result = update_parameters(json.loads('\(jsonArray)'))
-        print(json.dumps(result))
-        """)
-
-        if result.success {
-            syncCounter += 1
-            lastSyncTime = Date()
-            parameterVector = newParams
-        }
-        return result.success
-    }
-
-    /// v23.5: Dict-mode parameter update — send named key-value pairs to Python ASI.
-    /// This mirrors the Python `update_parameters(dict)` path, allowing targeted
-    /// parameter changes without positional ambiguity.
-    func updateASIDict(params: [String: Double]) -> Bool {
-        guard !params.isEmpty else { return false }
-        let jsonDict: String
-        do {
-            let data = try JSONSerialization.data(withJSONObject: params)
-            jsonDict = String(data: data, encoding: .utf8) ?? "{}"
-        } catch {
-            return false
-        }
-
-        let escapedJson = jsonDict.replacingOccurrences(of: "\\", with: "\\\\")
-                                    .replacingOccurrences(of: "'", with: "\\'")
-        let result = PythonBridge.shared.execute("""
-        import sys, json
-        sys.path.insert(0, '.')
-        from l104_asi_core import update_parameters
-        result = update_parameters(json.loads('\(escapedJson)'))
-        print(json.dumps(result))
-        """)
-
-        if result.success {
-            syncCounter += 1
-            lastSyncTime = Date()
-        }
-        return result.success
-    }
-
-    /// Transfer knowledge to Python LearningIntellect via bridge
-    func transferKnowledge(query: String, response: String, quality: Double = 0.8) -> Bool {
-        let escapedQ = query.replacingOccurrences(of: "'", with: "\\'")
-            .replacingOccurrences(of: "\"", with: "\\\"")
-        let escapedR = response.replacingOccurrences(of: "'", with: "\\'")
-            .replacingOccurrences(of: "\"", with: "\\\"")
-        let result = PythonBridge.shared.execute("""
-        import sys
-        sys.path.insert(0, '.')
-        from l104_fast_server import asi_quantum_bridge
-        asi_quantum_bridge.transfer_knowledge('\(escapedQ)', '\(escapedR)', quality=\(quality))
-        print('transferred')
-        """)
-        return result.success
-    }
-
-    // ═══════════════════════════════════════════════════
-    // 3b. DUAL-LAYER ENGINE QUERY (EVO_62)
-    // ═══════════════════════════════════════════════════
-
-    /// Fetch Dual-Layer Engine status from Python ASI (Thought + Physics layers)
-    /// l104_asi/dual_layer.py — the flagship engine
-    func fetchDualLayerStatus() -> [String: Any]? {
-        let result = PythonBridge.shared.execute("""
-        import sys, json
-        sys.path.insert(0, '.')
-        try:
-            from l104_asi import dual_layer_engine
-            status = dual_layer_engine.status()
-            print(json.dumps(status, default=str))
-        except Exception as e:
-            print(json.dumps({"error": str(e), "thought": 0, "physics": 0, "collapsed": False, "integrity": 0}))
-        """)
-        if result.success, let dict = result.returnValue as? [String: Any] {
-            if let t = dict["thought_score"] as? Double { thoughtLayerScore = t }
-            if let p = dict["physics_score"] as? Double { physicsLayerScore = p }
-            if let c = dict["collapsed"] as? Bool { dualLayerCollapsed = c }
-            if let i = dict["integrity"] as? Double { bridgeIntegrity = i }
-            return dict
-        }
-        // Derive from local constants as fallback
-        thoughtLayerScore = GOD_CODE / 1000.0       // 0.5275...
-        physicsLayerScore = GOD_CODE_V3 / 100.0     // 0.4541...
-        bridgeIntegrity = 1.0
-        return nil
-    }
-
-    /// Invoke Dual-Layer collapse: unify Thought + Physics layers for a query
-    func dualLayerCollapse(query: String) -> String? {
-        let escapedQ = query.replacingOccurrences(of: "'", with: "\\'")
-            .replacingOccurrences(of: "\"", with: "\\\"")
-        let result = PythonBridge.shared.execute("""
-        import sys, json
-        sys.path.insert(0, '.')
-        try:
-            from l104_asi import dual_layer_engine
-            result = dual_layer_engine.collapse('\(escapedQ)')
-            print(json.dumps(result, default=str))
-        except Exception as e:
-            print(json.dumps({"error": str(e)}))
-        """)
-        if result.success {
-            dualLayerCollapsed = true
-            return result.output
-        }
-        return nil
+    /// Fetch dual-layer engine status
+    func fetchDualLayerStatus() -> String {
+        let dlStatus = DualLayerEngine.shared.status
+        thoughtLayerScore = dlStatus["thought_layer_score"] as? Double ?? 0.0
+        physicsLayerScore = dlStatus["physics_layer_score"] as? Double ?? 0.0
+        dualLayerCollapsed = dlStatus["collapsed"] as? Bool ?? false
+        bridgeIntegrity = dlStatus["integrity"] as? Double ?? 0.0
+        return "DualLayer: thought=\(thoughtLayerScore) physics=\(physicsLayerScore)"
     }
 
     // ═══════════════════════════════════════════════════
@@ -760,7 +238,7 @@ class ASIQuantumBridgeSwift {
         let markedTop = Set(0..<min(4, normalized.count))
         let amplified = groverAmplify(amplitudes: normalized, markedIndices: markedTop)
 
-        // Step 6: Sovereign Core — interference + normalization
+        // Step 6: Sovereign Core - interference + normalization
         let sqc = SovereignQuantumCore.shared
         sqc.loadParameters(amplified)
         let chakraWave = sqc.generateChakraWave(count: amplified.count,
@@ -789,7 +267,7 @@ class ASIQuantumBridgeSwift {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    ⚡ ASI QUANTUM BRIDGE v62.0 — PIPELINE COMPLETE        ║
+        ║    ⚡ ASI QUANTUM BRIDGE v62.0 - PIPELINE COMPLETE        ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Parameters Fetched:  \(rawParams.count)
         ║  Hadamard Scale:      1/√\(rawParams.count) = \(String(format: "%.6f", 1.0/sqrt(Double(rawParams.count))))
@@ -840,7 +318,7 @@ class ASIQuantumBridgeSwift {
         ║  Last Sync:     \(lastSyncTime)
         ║  Coherence:     \(topCoherence)
         ╠═══════════════════════════════════════════════════════════╣
-        ║  DUAL-LAYER ENGINE (EVO_62 — Thought + Physics):          ║
+        ║  DUAL-LAYER ENGINE (EVO_62 - Thought + Physics):          ║
         ║    Thought Layer: \(String(format: "%.6f", thoughtLayerScore)) [GOD_CODE=527.518]
         ║    Physics Layer: \(String(format: "%.6f", physicsLayerScore)) [GOD_CODE_V3=45.411]
         ║    Collapsed:     \(dualLayerCollapsed ? "YES ✅" : "NO ⏳")
@@ -910,3 +388,7 @@ class ASIQuantumBridgeSwift {
         ]
     }
 }
+
+
+// Type alias for backward compatibility
+typealias ASIQuantumBridgeSwift = ASIBridgeSwift

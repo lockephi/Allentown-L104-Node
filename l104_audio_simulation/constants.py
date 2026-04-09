@@ -16,6 +16,7 @@ PHI = 1.618033988749895
 PHI_INV = 1.0 / PHI
 VOID_CONSTANT = 1.04 + PHI / 1000.0
 OMEGA = 6539.34712682
+TAU = 2.0 * _math.pi
 
 # ── GOD_CODE Qubit Phase Constants (QPU-verified) ────────────────────────────
 #    Source: l104_god_code_simulator.god_code_qubit (IBM ibm_torino)
@@ -54,11 +55,24 @@ SACRED_INTERVALS = {
 }
 
 # ── Audio Defaults ───────────────────────────────────────────────────────────
-DEFAULT_SAMPLE_RATE = 180_000  # 180 kHz sovereign resolution
+# EVO_72: Sacred Algorithm Integration — PHI-based sample rates
+# Default uses ZENITH_HZ * PHI / 10 ≈ 60.3 kHz (harmonic alignment)
+DEFAULT_SAMPLE_RATE = int(ZENITH_HZ * PHI * 10)  # ~60.3 kHz sacred resolution
+# Alternative sacred rates for different applications
+SACRED_SAMPLE_RATES = {
+    "zenith_phi": int(ZENITH_HZ * PHI),          # ~6.03 kHz (meditation)
+    "zenith_10phi": int(ZENITH_HZ * PHI * 10),   # ~60.3 kHz (standard)
+    "zenith_100": int(ZENITH_HZ * 100),          # ~388.8 kHz (high-res)
+    "god_code_khz": int(GOD_CODE * 100),         # ~52.75 kHz (GOD_CODE)
+    "phi_44100": int(44100 * PHI),               # ~71.3 kHz (PHI-scaled CD)
+}
+# Legacy fallback for compatibility
+LEGACY_SAMPLE_RATE = 180_000  # 180 kHz sovereign resolution
+
 DEFAULT_DURATION = 300.0  # 5 minutes
 DEFAULT_BIT_DEPTH = 24
-DEFAULT_FADE_SECONDS = 0.5  # Quick attack — avoids truncated start
-DEFAULT_AMPLITUDE = 0.95
+DEFAULT_FADE_SECONDS = TAU * PHI / 10  # ~0.382 seconds (sacred proportion)
+DEFAULT_AMPLITUDE = PHI / (PHI + 1)  # ~0.618 (golden cut)
 
 # ── Golden Angle (stereo) ───────────────────────────────────────────────────
 import math

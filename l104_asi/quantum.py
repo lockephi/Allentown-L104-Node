@@ -108,6 +108,14 @@ try:
 except ImportError:
     _rt_estimate = None
 
+# ═══ QEC: Quantum Error Correction (Repetition & Surface Code Decoders) ═══
+_QEC_AVAILABLE = False
+try:
+    from l104_simulator.qec import ErrorModel, RepetitionDecoder, SurfaceCodeDecoder, extract_syndrome_repetition
+    _QEC_AVAILABLE = True
+except ImportError:
+    pass
+
 # ═══ Math Engine wave coherence for Fe-Sacred / Fe-PHI computations ═══
 _WAVE_COHERENCE = None
 try:
@@ -519,6 +527,99 @@ class QuantumComputationCore:
             'noise_factors': ZNE_NOISE_FACTORS,
             'correction_applied': round(correction, 8),
             'extrapolation_order': min(len(factors) - 1, 2),
+        }
+
+    # ─── QEC: Quantum Error Correction (Logical Error Rate Estimation) ───
+
+    def quantum_error_correct(self,
+                              code_type: str = "repetition",
+                              error_type: str = "bit_flip",
+                              physical_error_rate: float = 0.1,
+                              shots: int = 1000,
+                              seed: Optional[int] = None) -> Dict[str, Any]:
+        """
+        Estimate logical error rate of a quantum error‑correcting code.
+
+        Uses the L104 simulator QEC module (repetition‑code majority‑vote decoder
+        and surface‑code union‑find placeholder) to simulate errors, decode syndromes,
+        and compute the probability of a logical error remaining after correction.
+
+        Args:
+            code_type: "repetition" (bit‑flip) or "surface" (placeholder).
+            error_type: "bit_flip", "phase_flip", "depolarizing", "biased".
+            physical_error_rate: per‑qubit error probability (0–1).
+            shots: Monte Carlo samples.
+            seed: Random seed for reproducibility.
+
+        Returns:
+            Dictionary with logical_error_rate, decode_accuracy, and metadata.
+        """
+        if not _QEC_AVAILABLE:
+            # Fallback: return placeholder values
+            return {
+                'quantum': False,
+                'fallback': 'qec_unavailable',
+                'logical_error_rate': physical_error_rate * 0.5,
+                'decode_accuracy': 0.95,
+                'code_type': code_type,
+                'error_type': error_type,
+            }
+
+        # Build error model
+        error_model = ErrorModel(error_type=error_type,
+                                 physical_error_rate=physical_error_rate)
+
+        if code_type.lower() == "repetition":
+            decoder = RepetitionDecoder(n_physical=5)
+        elif code_type.lower() == "surface":
+            decoder = SurfaceCodeDecoder(rows=3, cols=3)
+        else:
+            raise ValueError(f"Unknown code_type: {code_type}")
+
+        # Monte Carlo simulation via decoder's logical_error_probability
+        p_logical = decoder.logical_error_probability(error_model, shots=shots)
+
+        # Additional decode accuracy test (analytical)
+        # For simplicity we reuse the test from test_repetition_code
+        decode_accuracy = 1.0
+        if code_type == "repetition":
+            n = decoder.n
+            success = 0
+            total = min(shots, 100)
+            for _ in range(total):
+                errors = error_model.sample_pauli_error(n)
+                x_bits = [1 if e in ('X', 'Y') else 0 for e in errors]
+                syn_bits = []
+                for i in range(n - 1):
+                    syn_bits.append(str(x_bits[i] ^ x_bits[i + 1]))
+                syndrome = ''.join(syn_bits)
+                correction = decoder.decode(syndrome)
+                # Combine errors and correction (simple X only)
+                combined = []
+                for e, c in zip(errors, correction):
+                    if e == 'I':
+                        combined.append(c)
+                    elif e == 'X':
+                        if c == 'X':
+                            combined.append('I')
+                        else:
+                            combined.append('X')
+                    else:
+                        combined.append('I')
+                x_count = sum(1 for op in combined if op == 'X')
+                if x_count % 2 == 0:
+                    success += 1
+            decode_accuracy = success / total
+
+        return {
+            'quantum': True,
+            'logical_error_rate': float(p_logical),
+            'decode_accuracy': float(decode_accuracy),
+            'code_type': code_type,
+            'error_type': error_type,
+            'physical_error_rate': physical_error_rate,
+            'shots': shots,
+            'seed': seed,
         }
 
     # ─── QRC: Quantum Reservoir Computing for Metric Prediction ───

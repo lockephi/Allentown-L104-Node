@@ -1,20 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// H12_AppDelegate.swift
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Application Delegate
-//
-// AppDelegate: NSApplicationDelegate with app lifecycle management,
-// menu bar configuration, keyboard shortcuts (⌘K, ⌘D, ⌘S, ⌘E,
-// ⌘T, ⌘R, ⌘I), and sovereign initialization sequence.
-//
-// Extracted from L104Native.swift lines 42167–42472
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
+
+private let logging = Logger(subsystem: "com.l104.H12_AppDelegate", category: "main")
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var wc: L104WindowController!
@@ -35,26 +27,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // 🌐 ACTIVATE NETWORK SUBSYSTEMS (deferred to avoid blocking launch)
+        // EVO_76: removed duplicate EmotionalCore.activate() — FutureReserve.activate() handles it.
+        //         CircuitWatcher.start() moved here (was on main thread, blocked window init).
+        //         PerformanceOrchestrator.boot() warms SIMD/pool/GPU before first use.
         DispatchQueue.global(qos: .utility).async {
-            FutureReserve.shared.activate()  // Orchestrator activates all network subsystems
-            EmotionalCore.shared.activate()
-            // EVO_56: Pre-warm Python bridge — caches bytecode for faster first call
+            // EVO_77: Start quantum scheduler & metrics cache FIRST — must run before any engine polls
+            MetricsCache.shared.startPolling()
+            MacOSSystemMonitor.shared.startBackgroundPolling()
+            UnifiedHeartbeat.shared.activate()
+            // Pre-warm performance subsystems before anything else uses them
+            PerformanceOrchestrator.shared.boot()
+            FutureReserve.shared.activate()  // Orchestrator activates all network subsystems (parallel EVO_76)
+            // EVO_56: Pre-warm Python bridge - caches bytecode for faster first call
             PythonBridge.shared.warmUp()
+            // Start circuit watcher on background thread (uses DispatchSourceTimer, no RunLoop needed)
+            CircuitWatcher.shared.start()
             DispatchQueue.main.async {
                 if let mainView = self.wc.window?.contentView as? L104MainView {
-                    mainView.appendSystemLog("🌐 Network mesh online — \(NetworkLayer.shared.peers.count) peers, \(NetworkLayer.shared.quantumLinks.count) quantum links")
+                    mainView.appendSystemLog("🌐 Network mesh online - \(NetworkLayer.shared.peers.count) peers, \(NetworkLayer.shared.quantumLinks.count) quantum links")
+                    mainView.appendSystemLog("⚡ CircuitWatcher v3.0 started - three-engine scoring active (entropy=0.35, harmonic=0.40, wave=0.25)")
                 }
             }
         }
 
         // Launch backend processes if not already managed by launchd
         launchBackendProcesses()
-
-        // Start circuit watcher daemon v3.0 (three-engine scoring, zero CPU when idle)
-        CircuitWatcher.shared.start()
-        if let mainView = NSApp.mainWindow?.contentView?.subviews.first as? L104MainView {
-            mainView.appendSystemLog("⚡ CircuitWatcher v3.0 started — three-engine scoring active (entropy=0.35, harmonic=0.40, wave=0.25)")
-        }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ s: NSApplication) -> Bool { true }
@@ -62,7 +59,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ n: Notification) {
         CircuitWatcher.shared.stop()
         // v3.0: Log three-engine shutdown for telemetry continuity
-        NSLog("[L104] CircuitWatcher v3.0 stopped — three-engine telemetry flushed")
+        NSLog("[L104] CircuitWatcher v3.0 stopped - three-engine telemetry flushed")
         L104State.shared.saveState()
         L104State.shared.permanentMemory.save()
         AdaptiveLearner.shared.save()
@@ -81,7 +78,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let appMenuItem = NSMenuItem(); appMenuItem.submenu = appMenu
         mainMenu.addItem(appMenuItem)
 
-        // Edit menu — needed for Cmd+C, Cmd+V in text fields
+        // Edit menu - needed for Cmd+C, Cmd+V in text fields
         let editMenu = NSMenu(title: "Edit")
         editMenu.addItem(withTitle: "Undo", action: Selector(("undo:")), keyEquivalent: "z")
         editMenu.addItem(withTitle: "Redo", action: Selector(("redo:")), keyEquivalent: "Z")
@@ -93,29 +90,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let editMenuItem = NSMenuItem(); editMenuItem.submenu = editMenu
         mainMenu.addItem(editMenuItem)
 
-        // L104 menu — custom commands with keyboard shortcuts
+        // L104 menu - custom commands with keyboard shortcuts
         let l104Menu = NSMenu(title: "L104")
         l104Menu.addItem(withTitle: "Save Memories", action: #selector(saveAll), keyEquivalent: "s")
         l104Menu.addItem(withTitle: "Evolve", action: #selector(doEvolveMenu), keyEquivalent: "e")
         l104Menu.addItem(NSMenuItem.separator())
         l104Menu.addItem(withTitle: "System Status", action: #selector(doStatusMenu), keyEquivalent: "i")
         l104Menu.addItem(NSMenuItem.separator())
-        // ⌘K — Command Palette
+        // ⌘K - Command Palette
         let cmdPalette = NSMenuItem(title: "Command Palette…", action: #selector(showCommandPalette), keyEquivalent: "k")
         l104Menu.addItem(cmdPalette)
-        // ⌘D — Dashboard
+        // ⌘D - Dashboard
         let dashItem = NSMenuItem(title: "ASI Dashboard", action: #selector(switchToDashboard), keyEquivalent: "d")
         l104Menu.addItem(dashItem)
-        // ⌘T — Transcend
+        // ⌘T - Transcend
         let transcendItem = NSMenuItem(title: "Transcend", action: #selector(doTranscendMenu), keyEquivalent: "t")
         l104Menu.addItem(transcendItem)
-        // ⌘R — Resonate
+        // ⌘R - Resonate
         let resonateItem = NSMenuItem(title: "Resonate", action: #selector(doResonateMenu), keyEquivalent: "r")
         l104Menu.addItem(resonateItem)
-        // ⌘N — Network
+        // ⌘N - Network
         let networkItem = NSMenuItem(title: "Network Mesh", action: #selector(switchToNetwork), keyEquivalent: "n")
         l104Menu.addItem(networkItem)
-        // ⌘⇧D — Debug Console
+        // ⌘⇧D - Debug Console
         let debugItem = NSMenuItem(title: "Debug Console", action: #selector(switchToDebugConsole), keyEquivalent: "d")
         debugItem.keyEquivalentModifierMask = [.command, .shift]
         l104Menu.addItem(debugItem)
@@ -179,7 +176,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let _ = wc.window?.contentView as? L104MainView,
               let mainWindow = wc.window else { return }
 
-        // Check if palette is already open — toggle it closed
+        // Check if palette is already open - toggle it closed
         for child in mainWindow.childWindows ?? [] {
             if let panel = child as? NSPanel, panel.title == "L104CommandPalette" {
                 panel.close()
@@ -416,11 +413,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Launch backend processes if not already running.
     func launchBackendProcesses() {
         guard !isBackendRunning() else {
-            print("[L104 AppDelegate] Backend already running — skipping launch")
+            logging.info("[L104 AppDelegate] Backend already running - skipping launch")
             return
         }
         guard FileManager.default.fileExists(atPath: pythonPath) else {
-            print("[L104 AppDelegate] Python venv not found at \(pythonPath) — skipping backend launch")
+            logging.info("[L104 AppDelegate] Python venv not found at \(self.pythonPath) - skipping backend launch")
             return
         }
 
@@ -453,9 +450,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         do {
             try server.run()
             serverProcess = server
-            print("[L104 AppDelegate] Server launched: PID \(server.processIdentifier)")
+            logging.info("[L104 AppDelegate] Server launched: PID \(server.processIdentifier)")
         } catch {
-            print("[L104 AppDelegate] Failed to launch server: \(error)")
+            logging.info("[L104 AppDelegate] Failed to launch server: \(error)")
         }
 
         // Start public node if it exists
@@ -473,9 +470,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             do {
                 try node.run()
                 nodeProcess = node
-                print("[L104 AppDelegate] Node launched: PID \(node.processIdentifier)")
+                logging.info("[L104 AppDelegate] Node launched: PID \(node.processIdentifier)")
             } catch {
-                print("[L104 AppDelegate] Failed to launch node: \(error)")
+                logging.info("[L104 AppDelegate] Failed to launch node: \(error)")
             }
         }
     }
@@ -486,7 +483,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         for (label, proc) in [("Server", serverProcess), ("Node", nodeProcess)] {
             guard let p = proc, p.isRunning else { continue }
-            print("[L104 AppDelegate] Stopping \(label): PID \(p.processIdentifier)")
+            logging.info("[L104 AppDelegate] Stopping \(label): PID \(p.processIdentifier)")
             p.terminate()  // sends SIGTERM
 
             // Wait for graceful exit on a background thread (don't block main)
@@ -497,10 +494,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     Thread.sleep(forTimeInterval: 0.5)
                 }
                 if p.isRunning {
-                    print("[L104 AppDelegate] \(label) PID \(pid) did not exit in \(Int(gracePeriod))s — SIGKILL")
+                    logging.info("[L104 AppDelegate] \(label) PID \(pid) did not exit in \(Int(gracePeriod))s - SIGKILL")
                     kill(pid, SIGKILL)
                 } else {
-                    print("[L104 AppDelegate] \(label) PID \(pid) exited cleanly")
+                    logging.info("[L104 AppDelegate] \(label) PID \(pid) exited cleanly")
                 }
             }
         }
@@ -513,7 +510,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         DispatchQueue.global(qos: .userInitiated).async { [self] in
             let script = "\(l104Root)/scripts/upgrade_all.sh"
             guard FileManager.default.fileExists(atPath: script) else {
-                print("[L104 AppDelegate] upgrade_all.sh not found")
+                logging.info("[L104 AppDelegate] upgrade_all.sh not found")
                 return
             }
             let upgrade = Process()
@@ -533,9 +530,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         mainView.appendSystemLog(msg)
                     }
                 }
-                print("[L104 AppDelegate] upgrade_all.sh exited with status \(status)")
+                logging.info("[L104 AppDelegate] upgrade_all.sh exited with status \(status)")
             } catch {
-                print("[L104 AppDelegate] Failed to run upgrade: \(error)")
+                logging.info("[L104 AppDelegate] Failed to run upgrade: \(error)")
             }
         }
     }

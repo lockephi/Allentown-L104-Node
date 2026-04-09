@@ -40,6 +40,32 @@ __author__ = "L104 Sovereign Node"
 #  CONSTANTS
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# ═══════════════════════════════════════════════════════════════════════════════
+#  OPTIONAL DEPENDENCIES CHECK
+# ═══════════════════════════════════════════════════════════════════════════════
+
+try:
+    import sklearn
+    _SKLEARN_AVAILABLE = True
+except ImportError:
+    _SKLEARN_AVAILABLE = False
+    # Add parent of stub to path for basic compatibility
+    import sys
+    from pathlib import Path
+    stub_parent = Path(__file__).parent.parent
+    if str(stub_parent) not in sys.path:
+        sys.path.insert(0, str(stub_parent))
+    try:
+        import sklearn  # Try again with stub
+        _SKLEARN_AVAILABLE = True
+    except ImportError:
+        import warnings
+        warnings.warn("sklearn not available - classical ML features disabled. Install with: pip install scikit-learn", ImportWarning)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  CONSTANTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
 from .constants import (
     ML_ENGINE_VERSION,
     PHI, GOD_CODE, VOID_CONSTANT, OMEGA,
@@ -57,7 +83,7 @@ from .constants import (
 from .sacred_kernels import SacredKernelLibrary
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#  CLASSICAL ML
+#  CLASSICAL ML (conditional on sklearn availability)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 from .svm import L104SVM, SVMEnsemble
@@ -105,6 +131,25 @@ from .cross_engine import (
 from typing import Dict, Any, Optional
 
 
+class _StubML:
+    """Stub ML model when sklearn is unavailable."""
+    def __init__(self, name: str):
+        self._name = name
+        self._fitted = False
+
+    def fit(self, *args, **kwargs):
+        raise ImportError(f"{self._name} requires sklearn. Install with: pip install scikit-learn")
+
+    def predict(self, *args, **kwargs):
+        raise ImportError(f"{self._name} requires sklearn. Install with: pip install scikit-learn")
+
+    def score(self, *args, **kwargs):
+        return 0.0
+
+    def status(self):
+        return {'available': False, 'reason': 'sklearn not installed'}
+
+
 class MLEngine:
     """L104 ML Engine orchestrator — singleton hub for all ML capabilities.
 
@@ -122,20 +167,32 @@ class MLEngine:
     """
 
     def __init__(self):
-        # Classical ML (eager init — lightweight)
-        self.svm = L104SVM()
-        self.svm_ensemble = SVMEnsemble()
-        self.random_forest = L104RandomForest()
-        self.gradient_boosting = L104GradientBoosting()
-        self.adaboost = L104AdaBoost()
-        self.classifier = L104EnsembleClassifier()
+        # Classical ML (eager init — lightweight, conditional on sklearn)
+        if _SKLEARN_AVAILABLE:
+            self.svm = L104SVM()
+            self.svm_ensemble = SVMEnsemble()
+            self.random_forest = L104RandomForest()
+            self.gradient_boosting = L104GradientBoosting()
+            self.adaboost = L104AdaBoost()
+            self.classifier = L104EnsembleClassifier()
 
-        # Clustering (eager init — lightweight)
-        self.kmeans = L104KMeans()
-        self.dbscan = L104DBSCAN()
-        self.spectral = L104SpectralClustering()
+            # Clustering (eager init — lightweight)
+            self.kmeans = L104KMeans()
+            self.dbscan = L104DBSCAN()
+            self.spectral = L104SpectralClustering()
+        else:
+            # Stub objects for when sklearn is unavailable
+            self.svm = _StubML("L104SVM")
+            self.svm_ensemble = _StubML("SVMEnsemble")
+            self.random_forest = _StubML("L104RandomForest")
+            self.gradient_boosting = _StubML("L104GradientBoosting")
+            self.adaboost = _StubML("L104AdaBoost")
+            self.classifier = _StubML("L104EnsembleClassifier")
+            self.kmeans = _StubML("L104KMeans")
+            self.dbscan = _StubML("L104DBSCAN")
+            self.spectral = _StubML("L104SpectralClustering")
 
-        # Sacred kernels
+        # Sacred kernels (always available)
         self.sacred_kernels = SacredKernelLibrary()
 
         # Quantum ML (lazy — requires quantum gate engine)
@@ -151,6 +208,22 @@ class MLEngine:
         self._vqpu_bridge = None
         self._quantum_data_analyzer = None
         self._cross_engine_hub: Optional[MLCrossEngineHub] = None
+
+
+class _StubML:
+    """Stub for ML models when sklearn is unavailable."""
+    def __init__(self, name: str):
+        self._name = name
+        self._fitted = False
+
+    def fit(self, *args, **kwargs):
+        raise ImportError(f"{self._name} requires sklearn. Install with: pip install scikit-learn")
+
+    def predict(self, *args, **kwargs):
+        raise ImportError(f"{self._name} requires sklearn. Install with: pip install scikit-learn")
+
+    def status(self):
+        return {'available': False, 'name': self._name}
 
     def get_cross_engine_hub(self) -> MLCrossEngineHub:
         """Get or create the cross-engine integration hub (v2.0)."""

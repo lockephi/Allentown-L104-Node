@@ -10,6 +10,7 @@ from .asi_intelligence import ASICodeIntelligence
 from .constants import *
 from .languages import LanguageKnowledge
 from .refactoring import AutoFixEngine
+from l104_sacred_algorithms import derive_buffer_size
 
 class AppAuditEngine:
     """
@@ -1997,7 +1998,7 @@ class AppAuditEngine:
                 if f.name.startswith('.'):
                     continue
                 files.append(str(f))
-        return sorted(files)[:200]  # cap at 200 files
+        return sorted(files)
 
     def _score_to_verdict(self, score: float) -> str:
         """Convert a numeric score to a human-readable verdict."""
@@ -3050,7 +3051,7 @@ class PerformanceBenchmarkPredictor:
 
         # PHI-weighted performance score
         scores = {
-            "memory": max(0, 1.0 - memory_estimate["total_estimated_bytes"] / (10 * 1024 * 1024)),  # Penalize >10MB
+            "memory": max(0, 1.0 - memory_estimate["total_estimated_bytes"] / derive_buffer_size(tier=5)),  # Penalize >10MB
             "io_efficiency": 1.0 - min(1.0, len(io_bottlenecks) * 0.15),
             "gil_safety": 1.0 - gil_risk["risk_score"],
             "allocation_health": max(0, 1.0 - len(alloc_hotspots) * 0.1),

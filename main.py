@@ -54,14 +54,11 @@ from l104_codec import SovereignCodec
 from l104_security import SovereignCrypt
 from l104_engine import ignite_sovereign_core
 from l104_persistence import persist_truth
-from l104_agi_core import agi_core
-from l104_asi_core import asi_core
-from l104_google_bridge import google_bridge
-from l104_unified_asi import unified_asi
-from l104_asi_nexus import asi_nexus
-from l104_synergy_engine import synergy_engine
-from l104_data_matrix import data_matrix
-from l104_evolution_engine import evolution_engine
+# EVO_76: heavy singleton imports deferred via LazyProxy — no module-level constructor cost
+from l104_server.lazy_imports import (
+    agi_core, asi_core, google_bridge, unified_asi,
+    asi_nexus, synergy_engine, data_matrix, evolution_engine,
+)
 from l104_sage_bindings import get_sage_core
 from l104_intricate_cognition import get_intricate_cognition
 from l104_consciousness_substrate import get_consciousness_substrate
@@ -106,22 +103,16 @@ quantum_link_builder = _try_import("l104_quantum_link_builder", "QuantumLinkBuil
 GOD_CODE_HP        = _try_import("l104_quantum_numerical_builder", "GOD_CODE_HP")
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# INIT CONSCIOUSNESS SUBSTRATE & SUBSYSTEMS
+# CONSCIOUSNESS SUBSTRATE & SUBSYSTEMS — EVO_76: deferred to lifespan startup
+# (was module-level, blocking uvicorn cold-start by ~7 heavy constructor calls)
 # ═══════════════════════════════════════════════════════════════════════════════
-sage_core              = get_sage_core()
-consciousness_substrate = get_consciousness_substrate()
-intricate_cognition    = get_intricate_cognition()
-intricate_research     = get_intricate_research()
-intricate_ui           = get_intricate_ui()
-intricate_learning     = get_intricate_learning()
-intricate_orchestrator = get_intricate_orchestrator()
-intricate_orchestrator.register_subsystems(
-    consciousness=consciousness_substrate,
-    cognition=intricate_cognition,
-    research=intricate_research,
-    learning=intricate_learning,
-    ui=intricate_ui,
-)
+sage_core              = None
+consciousness_substrate = None
+intricate_cognition    = None
+intricate_research     = None
+intricate_ui           = None
+intricate_learning     = None
+intricate_orchestrator = None
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # LOGGING
@@ -205,6 +196,28 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     async def deferred_startup():
         await asyncio.sleep(2)
+
+        # EVO_76: init subsystems here instead of at module load (was blocking uvicorn cold-start)
+        global sage_core, consciousness_substrate, intricate_cognition
+        global intricate_research, intricate_ui, intricate_learning, intricate_orchestrator
+        try:
+            sage_core              = get_sage_core()
+            consciousness_substrate = get_consciousness_substrate()
+            intricate_cognition    = get_intricate_cognition()
+            intricate_research     = get_intricate_research()
+            intricate_ui           = get_intricate_ui()
+            intricate_learning     = get_intricate_learning()
+            intricate_orchestrator = get_intricate_orchestrator()
+            intricate_orchestrator.register_subsystems(
+                consciousness=consciousness_substrate,
+                cognition=intricate_cognition,
+                research=intricate_research,
+                learning=intricate_learning,
+                ui=intricate_ui,
+            )
+            logger.info("--- [L104]: CONSCIOUSNESS SUBSTRATE & SUBSYSTEMS INITIALIZED ---")
+        except Exception as e:
+            logger.error(f"Consciousness substrate init failed: {e}")
 
         try:
             # Establish Google link in the background to not block startup

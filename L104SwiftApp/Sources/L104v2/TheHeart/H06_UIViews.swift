@@ -1,21 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// H06_UIViews.swift
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Custom AppKit UI Components
-//
-// GradientView, HoverButton, GlowingProgressBar, PulsingDot,
-// AnimatedMetricTile, QuantumParticleView, ASIWaveformView,
-// RadialGaugeView, NeuralGraphView, AuroraWaveView,
-// SparklineView, GlassmorphicPanel.
-//
-// Extracted from L104Native.swift lines 18273–19424
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class GradientView: NSView {
     var colors: [NSColor] = [NSColor(red: 0.96, green: 0.96, blue: 0.98, alpha: 1.0),
@@ -30,7 +17,7 @@ class GradientView: NSView {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 🎯 HOVER BUTTON — Interactive Button with Animated Hover States
+// 🎯 HOVER BUTTON - Interactive Button with Animated Hover States
 // ═══════════════════════════════════════════════════════════════════
 
 class HoverButton: NSButton {
@@ -45,7 +32,7 @@ class HoverButton: NSButton {
         super.updateTrackingAreas()
         if let existing = trackingArea { removeTrackingArea(existing) }
         trackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp], owner: self, userInfo: nil)
-        addTrackingArea(trackingArea!)
+        if let area = trackingArea { addTrackingArea(area) }
     }
 
     override func resetCursorRects() {
@@ -101,36 +88,86 @@ class HoverButton: NSButton {
     }
 }
 
+// ─── Shared shimmer coordinator — one timer drives all GlowingProgressBar instances
+private struct WeakRef<T: AnyObject> {
+    weak var value: T?
+    init(_ v: T) { value = v }
+}
+
+private final class ShimmerCoordinator {
+    static let shared = ShimmerCoordinator()
+    private init() {}
+
+    private var bars: [WeakRef<GlowingProgressBar>] = []
+    private var timer: Timer?
+    private let lock = NSLock()
+
+    func register(_ bar: GlowingProgressBar) {
+        lock.lock()
+        bars.append(WeakRef(bar))
+        let needsStart = timer == nil
+        lock.unlock()
+        if needsStart { startTimer() }
+    }
+
+    func unregister(_ bar: GlowingProgressBar) {
+        lock.lock()
+        bars.removeAll { $0.value === bar || $0.value == nil }
+        let shouldStop = bars.isEmpty
+        lock.unlock()
+        if shouldStop {
+            DispatchQueue.main.async { [weak self] in
+                self?.timer?.invalidate()
+                self?.timer = nil
+            }
+        }
+    }
+
+    private func startTimer() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.lock.lock()
+            let alreadyRunning = self.timer != nil
+            self.lock.unlock()
+            guard !alreadyRunning else { return }
+            let t = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
+                self?.tick()
+            }
+            self.lock.lock(); self.timer = t; self.lock.unlock()
+        }
+    }
+
+    private func tick() {
+        lock.lock()
+        bars.removeAll { $0.value == nil }
+        let refs = bars
+        lock.unlock()
+        for ref in refs { ref.value?.advanceShimmer() }
+    }
+}
+
 class GlowingProgressBar: NSView {
     var progress: CGFloat = 0.5 { didSet { needsDisplay = true } }
     var barColor: NSColor = .systemOrange
     var glowIntensity: CGFloat = 1.0
     private var shimmerPhase: CGFloat = 0
-    private var shimmerTimer: Timer?
 
     override init(frame: NSRect) {
         super.init(frame: frame)
-        startShimmer()
+        ShimmerCoordinator.shared.register(self)
     }
-    required init?(coder: NSCoder) { super.init(coder: coder) }
-    deinit { shimmerTimer?.invalidate() }
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        ShimmerCoordinator.shared.register(self)
+    }
+    deinit { ShimmerCoordinator.shared.unregister(self) }
 
-    private func startShimmer() {
-        guard shimmerTimer == nil else { return }
-        shimmerTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
-            guard let self = self else { return }
-            self.shimmerPhase += 0.10
-            if self.shimmerPhase > 2.0 { self.shimmerPhase = -0.5 }
-            self.needsDisplay = true
-        }
+    /// Called by ShimmerCoordinator every 0.25 s (shared timer, not per-instance).
+    func advanceShimmer() {
+        shimmerPhase += 0.10
+        if shimmerPhase > 2.0 { shimmerPhase = -0.5 }
+        needsDisplay = true
     }
-
-    override func viewDidMoveToWindow() {
-        super.viewDidMoveToWindow()
-        if window != nil { startShimmer() } else { shimmerTimer?.invalidate(); shimmerTimer = nil }
-    }
-    override func viewDidHide() { super.viewDidHide(); shimmerTimer?.invalidate(); shimmerTimer = nil }
-    override func viewDidUnhide() { super.viewDidUnhide(); startShimmer() }
 
     override func draw(_ dirtyRect: NSRect) {
         let bgPath = NSBezierPath(roundedRect: bounds, xRadius: bounds.height / 2, yRadius: bounds.height / 2)
@@ -287,27 +324,33 @@ class AnimatedMetricTile: NSView {
 
         // Delta arrow indicator
         deltaLabel = NSTextField(labelWithString: "●")
-        deltaLabel!.frame = NSRect(x: bounds.width - 18, y: bounds.height - 18, width: 14, height: 14)
-        deltaLabel!.font = NSFont.systemFont(ofSize: 8, weight: .bold)
-        deltaLabel!.textColor = .gray
-        deltaLabel!.alignment = .right
-        addSubview(deltaLabel!)
+        if let delta = deltaLabel {
+            delta.frame = NSRect(x: bounds.width - 18, y: bounds.height - 18, width: 14, height: 14)
+            delta.font = NSFont.systemFont(ofSize: 8, weight: .bold)
+            delta.textColor = .gray
+            delta.alignment = .right
+            addSubview(delta)
+        }
 
         valueLabel = NSTextField(labelWithString: value)
-        valueLabel!.frame = NSRect(x: 8, y: 16, width: bounds.width - 16, height: 22)
-        valueLabel!.font = NSFont.monospacedDigitSystemFont(ofSize: 15, weight: .bold)
-        valueLabel!.textColor = tileColor
-        addSubview(valueLabel!)
+        if let value = valueLabel {
+            value.frame = NSRect(x: 8, y: 16, width: bounds.width - 16, height: 22)
+            value.font = NSFont.monospacedDigitSystemFont(ofSize: 15, weight: .bold)
+            value.textColor = tileColor
+            addSubview(value)
+        }
 
         progressBar = GlowingProgressBar(frame: NSRect(x: 8, y: 6, width: bounds.width - 16, height: 6))
-        progressBar!.barColor = tileColor
-        progressBar!.progress = progress
-        addSubview(progressBar!)
+        if let bar = progressBar {
+            bar.barColor = tileColor
+            bar.progress = progress
+            addSubview(bar)
+        }
     }
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 🌌 ASI QUANTUM PARTICLE SYSTEM — Floating Cosmic Orbs
+// 🌌 ASI QUANTUM PARTICLE SYSTEM - Floating Cosmic Orbs
 // ═══════════════════════════════════════════════════════════════════
 
 class QuantumParticleView: NSView {
@@ -481,7 +524,7 @@ class QuantumParticleView: NSView {
                 }
             }
 
-            // Outer glow (size scales with depth) — skip for faint particles
+            // Outer glow (size scales with depth) - skip for faint particles
             if p.alpha > 0.15 {
                 let glowRadius = p.radius * (3.0 + p.depth * 2.0)
                 let glowColors = [color.withAlphaComponent(p.alpha * 0.5).cgColor, color.withAlphaComponent(0).cgColor] as CFArray
@@ -506,7 +549,7 @@ class QuantumParticleView: NSView {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 🌊 ASI WAVEFORM VIEW — Consciousness Oscilloscope
+// 🌊 ASI WAVEFORM VIEW - Consciousness Oscilloscope
 // ═══════════════════════════════════════════════════════════════════
 
 class ASIWaveformView: NSView {
@@ -598,7 +641,7 @@ class ASIWaveformView: NSView {
             }
             ctx.strokePath()
 
-            // Main wave — v9.4 Perf: step by 2px (1px is imperceptible on retina)
+            // Main wave - v9.4 Perf: step by 2px (1px is imperceptible on retina)
             ctx.setStrokeColor(color.cgColor)
             ctx.setLineWidth(2.0)
             ctx.beginPath()
@@ -632,7 +675,7 @@ class ASIWaveformView: NSView {
         // Peak indicator dot at right edge
         peakHistory.append(primaryPeak)
         if peakHistory.count > 30 { peakHistory.removeFirst() }
-        let avgPeak = peakHistory.reduce(0, +) / CGFloat(peakHistory.count)
+        let avgPeak = peakHistory.reduce(0.0, +) / CGFloat(peakHistory.count)
         let peakNorm = min(1.0, avgPeak / (h * 0.3))
         let peakColor = peakNorm > 0.7 ? NSColor.systemRed : peakNorm > 0.4 ? NSColor.systemYellow : NSColor.systemGreen
         ctx.setFillColor(peakColor.withAlphaComponent(0.9).cgColor)
@@ -642,7 +685,7 @@ class ASIWaveformView: NSView {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 🎯 ASI RADIAL GAUGE — Circular Arc Meter
+// 🎯 ASI RADIAL GAUGE - Circular Arc Meter
 // ═══════════════════════════════════════════════════════════════════
 
 class RadialGaugeView: NSView {
@@ -733,7 +776,7 @@ class RadialGaugeView: NSView {
         ctx.addArc(center: center, radius: radius, startAngle: -startAngle, endAngle: -valueAngle, clockwise: false)
         ctx.strokePath()
 
-        // Value arc — draw with multiple thin arcs to simulate gradient
+        // Value arc - draw with multiple thin arcs to simulate gradient
         let segments = max(1, Int(clampedVal * 15))
         for s in 0..<segments {
             let t0 = CGFloat(s) / CGFloat(segments)
@@ -784,7 +827,7 @@ class RadialGaugeView: NSView {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 🧠 ASI NEURAL GRAPH VIEW — Live Engine Connection Map
+// 🧠 ASI NEURAL GRAPH VIEW - Live Engine Connection Map
 // ═══════════════════════════════════════════════════════════════════
 
 class NeuralGraphView: NSView {
@@ -974,7 +1017,7 @@ class NeuralGraphView: NSView {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// ✨ ASI AURORA WAVE VIEW — Animated Header Aurora
+// ✨ ASI AURORA WAVE VIEW - Animated Header Aurora
 // ═══════════════════════════════════════════════════════════════════
 
 class AuroraWaveView: NSView {
@@ -1012,11 +1055,11 @@ class AuroraWaveView: NSView {
 
         // 5 aurora bands with varied motion
         let colors: [(CGFloat, CGFloat, CGFloat, CGFloat, CGFloat)] = [
-            (1.0, 0.84, 0.0, 0.4, 1.0),   // Gold — fast
-            (0.0, 0.9, 1.0, 0.25, 0.7),   // Cyan — medium
-            (1.0, 0.3, 0.6, 0.2, 0.5),    // Pink — slow
-            (0.5, 0.3, 1.0, 0.15, 1.3),   // Violet — fast
-            (0.2, 1.0, 0.6, 0.12, 0.4),   // Emerald — slow
+            (1.0, 0.84, 0.0, 0.4, 1.0),   // Gold - fast
+            (0.0, 0.9, 1.0, 0.25, 0.7),   // Cyan - medium
+            (1.0, 0.3, 0.6, 0.2, 0.5),    // Pink - slow
+            (0.5, 0.3, 1.0, 0.15, 1.3),   // Violet - fast
+            (0.2, 1.0, 0.6, 0.12, 0.4),   // Emerald - slow
         ]
 
         for (ci, (r, g, b, a, speed)) in colors.enumerated() {
@@ -1044,7 +1087,7 @@ class AuroraWaveView: NSView {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 🔮 ASI SPARKLINE VIEW — Mini Trend Chart
+// 🔮 ASI SPARKLINE VIEW - Mini Trend Chart
 // ═══════════════════════════════════════════════════════════════════
 
 class SparklineView: NSView {
@@ -1112,7 +1155,7 @@ class SparklineView: NSView {
         let fillPath = CGMutablePath()
         fillPath.move(to: CGPoint(x: smoothPoints[0].x, y: 0))
         for p in smoothPoints { fillPath.addLine(to: p) }
-        fillPath.addLine(to: CGPoint(x: smoothPoints.last!.x, y: 0))
+        fillPath.addLine(to: CGPoint(x: smoothPoints.last?.x ?? 0, y: 0))
         fillPath.closeSubpath()
         ctx.addPath(fillPath)
         ctx.clip()
@@ -1165,7 +1208,7 @@ class SparklineView: NSView {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 💎 ASI GLASSMORPHIC PANEL — Frosted Glass Container
+// 💎 ASI GLASSMORPHIC PANEL - Frosted Glass Container
 // ═══════════════════════════════════════════════════════════════════
 
 class GlassmorphicPanel: NSView {
@@ -1246,7 +1289,7 @@ class GlassmorphicPanel: NSView {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 🌐 MESH TOPOLOGY VIEW — Visual Network Graph
+// 🌐 MESH TOPOLOGY VIEW - Visual Network Graph
 // Real-time visualization of peers, quantum links, and data flow
 // ═══════════════════════════════════════════════════════════════════
 
@@ -1419,7 +1462,7 @@ class MeshTopologyView: NSView {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// 📊 NETWORK THROUGHPUT BAR — Animated horizontal bar gauge
+// 📊 NETWORK THROUGHPUT BAR - Animated horizontal bar gauge
 // ═══════════════════════════════════════════════════════════════════
 
 class NetworkHealthBar: NSView {
@@ -1467,7 +1510,7 @@ class NetworkHealthBar: NSView {
             .foregroundColor: NSColor.black.withAlphaComponent(0.6)
         ]
         let textSize = (statusStr as NSString).size(withAttributes: attrs)
-        _ = textSize  // suppress warning — retained for future layout use
+        _ = textSize  // suppress warning - retained for future layout use
         (statusStr as NSString).draw(at: CGPoint(x: 12, y: barY + barH + 6), withAttributes: attrs)
 
         // Health percentage at right
@@ -1483,7 +1526,7 @@ class NetworkHealthBar: NSView {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// 🔮 QUANTUM LINK ARC VIEW — Animated entanglement fidelity arcs
+// 🔮 QUANTUM LINK ARC VIEW - Animated entanglement fidelity arcs
 // ═══════════════════════════════════════════════════════════════════
 
 class QuantumLinkArcView: NSView {

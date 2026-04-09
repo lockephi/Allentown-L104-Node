@@ -82,10 +82,13 @@ class CompilationResult:
 
 class GateCompiler:
     """
-    Multi-pass optimizing quantum gate compiler.
+    Multi-pass optimizing quantum gate compiler with PHI-weighted caching.
 
     Compiles gate circuits through decomposition, optimization, scheduling,
     and transpilation to target-specific native gate sets.
+
+    v1.1: Added SmartGateCache for PHI-weighted LRU compilation caching,
+          reducing recompilation time for frequently-used circuits.
     """
 
     def __init__(self):
@@ -99,18 +102,58 @@ class GateCompiler:
             "single_qubit_fusion": self._pass_single_qubit_fusion,
             "two_qubit_resynthesis": self._pass_two_qubit_resynthesis,
         }
+        # v1.1: Smart gate cache for PHI-weighted LRU caching
+        try:
+            from l104_quantum_coherence_enhancements import SmartGateCache
+            self._cache = SmartGateCache(max_size=512)
+        except ImportError:
+            self._cache = None
+        # ★ v1.1: Smart gate cache with PHI-weighted LRU
+        try:
+            from l104_quantum_coherence_enhancements import SmartGateCache
+            self._cache = SmartGateCache(max_size=512)
+        except ImportError:
+            self._cache = None
+
+    def _circuit_fingerprint(self, circuit: GateCircuit, target: GateSet,
+                              optimization: OptimizationLevel) -> str:
+        """Compute a unique fingerprint for cache lookup."""
+        import hashlib
+        ops_str = "|".join(f"{op.gate.name}:{op.qubits}" for op in circuit.operations)
+        key = f"{circuit.num_qubits}:{target.value}:{optimization.value}:{ops_str}"
+        return hashlib.sha256(key.encode()).hexdigest()[:24]
 
     def compile(self, circuit: GateCircuit,
                 target: GateSet = GateSet.UNIVERSAL,
-                optimization: OptimizationLevel = OptimizationLevel.O2) -> CompilationResult:
+                optimization: OptimizationLevel = OptimizationLevel.O2,
+                use_cache: bool = True) -> CompilationResult:
         """
-        Full compilation pipeline.
+        Full compilation pipeline with smart caching.
 
         Args:
             circuit: Input GateCircuit
             target: Target native gate set
             optimization: Optimization aggressiveness
+            use_cache: Whether to use PHI-weighted compilation caching
         """
+        # v1.1: Check cache for previously compiled circuit
+        if use_cache and self._cache is not None:
+            cache_key = self._circuit_fingerprint(circuit, target, optimization)
+            cached = self._cache.get(cache_key)
+            if cached is not None:
+                # Return cached result with updated metadata
+                result = CompilationResult(
+                    original_circuit=circuit,
+                    compiled_circuit=cached['circuit'],
+                    target_gate_set=target,
+                    optimization_level=optimization,
+                    fidelity=cached.get('fidelity', 1.0),
+                    verified=cached.get('verified', False),
+                )
+                result.passes_applied = cached.get('passes_applied', ["cached"])
+                result.metrics = cached.get('metrics', {})
+                return result
+
         result = CompilationResult(
             original_circuit=circuit,
             compiled_circuit=GateCircuit(circuit.num_qubits, f"{circuit.name}_compiled"),

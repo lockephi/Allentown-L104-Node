@@ -1,19 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L17_SyntacticFormatter.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104v2 — Extracted from L104Native.swift (lines 31814-32228)
-//
-// SYNTACTIC RESPONSE FORMATTER — 4-stage pipeline:
-//   ingestion → filtering → synthesis → output
-// GROVER RESPONSE AMPLIFIER — Quantum-inspired quality selection
-//   Suppress junk, amplify substantive knowledge
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class SyntacticResponseFormatter {
     static let shared = SyntacticResponseFormatter()
@@ -212,7 +201,7 @@ class SyntacticResponseFormatter {
             }
         }
 
-        // Limit total output size based on depth — expanded for ASI-level depth (Phase 55.0)
+        // Limit total output size based on depth - expanded for ASI-level depth (Phase 55.0)
         let maxBlocks: Int
         switch depth {
         case "expert": maxBlocks = 25
@@ -262,7 +251,7 @@ class SyntacticResponseFormatter {
                 lines.append("")
 
             case .bulletList:
-                // Already formatted as bullets — pass through
+                // Already formatted as bullets - pass through
                 lines.append(block.text)
                 lines.append("")
 
@@ -364,7 +353,7 @@ class SyntacticResponseFormatter {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// GROVER RESPONSE AMPLIFIER — Quantum-inspired quality selection
+// GROVER RESPONSE AMPLIFIER - Quantum-inspired quality selection
 // Suppress junk, amplify substantive knowledge
 // ═══════════════════════════════════════════════════════════════════
 

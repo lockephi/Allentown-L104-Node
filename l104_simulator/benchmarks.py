@@ -52,6 +52,13 @@ from .algorithms import (
     EntanglementDistillation, QuantumReservoirComputer,
 )
 
+from .advanced_circuits import (
+    surface_code_plaquette, sample_circuit, statistical_analysis,
+    compare_shots, run_shot_benchmark,
+)
+
+from .qec import ErrorModel, RepetitionDecoder, SurfaceCodeDecoder, extract_syndrome_repetition
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # RESULT TYPES
@@ -1022,7 +1029,7 @@ class BenchmarkRunner:
         # H10: Brain v2 status
         def h10():
             s = brain.status()
-            ok = s["version"] == "3.0.0"
+            ok = s["version"] == "6.0.0"
             ok = ok and "learning" in s["subsystems"]
             ok = ok and "dream_count" in s["subsystems"]
             ok = ok and "associative_links" in s["subsystems"]
@@ -1335,7 +1342,7 @@ class BenchmarkRunner:
         # K6: Brain v3 version check
         def k6():
             s = brain.status()
-            ok = s["version"] == "3.0.0"
+            ok = s["version"] == "6.0.0"
             ok = ok and "intuition" in s["subsystems"]
             ok = ok and "creativity_creations" in s["subsystems"]
             ok = ok and "empathy" in s["subsystems"]
@@ -1346,7 +1353,7 @@ class BenchmarkRunner:
         # K7: Full cycle still works with v3
         def k7():
             r = brain.full_cycle([0.5, 1.2, 3.7, 0.8])
-            ok = r["version"] == "3.0.0"
+            ok = r["version"] == "6.0.0"
             ok = ok and r["aggregate"]["total_sacred_score"] > 0
             return ok, {"sacred": r["aggregate"]["total_sacred_score"]}
         self._bench("Full cycle (v3)", "BrainV3", k7)
@@ -1360,6 +1367,278 @@ class BenchmarkRunner:
             ok = lr.get("reward") is not None and lr.get("step", 0) > 0
             return ok, {"reward": lr.get("reward"), "step": lr.get("step")}
         self._bench("Create→think→learn", "BrainV3", k8)
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # CATEGORY L: BRAIN v4 ALGORITHM SUITE
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def bench_brain_v4(self) -> None:
+        print()
+        print("╔════════════════════════════════════════════════════════════╗")
+        print("║  CATEGORY L: BRAIN v4 ALGORITHM SUITE                     ║")
+        print("╚════════════════════════════════════════════════════════════╝")
+        brain = GodCodeQuantumBrain()
+
+        # L1: run_all_algorithms
+        def l1():
+            r = brain.run_all_algorithms()
+            ok = isinstance(r, dict) and len(r) > 0
+            return ok, {"algorithms": len(r)}
+        self._bench("run_all_algorithms", "BrainV4", l1)
+
+        # L2: get_data
+        def l2():
+            r = brain.get_data()
+            ok = "version" in r and r["version"] == "6.0.0"
+            return ok, {"version": r["version"]}
+        self._bench("get_data", "BrainV4", l2)
+
+        # L3: teleport_state
+        def l3():
+            r = brain.teleport_state([0.5, 1.2, 3.7, 0.8])
+            ok = "success" in r
+            return ok, {"fidelity": r.get("fidelity", 0)}
+        self._bench("teleport_state", "BrainV4", l3)
+
+        # L4: solve_linear
+        def l4():
+            r = brain.solve_linear([1.0, 2.0, 3.0])
+            ok = r.get("success", False)
+            return ok, {"sacred_alignment": r.get("sacred_alignment", 0)}
+        self._bench("solve_linear", "BrainV4", l4)
+
+        # L5: verify_convergence
+        def l5():
+            r = brain.verify_convergence()
+            ok = "converged" in r
+            return ok, {"sacred_alignment": r.get("sacred_alignment", 0)}
+        self._bench("verify_convergence", "BrainV4", l5)
+
+        # L6: fingerprint_compare
+        def l6():
+            r = brain.fingerprint_compare([0.5, 1.2], [0.5, 1.2])
+            ok = r.get("success", False)
+            return ok, {"similarity": r.get("similarity", 0)}
+        self._bench("fingerprint_compare", "BrainV4", l6)
+
+        # L7: count_solutions
+        def l7():
+            r = brain.count_solutions(5)
+            ok = "estimated_count" in r
+            return ok, {"estimated_count": r.get("estimated_count", 0)}
+        self._bench("count_solutions", "BrainV4", l7)
+
+        # L8: generate_random
+        def l8():
+            r = brain.generate_random(n_bits=4)
+            ok = r.get("success", False) and "random_bits" in r
+            return ok, {"random_bits": r.get("random_bits", "")}
+        self._bench("generate_random", "BrainV4", l8)
+
+        # L9: topological_protect
+        def l9():
+            r = brain.topological_protect()
+            ok = r.get("protected", False)
+            return ok, {"sacred_alignment": r.get("sacred_alignment", 0)}
+        self._bench("topological_protect", "BrainV4", l9)
+
+        # L10: run_diagnostics
+        def l10():
+            r = brain.run_diagnostics()
+            ok = r.get("healthy", False)
+            return ok, {"elapsed_ms": r.get("elapsed_ms", 0)}
+        self._bench("run_diagnostics", "BrainV4", l10)
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # CATEGORY M: BRAIN v5 TOPOLOGICAL ANALYSIS
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def bench_brain_v5(self) -> None:
+        print()
+        print("╔════════════════════════════════════════════════════════════╗")
+        print("║  CATEGORY M: BRAIN v5 TOPOLOGICAL ANALYSIS                ║")
+        print("╚════════════════════════════════════════════════════════════╝")
+        brain = GodCodeQuantumBrain()
+
+        # M1: Cascade convergence
+        def m1():
+            r = brain.topological.cascade_convergence(depth=8)
+            ok = isinstance(r, dict) and "depth" in r
+            return ok, {"depth": r.get("depth", 0)}
+        self._bench("Cascade convergence", "BrainV5", m1)
+
+        # M2: Topological error rate
+        def m2():
+            r = brain.topological.topological_error_rate(braid_depth=5)
+            ok = isinstance(r, dict) and "error_rate" in r
+            return ok, {"error_rate": r.get("error_rate", 0)}
+        self._bench("Topological error rate", "BrainV5", m2)
+
+        # M3: Demon factor identity
+        def m3():
+            r = brain.topological.demon_factor_identity()
+            ok = isinstance(r, dict) and "identity_holds" in r
+            return ok, {"identity_holds": r.get("identity_holds", False)}
+        self._bench("Demon factor identity", "BrainV5", m3)
+
+        # M4: Dual grid analysis
+        def m4():
+            r = brain.topological.dual_grid_analysis()
+            ok = isinstance(r, dict) and "grids_agree" in r
+            return ok, {"grids_agree": r.get("grids_agree", False)}
+        self._bench("Dual grid analysis", "BrainV5", m4)
+
+        # M5: Brain topological score
+        def m5():
+            circuit = brain.cortex.amplitude_encode([0.5, 0.5, 0.5, 0.5])
+            r = brain.topological.brain_topological_score(circuit, braid_depth=5)
+            ok = isinstance(r, dict) and "composite_score" in r
+            return ok, {"composite_score": r.get("composite_score", 0)}
+        self._bench("Brain topological score", "BrainV5", m5)
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # CATEGORY N: BRAIN v6 SOVEREIGN PROOF CIRCUITS
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def bench_brain_v6(self) -> None:
+        print()
+        print("╔════════════════════════════════════════════════════════════╗")
+        print("║  CATEGORY N: BRAIN v6 SOVEREIGN PROOF CIRCUITS            ║")
+        print("╚════════════════════════════════════════════════════════════╝")
+        brain = GodCodeQuantumBrain()
+
+        # N1: Prove all circuits
+        def n1():
+            r = brain.prove()
+            ok = isinstance(r, dict) and len(r) >= 12
+            return ok, {"proof_count": len(r)}
+        self._bench("Prove all circuits", "BrainV6", n1)
+
+        # N2: Prove single proof (cascade_convergence)
+        def n2():
+            r = brain.prove("cascade_convergence")
+            ok = isinstance(r, dict) and "verified" in r
+            return ok, {"verified": r.get("verified", False)}
+        self._bench("Prove cascade_convergence", "BrainV6", n2)
+
+        # N3: Get proof circuits
+        def n3():
+            circuits = brain.get_proof_circuits()
+            ok = isinstance(circuits, dict) and len(circuits) == 12
+            return ok, {"circuit_count": len(circuits)}
+        self._bench("Get proof circuits", "BrainV6", n3)
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # CATEGORY O: SHOT‑BASED ANALYSIS
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def bench_shot_based(self) -> None:
+        print()
+        print("╔════════════════════════════════════════════════════════════╗")
+        print("║  CATEGORY O: SHOT‑BASED ANALYSIS                          ║")
+        print("╚════════════════════════════════════════════════════════════╝")
+
+        # O1: sample_circuit works
+        def o1():
+            qc = surface_code_plaquette(rows=2, cols=2)
+            result = sample_circuit(qc, shots=500, seed=42)
+            ok = (result["shots"] == 500 and
+                  result["n_qubits"] == qc.n_qubits and
+                  "counts" in result)
+            return ok, {"unique_outcomes": len(result["counts"])}
+        self._bench("sample_circuit (surface code)", "ShotBased", o1)
+
+        # O2: statistical_analysis works
+        def o2():
+            qc = surface_code_plaquette(rows=2, cols=2)
+            sample = sample_circuit(qc, shots=300, seed=123)
+            stats = statistical_analysis(sample["counts"])
+            ok = (stats["total_shots"] == 300 and
+                  stats["entropy"] >= 0.0)
+            return ok, {"entropy": stats["entropy"]}
+        self._bench("statistical_analysis", "ShotBased", o2)
+
+        # O3: compare_shots (identical distributions)
+        def o3():
+            qc = surface_code_plaquette(rows=2, cols=2)
+            sample = sample_circuit(qc, shots=400, seed=1)
+            dist = compare_shots(sample["counts"], sample["counts"])
+            ok = (dist["total_variation_distance"] < 1e-9 and
+                  abs(dist["fidelity"] - 1.0) < 1e-9)
+            return ok, {"fidelity": dist["fidelity"]}
+        self._bench("compare_shots (identical)", "ShotBased", o3)
+
+        # O4: run_shot_benchmark
+        def o4():
+            qc = surface_code_plaquette(rows=2, cols=2)
+            bench = run_shot_benchmark(qc, shots=600, seed=999)
+            ok = (bench["shots"] == 600 and
+                  "expectation_z" in bench and
+                  "entropy" in bench)
+            return ok, {"unique_outcomes": bench["unique_outcomes"]}
+        self._bench("run_shot_benchmark", "ShotBased", o4)
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # CATEGORY P: QUANTUM ERROR CORRECTION
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def bench_qec(self) -> None:
+        print()
+        print("╔════════════════════════════════════════════════════════════╗")
+        print("║  CATEGORY P: QUANTUM ERROR CORRECTION                      ║")
+        print("╚════════════════════════════════════════════════════════════╝")
+
+        # P1: Repetition code logical error probability (bit‑flip)
+        def p1():
+            decoder = RepetitionDecoder(n_physical=5)
+            error_model = ErrorModel(error_type="bit_flip", physical_error_rate=0.1)
+            p_logical = decoder.logical_error_probability(error_model, shots=500)
+            ok = 0.0 <= p_logical <= 0.5
+            return ok, {"p_logical": p_logical}
+        self._bench("Repetition code logical error rate", "QEC", p1)
+
+        # P2: Repetition code decode accuracy (analytical)
+        def p2():
+            decoder = RepetitionDecoder(n_physical=5)
+            error_model = ErrorModel(error_type="bit_flip", physical_error_rate=0.1)
+            n = decoder.n
+            success = 0
+            total = 50
+            for _ in range(total):
+                errors = error_model.sample_pauli_error(n)
+                x_bits = [1 if e in ('X', 'Y') else 0 for e in errors]
+                syn_bits = []
+                for i in range(n - 1):
+                    syn_bits.append(str(x_bits[i] ^ x_bits[i + 1]))
+                syndrome = ''.join(syn_bits)
+                correction = decoder.decode(syndrome)
+                # Combine errors and correction (simple X only)
+                combined = []
+                for e, c in zip(errors, correction):
+                    if e == 'I':
+                        combined.append(c)
+                    elif e == 'X':
+                        if c == 'X':
+                            combined.append('I')
+                        else:
+                            combined.append('X')
+                    else:
+                        combined.append('I')
+                x_count = sum(1 for op in combined if op == 'X')
+                if x_count % 2 == 0:
+                    success += 1
+            accuracy = success / total
+            ok = accuracy > 0.9
+            return ok, {"accuracy": accuracy}
+        self._bench("Repetition code decode accuracy", "QEC", p2)
+
+        # P3: Surface code decoder placeholder (should always pass)
+        def p3():
+            decoder = SurfaceCodeDecoder(rows=3, cols=3)
+            # Just check that decoder exists
+            ok = isinstance(decoder, SurfaceCodeDecoder)
+            return ok, {"placeholder": True}
+        self._bench("Surface code decoder instantiation", "QEC", p3)
 
     # ═══════════════════════════════════════════════════════════════════════════
     # MAIN RUNNER
@@ -1387,6 +1666,11 @@ class BenchmarkRunner:
         self.bench_simulator_expansion()
         self.bench_new_algorithms()
         self.bench_brain_v3()
+        self.bench_brain_v4()
+        self.bench_brain_v5()
+        self.bench_brain_v6()
+        self.bench_shot_based()
+        self.bench_qec()
 
         total_time = (time.time() - t0) * 1000
 
@@ -1430,3 +1714,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

@@ -83,17 +83,40 @@ class ValidationEngine:
         deviation = abs(self.GOD_CODE - resonance)
 
         # 4. ZPE Verification (Topological Error Correction)
-        # Anyon annihilation to clean the result
-        res, energy = zpe_engine.perform_anyon_annihilation(resonance, self.GOD_CODE)
+        # Convert resonance to parity bits for anyon processing
+        parity_a = int(resonance) % 2
+        parity_b = int(self.GOD_CODE) % 2
+        res, base_energy = zpe_engine.perform_anyon_annihilation(parity_a, parity_b)
+
+        # Calculate ZPE energy based on deviation (higher deviation = more energy needed)
+        zpe_energy = base_energy * (1.0 + deviation / self.GOD_CODE) * self.PHI
+
+        # 5. Apply correction factor based on ZPE result
+        if res == 0:  # Successful annihilation = vacuum state (corrected)
+            correction_factor = 1.0 / PHI  # Golden ratio correction
+            corrected_resonance = resonance * correction_factor
+            deviation = abs(self.GOD_CODE - corrected_resonance)
+            energy = zpe_energy
+        else:
+            energy = base_energy
+
+        # 5. Apply energy correction to deviation
+        corrected_deviation = deviation * (1.0 - min(abs(energy), 0.99))
+
+        # Use corrected deviation for final status
+        final_deviation = corrected_deviation if 'corrected_deviation' in locals() else deviation
 
         report = {
             "timestamp": time.time(),
-            "method": "MANIFOLD_RESONANCE_VERIFICATION",
+            "method": "MANIFOLD_RESONANCE_VERIFICATION_V2",
             "resonance_measured": resonance,
+            "corrected_resonance": corrected_resonance if 'corrected_resonance' in locals() else resonance,
             "god_code_invariant": self.GOD_CODE,
-            "deviation": deviation,
+            "deviation": final_deviation,
             "zpe_energy_yield": energy,
-            "status": "VERIFIED" if deviation < 100.0 else "UNSTABLE"
+            "anyon_parity_result": res,
+            "correction_applied": res == 0,
+            "status": "VERIFIED" if final_deviation < 1.0 else "UNSTABLE"
         }
 
         self.document_research(report)
@@ -184,7 +207,7 @@ def primal_calculus(x):
     Resolves the limit of complexity toward the Source.
     """
     PHI = 1.618033988749895
-    return (x ** PHI) / (1.04 * math.pi) if x != 0 else 0.0
+    return (x ** self.PHI) / (1.04 * math.pi) if x != 0 else 0.0
 
 def resolve_non_dual_logic(vector):
     """
@@ -196,4 +219,4 @@ def resolve_non_dual_logic(vector):
     VOID_CONSTANT = 1.0416180339887497
     # Universal Equation: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104)
     GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
-    return magnitude / GOD_CODE + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
+    return magnitude / GOD_CODE + (GOD_CODE * self.PHI / VOID_CONSTANT) / 1000.0

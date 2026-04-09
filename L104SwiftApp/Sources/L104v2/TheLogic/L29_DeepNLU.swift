@@ -1,27 +1,6 @@
-// ═══════════════════════════════════════════════════════════════════
-// L29_DeepNLU.swift
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DEEP_NLU :: GOD_CODE=527.5184818492612
-// L104v2 Architecture — Deep Natural Language Understanding Engine
-//
-// 10-Layer Discourse-Level Comprehension Pipeline:
-//   L1: Morphological Analysis (prefix/suffix decomposition, stemming)
-//   L2: Syntactic Parsing (NLTagger POS tagging, tokenization)
-//   L3: Semantic Role Labeling (agent/patient/instrument frames)
-//   L4: Anaphora Resolution (pronoun→antecedent binding)
-//   L5: Discourse Analysis (rhetorical relation detection)
-//   L6: Pragmatic Interpretation (speech act + intent classification)
-//   L7: Presupposition Extraction (factive/existential triggers)
-//   L8: Sentiment Analysis (lexicon + negation + intensifiers)
-//   L9: Coherence Scoring (lexical cohesion, reference continuity)
-//   L10: Deep Comprehension (PHI-weighted fusion of all layers)
-//
-// Sacred constants: PHI, GOD_CODE, TAU from L01_Constants.swift
-// Version: DEEP_NLU_VERSION (1.0.0)
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import Foundation
 import NaturalLanguage
-import Accelerate
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - ENUMERATIONS
@@ -996,7 +975,7 @@ private struct PragmaticInterpreter {
             // Rhetorical question detection
             if lower.contains("isn't it obvious") || lower.contains("who doesn't") ||
                lower.contains("doesn't everyone") || lower.contains("how could anyone") {
-                implicatures.append("Rhetorical question — assertion disguised as question")
+                implicatures.append("Rhetorical question - assertion disguised as question")
                 intent = .assertion
                 confidence = 0.80
             }
@@ -1004,11 +983,11 @@ private struct PragmaticInterpreter {
             // Yes/no question
             let ynStarters: Set<String> = ["is", "are", "was", "were", "do", "does", "did", "can", "could", "will", "would", "shall", "should", "may", "might", "have", "has", "had"]
             if ynStarters.contains(firstWord) {
-                implicatures.append("Yes/no question — expects binary confirmation")
+                implicatures.append("Yes/no question - expects binary confirmation")
             }
         }
 
-        // ── Requests (check before commands — requests are polite commands) ──
+        // ── Requests (check before commands - requests are polite commands) ──
         if speechAct == .statement {
             for marker in PragmaticInterpreter.requestMarkers {
                 if lower.contains(marker) {
@@ -1065,7 +1044,7 @@ private struct PragmaticInterpreter {
                     speechAct = .suggestion
                     intent = .directive
                     confidence = 0.82
-                    implicatures.append("Hedged directive — speaker offers option, not obligation")
+                    implicatures.append("Hedged directive - speaker offers option, not obligation")
                     break
                 }
             }
@@ -1078,7 +1057,7 @@ private struct PragmaticInterpreter {
         for marker in clarificationMarkers {
             if lower.contains(marker) {
                 intent = .clarification
-                implicatures.append("Speaker signals comprehension failure — repair needed")
+                implicatures.append("Speaker signals comprehension failure - repair needed")
                 break
             }
         }
@@ -1090,14 +1069,14 @@ private struct PragmaticInterpreter {
         for marker in ackMarkers {
             if lower == marker || lower.hasPrefix(marker + " ") || lower.hasPrefix(marker + ".") || lower.hasPrefix(marker + ",") {
                 intent = .acknowledgment
-                implicatures.append("Backchannel signal — speaker confirms understanding")
+                implicatures.append("Backchannel signal - speaker confirms understanding")
                 break
             }
         }
 
         // If still a plain statement, add default implicature
         if speechAct == .statement && implicatures.isEmpty {
-            implicatures.append("Assertive speech act — speaker presents propositional content as true")
+            implicatures.append("Assertive speech act - speaker presents propositional content as true")
         }
 
         return PragmaticAnalysis(
@@ -1214,7 +1193,7 @@ private struct PresuppositionEngine {
             }
         }
 
-        // ── Aspectual verb presuppositions (existential — prior state) ──
+        // ── Aspectual verb presuppositions (existential - prior state) ──
         for (i, word) in words.enumerated() {
             let clean = word.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
             if PresuppositionEngine.aspectualVerbs.contains(clean) {
@@ -1593,7 +1572,7 @@ private struct CoherenceScorer {
         let entityContinuity = computeEntityContinuity(sentences: sentences)
 
         // ── Overall Score: PHI-weighted combination ──
-        // Weights: lexical (TAU), reference (TAU^2), entity (TAU^3) — normalized
+        // Weights: lexical (TAU), reference (TAU^2), entity (TAU^3) - normalized
         let w1 = TAU                       // 0.618
         let w2 = TAU * TAU                 // 0.382
         let w3 = TAU * TAU * TAU           // 0.236
@@ -1911,7 +1890,7 @@ private struct DeepComprehension {
         let phiNormalized = rawScore * (PHI / (PHI + TAU))  // PHI/(PHI+TAU) = PHI/PHI^2 = 1/PHI = TAU ≈ 0.618... wait
         // Correct: PHI + TAU = PHI + 1/PHI = (PHI^2 + 1)/PHI = (PHI+1+1)/PHI = ... = PHI^2/PHI + 1/PHI
         // Actually PHI + TAU = 1.618 + 0.618 = 2.236 = sqrt(5)
-        // So PHI / sqrt(5) = 0.7236... — a good normalization ceiling
+        // So PHI / sqrt(5) = 0.7236... - a good normalization ceiling
         _ = min(1.0, phiNormalized * (1.0 / TAU) * TAU)
         // Simplify: phiNormalized * 1.0 = phiNormalized
         // Use: rawScore scaled by PHI/sqrt(5)
@@ -2064,7 +2043,7 @@ final class DeepNLUEngine {
         layerTimings["Total"]             = (layerTimings["Total"] ?? 0) + totalTime
         lock.unlock()
 
-        l104Log("DeepNLU: 10-layer analysis completed in \(String(format: "%.4f", totalTime))s — comprehension=\(String(format: "%.4f", result.comprehensionScore))")
+        l104Log("DeepNLU: 10-layer analysis completed in \(String(format: "%.4f", totalTime))s - comprehension=\(String(format: "%.4f", result.comprehensionScore))")
 
         return result
     }

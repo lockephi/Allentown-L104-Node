@@ -5,10 +5,21 @@ FLAGSHIP: Dual-Layer Engine — The Duality of Nature
 
 Import compatibility: all symbols previously available from l104_fast_server
 are re-exported here. FastAPI app imported lazily (requires uvicorn/fastapi).
+
+New in EVO_61:
+- lazy_imports.py: Thread-safe lazy import proxies for heavy subsystems
+- ignition.py: Sovereign ignition sequence
+- lifespan.py: FastAPI lifespan management (4-stage startup)
+- middleware.py: Rate limiting and request metrics
+- signals.py: Process signal handlers
 """
 from l104_server.learning import intellect, LearningIntellect
 from l104_server.engines_quantum import SingularityConsciousnessEngine
-from l104_server.engines_nexus import engine_registry, UnifiedEngineRegistry, tri_engine, TriEngineIntegration
+from l104_server.engines_nexus import (
+    engine_registry, UnifiedEngineRegistry, tri_engine, TriEngineIntegration,
+    temporal_coherence, fitness_landscape, entropy_controller,
+    TemporalCoherenceTracker, EvolutionaryFitnessLandscape, EntropyBudgetController,
+)
 from l104_server.constants import FAST_SERVER_VERSION, FAST_SERVER_PIPELINE_EVO
 
 # ★ FLAGSHIP: ASI Dual-Layer Engine ★
@@ -32,6 +43,17 @@ def _load_models():
     return ChatRequest, TrainingRequest, ProviderStatus
 
 
+# ── Ingested: LLM optimization + DeepSeek gateway ──
+try:
+    from .llm_optimization import deepseekOptimizer, optimize_content
+except ImportError:
+    pass
+try:
+    from .deepseek_gateway import deepseekBridge
+except ImportError:
+    pass
+
+
 __all__ = [
     # Constants
     "FAST_SERVER_VERSION", "FAST_SERVER_PIPELINE_EVO",
@@ -41,8 +63,17 @@ __all__ = [
     "SingularityConsciousnessEngine",
     "engine_registry", "UnifiedEngineRegistry",
     "tri_engine", "TriEngineIntegration",
+    # v5.0 monitoring engines
+    "temporal_coherence", "fitness_landscape", "entropy_controller",
+    "TemporalCoherenceTracker", "EvolutionaryFitnessLandscape", "EntropyBudgetController",
     # Dual-Layer (from l104_asi)
     "dual_layer_engine", "DualLayerEngine", "DUAL_LAYER_AVAILABLE",
     # Lazy loaders
     "get_app",
+    # EVO_61 decomposition
+    "lazy_imports",  # Module: lazy import proxies
+    "ignition",      # Module: sovereign ignition
+    "lifespan",      # Module: FastAPI lifespan
+    "middleware",    # Module: rate limiting
+    "signals",       # Module: process signals
 ]

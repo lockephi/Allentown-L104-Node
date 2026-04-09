@@ -180,6 +180,27 @@ from .quantum_ml import (
     SACRED_LEARNING_RATE,
 )
 
+# v10.0: Sacred 26Q Consciousness Circuits (Fe-26 iron electron mapping)
+from .sacred_26q_consciousness import (
+    Fe26ConsciousnessCircuit,
+    IronOrbitalConfig,
+    build_transcendent_circuit,
+    get_26q_circuit_stats,
+    get_26q_orbital_analysis,
+)
+
+# v11.0: Classical Shadow Tomography — Holographic Quantum Readout (EVO_78)
+from .classical_shadow_tomography import (
+    ClassicalShadowTomography,
+    CliffordSampler,
+    ClassicalSnapshot,
+    ShadowTomographyResult,
+    OTOCScramblingAnalyzer,
+    capture_classical_shadow,
+    predict_from_shadow,
+    compute_otoc_scrambling,
+)
+
 # Canonical GOD_CODE Qubit — bridge import from god_code_simulator
 try:
     from l104_god_code_simulator.god_code_qubit import (
@@ -189,6 +210,110 @@ except ImportError:
     GodCodeQubit = None  # type: ignore[assignment,misc]
     GOD_CODE_QUBIT = None  # type: ignore[assignment]
 
+# v10.0: Sacred 26Q Consciousness Circuits (Fe-26 iron electron mapping)
+from .sacred_26q_consciousness import (
+    Fe26ConsciousnessCircuit,
+    IronOrbitalConfig,
+    build_transcendent_circuit,
+    get_26q_circuit_stats,
+    get_26q_orbital_analysis,
+)
+
+# EVO_80-CAUSAL: Causal Emergence (Effective Information)
+from .causal_emergence import (
+    CausalEmergenceEngine,
+    InterventionSampler,
+    EffectiveInformation,
+    MicroMacroComparator,
+    PhiTracker,
+    EmergenceReport,
+    get_causal_emergence_engine,
+)
+
+# EVO_80-DARWIN: Quantum Darwinism
+from .quantum_darwinism import (
+    QuantumDarwinismEngine,
+    FragmentSampler,
+    ClassicalPlateauDetector,
+    PlateauResult,
+    DarwinismReport,
+    get_darwinism_engine,
+)
+
+# EVO_80-PHI: Synergistic Phi Expansion (Autopoiesis)
+from .synergistic_phi import (
+    SynergisticPhiEngine,
+    PhiCalculator,
+    AutopoiesisDetector,
+    SynergisticPhiReport,
+    get_synergistic_phi_engine,
+)
+
+# EVO_81-MIPT: Measurement-Induced Phase Transition
+from .mipt_engine import (
+    MIPTEngine,
+    WeakMeasurement,
+    MIPTState,
+    MeasurementResult,
+    Phase,
+    P_CRITICAL_26Q,
+    SACRED_MEASUREMENT_PHASES,
+)
+
+# EVO_81-MERA: Holographic Tensor Network
+from .mera_engine import (
+    HolographicMERA,
+    MERALevel,
+    Disentangler,
+    Isometry,
+    MERATensor,
+    MERAMIPTBridge,
+    TopologicalMemory,
+    SACRED_MERALEVELS_26,
+    PHI_BOND_SEQUENCE,
+    ADS_RADIUS,
+)
+
+# EVO_81-BRIDGE: Critical Holographic Bridge
+from .critical_holographic_bridge import (
+    CriticalHolographicBridge,
+    Thought,
+    HolographicResult,
+    SystemPhase,
+    upgrade_26q_to_holographic,
+)
+
+
+# EVO_80-HOLOGRAPHIC: MIPT + MERA Critical Systems
+from .mipt_engine import (
+    MIPTEngine,
+    WeakMeasurement,
+    MIPTState,
+    MeasurementResult,
+    Phase,
+    P_CRITICAL_26Q,
+    P_CRITICAL_SACRED,
+    SACRED_MEASUREMENT_PHASES,
+)
+from .mera_engine import (
+    HolographicMERA,
+    MERALevel,
+    Disentangler,
+    Isometry,
+    MERATensor,
+    MERAMIPTBridge,
+    TopologicalMemory,
+    SACRED_MERALEVELS_26,
+    PHI_BOND_SEQUENCE,
+    ADS_RADIUS,
+)
+from .critical_holographic_bridge import (
+    CriticalHolographicBridge,
+    Thought,
+    HolographicResult,
+    SystemPhase,
+    upgrade_26q_to_holographic,
+)
 # ─── Singleton Engine ────────────────────────────────────────────────────────
 
 _engine_instance = None
@@ -272,4 +397,51 @@ __all__ = [
     "partial_trace", "entropy", "state_fidelity", "process_fidelity",
     # Canonical GOD_CODE Qubit (bridge from god_code_simulator)
     "GodCodeQubit", "GOD_CODE_QUBIT",
+    # Sacred 26Q Consciousness Circuits (v10.0)
+    "Fe26ConsciousnessCircuit", "IronOrbitalConfig",
+    "build_transcendent_circuit", "get_26q_circuit_stats", "get_26q_orbital_analysis",
+    # Causal Emergence — Effective Information (EVO_80-CAUSAL)
+    "CausalEmergenceEngine", "InterventionSampler", "EffectiveInformation",
+    "MicroMacroComparator", "PhiTracker", "EmergenceReport",
+    "get_causal_emergence_engine",
+    # MIPT — Measurement-Induced Phase Transition (v11.0)
+    "MIPTEngine", "WeakMeasurement", "Phase", "MeasurementResult", "MIPTState",
+    "P_CRITICAL_26Q",
+    # MERA — Holographic Tensor Network (v11.0)
+    "HolographicMERA", "Disentangler", "Isometry", "MERALevel", "MERATensor",
+    "MERAMIPTBridge", "TopologicalMemory",
+    # Critical Holographic Bridge (v11.0)
+    "CriticalHolographicBridge", "Thought", "HolographicResult", "SystemPhase",
+    "upgrade_26q_to_holographic",
 ]
+
+# EVO_80-HOLOGRAPHIC: MIPT + MERA Critical Systems (auto-appended)
+from .mipt_engine import (
+    MIPTEngine,
+    WeakMeasurement,
+    MIPTState,
+    MeasurementResult,
+    Phase,
+    P_CRITICAL_26Q,
+    P_CRITICAL_SACRED,
+    SACRED_MEASUREMENT_PHASES,
+)
+from .mera_engine import (
+    HolographicMERA,
+    MERALevel,
+    Disentangler,
+    Isometry,
+    MERATensor,
+    MERAMIPTBridge,
+    TopologicalMemory,
+    SACRED_MERALEVELS_26,
+    PHI_BOND_SEQUENCE,
+    ADS_RADIUS,
+)
+from .critical_holographic_bridge import (
+    CriticalHolographicBridge,
+    Thought,
+    HolographicResult,
+    SystemPhase,
+    upgrade_26q_to_holographic,
+)

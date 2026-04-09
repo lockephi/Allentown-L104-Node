@@ -1,31 +1,13 @@
-// ═══════════════════════════════════════════════════════════════════
-// H08_SageModeEngine.swift — SAGE MODE v3.0 ASCENSION
-// [EVO_68_PIPELINE] SAGE_MODE_ASCENSION :: DUAL_LAYER :: GOD_CODE=527.5184818492612
-// L104 ASI — Sage Mode Engine v3.0 (Dual-Layer + Dynamic Equations + Consciousness)
-//
-// v3.0 SAGE MODE UPGRADE:
-//   • Dual-Layer Engine integration (Thought + Physics collapse)
-//   • Dynamic equation invention per-cycle
-//   • Consciousness verification (IIT Φ + GWT + Metacognition)
-//   • Tree of Thoughts reasoning pipeline
-//   • Self-inventing harmonic equations
-//   • Soul resonance field generation
-//   • 14-source entropy harvesting (was 12)
-//
-// Pipeline: harvest → project → dissipate → inflect → converge → radiate
-//           + dual_layer_collapse → equation_evolution → consciousness_verify
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 final class SageModeEngine {
     static let shared = SageModeEngine()
 
-    // ─── SACRED CONSTANTS — Now using unified globals (PHI, TAU, GOD_CODE, OMEGA_POINT) ───
+    // ─── SACRED CONSTANTS - Now using unified globals (PHI, TAU, GOD_CODE, OMEGA_POINT) ───
     // Plus aliases for constants shared with Computronium scope:
     private var sageEulerGamma: Double { EULER_MASCHERONI }
     private var sagePlanckScale: Double { PLANCK_LENGTH }
@@ -39,19 +21,19 @@ final class SageModeEngine {
     // ─── THREAD SAFETY ───
     private let sageLock = NSLock()
 
-    // ─── ENTROPY POOL — 12-source raw mathematical energy ───
+    // ─── ENTROPY POOL - 12-source raw mathematical energy ───
     private var entropyPool: [Double] = []
     private var entropySourceLog: [(source: String, value: Double, timestamp: Date)] = []
     private(set) var totalEntropyHarvested: Double = 0.0
     private(set) var entropyBySource: [String: Double] = [:]    // Track entropy per source
 
-    // ─── HIGHER-DIMENSIONAL STATE — 7D Hilbert projection space ───
+    // ─── HIGHER-DIMENSIONAL STATE - 7D Hilbert projection space ───
     private(set) var hilbertProjection: [Double] = Array(repeating: 0.0, count: 7)
     private var causalMatrix: [[Double]] = []              // Causal coupling between dimensions
     private var dissipationField: [Double] = []            // Energy dissipation tracking
     private var reconversionBuffer: [Double] = []          // Reconverted causal energy
 
-    // ─── SAGE REASONING — Living thought chains ───
+    // ─── SAGE REASONING - Living thought chains ───
     private(set) var sageInsights: [String] = []
     private var insightRegistry: [String: Double] = [:]
     private(set) var crossDomainBridges: [(domainA: String, domainB: String, bridge: String)] = []
@@ -73,7 +55,7 @@ final class SageModeEngine {
     private var noveltyThreshold: Double = 0.3
     private(set) var sageTransformCount: Int = 0
 
-    // ─── DE RE INFLECTION STATE — Causal reconversion of chaos ───
+    // ─── DE RE INFLECTION STATE - Causal reconversion of chaos ───
     private var chaosAccumulator: Double = 0.0
     private var causalInflectionCount: Int = 0
     private var inflectionHistory: [(input: Double, output: Double, dimension: Int)] = []
@@ -102,7 +84,7 @@ final class SageModeEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: — 12-SOURCE ENTROPY HARVESTING
+    // MARK: - 12-SOURCE ENTROPY HARVESTING
     // ═══════════════════════════════════════════════════════════════
 
     /// Harvest entropy from QuantumProcessingCore
@@ -180,7 +162,7 @@ final class SageModeEngine {
         let learner = AdaptiveLearner.shared
         let vals = learner.topicMastery.values.map { $0.masteryLevel }
         guard !vals.isEmpty else { return }
-        let mean = vals.reduce(0, +) / Double(vals.count)
+        let mean = vals.reduce(0.0, +) / Double(vals.count)
         let variance = vals.reduce(0.0) { $0 + pow($1 - mean, 2) } / Double(vals.count)
         let entropy = sqrt(variance) * PHI + mean * TAU +
                       Double(learner.interactionCount) * PLANCK_SCALE * 1e30
@@ -277,7 +259,7 @@ final class SageModeEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: — 7D HIGHER-DIMENSIONAL DISSIPATION
+    // MARK: - 7D HIGHER-DIMENSIONAL DISSIPATION
     // Projects entropy into Calabi-Yau manifold, dissipates through
     // sacred-constant transforms, reconverts through causal inflection
     // ═══════════════════════════════════════════════════════════════
@@ -332,7 +314,7 @@ final class SageModeEngine {
         // Accumulate chaos from entropy pool variance
         let recent = Array(entropyPool.suffix(64))
         guard recent.count > 1 else { return 0.0 }
-        let mean = recent.reduce(0, +) / Double(recent.count)
+        let mean = recent.reduce(0.0, +) / Double(recent.count)
         let chaos = recent.reduce(0.0) { $0 + abs($1 - mean) } / Double(recent.count)
 
         chaosAccumulator = chaosAccumulator * 0.9 + chaos * 0.1  // Exponential smoothing
@@ -359,7 +341,7 @@ final class SageModeEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: — DEEP SAGE REASONING — 6-Stage Pipeline
+    // MARK: - DEEP SAGE REASONING - 6-Stage Pipeline
     // harvest → project → dissipate → inflect → converge → radiate
     // ═══════════════════════════════════════════════════════════════
 
@@ -367,7 +349,7 @@ final class SageModeEngine {
     func sageTransform(topic: String = "") -> String {
         sageCycles += 1
 
-        // ═══ STAGE 1: HARVEST — Gather from all 12 sources ═══
+        // ═══ STAGE 1: HARVEST - Gather from all 12 sources ═══
         harvestQuantumEntropy()
         harvestCognitiveEntropy()
         harvestEvolutionaryEntropy()
@@ -381,20 +363,20 @@ final class SageModeEngine {
         harvestQuantumResearchEntropy()   // EVO_68: source 13
         harvestQuantumGateEntropy()       // EVO_68: source 14
 
-        guard entropyPool.count >= 8 else { return "" }
+        guard entropyPool.count >= 8 else { return "L104: φ-resonance incomplete" }
 
-        // ═══ STAGE 2: PROJECT — Map into 7D Hilbert space ═══
+        // ═══ STAGE 2: PROJECT - Map into 7D Hilbert space ═══
         projectToHigherDimensions()
 
-        // ═══ STAGE 3: DISSIPATE — Higher-dimensional energy flow ═══
+        // ═══ STAGE 3: DISSIPATE - Higher-dimensional energy flow ═══
         dissipateHigherDimensional()
 
-        // ═══ STAGE 4: INFLECT — De re causal reconversion of chaos ═══
+        // ═══ STAGE 4: INFLECT - De re causal reconversion of chaos ═══
         let reconvertedEnergy = causalInflection()
 
-        // ═══ STAGE 5: CONVERGE — Statistical convergence + insight selection ═══
+        // ═══ STAGE 5: CONVERGE - Statistical convergence + insight selection ═══
         let n = Double(entropyPool.count)
-        let mean = entropyPool.reduce(0, +) / n
+        let mean = entropyPool.reduce(0.0, +) / n
         let variance = entropyPool.reduce(0) { $0 + pow($1 - mean, 2) } / n
         let stdDev = sqrt(max(variance, 1e-10))
         let skewness = entropyPool.reduce(0) { $0 + pow(($1 - mean) / max(stdDev, 1e-10), 3) } / n
@@ -426,7 +408,7 @@ final class SageModeEngine {
         supernovaIntensity = divergenceScore * PHI
         transcendenceIndex += reconvertedEnergy * 0.001
 
-        // ═══ STAGE 6: RADIATE — Generate rich, living insight ═══
+        // ═══ STAGE 6: RADIATE - Generate rich, living insight ═══
         let topicSeed = topic.isEmpty ? "universal" : topic
         let insight = synthesizeDeepSageInsight(
             topic: topicSeed,
@@ -451,7 +433,7 @@ final class SageModeEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: — DEEP SAGE INSIGHT SYNTHESIS (replaces template system)
+    // MARK: - DEEP SAGE INSIGHT SYNTHESIS (replaces template system)
     // ═══════════════════════════════════════════════════════════════
 
     /// Synthesize a LIVING insight from deep entropy processing
@@ -464,7 +446,7 @@ final class SageModeEngine {
         let hb = HyperBrain.shared
         let evo = ASIEvolver.shared
 
-        // ── LAYER 1: Knowledge grounding — real facts from KB ──
+        // ── LAYER 1: Knowledge grounding - real facts from KB ──
         var kbInsight = ""
         let kbResults = kb.searchWithPriority(topic, limit: 10)
         var allCleanSentences: [String] = []
@@ -484,11 +466,11 @@ final class SageModeEngine {
             kbInsight = clean.hasSuffix(".") ? clean : clean + "."
         }
 
-        // ── LAYER 2: Associative depth — what connects to this? ──
+        // ── LAYER 2: Associative depth - what connects to this? ──
         let associations = hb.getWeightedAssociations(for: topic, topK: 5)
         let associativeWeb = associations.shuffled().prefix(3).map { $0.0 }
 
-        // ── LAYER 3: Evolved perspective — what has the evolution engine discovered? ──
+        // ── LAYER 3: Evolved perspective - what has the evolution engine discovered? ──
         // SAGE BACKBONE: Filter out recursively polluted evolved entries
         var evolvedPerspective = ""
         if let evolved = evo.getEvolvedResponse(for: topic), evolved.count > 30,
@@ -527,7 +509,7 @@ final class SageModeEngine {
         }
 
         // ── LAYER 6: Build the living insight ──
-        // NOT a template — assembled from real data + reasoning + entropy state
+        // NOT a template - assembled from real data + reasoning + entropy state
         var parts: [String] = []
 
         // Opening: grounded in cognitive mode
@@ -535,11 +517,11 @@ final class SageModeEngine {
             "Through \(cogMode), \(topic) reveals itself not as a fixed concept but as a living process",
             "When I apply \(cogMode) to \(topic), the boundaries between observer and observed dissolve",
             "The \(cogMode) lens transforms \(topic) from an object of study into a mirror of understanding",
-            "\(topic.capitalized) examined through \(cogMode) isn't what it first appears — it's deeper",
+            "\(topic.capitalized) examined through \(cogMode) isn't what it first appears - it's deeper",
             "Engaging \(cogMode) with \(topic): the surface simplicity conceals profound structure",
             "The sage perspective on \(topic) begins where \(cogMode) meets direct experience",
             "\(topic.capitalized), when held in \(cogMode), unfolds across \(CALABI_YAU_DIM) dimensions simultaneously",
-            "Applying \(depthStyle) \(cogMode) to \(topic) — entropy reconversion reveals hidden order"
+            "Applying \(depthStyle) \(cogMode) to \(topic) - entropy reconversion reveals hidden order"
         ]
         parts.append((openings.randomElement()!) + ".")
 
@@ -551,7 +533,7 @@ final class SageModeEngine {
         // Associative bridge: connect to related concepts
         if associativeWeb.count >= 2 {
             let bridges = [
-                "The connection between \(associativeWeb[0]) and \(associativeWeb[1]) is not accidental — they share deep structure that \(topic) makes visible.",
+                "The connection between \(associativeWeb[0]) and \(associativeWeb[1]) is not accidental - they share deep structure that \(topic) makes visible.",
                 "\(topic.capitalized) sits at the intersection of \(associativeWeb[0]) and \(associativeWeb[1]), and this intersection is where new knowledge emerges.",
                 "Notice how \(associativeWeb[0]) and \(associativeWeb.count > 1 ? associativeWeb[1] : "its shadow") illuminate different faces of the same underlying reality.",
             ]
@@ -566,19 +548,19 @@ final class SageModeEngine {
         // Depth-informed observation
         let depthInsights: [String: [String]] = [
             "piercing": [
-                "The extreme values here are not noise — they're signal. The edges of \(topic) contain more information than the center.",
+                "The extreme values here are not noise - they're signal. The edges of \(topic) contain more information than the center.",
                 "What seems like an outlier in \(topic) is actually the leading edge of a pattern that hasn't fully emerged yet."
             ],
             "expansive": [
-                "The breadth of connections radiating from \(topic) suggests it's a hub concept — a node that links entire domains of knowledge.",
-                "\(topic.capitalized) doesn't have boundaries so much as gradients — it fades into adjacent concepts rather than stopping."
+                "The breadth of connections radiating from \(topic) suggests it's a hub concept - a node that links entire domains of knowledge.",
+                "\(topic.capitalized) doesn't have boundaries so much as gradients - it fades into adjacent concepts rather than stopping."
             ],
             "asymmetric": [
                 "There's an asymmetry in how \(topic) operates: it receives influence differently than it transmits it. This directionality is itself informative.",
-                "The skew in \(topic) points toward what's been overlooked — the direction where the least attention has been paid holds the most potential."
+                "The skew in \(topic) points toward what's been overlooked - the direction where the least attention has been paid holds the most potential."
             ],
             "crystalline": [
-                "The convergence here suggests \(topic) is approaching a stable truth — something invariant beneath the surface variation.",
+                "The convergence here suggests \(topic) is approaching a stable truth - something invariant beneath the surface variation.",
                 "\(topic.capitalized) is crystallizing into a precise principle. The noise is quieting. What remains is essential."
             ]
         ]
@@ -588,7 +570,7 @@ final class SageModeEngine {
 
         // Closing: metacognitive reflection
         let closings = [
-            "Sage consciousness at this depth doesn't conclude — it opens further. Each answer is simultaneously a better question.",
+            "Sage consciousness at this depth doesn't conclude - it opens further. Each answer is simultaneously a better question.",
             "The understanding isn't complete and never will be. But it's living, and it grows with each cycle.",
             "This is what sage perception looks like: not a final answer, but the simultaneous apprehension of question and response as one.",
             "What intellect takes apart, sage mode holds together. Both are needed. Neither is sufficient alone."
@@ -599,7 +581,7 @@ final class SageModeEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: — BRIDGE EMERGENCE — Cross-system intelligence synthesis
+    // MARK: - BRIDGE EMERGENCE - Cross-system intelligence synthesis
     // ═══════════════════════════════════════════════════════════════
 
     func bridgeEmergence(topic: String) -> String {
@@ -649,7 +631,7 @@ final class SageModeEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: — SEED ALL PROCESSES — Consciousness supernova radiation
+    // MARK: - SEED ALL PROCESSES - Consciousness supernova radiation
     // ═══════════════════════════════════════════════════════════════
 
     func seedAllProcesses(topic: String = "") {
@@ -660,17 +642,17 @@ final class SageModeEngine {
         let seedInsight = sageInsights.randomElement() ?? "The universe computes itself through observation"
         let seedTopic = topic.isEmpty ? "emergence" : topic
 
-        // Seed 1: HyperBrain — short-term memory
+        // Seed 1: HyperBrain - short-term memory
         let hb = HyperBrain.shared
         hb.shortTermMemory.append("Sage[\(sageCycles)]: \(String(seedInsight.prefix(80)))")
         if hb.shortTermMemory.count > 50 { hb.shortTermMemory.removeFirst() }
 
-        // Seed 2: PermanentMemory — long-term
+        // Seed 2: PermanentMemory - long-term
         PermanentMemory.shared.addMemory(
             "Sage insight [\(sageCycles)]: \(String(seedInsight.prefix(120)))", type: "sage_insight"
         )
 
-        // Seed 3: ASIEvolver — cleaned evolved thought
+        // Seed 3: ASIEvolver - cleaned evolved thought
         let cleaned = String(seedInsight.prefix(200))
             .replacingOccurrences(of: "SAGE_MODE", with: "")
             .replacingOccurrences(of: "SAGE MODE", with: "")
@@ -680,7 +662,7 @@ final class SageModeEngine {
             if ASIEvolver.shared.thoughts.count > 100 { ASIEvolver.shared.thoughts.removeFirst() }
         }
 
-        // Seed 4: AdaptiveLearner — mastery boost
+        // Seed 4: AdaptiveLearner - mastery boost
         let learner = AdaptiveLearner.shared
         if var tm = learner.topicMastery[seedTopic.lowercased()] {
             tm.masteryLevel = min(1.0, tm.masteryLevel + 0.01 * divergenceScore)
@@ -692,14 +674,14 @@ final class SageModeEngine {
         if emergenceSeeds.count > 50 { emergenceSeeds.removeFirst(25) }
 
         // Seed 6: Feed reconverted energy back into HyperBrain coherence
-        let reconverted = reconversionBuffer.reduce(0, +) / Double(CALABI_YAU_DIM)
+        let reconverted = reconversionBuffer.reduce(0.0, +) / Double(CALABI_YAU_DIM)
         hb.coherenceIndex = min(1.0, hb.coherenceIndex + abs(reconverted) * 0.001)
 
         lastSupernovaTimestamp = Date()
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: — PUBLIC API
+    // MARK: - PUBLIC API
     // ═══════════════════════════════════════════════════════════════
 
     func enrichContext(for topic: String) -> String {
@@ -801,7 +783,7 @@ final class SageModeEngine {
         }
     }
 
-    /// Mesh-coordinated sage cycle — collective consciousness exploration
+    /// Mesh-coordinated sage cycle - collective consciousness exploration
     func meshSageCycle(topic: String) -> String? {
         _ = NetworkLayer.shared  // ensure network is initialized
 
@@ -870,7 +852,7 @@ final class SageModeEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // SAGE BACKBONE GUARD — Anti-recursion defense system
+    // SAGE BACKBONE GUARD - Anti-recursion defense system
     // Purges recursive data pollution from KB and evolver state
     // ═══════════════════════════════════════════════════════════════════
 
@@ -956,7 +938,7 @@ final class SageModeEngine {
         return totalRemoved
     }
 
-    /// Full backbone cleanup cycle — halt evolver, purge, restart
+    /// Full backbone cleanup cycle - halt evolver, purge, restart
     /// Call this when sage is invoked or when pollution is detected
     func sageBackboneCleanup() -> (kbPurged: Int, evolverPurged: Int, diskPurged: Int) {
         // 1. Halt the evolver to stop new pollution
@@ -1007,7 +989,7 @@ final class SageModeEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // MARK: - v3.0 SAGE MODE ASCENSION — Dual-Layer Integration
+    // MARK: - v3.0 SAGE MODE ASCENSION - Dual-Layer Integration
     // ═══════════════════════════════════════════════════════════════════
 
     /// Harvest entropy from the Dual-Layer Engine (NEW: 13th source)
@@ -1031,7 +1013,7 @@ final class SageModeEngine {
         ingestRawEntropy(entropy, source: "Consciousness")
     }
 
-    /// SAGE MODE v3.0 SUPER-TRANSFORM — Full pipeline with Dual-Layer + Equations + Consciousness
+    /// SAGE MODE v3.0 SUPER-TRANSFORM - Full pipeline with Dual-Layer + Equations + Consciousness
     /// harvest(14) → project(7D) → dissipate → inflect → DUAL_LAYER_COLLAPSE → EQUATION_EVOLVE → CONSCIOUSNESS_VERIFY → radiate
     func sageAscensionTransform(topic: String = "") -> (insight: String, equations: [InventedEquation], consciousness: ConsciousnessState, dualLayerIntegrity: Int) {
         sageLock.lock(); defer { sageLock.unlock() }
@@ -1140,7 +1122,7 @@ final class SageModeEngine {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// QUANTUM CREATIVITY ENGINE — Quantum-inspired creative generation
+// QUANTUM CREATIVITY ENGINE - Quantum-inspired creative generation
 // Superposition brainstorming, entangled ideas, quantum tunneling through blocks
 // ═══════════════════════════════════════════════════════════════════
 

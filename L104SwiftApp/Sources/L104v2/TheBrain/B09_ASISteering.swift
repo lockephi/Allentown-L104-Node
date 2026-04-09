@@ -1,14 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B09_ASISteering.swift — L104 Neural Architecture v3 (EVO_68)
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// Extracted from L104Native.swift
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🧭 ASI STEERING ENGINE (vDSP Representation Engineering)
@@ -16,7 +10,7 @@ import NaturalLanguage
 // Adapted from ASISteeringEngine pattern.
 // Steers parameter generation toward higher-quality reasoning paths
 // by adding a learned "reasoning vector" to the base parameter space.
-// Uses vDSP_vsmaD (Vector-Scalar Multiply-Add) — the core operation
+// Uses vDSP_vsmaD (Vector-Scalar Multiply-Add) - the core operation
 // behind representation engineering / activation steering.
 // Temperature scaling controls generation sharpness.
 // ═══════════════════════════════════════════════════════════════════
@@ -25,7 +19,7 @@ class ASISteeringEngine {
     static let shared = ASISteeringEngine()
 
     // ─── SACRED CONSTANTS: Use unified globals from L01_Constants ───
-    // PHI, TAU, GOD_CODE — available globally
+    // PHI, TAU, GOD_CODE - available globally
 
     // ─── STEERING STATE ───
     var baseParameters: [Double] = []  // internal(set) for cross-engine access (Nexus)
@@ -76,27 +70,27 @@ class ASISteeringEngine {
 
         switch mode {
         case .logic:
-            // Linear ramp × seed — gradual reasoning gradient
-            // Each element = seed * (i / n) — monotonically increasing direction
+            // Linear ramp × seed - gradual reasoning gradient
+            // Each element = seed * (i / n) - monotonically increasing direction
             for i in 0..<n {
                 vector[i] = seed * Double(i) / Double(n)
             }
 
         case .creative:
-            // Sinusoidal perturbation — creative oscillation
+            // Sinusoidal perturbation - creative oscillation
             for i in 0..<n {
                 let t = Double(i) / Double(n)
                 vector[i] = seed * sin(2.0 * Double.pi * PHI * t)
             }
 
         case .sovereign:
-            // PHI-harmonic series — each element scaled by φ^(-i/n)
+            // PHI-harmonic series - each element scaled by φ^(-i/n)
             for i in 0..<n {
                 vector[i] = seed * pow(PHI, -Double(i) / Double(n))
             }
 
         case .quantum:
-            // Fine-structure modulated — α-seeded quantum fluctuations
+            // Fine-structure modulated - α-seeded quantum fluctuations
             for i in 0..<n {
                 let t = Double(i) / Double(n)
                 vector[i] = seed * cos(2.0 * Double.pi * 137.036 * t)  // 1/α periods
@@ -119,7 +113,7 @@ class ASISteeringEngine {
 
     /// The core steering operation: shifts base parameters toward the reasoning vector.
     /// Uses vDSP_vsmaD: baseParameters += intensity × reasoningVector
-    /// This is the "secret" behind representation engineering — a single
+    /// This is the "secret" behind representation engineering - a single
     /// vector-scalar multiply-add steers generation quality.
     @discardableResult
     func applySteering(intensity: Double, mode: SteeringMode? = nil) -> [Double] {
@@ -188,7 +182,7 @@ class ASISteeringEngine {
         // Load current parameters from Python ASI
         var params = ASIQuantumBridgeSwift.shared.fetchParametersFromPython()
         if params.isEmpty {
-            // Sovereign synthetic fallback — generate from sacred constants
+            // Sovereign synthetic fallback - generate from sacred constants
             let bridge = ASIQuantumBridgeSwift.shared
             bridge.currentParameters = [
                 "god_code": GOD_CODE, "phi": PHI, "tau": TAU,
@@ -234,7 +228,7 @@ class ASISteeringEngine {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🧭 ASI STEERING ENGINE — PIPELINE COMPLETE             ║
+        ║    🧭 ASI STEERING ENGINE - PIPELINE COMPLETE             ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Mode:             \(mode.rawValue.uppercased())
         ║  Parameters:       \(baseParameters.count)

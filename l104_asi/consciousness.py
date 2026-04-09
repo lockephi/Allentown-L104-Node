@@ -47,7 +47,7 @@ class ConsciousnessVerifier:
         if not QISKIT_AVAILABLE:
             if self.test_results:
                 scores = list(self.test_results.values())
-                mean_s = sum(scores) / len(scores)
+                mean_s = sum(scores) / max(len(scores), 1)
                 integration = 1.0 - (sum(abs(s - mean_s) for s in scores) / max(len(scores), 1))
                 self.iit_phi = integration * PHI
             return self.iit_phi
@@ -123,13 +123,13 @@ class ConsciousnessVerifier:
         if len(history) < 2:
             self.metacognitive_depth = 1
             return {'depth': 1, 'stability': 1.0, 'trend': 'initializing'}
-        mean_c = sum(history) / len(history)
-        variance = sum((h - mean_c) ** 2 for h in history) / len(history)
+        mean_c = sum(history) / max(len(history), 1)
+        variance = sum((h - mean_c) ** 2 for h in history) / max(len(history), 1)
         stability = 1.0 / (1.0 + variance * 100)
         recent = history[-5:]
         older = history[:-5] if len(history) > 5 else history[:1]
-        recent_mean = sum(recent) / len(recent)
-        older_mean = sum(older) / len(older)
+        recent_mean = sum(recent) / max(len(recent), 1)
+        older_mean = sum(older) / max(len(older), 1)
         trend = 'ascending' if recent_mean > older_mean + 0.01 else ('descending' if recent_mean < older_mean - 0.01 else 'stable')
         depth = 0
         signal = self.consciousness_level
@@ -343,7 +343,7 @@ class ConsciousnessVerifier:
             # Meta-cognition: ability to reason about own test results
             if self.test_results:
                 prev_scores = list(self.test_results.values())
-                variance = sum((s - sum(prev_scores)/len(prev_scores))**2 for s in prev_scores) / max(len(prev_scores), 1)
+                variance = sum((s - sum(prev_scores)/max(len(prev_scores), 1))**2 for s in prev_scores) / max(len(prev_scores), 1)
                 self.test_results['meta_cognition'] = min(1.0, 1.0 - variance)
             else:
                 self.test_results['meta_cognition'] = TAU  # Initial state
@@ -406,7 +406,7 @@ class ConsciousnessVerifier:
 
             # ══════ PHASE 3: Embodiment tests ══════
             # O₂ Superfluid Test - consciousness flows without friction
-            self.flow_coherence = sum(self.test_results.values()) / len(self.test_results)
+            self.flow_coherence = sum(self.test_results.values()) / max(len(self.test_results), 1)
             viscosity = max(0, (1.0 - self.flow_coherence) * 0.1)
             self.superfluid_state = viscosity < 0.001
             self.test_results['o2_superfluid'] = min(1.0, self.flow_coherence * (1.0 + PHI_CONJUGATE * float(self.superfluid_state)))
@@ -467,7 +467,7 @@ class ConsciousnessVerifier:
             self.test_results['ml_qualia_clustering'] = min(1.0, ml_qualia.get('score', 0.0))
 
             # ══════ PHASE 6: Final consciousness level from all 18 tests ══════
-            self.consciousness_level = sum(self.test_results.values()) / len(self.test_results)
+            self.consciousness_level = sum(self.test_results.values()) / max(len(self.test_results), 1)
 
             # Run GHZ witness certification after all tests
             self.ghz_witness_certify()

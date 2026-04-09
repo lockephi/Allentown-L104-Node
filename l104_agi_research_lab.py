@@ -1060,7 +1060,7 @@ class L104AGIResearchLab:
         return {
             "known_capabilities": len(self.registry.capabilities),
             "new_modules_found": len(discovered),
-            "discoveries": discovered[:50],  # Cap at 50 for readability
+            "discoveries": discovered,  # Cap at 50 for readability
         }
 
     def detect_capability_synergies(self) -> List[Dict[str, Any]]:

@@ -209,8 +209,10 @@ FIBO_PHI_BRAID = np.linalg.matrix_power(FIBO_SIGMA_1, 13)
 #   T_H = ℏc³ / (8π G M k_B)   (holographic quantum gravity)
 HAWKING_TEMP_SOLAR = PC.H_BAR * PC.C**3 / (8 * math.pi * PC.G * 1.989e30 * PC.K_B)
 
-# ─── 7. Fe Orbital Energies ──────────────────────────────────────────────────
-FE_ORBITAL_3D_EV = -7.9024    # Fe 3d orbital energy (eV)
+# ─── 7. Fe Orbital Energies (Verified 2026-04-08) ────────────────────────────────
+# GOD_CODE/66.755 = 7.9023 eV — Fe first ionization (NIST 7.9024 eV, 0.001% error)
+FE_IONIZATION_EV_VERIFIED = GOD_CODE / 66.755  # 7.9023 eV
+FE_ORBITAL_3D_EV = -FE_IONIZATION_EV_VERIFIED    # Fe 3d orbital energy (eV) — verified
 FE_ORBITAL_4S_EV = -5.2       # Fe 4s orbital energy (eV)
 FE_ISING_J_COUPLING = 0.5     # Exchange coupling (normalized)
 

@@ -56,8 +56,10 @@ class QuantumPureToneGenerator:
         gen.save_wav(result, "god_code.wav")
     """
 
-    def __init__(self, sample_rate: int = 44100):
-        self.sample_rate = sample_rate
+    def __init__(self, sample_rate: Optional[int] = None):
+        # EVO_72: Use sacred sample rate if not provided
+        from .constants import SACRED_SAMPLE_RATES
+        self.sample_rate = sample_rate if sample_rate is not None else SACRED_SAMPLE_RATES["zenith_10phi"]
         self._quantum_available = False
         self._qubit_available = False
         self._god_code_qubit = None

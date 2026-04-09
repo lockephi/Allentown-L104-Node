@@ -1,0 +1,963 @@
+{
+  "total_files": 2696,
+  "total_lines": 1309650,
+  "packages": [
+    ".soul_backups/soul_daemon_20260316_125638/soul_daemon",
+    ".soul_backups/soul_daemon_20260318_032808/soul_daemon",
+    "l104_agent_system",
+    "l104_agi",
+    "l104_asi",
+    "l104_asi/commonsense_reasoning",
+    "l104_asi/knowledge_data",
+    "l104_asi/language_comprehension",
+    "l104_audio_simulation",
+    "l104_code_engine",
+    "l104_gate_engine",
+    "l104_gate_engine/analyzers",
+    "l104_god_code_simulator",
+    "l104_god_code_simulator/simulations",
+    "l104_intellect",
+    "l104_math_engine",
+    "l104_ml_engine",
+    "l104_numerical_engine",
+    "l104_numerical_engine/math_research",
+    "l104_quantum_ai_daemon",
+    "l104_quantum_data_analyzer",
+    "l104_quantum_engine",
+    "l104_quantum_gate_engine",
+    "l104_quantum_magic",
+    "l104_quantum_networker",
+    "l104_science_engine",
+    "l104_search",
+    "l104_server",
+    "l104_server/learning",
+    "l104_simulator",
+    "l104_soul_daemon",
+    "l104_vqpu",
+    "path/to/venv/lib/python3.14/site-packages/argcomplete",
+    "path/to/venv/lib/python3.14/site-packages/argcomplete/packages",
+    "path/to/venv/lib/python3.14/site-packages/argcomplete/scripts",
+    "path/to/venv/lib/python3.14/site-packages/click",
+    "path/to/venv/lib/python3.14/site-packages/packaging",
+    "path/to/venv/lib/python3.14/site-packages/packaging/licenses",
+    "path/to/venv/lib/python3.14/site-packages/pip",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/cli",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/commands",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/distributions",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/index",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/locations",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/metadata",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/metadata/importlib",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/models",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/network",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/operations",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/operations/build",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/operations/install",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/req",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/resolution",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/resolution/legacy",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/resolution/resolvelib",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/utils",
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/vcs",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/cachecontrol",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/cachecontrol/caches",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/certifi",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/dependency_groups",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/distlib",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/distro",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/idna",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/msgpack",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/packaging",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/packaging/licenses",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pkg_resources",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/platformdirs",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pygments",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pygments/filters",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pygments/formatters",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pygments/lexers",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pygments/styles",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks/_in_process",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/requests",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/resolvelib",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/resolvelib/resolvers",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/rich",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/tomli",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/tomli_w",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/truststore",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3/contrib",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3/contrib/_securetransport",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3/packages",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3/packages/backports",
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3/util",
+    "path/to/venv/lib/python3.14/site-packages/pipx",
+    "path/to/venv/lib/python3.14/site-packages/pipx/commands",
+    "path/to/venv/lib/python3.14/site-packages/platformdirs",
+    "path/to/venv/lib/python3.14/site-packages/userpath",
+    "routers",
+    "source/lib/python3.14/site-packages/pip",
+    "source/lib/python3.14/site-packages/pip/_internal",
+    "source/lib/python3.14/site-packages/pip/_internal/cli",
+    "source/lib/python3.14/site-packages/pip/_internal/commands",
+    "source/lib/python3.14/site-packages/pip/_internal/distributions",
+    "source/lib/python3.14/site-packages/pip/_internal/index",
+    "source/lib/python3.14/site-packages/pip/_internal/locations",
+    "source/lib/python3.14/site-packages/pip/_internal/metadata",
+    "source/lib/python3.14/site-packages/pip/_internal/metadata/importlib",
+    "source/lib/python3.14/site-packages/pip/_internal/models",
+    "source/lib/python3.14/site-packages/pip/_internal/network",
+    "source/lib/python3.14/site-packages/pip/_internal/operations",
+    "source/lib/python3.14/site-packages/pip/_internal/operations/build",
+    "source/lib/python3.14/site-packages/pip/_internal/operations/install",
+    "source/lib/python3.14/site-packages/pip/_internal/req",
+    "source/lib/python3.14/site-packages/pip/_internal/resolution",
+    "source/lib/python3.14/site-packages/pip/_internal/resolution/legacy",
+    "source/lib/python3.14/site-packages/pip/_internal/resolution/resolvelib",
+    "source/lib/python3.14/site-packages/pip/_internal/utils",
+    "source/lib/python3.14/site-packages/pip/_internal/vcs",
+    "source/lib/python3.14/site-packages/pip/_vendor",
+    "source/lib/python3.14/site-packages/pip/_vendor/cachecontrol",
+    "source/lib/python3.14/site-packages/pip/_vendor/cachecontrol/caches",
+    "source/lib/python3.14/site-packages/pip/_vendor/certifi",
+    "source/lib/python3.14/site-packages/pip/_vendor/dependency_groups",
+    "source/lib/python3.14/site-packages/pip/_vendor/distlib",
+    "source/lib/python3.14/site-packages/pip/_vendor/distro",
+    "source/lib/python3.14/site-packages/pip/_vendor/idna",
+    "source/lib/python3.14/site-packages/pip/_vendor/msgpack",
+    "source/lib/python3.14/site-packages/pip/_vendor/packaging",
+    "source/lib/python3.14/site-packages/pip/_vendor/packaging/licenses",
+    "source/lib/python3.14/site-packages/pip/_vendor/pkg_resources",
+    "source/lib/python3.14/site-packages/pip/_vendor/platformdirs",
+    "source/lib/python3.14/site-packages/pip/_vendor/pygments",
+    "source/lib/python3.14/site-packages/pip/_vendor/pygments/filters",
+    "source/lib/python3.14/site-packages/pip/_vendor/pygments/formatters",
+    "source/lib/python3.14/site-packages/pip/_vendor/pygments/lexers",
+    "source/lib/python3.14/site-packages/pip/_vendor/pygments/styles",
+    "source/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks",
+    "source/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks/_in_process",
+    "source/lib/python3.14/site-packages/pip/_vendor/requests",
+    "source/lib/python3.14/site-packages/pip/_vendor/resolvelib",
+    "source/lib/python3.14/site-packages/pip/_vendor/resolvelib/resolvers",
+    "source/lib/python3.14/site-packages/pip/_vendor/rich",
+    "source/lib/python3.14/site-packages/pip/_vendor/tomli",
+    "source/lib/python3.14/site-packages/pip/_vendor/tomli_w",
+    "source/lib/python3.14/site-packages/pip/_vendor/truststore",
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3",
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3/contrib",
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3/contrib/_securetransport",
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3/packages",
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3/packages/backports",
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3/util",
+    "tests"
+  ],
+  "directory_stats": {
+    "root": {
+      "files": 1258,
+      "lines": 596219,
+      "size": 24595347
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/rich": {
+      "files": 77,
+      "lines": 25917,
+      "size": 910431
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/rich": {
+      "files": 77,
+      "lines": 25917,
+      "size": 910433
+    },
+    "l104_asi": {
+      "files": 34,
+      "lines": 61875,
+      "size": 2758796
+    },
+    "l104_intellect": {
+      "files": 34,
+      "lines": 35372,
+      "size": 1639005
+    },
+    "tests": {
+      "files": 33,
+      "lines": 13286,
+      "size": 522642
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/utils": {
+      "files": 26,
+      "lines": 3942,
+      "size": 129843
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/utils": {
+      "files": 26,
+      "lines": 3942,
+      "size": 129843
+    },
+    "l104_vqpu": {
+      "files": 23,
+      "lines": 21136,
+      "size": 902024
+    },
+    "l104_audio_simulation": {
+      "files": 22,
+      "lines": 9629,
+      "size": 382451
+    },
+    "l104_quantum_engine": {
+      "files": 22,
+      "lines": 28460,
+      "size": 1306203
+    },
+    "l104_gate_engine": {
+      "files": 22,
+      "lines": 5836,
+      "size": 253501
+    },
+    "l104_quantum_gate_engine": {
+      "files": 21,
+      "lines": 19944,
+      "size": 835247
+    },
+    "l104_simulator": {
+      "files": 20,
+      "lines": 15778,
+      "size": 651253
+    },
+    "l104_numerical_engine/math_research": {
+      "files": 20,
+      "lines": 4199,
+      "size": 175766
+    },
+    "l104_math_engine": {
+      "files": 19,
+      "lines": 11733,
+      "size": 519408
+    },
+    "l104_numerical_engine": {
+      "files": 19,
+      "lines": 5071,
+      "size": 217823
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/commands": {
+      "files": 19,
+      "lines": 3772,
+      "size": 130356
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/commands": {
+      "files": 19,
+      "lines": 3772,
+      "size": 130356
+    },
+    "l104_code_engine": {
+      "files": 18,
+      "lines": 26178,
+      "size": 1211823
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/requests": {
+      "files": 18,
+      "lines": 5597,
+      "size": 187316
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/requests": {
+      "files": 18,
+      "lines": 5597,
+      "size": 187316
+    },
+    "path/to/venv/lib/python3.14/site-packages/pipx": {
+      "files": 17,
+      "lines": 3949,
+      "size": 141985
+    },
+    "path/to/venv/lib/python3.14/site-packages/click": {
+      "files": 17,
+      "lines": 11117,
+      "size": 383567
+    },
+    "routers": {
+      "files": 15,
+      "lines": 4626,
+      "size": 208296
+    },
+    "l104_asi/language_comprehension": {
+      "files": 15,
+      "lines": 10689,
+      "size": 575271
+    },
+    "path/to/venv/lib/python3.14/site-packages/packaging": {
+      "files": 15,
+      "lines": 5853,
+      "size": 202927
+    },
+    "path/to/venv/lib/python3.14/site-packages/pipx/commands": {
+      "files": 15,
+      "lines": 2711,
+      "size": 92640
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/packaging": {
+      "files": 15,
+      "lines": 5853,
+      "size": 202963
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pygments": {
+      "files": 15,
+      "lines": 2782,
+      "size": 149629
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/packaging": {
+      "files": 15,
+      "lines": 5853,
+      "size": 202963
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/pygments": {
+      "files": 15,
+      "lines": 2782,
+      "size": 149629
+    },
+    "l104_god_code_simulator": {
+      "files": 13,
+      "lines": 6653,
+      "size": 286902
+    },
+    "l104_science_engine": {
+      "files": 13,
+      "lines": 9590,
+      "size": 436514
+    },
+    "l104_server": {
+      "files": 13,
+      "lines": 31144,
+      "size": 1351187
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/models": {
+      "files": 13,
+      "lines": 1534,
+      "size": 53571
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/cli": {
+      "files": 13,
+      "lines": 3352,
+      "size": 109990
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3/util": {
+      "files": 13,
+      "lines": 2885,
+      "size": 97696
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/models": {
+      "files": 13,
+      "lines": 1534,
+      "size": 53571
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/cli": {
+      "files": 13,
+      "lines": 3352,
+      "size": 109990
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3/util": {
+      "files": 13,
+      "lines": 2885,
+      "size": 97696
+    },
+    "l104_magic_synthesis": {
+      "files": 12,
+      "lines": 3654,
+      "size": 149759
+    },
+    "l104_agi": {
+      "files": 12,
+      "lines": 9436,
+      "size": 433876
+    },
+    "l104_asi/commonsense_reasoning": {
+      "files": 12,
+      "lines": 9900,
+      "size": 579624
+    },
+    "l104_ml_engine": {
+      "files": 11,
+      "lines": 3868,
+      "size": 156068
+    },
+    "l104_quantum_ai_daemon": {
+      "files": 11,
+      "lines": 3835,
+      "size": 152764
+    },
+    "l104_quantum_networker": {
+      "files": 11,
+      "lines": 6106,
+      "size": 242235
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3": {
+      "files": 11,
+      "lines": 4476,
+      "size": 152049
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3": {
+      "files": 11,
+      "lines": 4476,
+      "size": 152049
+    },
+    "l104_quantum_magic": {
+      "files": 10,
+      "lines": 5553,
+      "size": 214748
+    },
+    "l104_god_code_simulator/simulations": {
+      "files": 10,
+      "lines": 6411,
+      "size": 281259
+    },
+    "l104_quantum_data_analyzer": {
+      "files": 9,
+      "lines": 6856,
+      "size": 288100
+    },
+    "path/to/venv/lib/python3.14/site-packages/argcomplete": {
+      "files": 9,
+      "lines": 1211,
+      "size": 49629
+    },
+    "path/to/venv/lib/python3.14/site-packages/platformdirs": {
+      "files": 9,
+      "lines": 2614,
+      "size": 97459
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal": {
+      "files": 9,
+      "lines": 2933,
+      "size": 101687
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/resolution/resolvelib": {
+      "files": 9,
+      "lines": 2721,
+      "size": 102573
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/cachecontrol": {
+      "files": 9,
+      "lines": 1322,
+      "size": 46013
+    },
+    "source/lib/python3.14/site-packages/pip/_internal": {
+      "files": 9,
+      "lines": 2933,
+      "size": 101687
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/resolution/resolvelib": {
+      "files": 9,
+      "lines": 2721,
+      "size": 102573
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/cachecontrol": {
+      "files": 9,
+      "lines": 1322,
+      "size": 46013
+    },
+    "l104_gate_engine/analyzers": {
+      "files": 9,
+      "lines": 1012,
+      "size": 42973
+    },
+    "l104_soul_daemon": {
+      "files": 8,
+      "lines": 3612,
+      "size": 143242
+    },
+    "l104_core_engines": {
+      "files": 8,
+      "lines": 5027,
+      "size": 205466
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/network": {
+      "files": 8,
+      "lines": 1944,
+      "size": 71506
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/req": {
+      "files": 8,
+      "lines": 2966,
+      "size": 104457
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/idna": {
+      "files": 8,
+      "lines": 13827,
+      "size": 343135
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/platformdirs": {
+      "files": 8,
+      "lines": 1964,
+      "size": 69989
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/network": {
+      "files": 8,
+      "lines": 1944,
+      "size": 71506
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/req": {
+      "files": 8,
+      "lines": 2963,
+      "size": 104278
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/idna": {
+      "files": 8,
+      "lines": 13827,
+      "size": 343135
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/platformdirs": {
+      "files": 8,
+      "lines": 1964,
+      "size": 69989
+    },
+    "l104_asi/knowledge_data": {
+      "files": 7,
+      "lines": 12576,
+      "size": 1314052
+    },
+    "path/to/venv/lib/python3.14/site-packages/userpath": {
+      "files": 7,
+      "lines": 541,
+      "size": 18865
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3/contrib": {
+      "files": 7,
+      "lines": 2134,
+      "size": 75145
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3/contrib": {
+      "files": 7,
+      "lines": 2134,
+      "size": 75145
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/vcs": {
+      "files": 6,
+      "lines": 1932,
+      "size": 63435
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/operations/build": {
+      "files": 6,
+      "lines": 304,
+      "size": 10315
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/truststore": {
+      "files": 6,
+      "lines": 1614,
+      "size": 54771
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/dependency_groups": {
+      "files": 6,
+      "lines": 417,
+      "size": 13860
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/vcs": {
+      "files": 6,
+      "lines": 1932,
+      "size": 63435
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/operations/build": {
+      "files": 6,
+      "lines": 304,
+      "size": 10315
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/truststore": {
+      "files": 6,
+      "lines": 1614,
+      "size": 54771
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/dependency_groups": {
+      "files": 6,
+      "lines": 417,
+      "size": 13860
+    },
+    "l104_api": {
+      "files": 5,
+      "lines": 1447,
+      "size": 58293
+    },
+    "l104_search": {
+      "files": 5,
+      "lines": 5727,
+      "size": 235501
+    },
+    "l104_agent_system": {
+      "files": 5,
+      "lines": 2527,
+      "size": 109172
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/distributions": {
+      "files": 5,
+      "lines": 317,
+      "size": 11608
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/distlib": {
+      "files": 5,
+      "lines": 3959,
+      "size": 138206
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/resolvelib/resolvers": {
+      "files": 5,
+      "lines": 806,
+      "size": 29931
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/distributions": {
+      "files": 5,
+      "lines": 317,
+      "size": 11608
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/distlib": {
+      "files": 5,
+      "lines": 3959,
+      "size": 138206
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/resolvelib/resolvers": {
+      "files": 5,
+      "lines": 806,
+      "size": 29931
+    },
+    "path/to/venv/lib/python3.14/site-packages/argcomplete/scripts": {
+      "files": 4,
+      "lines": 356,
+      "size": 12174
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/operations": {
+      "files": 4,
+      "lines": 1181,
+      "size": 44578
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/locations": {
+      "files": 4,
+      "lines": 913,
+      "size": 30461
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/index": {
+      "files": 4,
+      "lines": 1901,
+      "size": 66588
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/metadata": {
+      "files": 4,
+      "lines": 1239,
+      "size": 44499
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/metadata/importlib": {
+      "files": 4,
+      "lines": 465,
+      "size": 16692
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/msgpack": {
+      "files": 4,
+      "lines": 1202,
+      "size": 40306
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/tomli": {
+      "files": 4,
+      "lines": 910,
+      "size": 29581
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/resolvelib": {
+      "files": 4,
+      "lines": 487,
+      "size": 17912
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/operations": {
+      "files": 4,
+      "lines": 1181,
+      "size": 44578
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/locations": {
+      "files": 4,
+      "lines": 913,
+      "size": 30461
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/index": {
+      "files": 4,
+      "lines": 1901,
+      "size": 66588
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/metadata": {
+      "files": 4,
+      "lines": 1239,
+      "size": 44499
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/metadata/importlib": {
+      "files": 4,
+      "lines": 465,
+      "size": 16692
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/msgpack": {
+      "files": 4,
+      "lines": 1202,
+      "size": 40306
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/tomli": {
+      "files": 4,
+      "lines": 910,
+      "size": 29581
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/resolvelib": {
+      "files": 4,
+      "lines": 487,
+      "size": 17912
+    },
+    "l104_consciousness_engine": {
+      "files": 3,
+      "lines": 1234,
+      "size": 53031
+    },
+    "l104_asi_mastery": {
+      "files": 3,
+      "lines": 383,
+      "size": 18321
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip": {
+      "files": 3,
+      "lines": 87,
+      "size": 2659
+    },
+    "path/to/venv/lib/python3.14/site-packages/argcomplete/packages": {
+      "files": 3,
+      "lines": 655,
+      "size": 29114
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/distro": {
+      "files": 3,
+      "lines": 1461,
+      "size": 50475
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/certifi": {
+      "files": 3,
+      "lines": 99,
+      "size": 3791
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pygments/lexers": {
+      "files": 3,
+      "lines": 2165,
+      "size": 143570
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/cachecontrol/caches": {
+      "files": 3,
+      "lines": 201,
+      "size": 5806
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3/contrib/_securetransport": {
+      "files": 3,
+      "lines": 916,
+      "size": 31554
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3/packages/backports": {
+      "files": 3,
+      "lines": 206,
+      "size": 6760
+    },
+    "source/lib/python3.14/site-packages/pip": {
+      "files": 3,
+      "lines": 87,
+      "size": 2657
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/distro": {
+      "files": 3,
+      "lines": 1461,
+      "size": 50475
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/certifi": {
+      "files": 3,
+      "lines": 99,
+      "size": 3791
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/pygments/lexers": {
+      "files": 3,
+      "lines": 2165,
+      "size": 143570
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/cachecontrol/caches": {
+      "files": 3,
+      "lines": 201,
+      "size": 5806
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3/contrib/_securetransport": {
+      "files": 3,
+      "lines": 916,
+      "size": 31554
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3/packages/backports": {
+      "files": 3,
+      "lines": 206,
+      "size": 6760
+    },
+    "l104_server/learning": {
+      "files": 3,
+      "lines": 12184,
+      "size": 584683
+    },
+    "path/to/venv/lib/python3.14/site-packages/packaging/licenses": {
+      "files": 2,
+      "lines": 946,
+      "size": 56941
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/resolution": {
+      "files": 2,
+      "lines": 20,
+      "size": 577
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/operations/install": {
+      "files": 2,
+      "lines": 746,
+      "size": 27973
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_internal/resolution/legacy": {
+      "files": 2,
+      "lines": 598,
+      "size": 24060
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks": {
+      "files": 2,
+      "lines": 441,
+      "size": 15627
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/tomli_w": {
+      "files": 2,
+      "lines": 233,
+      "size": 7130
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/packaging/licenses": {
+      "files": 2,
+      "lines": 946,
+      "size": 56941
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pygments/formatters": {
+      "files": 2,
+      "lines": 180,
+      "size": 9561
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pygments/styles": {
+      "files": 2,
+      "lines": 115,
+      "size": 5354
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks/_in_process": {
+      "files": 2,
+      "lines": 410,
+      "size": 12773
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/urllib3/packages": {
+      "files": 2,
+      "lines": 1076,
+      "size": 34665
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/resolution": {
+      "files": 2,
+      "lines": 20,
+      "size": 577
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/operations/install": {
+      "files": 2,
+      "lines": 746,
+      "size": 27973
+    },
+    "source/lib/python3.14/site-packages/pip/_internal/resolution/legacy": {
+      "files": 2,
+      "lines": 598,
+      "size": 24060
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks": {
+      "files": 2,
+      "lines": 441,
+      "size": 15627
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/tomli_w": {
+      "files": 2,
+      "lines": 233,
+      "size": 7130
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/packaging/licenses": {
+      "files": 2,
+      "lines": 946,
+      "size": 56941
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/pygments/formatters": {
+      "files": 2,
+      "lines": 180,
+      "size": 9561
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/pygments/styles": {
+      "files": 2,
+      "lines": 115,
+      "size": 5354
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks/_in_process": {
+      "files": 2,
+      "lines": 410,
+      "size": 12773
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/urllib3/packages": {
+      "files": 2,
+      "lines": 1076,
+      "size": 34665
+    },
+    "L104SwiftApp/Sources": {
+      "files": 2,
+      "lines": 1643,
+      "size": 87720
+    },
+    "l104_research": {
+      "files": 1,
+      "lines": 723,
+      "size": 31163
+    },
+    "L104SwiftApp": {
+      "files": 1,
+      "lines": 123,
+      "size": 3925
+    },
+    "scripts": {
+      "files": 1,
+      "lines": 58,
+      "size": 2144
+    },
+    "l104_interfaces": {
+      "files": 1,
+      "lines": 2046,
+      "size": 100503
+    },
+    "fine_tune_exports": {
+      "files": 1,
+      "lines": 11809,
+      "size": 2246931
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor": {
+      "files": 1,
+      "lines": 117,
+      "size": 4907
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pkg_resources": {
+      "files": 1,
+      "lines": 3676,
+      "size": 124451
+    },
+    "path/to/venv/lib/python3.14/site-packages/pip/_vendor/pygments/filters": {
+      "files": 1,
+      "lines": 940,
+      "size": 40392
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor": {
+      "files": 1,
+      "lines": 117,
+      "size": 4907
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/pkg_resources": {
+      "files": 1,
+      "lines": 3676,
+      "size": 124451
+    },
+    "source/lib/python3.14/site-packages/pip/_vendor/pygments/filters": {
+      "files": 1,
+      "lines": 940,
+      "size": 40392
+    },
+    "quantum/deutsch_jozsa": {
+      "files": 1,
+      "lines": 130,
+      "size": 4625
+    }
+  }
+}

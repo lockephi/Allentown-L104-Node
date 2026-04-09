@@ -1,17 +1,8 @@
-// ═══════════════════════════════════════════════════════════════
-// B24_MathEngines4.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 · TheBrain · v2 Architecture
-//
-// Extracted from L104Native.swift lines 16376-17766
-// Classes: CryptographicMathEngine, FinancialMathEngine, HighSciencesEngine
-// ═══════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class CryptographicMathEngine {
     static let shared = CryptographicMathEngine()
@@ -20,7 +11,7 @@ class CryptographicMathEngine {
     // ═══ Modular Arithmetic (delegates to AdvancedMathEngine to avoid duplication) ═══
     private let _math = AdvancedMathEngine.shared
 
-    /// Modular exponentiation: (base^exp) mod m — using fast binary method
+    /// Modular exponentiation: (base^exp) mod m - using fast binary method
     func modPow(base: Int, exponent: Int, modulus: Int) -> Int {
         computations += 1
         return _math.modPow(base, exponent, modulus)
@@ -32,7 +23,7 @@ class CryptographicMathEngine {
         return _math.extendedGCD(a, b)
     }
 
-    /// Modular inverse: a^(-1) mod m — returns nil if no inverse exists
+    /// Modular inverse: a^(-1) mod m - returns nil if no inverse exists
     func modInverse(_ a: Int, _ m: Int) -> Int? {
         computations += 1
         return _math.modInverse(a, m)
@@ -47,7 +38,7 @@ class CryptographicMathEngine {
         return (x + M) % M
     }
 
-    /// Euler's totient function φ(n) — count of integers coprime to n
+    /// Euler's totient function φ(n) - count of integers coprime to n
     func eulerTotient(_ n: Int) -> Int {
         computations += 1
         return _math.eulerTotient(n)
@@ -285,7 +276,7 @@ class FinancialMathEngine {
 
     // ═══ Standard Normal Distribution ═══
 
-    /// Cumulative standard normal distribution Φ(x) — Abramowitz & Stegun approximation
+    /// Cumulative standard normal distribution Φ(x) - Abramowitz & Stegun approximation
     private func normalCDF(_ x: Double) -> Double {
         let a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741
         let a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911
@@ -1153,7 +1144,7 @@ class HighSciencesEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: SCIENCE SOLVER — Natural language query handler
+    // MARK: SCIENCE SOLVER - Natural language query handler
     // ═══════════════════════════════════════════════════════════════
 
     /// Route science queries to appropriate computation

@@ -1384,8 +1384,8 @@ class CoherenceScorer:
         # Sentence length consistency (sudden large changes = less coherent)
         lengths = [len(s.split()) for s in sentences]
         if len(lengths) > 1:
-            avg_len = sum(lengths) / len(lengths)
-            variance = sum((l - avg_len) ** 2 for l in lengths) / len(lengths)
+            avg_len = sum(lengths) / max(len(lengths), 1)
+            variance = sum((l - avg_len) ** 2 for l in lengths) / max(len(lengths), 1)
             length_consistency = max(0, 1.0 - variance / max(1, avg_len ** 2))
         else:
             length_consistency = 1.0
@@ -1834,7 +1834,7 @@ class CausalReasoner:
                 strengths.append(score)
 
         if strengths:
-            avg_strength = sum(strengths) / len(strengths)
+            avg_strength = sum(strengths) / max(len(strengths), 1)
             pair_factor = min(1.0, len(pairs) * 0.25)
             return avg_strength * 0.6 + pair_factor * 0.4
 
@@ -5115,7 +5115,7 @@ class InformationDensityAnalyzer:
                 scores.append(0.75)  # Technical terms
             else:
                 scores.append(0.45)  # Medium frequency
-        return sum(scores) / len(scores)
+        return sum(scores) / max(len(scores), 1)
 
     def _compute_lexical_diversity(self, words: List[str]) -> Dict[str, float]:
         """Compute lexical diversity metrics: TTR, Yule's K, hapax ratio."""

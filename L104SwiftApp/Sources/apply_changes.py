@@ -1,7 +1,7 @@
+import logging
 #!/usr/bin/env python3
 """Massive L104Native.swift transformation script — removes ALL limitations, makes everything dynamic."""
 
-import re
 import os
 
 FILEPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'L104Native.swift')
@@ -13,6 +13,7 @@ original_len = len(content)
 total_replacements = 0
 
 def replace_all(old, new):
+    """TODO: Document replace_all."""
     global content, total_replacements
     n = content.count(old)
     if n > 0:
@@ -22,7 +23,7 @@ def replace_all(old, new):
     return n
 
 print("=" * 70)
-print("PHASE 1: RAISE ALL POOL SIZE CAPS (50-500 -> 5000-50000)")
+logging.info("PHASE 1: RAISE ALL POOL SIZE CAPS (50-500 -> 5000-50000)")
 print("=" * 70)
 
 # Evolved pool caps
@@ -69,7 +70,7 @@ replace_all('conversationContext.count > 25', 'conversationContext.count > 250')
 print(f"\nPhase 1 total: {total_replacements} replacements")
 
 print("\n" + "=" * 70)
-print("PHASE 2: REMOVE PROBABILITY GATES — ALWAYS FIRE")
+logging.info("PHASE 2: REMOVE PROBABILITY GATES — ALWAYS FIRE")
 print("=" * 70)
 p2_start = total_replacements
 
@@ -126,7 +127,7 @@ replace_all('Double.random(in: 0...1) > 0.8, pairCount', 'Double.random(in: 0...
 print(f"\nPhase 2 total: {total_replacements - p2_start} replacements")
 
 print("\n" + "=" * 70)
-print("PHASE 3: REMOVE TOPIC FOCUS PRIORITY — NO BIAS")
+logging.info("PHASE 3: REMOVE TOPIC FOCUS PRIORITY — NO BIAS")
 print("=" * 70)
 p3_start = total_replacements
 
@@ -178,7 +179,7 @@ replace_all(
 print(f"\nPhase 3 total: {total_replacements - p3_start} replacements")
 
 print("\n" + "=" * 70)
-print("PHASE 4: MAKE SPEAK HANDLER 95% DYNAMIC")
+logging.info("PHASE 4: MAKE SPEAK HANDLER 95% DYNAMIC")
 print("=" * 70)
 p4_start = total_replacements
 
@@ -314,7 +315,7 @@ replace_all(old_speak_ratios, new_speak_ratios)
 print(f"\nPhase 4 total: {total_replacements - p4_start} replacements")
 
 print("\n" + "=" * 70)
-print("PHASE 5: MAKE WISDOM & PARADOX HANDLERS 90% DYNAMIC")
+logging.info("PHASE 5: MAKE WISDOM & PARADOX HANDLERS 90% DYNAMIC")
 print("=" * 70)
 p5_start = total_replacements
 
@@ -367,7 +368,7 @@ replace_all(
 print(f"\nPhase 5 total: {total_replacements - p5_start} replacements")
 
 print("\n" + "=" * 70)
-print("PHASE 6: EXPAND EVOLUTION — MORE HARVEST, MORE ACTIONS PER PHASE")
+logging.info("PHASE 6: EXPAND EVOLUTION — MORE HARVEST, MORE ACTIONS PER PHASE")
 print("=" * 70)
 p6_start = total_replacements
 
@@ -519,7 +520,7 @@ replace_all(
 print(f"\nPhase 6 total: {total_replacements - p6_start} replacements")
 
 print("\n" + "=" * 70)
-print("PHASE 7: REMOVE autoTrackTopic BIAS — DON'T TRACK TOPIC FOCUS")
+logging.info("PHASE 7: REMOVE autoTrackTopic BIAS — DON'T TRACK TOPIC FOCUS")
 print("=" * 70)
 p7_start = total_replacements
 

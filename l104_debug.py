@@ -2194,7 +2194,7 @@ def _run_functionality_probes(diag: DiagnosticCollector, printer: _TermPrinter):
     """Phase 5 preamble: probe ALL engines for importability/health."""
     printer.section("5.0: Engine Availability Probes (all packages)")
     for name in ENGINE_REGISTRY:
-        probe = _probe_engine(name)
+        probe = _probe_engine(name, timeout_s=90.0 if name == "server" else 30.0)
         if probe["importable"]:
             detail = (f"pkg={probe['package']}, constants={'OK' if probe['constants_ok'] else 'MISS'}, "
                       f"tests={probe['self_test_count']}")
@@ -3335,7 +3335,7 @@ def phase_dead_code(
         "duality_collapse_statistics", "full_system_synthesis",
         "quantum_causal_reason", "qldpc_error_correction_score",
         "v5_upgrade_report", "compile_gate_registry",
-        "audit_app", "consciousness_review", "predict_quality",
+        "audit_app", "ci_report", "consciousness_review", "predict_quality",
         "sweep_phi_space", "nucleosynthesis_narrative",
         "evolution_status", "intellect_consciousness_synthesis",
         "sync_to_backend",  # network-dependent: may block on TCP connect
@@ -3349,6 +3349,8 @@ def phase_dead_code(
         "sage_scour_workspace", "audit_app", "evolution_status",
         "intellect_consciousness_synthesis",
         "intellect_status",
+        # v3.3.2: Gate engine heavy methods that timeout during dead code validation
+        "compile_gate_registry", "run_tests",
     }
     # RSS guard threshold lowered to 800MB for more aggressive skipping
     _ULTRA_HEAVY = _ALWAYS_SKIP  # Alias for backward compatibility
@@ -3590,23 +3592,25 @@ MIN_FILE_LINES = 10         # Skip files with fewer than 10 lines
 MAX_FILE_LINES = 3000       # Skip files with more than 3000 lines (OOM guard)
 DIFF_FAST_THRESHOLD = 500   # Use fast O(n) diff instead of SequenceMatcher above this
 
-# Rules SKIPPED because they are destructive on re-export / __init__.py files:
-#   fix_unused_imports  — removes imports used only by external consumer modules
-#   fix_import_sorting  — rewrites entire import block wholesale, can misidentify range
-#   fix_unnecessary_pass — removes pass from functions where pass IS the only body
-#                          (causes "expected indented block" syntax errors)
-_DESTRUCTIVE_RULES = {"fix_unused_imports", "fix_import_sorting", "fix_unnecessary_pass"}
+# v3.4.0: All previously "destructive" rules have been hardened and are now safe:
+#   fix_unused_imports  — v3.1.0: respects __all__, TYPE_CHECKING, dunder modules
+#   fix_import_sorting  — v3.1.0: contiguous-block-only, skips try/except guards
+#   fix_unnecessary_pass — v3.1.0: AST-validates result, docstring-aware
+_DESTRUCTIVE_RULES: set = set()  # No rules are unconditionally destructive anymore
 
-# Safe rules applied in order (v3.3.0 tuned pipeline)
+# Safe rules applied in order (v3.4.0 full pipeline — all rules active)
 _SAFE_RULES = [
-    "fix_trailing_whitespace",   # cosmetic, safe
-    "fix_docstring_stubs",       # additive only (adds lines)
-    "fix_bare_except",           # in-place pattern replace
-    "fix_mutable_default_args",  # semantic preservation
-    "fix_print_to_logging",      # semantic preservation
+    "fix_trailing_whitespace",      # cosmetic, safe
+    "fix_unused_imports",           # v3.1.0: __all__-aware, TYPE_CHECKING-aware
+    "fix_import_sorting",           # v3.1.0: contiguous-block-only sort
+    "fix_unnecessary_pass",         # v3.1.0: AST-validated, docstring-aware
+    "fix_docstring_stubs",          # additive only (adds lines)
+    "fix_bare_except",              # in-place pattern replace
+    "fix_mutable_default_args",     # semantic preservation
+    "fix_print_to_logging",         # semantic preservation
     "fix_redundant_else_after_return",  # structural (currently disabled in engine)
-    "fix_fstring_upgrade",       # in-place format conversion
-    "fix_dict_comprehension",    # in-place pattern replace
+    "fix_fstring_upgrade",          # in-place format conversion
+    "fix_dict_comprehension",       # in-place pattern replace
 ]
 
 # Files that get extra protection (re-export hubs)

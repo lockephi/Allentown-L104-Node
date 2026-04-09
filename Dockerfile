@@ -73,6 +73,7 @@ ENV PORT=8081
 ENV L104_CPU_CORES=0
 ENV LOG_FORMAT=json
 ENV LOG_LEVEL=info
+ENV UVICORN_WORKERS=4
 
 # Expose ports: 8081 (API), 8080 (Bridge), 4160 (AI Core), 4161 (UI), 2404 (Socket)
 EXPOSE 8081 8080 4160 4161 2404
@@ -84,5 +85,5 @@ USER l104
 HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
     CMD curl -fsS http://localhost:8081/health || exit 1
 
-# Run the application
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8081}"]
+# Run the application (EVO_62: multi-worker support via UVICORN_WORKERS env var)
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8081} --workers ${UVICORN_WORKERS:-4} --loop uvloop"]

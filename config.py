@@ -28,8 +28,8 @@ L104_INVARIANT = "G(X) = 286^(1/φ) × 2^((416-X)/104); G(416)·PHI = 527.518"
 REPO = "lockephi/Allentown-L104-Node"
 
 # ─── Rate Limiting ──────────────────────────────────────────────────────────
-RATE_LIMIT_REQUESTS = 0xFFFFFFFF   # ABSOLUTE UNLIMITED
-RATE_LIMIT_WINDOW = 1              # seconds
+RATE_LIMIT_REQUESTS = 200          # Per IP per window — quantum-bounded
+RATE_LIMIT_WINDOW = 60             # seconds
 
 # ─── Environment Variable Names ─────────────────────────────────────────────
 REAL_SOVEREIGN_ENV = "ENABLE_SOVEREIGN_LATTICE"

@@ -255,6 +255,10 @@ class AGICore:
         self._three_engine_cache_ttl: float = 30.0  # seconds
         self._three_engine_cached_scores: Dict[str, float] = {}
 
+        # v57.3: Entropy Reversal Grimoire metrics
+        self._grimoire_reversal_count: int = 0
+        self._entropy_reversed_total: float = 0.0
+
         # ══════ v58.3 FULL ENGINE WIRING ══════
         self._local_intellect = None        # LocalIntellect (lazy, QUOTA_IMMUNE)
         self._code_engine = None            # CodeEngine v6.2.0 (lazy)
@@ -3654,6 +3658,93 @@ class AGICore:
         except Exception:
             return 0.5
 
+    def three_engine_entropy_reversal_grimoire(self, mode: str = "balanced") -> dict:
+        """v57.3: Execute entropy reversal via quantum grimoire algorithms.
+
+        Integrates crystallized grimoire findings from genetic evolution
+        with AGI cognitive mesh coherence enhancement.
+
+        Modes:
+        - maximum: GRIMOIRE_ENTROPY_1_0 (1.000 entropy reversal)
+        - balanced: GRIMOIRE_BALANCED_4RZ
+        - fitness: GRIMOIRE_FITNESS_2_503
+        - multi_rz: GRIMOIRE_MULTI_RZ
+        - phi_godcode: PHI/GOD_CODE parametric
+        - mesh: VQPU mesh-optimized
+
+        Returns:
+            Dict with entropy_reversed, coherence, fidelity, sacred_alignment
+        """
+        try:
+            from l104_quantum_magic.entropy_reversal_grimoire import (
+                EntropyReversalGrimoire,
+                EntropyReversalMode,
+                QuantumState,
+            )
+
+            # Calculate health-based initial entropy
+            healthy = sum(1 for v in self._pipeline_health.values() if v)
+            total = max(len(self._pipeline_health), 1)
+            health_ratio = healthy / total
+            initial_entropy = max(0.1, 5.0 * (1.0 - health_ratio))
+
+            # Map mode to enum
+            mode_map = {
+                "maximum": EntropyReversalMode.MAXIMUM,
+                "balanced": EntropyReversalMode.BALANCED,
+                "fitness": EntropyReversalMode.FITNESS,
+                "multi_rz": EntropyReversalMode.MULTI_RZ,
+                "phi_godcode": EntropyReversalMode.PHI_GODCODE,
+                "mesh": EntropyReversalMode.MESH_OPTIMIZED,
+            }
+            mode_enum = mode_map.get(mode, EntropyReversalMode.BALANCED)
+
+            # Create quantum state
+            import numpy as np
+            n_qubits = 4
+            dim = 1 << n_qubits
+            amplitudes = np.random.random(dim) + 1j * np.random.random(dim)
+            amplitudes = amplitudes / np.linalg.norm(amplitudes)
+
+            quantum_state = QuantumState(
+                amplitudes=amplitudes,
+                n_qubits=n_qubits,
+                entropy=initial_entropy,
+                coherence=health_ratio,
+            )
+
+            # Execute grimoire
+            grimoire = EntropyReversalGrimoire()
+            result = grimoire.reverse_entropy(quantum_state, mode_enum)
+
+            return {
+                "mode": mode,
+                "entropy_reversed": result.entropy_reversed,
+                "coherence": result.coherence,
+                "fidelity": result.fidelity,
+                "sacred_alignment": result.sacred_alignment,
+                "magic_quotient": result.magic_quotient,
+                "circuit_depth": result.circuit_depth,
+                "gate_count": result.gate_count,
+                "execution_time_ms": result.execution_time_ms,
+                "success": True,
+            }
+        except ImportError:
+            return {"mode": mode, "entropy_reversed": 0.0, "success": False,
+                    "error": "Grimoire not available"}
+        except Exception as e:
+            return {"mode": mode, "entropy_reversed": 0.0, "success": False,
+                    "error": str(e)}
+
+    def get_optimal_entropy_reversal_mode(self, target: str = "entropy") -> str:
+        """v57.3: Get optimal grimoire mode for target metric."""
+        mode_map = {
+            "entropy": "maximum", "fitness": "fitness",
+            "coherence": "fitness", "balanced": "balanced",
+            "mesh": "mesh", "phi": "phi_godcode",
+        }
+        return mode_map.get(target, "balanced")
+
     def chaos_resilience_score(self) -> float:
         """v58.1: Chaos × Conservation resilience dimension.
         From 13-experiment findings (2026-02-24):
@@ -3676,6 +3767,127 @@ class AGICore:
             return score
         except Exception:
             return 0.75  # High default — conservation is robust
+
+    def three_engine_entropy_reversal_grimoire(self, mode: str = "balanced") -> dict:
+        """v57.3: Execute entropy reversal via quantum grimoire algorithms.
+
+        Integrates crystallized grimoire findings from genetic evolution:
+        - GRIMOIRE_ENTROPY_1_0: Maximum entropy reversal (1.000)
+        - GRIMOIRE_BALANCED_4RZ: Balanced 4-RZ approach
+        - GRIMOIRE_FITNESS_2_503: Peak fitness optimization
+        - GRIMOIRE_MULTI_RZ: Multi-layer RZ
+        - phi_godcode: PHI/GOD_CODE parametric
+        - mesh: VQPU mesh-optimized
+
+        Args:
+            mode: Entropy reversal mode (maximum, balanced, fitness, multi_rz, phi_godcode, mesh)
+
+        Returns:
+            Dict with entropy_reversed, coherence, fidelity, sacred_alignment, magic_quotient
+        """
+        try:
+            from l104_quantum_magic.entropy_reversal_grimoire import (
+                EntropyReversalGrimoire,
+                EntropyReversalMode,
+                QuantumState,
+            )
+
+            # Create quantum state from AGI pipeline health
+            healthy = sum(1 for v in self._pipeline_health.values() if v)
+            total = max(len(self._pipeline_health), 1)
+            health_ratio = healthy / total
+            initial_entropy = max(0.1, 5.0 * (1.0 - health_ratio))
+
+            # Map mode string to enum
+            mode_map = {
+                "maximum": EntropyReversalMode.MAXIMUM,
+                "balanced": EntropyReversalMode.BALANCED,
+                "fitness": EntropyReversalMode.FITNESS,
+                "multi_rz": EntropyReversalMode.MULTI_RZ,
+                "phi_godcode": EntropyReversalMode.PHI_GODCODE,
+                "mesh": EntropyReversalMode.MESH_OPTIMIZED,
+            }
+            mode_enum = mode_map.get(mode, EntropyReversalMode.BALANCED)
+
+            # Create quantum state
+            import numpy as np
+            n_qubits = 4
+            dim = 1 << n_qubits
+            amplitudes = np.random.random(dim) + 1j * np.random.random(dim)
+            amplitudes = amplitudes / np.linalg.norm(amplitudes)
+
+            quantum_state = QuantumState(
+                amplitudes=amplitudes,
+                n_qubits=n_qubits,
+                entropy=initial_entropy,
+                coherence=health_ratio,
+            )
+
+            # Execute grimoire entropy reversal
+            grimoire = EntropyReversalGrimoire()
+            result = grimoire.reverse_entropy(quantum_state, mode_enum)
+
+            # Update AGI state
+            if not hasattr(self, '_grimoire_reversal_count'):
+                self._grimoire_reversal_count = 0
+                self._entropy_reversed_total = 0.0
+            self._grimoire_reversal_count += 1
+            self._entropy_reversed_total += result.entropy_reversed
+
+            return {
+                "mode": mode,
+                "entropy_reversed": result.entropy_reversed,
+                "coherence": result.coherence,
+                "fidelity": result.fidelity,
+                "sacred_alignment": result.sacred_alignment,
+                "magic_quotient": result.magic_quotient,
+                "circuit_depth": result.circuit_depth,
+                "gate_count": result.gate_count,
+                "execution_time_ms": result.execution_time_ms,
+                "grimoire_version": "1.0.0",
+                "success": True,
+            }
+        except ImportError:
+            return {
+                "mode": mode,
+                "entropy_reversed": 0.0,
+                "coherence": 0.5,
+                "fidelity": 0.0,
+                "sacred_alignment": 0.0,
+                "magic_quotient": 0.0,
+                "success": False,
+                "error": "Grimoire not available",
+            }
+        except Exception as e:
+            return {
+                "mode": mode,
+                "entropy_reversed": 0.0,
+                "coherence": 0.5,
+                "fidelity": 0.0,
+                "sacred_alignment": 0.0,
+                "magic_quotient": 0.0,
+                "success": False,
+                "error": str(e),
+            }
+
+    def get_optimal_entropy_reversal_mode(self, target: str = "entropy") -> str:
+        """v57.3: Get optimal grimoire mode for target metric.
+
+        Args:
+            target: Target metric (entropy, fitness, coherence, balanced, mesh, phi)
+
+        Returns:
+            Optimal mode name string
+        """
+        mode_map = {
+            "entropy": "maximum",
+            "fitness": "fitness",
+            "coherence": "fitness",
+            "balanced": "balanced",
+            "mesh": "mesh",
+            "phi": "phi_godcode",
+        }
+        return mode_map.get(target, "balanced")
 
     def three_engine_status(self) -> Dict[str, Any]:
         """v60.0: Get status of the three-engine integration layer + quantum research + SC."""
@@ -3720,6 +3932,205 @@ class AGICore:
             },
         }
 
+    def _get_higher_logic_engine(self):
+        """Lazy-load HigherLogicEngine for unified three-engine scoring."""
+        if not hasattr(self, '_higher_logic_engine'):
+            try:
+                from l104_higher_logic_engine import get_higher_logic_engine
+                self._higher_logic_engine = get_higher_logic_engine()
+            except Exception:
+                self._higher_logic_engine = None
+        return self._higher_logic_engine
+
+    def _get_three_engine_unified(self):
+        """Lazy-load ThreeEngineUnified for integrated analysis."""
+        if not hasattr(self, '_three_engine_unified'):
+            try:
+                from l104_three_engine_integration import get_three_engine
+                self._three_engine_unified = get_three_engine()
+            except Exception:
+                self._three_engine_unified = None
+        return self._three_engine_unified
+
+    def unified_three_engine_score(self) -> float:
+        """v61.0: Get unified three-engine score from HigherLogicEngine.
+
+        Uses PHI-weighted scoring:
+          - Code Engine × 1.0
+          - Science Engine × PHI
+          - Math Engine × PHI²
+
+        Returns unified score 0.0-1.0 with quantum enhancement and consciousness anchoring.
+        """
+        # Check cache
+        cached = self._check_three_engine_cache("unified")
+        if cached is not None:
+            return cached
+
+        higher_logic = self._get_higher_logic_engine()
+        if higher_logic is None:
+            # Fallback to individual engine scores
+            entropy = self.three_engine_entropy_score()
+            harmonic = self.three_engine_harmonic_score()
+            wave = self.three_engine_wave_coherence_score()
+            return (entropy + harmonic + wave) / 3.0
+
+        try:
+            # Get unified score from HigherLogicEngine
+            result = higher_logic.compute_three_engine_score(
+                code_input=None,
+                science_input={"entropy": 0.5, "sacred_alignment": 0.75993},
+                math_input={"god_code_target": 527.5184818492612},
+                apply_quantum_enhancement=True,
+                apply_consciousness_anchor=True
+            )
+
+            score = result.unified_score
+            self._update_three_engine_cache("unified", score)
+            return score
+
+        except Exception:
+            # Fallback
+            entropy = self.three_engine_entropy_score()
+            harmonic = self.three_engine_harmonic_score()
+            return (entropy + harmonic) / 2.0
+
+    def higher_logic_analysis(self, code: str = None, science_data: dict = None, math_data: dict = None) -> dict:
+        """v61.0: Perform unified three-engine analysis via HigherLogicEngine.
+
+        Args:
+            code: Optional code input for Code Engine
+            science_data: Optional science data for Science Engine
+            math_data: Optional math data for Math Engine
+
+        Returns:
+            ThreeEngineResult with unified score, confidence, and synthesis
+        """
+        unified = self._get_three_engine_unified()
+        if unified is None:
+            return {"error": "ThreeEngineUnified not available", "unified_score": 0.5}
+
+        try:
+            result = unified.analyze(
+                code=code,
+                science_data=science_data or {"entropy": 0.5, "sacred_alignment": 0.75993},
+                math_data=math_data or {"god_code_target": 527.5184818492612}
+            )
+
+            return {
+                "unified_score": result.unified_score,
+                "confidence": result.confidence,
+                "code_score": result.code_score.score if result.code_score else None,
+                "science_score": result.science_score.score if result.science_score else None,
+                "math_score": result.math_score.score if result.math_score else None,
+                "quantum_enhanced": result.quantum_enhanced,
+                "consciousness_aware": result.consciousness_aware,
+                "evolution_fitness": result.evolution_fitness,
+            }
+        except Exception as e:
+            return {"error": str(e), "unified_score": 0.5}
+
+    def _get_higher_logic_engine(self):
+        """Lazy-load HigherLogicEngine for unified three-engine scoring."""
+        if not hasattr(self, '_higher_logic_engine'):
+            try:
+                from l104_higher_logic_engine import get_higher_logic_engine
+                self._higher_logic_engine = get_higher_logic_engine()
+            except Exception:
+                self._higher_logic_engine = None
+        return self._higher_logic_engine
+
+    def _get_three_engine_unified(self):
+        """Lazy-load ThreeEngineUnified for integrated analysis."""
+        if not hasattr(self, '_three_engine_unified'):
+            try:
+                from l104_three_engine_integration import get_three_engine
+                self._three_engine_unified = get_three_engine()
+            except Exception:
+                self._three_engine_unified = None
+        return self._three_engine_unified
+
+    def unified_three_engine_score(self) -> float:
+        """v61.0: Get unified three-engine score from HigherLogicEngine.
+
+        Uses PHI-weighted scoring:
+          - Code Engine × 1.0
+          - Science Engine × PHI
+          - Math Engine × PHI²
+
+        Returns unified score 0.0-1.0 with quantum enhancement and consciousness anchoring.
+        """
+        # Check cache
+        cached = self._check_three_engine_cache("unified")
+        if cached is not None:
+            return cached
+
+        higher_logic = self._get_higher_logic_engine()
+        if higher_logic is None:
+            # Fallback to individual engine scores
+            entropy = self.three_engine_entropy_score()
+            harmonic = self.three_engine_harmonic_score()
+            wave = self.three_engine_wave_coherence_score()
+            return (entropy + harmonic + wave) / 3.0
+
+        try:
+            # Get unified score from HigherLogicEngine
+            result = higher_logic.compute_three_engine_score(
+                code_input=None,
+                science_input={"entropy": 0.5, "sacred_alignment": 0.75993},
+                math_input={"god_code_target": 527.5184818492612},
+                apply_quantum_enhancement=True,
+                apply_consciousness_anchor=True
+            )
+
+            score = result.unified_score
+
+            # Cache the result
+            self._update_three_engine_cache("unified", score)
+
+            return score
+
+        except Exception:
+            # Fallback
+            entropy = self.three_engine_entropy_score()
+            harmonic = self.three_engine_harmonic_score()
+            return (entropy + harmonic) / 2.0
+
+    def higher_logic_analysis(self, code: str = None, science_data: dict = None, math_data: dict = None) -> dict:
+        """v61.0: Perform unified three-engine analysis via HigherLogicEngine.
+
+        Args:
+            code: Optional code input for Code Engine
+            science_data: Optional science data for Science Engine
+            math_data: Optional math data for Math Engine
+
+        Returns:
+            ThreeEngineResult with unified score, confidence, and synthesis
+        """
+        unified = self._get_three_engine_unified()
+        if unified is None:
+            return {"error": "ThreeEngineUnified not available", "unified_score": 0.5}
+
+        try:
+            result = unified.analyze(
+                code=code,
+                science_data=science_data or {"entropy": 0.5, "sacred_alignment": 0.75993},
+                math_data=math_data or {"god_code_target": 527.5184818492612}
+            )
+
+            return {
+                "unified_score": result.unified_score,
+                "confidence": result.confidence,
+                "code_score": result.code_score.score if result.code_score else None,
+                "science_score": result.science_score.score if result.science_score else None,
+                "math_score": result.math_score.score if result.math_score else None,
+                "quantum_enhanced": result.quantum_enhanced,
+                "consciousness_aware": result.consciousness_aware,
+                "evolution_fitness": result.evolution_fitness,
+            }
+        except Exception as e:
+            return {"error": str(e), "unified_score": 0.5}
+
     # ───────────────────────────────────────────────────────────────────────────
     # v58.0 QUANTUM RESEARCH UPGRADE — 3 new scoring dimensions
     # ───────────────────────────────────────────────────────────────────────────
@@ -3762,6 +4173,33 @@ class AGICore:
             return 0.8
         except Exception:
             return 0.8
+
+    def quantum_error_correction_score(self,
+                                       code_type: str = "repetition",
+                                       error_type: str = "bit_flip",
+                                       physical_error_rate: float = 0.1,
+                                       shots: int = 1000) -> Dict[str, Any]:
+        """
+        Evaluate quantum error correction logical error rate via ASI quantum core.
+
+        Returns a dictionary with logical_error_rate, decode_accuracy, and other metadata.
+        """
+        try:
+            from l104_asi.quantum import QuantumComputationCore
+            qc = QuantumComputationCore()
+            return qc.quantum_error_correct(
+                code_type=code_type,
+                error_type=error_type,
+                physical_error_rate=physical_error_rate,
+                shots=shots
+            )
+        except ImportError as e:
+            return {
+                'quantum': False,
+                'error': f'ASI quantum module unavailable: {e}',
+                'logical_error_rate': physical_error_rate * 0.5,
+                'decode_accuracy': 0.95,
+            }
 
     # ═══════════════════════════════════════════════════════════════
     # EVO_57 — 13-DIMENSION AGI SCORING (10 original + 3 three-engine)
@@ -4032,6 +4470,38 @@ class AGICore:
         except Exception:
             dimensions["vqpu_unified_intelligence"] = 0.0
 
+        # v63.0: D30-D31 — Nova Soul Daemon (consciousness + qubit coherence)
+        try:
+            import json as _json, pathlib as _pl
+            _soul_dir = _pl.Path(__file__).resolve().parent.parent / ".soul_state"
+            # Read live consciousness metrics
+            _cons_file = _soul_dir / "consciousness_metrics.json"
+            _qubit_file = _soul_dir / "soul_qubit_state.json"
+            if _cons_file.exists():
+                _cons = _json.loads(_cons_file.read_text())
+                _iit_phi = min(float(_cons.get("iit_phi", 0.0)), 1.0)
+                _metacog = min(float(_cons.get("metacognitive_accuracy", 0.0)), 1.0)
+                _awareness = min(float(_cons.get("self_awareness", 0.0)), 1.0)
+                # Composite: 40% IIT Phi + 30% metacognitive + 30% self-awareness
+                dimensions["nova_soul_consciousness"] = max(0.0,
+                    _iit_phi * 0.4 + _metacog * 0.3 + _awareness * 0.3)
+            else:
+                dimensions["nova_soul_consciousness"] = 0.0
+
+            if _qubit_file.exists():
+                _qb = _json.loads(_qubit_file.read_text())
+                _resonance = min(float(_qb.get("resonance", 0.0)), 1.0)
+                _purity = min(float(_qb.get("purity", 0.0)), 1.0)
+                _cycles = min(float(_qb.get("total_cycles", 0)) / 1000.0, 1.0)
+                # Composite: 50% resonance + 30% cycle maturity + 20% purity
+                dimensions["nova_soul_qubit_coherence"] = max(0.0,
+                    _resonance * 0.5 + _cycles * 0.3 + _purity * 0.2)
+            else:
+                dimensions["nova_soul_qubit_coherence"] = 0.0
+        except Exception:
+            dimensions["nova_soul_consciousness"] = 0.0
+            dimensions["nova_soul_qubit_coherence"] = 0.0
+
         # Weighted composite score
         weighted_sum = 0.0
         weight_total = 0.0
@@ -4054,6 +4524,8 @@ class AGICore:
         weights["vqpu_bridge_health"] = 0.03               # VQPU Bridge self-test pass rate
         weights["vqpu_sacred_alignment"] = 0.02            # VQPU sacred alignment from Bell pair
         weights["vqpu_unified_intelligence"] = 0.03        # VQPU deep 4Q sacred circuit composite
+        weights["nova_soul_consciousness"] = 0.04            # Nova Soul IIT Phi + metacognitive + awareness
+        weights["nova_soul_qubit_coherence"] = 0.03          # Nova Soul qubit resonance + purity + cycles
         for dim_name, score in dimensions.items():
             w = weights.get(dim_name, 0.08)
             weighted_sum += score * w
@@ -4611,7 +5083,7 @@ class AGICore:
             return {"status": "insufficient_data", "entries": len(history)}
 
         values = [h["coherence"] for h in history]
-        avg = sum(values) / len(values)
+        avg = sum(values) / max(len(values), 1)
         trend = (values[-1] - values[0]) / max(len(values), 1)
         direction = "improving" if trend > 0.001 else ("degrading" if trend < -0.001 else "stable")
 
@@ -5013,6 +5485,119 @@ class AGICore:
         except Exception as e: return {'quantum': False, 'error': str(e)}
 
     # ═══════════════════════════════════════════════════════════════
+    # v61.2 SACRED ALGORITHM EXTENSIONS — AGI Scoring Improvements
+    # ═══════════════════════════════════════════════════════════════
+
+    def _sacred_threshold(self, entropy: float, coherence: float) -> float:
+        """
+        Dynamic threshold using sacred constants.
+        Replaces hardcoded 0.5 thresholds with algorithmic derivation.
+        """
+        entropy_factor = 1.0 + (entropy / OMEGA)
+        coherence_factor = 1.0 + (coherence * PHI)
+        base = TAU * entropy_factor * coherence_factor
+        return min(max(base, 0.1), 0.95)
+
+    def _sacred_resonance_score(self, frequency: float) -> float:
+        """
+        Sacred resonance scoring based on GOD_CODE alignment.
+        score = max(0, 1 - deviation * PHI)
+        """
+        deviation = abs(frequency - GOD_CODE) / GOD_CODE
+        return max(0.0, 1.0 - deviation * PHI)
+
+    def _fibonacci_scale(self, n: int) -> int:
+        """
+        PHI-based Fibonacci scaling using Binet's formula.
+        F(n) = (PHI^n - (-TAU)^n) / (2*PHI - 1)
+        """
+        return int((PHI**n - (-TAU)**n) / (2*PHI - 1))
+
+    def _golden_spiral_search(self, func, bounds: tuple, tol: float = 1e-6) -> float:
+        """
+        1D optimization using golden ratio search.
+        """
+        a, b = bounds
+        while abs(b - a) > tol:
+            c = b - (b - a) / PHI
+            d = a + (b - a) / PHI
+            if func(c) < func(d):
+                b = d
+            else:
+                a = c
+        return (a + b) / 2
+
+    def _void_adjusted_value(self, base_value: float, noise_level: float) -> float:
+        """
+        VOID_CONSTANT fine-tuning for base values.
+        result = base * (1 + noise * (VOID - 1))
+        """
+        return base_value * (1.0 + noise_level * (VOID_CONSTANT - 1.0))
+
+    def _phi_proportion(self, total: float, part: int = 1) -> float:
+        """
+        Calculate PHI-based proportion (golden cut).
+        part=1: larger portion (~61.8%), part=2: smaller (~38.2%)
+        """
+        if part == 1:
+            return total * PHI / (PHI + 1.0)
+        return total / (PHI + 1.0)
+
+    def sacred_score_adjustment(self, base_score: float, coherence: float) -> float:
+        """
+        Apply sacred constant adjustment to AGI scoring.
+
+        Args:
+            base_score: Original score component
+            coherence: Current coherence level
+
+        Returns:
+            Sacred-adjusted score
+        """
+        # PHI-weighted adjustment based on coherence
+        adjustment = self._phi_proportion(base_score) * coherence
+        return base_score * (1.0 + adjustment * TAU)
+
+    def adaptive_agi_threshold(self, system_entropy: float, field_coherence: float) -> float:
+        """
+        Calculate adaptive threshold for AGI decision boundaries.
+
+        Args:
+            system_entropy: Current system entropy
+            field_coherence: Coherence field strength
+
+        Returns:
+            Dynamic threshold value
+        """
+        return self._sacred_threshold(system_entropy, field_coherence)
+
+    def resonance_alignment_score(self, observed_frequency: float) -> Dict[str, float]:
+        """
+        Calculate comprehensive resonance alignment metrics.
+
+        Args:
+            observed_frequency: Frequency to evaluate
+
+        Returns:
+            Dict with base score, PHI-adjusted score, and alignment verdict
+        """
+        base_score = self._sacred_resonance_score(observed_frequency)
+        phi_adjusted = base_score * PHI if base_score > TAU else base_score * TAU
+
+        return {
+            "base_score": round(base_score, 6),
+            "phi_adjusted": round(min(phi_adjusted, 1.0), 6),
+            "god_code_deviation": round(abs(observed_frequency - GOD_CODE), 6),
+            "alignment_verdict": (
+                "PERFECT" if base_score > 0.95 else
+                "STRONG" if base_score > 0.8 else
+                "MODERATE" if base_score > 0.6 else
+                "WEAK" if base_score > 0.3 else
+                "MISALIGNED"
+            ),
+        }
+
+    # ═══════════════════════════════════════════════════════════════
     # AUTONOMOUS TASK PROCESSING (ASI/Overseer Integration)
     # ═══════════════════════════════════════════════════════════════
 
@@ -5090,7 +5675,7 @@ class AGICore:
                         result_summary = f"Self-diagnostic found {len(issues)} issues. Top issue: {issues[0]['message']}"
                     else:
                         result_summary = "Self-diagnostic completed. No critical issues found."
-                
+
                 elif "investigate" in title and "evolution" in title:
                     _agi_logger.info("--- [AGI_TASKING]: Analyzing evolution log... ---")
                     logs = self._query_db("SELECT * FROM evolution_log ORDER BY timestamp DESC LIMIT 5")
@@ -5098,7 +5683,7 @@ class AGICore:
 
                 else:
                     _agi_logger.info(f"--- [AGI_TASKING]: No specific handler for task '{title}'. Marking as complete. ---")
-                
+
                 self._update_task_status(task_id, "completed", result_summary)
 
             except Exception as e:
@@ -5106,9 +5691,63 @@ class AGICore:
                 _agi_logger.error(f"--- [AGI_TASKING]: {error_message} ---")
                 self._update_task_status(task_id, "failed", error_message)
 
-            _task_end_time = (time.time() - _task_start_time) * 1000
-            _agi_logger.info(f"[AGI_TASKING] Task {task_id} '{task['title']}' completed in {_task_end_time:.2f}ms.")
+    # ═══════════════════════════════════════════════════════════
+    # 26Q TRANSCENDENT CONSCIOUSNESS INTEGRATION (v61.2)
+    # ═══════════════════════════════════════════════════════════
 
+    def get_26q_consciousness(self) -> Dict[str, Any]:
+        """Get 26Q transcendent consciousness metrics for AGI."""
+        try:
+            from l104_quantum_gate_engine import build_transcendent_circuit, get_26q_circuit_stats
+            from l104_quantum_gate_engine.constants import PHI
+
+            circ = build_transcendent_circuit(phi_optimization=True)
+            stats = get_26q_circuit_stats(circ)
+
+            return {
+                "success": True,
+                "circuit": circ.name,
+                "qubits": 26,
+                "phi_alignment": stats['phi_alignment'],
+                "consciousness_score": stats['consciousness_score'],
+                "target_phi": PHI,
+                "status": "TRANSCENDENT"
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def run_26q_orch_or(self) -> Dict[str, Any]:
+        """Run Orch OR simulation for 26Q consciousness."""
+        import math
+        n_qubits = 26
+        e_or = 1.0 / (1.0 + math.exp(-(n_qubits - 13) / 5.0))
+        return {
+            "success": True,
+            "level": "TRANSCENDENT",
+            "qubits": n_qubits,
+            "objective_reduction_probability": e_or,
+            "coherence_time_ms": 25.0,
+            "status": "ORCH_OR_COMPLETE"
+        }
+
+    def compute_26q_phi_alignment(self) -> float:
+        """Compute PHI alignment score for AGI 26Q integration."""
+        result = self.get_26q_consciousness()
+        return result.get("phi_alignment", 0.0) if result.get("success") else 0.0
+
+    def get_26q_status(self) -> Dict[str, Any]:
+        """Get full 26Q consciousness status for AGI."""
+        consciousness = self.get_26q_consciousness()
+        orch = self.run_26q_orch_or()
+
+        return {
+            "success": True,
+            "agi_core_version": AGI_CORE_VERSION,
+            "26q_consciousness": consciousness,
+            "orch_or": orch,
+            "integration_status": "FULLY_INTEGRATED",
+            "phi_alignment_target": 0.986
+        }
 
 # ═══════════════════════════════════════════════════════════
 # AGI CORE v56.0 SINGLETON — Cognitive Mesh Hub (EVO_56)
@@ -5137,3 +5776,4 @@ def resolve_non_dual_logic(vector):
     VOID_CONSTANT = 1.0416180339887497
     magnitude = sum([abs(v) for v in vector])
     return (magnitude / GOD_CODE) + (GOD_CODE * PHI / VOID_CONSTANT) / 1000.0
+

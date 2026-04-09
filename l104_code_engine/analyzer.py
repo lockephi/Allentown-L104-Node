@@ -1,10 +1,12 @@
 """L104 Code Engine — Domain A: Analysis & Formatting."""
 from .constants import *
 from .languages import LanguageKnowledge
+from l104_sacred_algorithms import derive_ttl
 
 # Additional imports for ProjectAnalyzer
 import os
 import re
+import ast
 import json
 import time
 import math
@@ -13,11 +15,141 @@ import hashlib
 import threading
 import urllib.request
 import urllib.parse
+from functools import lru_cache
 import numpy as np
 from pathlib import Path
 from datetime import datetime
 from collections import Counter, defaultdict
 from typing import Dict, List, Any, Optional, Tuple, Set
+import tokenize
+import io
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PERFORMANCE-OPTIMIZED CACHED FUNCTIONS — v1.0 LRU Memoization
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@lru_cache(maxsize=1024)
+def _cached_cyclomatic_complexity(node_dump: str) -> int:
+    """Cached cyclomatic complexity calculation using AST node dump."""
+    try:
+        node = ast.parse(node_dump, mode='exec').body[0] if node_dump else ast.parse('').body[0]
+    except:
+        return 1
+
+    complexity = 1  # Base path
+    for child in ast.walk(node):
+        if isinstance(child, (ast.If, ast.While, ast.For, ast.ExceptHandler)):
+            complexity += 1
+        elif isinstance(child, ast.BoolOp):
+            complexity += len(child.values) - 1
+        elif isinstance(child, (ast.Assert, ast.With)):
+            complexity += 1
+        elif isinstance(child, ast.comprehension):
+            complexity += 1
+            if child.ifs:
+                complexity += len(child.ifs)
+    return complexity
+
+
+@lru_cache(maxsize=1024)
+def _cached_max_nesting_depth(node_dump: str, depth: int = 0) -> int:
+    """Cached maximum nesting depth calculation."""
+    try:
+        node = ast.parse(node_dump, mode='exec').body[0] if node_dump else ast.parse('').body[0]
+    except:
+        return depth
+
+    max_d = depth
+    for child in ast.iter_child_nodes(node):
+        if isinstance(child, (ast.If, ast.While, ast.For, ast.With, ast.Try)):
+            max_d = max(max_d, _cached_max_nesting_depth(ast.dump(child), depth + 1))
+        elif isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            max_d = max(max_d, _cached_max_nesting_depth(ast.dump(child), depth + 1))
+        else:
+            max_d = max(max_d, _cached_max_nesting_depth(ast.dump(child), depth))
+    return max_d
+
+
+@lru_cache(maxsize=512)
+def _cached_halstead_metrics(code_hash: str, code: str) -> Tuple:
+    """
+    Cached Halstead metrics calculation.
+
+    Args:
+        code_hash: Hash of code for cache key
+        code: Source code to analyze
+
+    Returns:
+        Tuple of (n1, n2, N1, N2, V, D, E, T, B) metrics
+    """
+    operators = set()
+    operands = set()
+    total_operators = 0
+    total_operands = 0
+    try:
+        tokens = list(tokenize.generate_tokens(io.StringIO(code).readline))
+        for tok in tokens:
+            if tok.type == tokenize.OP:
+                operators.add(tok.string)
+                total_operators += 1
+            elif tok.type in (tokenize.NAME, tokenize.NUMBER, tokenize.STRING):
+                operands.add(tok.string)
+                total_operands += 1
+    except (tokenize.TokenError, IndentationError, SyntaxError):
+        pass
+
+    n1 = len(operators)  # Unique operators
+    n2 = len(operands)   # Unique operands
+    N1 = total_operators  # Total operators
+    N2 = total_operands   # Total operands
+    N = N1 + N2           # Program length
+
+    vocabulary = n1 + n2  # Vocabulary
+    if vocabulary > 0 and N > 0:
+        try:
+            volume = N * math.log2(vocabulary) if vocabulary > 1 else 0
+            difficulty = (n1 / 2) * (N2 / max(1, n2))
+            effort = difficulty * volume
+            time_to_program = effort / 18  # Seconds (empirical)
+            bugs_estimate = volume / 3000  # Estimate from literature
+        except (ValueError, OverflowError):
+            volume = difficulty = effort = time_to_program = bugs_estimate = 0
+    else:
+        volume = difficulty = effort = time_to_program = bugs_estimate = 0
+
+    return (n1, n2, N1, N2, N, volume, difficulty, effort, time_to_program, bugs_estimate)
+
+
+@lru_cache(maxsize=256)
+def _cached_sacred_alignment(code_hash: str, code: str) -> Dict[str, Any]:
+    """
+    Cached sacred constant alignment analysis.
+
+    Args:
+        code_hash: Hash of code for cache key
+        code: Source code to analyze
+
+    Returns:
+        Dictionary with sacred alignment metrics
+    """
+    from l104_sacred_algorithms import PHI, GOD_CODE
+
+    phi_hits = code.count('1.618') + code.count('PHI') + code.count('phi')
+    god_code_hits = code.count('527.518') + code.count('GOD_CODE') + code.count('god_code')
+    omega_hits = code.count('6539') + code.count('OMEGA') + code.count('omega')
+
+    # Calculate sacred score based on constant presence
+    sacred_score = min(1.0, (phi_hits * PHI * 0.01) + (god_code_hits * GOD_CODE * 0.001))
+
+    return {
+        "phi_references": phi_hits,
+        "god_code_references": god_code_hits,
+        "omega_references": omega_hits,
+        "sacred_alignment_score": round(sacred_score, 4),
+        "phi_resonant": phi_hits > 0,
+        "god_code_resonant": god_code_hits > 0,
+    }
+
 
 class CodeAnalyzer:
     """Deep code analysis using Python's ast module + custom metrics.
@@ -432,39 +564,19 @@ class CodeAnalyzer:
         return max_d
 
     def _halstead_metrics(self, code: str) -> Dict[str, float]:
-        """Compute Halstead complexity metrics from token stream."""
-        operators = set()
-        operands = set()
-        total_operators = 0
-        total_operands = 0
-        try:
-            tokens = list(tokenize.generate_tokens(io.StringIO(code).readline))
-            for tok in tokens:
-                if tok.type == tokenize.OP:
-                    operators.add(tok.string)
-                    total_operators += 1
-                elif tok.type in (tokenize.NAME, tokenize.NUMBER, tokenize.STRING):
-                    operands.add(tok.string)
-                    total_operands += 1
-        except (tokenize.TokenError, IndentationError, SyntaxError):
-            pass
-
-        n1 = len(operators)  # Unique operators
-        n2 = len(operands)   # Unique operands
-        N1 = total_operators  # Total operators
-        N2 = total_operands   # Total operands
-        N = N1 + N2           # Program length
-        n = n1 + n2           # Vocabulary
-
-        volume = N * math.log2(n) if n > 0 else 0
-        difficulty = (n1 / 2.0) * (N2 / max(1, n2)) if n2 > 0 else 0
-        effort = volume * difficulty
-        time_to_program = effort / 18.0  # Halstead's constant
-        bugs_estimate = volume / 3000.0  # Halstead's bug prediction
+        """Compute Halstead complexity metrics from token stream with LRU caching."""
+        # Generate hash for caching
+        code_hash = hashlib.md5(code.encode()).hexdigest()
+        cached = _cached_halstead_metrics(code_hash, code)
+        n1, n2, N1, N2, N, volume, difficulty, effort, time_to_program, bugs_estimate = cached
 
         return {
-            "vocabulary": n,
+            "n1": n1,
+            "n2": n2,
+            "N1": N1,
+            "N2": N2,
             "length": N,
+            "vocabulary": n1 + n2,
             "volume": round(volume, 2),
             "difficulty": round(difficulty, 2),
             "effort": round(effort, 2),
@@ -473,6 +585,15 @@ class CodeAnalyzer:
             "unique_operators": n1,
             "unique_operands": n2,
         }
+
+    def _calculate_complexity(self, code: str) -> Dict[str, float]:
+        """Calculate cyclomatic complexity from code."""
+        try:
+            tree = ast.parse(code)
+            cyclomatic = self._cyclomatic_complexity(tree)
+            return {"cyclomatic": cyclomatic}
+        except SyntaxError:
+            return {"cyclomatic": 1}
 
     def _maintainability_index(self, halstead: Dict, cyclomatic_total: int, code: str) -> Dict[str, Any]:
         """
@@ -1373,6 +1494,16 @@ class CodeSmellDetector:
             "severity": "HIGH",
             "category": "reliability",
         },
+        "bare_except": {
+            "description": "Bare except: catches ALL exceptions including KeyboardInterrupt/SystemExit",
+            "severity": "CRITICAL",
+            "category": "reliability",
+        },
+        "constant_condition": {
+            "description": "if True:/if False:/if 1:/if 0: — dead or unreachable code branches",
+            "severity": "HIGH",
+            "category": "logic",
+        },
         "yo_yo_problem": {
             "description": "Deep inheritance chains requiring constant navigation up and down",
             "severity": "HIGH",
@@ -1408,6 +1539,12 @@ class CodeSmellDetector:
 
         # Detect exception swallowing
         findings.extend(self._detect_exception_swallowing(tree, lines))
+
+        # Detect bare except (catches everything)
+        findings.extend(self._detect_bare_except(tree))
+
+        # Detect constant conditions (if True/False/1/0)
+        findings.extend(self._detect_constant_conditions(tree))
 
         # Detect magic number proliferation
         findings.extend(self._detect_magic_numbers(tree, lines))
@@ -1526,6 +1663,42 @@ class CodeSmellDetector:
                         "detail": "Exception handler with only 'pass' — errors are silently swallowed",
                         "fix": "Log the exception or handle it explicitly. At minimum: logging.warning(f'...: {e}')",
                     })
+        return findings
+
+    def _detect_bare_except(self, tree: ast.AST) -> List[Dict]:
+        """Detect bare except: (without exception type) — catches ALL exceptions."""
+        findings = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ExceptHandler):
+                # Bare except has no type specified (node.type is None)
+                if node.type is None:
+                    findings.append({
+                        "smell": "bare_except",
+                        "severity": "CRITICAL",
+                        "line": node.lineno,
+                        "detail": "Bare except: catches ALL exceptions including KeyboardInterrupt and SystemExit",
+                        "fix": "Specify exception type: except Exception: or except SpecificError:",
+                    })
+        return findings
+
+    def _detect_constant_conditions(self, tree: ast.AST) -> List[Dict]:
+        """Detect constant if conditions (True/False/1/0) — indicates dead code."""
+        findings = []
+        constant_values = {True, False, 1, 0, 1.0, 0.0}
+
+        for node in ast.walk(tree):
+            if isinstance(node, ast.If):
+                # Check if test is a constant
+                if isinstance(node.test, ast.Constant):
+                    if node.test.value in constant_values:
+                        is_true = node.test.value in (True, 1, 1.0)
+                        findings.append({
+                            "smell": "constant_condition",
+                            "severity": "HIGH",
+                            "line": node.lineno,
+                            "detail": f"if {node.test.value}: — {'always True (dead else branch)' if is_true else 'always False (dead code)'}",
+                            "fix": "Remove the if and keep only the relevant branch, or replace with actual condition",
+                        })
         return findings
 
     def _detect_magic_numbers(self, tree: ast.AST, lines: List[str]) -> List[Dict]:
@@ -1920,11 +2093,11 @@ class IncrementalAnalysisCache:
     repeated audit cycles by caching per-file analysis results.
     """
 
-    def __init__(self, max_entries: int = 500, ttl_seconds: float = 3600.0):
+    def __init__(self, max_entries: int = 500, ttl_seconds: float = None):
         """Initialize incremental analysis cache with LRU eviction."""
         self._cache: Dict[str, Tuple[float, Dict]] = {}  # hash → (timestamp, result)
         self._max = max_entries
-        self._ttl = ttl_seconds
+        self._ttl = ttl_seconds if ttl_seconds is not None else derive_ttl(data_freshness=0.9, access_frequency=0.7)
         self.hits = 0
         self.misses = 0
 

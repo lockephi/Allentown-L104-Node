@@ -349,7 +349,7 @@ class DependencyGraphAnalyzer:
 
         for module in self.graph:
             dfs(module)
-        return cycles[:10]  # Cap at 10
+        return cycles
 
     def _find_hubs(self, top_k: int = 5) -> List[Dict[str, Any]]:
         """Find most-imported modules (hubs)."""
@@ -594,36 +594,71 @@ class AutoFixEngine:
         return '\n'.join(fixed)
 
     def fix_unused_imports(self, code: str) -> str:
-        """Remove import statements where the imported name is never used in code body."""
+        """Remove truly unused imports — safe for re-export files.
+
+        v3.1.0 safety rules:
+          • Skips any name listed in __all__ (re-export guard)
+          • Skips imports inside TYPE_CHECKING blocks
+          • Skips __future__ and dunder modules
+          • Checks ALL non-import lines (including string literals / __all__ assignments)
+          • Only removes when name has zero word-boundary occurrences outside import line
+        """
         try:
             tree = ast.parse(code)
         except SyntaxError:
             return code
 
         lines = code.split('\n')
-        imports_to_check = []
 
+        # Collect names in __all__ — never remove re-exported names
+        all_names: set = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name) and target.id == '__all__':
+                        if isinstance(node.value, (ast.List, ast.Tuple)):
+                            for elt in node.value.elts:
+                                if isinstance(elt, ast.Constant) and isinstance(elt.value, str):
+                                    all_names.add(elt.value)
+
+        # Identify line ranges that are under TYPE_CHECKING guards
+        type_checking_lines: set = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.If):
+                test = node.test
+                is_tc = (
+                    (isinstance(test, ast.Name) and test.id == 'TYPE_CHECKING') or
+                    (isinstance(test, ast.Attribute) and test.attr == 'TYPE_CHECKING')
+                )
+                if is_tc:
+                    for child in ast.walk(node):
+                        if hasattr(child, 'lineno'):
+                            type_checking_lines.add(child.lineno - 1)
+
+        imports_to_check = []
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
+                line_idx = node.lineno - 1
+                if line_idx in type_checking_lines:
+                    continue
                 for alias in node.names:
                     name = alias.asname or alias.name.split('.')[0]
-                    imports_to_check.append((node.lineno - 1, name))
+                    imports_to_check.append((line_idx, name))
             elif isinstance(node, ast.ImportFrom):
+                line_idx = node.lineno - 1
+                if line_idx in type_checking_lines:
+                    continue
                 if node.module and node.module.startswith('__'):
                     continue
                 for alias in node.names:
                     name = alias.asname or alias.name
-                    if name == '*':
+                    if name == '*' or name in all_names:
                         continue
-                    imports_to_check.append((node.lineno - 1, name))
+                    imports_to_check.append((line_idx, name))
 
         lines_to_remove = set()
         for line_idx, name in imports_to_check:
-            # Count occurrences of the name in all non-import lines
-            body_text = '\n'.join(
-                l for i, l in enumerate(lines) if i != line_idx
-            )
-            # Simple heuristic: name must appear as a word boundary
+            body_text = '\n'.join(l for i, l in enumerate(lines) if i != line_idx)
             if not re.search(rf'\b{re.escape(name)}\b', body_text):
                 lines_to_remove.add(line_idx)
 
@@ -796,9 +831,13 @@ class AutoFixEngine:
         # return fixed
 
     def fix_unnecessary_pass(self, code: str) -> str:
-        """Remove pass statements from bodies that have other statements (v3.0.0).
+        """Remove pass statements that are redundant alongside other real statements.
 
-        Keeps pass only when it's the sole statement in a block.
+        v3.1.0 safety rules:
+          • Keeps pass when it is the ONLY non-docstring statement in a block
+          • Keeps pass in except/finally clauses that are otherwise empty
+          • Handles both body= and handlers=/orelse=/finalbody= sub-lists for try nodes
+          • AST-validates result before returning — aborts on parse failure
         """
         try:
             tree = ast.parse(code)
@@ -808,22 +847,57 @@ class AutoFixEngine:
         lines = code.split('\n')
         lines_to_remove = set()
 
+        def _real_stmts(body):
+            """Count non-pass, non-docstring statements."""
+            count = 0
+            for s in body:
+                if isinstance(s, ast.Pass):
+                    continue
+                if (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant)
+                        and isinstance(s.value.value, str)):
+                    continue  # docstring
+                count += 1
+            return count
+
         for node in ast.walk(tree):
+            bodies = []
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef,
-                                 ast.If, ast.For, ast.While, ast.With,
-                                 ast.ExceptHandler, ast.Try)):
-                body = getattr(node, 'body', [])
-                if len(body) > 1:
+                                  ast.If, ast.For, ast.While, ast.With)):
+                bodies.append(getattr(node, 'body', []))
+                bodies.append(getattr(node, 'orelse', []))
+            elif isinstance(node, ast.Try):
+                bodies.append(getattr(node, 'body', []))
+                bodies.append(getattr(node, 'orelse', []))
+                bodies.append(getattr(node, 'finalbody', []))
+                for h in getattr(node, 'handlers', []):
+                    bodies.append(getattr(h, 'body', []))
+            elif isinstance(node, ast.ExceptHandler):
+                bodies.append(getattr(node, 'body', []))
+
+            for body in bodies:
+                if not body:
+                    continue
+                if _real_stmts(body) >= 1:
+                    # There are real statements — pass is redundant
                     for stmt in body:
                         if isinstance(stmt, ast.Pass):
                             lines_to_remove.add(stmt.lineno - 1)
 
-        if lines_to_remove:
-            fixed = [l for i, l in enumerate(lines) if i not in lines_to_remove]
-            self.fixes_applied += len(lines_to_remove)
-            self.fixes_log.append({"fix": "unnecessary_pass", "count": len(lines_to_remove)})
-            return '\n'.join(fixed)
-        return code
+        if not lines_to_remove:
+            return code
+
+        fixed_lines = [l for i, l in enumerate(lines) if i not in lines_to_remove]
+        fixed_code = '\n'.join(fixed_lines)
+
+        # AST validation — abort if result doesn't parse
+        try:
+            ast.parse(fixed_code)
+        except SyntaxError:
+            return code
+
+        self.fixes_applied += len(lines_to_remove)
+        self.fixes_log.append({"fix": "unnecessary_pass", "count": len(lines_to_remove)})
+        return fixed_code
 
     def fix_fstring_upgrade(self, code: str) -> str:
         """Convert str.format() and %-formatting to f-strings where safe."""
@@ -846,40 +920,98 @@ class AutoFixEngine:
         return '\n'.join(fixed)
 
     def fix_import_sorting(self, code: str) -> str:
-        """Sort imports: stdlib first, then third-party, then local."""
+        """Sort imports: stdlib first, then third-party, then local.
+
+        v3.1.0 safety rules:
+          • Only sorts the FIRST contiguous import block (stops at first non-import,
+            non-blank, non-comment line) — never touches conditional/late imports
+          • Preserves blank separator lines between groups within the block
+          • Skips any block containing try/except imports (conditional guards)
+          • Skips if the block contains __future__ imports at a non-first position
+        """
         lines = code.split('\n')
-        import_lines, import_start, import_end = [], None, None
+        import_start = None
+        import_end = None
+        block_lines = []
+
         for i, line in enumerate(lines):
             stripped = line.strip()
-            if stripped.startswith(('import ', 'from ')) and not stripped.startswith('#'):
-                if import_start is None: import_start = i
+            if not stripped or stripped.startswith('#'):
+                if import_start is not None:
+                    block_lines.append(line)
+                continue
+            if stripped.startswith(('import ', 'from ')):
+                if import_start is None:
+                    import_start = i
                 import_end = i
-                import_lines.append(line)
-        if not import_lines or import_start is None:
+                block_lines.append(line)
+            else:
+                # First non-import, non-blank, non-comment line ends the block
+                break
+
+        if not block_lines or import_start is None:
             return code
-        STDLIB = {'os','sys','json','math','re','ast','hashlib','pathlib','typing',
-                  'collections','functools','itertools','datetime','time','logging',
-                  'abc','io','copy','textwrap','inspect','unittest','dataclasses',
-                  'enum','contextlib','operator','string','random','struct','threading',
-                  'subprocess','socket','tempfile','shutil','warnings','traceback',
-                  'argparse','uuid','base64','types','weakref','asyncio','concurrent'}
+
+        # Safety: skip if block contains try/except (conditional imports)
+        joined = '\n'.join(block_lines)
+        if 'try:' in joined or 'except' in joined:
+            return code
+
+        # Trim trailing blank lines from block
+        while block_lines and not block_lines[-1].strip():
+            block_lines.pop()
+            import_end -= 1
+
+        # Collect only actual import lines (skip blank/comment lines for sorting)
+        import_lines = [l for l in block_lines if l.strip().startswith(('import ', 'from '))]
+
+        STDLIB = {
+            'os', 'sys', 'json', 'math', 're', 'ast', 'hashlib', 'pathlib', 'typing',
+            'collections', 'functools', 'itertools', 'datetime', 'time', 'logging',
+            'abc', 'io', 'copy', 'textwrap', 'inspect', 'unittest', 'dataclasses',
+            'enum', 'contextlib', 'operator', 'string', 'random', 'struct', 'threading',
+            'subprocess', 'socket', 'tempfile', 'shutil', 'warnings', 'traceback',
+            'argparse', 'uuid', 'base64', 'types', 'weakref', 'asyncio', 'concurrent',
+            'cmath', 'decimal', 'fractions', 'statistics', 'array', 'bisect', 'heapq',
+            'queue', 'pickle', 'shelve', 'csv', 'configparser', 'html', 'http',
+            'urllib', 'email', 'xml', 'zipfile', 'tarfile', 'gzip', 'bz2', 'lzma',
+            'signal', 'ctypes', 'multiprocessing', 'platform', 'gc', 'tracemalloc',
+        }
         stdlib_i, third_i, local_i = [], [], []
         for imp in import_lines:
-            stripped = imp.strip()
+            s = imp.strip()
             mod = ''
-            if stripped.startswith('from '): mod = stripped.split()[1].split('.')[0]
-            elif stripped.startswith('import '): mod = stripped.split()[1].split('.')[0].split(',')[0]
-            if mod in STDLIB: stdlib_i.append(imp)
-            elif mod.startswith(('l104', '.')): local_i.append(imp)
-            else: third_i.append(imp)
-        stdlib_i.sort(key=str.strip); third_i.sort(key=str.strip); local_i.sort(key=str.strip)
-        sorted_imports = stdlib_i
+            if s.startswith('from '):
+                mod = s.split()[1].split('.')[0]
+            elif s.startswith('import '):
+                mod = s.split()[1].split('.')[0].split(',')[0]
+            if mod == '__future__':
+                stdlib_i.insert(0, imp)  # __future__ always first
+            elif mod in STDLIB:
+                stdlib_i.append(imp)
+            elif mod.startswith(('l104', '.')):
+                local_i.append(imp)
+            else:
+                third_i.append(imp)
+
+        stdlib_i_sorted = sorted(stdlib_i, key=str.strip)
+        # Keep __future__ first
+        future = [x for x in stdlib_i_sorted if '__future__' in x]
+        stdlib_i_sorted = future + [x for x in stdlib_i_sorted if x not in future]
+
+        third_i.sort(key=str.strip)
+        local_i.sort(key=str.strip)
+
+        sorted_imports = list(stdlib_i_sorted)
         if third_i:
-            if sorted_imports: sorted_imports.append('')
+            if sorted_imports:
+                sorted_imports.append('')
             sorted_imports.extend(third_i)
         if local_i:
-            if sorted_imports: sorted_imports.append('')
+            if sorted_imports:
+                sorted_imports.append('')
             sorted_imports.extend(local_i)
+
         if sorted_imports != import_lines:
             new_lines = lines[:import_start] + sorted_imports + lines[import_end + 1:]
             self.fixes_applied += 1
@@ -1041,7 +1173,7 @@ class CodeArcheologist:
                     "line": line_num,
                     "text": match.group()[:60],
                 })
-        return fossils[:20]  # cap at 20
+        return fossils
 
     def _detect_dead_code(self, lines: list) -> List[dict]:
         """Detect unreachable code segments using AST analysis.
@@ -1150,7 +1282,7 @@ class CodeArcheologist:
                     "text": f"def {fname}(...) — defined but never referenced",
                 })
 
-        return dead[:30]
+        return dead
 
     def _detect_dead_code_simple(self, lines: list) -> List[dict]:
         """Fallback line-based dead code detection for unparseable code."""
@@ -1174,7 +1306,7 @@ class CodeArcheologist:
                 after_terminal = True
                 current_indent = indent
 
-        return dead[:10]
+        return dead
 
     def _analyze_architecture(self, lines: list) -> Dict[str, Any]:
         """Analyze the architectural structure."""
@@ -1270,7 +1402,7 @@ class CodeArcheologist:
                     "line": line_num,
                     "text": match.group()[:60],
                 })
-        return debt_items[:30]  # Cap at 30
+        return debt_items
 
     def status(self) -> Dict[str, Any]:
         """Return archeological excavation metrics."""
@@ -1551,7 +1683,7 @@ class SacredRefactorer:
         for match in pattern.finditer(source):
             line = source[:match.start()].count('\n') + 1
             results.append({"value": match.group(), "line": line})
-        return results[:10]
+        return results
 
     def _find_trivial_functions(self, lines: list) -> List[dict]:
         """Find tiny functions that could be inlined."""
@@ -1576,7 +1708,7 @@ class SacredRefactorer:
                     results.append({"name": name, "line": fn_start + 1, "length": body_lines})
             else:
                 i += 1
-        return results[:10]
+        return results
 
     def status(self) -> Dict[str, Any]:
         """Return refactoring metrics and configuration thresholds."""
@@ -1881,7 +2013,7 @@ class CodeEvolutionTracker:
         ranked = sorted(file_churn.items(), key=lambda x: x[1]["churn_rate"], reverse=True)
         return {
             "files_tracked": len(self.snapshots),
-            "hotspots": [{"file": f, **data} for f, data in ranked[:20]],
+            "hotspots": [{"file": f, **data} for f, data in ranked],
             "most_stable": [{"file": f, **data} for f, data in ranked[-5:][::-1]] if ranked else [],
         }
 
@@ -2097,7 +2229,7 @@ class LiveCodeRefactorer:
                     dupes.append({"lines": list(block), "first_at": seen[block] + 1, "also_at": i + 1})
                 else:
                     seen[block] = i
-        return {"duplicates_found": len(dupes), "duplicates": dupes[:20]}
+        return {"duplicates_found": len(dupes), "duplicates": dupes}
 
     def status(self) -> Dict[str, Any]:
         return {"refactor_count": self.refactor_count, "methods": 7}
@@ -2393,7 +2525,7 @@ class SemanticCodeSearchEngine:
 
         return {
             "total_clones": len(clones),
-            "clones": clones[:50],
+            "clones": clones,
             "files_scanned": len(sources),
             "blocks_compared": len(all_blocks),
             "threshold": similarity_threshold,
@@ -2427,7 +2559,7 @@ class SemanticCodeSearchEngine:
         return {
             "files_scanned": files_scanned,
             "total_sacred_references": total_refs,
-            "references": {k: {"count": len(v), "locations": v[:20]} for k, v in sacred_refs.items()},
+            "references": {k: {"count": len(v), "locations": v} for k, v in sacred_refs.items()},
             "sacred_density": round(total_refs / max(files_scanned, 1), 4),
         }
 

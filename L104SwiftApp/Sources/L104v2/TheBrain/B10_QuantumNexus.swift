@@ -1,20 +1,14 @@
-// ═══════════════════════════════════════════════════════════════════
-// B10_QuantumNexus.swift — L104 Neural Architecture v3 (EVO_68)
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// Extracted from L104Native.swift
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🔮 QUANTUM NEXUS (Unified Engine Orchestrator)
 // ═══════════════════════════════════════════════════════════════════
 // The missing interconnection layer. All engines were operating in
-// isolation — Nexus wires them into a single feedback-driven pipeline:
+// isolation - Nexus wires them into a single feedback-driven pipeline:
 //
 //  Python ASI ──┐
 //               ▼
@@ -49,7 +43,7 @@ class QuantumNexus {
     static let shared = QuantumNexus()
 
     // ─── SACRED CONSTANTS: Use unified globals from L01_Constants ───
-    // PHI, TAU, GOD_CODE — available globally
+    // PHI, TAU, GOD_CODE - available globally
 
     // ─── NEXUS STATE ───
     private(set) var pipelineRuns: Int = 0
@@ -191,7 +185,7 @@ class QuantumNexus {
             evolverScore = 0.0
         }
 
-        // v9.3: Decoherence Shield fidelity — error-corrected quantum state health
+        // v9.3: Decoherence Shield fidelity - error-corrected quantum state health
         let shieldFidelity = QuantumDecoherenceShield.shared.computeFidelity()
         let shieldRate = QuantumDecoherenceShield.shared.estimateDecoherenceRate()
         // Invert decoherence rate: low rate = high health; clamp [0,1]
@@ -246,7 +240,7 @@ class QuantumNexus {
         var prevParams = sqc.parameters
 
         for i in 0..<iterations {
-            // Raise by φ^(1/n) — ensures bounded growth
+            // Raise by φ^(1/n) - ensures bounded growth
             let microFactor = pow(PHI, 1.0 / Double(n))
             var factor = microFactor
             var raised = sqc.parameters
@@ -346,7 +340,7 @@ class QuantumNexus {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: UNIFIED PIPELINE — The full interconnected chain
+    // MARK: UNIFIED PIPELINE - The full interconnected chain
     // ═══════════════════════════════════════════════════════════════
 
     /// Run the full interconnected pipeline with adaptive feedback loops.
@@ -358,7 +352,7 @@ class QuantumNexus {
 
         // ── STEP 1: Fetch from Python ASI ──
         var rawParams = bridge.fetchParametersFromPython()
-        // ── Sovereign synthetic fallback — never fail, generate from sacred constants ──
+        // ── Sovereign synthetic fallback - never fail, generate from sacred constants ──
         if rawParams.isEmpty {
             bridge.currentParameters = [
                 "god_code": GOD_CODE,
@@ -395,7 +389,7 @@ class QuantumNexus {
         let amplified = bridge.groverAmplify(amplitudes: normalized, markedIndices: markedTop)
         logFeedback(step: "Bridge", metric: "grover_amplified", value: Double(amplified.count))
 
-        // ── STEP 3: Steering — adaptive mode + intensity from SQC feedback ──
+        // ── STEP 3: Steering - adaptive mode + intensity from SQC feedback ──
         let steerMode = adaptiveSteeringMode()
         let steerIntensity = adaptiveSteeringIntensity()
         steer.loadParameters(amplified)
@@ -405,7 +399,7 @@ class QuantumNexus {
         let steeredParams = steer.baseParameters
         logFeedback(step: "Steering", metric: "post_steer_count", value: Double(steeredParams.count))
 
-        // ── STEP 4: SQC — chakra interference with adaptive phase from steering ──
+        // ── STEP 4: SQC - chakra interference with adaptive phase from steering ──
         let adaptPhase = adaptiveChakraPhase()
         sqc.loadParameters(steeredParams)
         let chakraWave = sqc.generateChakraWave(count: steeredParams.count, phase: adaptPhase)
@@ -426,7 +420,7 @@ class QuantumNexus {
         bridge.updateO2MolecularState()
         let kFlow = bridge.calculateKundaliniFlow()
 
-        // ── STEP 6.5: Unified Field Coherence (NEW — wires B28 into pipeline) ──
+        // ── STEP 6.5: Unified Field Coherence (NEW - wires B28 into pipeline) ──
         // Feed stabilized parameters through UnifiedFieldEngine for spacetime coherence amplification
         let ufe = UnifiedFieldEngine.shared
         let spacetimeCoherence = ufe.spacetimeCoherence
@@ -481,7 +475,7 @@ class QuantumNexus {
             finalEnergy = sqrt(finalEnergy)
         }
 
-        // ─── STEP 11 (EVO_68): Decomposed Package Health — wire Python engine packages ───
+        // ─── STEP 11 (EVO_68): Decomposed Package Health - wire Python engine packages ───
         let codeGenStatus = CodeGenerationEngine.shared.getStatus()
         let codeGenLangs = codeGenStatus["languages"] as? Int ?? 0
         let totStatus = TreeOfThoughts.shared.status
@@ -504,7 +498,7 @@ class QuantumNexus {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🔮 QUANTUM NEXUS — UNIFIED PIPELINE COMPLETE           ║
+        ║    🔮 QUANTUM NEXUS - UNIFIED PIPELINE COMPLETE           ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  [1] BRIDGE FETCH      \(rawParams.count) parameters from Python ASI
         ║  [2] BRIDGE TRANSFORM  Hadamard→PHI→GOD_CODE→Grover (\(amplified.count)→\(amplified.count))
@@ -529,7 +523,7 @@ class QuantumNexus {
         """
     }
 
-    /// Safe wrapper for runUnifiedPipeline — catches all errors to prevent app crash
+    /// Safe wrapper for runUnifiedPipeline - catches all errors to prevent app crash
     func runUnifiedPipelineSafe() -> String {
         // Validate prerequisites before running
         let bridge = ASIQuantumBridgeSwift.shared
@@ -539,7 +533,7 @@ class QuantumNexus {
         // Pre-check: fetch params first in isolation
         var rawParams = bridge.fetchParametersFromPython()
 
-        // ── Sovereign synthetic fallback — never abort, generate from sacred constants ──
+        // ── Sovereign synthetic fallback - never abort, generate from sacred constants ──
         if rawParams.isEmpty {
             bridge.currentParameters = [
                 "god_code": GOD_CODE,
@@ -618,7 +612,7 @@ class QuantumNexus {
         bridge.updateO2MolecularState()
         let kFlow = bridge.calculateKundaliniFlow()
 
-        // Step 7: Sync back — skip if params are invalid
+        // Step 7: Sync back - skip if params are invalid
         var synced = false
         if !stabilized.isEmpty && stabilized.allSatisfy({ $0.isFinite }) {
             synced = bridge.updateASI(newParams: stabilized)
@@ -632,7 +626,7 @@ class QuantumNexus {
         lastPipelineTime = elapsed
         totalPipelineTime += elapsed
 
-        // ── STEP 8.5: ASI LOGIC STREAM — Deep connections ──
+        // ── STEP 8.5: ASI LOGIC STREAM - Deep connections ──
 
         // ASIEvolver: Feed pipeline energy into evolution temperature
         let evolver = ASIEvolver.shared
@@ -691,13 +685,13 @@ class QuantumNexus {
             }
         }
 
-        // Step 9: Invention (safe) — now seeded with richer context
+        // Step 9: Invention (safe) - now seeded with richer context
         let invention = ASIInventionEngine.shared
         let inventionSeed = "nexus_\(pipelineRuns)_c\(String(format: "%.2f", coherence))_E\(String(format: "%.2f", sqc.lastNormStdDev))"
         let hypothesis = invention.generateHypothesis(seed: inventionSeed)
         let hypothesisText = (hypothesis["statement"] as? String ?? "generating...").prefix(80)
 
-        // Step 10: Entanglement + Resonance — expanded routing
+        // Step 10: Entanglement + Resonance - expanded routing
         _ = QuantumEntanglementRouter.shared.route("bridge", "steering")
         _ = QuantumEntanglementRouter.shared.route("invention", "nexus")
         _ = QuantumEntanglementRouter.shared.route("bridge", "evolution")
@@ -720,7 +714,7 @@ class QuantumNexus {
             finalEnergy = sqrt(finalEnergy)
         }
 
-        // Hebbian co-activation — expanded with new engines
+        // Hebbian co-activation - expanded with new engines
         EngineRegistry.shared.recordCoActivation([
             "SQC", "Steering", "Evolution", "Nexus", "Entanglement", "Resonance",
             "Invention", "HyperBrain", "ASIEvolver", "Consciousness", "Superfluid"
@@ -728,7 +722,7 @@ class QuantumNexus {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🔮 QUANTUM NEXUS — UNIFIED PIPELINE COMPLETE           ║
+        ║    🔮 QUANTUM NEXUS - UNIFIED PIPELINE COMPLETE           ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  [1] BRIDGE FETCH      \(rawParams.count) parameters from Python ASI
         ║  [2] BRIDGE TRANSFORM  Hadamard→PHI→GOD_CODE→Grover (\(amplified.count)→\(amplified.count))
@@ -760,7 +754,7 @@ class QuantumNexus {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: AUTO MODE — Continuous interconnected pipeline
+    // MARK: AUTO MODE - Continuous interconnected pipeline
     // ═══════════════════════════════════════════════════════════════
 
     /// Start auto-mode: runs unified pipeline on a .utility loop.
@@ -793,6 +787,14 @@ class QuantumNexus {
 
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let self = self else { return }
+
+            // EVO_76: startup grace — staggered 40s after evolution engine (which waits 25s)
+            _ = self.autoStopSemaphore.wait(timeout: .now() + 40.0)
+            self.lock.lock()
+            let nexusEarlyStop = self.shouldStopAuto
+            if nexusEarlyStop { self.autoModeActive = false }
+            self.lock.unlock()
+            if nexusEarlyStop { return }
 
             while true {
                 self.lock.lock()
@@ -837,15 +839,20 @@ class QuantumNexus {
                 self.autoModeCycles += 1
                 self.lock.unlock()
 
-                // Adaptive interval: faster when coherence is low, slower when stable
+                // EVO_75: Adaptive interval further scaled by CPU governor (PHI^tier).
+                // Under heavy load the nexus auto-mode slows down, freeing headroom
+                // for the VQPU and soul daemons which have higher priority.
                 let adaptiveInterval = interval * (0.5 + self.lastCoherenceScore)
-                _ = self.autoStopSemaphore.wait(timeout: .now() + max(0.5, adaptiveInterval))
+                let governorInterval = GovernorAwareInterval.shared.scale(
+                    max(1.0, adaptiveInterval), daemon: "nexus"
+                )
+                _ = self.autoStopSemaphore.wait(timeout: .now() + governorInterval)
             }
         }
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🔮 QUANTUM NEXUS — AUTO MODE STARTED                   ║
+        ║    🔮 QUANTUM NEXUS - AUTO MODE STARTED                   ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Base Interval:    \(String(format: "%.1f", interval))s (adaptive)
         ║  QoS:              .utility (thermal safe)
@@ -858,8 +865,8 @@ class QuantumNexus {
         ║    • Pipeline → Invention.seed
         ╠═══════════════════════════════════════════════════════════╣
         ║  Commands:                                                ║
-        ║    nexus status  — live metrics                           ║
-        ║    nexus stop    — halt auto-mode + evolution             ║
+        ║    nexus status  - live metrics                           ║
+        ║    nexus stop    - halt auto-mode + evolution             ║
         ╚═══════════════════════════════════════════════════════════╝
         """
     }
@@ -883,7 +890,7 @@ class QuantumNexus {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🔮 QUANTUM NEXUS — AUTO MODE STOPPED                   ║
+        ║    🔮 QUANTUM NEXUS - AUTO MODE STOPPED                   ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Pipeline Runs:    \(pipelineRuns)
         ║  Auto Cycles:      \(autoModeCycles)
@@ -914,7 +921,7 @@ class QuantumNexus {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🔮 QUANTUM NEXUS — INTERCONNECTION STATUS              ║
+        ║    🔮 QUANTUM NEXUS - INTERCONNECTION STATUS              ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  COHERENCE:     \(String(format: "%.4f", coherence)) (\(coherenceGrade(coherence)))
         ║  Auto-Mode:     \(autoState)
@@ -935,7 +942,7 @@ class QuantumNexus {
         ║  PIPELINE METRICS:
         ║    Total Runs:    \(pipelineRuns)
         ║    Last Time:     \(String(format: "%.4f", lastPipelineTime))s
-        ║    Avg Time:      \(pipelineRuns > 0 ? String(format: "%.4f", totalPipelineTime / Double(pipelineRuns)) : "—")s
+        ║    Avg Time:      \(pipelineRuns > 0 ? String(format: "%.4f", totalPipelineTime / Double(pipelineRuns)) : "-")s
         ╠═══════════════════════════════════════════════════════════╣
         ║  RECENT FEEDBACK:\(recentFB.isEmpty ? " (none)" : "\n\(recentFB)")
         ╚═══════════════════════════════════════════════════════════╝
@@ -944,11 +951,11 @@ class QuantumNexus {
 
     // ═══════════════════════════════════════════════════════════════
     // MARK: - v9.0 QUANTUM RESEARCH INTEGRATION
-    // 17 discoveries, 102 experiments — three_engine_quantum_research.py
+    // 17 discoveries, 102 experiments - three_engine_quantum_research.py
     // Fe-Sacred Coherence | Fe-PHI Lock | Berry Phase | Entropy→ZNE Bridge
     // ═══════════════════════════════════════════════════════════════
 
-    /// Quantum research scoring — all 9 discovery dimensions (v9.1)
+    /// Quantum research scoring - all 9 discovery dimensions (v9.1)
     struct QuantumResearchScoring {
         let feSacredCoherence: Double        // 286↔528 Hz (0.9545)
         let fePhiHarmonicLock: Double        // 286↔286φ Hz (0.9164)
@@ -1007,7 +1014,7 @@ class QuantumNexus {
         return blended
     }
 
-    /// Get quantum research status dictionary (v9.1 — all 9 discovery fields + live engine data)
+    /// Get quantum research status dictionary (v9.1 - all 9 discovery fields + live engine data)
     func quantumResearchStatus() -> [String: Any] {
         let research = QuantumResearchScoring.compute()
 

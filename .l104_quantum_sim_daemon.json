@@ -1,0 +1,20 @@
+{
+  "running": false,
+  "cycle_count": 0,
+  "last_cycle_start": 0.0,
+  "last_cycle_end": 0.0,
+  "total_uptime": 0.0,
+  "avg_cycle_time": 0.0,
+  "max_cycle_time": 0.0,
+  "min_cycle_time": 0.0,
+  "error_count": 0,
+  "last_error": null,
+  "total_simulations": 0,
+  "avg_fidelity": 1.0,
+  "avg_sacred_alignment": 0.618,
+  "mesh_channels_active": 0,
+  "mesh_bell_pairs": 0,
+  "soul_daemon_connected": false,
+  "quantum_ai_daemon_connected": false,
+  "vqpu_daemon_connected": false
+}

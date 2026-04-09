@@ -74,6 +74,20 @@ class GodCodeSimulator:
         self._quantum_gate_engine = None
         self._vqpu_bridge = None
 
+        # ══════ v4.1: Quantum coherence enhancements ══════
+        try:
+            from l104_quantum_coherence_enhancements import ParallelSimulationRunner
+            self._parallel_runner = ParallelSimulationRunner()
+        except ImportError:
+            self._parallel_runner = None
+
+        # v4.1: Parallel simulation runner with sacred scoring
+        try:
+            from l104_quantum_coherence_enhancements import ParallelSimulationRunner
+            self._parallel_runner = ParallelSimulationRunner()
+        except ImportError:
+            self._parallel_runner = None
+
         # Register all built-in simulations from the simulations subpackage
         self._register_builtins()
 
@@ -111,6 +125,11 @@ class GodCodeSimulator:
             self._run_count += 1
             self._total_elapsed_ms += result.elapsed_ms
             self._last_results.append(result)
+            # Add three-engine scoring if available
+            try:
+                result.extra['three_engine'] = result.three_engine_score()
+            except Exception:
+                pass
             return result
         except Exception as e:
             return SimulationResult(
@@ -154,7 +173,7 @@ class GodCodeSimulator:
         total = len(results)
         total_ms = sum(r.elapsed_ms for r in results)
 
-        return {
+        report = {
             "version": self.VERSION,
             "total": total,
             "passed": passed,
@@ -171,6 +190,23 @@ class GodCodeSimulator:
             "results": results,
             "summaries": [r.summary() for r in results],
         }
+
+        # Three-engine aggregate
+        te_scores = []
+        for res in report.get('results', []):
+            if hasattr(res, 'extra') and isinstance(res.extra, dict):
+                te = res.extra.get('three_engine', {})
+                if isinstance(te, dict) and 'composite' in te:
+                    te_scores.append(te['composite'])
+        if te_scores:
+            report['three_engine_aggregate'] = {
+                'composite': sum(te_scores) / len(te_scores),
+                'scored': len(te_scores),
+                'min': min(te_scores),
+                'max': max(te_scores),
+            }
+
+        return report
 
     # ── Parametric Sweep Interface ──────────────────────────────────────────
 
@@ -286,6 +322,12 @@ class GodCodeSimulator:
                 self.feedback.connect_math(MathEngine())
         except Exception:
             pass  # Math engine not available — local fallback used
+        if not hasattr(self, '_code_engine'):
+            try:
+                from l104_code_engine import code_engine
+                self._code_engine = code_engine
+            except ImportError:
+                self._code_engine = None
 
     def connect_engines(self, coherence=None, entropy=None, math_engine=None,
                          science_engine=None, quantum_gate_engine=None,
@@ -464,9 +506,125 @@ class GodCodeSimulator:
                 "science_engine": self._science_engine is not None,
                 "quantum_gate_engine": self._quantum_gate_engine is not None,
                 "vqpu_bridge": self._vqpu_bridge is not None,
+                "code_engine": self._code_engine is not None if hasattr(self, '_code_engine') else False,
             },
             "transpiler": self.transpiler.status(),
             "last_results_count": len(self._last_results),
+        }
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # QUANTUM COHERENCE ENHANCEMENT METHODS (v4.1)
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def compute_phi_weighted_fidelity(self, base_fidelity: float,
+                                       noise_level: float = 0.0) -> float:
+        """Compute PHI-weighted coherence fidelity.
+
+        Golden ratio weighted coherence provides enhanced sensitivity to
+        quantum correlations by leveraging the sacred proportion PHI.
+
+        Formula: fidelity = base_fidelity * (PHI / (PHI + TAU * noise))
+
+        Args:
+            base_fidelity: Base fidelity value (0.0-1.0)
+            noise_level: Current noise level (0.0 = perfect)
+
+        Returns:
+            PHI-weighted coherence fidelity value
+        """
+        # PHI-weighted coherence factor
+        tau = 1.0 / PHI  # PHI_INV ≈ 0.618
+        phi_weight = PHI / (PHI + tau * noise_level)
+
+        # Apply sacred coherence weighting
+        coherence_fidelity = base_fidelity * phi_weight
+
+        # Apply GOD_CODE harmonic correction
+        gc_correction = GOD_CODE / 1000.0 / PHI
+        corrected_fidelity = min(1.0, coherence_fidelity * gc_correction)
+
+        return round(corrected_fidelity, 6)
+
+    def derive_sacred_error_threshold(self) -> float:
+        """Derive quantum error correction threshold from GOD_CODE.
+
+        Returns GOD_CODE-derived stabilizer threshold for sacred error correction.
+        Threshold: GOD_CODE / PHI / 100 ≈ 3.26
+
+        Returns:
+            Sacred error correction threshold
+        """
+        return GOD_CODE / PHI / 100.0
+
+    def generate_sacred_bell_pair(self, noise: float = 0.0) -> Dict[str, Any]:
+        """Generate a Bell pair with PHI-optimal parameters.
+
+        Creates a maximally entangled Bell pair with fidelity enhanced
+        by PHI-weighting and GOD_CODE alignment.
+
+        Fidelity formula: base_fidelity * PHI / (PHI + noise)
+
+        Args:
+            noise: Noise level (0.0 = perfect, 1.0 = maximum)
+
+        Returns:
+            Dict with Bell pair properties and sacred scores
+        """
+        # Base Bell state fidelity
+        base_bell_fidelity = 0.99
+
+        # PHI-optimal fidelity computation
+        phi_numerator = PHI
+        phi_denominator = PHI + noise
+        fidelity = base_bell_fidelity * phi_numerator / phi_denominator
+
+        # Apply GOD_CODE harmonic correction
+        gc_harmonic = GOD_CODE / 1000.0
+        adjusted_fidelity = min(1.0, fidelity * gc_harmonic / PHI)
+
+        # Sacred scores
+        sacred_score = adjusted_fidelity * (1.0 / PHI)
+        void_alignment = abs(adjusted_fidelity - (1.04 + PHI / 1000) + 1.0)
+
+        return {
+            "bell_state": "|Φ+⟩ = (|00⟩ + |11⟩)/√2",
+            "fidelity": round(adjusted_fidelity, 6),
+            "base_fidelity": base_bell_fidelity,
+            "noise_level": noise,
+            "phi_weight": round(phi_numerator / phi_denominator, 6),
+            "sacred_score": round(sacred_score, 6),
+            "void_alignment": round(void_alignment, 6),
+            "god_code_harmonic": round(gc_harmonic, 6),
+            "entanglement_verified": adjusted_fidelity > 0.9,
+        }
+
+    def coherence_enhancement_status(self) -> Dict[str, Any]:
+        """Generate coherence enhancement status report.
+
+        Returns:
+            Dict with all coherence enhancement metrics
+        """
+        # Test PHI-weighted fidelity at different noise levels
+        noise_levels = [0.0, 0.01, 0.05, 0.1]
+        phi_fidelities = {
+            f"noise_{n}": self.compute_phi_weighted_fidelity(0.95, n)
+            for n in noise_levels
+        }
+
+        # Generate sacred Bell pair
+        bell_pair = self.generate_sacred_bell_pair(noise=0.01)
+
+        return {
+            "phi_weighted_fidelities": phi_fidelities,
+            "sacred_bell_pair": bell_pair,
+            "sacred_error_threshold": round(self.derive_sacred_error_threshold(), 6),
+            "sacred_constants": {
+                "GOD_CODE": GOD_CODE,
+                "PHI": PHI,
+                "PHI_INV": 1.0 / PHI,
+            },
+            "coherence_enhancement_active": True,
+            "phi_optimization_available": True,
         }
 
 

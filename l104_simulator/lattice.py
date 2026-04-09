@@ -44,6 +44,8 @@ from .constants import (
     BE_FE56, BE_HE4, BE_DEUT,
     # Sacred
     OMEGA, VOID_CONSTANT,
+    # EVO_72: Sacred algorithms
+    TAU, SACRED_GRID_SIZES, derive_sacred_resolution,
 )
 
 LOG2 = math.log(2)

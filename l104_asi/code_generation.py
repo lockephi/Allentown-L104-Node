@@ -41,9 +41,7 @@ import io
 import sys
 
 # ── Sacred Constants ──────────────────────────────────────────────────────────
-PHI = 1.618033988749895
-GOD_CODE = 527.5184818492612
-TAU = 1.0 / PHI
+from l104_sacred_algorithms import derive_timeout, derive_iterations, derive_worker_threads, PHI, GOD_CODE, TAU
 
 
 # ── Engine Support (lazy-loaded for code analysis + smell detection) ─────────
@@ -1129,8 +1127,8 @@ class AlgorithmPatternLibrary:
             keywords=["mean absolute deviation", "mad", "average deviation", "deviation from mean"],
             template=textwrap.dedent("""
             def {name}({params}):
-                mean = sum({arr}) / len({arr})
-                return sum(abs(x - mean) for x in {arr}) / len({arr})
+                mean = sum({arr}) / max(len({arr}), 1)
+                return sum(abs(x - mean) for x in {arr}) / max(len({arr}), 1)
             """).strip(),
             complexity="O(n)"
         ))
@@ -2722,7 +2720,7 @@ class AlgorithmPatternLibrary:
                 def _deriv(coeffs, x):
                     return sum(i * c * x**(i-1) for i, c in enumerate(coeffs) if i > 0)
                 x = 0.0
-                for _ in range(1000):
+                for _ in range(int(GOD_CODE/TAU/0.85)):
                     v = _eval({arr}, x)
                     if abs(v) < 1e-10:
                         return x
@@ -2732,11 +2730,11 @@ class AlgorithmPatternLibrary:
                         continue
                     x = x - v / d
                 lo, hi = -1.0, 1.0
-                for _ in range(100):
+                for _ in range(int(GOD_CODE/PHI/5.27)):
                     if _eval({arr}, lo) * _eval({arr}, hi) <= 0:
                         break
                     lo *= 2; hi *= 2
-                for _ in range(200):
+                for _ in range(int(GOD_CODE/TAU/4.25)):
                     mid = (lo + hi) / 2.0
                     if abs(_eval({arr}, mid)) < 1e-10:
                         return mid

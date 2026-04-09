@@ -1,0 +1,191 @@
+{
+  "timestamp": "2026-04-08T14:26:52",
+  "experiment": "godcode_26q_fe_register_test",
+  "nq_full": 26,
+  "target_human": "00111111110000000000000000",
+  "god_code": 527.5184818492612,
+  "phase1_analytical": {
+    "base_state_p_target": 1.0,
+    "method": "analytical (X-gates + Ry(0)=identity)",
+    "transpiled_depth": 3,
+    "transpiled_gates": 14
+  },
+  "phase2_register_vqe": {
+    "CORE": {
+      "nq": 2,
+      "target": "00",
+      "n_params": 4,
+      "transpiled_depth": 4,
+      "spsa_iters": 150,
+      "time_s": 5.1,
+      "p_target": 0.9999,
+      "enrichment": 4.0,
+      "rank": 1,
+      "status": "LOCKED",
+      "top3": [
+        {
+          "state": "00",
+          "p": 0.9999
+        },
+        {
+          "state": "10",
+          "p": 0.0001
+        }
+      ]
+    },
+    "3d": {
+      "nq": 6,
+      "target": "111111",
+      "n_params": 12,
+      "transpiled_depth": 7,
+      "spsa_iters": 300,
+      "time_s": 13.2,
+      "p_target": 0.9991,
+      "enrichment": 63.9,
+      "rank": 1,
+      "status": "LOCKED",
+      "top3": [
+        {
+          "state": "111111",
+          "p": 0.9991
+        },
+        {
+          "state": "101111",
+          "p": 0.0004
+        },
+        {
+          "state": "111101",
+          "p": 0.0004
+        }
+      ]
+    },
+    "4s": {
+      "nq": 2,
+      "target": "11",
+      "n_params": 4,
+      "transpiled_depth": 5,
+      "spsa_iters": 150,
+      "time_s": 3.0,
+      "p_target": 0.9995,
+      "enrichment": 4.0,
+      "rank": 1,
+      "status": "LOCKED",
+      "top3": [
+        {
+          "state": "11",
+          "p": 0.9995
+        },
+        {
+          "state": "01",
+          "p": 0.0004
+        },
+        {
+          "state": "10",
+          "p": 0.0001
+        }
+      ]
+    },
+    "LATTICE": {
+      "nq": 6,
+      "target": "000000",
+      "n_params": 12,
+      "transpiled_depth": 6,
+      "spsa_iters": 300,
+      "time_s": 13.1,
+      "p_target": 0.9989,
+      "enrichment": 63.9,
+      "rank": 1,
+      "status": "LOCKED",
+      "top3": [
+        {
+          "state": "000000",
+          "p": 0.9989
+        },
+        {
+          "state": "000010",
+          "p": 0.0007
+        },
+        {
+          "state": "100000",
+          "p": 0.0002
+        }
+      ]
+    },
+    "SACRED": {
+      "nq": 5,
+      "target": "00000",
+      "n_params": 10,
+      "transpiled_depth": 6,
+      "spsa_iters": 150,
+      "time_s": 5.8,
+      "p_target": 0.9993,
+      "enrichment": 32.0,
+      "rank": 1,
+      "status": "LOCKED",
+      "top3": [
+        {
+          "state": "00000",
+          "p": 0.9993
+        },
+        {
+          "state": "00010",
+          "p": 0.0003
+        },
+        {
+          "state": "10000",
+          "p": 0.0002
+        }
+      ]
+    },
+    "PHI": {
+      "nq": 4,
+      "target": "0000",
+      "n_params": 8,
+      "transpiled_depth": 6,
+      "spsa_iters": 150,
+      "time_s": 4.8,
+      "p_target": 0.9987,
+      "enrichment": 16.0,
+      "rank": 1,
+      "status": "LOCKED",
+      "top3": [
+        {
+          "state": "0000",
+          "p": 0.9987
+        },
+        {
+          "state": "1000",
+          "p": 0.0006
+        },
+        {
+          "state": "0001",
+          "p": 0.0005
+        }
+      ]
+    },
+    "ANCHOR": {
+      "nq": 1,
+      "target": "0",
+      "p_target": 1.0,
+      "enrichment": 2.0,
+      "rank": 1,
+      "status": "LOCKED",
+      "analytical": true
+    }
+  },
+  "phase3_projected_p26q": 0.995408,
+  "8q_insights_applied": [
+    "transpile_first",
+    "base_state_plus_ry_perturbation",
+    "minimal_register_local_cz_max_3",
+    "spsa_a0=0.15_c0=0.1_A=100",
+    "per_register_marginal_analysis"
+  ],
+  "ibm_deployment": {
+    "backend": "ibm_marrakesh",
+    "n_params": 52,
+    "cz_gates": 6,
+    "shots_recommended": 32768,
+    "dd_sequence": "XY4"
+  }
+}

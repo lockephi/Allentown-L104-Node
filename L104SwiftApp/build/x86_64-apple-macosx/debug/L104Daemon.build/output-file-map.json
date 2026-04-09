@@ -1,0 +1,29 @@
+{
+  "": {
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/master.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/Daemon/CircuitWatcher.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/CircuitWatcher.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/CircuitWatcher.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/CircuitWatcher~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/CircuitWatcher.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/Daemon/MetalVQPU.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/MetalVQPU.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/MetalVQPU.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/MetalVQPU~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/MetalVQPU.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/Daemon/VQPUMicroDaemon.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/VQPUMicroDaemon.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/VQPUMicroDaemon.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/VQPUMicroDaemon~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/VQPUMicroDaemon.swiftdeps"
+  },
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/Daemon/main.swift": {
+    "dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/main.d",
+    "object": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/main.swift.o",
+    "swiftmodule": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/main~partial.swiftmodule",
+    "swift-dependencies": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/build/x86_64-apple-macosx/debug/L104Daemon.build/main.swiftdeps"
+  }
+}

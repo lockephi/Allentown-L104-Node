@@ -1,0 +1,169 @@
+{
+  "metadata": {
+    "method": "proper_qfi_superposition_states",
+    "n_qubits": 26,
+    "theory": "Braunstein_Caves_PRL_1994",
+    "god_code": 527.5184818492612,
+    "phi": 1.618033988749895
+  },
+  "single_qubit_benchmark": {
+    "F_Q": 1.0,
+    "expected": 1.0
+  },
+  "register_qfi": {
+    "CORE": {
+      "register": "CORE",
+      "N_qubits": 2,
+      "target": "00",
+      "theta_rad": 0.7853981633974483,
+      "theta_deg": 45.0,
+      "fidelity": 0.9984,
+      "F_Q": 1.0000000000000002,
+      "F_Q_effective": 0.9984000000000002,
+      "F_Q_max": 2.0,
+      "xi_squared": 2.0032051282051277,
+      "quantum_enhanced": false,
+      "regime": "classical",
+      "improvement_over_SQL": 0.4992000000000001
+    },
+    "3d": {
+      "register": "3d",
+      "N_qubits": 6,
+      "target": "111111",
+      "theta_rad": 0.7853981633974483,
+      "theta_deg": 45.0,
+      "fidelity": 0.916,
+      "F_Q": 3.0000000000000004,
+      "F_Q_effective": 2.7480000000000007,
+      "F_Q_max": 6.0,
+      "xi_squared": 2.183406113537117,
+      "quantum_enhanced": false,
+      "regime": "classical",
+      "improvement_over_SQL": 0.45800000000000013
+    },
+    "4s": {
+      "register": "4s",
+      "N_qubits": 2,
+      "target": "11",
+      "theta_rad": 0.7853981633974483,
+      "theta_deg": 45.0,
+      "fidelity": 0.9848,
+      "F_Q": 1.0000000000000002,
+      "F_Q_effective": 0.9848000000000002,
+      "F_Q_max": 2.0,
+      "xi_squared": 2.030869212022745,
+      "quantum_enhanced": false,
+      "regime": "classical",
+      "improvement_over_SQL": 0.4924000000000001
+    },
+    "LATTICE": {
+      "register": "LATTICE",
+      "N_qubits": 6,
+      "target": "000000",
+      "theta_rad": 0.7853981633974483,
+      "theta_deg": 45.0,
+      "fidelity": 0.9468,
+      "F_Q": 3.0000000000000004,
+      "F_Q_effective": 2.8404000000000003,
+      "F_Q_max": 6.0,
+      "xi_squared": 2.112378538234051,
+      "quantum_enhanced": false,
+      "regime": "classical",
+      "improvement_over_SQL": 0.47340000000000004
+    },
+    "SACRED": {
+      "register": "SACRED",
+      "N_qubits": 5,
+      "target": "00000",
+      "theta_rad": 0.7853981633974483,
+      "theta_deg": 45.0,
+      "fidelity": 0.9811,
+      "F_Q": 2.5000000000000004,
+      "F_Q_effective": 2.4527500000000004,
+      "F_Q_max": 5.0,
+      "xi_squared": 2.038528182652125,
+      "quantum_enhanced": false,
+      "regime": "classical",
+      "improvement_over_SQL": 0.4905500000000001
+    },
+    "PHI": {
+      "register": "PHI",
+      "N_qubits": 4,
+      "target": "0000",
+      "theta_rad": 0.7853981633974483,
+      "theta_deg": 45.0,
+      "fidelity": 0.9875,
+      "F_Q": 2.0000000000000004,
+      "F_Q_effective": 1.9750000000000005,
+      "F_Q_max": 4.0,
+      "xi_squared": 2.025316455696202,
+      "quantum_enhanced": false,
+      "regime": "classical",
+      "improvement_over_SQL": 0.49375000000000013
+    },
+    "ANCHOR": {
+      "register": "ANCHOR",
+      "N_qubits": 1,
+      "target": "0",
+      "theta_rad": 0.7853981633974483,
+      "theta_deg": 45.0,
+      "fidelity": 0.997,
+      "F_Q": 0.5000000000000001,
+      "F_Q_effective": 0.4985000000000001,
+      "F_Q_max": 1.0,
+      "xi_squared": 2.006018054162487,
+      "quantum_enhanced": false,
+      "regime": "classical",
+      "improvement_over_SQL": 0.4985000000000001
+    }
+  },
+  "entangled_qfi": {
+    "N_total": 26,
+    "F_Q_product_state": 26.0,
+    "F_Q_nested_GHZ": 168.0516733888562,
+    "F_Q_effective": 163.52868263650467,
+    "correlation_contribution": 142.0516733888562,
+    "average_fidelity": 0.9730857142857142,
+    "xi_squared": 0.1589935146594032,
+    "quantum_enhanced": true,
+    "regime": "quantum",
+    "improvement_over_SQL": 6.289564716788641
+  },
+  "parameter_shift": {
+    "CORE": {
+      "N": 2,
+      "F_Q": 2.0,
+      "F_Q_per_qubit": 1.0
+    },
+    "3d": {
+      "N": 6,
+      "F_Q": 6.0,
+      "F_Q_per_qubit": 1.0
+    },
+    "4s": {
+      "N": 2,
+      "F_Q": 2.0,
+      "F_Q_per_qubit": 1.0
+    },
+    "LATTICE": {
+      "N": 6,
+      "F_Q": 6.0,
+      "F_Q_per_qubit": 1.0
+    },
+    "SACRED": {
+      "N": 5,
+      "F_Q": 5.0,
+      "F_Q_per_qubit": 1.0
+    },
+    "PHI": {
+      "N": 4,
+      "F_Q": 4.0,
+      "F_Q_per_qubit": 1.0
+    },
+    "ANCHOR": {
+      "N": 1,
+      "F_Q": 1.0,
+      "F_Q_per_qubit": 1.0
+    }
+  }
+}

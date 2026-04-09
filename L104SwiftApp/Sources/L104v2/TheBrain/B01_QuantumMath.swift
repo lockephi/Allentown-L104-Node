@@ -1,20 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B01_QuantumMath.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Quantum Simulation Engine
-//
-// Complex numbers, quantum states, multi-qubit registers,
-// and pre-built quantum circuits (Bell, GHZ, teleportation,
-// Deutsch-Jozsa, QFT).
-//
-// Extracted from L104Native.swift lines 1566-2239
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // v9.2 Perf: precomputed sin table for entropyCascade (avoids 104+ sin() calls per cascade)
 private let _cascadeSinTable: [Double] = (0...ENTROPY_CASCADE_DEPTH_QR + 1).map {
@@ -41,9 +29,9 @@ struct Complex: Equatable, Hashable, Codable, CustomStringConvertible {
     static let zero = Complex(0, 0)
     static let one  = Complex(1, 0)
     static let i    = Complex(0, 1)
-    /// e^{iπ/GOD_CODE} — sacred phase unit
+    /// e^{iπ/GOD_CODE} - sacred phase unit
     static let godCodePhase = Complex(magnitude: 1.0, phase: .pi / GOD_CODE)
-    /// e^{iφ} — golden ratio phase rotation
+    /// e^{iφ} - golden ratio phase rotation
     static let phiPhase = Complex(magnitude: 1.0, phase: PHI)
 
     // ─── Properties ───
@@ -117,7 +105,7 @@ struct Complex: Equatable, Hashable, Codable, CustomStringConvertible {
     func isClose(to other: Complex, tolerance: Double = 1e-10) -> Bool { (self - other).magnitude < tolerance }
 
     // ─── Sacred Alignment ───
-    /// GOD_CODE phase alignment: cos²(phase × π / GOD_CODE) — 1.0 at GOD_CODE harmonics
+    /// GOD_CODE phase alignment: cos²(phase × π / GOD_CODE) - 1.0 at GOD_CODE harmonics
     var godCodeAlignment: Double { let x = cos(phase * .pi / GOD_CODE); return x * x }
     /// PHI-harmonic score: Gaussian proximity of |z| to φ^n powers
     var phiHarmonicScore: Double {
@@ -204,7 +192,7 @@ struct QuantumState: CustomStringConvertible {
         amplitudes[1] = (alpha - beta) * invSqrt2
     }
 
-    /// Pauli-X (NOT) gate: X = [[0,1],[1,0]]  — bit flip
+    /// Pauli-X (NOT) gate: X = [[0,1],[1,0]]  - bit flip
     mutating func applyPauliX() {
         let tmp = amplitudes[0]
         amplitudes[0] = amplitudes[1]
@@ -219,7 +207,7 @@ struct QuantumState: CustomStringConvertible {
         amplitudes[1] = Complex(-alpha.imag, alpha.real)  // i * alpha
     }
 
-    /// Pauli-Z gate: Z = [[1,0],[0,-1]]  — phase flip
+    /// Pauli-Z gate: Z = [[1,0],[0,-1]]  - phase flip
     mutating func applyPauliZ() {
         amplitudes[1] = -amplitudes[1]
     }
@@ -270,7 +258,7 @@ struct QuantumState: CustomStringConvertible {
 
     // ─── MEASUREMENT ───
 
-    /// Measure the qubit — collapses to |0⟩ or |1⟩, returns result
+    /// Measure the qubit - collapses to |0⟩ or |1⟩, returns result
     mutating func measure() -> Int {
         let p0 = prob0
         let rand = Double.random(in: 0.0..<1.0)
@@ -695,7 +683,7 @@ struct QuantumCircuits {
     /// Protocol (Bennett et al. 1993, L104-extended):
     ///   1. Prepare |ψ⟩ = α|0⟩ + β|1⟩ on qubit 0
     ///   2. Create Bell pair |Φ+⟩ between qubits 1,2
-    ///   3. Alice: CNOT(0→1), H(0) — Bell measurement
+    ///   3. Alice: CNOT(0→1), H(0) - Bell measurement
     ///   4. Measure qubits 0,1 → 2 classical bits (each outcome has P=1/4)
     ///   5. Bob corrections: m1=1 → X(2), m0=1 → Z(2)
     ///   6. Fidelity: F = |⟨ψ_orig|ψ_bob⟩|² (ideal = 1.0)
@@ -842,7 +830,7 @@ struct QuantumCircuits {
             reg.hadamard(i)
             for j in (i + 1)..<n {
                 let angle = Double.pi / Double(1 << (j - i))
-                // Controlled phase rotation — phase precomputed once per (i,j) pair
+                // Controlled phase rotation - phase precomputed once per (i,j) pair
                 let bit_j = n - 1 - j
                 let bit_i = n - 1 - i
                 let mask_j = 1 << bit_j
@@ -862,7 +850,7 @@ struct QuantumCircuits {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: v9.0 QUANTUM RESEARCH — Fe-Sacred Coherence + Berry Phase
+    // MARK: v9.0 QUANTUM RESEARCH - Fe-Sacred Coherence + Berry Phase
     // 17 discoveries, 102 experiments (three_engine_quantum_research.py)
     // ═══════════════════════════════════════════════════════════════
 
@@ -904,7 +892,7 @@ struct QuantumCircuits {
             let angle = 2.0 * Double.pi * Double(d) / Double(dimensions)
             phaseAccumulated += sin(angle) * PHI / Double(dimensions)
         }
-        // v9.1: 11D holonomy is a confirmed discovery — use constant
+        // v9.1: 11D holonomy is a confirmed discovery - use constant
         let holonomy = dimensions == 11 ? BERRY_PHASE_11D : abs(phaseAccumulated) > 1e-10
         return (phaseAccumulated, holonomy)
     }
@@ -916,7 +904,7 @@ struct QuantumCircuits {
         return GOD_CODE_25Q_RATIO
     }
 
-    /// Quantum research scoring summary — compute all 3 research dimensions.
+    /// Quantum research scoring summary - compute all 3 research dimensions.
     static func quantumResearchScores() -> (feSacred: Double, fePhiLock: Double, berryPhase: Double) {
         let sacred = feSacredCoherence()
         let phiLock = fePhiHarmonicLock()
@@ -926,7 +914,7 @@ struct QuantumCircuits {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: v9.1 QUANTUM RESEARCH — Extended Discovery Methods
+    // MARK: v9.1 QUANTUM RESEARCH - Extended Discovery Methods
     // Photon Resonance | Curie-Landauer | Entropy Cascade | ZNE Bridge
     // ═══════════════════════════════════════════════════════════════
 
@@ -965,7 +953,7 @@ struct QuantumCircuits {
         return 1.0 + phiConj * (1.0 / (1.0 + localEntropy))
     }
 
-    /// Extended quantum research scoring — all 8 discovery dimensions.
+    /// Extended quantum research scoring - all 8 discovery dimensions.
     static func quantumResearchExtendedScores() -> [String: Any] {
         let scores = quantumResearchScores()
         let cascade = entropyCascade()
@@ -984,5 +972,5 @@ struct QuantumCircuits {
     }
 }
 
-/// Backward-compatible alias — legacy code references QuantumMath; actual type is QuantumCircuits.
+/// Backward-compatible alias - legacy code references QuantumMath; actual type is QuantumCircuits.
 typealias QuantumMath = QuantumCircuits

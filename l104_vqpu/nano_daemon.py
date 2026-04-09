@@ -1715,4 +1715,9 @@ def main():
 
 
 if __name__ == "__main__":
+    try:
+        import setproctitle
+        setproctitle.setproctitle("L104-NanoDaemon")
+    except ImportError:
+        pass
     main()

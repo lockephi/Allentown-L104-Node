@@ -240,7 +240,7 @@ class ExperienceReplayBuffer:
         if not self._buffer:
             return {"count": 0}
         rewards = [e["reward"] for e in self._buffer]
-        mean = sum(rewards) / len(rewards)
+        mean = sum(rewards) / max(len(rewards), 1)
         variance = sum((r - mean) ** 2 for r in rewards) / max(len(rewards) - 1, 1)
         return {
             "count": len(rewards),
@@ -249,7 +249,7 @@ class ExperienceReplayBuffer:
             "stddev_reward": round(math.sqrt(max(0, variance)), 6),
             "min_reward": round(min(rewards), 6),
             "max_reward": round(max(rewards), 6),
-            "positive_ratio": round(sum(1 for r in rewards if r > 0) / len(rewards), 4),
+            "positive_ratio": round(sum(1 for r in rewards if r > 0) / max(len(rewards), 1), 4),
         }
 
     def get_status(self) -> Dict[str, Any]:

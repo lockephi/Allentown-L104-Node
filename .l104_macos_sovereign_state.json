@@ -1,0 +1,224 @@
+{
+  "version": "1.0.0",
+  "cycle_count": 1021,
+  "uptime_s": 26156.1,
+  "timestamp": 1773934774.343578,
+  "god_code": 527.5184818492612,
+  "phi": 1.618033988749895,
+  "cpu": {
+    "percent": 91.3,
+    "load_avg_1m": 23.85205078125,
+    "cores": 4
+  },
+  "memory": {
+    "used_gb": 1.981,
+    "total_gb": 4.295,
+    "percent": 78.3
+  },
+  "disk": {
+    "used_gb": 15.42,
+    "free_gb": 6.49,
+    "percent": 70.4
+  },
+  "network": {
+    "bytes_sent": 457000960,
+    "bytes_recv": 822579200
+  },
+  "gpu": {
+    "available": true,
+    "renderer": "",
+    "utilization": null
+  },
+  "thermal_pressure": "nominal",
+  "god_code_alignment": 0.8269,
+  "l104_processes": {
+    "count": 16,
+    "total_cpu_percent": 114.7,
+    "total_memory_mb": 583.6,
+    "processes": [
+      {
+        "pid": 461,
+        "name": "Python",
+        "cpu": 1.5,
+        "mem_mb": 16.7,
+        "status": "running"
+      },
+      {
+        "pid": 464,
+        "name": "Python",
+        "cpu": 0.2,
+        "mem_mb": 10.1,
+        "status": "running"
+      },
+      {
+        "pid": 466,
+        "name": "bash",
+        "cpu": 0.0,
+        "mem_mb": 0.3,
+        "status": "running"
+      },
+      {
+        "pid": 468,
+        "name": "Python",
+        "cpu": 1.4,
+        "mem_mb": 6.8,
+        "status": "running"
+      },
+      {
+        "pid": 472,
+        "name": "Python",
+        "cpu": 1.6,
+        "mem_mb": 13.7,
+        "status": "running"
+      },
+      {
+        "pid": 477,
+        "name": "Python",
+        "cpu": 3.1,
+        "mem_mb": 22.3,
+        "status": "running"
+      },
+      {
+        "pid": 480,
+        "name": "Python",
+        "cpu": 0.0,
+        "mem_mb": 2.6,
+        "status": "running"
+      },
+      {
+        "pid": 485,
+        "name": "Python",
+        "cpu": 1.2,
+        "mem_mb": 12.3,
+        "status": "running"
+      },
+      {
+        "pid": 486,
+        "name": "asi-deepseek-daemon",
+        "cpu": 0.1,
+        "mem_mb": 2.2,
+        "status": "running"
+      },
+      {
+        "pid": 488,
+        "name": "bash",
+        "cpu": 0.4,
+        "mem_mb": 1.0,
+        "status": "running"
+      },
+      {
+        "pid": 489,
+        "name": "Python",
+        "cpu": 3.4,
+        "mem_mb": 95.4,
+        "status": "running"
+      },
+      {
+        "pid": 491,
+        "name": "L104Daemon",
+        "cpu": 0.3,
+        "mem_mb": 39.5,
+        "status": "running"
+      },
+      {
+        "pid": 42016,
+        "name": "Python",
+        "cpu": 0.1,
+        "mem_mb": 9.1,
+        "status": "running"
+      },
+      {
+        "pid": 49828,
+        "name": "Python",
+        "cpu": 0.1,
+        "mem_mb": 11.1,
+        "status": "running"
+      },
+      {
+        "pid": 71193,
+        "name": "L104Native",
+        "cpu": 27.7,
+        "mem_mb": 105.5,
+        "status": "running"
+      },
+      {
+        "pid": 71505,
+        "name": "Python",
+        "cpu": 73.6,
+        "mem_mb": 235.0,
+        "status": "running"
+      }
+    ]
+  },
+  "top_processes": [
+    {
+      "pid": 71505,
+      "name": "Python",
+      "cpu": 73.6
+    },
+    {
+      "pid": 71193,
+      "name": "L104Native",
+      "cpu": 27.7
+    },
+    {
+      "pid": 378,
+      "name": "Finder",
+      "cpu": 25.1
+    },
+    {
+      "pid": 489,
+      "name": "Python",
+      "cpu": 3.4
+    },
+    {
+      "pid": 477,
+      "name": "Python",
+      "cpu": 3.1
+    }
+  ],
+  "daemons_alive": 5,
+  "daemons_total": 7,
+  "daemon_agents": {
+    "com.l104.boot-manager": {
+      "running": false,
+      "pid": null,
+      "exit": 512
+    },
+    "com.l104.quantum-ai-daemon": {
+      "running": true,
+      "pid": 489,
+      "exit": 0
+    },
+    "com.l104.vqpu-micro-daemon": {
+      "running": true,
+      "pid": 472,
+      "exit": 0
+    },
+    "com.l104.nano-daemon-python": {
+      "running": true,
+      "pid": 468,
+      "exit": 0
+    },
+    "com.l104.resource-guardian": {
+      "running": true,
+      "pid": 461,
+      "exit": 0
+    },
+    "com.l104.macos-sovereign": {
+      "running": true,
+      "pid": 485,
+      "exit": 0
+    },
+    "com.l104.quantum-upgrade-manager": {
+      "running": false,
+      "pid": null,
+      "exit": 19968
+    }
+  },
+  "asi_score": 0,
+  "agi_score": 0,
+  "asi_state": "UNKNOWN",
+  "resonance": 527.5184818492612,
+  "server_ok": false
+}

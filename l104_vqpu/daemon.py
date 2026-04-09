@@ -68,6 +68,13 @@ from .constants import (
     DAEMON_LOAD_THRESHOLD_LOW, DAEMON_LOAD_THRESHOLD_HIGH,
 )
 
+# v1.0.0: Orchestrator integration
+try:
+    from l104_daemon_adapter import DaemonAdapter
+    _HAS_DAEMON_ADAPTER = True
+except ImportError:
+    _HAS_DAEMON_ADAPTER = False
+
 # ═══════════════════════════════════════════════════════════════════
 # v13.3: MODULE-LEVEL CACHES — avoid repeated heavy imports
 # ═══════════════════════════════════════════════════════════════════
@@ -214,7 +221,7 @@ def _get_agi_core():
 _SIM_TIMEOUT_S = 120.0
 
 # v15.1: Track leaked threads from timed-out sims
-_leaked_threads: deque = deque(maxlen=20)
+_leaked_threads: deque = deque(maxlen=1000)  # QUANTUM AMPLIFIED
 _last_leaked_warn_ts = 0.0
 
 
@@ -419,8 +426,8 @@ class VQPUDaemonCycler:
         self._last_cycle_time = 0.0
         self._last_cycle_results = []
         # v15.0: deque replaces list + slicing — O(1) bounded append
-        self._sc_history = deque(maxlen=200)
-        self._health_history = deque(maxlen=50)
+        self._sc_history = deque(maxlen=10000)  # QUANTUM AMPLIFIED
+        self._health_history = deque(maxlen=1000)  # QUANTUM AMPLIFIED
         self._start_time = 0.0
         self._active = False
         self._error_log = deque(maxlen=DAEMON_MAX_ERROR_LOG)
@@ -432,21 +439,21 @@ class VQPUDaemonCycler:
 
         # v15.0: Per-sim timing drift detection
         self._sim_timing_history: dict[str, deque] = {}  # name → deque of elapsed_ms
-        self._drift_alerts: deque = deque(maxlen=50)
+        self._drift_alerts: deque = deque(maxlen=5000)  # QUANTUM AMPLIFIED
 
         # v15.1: Sim quarantine — chronically failing sims auto-skipped
         self._sim_failure_counts: dict[str, int] = {}      # name → consecutive failures
         self._sim_quarantine: dict[str, int] = {}           # name → cycles remaining
-        self._quarantine_log: deque = deque(maxlen=50)
+        self._quarantine_log: deque = deque(maxlen=1000)  # QUANTUM AMPLIFIED
 
         # v15.1: Fidelity + sacred alignment trend tracking
         self._sim_fidelity_history: dict[str, deque] = {}   # name → deque of fidelity
         self._sim_alignment_history: dict[str, deque] = {}  # name → deque of sacred_alignment
-        self._cycle_fidelity_avg: deque = deque(maxlen=100)  # per-cycle avg fidelity
-        self._cycle_alignment_avg: deque = deque(maxlen=100) # per-cycle avg alignment
+        self._cycle_fidelity_avg: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED per-cycle avg fidelity
+        self._cycle_alignment_avg: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED per-cycle avg alignment
 
         # v15.1: Throughput tracking
-        self._cycle_throughput: deque = deque(maxlen=50)    # sims/second per cycle
+        self._cycle_throughput: deque = deque(maxlen=5000)  # QUANTUM AMPLIFIED sims/second per cycle
 
         # v15.1: Leaked thread tracking
         self._total_leaked_threads = 0
@@ -507,11 +514,16 @@ class VQPUDaemonCycler:
         self._degradation_level = "FULL"  # FULL, REDUCED, MINIMAL
 
         # v16.0: Fidelity alert log
-        self._fidelity_alerts: deque = deque(maxlen=50)
+        self._fidelity_alerts: deque = deque(maxlen=1000)  # QUANTUM AMPLIFIED
 
         # v16.0: Cross-daemon state cache
         self._cross_daemon_cache: dict = {}
         self._cross_daemon_cache_ts = 0.0
+
+        # v1.0.0: Orchestrator integration
+        self._orchestrator = None
+        self._adapter = None
+        self._last_memory_mb = 0.0
 
     def start(self):
         """Spawn the background daemon cycling thread + quantum subconscious.
@@ -519,6 +531,7 @@ class VQPUDaemonCycler:
         v15.0: Registers atexit handler for clean shutdown + state persistence.
         v13.4: Pre-warms heavy engine imports in a background thread so the
         first cycle doesn't pay the 4.6s import penalty.
+        v1.0.0: Registers with orchestrator if available.
         """
         if self._active:
             return
@@ -526,6 +539,14 @@ class VQPUDaemonCycler:
         self._start_time = time.time()
         self._active = True
         self._load_state()
+
+        # v1.0.0: Orchestrator integration
+        if _HAS_DAEMON_ADAPTER and self._orchestrator:
+            try:
+                self._adapter = DaemonAdapter("vqpu_daemon", self._orchestrator)
+                _logger.info("VQPU daemon registered with orchestrator")
+            except Exception as e:
+                _logger.warning(f"Failed to create orchestrator adapter: {e}")
 
         # v15.0: Register atexit handler (once) — persist state on process exit
         if not self._atexit_registered:
@@ -830,6 +851,15 @@ class VQPUDaemonCycler:
     # v15.1: RUNTIME CONTROL — pause, resume, force cycle, reconfigure
     # ═══════════════════════════════════════════════════════════════════
 
+    # v1.0.0: Orchestrator integration
+    def set_orchestrator(self, orchestrator):
+        """Set the daemon orchestrator instance for coordination.
+
+        Must be called before start() for orchestrator integration to work.
+        """
+        self._orchestrator = orchestrator
+        _logger.info("VQPU daemon orchestrator set")
+
     def pause(self):
         """v15.1: Pause daemon cycling (sims stop, thread stays alive).
 
@@ -1023,6 +1053,10 @@ class VQPUDaemonCycler:
                     self._circuit_breaker_open = False
 
             try:
+                # v1.0.0: Orchestrator cycle start marker
+                if self._adapter:
+                    self._adapter.on_cycle_start()
+
                 # v13.3: Refresh harvest caches if stale (before cycle)
                 now = time.time()
                 if self._cached_brain_data is None or (now - self._brain_harvest_ts) > self._HARVEST_TTL:
@@ -1032,7 +1066,9 @@ class VQPUDaemonCycler:
                     self._cached_evolution_data = self._harvest_evolution_scores()
                     self._evolution_harvest_ts = now
 
-                self._run_findings_cycle()
+                cycle_start_ms = time.time()
+                result = self._run_findings_cycle()
+                cycle_duration_ms = (time.time() - cycle_start_ms) * 1000
 
                 # v13.3: Persist every N cycles in background thread
                 # v15.2: Guard against overlapping persist threads — if a previous
@@ -1060,6 +1096,38 @@ class VQPUDaemonCycler:
                 # v15.0: Success — reset circuit breaker
                 self._consecutive_failures = 0
                 self._circuit_breaker_open = False
+
+                # v1.0.0: Report success to orchestrator
+                if self._adapter:
+                    success = result.get("success", True) if result else True
+                    passed = result.get("passed", 0) if result else 0
+                    failed = result.get("failed", 0) if result else 0
+
+                    self._adapter.on_cycle_end(
+                        success=success,
+                        duration_ms=cycle_duration_ms,
+                        cpu_percent=self._last_cpu_percent,
+                        memory_mb=self._last_memory_mb
+                    )
+
+                    # Emit fidelity metrics
+                    if success and len(self._cycle_fidelity_avg) > 0:
+                        fidelity = sum(self._cycle_fidelity_avg) / len(self._cycle_fidelity_avg)
+                        trending = "stable"
+                        if len(self._cycle_fidelity_avg) >= 2:
+                            recent_avg = sum(list(self._cycle_fidelity_avg)[-5:]) / min(5, len(self._cycle_fidelity_avg))
+                            older_avg = sum(list(self._cycle_fidelity_avg)[:-5]) / max(1, len(self._cycle_fidelity_avg) - 5)
+                            if recent_avg < older_avg * 0.95:
+                                trending = "down"
+                            elif recent_avg > older_avg * 1.05:
+                                trending = "up"
+
+                        self._adapter.emit_fidelity_alert(
+                            fidelity=fidelity,
+                            trending=trending,
+                            sim_count=passed + failed,
+                            error_count=failed
+                        )
             except Exception as e:
                 self._consecutive_failures += 1
                 with self._lock:
@@ -1072,6 +1140,20 @@ class VQPUDaemonCycler:
                 _logger.warning(
                     "Cycle %d failed (consecutive=%d): %s",
                     self._cycles_completed, self._consecutive_failures, e)
+
+                # v1.0.0: Report failure to orchestrator
+                if self._adapter:
+                    self._adapter.on_cycle_end(
+                        success=False,
+                        duration_ms=cycle_duration_ms,
+                        cpu_percent=self._last_cpu_percent,
+                        memory_mb=self._last_memory_mb
+                    )
+                    self._adapter.emit_error(
+                        "cycle_failure",
+                        str(e),
+                        "error"
+                    )
 
                 # v15.0: Circuit breaker — exponential backoff on consecutive failures
                 if self._consecutive_failures >= DAEMON_ERROR_THRESHOLD:

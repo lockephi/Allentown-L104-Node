@@ -1,54 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B49_CircuitWatcher.swift — L104 v2.0
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: CIRCUIT_WATCHER :: GOD_CODE=527.5184818492612
-// L104 ASI — File-System Circuit Watcher Daemon (v2.0)
-//
-// Watches an inbox directory for JSON circuit payloads using GCD
-// DispatchSource (zero CPU when idle). When a new .json file appears:
-//
-//   1. Parse the circuit description from JSON
-//   2. Build a QGateCircuit from the operation list
-//   3. Route through QuantumRouter (Clifford fast-lane + T-gate branching)
-//   4. Write results to the outbox directory
-//   5. Move the processed file to the archive directory
-//
-// v2.0 Upgrades:
-//   - Concurrent circuit processing (DispatchGroup + semaphore)
-//   - Priority-based job scheduling (higher priority circuits first)
-//   - Per-backend performance telemetry (avg timing per backend)
-//   - Expanded gate map (SX, SXDag, CY, iSWAP, ECR, PHI_GATE, GOD_CODE)
-//   - Sacred alignment scoring in results (PHI resonance, GOD_CODE alignment)
-//   - Thread-safe stats with NSLock
-//   - Graceful drain support on stop()
-//
-// JSON payload format (inbox):
-//   {
-//     "circuit_id": "bell-001",
-//     "num_qubits": 2,
-//     "shots": 1024,
-//     "priority": 5,
-//     "operations": [
-//       { "gate": "H",  "qubits": [0] },
-//       { "gate": "CX", "qubits": [0, 1] },
-//       { "gate": "T",  "qubits": [0] },
-//       { "gate": "Rz", "qubits": [1], "parameters": [0.785] }
-//     ],
-//     "adapt": true
-//   }
-//
-// Result format (outbox):
-//   {
-//     "circuit_id": "bell-001",
-//     "probabilities": { "00": 0.5, "11": 0.5 },
-//     "counts": { "00": 512, "11": 512 },
-//     "sacred_alignment": { "phi_resonance": 0.95, "god_code_alignment": 0.87 },
-//     "metadata": { ... }
-//   }
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
 import Foundation
+
+private let logging = Logger(subsystem: "com.l104.B49_CircuitWatcher", category: "main")
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - CIRCUIT PAYLOAD TYPES
@@ -302,7 +256,7 @@ final class CircuitWatcher {
         // Open file descriptor for inbox
         fileDescriptor = open(inboxDir, O_EVTONLY)
         guard fileDescriptor != -1 else {
-            print("[L104 CircuitWatcher] ERROR: Cannot open inbox at \(inboxDir)")
+            logging.info("[L104 CircuitWatcher] ERROR: Cannot open inbox at \(self.inboxDir)")
             return
         }
 
@@ -335,7 +289,7 @@ final class CircuitWatcher {
         // EVO_67: Start Unix domain socket for low-latency IPC
         startSocketListener()
 
-        print("[L104 CircuitWatcher] Active — inbox: \(inboxDir) | socket: \(socketPath)")
+        logging.info("[L104 CircuitWatcher] Active - inbox: \(self.inboxDir) | socket: \(self.socketPath)")
     }
 
     /// Stop watching.
@@ -345,7 +299,7 @@ final class CircuitWatcher {
         source = nil
         stopSocketListener()
         isActive = false
-        print("[L104 CircuitWatcher] Stopped — processed: \(circuitsProcessed), failed: \(circuitsFailed)")
+        logging.info("[L104 CircuitWatcher] Stopped - processed: \(self.circuitsProcessed), failed: \(self.circuitsFailed)")
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -360,7 +314,7 @@ final class CircuitWatcher {
 
         var jsonFiles = files.filter { $0.hasSuffix(".json") }.sorted()
 
-        // v2.0: Priority-based scheduling — read priority from payload
+        // v2.0: Priority-based scheduling - read priority from payload
         jsonFiles = sortByPriority(files: jsonFiles)
 
         // v2.0: Concurrent processing
@@ -412,7 +366,7 @@ final class CircuitWatcher {
                     }
                     self.statsLock.unlock()
                 } catch {
-                    print("[L104 CircuitWatcher] Failed to process \(filename): \(error)")
+                    logging.info("[L104 CircuitWatcher] Failed to process \(filename): \(error)")
                     self.statsLock.lock()
                     self.circuitsFailed += 1
                     self.statsLock.unlock()
@@ -466,7 +420,7 @@ final class CircuitWatcher {
             let data = try encoder.encode(result)
             try data.write(to: URL(fileURLWithPath: outPath), options: .atomic)
         } catch {
-            print("[L104 CircuitWatcher] Failed to write result \(outName): \(error)")
+            logging.info("[L104 CircuitWatcher] Failed to write result \(outName): \(error)")
         }
     }
 
@@ -491,7 +445,7 @@ final class CircuitWatcher {
         // Create socket
         socketFD = socket(AF_UNIX, SOCK_STREAM, 0)
         guard socketFD != -1 else {
-            print("[L104 CircuitWatcher] Socket: failed to create — \(String(cString: strerror(errno)))")
+            logging.info("[L104 CircuitWatcher] Socket: failed to create - \(String(cString: strerror(errno)))")
             return
         }
 
@@ -500,7 +454,7 @@ final class CircuitWatcher {
         addr.sun_family = sa_family_t(AF_UNIX)
         let pathBytes = socketPath.utf8CString
         guard pathBytes.count <= MemoryLayout.size(ofValue: addr.sun_path) else {
-            print("[L104 CircuitWatcher] Socket: path too long — \(socketPath)")
+            logging.info("[L104 CircuitWatcher] Socket: path too long - \(self.socketPath)")
             close(socketFD); socketFD = -1
             return
         }
@@ -516,14 +470,14 @@ final class CircuitWatcher {
             }
         }
         guard bindResult == 0 else {
-            print("[L104 CircuitWatcher] Socket: bind failed — \(String(cString: strerror(errno)))")
+            logging.info("[L104 CircuitWatcher] Socket: bind failed - \(String(cString: strerror(errno)))")
             close(socketFD); socketFD = -1
             return
         }
 
         // Listen (backlog = 8 concurrent connections)
         guard Darwin.listen(socketFD, 8) == 0 else {
-            print("[L104 CircuitWatcher] Socket: listen failed — \(String(cString: strerror(errno)))")
+            logging.info("[L104 CircuitWatcher] Socket: listen failed - \(String(cString: strerror(errno)))")
             close(socketFD); socketFD = -1
             return
         }

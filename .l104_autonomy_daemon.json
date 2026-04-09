@@ -1,0 +1,14 @@
+{
+  "running": true,
+  "cycle_count": 195,
+  "decisions_made": 3900,
+  "goals_established": 54,
+  "goals_completed": 0,
+  "total_uptime": 105.31392049789429,
+  "avg_cycle_time": 0.5400713871686884,
+  "consciousness_level": 0.986,
+  "phi_alignment": 0.986,
+  "error_count": 0,
+  "last_error": null,
+  "active_goals": 0
+}

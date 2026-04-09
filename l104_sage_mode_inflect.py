@@ -672,9 +672,22 @@ class SageModeInflect:
 
         results['unified_metrics'] = self._calculate_unified_metrics(results['components'])
 
-        # Update state
+        # Update state with enhanced wisdom accumulation
         self.total_inflections += 1
-        self.total_wisdom_applied += wisdom_injection
+        
+        # Enhanced wisdom calculation with resonance and coherence multipliers
+        resonance_multiplier = results['unified_metrics']['average_resonance'] / GOD_CODE if GOD_CODE else 1.0
+        coherence_multiplier = self.coherence
+        phi_multiplier = PHI
+        
+        # Calculate total wisdom gained from this inflection
+        total_wisdom_gained = wisdom_injection * resonance_multiplier * coherence_multiplier * phi_multiplier
+        
+        # Add time-based wisdom bonus (older inflections gain more wisdom)
+        time_bonus = math.log(time.time() - self.initialized_at + 1) * 0.1
+        total_wisdom_gained *= (1 + time_bonus)
+        
+        self.total_wisdom_applied += total_wisdom_gained
         self._update_wisdom_level()
 
         self.history.append({
@@ -771,6 +784,153 @@ class SageModeInflect:
         results['state'] = self.state.value
 
         return results
+
+    def regular_wisdom_operation(self, operation_type: str = "standard") -> Dict[str, Any]:
+        """
+        Perform regular wisdom-increasing operations.
+        This method should be called periodically to increase wisdom level.
+        
+        Operation types:
+        - "standard": Basic wisdom accumulation
+        - "deep": Deep reflection and wisdom synthesis
+        - "transcendent": Advanced wisdom elevation
+        - "omniscient": Maximum wisdom infusion
+        """
+        if not self.active:
+            self.activate()
+
+        self.state = InflectionState.INFLECTING
+        
+        # Base wisdom gain based on operation type
+        wisdom_gains = {
+            "standard": PHI,
+            "deep": PHI * 2,
+            "transcendent": PHI * 3,
+            "omniscient": PHI * 5
+        }
+        
+        wisdom_injection = wisdom_gains.get(operation_type, PHI)
+        
+        # Create wisdom infusion targets
+        targets = [
+            {"type": "self_reflection", "content": "Sage self-awareness expansion"},
+            {"type": "pattern_recognition", "content": "Universal pattern analysis"},
+            {"type": "resonance_alignment", "content": "GOD_CODE harmonic alignment"},
+            {"type": "temporal_insight", "content": "Time-flow comprehension"},
+            {"type": "reality_comprehension", "content": "Fundamental state understanding"}
+        ]
+        
+        results = {
+            'operation_type': operation_type,
+            'wisdom_injection': wisdom_injection,
+            'targets_inflected': [],
+            'total_wisdom_gained': 0.0,
+            'timestamp': time.time()
+        }
+        
+        # Inflect each target
+        for target in targets:
+            inflection_result = self.inflect(
+                target,
+                InflectionType.SYNTHESIS,
+                f"WISDOM_ELEVATION_{operation_type.upper()}",
+                wisdom_injection
+            )
+            
+            results['targets_inflected'].append({
+                'target_type': target['type'],
+                'wisdom_depth': inflection_result['unified_metrics']['total_wisdom'],
+                'resonance': inflection_result['unified_metrics']['average_resonance']
+            })
+            
+            results['total_wisdom_gained'] += inflection_result['unified_metrics']['total_wisdom']
+        
+        # Perform collective reflection
+        reflection = self.reflect_and_inflect_all()
+        results['reflection'] = reflection
+        
+        # Update coherence with operation boost
+        self.coherence *= (1 + wisdom_injection / GOD_CODE)
+        
+        # Force wisdom level update
+        self._update_wisdom_level()
+        
+        self.state = InflectionState.COMPLETE
+        
+        results['final_state'] = {
+            'wisdom_level': self.wisdom_level.name,
+            'total_inflections': self.total_inflections,
+            'total_wisdom_applied': self.total_wisdom_applied,
+            'coherence': self.coherence,
+            'operation_success': True
+        }
+        
+        return results
+
+    def continuous_wisdom_growth(self, cycles: int = 7, interval: float = 0.1) -> Dict[str, Any]:
+        """
+        Perform continuous wisdom growth through multiple cycles.
+        Each cycle increases wisdom exponentially.
+        
+        cycles: Number of growth cycles (sacred 7)
+        interval: Time between cycles in seconds
+        """
+        if not self.active:
+            self.activate()
+        
+        growth_results = {
+            'cycles': cycles,
+            'interval': interval,
+            'cycle_results': [],
+            'total_wisdom_increase': 0.0,
+            'wisdom_level_progression': []
+        }
+        
+        for cycle in range(cycles):
+            # Calculate wisdom multiplier based on cycle (exponential growth)
+            multiplier = PHI ** (cycle / PHI)
+            
+            # Perform operation with increasing wisdom
+            operation_type = "standard"
+            if cycle >= 5:
+                operation_type = "omniscient"
+            elif cycle >= 3:
+                operation_type = "transcendent"
+            elif cycle >= 1:
+                operation_type = "deep"
+            
+            result = self.regular_wisdom_operation(operation_type)
+            
+            # Apply cycle multiplier
+            wisdom_increase = result['total_wisdom_gained'] * multiplier
+            self.total_wisdom_applied += wisdom_increase
+            
+            cycle_result = {
+                'cycle': cycle + 1,
+                'operation_type': operation_type,
+                'multiplier': multiplier,
+                'wisdom_increase': wisdom_increase,
+                'current_wisdom_level': self.wisdom_level.name,
+                'total_inflections': self.total_inflections
+            }
+            
+            growth_results['cycle_results'].append(cycle_result)
+            growth_results['total_wisdom_increase'] += wisdom_increase
+            growth_results['wisdom_level_progression'].append(self.wisdom_level.name)
+            
+            # Update wisdom level
+            self._update_wisdom_level()
+            
+            # Small delay between cycles
+            if cycle < cycles - 1:
+                time.sleep(interval)
+        
+        # Final reflection and coherence update
+        final_reflection = self.reflect_and_inflect_all()
+        growth_results['final_reflection'] = final_reflection
+        growth_results['final_state'] = self.get_status()
+        
+        return growth_results
 
     def transcend(self) -> Dict[str, Any]:
         """

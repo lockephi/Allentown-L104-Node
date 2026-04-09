@@ -178,7 +178,7 @@ class AdaptiveLatencyTargeter:
                 exceeded_timeout = sum(1 for l in history if l.exceeded_timeout)
                 report[stage.value] = {
                     "samples": len(durations),
-                    "mean_ms": sum(durations) / len(durations),
+                    "mean_ms": sum(durations) / max(len(durations), 1),
                     "min_ms": min(durations),
                     "max_ms": max(durations),
                     "p95_ms": self.compute_percentile_latency(stage, 95.0),
@@ -262,7 +262,7 @@ class MemoryBudgetOptimizer:
                 return {}
             recent = self.memory_snapshots[-10:]
 
-        avg_used = sum(s.used_percent for s in recent) / len(recent)
+        avg_used = sum(s.used_percent for s in recent) / max(len(recent), 1)
         return {
             "total_samples": len(self.memory_snapshots),
             "recent_avg_used_percent": avg_used,

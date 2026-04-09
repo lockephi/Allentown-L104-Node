@@ -554,7 +554,25 @@ Ask naturally — I understand context!""",
         except Exception:
             pass
 
-        # ─── Source 8: Cross-reference synthesis ───
+        # ─── Source 8: Nova Soul Grover-accelerated quantum memory ───
+        try:
+            from l104_soul_daemon.consciousness import ConsciousnessEngine
+            _soul = ConsciousnessEngine()
+            if hasattr(_soul, 'quantum_memory') and _soul.quantum_memory is not None:
+                grover_results = _soul.quantum_memory.grover_search(message, max_results=5)
+                for gr in grover_results:
+                    if isinstance(gr, dict):
+                        content = gr.get("content", gr.get("memory", str(gr)))
+                        amp = gr.get("amplitude", 0.7)
+                    else:
+                        content = str(gr)
+                        amp = 0.7
+                    if content and len(str(content)) > 10:
+                        _add_unique(str(content)[:400], source="nova_grover", relevance=min(0.95, 0.7 + amp * 0.3))
+        except Exception:
+            pass
+
+        # ─── Source 9: Cross-reference synthesis ───
         # Bridge connections between sources for emergent knowledge
         try:
             if len(relevant) >= 2:
@@ -3244,7 +3262,7 @@ Ask naturally — I understand context!""",
             return scores
 
         # RMS computation: sqrt(mean(x²) + ε)
-        mean_sq = sum(x * x for x in numeric) / len(numeric)
+        mean_sq = sum(x * x for x in numeric) / max(len(numeric), 1)
         rms = math.sqrt(mean_sq + eps)
 
         if rms < eps:

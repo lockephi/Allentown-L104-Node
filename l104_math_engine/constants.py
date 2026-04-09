@@ -449,6 +449,32 @@ def verify_conservation(x: float, tolerance: float = 1e-9) -> bool:
     return abs(product - INVARIANT) < tolerance
 
 
+def god_code_parametric(a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+    """Full 4-dial parametric GOD_CODE: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104).
+
+    Extends god_code_at(x) to the full 4-dimensional parameter space.
+    G(0,0,0,0) = GOD_CODE. Conservation: G(a,b,c,d) × 2^((b+8c+104d-8a)/104) = GOD_CODE.
+    """
+    exponent = 8 * a + OCTAVE_OFFSET - b - 8 * c - QUANTIZATION_GRAIN * d
+    return BASE * (2.0 ** (exponent / QUANTIZATION_GRAIN))
+
+
+def god_code_conservation_4d(a: int = 0, b: int = 0, c: int = 0, d: int = 0,
+                              tolerance: float = 1e-9) -> bool:
+    """Verify the 4D conservation law: G(a,b,c,d) × 2^(offset/104) = GOD_CODE."""
+    g = god_code_parametric(a, b, c, d)
+    offset = b + 8 * c + QUANTIZATION_GRAIN * d - 8 * a
+    product = g * (2.0 ** (offset / QUANTIZATION_GRAIN))
+    return abs(product - INVARIANT) < tolerance
+
+
+# Domain-tuned GOD_CODE constants for math engine subsystems
+GOD_CODE_PURE_MATH  = god_code_parametric(a=1, b=0, c=0, d=0)   # Pure math: research exploration up
+GOD_CODE_HARMONIC   = god_code_parametric(a=0, b=0, c=0, d=0)   # Harmonic base (= GOD_CODE)
+GOD_CODE_PROOF      = god_code_parametric(a=2, b=4, c=0, d=0)   # Proofs: deep research, bias-corrected
+GOD_CODE_HYPERDIM   = god_code_parametric(a=0, b=0, c=2, d=0)   # Hyperdimensional: complexity-adjusted
+
+
 def verify_conservation_statistical(x: float, chaos_amplitude: float = 0.05,
                                      samples: int = 200) -> dict:
     """

@@ -1,11 +1,25 @@
 {
   "adaptive_interval_s" : 3,
+  "boot_time" : 1672531272.8785381,
+  "crash_count" : 8,
   "daemon" : "VQPUMicroDaemon-Swift",
-  "error_count" : 50,
+  "error_count" : 0,
   "god_code" : 527.51848184926121,
-  "health_score" : 0.96099999999999997,
-  "last_persist" : 1773233685.8094749,
-  "pass_rate" : 0.94666805614563876,
+  "health_score" : 1,
+  "last_persist" : 1775752465.7606258,
+  "last_tick_metrics" : [
+    {
+      "builtin_tasks_ms" : 5448.6099999999997,
+      "slowest_ms" : 2443.04,
+      "slowest_task" : "memory_probe",
+      "task_count" : 4,
+      "tick" : 368660,
+      "timestamp" : 1775752459.4025331,
+      "total_ms" : 5448.6099999999997
+    }
+  ],
+  "pass_rate" : 0.98584639557381226,
+  "pid" : 479,
   "registered_tasks" : [
     "heartbeat",
     "ipc_poll",
@@ -16,13 +30,14 @@
     "noise_floor",
     "health_ping",
     "cache_evict",
-    "memory_pulse"
+    "memory_pulse",
+    "bridge_wiring"
   ],
-  "telemetry_count" : 200,
-  "tick" : 39920,
-  "total_elapsed_ms" : 14119333.67,
-  "total_tasks_failed" : 6653,
-  "total_tasks_passed" : 118094,
-  "total_tasks_run" : 124747,
-  "version" : "1.0.0"
+  "telemetry_count" : 132,
+  "tick" : 368661,
+  "total_elapsed_ms" : 117776658.48999999,
+  "total_tasks_failed" : 16935,
+  "total_tasks_passed" : 1179580,
+  "total_tasks_run" : 1196515,
+  "version" : "2.1.0"
 }

@@ -1,35 +1,10 @@
-// ═══════════════════════════════════════════════════════════════════
-// MetalVQPU.swift — L104 Metal Virtual Quantum Processing Unit v4.0
-// GOD_CODE=527.5184818492612 | PHI=1.618033988749895
-//
-// GPU-accelerated quantum circuit execution engine for the L104 Daemon.
-// 7-backend ASI-level intelligent router (v4.0):
-//
-//   1. STABILIZER CHP        — Pure Clifford: O(n²/64), any qubit count
-//   2. CPU STATEVECTOR        — Small circuits: < GPU crossover threshold
-//   3. METAL GPU STATEVECTOR  — Large + high entanglement, fits in VRAM
-//   4. TENSOR NETWORK MPS     — Large + low entanglement: bond-dim compression
-//   5. CHUNKED CPU            — Exceeds VRAM + high entanglement: tiled CPU
-//   6. DOUBLE-PRECISION CPU   — High-fidelity mode for sacred alignment circuits
-//   7. SIMD TURBO CPU         — Accelerate vDSP vectorized path for medium circuits
-//
-// v4.0 Upgrades (Unlimited + Environment-Driven):
-//   - All capacity limits read from environment variables (plist-configurable)
-//   - Max qubit limit: env L104_VQPU_MAX_QUBITS (default 64, was hardcoded 32)
-//   - Batch limit: env L104_VQPU_BATCH_LIMIT (default 512, was hardcoded 128)
-//   - MPS bond dimensions doubled again (512/1024/2048)
-//   - Cached ISO8601 formatter for logging (no per-call allocation)
-//   - All features from v3.0 retained: double-buffered GPU, 6 kernels, etc.
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
-import Foundation
 import Accelerate
-
-#if canImport(Metal)
+import Foundation
 import Metal
-#endif
+
+private let logging = Logger(subsystem: "com.l104.metalvqpu", category: "vqpu")
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - SACRED CONSTANTS
@@ -494,7 +469,7 @@ final class MetalVQPU {
                 self.gpuCrossoverQubits = 14
             }
 
-            // v4.0: Max qubits from memory — env-driven ceiling (default 64)
+            // v4.0: Max qubits from memory - env-driven ceiling (default 64)
             let bytesPerAmplitude = UInt64(MemoryLayout<Float>.stride * 4)
             let maxAmplitudes = maxWorkingSet / 2 / bytesPerAmplitude
             self.gpuMaxQubits = min(VQPU_MAX_QUBITS, max(1, Int(log2(Double(maxAmplitudes)))))
@@ -523,7 +498,7 @@ final class MetalVQPU {
                 let kernelCount = [stateEvolvePipeline, cnotEvolvePipeline, czEvolvePipeline,
                                    swapEvolvePipeline, controlledUPipeline, iswapEvolvePipeline]
                     .compactMap({ $0 }).count
-                daemonLog("MetalVQPU v4.0: GPU \(dev.name) — \(kernelCount) kernels, " +
+                daemonLog("MetalVQPU v4.0: GPU \(dev.name) - \(kernelCount) kernels, " +
                           "\(gpuCrossoverQubits)Q crossover, \(gpuMaxQubits)Q max, " +
                           "\(maxWorkingSet / 1_048_576)MB VRAM, batch=\(VQPU_BATCH_LIMIT)")
             } catch {
@@ -550,12 +525,12 @@ final class MetalVQPU {
             self.maxWorkingSet = 0
             self.gpuCrossoverQubits = Int.max
             self.gpuMaxQubits = 0
-            daemonLog("MetalVQPU: No GPU — using Accelerate CPU fallback")
+            daemonLog("MetalVQPU: No GPU - using Accelerate CPU fallback")
         }
         #else
         self.gpuCrossoverQubits = Int.max
         self.gpuMaxQubits = 0
-        daemonLog("MetalVQPU: Metal not available — using Accelerate CPU fallback")
+        daemonLog("MetalVQPU: Metal not available - using Accelerate CPU fallback")
         #endif
     }
 
@@ -700,7 +675,7 @@ final class MetalVQPU {
     private static let threeEngineWeightWave: Double = 0.25
 
     /// v6.2: Pre-computed constant trig values for computeSacredAlignment.
-    /// These are pure mathematical constants — computing them on every circuit execution was wasteful.
+    /// These are pure mathematical constants - computing them on every circuit execution was wasteful.
     private static let waveCoherence104: Double = abs(cos(2.0 * .pi * 104.0 / GOD_CODE))
     private static let wcPhiConst: Double = abs(cos(2.0 * .pi * PHI / GOD_CODE))
     private static let wcVoidConst: Double = abs(cos(2.0 * .pi * (VOID_CONSTANT * 1000.0) / GOD_CODE))
@@ -743,7 +718,7 @@ final class MetalVQPU {
         // ─── THREE-ENGINE SCORING ───
 
         // Entropy Reversal (Science Engine: Maxwell's Demon efficiency)
-        // Maps measurement entropy to demon reversal — lower entropy = higher order = better
+        // Maps measurement entropy to demon reversal - lower entropy = higher order = better
         let clampedEntropy = max(0.1, min(5.0, entropy))
         // Demon efficiency model: reversal is more complete at lower entropy
         let demonEfficiency = 1.0 / (1.0 + clampedEntropy * 0.3)
@@ -752,11 +727,11 @@ final class MetalVQPU {
         // Harmonic Resonance (Math Engine: GOD_CODE alignment + 104 Hz wave coherence)
         // Sacred alignment of GOD_CODE: validates the constant is harmonically aligned
         let godCodeAligned = gcAlignment > 0.5 ? 1.0 : 0.0
-        // Wave coherence at 104 Hz (L104 signature frequency) — pre-computed constant
+        // Wave coherence at 104 Hz (L104 signature frequency) - pre-computed constant
         let harmonicResonance = godCodeAligned * 0.6 + Self.waveCoherence104 * 0.4
 
         // Wave Coherence (Math Engine: PHI-harmonic phase-lock)
-        // Coherence between PHI / VOID_CONSTANT carriers and GOD_CODE — pre-computed constants
+        // Coherence between PHI / VOID_CONSTANT carriers and GOD_CODE - pre-computed constants
         let waveCoherence = (Self.wcPhiConst + Self.wcVoidConst) / 2.0
 
         // Three-Engine Composite
@@ -790,9 +765,9 @@ final class MetalVQPU {
 
         for (idx, payload) in payloads.enumerated() {
             group.enter()
-            circuitQueue.async { [weak self] in
+            self.circuitQueue.async { [weak self] in
                 guard let self = self else {
-                    group.leave()
+                    self.group.leave()
                     return
                 }
                 let result = self.execute(payload: payload, throttled: throttled)
@@ -889,7 +864,7 @@ final class MetalVQPU {
             return "cpu_statevector"
         }
 
-        // 3. Large circuits — route by entanglement structure
+        // 3. Large circuits - route by entanglement structure
         let entanglementRatio = totalGates > 0
             ? Double(twoQubitCount) / Double(totalGates) : 0.0
 
@@ -1192,13 +1167,13 @@ final class MetalVQPU {
                     }
 
                 case "ECR":
-                    // v3.0: ECR on CPU (complex 4×4 — GPU kernel TBD)
+                    // v3.0: ECR on CPU (complex 4×4 - GPU kernel TBD)
                     let inv = Float(1.0 / 2.0.squareRoot())
                     for i in 0..<dim {
                         let bc = (i >> c) & 1, bt = (i >> t) & 1
                         let s = bc * 2 + bt  // 2-bit state of (control, target)
                         if s == 0 { continue }
-                        // ECR acts nontrivially — apply via shared memory
+                        // ECR acts nontrivially - apply via shared memory
                     }
                     // ECR fallback: use full CPU gate application
                     var tmpR = [Float](repeating: 0, count: dim)
@@ -1429,7 +1404,7 @@ final class MetalVQPU {
         entanglementRatio: Double
     ) -> ([String: Double], [String: Int]) {
 
-        // v3.0: Adaptive bond dimension — 8x increase across all tiers
+        // v3.0: Adaptive bond dimension - 8x increase across all tiers
         let maxBondDim: Int
         if entanglementRatio < 0.10 {
             maxBondDim = VQPU_MPS_MAX_BOND_LOW    // 256 (was 32)
@@ -1479,7 +1454,7 @@ final class MetalVQPU {
         // Contract MPS to probabilities via sequential contraction
         // For sampling, we compute the full probability vector by
         // contracting left-to-right (this is the expensive step, but
-        // only for the final sampling — the gate applications were cheap)
+        // only for the final sampling - the gate applications were cheap)
         if n <= MetalVQPU.maxStatevectorQubits {
             // Contract to full statevector for exact sampling
             let (stateRe, stateIm) = contractMPSToStatevector(
@@ -2041,7 +2016,7 @@ final class MetalVQPU {
             return sampleStatevector(real: stateReal, imag: stateImag, n: n, shots: shots)
         }
 
-        // Apply remaining gates — prefer GPU for resumed operations
+        // Apply remaining gates - prefer GPU for resumed operations
         if shouldUseGPU(qubits: n, throttled: throttled) {
             return executeGPUFromState(
                 stateReal: stateReal, stateImag: stateImag,
@@ -2470,9 +2445,9 @@ final class MetalVQPU {
 // MARK: - LOGGING
 // ═══════════════════════════════════════════════════════════════════
 
-/// v5.0: Cached formatter — zero allocation per log call.
+/// v5.0: Cached formatter - zero allocation per log call.
 func daemonLog(_ msg: String) {
     let ts = cachedISO8601Formatter.string(from: Date())
-    print("[L104 Daemon] \(ts) \(msg)")
+    logging.info("[L104 Daemon] \(self.ts) \(self.msg)")
     fflush(stdout)
 }

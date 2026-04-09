@@ -1,15 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L04_LogicGateCore.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// ASILogicGateV2 class + LogicGateEnvironment class
-// Extracted from L104Native.swift (lines 12107-12882)
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class ASILogicGateV2 {
     static let shared = ASILogicGateV2()
@@ -107,7 +100,7 @@ class ASILogicGateV2 {
             )
         }
 
-        // Temporal awareness — inject causal reasoning if pattern detected
+        // Temporal awareness - inject causal reasoning if pattern detected
         let temporalCtx = buildTemporalContext(q)
 
         // Build primary path with coherence cascade
@@ -222,7 +215,7 @@ class ASILogicGateV2 {
             score += Double(emotionalMarkers.filter { q.contains($0) }.count) * 0.12
         }
 
-        // Context boost — if recent queries were in this dimension
+        // Context boost - if recent queries were in this dimension
         let recentInDim = temporalMemory.suffix(5).filter { $0.dimension == dimension }.count
         score += Double(recentInDim) * 0.05
 
@@ -305,7 +298,7 @@ class ASILogicGateV2 {
         let coh = String(format: "%.4f", computeGlobalCoherence())
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║  🧬 ASI LOGIC GATE v2 — Multi-Dimensional Reasoning      ║
+        ║  🧬 ASI LOGIC GATE v2 - Multi-Dimensional Reasoning      ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Invocations:      \(gateInvocations)
         ║  Global Coherence: \(coh)
@@ -320,7 +313,7 @@ class ASILogicGateV2 {
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // MARK: - ⚡ LOGIC GATE ENVIRONMENT
-// Phase 40.0: Unified gate orchestration — ties ASILogicGateV2,
+// Phase 40.0: Unified gate orchestration - ties ASILogicGateV2,
 // ContextualLogicGate, QuantumLogicGateEngine, StoryLogicGateEngine,
 // and DynamicPhraseEngine into a coherent execution pipeline
 // with gate composition, circuit building, truth tables, and telemetry.
@@ -469,7 +462,7 @@ final class LogicGateEnvironment {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: FULL PIPELINE — Route query through all gate subsystems
+    // MARK: FULL PIPELINE - Route query through all gate subsystems
     // ═══════════════════════════════════════════════════════════════
 
     func runPipeline(_ query: String, context: [String] = []) -> PipelineResult {
@@ -477,7 +470,7 @@ final class LogicGateEnvironment {
         var stages: [PipelineStage] = []
         let pipelineStart = CFAbsoluteTimeGetCurrent()
 
-        // ─── STAGE 1: ASI Logic Gate V2 — Dimension Routing ───
+        // ─── STAGE 1: ASI Logic Gate V2 - Dimension Routing ───
         let s1Start = CFAbsoluteTimeGetCurrent()
         let gateV2Result = ASILogicGateV2.shared.process(query, context: context)
         let s1End = CFAbsoluteTimeGetCurrent()
@@ -495,7 +488,7 @@ final class LogicGateEnvironment {
             enrichment: "Primary: \(primaryDim), subs: \(subDims.joined(separator: ","))"
         ))
 
-        // ─── STAGE 2: Contextual Logic Gate — Context Enrichment ───
+        // ─── STAGE 2: Contextual Logic Gate - Context Enrichment ───
         let s2Start = CFAbsoluteTimeGetCurrent()
         let ctxResult = ContextualLogicGate.shared.processQuery(query, conversationContext: context)
         let s2End = CFAbsoluteTimeGetCurrent()
@@ -511,7 +504,7 @@ final class LogicGateEnvironment {
             enrichment: "Gate: \(ctxResult.gateType), ctx: \(ctxResult.contextInjection.prefix(60))"
         ))
 
-        // ─── STAGE 3: Quantum Logic Gate — Interference + Tunneling ───
+        // ─── STAGE 3: Quantum Logic Gate - Interference + Tunneling ───
         let s3Start = CFAbsoluteTimeGetCurrent()
         let qEngine = QuantumLogicGateEngine.shared
         let tunnelResult = qEngine.quantumTunnel(topic: query.split(separator: " ").first.map(String.init) ?? query, query: query)
@@ -526,10 +519,10 @@ final class LogicGateEnvironment {
             outputConfidence: qConf,
             dimension: primaryDim,
             latencyMs: (s3End - s3Start) * 1000,
-            enrichment: tunnelResult != nil ? "Tunneled: \(tunnelResult!.prefix(50))" : "No tunnel — coherent path"
+            enrichment: tunnelResult != nil ? "Tunneled: \(tunnelResult!.prefix(50))" : "No tunnel - coherent path"
         ))
 
-        // ─── STAGE 4: Story Logic Gate — Narrative Synthesis ───
+        // ─── STAGE 4: Story Logic Gate - Narrative Synthesis ───
         // Fire for story/creative/write dimensions, AND when the story dimension
         // scored above 0 (emotional/human topics like 'love'), AND as a fallback
         // enrichment when overall confidence is low (the story engine adds context)
@@ -559,7 +552,7 @@ final class LogicGateEnvironment {
             enrichment: storyNote
         ))
 
-        // ─── STAGE 5: Dynamic Phrase Engine — Output Calibration ───
+        // ─── STAGE 5: Dynamic Phrase Engine - Output Calibration ───
         let s5Start = CFAbsoluteTimeGetCurrent()
         let phrases = DynamicPhraseEngine.shared.generate(primaryDim, count: 2, context: context, topic: query)
         let phraseBoost = phrases.isEmpty ? 0.0 : 0.03
@@ -576,7 +569,7 @@ final class LogicGateEnvironment {
             enrichment: "Generated \(phrases.count) calibration phrases"
         ))
 
-        // ─── STAGE 6: Circuit Evaluation — Apply default resonance circuit ───
+        // ─── STAGE 6: Circuit Evaluation - Apply default resonance circuit ───
         let s6Start = CFAbsoluteTimeGetCurrent()
         let circuitOut = evaluateCircuit("resonance", inputs: [
             "dim_conf": primaryConf,
@@ -634,7 +627,7 @@ final class LogicGateEnvironment {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: GATE CIRCUIT BUILDER — Compose primitive gates
+    // MARK: GATE CIRCUIT BUILDER - Compose primitive gates
     // ═══════════════════════════════════════════════════════════════
 
     func buildCircuit(name: String, nodes: [CircuitNode]) {
@@ -707,7 +700,7 @@ final class LogicGateEnvironment {
         guard let nodes = circuits[name] else { return "Circuit '\(name)' not found." }
         let gateSymbols = nodes.map { "\($0.gate.symbol)" }.joined(separator: " → ")
         var rows: [String] = []
-        rows.append("⚡ Circuit: \(name) — Gates: \(gateSymbols)")
+        rows.append("⚡ Circuit: \(name) - Gates: \(gateSymbols)")
         rows.append("┌───────────┬───────────┬───────────┬──────────────┐")
         rows.append("│  dim_conf │  ctx_conf │   q_conf  │    OUTPUT    │")
         rows.append("├───────────┼───────────┼───────────┼──────────────┤")
@@ -730,12 +723,12 @@ final class LogicGateEnvironment {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: SELF TEST — Exercise all gate subsystems
+    // MARK: SELF TEST - Exercise all gate subsystems
     // ═══════════════════════════════════════════════════════════════
 
     func selfTest() -> String {
         var results: [String] = []
-        results.append("⚡ LOGIC GATE ENVIRONMENT — SELF-TEST")
+        results.append("⚡ LOGIC GATE ENVIRONMENT - SELF-TEST")
         results.append("═══════════════════════════════════════════════════")
 
         // Test 1: Primitive gates
@@ -784,7 +777,7 @@ final class LogicGateEnvironment {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: STATUS — Unified environment telemetry
+    // MARK: STATUS - Unified environment telemetry
     // ═══════════════════════════════════════════════════════════════
 
     var status: String {
@@ -800,7 +793,7 @@ final class LogicGateEnvironment {
 
         return """
         ╔═══════════════════════════════════════════════════════════════╗
-        ║  ⚡ LOGIC GATE ENVIRONMENT — Unified Gate Orchestration       ║
+        ║  ⚡ LOGIC GATE ENVIRONMENT - Unified Gate Orchestration       ║
         ╠═══════════════════════════════════════════════════════════════╣
         ║  Pipeline Runs:     \(totalPipelineRuns)
         ║  Total Gate Ops:    \(totalGateOps)

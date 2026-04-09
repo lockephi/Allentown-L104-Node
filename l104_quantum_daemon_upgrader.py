@@ -26,7 +26,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 # Import L104 modules
 from l104_asi.constants import GOD_CODE, PHI
-from l104_qwen_optimization import get_qwen_optimizer
+from l104_deepseek_optimization import get_deepseek_optimizer
 
 print("=" * 100)
 print("L104 QUANTUM DAEMON UPGRADE ENGINE")
@@ -67,7 +67,7 @@ class QuantumDaemonUpgrader:
     """Manages quantum daemon upgrades with ASI orchestration."""
 
     def __init__(self):
-        self.qwen_optimizer = get_qwen_optimizer()
+        self.deepseek_optimizer = get_deepseek_optimizer()
         self.upgrade_history: List[UpgradeResult] = []
         self.active_upgrades: Dict[str, threading.Thread] = {}
         self.lock = threading.Lock()
@@ -112,13 +112,13 @@ class QuantumDaemonUpgrader:
         try:
             print(f"🚀 [QUANTUM-UPGRADE]: Starting upgrade of {spec.daemon_name} v{spec.version}")
             
-            # 1. Optimize upgrade script with Qwen
-            if self.qwen_optimizer:
+            # 1. Optimize upgrade script with DeepSeek
+            if self.deepseek_optimizer:
                 with open(spec.upgrade_path, 'r') as f:
                     script_content = f.read()
                 
-                optimized_script, opt_stats = self.qwen_optimizer.optimize_for_qwen(script_content)
-                tokens_used = opt_stats.get('original_tokens', 0)
+                optimized_script, opt_stats = self.deepseek_optimizer.optimize_for_deepseek(script_content)
+                tokens_used = opt_stats.original_tokens
                 
                 if tokens_used > spec.token_limit:
                     raise Exception(f"Token limit exceeded: {tokens_used} > {spec.token_limit}")

@@ -57,6 +57,11 @@ from .orchestrator import RealWorldSimulator
 from .constants import (
     PHI, GOD_CODE, BASE, VOID_CONSTANT, OMEGA,
     X_SCAFFOLD, R_RATIO, Q_GRAIN, P_DIAL, K_OFFSET,
+    # EVO_72: Sacred time steps and dynamic scaling
+    TAU, SACRED_DT_STABLE, SACRED_DT_BALANCED, SACRED_DT_AGGRESSIVE,
+    derive_sacred_resolution, derive_scoring_weight,
+    SACRED_GRID_SIZES, derive_simulation_steps,
+    SACRED_ALGORITHMS_VERSION, SACRED_ALGORITHMS_MARKER,
 )
 
 # ─── Quantum Simulator Engine ──────────────────────────────────────────────
@@ -126,6 +131,12 @@ from .chunked_statevector import (
 from .adaptive_simulator import (
     AdaptiveSimulator, AdaptiveSimResult, SimBackend,
 )
+
+# ── Ingested: unified physics equation solvers ──
+try:
+    from .unified_physics_solver import UnifiedFieldEngine
+except ImportError:
+    pass
 
 
 __all__ = [
@@ -209,4 +220,14 @@ __all__ = [
     # Constants
     "PHI", "GOD_CODE", "BASE", "VOID_CONSTANT", "OMEGA",
     "X_SCAFFOLD", "R_RATIO", "Q_GRAIN", "P_DIAL", "K_OFFSET",
+    # EVO_72: Sacred algorithms
+    "TAU", "SACRED_DT_STABLE", "SACRED_DT_BALANCED", "SACRED_DT_AGGRESSIVE",
+    "derive_sacred_resolution", "derive_scoring_weight",
+    "SACRED_GRID_SIZES", "derive_simulation_steps",
+    "SACRED_ALGORITHMS_VERSION", "SACRED_ALGORITHMS_MARKER",
+    # EVO_72: Sacred time steps and dynamic scaling
+    "TAU", "SACRED_DT_STABLE", "SACRED_DT_BALANCED", "SACRED_DT_AGGRESSIVE",
+    "derive_sacred_resolution", "derive_scoring_weight",
+    "SACRED_GRID_SIZES", "derive_simulation_steps",
+    "SACRED_ALGORITHMS_VERSION", "SACRED_ALGORITHMS_MARKER",
 ]

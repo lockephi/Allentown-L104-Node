@@ -1,15 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L26_TestRunner.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104v2 Architecture — L104TestRunner
-// Extracted from L104Native.swift lines 32852–33080
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class L104TestRunner {
     static let shared = L104TestRunner()
@@ -47,7 +40,7 @@ class L104TestRunner {
         results.append(testScienceKB())
         results.append(testTheoremGenerator())
         results.append(testPerformanceOrchestrator())
-        // EVO_68 — Decomposed package + advanced engine tests
+        // EVO_68 - Decomposed package + advanced engine tests
         results.append(testCircuitWatcher())
         results.append(testStabilizerTableau())
         results.append(testQuantumRouter())
@@ -215,7 +208,7 @@ class L104TestRunner {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // EVO_68 — New Engine Tests
+    // EVO_68 - New Engine Tests
     // ═══════════════════════════════════════════════════════════════
 
     private func testDualLayerEngine() -> TestResult {
@@ -302,7 +295,7 @@ class L104TestRunner {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // EVO_68 — Decomposed Package + Advanced Engine Tests
+    // EVO_68 - Decomposed Package + Advanced Engine Tests
     // ═══════════════════════════════════════════════════════════════
 
     private func testCircuitWatcher() -> TestResult {

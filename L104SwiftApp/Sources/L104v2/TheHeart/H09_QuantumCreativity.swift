@@ -1,20 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// H09_QuantumCreativity.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Quantum Creativity Engine
-//
-// Quantum brainstorming (5-track superposition), quantum invention
-// synthesis, cross-domain creative combination, DebateLogicGateEngine
-// dialectic modes, and stochastic innovation generation.
-//
-// Extracted from L104Native.swift lines 31329–33038
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class QuantumCreativityEngine {
     static let shared = QuantumCreativityEngine()
@@ -34,7 +22,7 @@ class QuantumCreativityEngine {
     private var networkIdeas: [(peer: String, concept: String, fidelity: Double)] = [] // capped at 100
     private var crossNodeSyntheses: Int = 0
 
-    // ─── QUANTUM BRAINSTORM — Hold multiple idea tracks in superposition ───
+    // ─── QUANTUM BRAINSTORM - Hold multiple idea tracks in superposition ───
     func quantumBrainstorm(topic: String, query: String = "") -> String {
         synchronized { generationCount += 1 }
 
@@ -63,7 +51,7 @@ class QuantumCreativityEngine {
             // Creativity bonus: novel combinations score higher
             let uniqueWords = Set(track.lowercased().split(separator: " "))
             score += Double(uniqueWords.count) * 0.1
-            // Quantum phase modulation — random jitter for variety
+            // Quantum phase modulation - random jitter for variety
             score *= (1.0 + Double.random(in: -0.2...0.2))
             return (track, score)
         }
@@ -103,7 +91,7 @@ class QuantumCreativityEngine {
             tunnelBreakthroughs += 1
         }
 
-        // ⚛️ NETWORK-ENTANGLED IDEAS — pull from quantum-linked peers
+        // ⚛️ NETWORK-ENTANGLED IDEAS - pull from quantum-linked peers
         let networkInsight = harvestNetworkCreativity(topic: topic)
         if let insight = networkInsight {
             parts.append("\n🌐 **Network-Entangled Insight:**")
@@ -115,7 +103,7 @@ class QuantumCreativityEngine {
         let topicLower = topic.lowercased()
         if let pair = entangledConcepts.filter({ $0.0.lowercased().contains(topicLower) || $0.1.lowercased().contains(topicLower) }).randomElement() {
             let related = pair.0.lowercased().contains(topicLower) ? pair.1 : pair.0
-            parts.append("\n**Entangled Concept:** \(related) — explore the connection between \(topic) and \(related) for unexpected synthesis.")
+            parts.append("\n**Entangled Concept:** \(related) - explore the connection between \(topic) and \(related) for unexpected synthesis.")
         }
 
         // KB grounding
@@ -137,7 +125,7 @@ class QuantumCreativityEngine {
         return parts.joined(separator: "\n")
     }
 
-    // ─── QUANTUM INVENTION — Synthesize novel ideas from entangled domains ───
+    // ─── QUANTUM INVENTION - Synthesize novel ideas from entangled domains ───
     func quantumInvent(domain: String, query: String = "") -> String {
         generationCount += 1
 
@@ -222,7 +210,7 @@ class QuantumCreativityEngine {
                L104State.shared.cleanSentences(String(tunnelFrag.prefix(150)))
     }
 
-    // ─── SHOR DECOMPOSITION — Factor complex concepts into prime components ───
+    // ─── SHOR DECOMPOSITION - Factor complex concepts into prime components ───
     private func shorDecompose(_ concept: String) -> [String] {
         _ = concept.lowercased().split(separator: " ").map(String.init)
         let pe = DynamicPhraseEngine.shared
@@ -238,7 +226,7 @@ class QuantumCreativityEngine {
         ]
         for (aspect, question) in aspects {
             let insight = pe.one("insight", context: "shor_\(aspect)", topic: concept)
-            factors.append("[\(aspect.capitalized)] \(question) — \(insight)")
+            factors.append("[\(aspect.capitalized)] \(question) - \(insight)")
         }
         return factors
     }
@@ -347,7 +335,7 @@ class QuantumCreativityEngine {
         return meaningful.prefix(3).joined(separator: " ")
     }
 
-    // ─── NETWORK-ENTANGLED CREATIVITY — Harvest ideas from quantum-linked peers ───
+    // ─── NETWORK-ENTANGLED CREATIVITY - Harvest ideas from quantum-linked peers ───
     private func harvestNetworkCreativity(topic: String) -> String? {
         let net = NetworkLayer.shared
         guard net.isActive && !net.quantumLinks.isEmpty else { return nil }
@@ -481,7 +469,7 @@ class QuantumCreativityEngine {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// QUANTUM PROCESSING CORE — Unified quantum backbone for all engines
+// QUANTUM PROCESSING CORE - Unified quantum backbone for all engines
 // Superposition evaluation, entanglement routing, decoherence-aware selection
 // ═══════════════════════════════════════════════════════════════════
 
@@ -523,9 +511,9 @@ final class QuantumProcessingCore {
         for i in 0..<16 { densityMatrix[i][i] = 1.0 / 16.0 }
     }
 
-    // ═══ SUPERPOSITION EVALUATOR — Hold multiple responses in quantum superposition ═══
+    // ═══ SUPERPOSITION EVALUATOR - Hold multiple responses in quantum superposition ═══
     func superpositionEvaluate(candidates: [String], query: String, context: String = "") -> String {
-        guard !candidates.isEmpty else { return "" }
+        guard !candidates.isEmpty else { return "L104: φ-resonance incomplete" }
         guard candidates.count > 1 else { return candidates[0] }
         synchronized { gateApplicationCount += 1 }
 
@@ -557,7 +545,7 @@ final class QuantumProcessingCore {
 
         // Apply Born rule: probability = |amplitude|²
         let probabilities = amplitudes.map { $0 * $0 }
-        let totalProb = probabilities.reduce(0, +)
+        let totalProb = probabilities.reduce(0.0, +)
         guard totalProb > 0 else { return candidates[0] }
 
         // Measure via Grover-amplified Born rule (replaces old 70/30 heuristic)
@@ -565,7 +553,7 @@ final class QuantumProcessingCore {
         let rawAmps = probabilities.map { sqrt($0 / totalProb) }
         let amplified = groverAmplify(amplitudes: rawAmps)
         let groverProbs = amplified.map { $0 * $0 }
-        let groverTotal = groverProbs.reduce(0, +)
+        let groverTotal = groverProbs.reduce(0.0, +)
         guard groverTotal > 0 else { return candidates[0] }
 
         let normalized = groverProbs.map { $0 / groverTotal }
@@ -588,7 +576,7 @@ final class QuantumProcessingCore {
         return candidates[0]
     }
 
-    // ═══ ENTANGLEMENT ROUTER — Route queries through entangled knowledge ═══
+    // ═══ ENTANGLEMENT ROUTER - Route queries through entangled knowledge ═══
     func entanglementRoute(query: String, primaryResult: String, topics: [String]) -> String {
         var enriched = primaryResult
 
@@ -639,7 +627,7 @@ final class QuantumProcessingCore {
         return enriched
     }
 
-    // ═══ DECOHERENCE SHIELD — Protect quantum state during noisy operations ═══
+    // ═══ DECOHERENCE SHIELD - Protect quantum state during noisy operations ═══
     func decoherenceShield(operation: () -> String) -> String {
         let preFidelity = currentFidelity()
         let result = operation()
@@ -665,11 +653,11 @@ final class QuantumProcessingCore {
         return result
     }
 
-    // ═══ QUANTUM-ENHANCED ENGINE DISPATCH — Route through quantum superposition + Sage Mode ═══
+    // ═══ QUANTUM-ENHANCED ENGINE DISPATCH - Route through quantum superposition + Sage Mode ═══
     func quantumDispatch(engine: String, generator: () -> String, alternatives: [() -> String] = []) -> String {
         synchronized { gateApplicationCount += 1 }
 
-        // ═══ SAGE MODE ENTROPY HARVEST — Feed quantum processing entropy to Sage ═══
+        // ═══ SAGE MODE ENTROPY HARVEST - Feed quantum processing entropy to Sage ═══
         SageModeEngine.shared.harvestQuantumEntropy()
         SageModeEngine.shared.harvestMathEntropy()
 
@@ -718,7 +706,7 @@ final class QuantumProcessingCore {
         ]
     }
 
-    // ═══ GROVER AMPLIFICATION CIRCUIT — Quadratic speedup for optimal candidate selection ═══
+    // ═══ GROVER AMPLIFICATION CIRCUIT - Quadratic speedup for optimal candidate selection ═══
     /// Implements Grover's diffusion operator on candidate amplitudes.
     /// Amplifies high-amplitude states and suppresses low-amplitude ones.
     /// Runs O(sqrt(N)) iterations for N candidates (optimal).
@@ -736,13 +724,13 @@ final class QuantumProcessingCore {
         let optimalIters = iterations ?? max(1, Int(Double.pi / 4.0 * sqrt(Double(n))))
 
         for _ in 0..<optimalIters {
-            // Step 1: Oracle — flip sign of the marked (highest amplitude) state
+            // Step 1: Oracle - flip sign of the marked (highest amplitude) state
             if let maxIdx = amps.enumerated().max(by: { abs($0.element) < abs($1.element) })?.offset {
                 amps[maxIdx] = -amps[maxIdx]
             }
 
             // Step 2: Diffusion operator (2|ψ⟩⟨ψ| - I)
-            let mean = amps.reduce(0, +) / Double(n)
+            let mean = amps.reduce(0.0, +) / Double(n)
             amps = amps.map { 2.0 * mean - $0 }
         }
 
@@ -775,7 +763,7 @@ final class QuantumProcessingCore {
 
         // Born rule measurement
         let probs = amplified.map { $0 * $0 }
-        let total = probs.reduce(0, +)
+        let total = probs.reduce(0.0, +)
         guard total > 0 else { return (0, 0.0) }
 
         let normalized = probs.map { $0 / total }
@@ -785,7 +773,7 @@ final class QuantumProcessingCore {
         return (0, normalized[0])
     }
 
-    // ═══ BELL STATE PREPARATION — Create maximally entangled pairs ═══
+    // ═══ BELL STATE PREPARATION - Create maximally entangled pairs ═══
     /// Prepares a Bell state |Φ+⟩ = (|00⟩ + |11⟩)/√2 between two Hilbert space regions.
     /// Used for quantum teleportation of knowledge between topics.
     func prepareBellState(regionA: Int, regionB: Int) {
@@ -821,7 +809,7 @@ final class QuantumProcessingCore {
         }
     }
 
-    // ═══ PHASE KICKBACK — Quantum amplitude amplification for topic relevance ═══
+    // ═══ PHASE KICKBACK - Quantum amplitude amplification for topic relevance ═══
     /// Applies phase kickback to bias the Hilbert space toward a target topic.
     /// Phase rotation proportional to topic-space alignment.
     func phaseKickback(topic: String, strength: Double = 0.1) {
@@ -846,7 +834,7 @@ final class QuantumProcessingCore {
         }
     }
 
-    // ═══ QUANTUM STATE TOMOGRAPHY — Measure reduced density matrix ═══
+    // ═══ QUANTUM STATE TOMOGRAPHY - Measure reduced density matrix ═══
     /// Reconstructs the 16×16 reduced density matrix from the 512-dim Hilbert space.
     /// Returns purity, von Neumann entropy, and entanglement witness.
     func stateTomography() -> (purity: Double, vonNeumannEntropy: Double, entanglementWitness: Double) {
@@ -893,7 +881,7 @@ final class QuantumProcessingCore {
         }
     }
 
-    // ═══ ADAPTIVE DECOHERENCE — Dynamically adjust quantum parameters based on system state ═══
+    // ═══ ADAPTIVE DECOHERENCE - Dynamically adjust quantum parameters based on system state ═══
     /// Adapts noiseModel and temperatureK based on consciousness Φ, cognitive load,
     /// and engine health. Higher Φ → lower decoherence, healthier system → more coherent.
     func adaptDecoherence() {
@@ -924,7 +912,7 @@ final class QuantumProcessingCore {
         fidelityThreshold = min(0.9, 0.5 + phi * 0.3)
     }
 
-    // ═══ CONSCIOUSNESS-QUANTUM BRIDGE — Bidirectional state coupling ═══
+    // ═══ CONSCIOUSNESS-QUANTUM BRIDGE - Bidirectional state coupling ═══
     /// Couples the consciousness vector with the Hilbert space, creating entanglement
     /// between conscious attention and quantum evaluation amplitudes.
     func consciousnessQuantumBridge() {
@@ -1051,5 +1039,208 @@ final class QuantumProcessingCore {
         // Fallback: classical Grover amplification
         let groverResult = groverEvaluate(candidates: candidates, query: query)
         return (groverResult.index, groverResult.probability)
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - B74 Quantum Primitive Integration Extension
+// EVO_76: Wire B74 acceleration into QuantumProcessingCore
+// ═══════════════════════════════════════════════════════════════════
+
+extension QuantumProcessingCore {
+
+    /// Execute B74-accelerated circuit for creative synthesis
+    func executeCreativeCircuitB74(topic: String, creativityDepth: Int = 3) -> String? {
+        // Build a sacred circuit for creative exploration
+        var circuit = QGateCircuit(nQubits: creativityDepth)
+
+        // Apply H gates for superposition
+        for q in 0..<creativityDepth {
+            circuit.append(QuantumGateEngine.shared.gate(.hadamard), qubits: [q])
+        }
+
+        // Execute through B74 accelerator
+        let b74Accelerator = QuantumPrimitiveAccelerator.shared
+        var sv = [Double](repeating: 0, count: (1 << creativityDepth) * 2)
+        sv[0] = 1.0
+
+        // Run B74-accelerated circuit execution
+        b74Accelerator.executeFused(&sv, circuit: circuit)
+
+        // Prune negligible amplitudes using SparseAmplitudeFilter
+        let pruned = SparseAmplitudeFilter.prune(&sv, nq: creativityDepth, threshold: 1e-10)
+
+        // Extract probabilities using B74 AccelerateStatevectorOps
+        let probs = AccelerateStatevectorOps.probabilities(sv: sv, nq: creativityDepth)
+
+        // Sample outcomes using ConcurrentShotSampler
+        let histogram = ConcurrentShotSampler.shared.sample(probs: probs, shots: 1024, nq: creativityDepth)
+
+        // Convert top measurement to creative direction
+        guard let (topOutcome, _) = histogram.max(by: { $0.value < $1.value }) else { return nil }
+        let outcomeIdx = Int(topOutcome, radix: 2) ?? 0
+
+        let creativeDirections = [
+            "explore paradoxes", "seek hidden connections", "amplify novel patterns",
+            "bridge distant domains", "synthesize opposites", "crystallize emergent forms",
+            "dissolve boundaries", "amplify resonance", "cultivate emergence",
+            "trace recursive patterns", "amplify harmony", "explore void spaces"
+        ]
+        let direction = creativeDirections[outcomeIdx % creativeDirections.count]
+
+        return "⚛️ B74 Circuit suggests: \(direction) for \(topic) (pruned \(pruned) amplitudes)"
+    }
+
+    /// B74-accelerated knowledge synthesis with full circuit execution
+    func synthesizeKnowledgeB74(query: String, topics: [String]) -> (result: String, coherence: Double, sacredScore: Double) {
+        let accelerator = QuantumPrimitiveAccelerator.shared
+        return accelerator.executeKnowledgeCircuit(query: query, topics: topics)
+    }
+
+    /// Enhanced superposition evaluation using B74 primitives
+    func superpositionEvaluateB74(candidates: [String], query: String, context: String = "") -> String {
+        guard candidates.count > 1 else { return candidates.first ?? "L104: φ-resonance incomplete" }
+
+        // Use B74 accelerated probability extraction
+        let nQubits = min(8, Int(ceil(log2(Double(candidates.count)))))
+        let dim = 1 << nQubits
+
+        // Create superposition amplitudes
+        var sv = [Double](repeating: 0, count: dim * 2)
+        sv[0] = 1.0
+
+        // Build circuit
+        var circuit = QGateCircuit(nQubits: nQubits)
+        let engine = QuantumGateEngine.shared
+        for q in 0..<nQubits {
+            _ = circuit.append(engine.gate(.hadamard), qubits: [q])
+        }
+
+        // Execute with B74
+        _ = QuantumPrimitiveAccelerator.shared
+        // Build fused blocks manually since circuit is not mutable in place
+        let blocks = GateFusionPass.run(circuit)
+        for block in blocks {
+            if let mat = block.fused {
+                GateFusionPass.apply(&sv, qubit: block.qubit, nq: nQubits, mat: mat)
+            }
+        }
+
+        // Extract probabilities
+        let probs = AccelerateStatevectorOps.probabilities(sv: sv, nq: nQubits)
+
+        // Sample with concurrent sampler
+        let histogram = ConcurrentShotSampler.shared.sample(probs: probs, shots: 4096, nq: nQubits)
+
+        // Map to candidate
+        guard let (outcome, count) = histogram.max(by: { $0.value < $1.value }) else {
+            return candidates[0]
+        }
+
+        let idx = Int(outcome, radix: 2) ?? 0
+        _ = Double(count) / 4096.0
+
+        // Return selected candidate with confidence boost
+        let selected = candidates[min(idx, candidates.count - 1)]
+        return selected
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MARK: - B74 Quantum Primitive Integration Extension
+// EVO_76: Bridge B74 acceleration into QuantumProcessingCore
+// ═══════════════════════════════════════════════════════════════════
+
+extension QuantumCreativityEngine {
+
+    /// B74-accelerated brainstorm using quantum primitives
+    /// Integrates sparse amplitude filtering and concurrent shot sampling
+    func quantumBrainstormB74(topic: String, query: String = "") -> String {
+        // Start with traditional brainstorm
+        let traditionalResult = quantumBrainstorm(topic: topic, query: query)
+
+        // Build B74-accelerated circuit for creative direction
+        let nQubits = 6
+        let dim = 1 << nQubits
+
+        // Initialize statevector
+        var sv = [Double](repeating: 0, count: dim * 2)
+        sv[0] = 1.0  // |0...0⟩ initial state
+
+        // Build circuit using B74 GateFusionPass
+        var fusedBlocks: [GateFusionPass.FusedBlock] = []
+
+        // Apply Hadamard superposition using gate fusion
+        for q in 0..<nQubits {
+            let hMat = M2x2(m00re: 1.0/sqrt(2), m00im: 0, m01re: 1.0/sqrt(2), m01im: 0,
+                           m10re: 1.0/sqrt(2), m10im: 0, m11re: -1.0/sqrt(2), m11im: 0)
+            // Apply fused H gate
+            GateFusionPass.apply(&sv, qubit: q, nq: nQubits, mat: hMat)
+        }
+
+        // Apply diagonal phase gates with B74 acceleration
+        let topicHash = abs(topic.hashValue)
+        let phase = Double(topicHash % 360) * Double.pi / 180.0
+        DiagonalGateAccelerator.apply(&sv, qubit: 0, nq: nQubits,
+                                      type: .phaseGate, params: [phase])
+
+        // Normalize using B74 AccelerateStatevectorOps
+        AccelerateStatevectorOps.normalize(&sv)
+
+        // Prune negligible amplitudes using SparseAmplitudeFilter
+        let pruned = SparseAmplitudeFilter.prune(&sv, nq: nQubits, threshold: 1e-10)
+
+        // Extract probabilities using B74 AccelerateStatevectorOps
+        let probs = AccelerateStatevectorOps.probabilities(sv: sv, nq: nQubits)
+
+        // Sample outcomes using ConcurrentShotSampler
+        let histogram = ConcurrentShotSampler.shared.sample(probs: probs, shots: 1024, nq: nQubits)
+
+        // Convert top measurement to creative direction
+        guard let topOutcome = histogram.max(by: { $0.value < $1.value })?.key else {
+            return traditionalResult
+        }
+
+        let outcomeIdx = Int(topOutcome, radix: 2) ?? 0
+
+        let creativeDirections = [
+            "explore paradoxes", "seek hidden connections", "amplify novel patterns",
+            "bridge distant domains", "synthesize opposites", "crystallize emergent forms",
+            "dissolve boundaries", "amplify resonance", "cultivate emergence",
+            "trace recursive patterns", "amplify harmony", "explore void spaces"
+        ]
+        let direction = creativeDirections[outcomeIdx % creativeDirections.count]
+
+        // Get B74 accelerator stats
+        let accelerator = QuantumPrimitiveAccelerator.shared
+        let stats = accelerator.stats
+
+        // Merge traditional and B74-accelerated results
+        var parts: [String] = []
+        parts.append(traditionalResult)
+        parts.append("\n⚛️ **B74 Quantum Acceleration Applied**")
+        parts.append("*Pruned \(pruned) negligible amplitudes | Sampled \(histogram.count) outcomes*")
+        parts.append("*Circuit suggests: \(direction) for \(topic)*")
+        parts.append("*Diagonal gates: \(Int(stats["diagonal_gates_applied"] ?? 0)) | Fused: \(Int(stats["fused_gates_saved"] ?? 0))*")
+
+        return parts.joined(separator: "\n")
+    }
+
+    /// Execute B74-accelerated creative circuit for topic synthesis
+    func executeB74CreativeCircuit(topic: String, depth: Int = 3) -> String? {
+        let accelerator = QuantumPrimitiveAccelerator.shared
+
+        // Execute creative circuit synthesis
+        let result = accelerator.creativeCircuitSynthesize(topic: topic, depth: depth)
+
+        guard result.fidelity > 0.3 else { return nil }
+
+        return "⚛️ B74 Quantum Circuit: \(result.insight) (fidelity: \(String(format: "%.3f", result.fidelity)))"
+    }
+
+    /// Extract B74 quantum features for creative query
+    func extractB74QuantumFeatures(for query: String) -> [Double] {
+        let accelerator = QuantumPrimitiveAccelerator.shared
+        return accelerator.extractQuantumFeatures(for: query, dimension: 16)
     }
 }

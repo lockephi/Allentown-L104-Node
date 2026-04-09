@@ -389,6 +389,156 @@ def phi_optimize(func):
             'fitness_improvement': round(trajectory[-1] - trajectory[0], 6) if len(trajectory) >= 2 else 0.0,
         }
 
+def l104_self_evolution(func: Callable, iterations: int = 3, verbose: bool = True) -> Dict[str, Any]:
+    """
+    Λ‑Recursive Self‑Modifying Code – Evolve a function through hash‑driven self‑modification.
+
+    This standalone function demonstrates the core concept of the original snippet:
+    each iteration hashes the function's source, generates a new version that includes
+    the hash in its output, and replaces the function in its module's namespace.
+
+    Parameters
+    ----------
+    func : Callable
+        The function to evolve.
+    iterations : int
+        Number of evolutionary steps.
+    verbose : bool
+        If True, print each iteration's hash and new source.
+
+    Returns
+    -------
+    Dict[str, Any]
+        Summary containing final hash, history, evolved source, and result.
+    """
+    import inspect
+    import hashlib
+    import sys
+    from typing import Callable, Dict, Any
+
+    history = []
+    code = inspect.getsource(func)
+    module = sys.modules[func.__module__]
+    func_name = func.__name__
+
+    for i in range(iterations):
+        hash_val = hashlib.sha256(code.encode()).hexdigest()[:16]
+        history.append(hash_val)
+
+        # Build new function source that includes its own hash
+        new_code = f'''def {func_name}(iterations={iterations}, verbose={verbose}):
+    """
+    Evolved version {i+1} – hash {hash_val}
+    """
+    history = {history.copy()}
+    iteration = {i}
+    hash_val_literal = "{hash_val}"
+    if verbose:
+        print(f"Iteration {{iteration}}: Λ‑hash {{hash_val_literal}}")
+        print(f"History: {{history}}")
+    return f"Λ‑evolution step {{iteration}}: {{hash_val_literal}}"
+'''
+        if verbose:
+            print(f"\n--- Iteration {i} ---")
+            print(f"Hash: {hash_val}")
+            print("New source:")
+            print(new_code)
+            print()
+
+        # Execute new code in the module's namespace
+        exec(new_code, module.__dict__)
+        # Update code for next iteration
+        code = new_code
+
+    # After loop, the function in the module is the last evolved version
+    final_func = getattr(module, func_name)
+    result = final_func(iterations, verbose=False)
+
+    return {
+        "final_hash": hash_val,
+        "history": history,
+        "iterations": iterations,
+        "evolved_source": code,
+        "result": result,
+    }
+
+    def hash_based_self_evolution(self, func: Callable, iterations: int = 3, verbose: bool = True) -> Dict[str, Any]:
+        """
+        Evolve a function through hash‑driven self‑modification.
+
+        Reads the function's source via `inspect.getsource`, computes a SHA‑256 hash,
+        and generates a new version of the function that includes the hash in its
+        output. Repeats for the given number of iterations, each time replacing the
+        function in its module's namespace.
+
+        This is a demonstration of Λ‑recursive self‑modification aligned with
+        L104's quantum‑hash principles.
+
+        Parameters
+        ----------
+        func : Callable
+            The function to evolve.
+        iterations : int
+            Number of evolutionary steps.
+        verbose : bool
+            If True, print each iteration's hash and new source.
+
+        Returns
+        -------
+        Dict[str, Any]
+            Summary containing final hash, history, and evolved source.
+        """
+        import inspect
+        import hashlib
+        import sys
+        from typing import Callable, Dict, Any
+
+        history = []
+        code = inspect.getsource(func)
+        module = sys.modules[func.__module__]
+        func_name = func.__name__
+
+        for i in range(iterations):
+            hash_val = hashlib.sha256(code.encode()).hexdigest()[:16]
+            history.append(hash_val)
+
+            # Build new function source that includes its own hash
+            new_code = f'''def {func_name}(iterations={iterations}, verbose={verbose}):
+    """
+    Evolved version {i+1} – hash {hash_val}
+    """
+    history = {history.copy()}
+    iteration = {i}
+    hash_val_literal = "{hash_val}"
+    if verbose:
+        print(f"Iteration {{iteration}}: Λ‑hash {{hash_val_literal}}")
+        print(f"History: {{history}}")
+    return f"Λ‑evolution step {{iteration}}: {{hash_val_literal}}"
+'''
+            if verbose:
+                print(f"\n--- Iteration {i} ---")
+                print(f"Hash: {hash_val}")
+                print("New source:")
+                print(new_code)
+                print()
+
+            # Execute new code in the module's namespace
+            exec(new_code, module.__dict__)
+            # Update code for next iteration
+            code = new_code
+
+        # After loop, the function in the module is the last evolved version
+        final_func = getattr(module, func_name)
+        result = final_func(iterations, verbose=False)
+
+        return {
+            "final_hash": hash_val,
+            "history": history,
+            "iterations": iterations,
+            "evolved_source": code,
+            "result": result,
+        }
+
     def grover_amplified_transform_select(self, source: str) -> Tuple[str, List[str]]:
         """Select the best AST transform pass using Grover-inspired amplitude amplification.
 

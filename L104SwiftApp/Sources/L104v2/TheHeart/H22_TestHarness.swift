@@ -1,16 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// H22_TestHarness.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Mesh-Distributed Test Harness
-// Automated engine testing, health validation, and cross-node test sync
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
+private let logging = Logger(subsystem: "com.l104.H22_TestHarness", category: "main")
 // MARK: - Test Result
 
 struct TestResult {
@@ -22,7 +18,7 @@ struct TestResult {
     let timestamp: Date
 }
 
-// MARK: - TestHarness — Full Implementation
+// MARK: - TestHarness - Full Implementation
 
 final class TestHarness {
     static let shared = TestHarness()
@@ -43,7 +39,7 @@ final class TestHarness {
         defer { lock.unlock() }
         isActive = true
         registerCoreTests()
-        print("[H22] TestHarness activated — \(registeredTests.count) core tests registered")
+        logging.info("[H22] TestHarness activated - \(self.registeredTests.count) core tests registered")
     }
 
     func deactivate() {
@@ -150,7 +146,7 @@ final class TestHarness {
         return (thisRunPassed, thisRunFailed, thisRunResults)
     }
 
-    // ═══ MESH TEST SYNC — Share test results with peers ═══
+    // ═══ MESH TEST SYNC - Share test results with peers ═══
     func syncTestsWithMesh() {
         guard isActive else { return }
         let net = NetworkLayer.shared

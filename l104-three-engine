@@ -1,0 +1,203 @@
+#!/usr/bin/env python3
+"""
+L104 Three-Engine Unified CLI
+Command‑line interface for the L104 Three-Engine Unified.
+"""
+
+import sys
+import os
+import argparse
+import json
+import glob
+
+# --- ENVIRONMENT SETUP ---
+current_dir = os.path.dirname(os.path.abspath(__file__))
+os.environ["PYTHONPATH"] = f"{os.environ.get('PYTHONPATH', '')}:{current_dir}"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["L104_CPU_CORES"] = "2"
+
+# Add all l104_* directories to path
+root = current_dir
+for p in glob.glob(os.path.join(root, 'l104_*')):
+    if os.path.isdir(p) and not os.path.basename(p).startswith('l104_data'):
+        if p not in sys.path:
+            sys.path.insert(0, p)
+
+# --- ENGINE SELECTION ---
+ENGINE_TYPE = "three-engine"
+ENGINE_NAME = "Three-Engine Unified"
+
+def get_engine():
+    """Get the appropriate engine instance."""
+    if ENGINE_TYPE == "science":
+        from l104_science_engine import ScienceEngine
+        return ScienceEngine()
+    elif ENGINE_TYPE == "math":
+        from l104_math_engine import math_engine
+        return math_engine
+    elif ENGINE_TYPE == "code":
+        from l104_code_engine import code_engine
+        return code_engine
+    elif ENGINE_TYPE == "three-engine":
+        from l104_three_engine_integration import get_three_engine
+        return get_three_engine()
+    else:
+        raise ValueError(f"Unknown engine type: {ENGINE_TYPE}")
+
+def get_unified():
+    """Get the unified three-engine instance (for cross-engine operations)."""
+    from l104_three_engine_integration import get_three_engine
+    return get_three_engine()
+
+# --- COMMAND IMPLEMENTATIONS ---
+def cmd_status(args):
+    """Get engine status."""
+    engine = get_engine()
+    status = engine.get_status() if hasattr(engine, 'get_status') else {"available": True, "type": ENGINE_TYPE}
+    print(json.dumps(status, indent=2))
+
+def cmd_analyze(args):
+    """Perform analysis."""
+    engine = get_engine()
+    if ENGINE_TYPE == "three-engine":
+        # Unified three-engine analysis
+        result = engine.analyze(
+            code=args.code,
+            science_data=args.science,
+            math_data=args.math,
+            measurement_gap=args.measurement_gap,
+            apply_quantum_enhancement=not args.no_quantum,
+            apply_consciousness_anchor=not args.no_consciousness
+        )
+        print(json.dumps(result, indent=2))
+    elif ENGINE_TYPE == "science":
+        # Science engine specific analysis
+        if hasattr(engine, 'perform_research_cycle'):
+            result = engine.perform_research_cycle(domain=args.domain)
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"Science engine does not support analysis directly.")
+    elif ENGINE_TYPE == "math":
+        # Math engine specific analysis
+        if hasattr(engine, 'prove_all'):
+            result = engine.prove_all()
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"Math engine does not support analysis directly.")
+    elif ENGINE_TYPE == "code":
+        # Code engine specific analysis
+        if hasattr(engine, 'analyze_code'):
+            result = engine.analyze_code(args.code)
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"Code engine does not support analysis directly.")
+    else:
+        print(f"Analysis not implemented for {ENGINE_TYPE}.")
+
+def cmd_validate(args):
+    """Cross‑validate input across engines."""
+    unified = get_unified()
+    if not hasattr(unified, 'cross_validate'):
+        print("Cross‑validation not available.")
+        return
+    try:
+        with open(args.input, 'r') as f:
+            input_data = json.load(f)
+    except Exception as e:
+        print(f"Error loading input file: {e}")
+        sys.exit(1)
+    result = unified.cross_validate(input_data)
+    print(json.dumps(result, indent=2))
+
+def cmd_cross_engine(args):
+    """Run a cross‑engine operation."""
+    unified = get_unified()
+    if args.operation == "entropy_analysis":
+        if hasattr(unified, 'cross_engine_entropy_analysis'):
+            result = unified.cross_engine_entropy_analysis()
+            print(json.dumps(result, indent=2))
+        else:
+            print("Entropy analysis not available.")
+    elif args.operation == "coherence_deep":
+        if hasattr(unified, 'cross_engine_coherence_deep'):
+            result = unified.cross_engine_coherence_deep()
+            print(json.dumps(result, indent=2))
+        else:
+            print("Coherence deep not available.")
+    else:
+        print(f"Unknown operation: {args.operation}")
+
+def cmd_simulate(args):
+    """Run a simulation."""
+    engine = get_engine()
+    if ENGINE_TYPE == "science":
+        if hasattr(engine, 'run_god_code_simulation'):
+            result = engine.run_god_code_simulation(sim_name=args.type)
+            print(json.dumps(result, indent=2))
+        else:
+            print("Simulation not available.")
+    elif ENGINE_TYPE == "math":
+        if hasattr(engine, 'run_simulation'):
+            result = engine.run_simulation()
+            print(json.dumps(result, indent=2))
+        else:
+            print("Simulation not available.")
+    elif ENGINE_TYPE == "code":
+        if hasattr(engine, 'execute'):
+            result = engine.execute(args.code)
+            print(json.dumps(result, indent=2))
+        else:
+            print("Simulation not available.")
+    else:
+        print(f"Simulation not implemented for {ENGINE_TYPE}.")
+
+# --- MAIN PARSER ---
+def main():
+    parser = argparse.ArgumentParser(description="L104 " + ENGINE_NAME + " CLI")
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # Status
+    status_parser = subparsers.add_parser("status", help="Get " + ENGINE_NAME + " status")
+    status_parser.set_defaults(func=cmd_status)
+
+    # Analyze
+    analyze_parser = subparsers.add_parser("analyze", help="Perform " + ENGINE_NAME + " analysis")
+    if ENGINE_TYPE == "three-engine":
+        analyze_parser.add_argument("--code", type=str, help="Code input")
+        analyze_parser.add_argument("--science", type=str, help="Science data JSON string")
+        analyze_parser.add_argument("--math", type=str, help="Math data JSON string")
+        analyze_parser.add_argument("--measurement-gap", type=float, default=0.0, help="Measurement gap for thermal detection")
+        analyze_parser.add_argument("--no-quantum", action="store_true", help="Disable quantum enhancement")
+        analyze_parser.add_argument("--no-consciousness", action="store_true", help="Disable consciousness anchoring")
+    elif ENGINE_TYPE == "science":
+        analyze_parser.add_argument("--domain", type=str, default="ADVANCED_PHYSICS", help="Research domain")
+    elif ENGINE_TYPE == "code":
+        analyze_parser.add_argument("--code", type=str, required=True, help="Code to analyze")
+    analyze_parser.set_defaults(func=cmd_analyze)
+
+    # Validate
+    validate_parser = subparsers.add_parser("validate", help="Cross‑validate input across three engines")
+    validate_parser.add_argument("--input", type=str, required=True, help="Input JSON file")
+    validate_parser.set_defaults(func=cmd_validate)
+
+    # Cross‑engine
+    cross_parser = subparsers.add_parser("cross‑engine", help="Run a cross‑engine operation")
+    cross_parser.add_argument("--operation", type=str, required=True, choices=["entropy_analysis", "coherence_deep"], help="Operation to perform")
+    cross_parser.set_defaults(func=cmd_cross_engine)
+
+    # Simulate
+    simulate_parser = subparsers.add_parser("simulate", help="Run a " + ENGINE_NAME + " simulation")
+    if ENGINE_TYPE == "science":
+        simulate_parser.add_argument("--type", type=str, default="entanglement_entropy", help="Simulation type")
+    elif ENGINE_TYPE == "code":
+        simulate_parser.add_argument("--code", type=str, required=True, help="Code to execute")
+    simulate_parser.set_defaults(func=cmd_simulate)
+
+    args = parser.parse_args()
+    if hasattr(args, 'func'):
+        args.func(args)
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    main()

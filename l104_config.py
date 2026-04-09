@@ -297,6 +297,7 @@ class LRUCache:
         self.cache: Dict[str, Any] = {}
         self.order: list = []
         self._lock = __import__('threading').Lock()
+        self._hit_count = 0  # Track cache hits
 
     def get(self, key: str) -> Optional[Any]:
         with self._lock:
@@ -304,6 +305,7 @@ class LRUCache:
                 # Move to end (most recently used)
                 self.order.remove(key)
                 self.order.append(key)
+                self._hit_count += 1  # Increment hit count
                 return self.cache[key]
             return None
 

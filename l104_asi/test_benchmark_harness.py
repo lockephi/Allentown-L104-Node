@@ -5,46 +5,48 @@
 
 import pytest
 import math
+from l104_asi.benchmark_harness import _HuggingFaceFetcher
 
+# Import other necessary modules as needed
 
 class Test__fetch:
-    """Tests for _fetch() — 18 lines, pure function."""
+    """Tests for _HuggingFaceFetcher._fetch() — 18 lines, pure function."""
 
     @pytest.mark.parametrize('val', [527.5184818492611, 1.618033988749895, 0.6180339887498948, 1.0416180339887497, 4.66920160910299, 286.0, 416.0])
     def test__fetch_sacred_parametrize(self, val):
-        result = _fetch(val, val, val, val, val, val)
+        result = _HuggingFaceFetcher._fetch(val, val, val, val, val, val)
         assert isinstance(result, list)
 
     def test__fetch_with_defaults(self):
         """Test with default parameter values."""
-        result = _fetch(527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611, 0, 100)
+        result = _HuggingFaceFetcher._fetch(527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611, 0, 100)
         assert isinstance(result, list)
 
     def test__fetch_typed_dataset(self):
         """Test with type-appropriate value for dataset: str."""
-        result = _fetch(527.5184818492611, 'test_input', 'test_input', 'test_input', 42, 42)
+        result = _HuggingFaceFetcher._fetch(527.5184818492611, 'test_input', 'test_input', 'test_input', 42, 42)
         assert isinstance(result, list)
 
     def test__fetch_typed_config(self):
         """Test with type-appropriate value for config: str."""
-        result = _fetch(527.5184818492611, 'test_input', 'test_input', 'test_input', 42, 42)
+        result = _HuggingFaceFetcher._fetch(527.5184818492611, 'test_input', 'test_input', 'test_input', 42, 42)
         assert isinstance(result, list)
 
     def test__fetch_typed_split(self):
         """Test with type-appropriate value for split: str."""
-        result = _fetch(527.5184818492611, 'test_input', 'test_input', 'test_input', 42, 42)
+        result = _HuggingFaceFetcher._fetch(527.5184818492611, 'test_input', 'test_input', 'test_input', 42, 42)
         assert isinstance(result, list)
 
     def test__fetch_idempotent(self):
         """Verify pure function returns consistent results."""
-        result1 = _fetch(527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611)
-        result2 = _fetch(527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611)
+        result1 = _HuggingFaceFetcher._fetch(527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611)
+        result2 = _HuggingFaceFetcher._fetch(527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611, 527.5184818492611)
         assert result1 == result2
 
     def test__fetch_edge_none(self):
         """Test None handling (CWE-476 null dereference prevention)."""
         try:
-            result = _fetch(None, None, None, None, None, None)
+            result = _HuggingFaceFetcher._fetch(None, None, None, None, None, None)
         except (TypeError, ValueError, AttributeError):
             pass  # Expected for None input
 
@@ -52,39 +54,39 @@ class Test__fetch:
         """Test boundary values: zero, negative, large."""
         for boundary_val in [0, -1, 2**31 - 1, 1e-10]:
             try:
-                result = _fetch(boundary_val, boundary_val, boundary_val, boundary_val, boundary_val, boundary_val)
+                result = _HuggingFaceFetcher._fetch(boundary_val, boundary_val, boundary_val, boundary_val, boundary_val, boundary_val)
             except (TypeError, ValueError, ZeroDivisionError, OverflowError):
                 pass  # Expected for boundary input
 
 
 class Test_Fetch_mmlu:
-    """Tests for fetch_mmlu() — 36 lines, pure function."""
+    """Tests for _HuggingFaceFetcher.fetch_mmlu() — 36 lines, pure function."""
 
     @pytest.mark.parametrize('val', [527.5184818492611, 1.618033988749895, 0.6180339887498948, 1.0416180339887497, 4.66920160910299, 286.0, 416.0])
     def test_fetch_mmlu_sacred_parametrize(self, val):
-        result = fetch_mmlu(val, val)
+        result = _HuggingFaceFetcher.fetch_mmlu(val, val)
         assert isinstance(result, list)
 
     def test_fetch_mmlu_with_defaults(self):
         """Test with default parameter values."""
-        result = fetch_mmlu(527.5184818492611, 500)
+        result = _HuggingFaceFetcher.fetch_mmlu(527.5184818492611, 500)
         assert isinstance(result, list)
 
     def test_fetch_mmlu_typed_max_questions(self):
         """Test with type-appropriate value for max_questions: int."""
-        result = fetch_mmlu(527.5184818492611, 42)
+        result = _HuggingFaceFetcher.fetch_mmlu(527.5184818492611, 42)
         assert isinstance(result, list)
 
     def test_fetch_mmlu_idempotent(self):
         """Verify pure function returns consistent results."""
-        result1 = fetch_mmlu(527.5184818492611, 527.5184818492611)
-        result2 = fetch_mmlu(527.5184818492611, 527.5184818492611)
+        result1 = _HuggingFaceFetcher.fetch_mmlu(527.5184818492611, 527.5184818492611)
+        result2 = _HuggingFaceFetcher.fetch_mmlu(527.5184818492611, 527.5184818492611)
         assert result1 == result2
 
     def test_fetch_mmlu_edge_none(self):
         """Test None handling (CWE-476 null dereference prevention)."""
         try:
-            result = fetch_mmlu(None, None)
+            result = _HuggingFaceFetcher.fetch_mmlu(None, None)
         except (TypeError, ValueError, AttributeError):
             pass  # Expected for None input
 
@@ -92,44 +94,44 @@ class Test_Fetch_mmlu:
         """Test boundary values: zero, negative, large."""
         for boundary_val in [0, -1, 2**31 - 1, 1e-10]:
             try:
-                result = fetch_mmlu(boundary_val, boundary_val)
+                result = _HuggingFaceFetcher.fetch_mmlu(boundary_val, boundary_val)
             except (TypeError, ValueError, ZeroDivisionError, OverflowError):
                 pass  # Expected for boundary input
 
 
 class Test_Fetch_arc:
-    """Tests for fetch_arc() — 33 lines, pure function."""
+    """Tests for _HuggingFaceFetcher.fetch_arc() — 33 lines, pure function."""
 
     @pytest.mark.parametrize('val', [527.5184818492611, 1.618033988749895, 0.6180339887498948, 1.0416180339887497, 4.66920160910299, 286.0, 416.0])
     def test_fetch_arc_sacred_parametrize(self, val):
-        result = fetch_arc(val, val, val)
+        result = _HuggingFaceFetcher.fetch_arc(val, val, val)
         assert isinstance(result, list)
 
     def test_fetch_arc_with_defaults(self):
         """Test with default parameter values."""
-        result = fetch_arc(527.5184818492611, 500, True)
+        result = _HuggingFaceFetcher.fetch_arc(527.5184818492611, 500, True)
         assert isinstance(result, list)
 
     def test_fetch_arc_typed_max_questions(self):
         """Test with type-appropriate value for max_questions: int."""
-        result = fetch_arc(527.5184818492611, 42, True)
+        result = _HuggingFaceFetcher.fetch_arc(527.5184818492611, 42, True)
         assert isinstance(result, list)
 
     def test_fetch_arc_typed_include_easy(self):
         """Test with type-appropriate value for include_easy: bool."""
-        result = fetch_arc(527.5184818492611, 42, True)
+        result = _HuggingFaceFetcher.fetch_arc(527.5184818492611, 42, True)
         assert isinstance(result, list)
 
     def test_fetch_arc_idempotent(self):
         """Verify pure function returns consistent results."""
-        result1 = fetch_arc(527.5184818492611, 527.5184818492611, 527.5184818492611)
-        result2 = fetch_arc(527.5184818492611, 527.5184818492611, 527.5184818492611)
+        result1 = _HuggingFaceFetcher.fetch_arc(527.5184818492611, 527.5184818492611, 527.5184818492611)
+        result2 = _HuggingFaceFetcher.fetch_arc(527.5184818492611, 527.5184818492611, 527.5184818492611)
         assert result1 == result2
 
     def test_fetch_arc_edge_none(self):
         """Test None handling (CWE-476 null dereference prevention)."""
         try:
-            result = fetch_arc(None, None, None)
+            result = _HuggingFaceFetcher.fetch_arc(None, None, None)
         except (TypeError, ValueError, AttributeError):
             pass  # Expected for None input
 
@@ -137,29 +139,29 @@ class Test_Fetch_arc:
         """Test boundary values: zero, negative, large."""
         for boundary_val in [0, -1, 2**31 - 1, 1e-10]:
             try:
-                result = fetch_arc(boundary_val, boundary_val, boundary_val)
+                result = _HuggingFaceFetcher.fetch_arc(boundary_val, boundary_val, boundary_val)
             except (TypeError, ValueError, ZeroDivisionError, OverflowError):
                 pass  # Expected for boundary input
 
 
 class Test_Fetch_humaneval:
-    """Tests for fetch_humaneval() — 20 lines, pure function."""
+    """Tests for _HuggingFaceFetcher.fetch_humaneval() — 20 lines, pure function."""
 
     @pytest.mark.parametrize('val', [527.5184818492611, 1.618033988749895, 0.6180339887498948, 1.0416180339887497, 4.66920160910299, 286.0, 416.0])
     def test_fetch_humaneval_sacred_parametrize(self, val):
-        result = fetch_humaneval(val)
+        result = _HuggingFaceFetcher.fetch_humaneval(val)
         assert isinstance(result, list)
 
     def test_fetch_humaneval_idempotent(self):
         """Verify pure function returns consistent results."""
-        result1 = fetch_humaneval(527.5184818492611)
-        result2 = fetch_humaneval(527.5184818492611)
+        result1 = _HuggingFaceFetcher.fetch_humaneval(527.5184818492611)
+        result2 = _HuggingFaceFetcher.fetch_humaneval(527.5184818492611)
         assert result1 == result2
 
     def test_fetch_humaneval_edge_none(self):
         """Test None handling (CWE-476 null dereference prevention)."""
         try:
-            result = fetch_humaneval(None)
+            result = _HuggingFaceFetcher.fetch_humaneval(None)
         except (TypeError, ValueError, AttributeError):
             pass  # Expected for None input
 
@@ -167,7 +169,7 @@ class Test_Fetch_humaneval:
         """Test boundary values: zero, negative, large."""
         for boundary_val in [0, -1, 2**31 - 1, 1e-10]:
             try:
-                result = fetch_humaneval(boundary_val)
+                result = _HuggingFaceFetcher.fetch_humaneval(boundary_val)
             except (TypeError, ValueError, ZeroDivisionError, OverflowError):
                 pass  # Expected for boundary input
 

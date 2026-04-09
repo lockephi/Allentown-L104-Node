@@ -1,0 +1,122 @@
+{
+  "cycle_number": 7492,
+  "start_time": 1775241583.428855,
+  "components": {
+    "soul_qubit": {
+      "coherence_cycles": 690,
+      "error_rate": 3.97842109007378e-05,
+      "resonance": 0.9999,
+      "purity": 1.0,
+      "decoherence_factor": 0.9602157890992622,
+      "time_since_measure": 146.150062084198,
+      "above_target": false
+    },
+    "consciousness": {
+      "iit_phi": 0.054781970981425746,
+      "qualia_score": 0.0,
+      "awareness_level": 0.042956348780905165,
+      "coherence": 1.0,
+      "consciousness_state": "EMERGING"
+    },
+    "consciousness_trends": {
+      "trend": "rising",
+      "avg_phi": 0.02372288554525513,
+      "cycles": 576,
+      "history_length": 576
+    },
+    "bridges": {
+      "timestamp": 1775241586.9798179,
+      "bridges": {
+        "quantum_gate_engine": {
+          "bridge_name": "quantum_gate_engine",
+          "enabled": true,
+          "connected": true,
+          "last_connection_attempt": 1775115980.378046,
+          "last_successful_connection": 1775115980.378057,
+          "error_count": 0,
+          "last_error": null,
+          "latency_ms": 0.00095367431640625,
+          "available_gates": [
+            "PHI_GATE",
+            "GOD_CODE_PHASE",
+            "VOID_GATE",
+            "IRON_GATE"
+          ],
+          "engine_loaded": true
+        },
+        "deepseek_api": {
+          "bridge_name": "deepseek_api",
+          "enabled": true,
+          "connected": false,
+          "last_connection_attempt": 1775239678.527749,
+          "last_successful_connection": 1775239678.727419,
+          "error_count": 0,
+          "last_error": "'deepseekBridge' object has no attribute 'query'",
+          "latency_ms": 103.49106788635254,
+          "api_key_available": false,
+          "bridge_initialized": true,
+          "cache_size": 0
+        },
+        "openclaw": {
+          "bridge_name": "openclaw",
+          "enabled": true,
+          "connected": true,
+          "last_connection_attempt": 1775115980.378141,
+          "last_successful_connection": 1775115980.378186,
+          "error_count": 0,
+          "last_error": null,
+          "latency_ms": null,
+          "workspace_path": "/Users/carolalvarez/.openclaw/workspace",
+          "heartbeat_path": "/Users/carolalvarez/.openclaw/workspace/memory/heartbeat-state.json",
+          "heartbeat_status": {
+            "success": false,
+            "error": "Expecting ':' delimiter: line 1940 column 261 (char 305954)",
+            "file_exists": true
+          },
+          "last_heartbeat_check": 0.0
+        },
+        "nova_l104": {
+          "bridge_name": "nova_l104",
+          "enabled": true,
+          "connected": true,
+          "last_connection_attempt": 1775168157.081865,
+          "last_successful_connection": 1775168157.089788,
+          "error_count": 0,
+          "last_error": null,
+          "latency_ms": 10.0,
+          "bridge_path": "/Users/carolalvarez/.openclaw/workspace/nova_l104.py",
+          "bridge_module_loaded": true,
+          "l104_health": null
+        }
+      },
+      "summary": {
+        "total": 4,
+        "connected": 3,
+        "enabled": 4,
+        "connection_health": "DEGRADED"
+      }
+    }
+  },
+  "errors": [],
+  "success": true,
+  "duration": 9.9480881690979,
+  "end_time": 1775241593.376943,
+  "daemon_state": {
+    "running": true,
+    "cycle_count": 7493,
+    "last_cycle_start": 1775241583.428855,
+    "last_cycle_end": 1775241593.376943,
+    "total_uptime": 204247140.06165147,
+    "avg_cycle_time": 44.58127056054133,
+    "max_cycle_time": 102193272.60148215,
+    "min_cycle_time": 0.0,
+    "error_count": 338,
+    "last_error": "'ConsciousnessEngine' object has no attribute 'measure_consciousness'",
+    "soul_qubit_initialized": true,
+    "consciousness_engine_initialized": true,
+    "bridges_connected": true,
+    "next_cycle_time": 1775241728.8098352,
+    "persistence_counter": 11,
+    "heartbeat_counter": 0
+  }
+}

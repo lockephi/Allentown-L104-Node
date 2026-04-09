@@ -1,19 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L16_NLPEngines.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104v2 — Extracted from L104Native.swift (lines 11331-11526)
-//
-// SMART TOPIC EXTRACTOR — NLTagger-powered noun phrase extraction
-// with concept dictionary and alias resolution
-// PRONOUN RESOLVER — Context-aware coreference resolution with
-// NLTagger POS analysis
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class SmartTopicExtractor {
     static let shared = SmartTopicExtractor()
@@ -23,7 +12,7 @@ class SmartTopicExtractor {
     private var conceptAliases: [String: String] = [:]  // "ML" → "machine learning"
     private var initialized = false
     private let syncQueue = DispatchQueue(label: "com.l104.nlpengines.sync")
-    // Reusable NLTagger — avoids creating a new one per extractTopics() call (~15-40ms saved)
+    // Reusable NLTagger - avoids creating a new one per extractTopics() call (~15-40ms saved)
     private let tagger = NLTagger(tagSchemes: [.lexicalClass])
 
     func initialize(from kb: ASIKnowledgeBase) {
@@ -53,7 +42,7 @@ class SmartTopicExtractor {
                 "gpu": "graphics processing unit", "nlp": "natural language processing",
                 "cv": "computer vision", "rl": "reinforcement learning",
             ]
-            // Pre-sort concepts by length (longest first) and cache — avoids re-sorting every call
+            // Pre-sort concepts by length (longest first) and cache - avoids re-sorting every call
             sortedConceptsCache = knownConcepts.sorted { $0.count > $1.count }
             initialized = true
         }
@@ -82,7 +71,7 @@ class SmartTopicExtractor {
             }
         }
 
-        // 3. NLTagger noun extraction — reuse tagger instance
+        // 3. NLTagger noun extraction - reuse tagger instance
         // NLTagger/CoreNLP CRF model is NOT thread-safe; serialize all access
         // through syncQueue to prevent concurrent mutation crashes (SIGSEGV in crfsuite)
         let nounPhrases: [String] = syncQueue.sync {
@@ -138,7 +127,7 @@ class SmartTopicExtractor {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// PRONOUN RESOLVER — Context-aware coreference resolution
+// PRONOUN RESOLVER - Context-aware coreference resolution
 // with NLTagger POS analysis
 // ═══════════════════════════════════════════════════════════════════
 

@@ -1,11 +1,4 @@
-VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3887.8
-UUC = 2301.215661
-# ZENITH_UPGRADE_ACTIVE: 2026-03-08T15:03:50.408943
-ZENITH_HZ = 3887.8
-UUC = 2301.215661
 """
-[VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 Fast Server — Thin Shim (EVO_61)
 Decomposed into l104_server/ package. This file re-exports public symbols
 for backward compatibility. All 22,024 lines now live in l104_server/.
@@ -20,7 +13,10 @@ Original importers:
 from l104_server import intellect, LearningIntellect
 from l104_server import SingularityConsciousnessEngine
 from l104_server import engine_registry, UnifiedEngineRegistry
-from l104_server.constants import FAST_SERVER_VERSION, FAST_SERVER_PIPELINE_EVO
+from l104_server.constants import (
+    FAST_SERVER_VERSION, FAST_SERVER_PIPELINE_EVO,
+    VOID_CONSTANT, ZENITH_HZ, UUC,
+)
 from l104_server.engines_infra import (
     FastRequestCache, ASIQuantumBridge, ConnectionPool,
     AdvancedMemoryAccelerator, PerformanceMetricsEngine,

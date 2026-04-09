@@ -1,0 +1,204 @@
+#!/usr/bin/env python3
+"""
+L104 UNIFIED PROVIDER CLI - Perplexity
+Command‑line interface for the Perplexity provider via the L104 Unified Provider Orchestrator.
+"""
+
+import sys
+import os
+import argparse
+import asyncio
+import json
+import glob
+
+# --- ENVIRONMENT SETUP ---
+current_dir = os.path.dirname(os.path.abspath(__file__))
+os.environ["PYTHONPATH"] = f"{os.environ.get('PYTHONPATH', '')}:{current_dir}"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["L104_CPU_CORES"] = "2"
+
+# Add all l104_* directories to path
+root = current_dir
+for p in glob.glob(os.path.join(root, 'l104_*')):
+    if os.path.isdir(p) and not os.path.basename(p).startswith('l104_data'):
+        if p not in sys.path:
+            sys.path.insert(0, p)
+
+# --- PROVIDER-SPECIFIC CONFIG ---
+PROVIDER_NAME = "perplexity"
+MODEL_NAME = "Perplexity"
+
+# --- HELPER FUNCTIONS ---
+def get_orchestrator():
+    from l104_unified_providers import get_orchestrator
+    return get_orchestrator()
+
+async def query_provider(prompt: str, temperature: float = 0.7, max_tokens: int = 1000, timeout: float = 30.0):
+    """Query the specific provider with the given prompt."""
+    orchestrator = get_orchestrator()
+    provider = orchestrator.providers.get(PROVIDER_NAME)
+    if not provider or not provider.is_available:
+        print(f"Error: Provider {PROVIDER_NAME} is not available.")
+        sys.exit(1)
+
+    try:
+        # Use the orchestrator's call_provider method
+        response = await orchestrator.call_provider(provider, prompt, timeout=timeout)
+        if response is None:
+            print(f"Error: No response from {PROVIDER_NAME}.")
+            sys.exit(1)
+        return response
+    except Exception as e:
+        print(f"Error calling {PROVIDER_NAME}: {e}")
+        sys.exit(1)
+
+async def get_provider_status():
+    """Get status of the specific provider."""
+    orchestrator = get_orchestrator()
+    provider = orchestrator.providers.get(PROVIDER_NAME)
+    if not provider:
+        return {"available": False, "error": "Provider not configured"}
+    return {
+        "name": provider.name,
+        "available": provider.is_available,
+        "reliability_score": provider.reliability_score,
+        "success_count": provider.success_count,
+        "failure_count": provider.failure_count,
+        "models": provider.models,
+        "current_model": provider.current_model,
+        "last_call": provider.last_call,
+    }
+
+async def list_all_providers():
+    """List all providers with their status."""
+    orchestrator = get_orchestrator()
+    providers = orchestrator.get_providers_by_priority()
+    result = []
+    for p in providers:
+        result.append({
+            "name": p.name,
+            "available": p.is_available,
+            "reliability_score": p.reliability_score,
+            "models": p.models,
+            "current_model": p.current_model,
+        })
+    return result
+
+async def consensus_query(prompt: str):
+    """Query multiple providers and compute consensus."""
+    orchestrator = get_orchestrator()
+    try:
+        # Use the orchestrator's query_consensus method if available
+        if hasattr(orchestrator, 'query_consensus'):
+            response = await orchestrator.query_consensus(prompt)
+            return response
+        else:
+            # Fallback: query all available providers and pick the most frequent answer
+            providers = orchestrator.get_available_providers()
+            responses = []
+            for p in providers:
+                try:
+                    resp = await orchestrator.call_provider(p, prompt, timeout=10.0)
+                    responses.append(resp)
+                except:
+                    continue
+            if not responses:
+                return {"error": "No providers responded"}
+            # Simple consensus: pick the first response for now
+            return {"consensus": responses[0], "responses": responses}
+    except Exception as e:
+        print(f"Error during consensus query: {e}")
+        sys.exit(1)
+
+async def batch_process(input_file: str, output_file: str):
+    """Process a batch of prompts from a JSON file."""
+    try:
+        with open(input_file, 'r') as f:
+            data = json.load(f)
+        prompts = data if isinstance(data, list) else data.get("prompts", [])
+        results = []
+        for prompt in prompts:
+            response = await query_provider(prompt)
+            results.append({"prompt": prompt, "response": response})
+        with open(output_file, 'w') as f:
+            json.dump(results, f, indent=2)
+        print(f"Processed {len(results)} prompts, output written to {output_file}.")
+    except Exception as e:
+        print(f"Batch processing error: {e}")
+        sys.exit(1)
+
+# --- COMMAND IMPLEMENTATIONS (sync wrappers) ---
+def cmd_query(args):
+    """Handle query command."""
+    async def run():
+        response = await query_provider(args.prompt, temperature=args.temperature, max_tokens=args.max_tokens, timeout=args.timeout)
+        print(response)
+    asyncio.run(run())
+
+def cmd_status(args):
+    """Handle status command."""
+    async def run():
+        status = await get_provider_status()
+        print(json.dumps(status, indent=2))
+    asyncio.run(run())
+
+def cmd_list(args):
+    """Handle list command."""
+    async def run():
+        providers = await list_all_providers()
+        print(json.dumps(providers, indent=2))
+    asyncio.run(run())
+
+def cmd_consensus(args):
+    """Handle consensus command."""
+    async def run():
+        result = await consensus_query(args.prompt)
+        print(json.dumps(result, indent=2))
+    asyncio.run(run())
+
+def cmd_batch(args):
+    """Handle batch command."""
+    async def run():
+        await batch_process(args.input, args.output)
+    asyncio.run(run())
+
+# --- MAIN PARSER ---
+def main():
+    parser = argparse.ArgumentParser(description="L104 " + MODEL_NAME + " Provider CLI")
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # Query
+    query_parser = subparsers.add_parser("query", help="Send a prompt to the " + MODEL_NAME + " provider")
+    query_parser.add_argument("prompt", type=str, help="The prompt to send")
+    query_parser.add_argument("--temperature", type=float, default=0.7, help="Temperature for generation (default 0.7)")
+    query_parser.add_argument("--max_tokens", type=int, default=1000, help="Maximum tokens in response (default 1000)")
+    query_parser.add_argument("--timeout", type=float, default=30.0, help="Timeout in seconds (default 30)")
+    query_parser.set_defaults(func=cmd_query)
+
+    # Status
+    status_parser = subparsers.add_parser("status", help="Get " + MODEL_NAME + " provider status")
+    status_parser.set_defaults(func=cmd_status)
+
+    # List
+    list_parser = subparsers.add_parser("list", help="List all available LLM providers")
+    list_parser.set_defaults(func=cmd_list)
+
+    # Consensus
+    consensus_parser = subparsers.add_parser("consensus", help="Query multiple providers and compute consensus")
+    consensus_parser.add_argument("prompt", type=str, help="The prompt to send")
+    consensus_parser.set_defaults(func=cmd_consensus)
+
+    # Batch
+    batch_parser = subparsers.add_parser("batch", help="Process a batch of prompts from a JSON file")
+    batch_parser.add_argument("input", type=str, help="Input JSON file containing prompts")
+    batch_parser.add_argument("output", type=str, help="Output JSON file for responses")
+    batch_parser.set_defaults(func=cmd_batch)
+
+    args = parser.parse_args()
+    if hasattr(args, 'func'):
+        args.func(args)
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    main()

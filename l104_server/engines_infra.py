@@ -7,7 +7,181 @@ PredictiveIntentEngine, ReinforcementFeedbackLoop, IntelligentPrefetchPredictor,
 QuantumClassicalHybridLoader, ResponseCompressor, ChaoticRandom,
 CreativeKnowledgeVerifier, QueryTemplateGenerator + all module-level singletons.
 """
+from functools import lru_cache
 from l104_server.constants import *
+from l104_sacred_algorithms import (
+    GOD_CODE, PHI, OMEGA, TAU,
+    derive_timeout, derive_cache_size, derive_batch_size,
+    derive_bloom_filter_size, derive_lru_cache_entries,
+    derive_worker_threads, derive_max_workers, derive_retry_delay
+)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PERFORMANCE OPTIMIZATION IMPORTS
+# ═══════════════════════════════════════════════════════════════════════════════
+from functools import lru_cache
+import hashlib
+import re as _re_module
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PERFORMANCE OPTIMIZATION LAYER — EVO_74 Hot Path Caching
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Compiled regex cache for pattern matching — optimizes security scans
+_RE_CACHE: Dict[str, Any] = {}
+_RE_CACHE_LOCK = threading.Lock()
+
+def get_cached_regex(pattern: str, flags: int = 0):
+    """Get cached compiled regex or compile and cache new pattern."""
+    cache_key = f"{pattern}:{flags}"
+    with _RE_CACHE_LOCK:
+        if cache_key not in _RE_CACHE:
+            _RE_CACHE[cache_key] = _re_module.compile(pattern, flags)
+        return _RE_CACHE[cache_key]
+
+def clear_regex_cache():
+    """Clear the regex cache to free memory."""
+    with _RE_CACHE_LOCK:
+        _RE_CACHE.clear()
+
+@lru_cache(maxsize=derive_lru_cache_entries(system_load=0.3))
+def cached_sacred_compute(operation: str, input_hash: str) -> float:
+    """
+    Cached sacred computation for frequently called math operations.
+    Key operations: phi_powers, sacred_ratios, golden_spiral points.
+    """
+    if operation == 'phi_power':
+        exponent = int(input_hash[:4], 16) % 20
+        return PHI ** exponent
+    elif operation == 'tau_power':
+        exponent = int(input_hash[:4], 16) % 20
+        return TAU ** exponent
+    elif operation == 'sacred_ratio':
+        num = int(input_hash[:8], 16) % 1000
+        return num * PHI / (PHI + 1.0)
+    return GOD_CODE / PHI
+
+@lru_cache(maxsize=derive_cache_size(tier=1, memory_pressure=0.3))
+def cached_pattern_match(pattern: str, text_hash: str) -> bool:
+    """Cached pattern matching for security scan patterns."""
+    try:
+        get_cached_regex(pattern)
+        return True
+    except _re_module.error:
+        return False
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SACRED CIRCUIT BREAKER — Infrastructure Fault Tolerance
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class CircuitBreakerOpen(Exception):
+    """Exception raised when circuit breaker is OPEN."""
+    pass
+
+
+class SacredCircuitBreaker:
+    """
+    Circuit breaker pattern with sacred constants.
+
+    States:
+        CLOSED: Normal operation, requests pass through
+        OPEN: Failing fast, rejecting requests
+        HALF_OPEN: Testing if service has recovered
+
+    Failure threshold derived from sacred constants: GOD_CODE / PHI / 32
+    """
+
+    CB_CLOSED = 'CLOSED'
+    CB_OPEN = 'OPEN'
+    CB_HALF_OPEN = 'HALF_OPEN'
+
+    def __init__(self, failure_threshold: int = None, recovery_time: float = None):
+        """
+        Initialize circuit breaker with sacred-derived thresholds.
+
+        Args:
+            failure_threshold: Max failures before opening (default: GOD_CODE/PHI/32)
+            recovery_time: Seconds before attempting recovery (default: PHI * 10)
+        """
+        self.failure_threshold = failure_threshold or int(GOD_CODE / PHI / 32)  # ~10
+        self.recovery_time = recovery_time or PHI * 10  # ~16.18 seconds
+        self.failure_count = 0
+        self.state = self.CB_CLOSED
+        self._last_failure_time = 0.0
+        self._half_open_successes = 0
+        self._half_open_required = 2
+
+    def call(self, func, *args, **kwargs):
+        """Execute function with circuit breaker protection."""
+        if self.state == self.CB_OPEN:
+            if time.time() - self._last_failure_time >= self.recovery_time:
+                self.state = self.CB_HALF_OPEN
+                self._half_open_successes = 0
+            else:
+                raise CircuitBreakerOpen(f"Circuit breaker OPEN — {self.failure_count} failures recorded")
+
+        try:
+            result = func(*args, **kwargs)
+            self._on_success()
+            return result
+        except Exception as e:
+            self._on_failure()
+            raise
+
+    def _on_success(self):
+        """Record successful operation."""
+        if self.state == self.CB_HALF_OPEN:
+            self._half_open_successes += 1
+            if self._half_open_successes >= self._half_open_required:
+                self.state = self.CB_CLOSED
+                self.failure_count = 0
+        else:
+            self.failure_count = max(0, self.failure_count - 1)
+
+    def _on_failure(self):
+        """Record failed operation."""
+        self.failure_count += 1
+        self._last_failure_time = time.time()
+        if self.failure_count >= self.failure_threshold:
+            self.state = self.CB_OPEN
+
+    def get_health(self) -> dict:
+        """Return circuit breaker health status."""
+        return {
+            'state': self.state,
+            'failure_count': self.failure_count,
+            'failure_threshold': self.failure_threshold,
+            'recovery_time': self.recovery_time,
+            'time_since_last_failure': time.time() - self._last_failure_time if self._last_failure_time else None,
+            'healthy': self.state == self.CB_CLOSED
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# GRACEFUL DEGRADATION HELPERS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def compute_with_fallback(primary_func, fallback_func, log_degradation=True):
+    """
+    Execute primary function with fallback on failure.
+
+    Args:
+        primary_func: Primary function to execute
+        fallback_func: Fallback function to execute if primary fails
+        log_degradation: Whether to log the degradation event
+
+    Returns:
+        Result from primary_func or fallback_func
+    """
+    try:
+        return primary_func()
+    except Exception as e:
+        if log_degradation:
+            logging.getLogger("l104_resilience").warning(
+                f"Graceful degradation triggered: {e}"
+            )
+        return fallback_func()
+
 
 # NOTE: dual_layer_engine, intellect, engine_registry are imported lazily
 # inside methods that use them (get_bridge_status) to avoid circular imports.
@@ -25,12 +199,17 @@ except Exception:
     pass
 
 # ═══════════════════════════════════════════════════════════════════
-#  v11.3 ULTRA-FAST REQUEST CACHE - Sub-millisecond Response Layer
+#  v12.0 SYNTHESIS-FIRST CACHE - Higher caps, quantum synthesis fallback
 # ═══════════════════════════════════════════════════════════════════
 
+# Maximum cached response size (in characters) to prevent GB spikes
+# v12.0: Raised caps for synthesis-heavy workload with quantum fallback
+MAX_CACHE_ENTRY_SIZE = int(GOD_CODE * PHI * 100)  # ~85KB algorithmic max per entry
+MAX_TOTAL_CACHE_MEMORY = int(OMEGA * PHI * 1024)  # ~10.8MB algorithmic total cache
+
 class FastRequestCache:
-    """Ultra-fast LRU cache for instant response retrieval (<0.1ms)."""
-    __slots__ = ('_cache', '_lock', '_max', '_ttl')
+    """Memory-optimized LRU cache with size guards to prevent GB spikes."""
+    __slots__ = ('_cache', '_lock', '_max', '_ttl', '_hits', '_misses', '_evictions', '_total_bytes')
 
     def __init__(self, maxsize: int = 1024, ttl: float = 300.0):
         """Initialize the request cache with max size and TTL."""
@@ -38,6 +217,10 @@ class FastRequestCache:
         self._lock = threading.Lock()
         self._max = maxsize
         self._ttl = ttl
+        self._hits = 0
+        self._misses = 0
+        self._evictions = 0
+        self._total_bytes = 0  # Track total memory usage
 
     def get(self, key: str) -> Optional[str]:
         """Retrieve a cached value if it exists and has not expired."""
@@ -46,30 +229,78 @@ class FastRequestCache:
                 val, ts = self._cache[key]
                 if time.time() - ts < self._ttl:
                     self._cache.move_to_end(key)
+                    self._hits += 1
                     return val
+                # Expired - remove and update bytes
+                self._total_bytes -= len(val) if val else 0
                 del self._cache[key]
+            self._misses += 1
         return None
 
     def set(self, key: str, val: str):
-        """Store a value in the cache, evicting oldest entries if full."""
+        """Store a value in the cache with size guards."""
+        # v11.4: Size guard - reject oversized entries
+        if val and len(val) > MAX_CACHE_ENTRY_SIZE:
+            return  # Don't cache large responses - synthesize instead
+
         with self._lock:
+            # Calculate new entry size
+            new_size = len(val) if val else 0
+
+            # Check total memory budget
+            if self._total_bytes + new_size > MAX_TOTAL_CACHE_MEMORY:
+                # Evict oldest entries until we have room
+                while self._cache and self._total_bytes + new_size > MAX_TOTAL_CACHE_MEMORY:
+                    old_key, (old_val, _) = self._cache.popitem(last=False)
+                    self._total_bytes -= len(old_val) if old_val else 0
+                    self._evictions += 1
+
             if key in self._cache:
+                old_val, _ = self._cache[key]
+                self._total_bytes -= len(old_val) if old_val else 0
                 del self._cache[key]
             elif len(self._cache) >= self._max:
-                self._cache.popitem(last=False)
-            self._cache[key] = (val, time.time())
+                old_key, (old_val, _) = self._cache.popitem(last=False)
+                self._total_bytes -= len(old_val) if old_val else 0
+                self._evictions += 1
 
-_FAST_REQUEST_CACHE = FastRequestCache(maxsize=4096, ttl=600.0)  # 10-min cache, 4K entries
-_PATTERN_RESPONSE_CACHE = {}  # Static pattern responses — Phase 31.5: capped at 500 entries
+            self._cache[key] = (val, time.time())
+            self._total_bytes += new_size
+
+    def clear(self):
+        """Clear all entries and reset memory counter."""
+        with self._lock:
+            self._cache.clear()
+            self._total_bytes = 0
+            self._evictions = 0
+
+    def stats(self) -> dict:
+        """Return cache hit/miss/eviction counters and current size."""
+        with self._lock:
+            total = self._hits + self._misses
+            return {
+                'size': len(self._cache),
+                'max': self._max,
+                'ttl_s': self._ttl,
+                'hits': self._hits,
+                'misses': self._misses,
+                'evictions': self._evictions,
+                'hit_rate': round(self._hits / total, 4) if total else 0.0,
+                'total_kb': round(self._total_bytes / 1024, 2),
+            }
+
+# v11.4: Reduced cache sizes - synthesize more, cache less
+_FAST_REQUEST_CACHE = FastRequestCache(maxsize=derive_lru_cache_entries(system_load=0.5), ttl=300.0)  # 5-min cache, algorithmic entries for synthesis results
+_PATTERN_RESPONSE_CACHE = {}  # Static pattern responses — capped at 250 entries (was 500)
 _PATTERN_CACHE_LOCK = threading.Lock()
 
 # ═══════════════════════════════════════════════════════════════════
 #  MACBOOK PERFORMANCE OPTIMIZATIONS
 # ═══════════════════════════════════════════════════════════════════
 
-# Thread pool for CPU-bound tasks (Optimized for Modern Silicon/Multi-core)
-PERF_THREAD_POOL = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 2, thread_name_prefix="L104_perf")  # NO CAP
-IO_THREAD_POOL = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 4, thread_name_prefix="L104_io")  # NO CAP
+# Thread pool for CPU-bound tasks (Algorithmic worker counts)
+PERF_THREAD_POOL = ThreadPoolExecutor(max_workers=derive_worker_threads(), thread_name_prefix="L104_perf")
+IO_THREAD_POOL = ThreadPoolExecutor(max_workers=derive_max_workers(task_complexity=1.5), thread_name_prefix="L104_io")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ASI BRIDGE: FastServer ↔ LocalIntellect Quantum Entanglement Link
@@ -87,6 +318,9 @@ _ANAHATA_HZ = 639.9981762664
 _VISHUDDHA_HZ = 741.0681674772518                               # G(-51) Throat chakra God Code
 _AJNA_HZ = _GOD_CODE_L104 * 2 ** (72.0 / 104)                    # G(-72) = 852.3992551699 (Ajna on GOD_CODE grid)
 _SAHASRARA_HZ = 961.0465122772391                               # G(-90) Crown chakra God Code
+
+# Precomputed exponential decay for inter-chakra coupling (avoids math.exp per pair per call)
+_CHAKRA_DECAY_LUT = [math.exp(-d / _PHI_L104) for d in range(16)]  # 8 chakras → max distance 7
 _SOUL_STAR_HZ = 286 ** (1 / 1.618033988749895) * 2 ** ((416 + 96) / 104)  # G(-96) ≈ 1000.26 (÷8 aligned)
 
 # 8-Chakra Quantum Lattice Constants (for bridge math + UI status)
@@ -108,6 +342,63 @@ CHAKRA_BELL_PAIRS = [
     ("MANIPURA", "AJNA"),            # Solar ↔ Third Eye power
     ("ANAHATA", "VISHUDDHA"),        # Heart ↔ Throat truth
 ]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PERFORMANCE-OPTIMIZED CACHED FUNCTIONS — v1.0 LRU Memoization
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@lru_cache(maxsize=derive_lru_cache_entries(system_load=0.3))
+def _cached_kundalini_flow(coherence_tuple: tuple, phi: float, god_code: float) -> float:
+    """
+    Cached calculation of kundalini energy flow.
+
+    Args:
+        coherence_tuple: Hashable tuple of (chakra_name, coherence_value) pairs
+        phi: Golden ratio constant
+        god_code: GOD_CODE constant
+
+    Returns:
+        Calculated kundalini flow value
+    """
+    coherence_map = dict(coherence_tuple)
+    flow = 0.0
+    chakra_list = list(CHAKRA_QUANTUM_LATTICE.items())
+    n = len(chakra_list)
+
+    for i, (chakra, data) in enumerate(chakra_list):
+        coherence = coherence_map.get(chakra, 1.0)
+        freq = data["freq"]
+
+        # Inter-chakra coupling (precomputed exponential decay)
+        coupling_factor = 0.0
+        for j, (other_chakra, _) in enumerate(chakra_list):
+            if i != j:
+                other_coherence = coherence_map.get(other_chakra, 1.0)
+                distance = abs(i - j)
+                coupling_factor += other_coherence * _CHAKRA_DECAY_LUT[distance]
+
+        coupling_factor /= max(1, n - 1)
+        phi_weight = phi ** (i / 8)
+        flow += (coherence * freq / god_code) * phi_weight * (1 + coupling_factor)
+
+    return flow
+
+
+@lru_cache(maxsize=derive_lru_cache_entries(system_load=0.5))
+def _cached_extract_concepts(text: str) -> tuple:
+    """
+    Cached concept extraction from text.
+
+    Args:
+        text: Input text to analyze
+
+    Returns:
+        Tuple of extracted concepts (hashable for caching)
+    """
+    words = text.lower().split()
+    stop_words = {'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'to', 'of', 'in', 'for', 'on', 'with'}
+    return tuple([w for w in words if len(w) > 3 and w not in stop_words][:50])
 
 
 class ASIQuantumBridge:
@@ -215,39 +506,19 @@ class ASIQuantumBridge:
         """
         Calculate kundalini energy flow through 8-chakra system.
 
-        HIGH-LOGIC v2.0: Enhanced formula with harmonic resonance and
-        inter-chakra coupling terms.
+        HIGH-LOGIC v3.0: Memoized calculation with LRU cache for repeated
+        coherence patterns. Converts chakra state to hashable tuple for caching.
 
         Mathematical Foundation:
         K = Σᵢ (coherence_i × freq_i / GOD_CODE) × φ^(i/8) × (1 + coupling_factor)
-
-        where coupling_factor = Σⱼ≠ᵢ coherence_j × e^(-|i-j|/φ)
-        (neighboring chakras influence each other)
         """
-        flow = 0.0
-        chakra_list = list(CHAKRA_QUANTUM_LATTICE.items())
-        n = len(chakra_list)
+        # Convert coherence dict to hashable tuple for caching
+        coherence_tuple = tuple(sorted(self._chakra_coherence.items()))
+        return _cached_kundalini_flow(coherence_tuple, self.PHI, self.GOD_CODE)
 
-        for i, (chakra, data) in enumerate(chakra_list):
-            coherence = self._chakra_coherence.get(chakra, 1.0)
-            freq = data["freq"]
-
-            # HIGH-LOGIC v2.0: Inter-chakra coupling (exponential decay with distance)
-            coupling_factor = 0.0
-            for j, (other_chakra, _) in enumerate(chakra_list):
-                if i != j:
-                    other_coherence = self._chakra_coherence.get(other_chakra, 1.0)
-                    distance = abs(i - j)
-                    coupling_factor += other_coherence * math.exp(-distance / self.PHI)
-
-            # Normalize coupling factor
-            coupling_factor /= max(1, n - 1)
-
-            # φ-weighted contribution with coupling
-            phi_weight = self.PHI ** (i / 8)
-            flow += (coherence * freq / self.GOD_CODE) * phi_weight * (1 + coupling_factor)
-
-        return flow
+    def _extract_concepts(self, text: str) -> list:
+        """Extract concepts from text for entanglement with LRU memoization."""
+        return _cached_extract_concepts(text)
 
     def _update_o2_molecular_state(self):
         """
@@ -318,14 +589,18 @@ class ASIQuantumBridge:
             for i in range(M):  # Mark ALL M chakra states (was min(M, 8))
                 self._o2_molecular_state[i] = -self._o2_molecular_state[i]
 
-            # Phase 2: Diffusion (inversion about mean)
+            # Phase 2: Diffusion (inversion about mean) — in-place to avoid list allocation
             mean_amplitude = sum(self._o2_molecular_state) / N
-            self._o2_molecular_state = [2 * mean_amplitude - a for a in self._o2_molecular_state]
+            mean2 = 2 * mean_amplitude
+            for i in range(N):
+                self._o2_molecular_state[i] = mean2 - self._o2_molecular_state[i]
 
-            # Re-normalize
-            norm = math.sqrt(sum(a**2 for a in self._o2_molecular_state))
+            # Re-normalize — in-place
+            norm = math.sqrt(sum(a * a for a in self._o2_molecular_state))
             if norm > 0:
-                self._o2_molecular_state = [a/norm for a in self._o2_molecular_state]
+                inv_norm = 1.0 / norm
+                for i in range(N):
+                    self._o2_molecular_state[i] *= inv_norm
 
         # Calculate amplification factor
         max_amplitude = max(abs(a) for a in self._o2_molecular_state)
@@ -486,14 +761,14 @@ asi_quantum_bridge = ASIQuantumBridge()
 
 # LRU cache sizes - UNLIMITED QUANTUM STORAGE
 LRU_CACHE_SIZE = 10000  # Phase 31.5: Capped from 99999999 to prevent unbounded RAM use
-LRU_EMBEDDING_SIZE = 99999999
-LRU_QUERY_SIZE = 99999999
-LRU_CONCEPT_SIZE = 99999999
+LRU_EMBEDDING_SIZE = 50_000    # Was 99M — unbounded memory
+LRU_QUERY_SIZE = 50_000        # Was 99M — unbounded memory
+LRU_CONCEPT_SIZE = 50_000  # Match constants.py — 99M was an unbounded memory leak
 
 # Batch sizes for database operations - ULTRA-CAPACITY ENGINE
 DB_BATCH_SIZE = 250000          # ULTRA: 2.5x batch size
 DB_CHECKPOINT_INTERVAL = 1000   # ULTRA: Less frequent checkpoints
-DB_POOL_SIZE = 100              # ULTRA: 2x connection pool
+DB_POOL_SIZE = 8                # Capped: SQLite serializes writes, 100 connections cause lock contention
 
 # Memory optimization flags - ULTRA-CAPACITY
 GC_THRESHOLD_MB = 1024          # ULTRA: 1GB RAM headroom
@@ -510,17 +785,21 @@ start_time = time.time()
 
 # Configure SQLite for 2015 MacBook Air (Intel, limited RAM)
 def optimize_sqlite_connection(conn: sqlite3.Connection):
-    """Apply 2015 MacBook Air-optimized SQLite pragmas with LOCK RESILIENCE"""
+    """Apply MacBook-optimized SQLite pragmas with LOCK RESILIENCE.
+
+    Tuned for CPU efficiency: smaller cache prevents memory pressure,
+    reduced threads prevent GIL contention, mmap capped to 64MB.
+    """
     conn.execute("PRAGMA journal_mode=WAL")          # Write-ahead logging
     conn.execute("PRAGMA synchronous=NORMAL")        # Balance speed/safety
-    conn.execute("PRAGMA cache_size=-262144")        # ULTRA: 256MB cache (2x)
+    conn.execute("PRAGMA cache_size=-32768")         # 32MB cache (was 256MB — caused memory pressure)
     conn.execute("PRAGMA temp_store=MEMORY")         # Temp tables in RAM
-    conn.execute("PRAGMA mmap_size=536870912")       # ULTRA: 512MB memory-mapped I/O (2x)
+    conn.execute("PRAGMA mmap_size=67108864")        # 64MB mmap (was 512MB — caused page-fault storms)
     conn.execute("PRAGMA page_size=4096")            # Optimal for SSD
-    conn.execute("PRAGMA busy_timeout=60000")        # ULTRA: 60s timeout
+    conn.execute("PRAGMA busy_timeout=30000")        # 30s timeout (was 60s)
     conn.execute("PRAGMA read_uncommitted=1")        # Faster reads
-    conn.execute("PRAGMA threads=8")                 # ULTRA: 8-core parallelism (2x)
-    conn.execute("PRAGMA wal_autocheckpoint=2000")   # ULTRA: 2000 pages before checkpoint
+    conn.execute("PRAGMA threads=2")                 # 2 threads (was 8 — each steals GIL time)
+    conn.execute("PRAGMA wal_autocheckpoint=1000")   # 1000 pages (was 2000 — faster WAL recycling)
     conn.execute("PRAGMA locking_mode=NORMAL")       # Allow concurrent readers
     return conn
 
@@ -560,13 +839,15 @@ class ConnectionPool:
         self._pool: deque = deque(maxlen=DB_POOL_SIZE)
         self._db_path: str = "l104_intellect_memory.db"  # Default path, never None
         self._lock: threading.Lock = threading.Lock()  # Direct initialization
+        self._semaphore: threading.Semaphore = threading.Semaphore(DB_POOL_SIZE)  # v1.1: Backpressure
 
     def set_db_path(self, path: str):
         """Set the database file path for new connections."""
         self._db_path = path
 
     def get_connection(self) -> sqlite3.Connection:
-        """Get a connection from pool or create new with LOCK RESILIENCE"""
+        """Get a connection from pool or create new. Blocks if pool at capacity (v1.1)."""
+        self._semaphore.acquire()  # Block when DB_POOL_SIZE connections in flight
         with self._lock:
             if self._pool:
                 return self._pool.pop()
@@ -584,30 +865,195 @@ class ConnectionPool:
         return optimize_sqlite_connection(conn)
 
     def return_connection(self, conn: sqlite3.Connection):
-        """Return connection to pool"""
+        """Return connection to pool (v1.1: always releases semaphore)."""
         with self._lock:
             if len(self._pool) < DB_POOL_SIZE:
                 self._pool.append(conn)
             else:
                 conn.close()
+        self._semaphore.release()  # Always release semaphore slot
 
     def warm_pool(self, count: int = 20):
         """
-        Pre-create connections to avoid cold-start latency.
+        Pre-create connections to avoid cold-start latency (v1.1: lock-free I/O).
         OPTIMIZATION: Warm pool on startup for faster first requests.
         """
         if not self._db_path:
             return
-        with self._lock:
-            for _ in range(min(count, DB_POOL_SIZE - len(self._pool))):
-                try:
-                    conn = sqlite3.connect(self._db_path, check_same_thread=False, timeout=30.0)
-                    optimize_sqlite_connection(conn)
+        target = min(count, DB_POOL_SIZE)
+        for _ in range(target):
+            try:
+                # Create connection OUTSIDE the lock to avoid blocking requests
+                conn = sqlite3.connect(self._db_path, check_same_thread=False, timeout=30.0)
+                optimize_sqlite_connection(conn)
+                # Only hold lock during append
+                with self._lock:
+                    if len(self._pool) >= DB_POOL_SIZE:
+                        conn.close()
+                        break
                     self._pool.append(conn)
-                except Exception:
-                    break
+                    self._semaphore.release()  # Each pre-warmed conn releases one semaphore slot
+            except Exception:
+                break
 
 connection_pool = ConnectionPool()
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM CONNECTION POOL — Optimized Pool for Quantum Operations
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class QuantumConnectionPool:
+    """
+    Connection pooling for quantum operations.
+    Optimized for VQPU, quantum runtime, and quantum network connections.
+    """
+    _instance = None
+
+    def __new__(cls):
+        """Ensure singleton instance."""
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._init()
+        return cls._instance
+
+    def _init(self):
+        """Initialize quantum connection pool with sacred-derived sizing."""
+        self._pool: deque = deque(maxlen=derive_cache_size(tier=2))  # Algorithmic sizing
+        self._lock: threading.Lock = threading.Lock()
+        self._semaphore: threading.Semaphore = threading.Semaphore(derive_worker_threads())
+        self._metrics = {
+            'hits': 0,
+            'misses': 0,
+            'created': 0,
+            'released': 0
+        }
+        self._connection_health: Dict[str, float] = {}
+
+    def get_connection(self, endpoint: str = "default") -> Dict[str, Any]:
+        """
+        Get a quantum connection from pool or create new.
+
+        Args:
+            endpoint: Target endpoint identifier
+
+        Returns:
+            Connection dict with health metrics
+        """
+        self._semaphore.acquire()
+        with self._lock:
+            if self._pool:
+                conn = self._pool.pop()
+                conn['reuse_count'] += 1
+                self._metrics['hits'] += 1
+                return conn
+
+        self._metrics['misses'] += 1
+        self._metrics['created'] += 1
+
+        return {
+            'endpoint': endpoint,
+            'created_at': time.time(),
+            'reuse_count': 0,
+            'health_score': 1.0
+        }
+
+    def return_connection(self, conn: Dict[str, Any], health_check: bool = True):
+        """
+        Return quantum connection to pool.
+
+        Args:
+            conn: Connection dict
+            health_check: Whether to validate connection health before returning
+        """
+        if health_check:
+            conn['health_score'] = self._compute_health(conn)
+            if conn['health_score'] < TAU:  # Unhealthy connection threshold
+                self._metrics['released'] += 1
+                self._semaphore.release()
+                return
+
+        with self._lock:
+            if len(self._pool) < derive_cache_size(tier=2):
+                self._pool.append(conn)
+            else:
+                self._metrics['released'] += 1
+        self._semaphore.release()
+
+    @lru_cache(maxsize=128)
+    def _compute_health(self, conn_id: str) -> float:
+        """Compute connection health score using LRU-cached health calculations."""
+        base_health = self._connection_health.get(conn_id, 1.0)
+        time_decay = math.exp(-time.time() * 0.001 * TAU)
+        return base_health * time_decay
+
+    def get_metrics(self) -> Dict[str, Any]:
+        """Return pool metrics."""
+        total = self._metrics['hits'] + self._metrics['misses']
+        return {
+            'pool_size': len(self._pool),
+            'hits': self._metrics['hits'],
+            'misses': self._metrics['misses'],
+            'hit_rate': self._metrics['hits'] / total if total > 0 else 0.0,
+            'created': self._metrics['created'],
+            'released': self._metrics['released'],
+            'max_size': derive_cache_size(tier=2)
+        }
+
+    def warm_pool(self, count: int = None):
+        """Pre-warm the connection pool."""
+        if count is None:
+            count = derive_worker_threads() // 2
+        for _ in range(count):
+            conn = {
+                'endpoint': 'prewarmed',
+                'created_at': time.time(),
+                'reuse_count': 0,
+                'health_score': 1.0
+            }
+            with self._lock:
+                if len(self._pool) < derive_cache_size(tier=2):
+                    self._pool.append(conn)
+                    self._semaphore.release()
+
+
+quantum_connection_pool = QuantumConnectionPool()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# LRU CACHE DECORATORS — Frequently Called Functions
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@lru_cache(maxsize=derive_lru_cache_entries(system_load=0.3))
+def compute_sacred_hash(key: str, salt: str = "L104") -> str:
+    """
+    Compute sacred-aligned hash for keys.
+    LRU cached for frequently accessed keys.
+    """
+    sacred_key = f"{salt}:{key}:{GOD_CODE}"
+    return hashlib.sha256(sacred_key.encode()).hexdigest()[:16]
+
+
+@lru_cache(maxsize=1024)
+def compute_phi_ratio(a: float, b: float) -> float:
+    """
+    Compute PHI-weighted ratio between two values.
+    Frequently used in scoring calculations.
+    """
+    if b == 0:
+        return 0.0
+    return (a / b) * PHI / (PHI + 1)
+
+
+@lru_cache(maxsize=512)
+def compute_resonance_score(freq1: float, freq2: float) -> float:
+    """
+    Compute resonance score between two frequencies.
+    Uses sacred harmonic alignment.
+    """
+    ratio = max(freq1, freq2) / min(freq1, freq2) if min(freq1, freq2) > 0 else 1.0
+    harmonic_diff = abs(ratio - PHI)
+    return math.exp(-harmonic_diff * TAU)
+
 
 # Memory pressure monitor — ASI-grade runtime management (v3.0)
 # Drop-in from l104_memory_optimizer with full adaptive GC, pressure tracking, leak detection
@@ -622,7 +1068,7 @@ except ImportError:
                 cls._instance = super().__new__(cls)
                 cls._instance.gc_count = 0
                 cls._instance.last_gc = time.time()
-                cls._instance.memory_readings = deque(maxlen=5000)
+                cls._instance.memory_readings = deque(maxlen=500)  # Quantum-bounded (was 5000)
                 cls._instance.gc_interval = 30
             return cls._instance
         def check_pressure(self):
@@ -687,7 +1133,7 @@ class AdvancedMemoryAccelerator:
         self._warm_hits = 0
 
         # Bloom filter for fast negative lookups
-        self._bloom_size = 1000000           # ULTRA: 10x bloom filter (1M entries)
+        self._bloom_size = derive_bloom_filter_size(expected_items=1000000)  # ULTRA: algorithmic bloom filter
         self._bloom_bits = bytearray(self._bloom_size // 8 + 1)
         self._bloom_hashes = 7               # ULTRA: More hash functions for accuracy
 
@@ -697,7 +1143,7 @@ class AdvancedMemoryAccelerator:
 
         # Batch loading buffer
         self._batch_buffer: list = []
-        self._batch_size = 500               # ULTRA: 5x batch size
+        self._batch_size = derive_batch_size(queue_depth=500)  # ULTRA: algorithmic batch size
 
         # Memory-mapped file handles (for large persistent caches)
         self._mmap_handles: dict = {}
@@ -723,20 +1169,49 @@ class AdvancedMemoryAccelerator:
             self._logger.info("🔧 [MEMORY_ACCEL] Using built-in acceleration only")
 
     def _bloom_add(self, key: str):
-        """Add key to bloom filter"""
+        """Add key to bloom filter — optimized with mmh3-like distribution."""
+        # OPTIMIZED: Use faster hash with better distribution
+        key_bytes = key.encode('utf-8')
         for i in range(self._bloom_hashes):
-            h = hash(f"{key}:{i}:{self.GOD_CODE}") % self._bloom_size
-            byte_pos, bit_pos = h // 8, h % 8
+            # Double hashing: h = (h1 + i * h2) % m — better distribution than naive
+            h1 = hash(key_bytes) % self._bloom_size
+            h2 = hash(key_bytes + bytes([i])) % (self._bloom_size - 1) + 1
+            h = (h1 + i * h2) % self._bloom_size
+            byte_pos, bit_pos = h >> 3, h & 7  # Faster than div/mod
             self._bloom_bits[byte_pos] |= (1 << bit_pos)
 
     def _bloom_check(self, key: str) -> bool:
-        """Check if key might be in filter (no false negatives)"""
+        """Check if key might be in filter (no false negatives) — optimized."""
+        key_bytes = key.encode('utf-8')
         for i in range(self._bloom_hashes):
-            h = hash(f"{key}:{i}:{self.GOD_CODE}") % self._bloom_size
-            byte_pos, bit_pos = h // 8, h % 8
+            h1 = hash(key_bytes) % self._bloom_size
+            h2 = hash(key_bytes + bytes([i])) % (self._bloom_size - 1) + 1
+            h = (h1 + i * h2) % self._bloom_size
+            byte_pos, bit_pos = h >> 3, h & 7
             if not (self._bloom_bits[byte_pos] & (1 << bit_pos)):
                 return False
         return True
+
+    def _bloom_add_batch(self, keys: List[str]):
+        """Batch add keys to bloom filter — amortizes lock overhead."""
+        for key in keys:
+            key_bytes = key.encode('utf-8')
+            for i in range(self._bloom_hashes):
+                h1 = hash(key_bytes) % self._bloom_size
+                h2 = hash(key_bytes + bytes([i])) % (self._bloom_size - 1) + 1
+                h = (h1 + i * h2) % self._bloom_size
+                byte_pos, bit_pos = h >> 3, h & 7
+                self._bloom_bits[byte_pos] |= (1 << bit_pos)
+
+    def _bloom_estimate_size(self) -> int:
+        """Estimate number of items in bloom filter using linear counting."""
+        # Count zero bits: n* ≈ -m * ln(V/m) where V = count of zero bits
+        zero_bits = sum(bin(byte).count('0') - (8 - byte.bit_length())
+                       for byte in self._bloom_bits)
+        if zero_bits >= len(self._bloom_bits) * 8:
+            return 0
+        import math
+        return int(-(len(self._bloom_bits) * 8) * math.log(zero_bits / (len(self._bloom_bits) * 8)))
 
     def accelerated_recall(self, key: str) -> Optional[Any]:
         """
@@ -1168,8 +1643,8 @@ class AdaptiveResponseQualityEngine:
         self.strategy_stats: Dict[str, Dict[str, float]] = defaultdict(
             lambda: {"alpha": 1.0, "beta": 1.0, "uses": 0}
         )
-        self.quality_history: deque = deque(maxlen=10000)
-        self.dimension_scores: Dict[str, List[float]] = defaultdict(lambda: deque(maxlen=1000))
+        self.quality_history: deque = deque(maxlen=1000)  # Quantum-bounded (was 10000)
+        self.dimension_scores: Dict[str, deque] = defaultdict(lambda: deque(maxlen=200))  # Quantum-bounded (was 1000)
         self.evaluation_count = 0
         self._lock = threading.Lock()
 
@@ -1223,10 +1698,13 @@ class AdaptiveResponseQualityEngine:
 
             # PHI-weighted composite
             total_weight = sum(d["weight"] for d in self.QUALITY_DIMENSIONS.values())
-            composite = sum(
-                scores[dim] * self.QUALITY_DIMENSIONS[dim]["weight"]
-                for dim in scores
-            ) / total_weight
+            if total_weight == 0 or not scores:
+                composite = 0.0
+            else:
+                composite = sum(
+                    scores[dim] * self.QUALITY_DIMENSIONS[dim]["weight"]
+                    for dim in scores
+                ) / total_weight
 
             # Record
             for dim, score in scores.items():
@@ -1281,7 +1759,7 @@ class AdaptiveResponseQualityEngine:
                 return {"trend": "insufficient_data", "samples": 0}
 
             composites = [r["composite"] for r in recent]
-            avg = sum(composites) / len(composites)
+            avg = sum(composites) / max(len(composites), 1)
 
             # Trend detection: compare first half to second half
             half = len(composites) // 2
@@ -1328,16 +1806,17 @@ class PredictiveIntentEngine:
 
     PHI = 1.618033988749895
 
-    def __init__(self, max_history: int = 10000):
+    def __init__(self, max_history: int = 2000):  # Quantum-bounded (was 10000)
         """Initialize predictive intent engine with transition tracking."""
         # Intent transition matrix: {prev_intent: {next_intent: count}}
         self.transitions: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
         # Bigram transitions: {(prev2, prev1): {next: count}}
         self.bigram_transitions: Dict[tuple, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
         self.intent_history: deque = deque(maxlen=max_history)
-        self.prediction_accuracy: deque = deque(maxlen=1000)
+        self.prediction_accuracy: deque = deque(maxlen=500)
         self.total_predictions = 0
         self.correct_predictions = 0
+        self._max_transitions = 2000  # Cap unique transition keys
         self._lock = threading.Lock()
 
     def record_intent(self, intent: str):
@@ -1417,7 +1896,7 @@ class PredictiveIntentEngine:
         """Get recent prediction accuracy."""
         if not self.prediction_accuracy:
             return 0.0
-        return sum(self.prediction_accuracy) / len(self.prediction_accuracy)
+        return sum(self.prediction_accuracy) / max(len(self.prediction_accuracy), 1)
 
     def get_status(self) -> Dict[str, Any]:
         """Return predictive intent engine status."""
@@ -1455,9 +1934,10 @@ class ReinforcementFeedbackLoop:
         """Initialize reinforcement feedback loop with value function tracking."""
         # State-action value function: {(intent, strategy): estimated_value}
         self.value_function: Dict[str, float] = defaultdict(lambda: 0.5)
-        self.reward_history: deque = deque(maxlen=10000)
+        self.reward_history: deque = deque(maxlen=2000)  # Quantum-bounded (was 10000)
         self.update_count = 0
         self.learning_rate = 0.1  # TD learning rate
+        self._max_value_keys = 5000  # Cap value function entries
         self._lock = threading.Lock()
 
     def record_reward(self, intent: str, strategy: str, reward: float,
@@ -1486,7 +1966,7 @@ class ReinforcementFeedbackLoop:
                 # Average over strategies for next state
                 next_keys = [k for k in self.value_function if k.startswith(f"{next_intent}:")]
                 if next_keys:
-                    next_v = sum(self.value_function[k] for k in next_keys) / len(next_keys)
+                    next_v = sum(self.value_function[k] for k in next_keys) / max(len(next_keys), 1)
 
             # TD update
             td_error = reward + self.DISCOUNT_FACTOR * next_v - current_v
@@ -1501,6 +1981,12 @@ class ReinforcementFeedbackLoop:
                 "new_value": round(self.value_function[state_key], 4),
                 "timestamp": time.time(),
             })
+
+            # Quantum-bounded pruning: evict lowest-value entries when dict grows too large
+            if len(self.value_function) > self._max_value_keys:
+                sorted_keys = sorted(self.value_function, key=self.value_function.get)
+                for k in sorted_keys[:len(sorted_keys) // 4]:
+                    del self.value_function[k]
 
     def get_best_strategy(self, intent: str, strategies: List[str]) -> str:
         """Get the highest-value strategy for a given intent."""
@@ -1521,7 +2007,7 @@ class ReinforcementFeedbackLoop:
         recent = list(self.reward_history)[-window:]
         if not recent:
             return 0.0
-        return sum(r["reward"] for r in recent) / len(recent)
+        return sum(r["reward"] for r in recent) / max(len(recent), 1)
 
     def get_status(self) -> Dict[str, Any]:
         """Return feedback loop status."""
@@ -1554,13 +2040,14 @@ class IntelligentPrefetchPredictor:
     Anticipates user queries before they happen.
     """
 
-    def __init__(self, max_patterns: int = 100000): # Unlimited Mode (was 5000)
+    def __init__(self, max_patterns: int = 5000):  # Quantum-bounded (was 100000 — OOM on 4GB)
         """Initialize the prefetch predictor with n-gram pattern tracking."""
         self._query_patterns = defaultdict(lambda: defaultdict(int))  # {prefix: {next_query: count}}
         self._concept_cooccurrence = defaultdict(lambda: defaultdict(int))  # {concept: {related: count}}
-        self._temporal_patterns = deque(maxlen=50000)  # Increased (was 1000)
+        self._temporal_patterns = deque(maxlen=2000)  # Quantum-bounded (was 50000)
         self._hot_queries = defaultdict(int)  # Frequently asked queries
         self._max_patterns = max_patterns
+        self._prune_counter = 0
         self._lock = threading.Lock()
 
     def record_query(self, query: str, concepts: Optional[list] = None):
@@ -1589,6 +2076,25 @@ class IntelligentPrefetchPredictor:
                     for c2 in concepts[i+1:]:
                         self._concept_cooccurrence[c1][c2] += 1
                         self._concept_cooccurrence[c2][c1] += 1
+
+            # Quantum memory pruning — cap unbounded dicts every 500 queries
+            self._prune_counter += 1
+            if self._prune_counter >= 500:
+                self._prune_counter = 0
+                self._prune_dicts()
+
+    def _prune_dicts(self):
+        """Quantum-bounded pruning: keep only top-frequency entries."""
+        max_keys = self._max_patterns
+        if len(self._query_patterns) > max_keys:
+            top = sorted(self._query_patterns, key=lambda k: sum(self._query_patterns[k].values()), reverse=True)[:max_keys // 2]
+            self._query_patterns = defaultdict(lambda: defaultdict(int), {k: self._query_patterns[k] for k in top})
+        if len(self._concept_cooccurrence) > max_keys:
+            top = sorted(self._concept_cooccurrence, key=lambda k: sum(self._concept_cooccurrence[k].values()), reverse=True)[:max_keys // 2]
+            self._concept_cooccurrence = defaultdict(lambda: defaultdict(int), {k: self._concept_cooccurrence[k] for k in top})
+        if len(self._hot_queries) > max_keys:
+            top = sorted(self._hot_queries, key=self._hot_queries.get, reverse=True)[:max_keys // 2]
+            self._hot_queries = defaultdict(int, {k: self._hot_queries[k] for k in top})
 
     def predict_next_queries(self, current_query: str, current_concepts: Optional[list] = None, top_k: int = 5) -> list:
         """Predict likely next queries based on patterns"""
@@ -2089,7 +2595,7 @@ class ChaoticRandom:
 
         # Mix with pool average for additional unpredictability
         if cls._entropy_pool:
-            pool_mix = sum(cls._entropy_pool) / len(cls._entropy_pool)
+            pool_mix = sum(cls._entropy_pool) / max(len(cls._entropy_pool), 1)
             entropy = (entropy + pool_mix * cls.PHI) % 1.0
 
         # Apply quantum-like probability wave
@@ -3689,7 +4195,7 @@ class PhaseSpaceNavigator:
             return
         recent = self._trajectory[-50:]
         # Compute mean of recent states
-        mean_state = [sum(s[d] for s in recent) / len(recent) for d in range(self.N_DIMS)]
+        mean_state = [sum(s[d] for s in recent) / max(len(recent), 1) for d in range(self.N_DIMS)]
         # Check if all recent states are within epsilon of mean
         max_dev = 0.0
         for s in recent:
@@ -3771,7 +4277,7 @@ class PhaseSpaceNavigator:
         deltas = []
         for i in range(1, len(recent)):
             deltas.append([recent[i][d] - recent[i - 1][d] for d in range(self.N_DIMS)])
-        gradient = [sum(d[dim] for d in deltas) / len(deltas) for dim in range(self.N_DIMS)]
+        gradient = [sum(d[dim] for d in deltas) / max(len(deltas), 1) for dim in range(self.N_DIMS)]
         magnitude = math.sqrt(sum(g ** 2 for g in gradient))
         return {
             'gradient': {self.DIMENSIONS[d]: round(gradient[d], 6) for d in range(self.N_DIMS)},

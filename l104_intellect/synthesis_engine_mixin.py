@@ -774,19 +774,19 @@ class SynthesisEngineMixin:
         if hasattr(self, '_metacognitive_response_quality') and self._metacognitive_response_quality:
             recent = self._metacognitive_response_quality[-50:]
             qualities = [r["quality"] for r in recent]
-            avg_quality = sum(qualities) / len(qualities)
+            avg_quality = sum(qualities) / max(len(qualities), 1)
             noise_ratios = [r["noise_ratio"] for r in recent]
-            avg_noise = sum(noise_ratios) / len(noise_ratios)
+            avg_noise = sum(noise_ratios) / max(len(noise_ratios), 1)
 
             diagnostics["response_quality"] = {
                 "total_assessed": len(self._metacognitive_response_quality),
                 "recent_avg_quality": round(avg_quality, 3),
                 "recent_avg_noise_ratio": round(avg_noise, 3),
                 "recent_avg_lexical_diversity": round(
-                    sum(r["lexical_diversity"] for r in recent) / len(recent), 3
+                    sum(r["lexical_diversity"] for r in recent) / max(len(recent), 1), 3
                 ),
                 "recent_avg_confidence": round(
-                    sum(r["confidence"] for r in recent) / len(recent), 3
+                    sum(r["confidence"] for r in recent) / max(len(recent), 1), 3
                 ),
             }
 
@@ -794,8 +794,8 @@ class SynthesisEngineMixin:
             if len(recent) >= 10:
                 first_half = qualities[:len(qualities)//2]
                 second_half = qualities[len(qualities)//2:]
-                first_avg = sum(first_half) / len(first_half)
-                second_avg = sum(second_half) / len(second_half)
+                first_avg = sum(first_half) / max(len(first_half), 1)
+                second_avg = sum(second_half) / max(len(second_half), 1)
                 if second_avg > first_avg * 1.05:
                     diagnostics["response_quality"]["trend"] = "improving"
                 elif second_avg < first_avg * 0.95:

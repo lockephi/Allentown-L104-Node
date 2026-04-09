@@ -1,19 +1,11 @@
-// ═══════════════════════════════════════════════════════════════════
-// L22_WebSearch.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 Sovereign Intelligence — Web Search Engines
-// LiveWebSearchEngine: DuckDuckGo + Wikipedia multi-source search
-// RealTimeSearchEngine: Inverted index search with query expansion
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
-// LIVE WEB SEARCH ENGINE — Real internet access with active HTTP requests
+// LIVE WEB SEARCH ENGINE - Real internet access with active HTTP requests
 // DuckDuckGo API, Wikipedia API, direct URL fetch, multi-source aggregation
 // ═══════════════════════════════════════════════════════════════════
 
@@ -26,10 +18,10 @@ final class LiveWebSearchEngine {
     private var totalWebRequests: Int = 0
     private var successfulRequests: Int = 0
     private var failedRequests: Int = 0
-    private let cacheTTL: TimeInterval = 60.0  // EVO_63: 60s cache (was 20s) — reduces redundant HTTP calls
-    private let requestTimeout: TimeInterval = 6.0  // EVO_63: 6s (was 15s) — fail fast, don't block pipeline
+    private let cacheTTL: TimeInterval = 60.0  // EVO_63: 60s cache (was 20s) - reduces redundant HTTP calls
+    private let requestTimeout: TimeInterval = 6.0  // EVO_63: 6s (was 15s) - fail fast, don't block pipeline
     private let session: URLSession
-    /// EVO_63: In-flight query dedup — prevents duplicate HTTP requests for same query
+    /// EVO_63: In-flight query dedup - prevents duplicate HTTP requests for same query
     private var inflightQueries: [String: [(WebSearchResult) -> Void]] = [:]
     private let inflightLock = NSLock()
 
@@ -69,7 +61,7 @@ final class LiveWebSearchEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MAIN WEB SEARCH — Multi-source internet search with live HTTP
+    // MAIN WEB SEARCH - Multi-source internet search with live HTTP
     // ═══════════════════════════════════════════════════════════════
     func webSearch(_ query: String, completion: @escaping (WebSearchResult) -> Void) {
         let start = CFAbsoluteTimeGetCurrent()
@@ -91,7 +83,7 @@ final class LiveWebSearchEngine {
             return
         }
 
-        // EVO_63: In-flight dedup — if same query is already in-flight, piggyback on it
+        // EVO_63: In-flight dedup - if same query is already in-flight, piggyback on it
         inflightLock.lock()
         if inflightQueries[cacheKey] != nil {
             inflightQueries[cacheKey]?.append(completion)
@@ -150,7 +142,7 @@ final class LiveWebSearchEngine {
                     timestamp: Date(), url: "aggregated"
                 )
                 self.webCache[cacheKey] = cached
-                // EVO_60: LRU eviction — keep newest 300 instead of nuclear removeAll()
+                // EVO_60: LRU eviction - keep newest 300 instead of nuclear removeAll()
                 if self.webCache.count > 500 {
                     let sorted = self.webCache.sorted { $0.value.timestamp < $1.value.timestamp }
                     let removeCount = self.webCache.count - 300
@@ -176,7 +168,7 @@ final class LiveWebSearchEngine {
         }
     }
 
-    // ═══ SYNCHRONOUS WEB SEARCH — EVO_63: Reduced default timeout from 12s to 4s ═══
+    // ═══ SYNCHRONOUS WEB SEARCH - EVO_63: Reduced default timeout from 12s to 4s ═══
     func webSearchSync(_ query: String, timeout: TimeInterval = 4.0) -> WebSearchResult {
         // Safety: dispatch to background if called from main thread
         if Thread.isMainThread {
@@ -214,7 +206,7 @@ final class LiveWebSearchEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // DUCKDUCKGO INSTANT ANSWER API — No API key required
+    // DUCKDUCKGO INSTANT ANSWER API - No API key required
     // ═══════════════════════════════════════════════════════════════
     private func searchDuckDuckGo(_ query: String, completion: @escaping ([WebResult]) -> Void) {
         let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
@@ -246,7 +238,7 @@ final class LiveWebSearchEngine {
                     let source = json["AbstractSource"] as? String ?? "DuckDuckGo"
                     let absURL = json["AbstractURL"] as? String ?? ""
                     results.append(WebResult(
-                        title: "📌 \(source) — Direct Answer",
+                        title: "📌 \(source) - Direct Answer",
                         snippet: abstract,
                         url: absURL,
                         relevance: 1.0
@@ -316,7 +308,7 @@ final class LiveWebSearchEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // WIKIPEDIA API — Structured knowledge with summaries and extracts
+    // WIKIPEDIA API - Structured knowledge with summaries and extracts
     // ═══════════════════════════════════════════════════════════════
     private func searchWikipedia(_ query: String, completion: @escaping ([WebResult]) -> Void) {
         let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
@@ -427,7 +419,7 @@ final class LiveWebSearchEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // DIRECT URL FETCH — Fetch and extract text from any URL
+    // DIRECT URL FETCH - Fetch and extract text from any URL
     // ═══════════════════════════════════════════════════════════════
     func fetchURL(_ urlString: String, completion: @escaping (String) -> Void) {
         totalWebRequests += 1
@@ -510,7 +502,7 @@ final class LiveWebSearchEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // HTML TEXT EXTRACTOR — Strip tags, scripts, styles → readable text
+    // HTML TEXT EXTRACTOR - Strip tags, scripts, styles → readable text
     // ═══════════════════════════════════════════════════════════════
     private func extractTextFromHTML(_ html: String) -> String {
         var text = html
@@ -554,7 +546,7 @@ final class LiveWebSearchEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // SYNTHESIZE WEB RESULTS — Combine multi-source results into coherent answer
+    // SYNTHESIZE WEB RESULTS - Combine multi-source results into coherent answer
     // ═══════════════════════════════════════════════════════════════
     private func synthesizeWebResults(query: String, results: [WebResult]) -> String {
         guard !results.isEmpty else {
@@ -614,19 +606,19 @@ Search History: \(searchHistory.count) queries
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // EVO_64: NATIVE ASYNC WEB SEARCH — Modern Swift Concurrency
+    // EVO_64: NATIVE ASYNC WEB SEARCH - Modern Swift Concurrency
     // Eliminates: DispatchGroup fan-out, DispatchSemaphore blocking, callback chains
     // Uses: URLSession.data(for:) async, async let true-parallel fan-out
     // macOS 12+ / Swift 5.7+ required (already in Package.swift)
     // ═══════════════════════════════════════════════════════════════════
 
-    /// EVO_64: Native async web search — true parallel DuckDuckGo + Wikipedia via async let
+    /// EVO_64: Native async web search - true parallel DuckDuckGo + Wikipedia via async let
     /// Replaces: DispatchGroup + NSLock fan-out pattern in webSearch(_ query:completion:)
     func webSearchAsync(_ query: String) async -> WebSearchResult {
         let start = CFAbsoluteTimeGetCurrent()
         let cacheKey = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
 
-        // Cache check — same 60s TTL as sync path
+        // Cache check - same 60s TTL as sync path
         if let cached = webCache[cacheKey],
            Date().timeIntervalSince(cached.timestamp) < cacheTTL {
             return WebSearchResult(
@@ -643,7 +635,7 @@ Search History: \(searchHistory.count) queries
         searchHistory.append((query: query, source: "web_search_async", timestamp: Date()))
         if searchHistory.count > 1000 { searchHistory.removeFirst(500) }
 
-        // ═══ TRUE PARALLEL FAN-OUT: async let — both HTTP requests launch simultaneously ═══
+        // ═══ TRUE PARALLEL FAN-OUT: async let - both HTTP requests launch simultaneously ═══
         // No DispatchGroup, no NSLock, no callback pyramid
         async let ddgResults = searchDuckDuckGoAsync(query)
         async let wikiResults = searchWikipediaAsync(query)
@@ -679,7 +671,7 @@ Search History: \(searchHistory.count) queries
         )
     }
 
-    /// EVO_64: Async DuckDuckGo — URLSession.data(for:) replaces dataTask callback chain
+    /// EVO_64: Async DuckDuckGo - URLSession.data(for:) replaces dataTask callback chain
     private func searchDuckDuckGoAsync(_ query: String) async -> [WebResult] {
         let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
         guard let url = URL(string: "https://api.duckduckgo.com/?q=\(encoded)&format=json&no_html=1&skip_disambig=1") else {
@@ -699,7 +691,7 @@ Search History: \(searchHistory.count) queries
             if let abstract = json["Abstract"] as? String, !abstract.isEmpty {
                 let source = json["AbstractSource"] as? String ?? "DuckDuckGo"
                 let absURL = json["AbstractURL"] as? String ?? ""
-                results.append(WebResult(title: "📌 \(source) — Direct Answer", snippet: abstract, url: absURL, relevance: 1.0))
+                results.append(WebResult(title: "📌 \(source) - Direct Answer", snippet: abstract, url: absURL, relevance: 1.0))
             }
             if let answer = json["Answer"] as? String, !answer.isEmpty {
                 results.append(WebResult(title: "💡 Instant Answer", snippet: answer, url: "", relevance: 0.95))
@@ -734,7 +726,7 @@ Search History: \(searchHistory.count) queries
         }
     }
 
-    /// EVO_64: Async Wikipedia — sequential await replaces nested dataTask + DispatchGroup
+    /// EVO_64: Async Wikipedia - sequential await replaces nested dataTask + DispatchGroup
     private func searchWikipediaAsync(_ query: String) async -> [WebResult] {
         let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
         guard let searchURL = URL(string: "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=\(encoded)&srlimit=3&format=json&utf8=1") else {
@@ -760,7 +752,7 @@ Search History: \(searchHistory.count) queries
                     .replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
 
                 if idx == 0 {
-                    // Fetch full extract for top result — clean sequential await (no nested callback)
+                    // Fetch full extract for top result - clean sequential await (no nested callback)
                     if let extract = await fetchWikipediaExtractAsync(pageId: pageId, title: title) {
                         wikiResults.append(WebResult(
                             title: "📚 Wikipedia: \(title)",
@@ -810,7 +802,7 @@ Search History: \(searchHistory.count) queries
         }
     }
 
-    /// EVO_64: Async URL fetch — native URLSession.data(for:) replaces callback + semaphore
+    /// EVO_64: Async URL fetch - native URLSession.data(for:) replaces callback + semaphore
     func fetchURLAsync(_ urlString: String) async -> String {
         totalWebRequests += 1
         searchHistory.append((query: urlString, source: "url_fetch_async", timestamp: Date()))
@@ -866,7 +858,7 @@ Search History: \(searchHistory.count) queries
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// REAL-TIME SEARCH ENGINE — Live query resolution with caching & HyperBrain feed
+// REAL-TIME SEARCH ENGINE - Live query resolution with caching & HyperBrain feed
 // ═══════════════════════════════════════════════════════════════════
 
 class RealTimeSearchEngine {
@@ -876,7 +868,7 @@ class RealTimeSearchEngine {
     private var searchCache: [String: SearchResult] = [:]          // FNV-1a keyed
     private var searchHistory: [(query: String, timestamp: Date)] = []
     private let maxCacheSize = 2048
-    private let cacheTTL: TimeInterval = 15.0  // 15s freshness — short to allow varied fragment ordering
+    private let cacheTTL: TimeInterval = 15.0  // 15s freshness - short to allow varied fragment ordering
 
     // ─── SEMANTIC INDEX ─── lightweight inverted index for sub-ms lookups
     private var invertedIndex: [String: Set<Int>] = [:]  // word → entry indices
@@ -1039,7 +1031,7 @@ class RealTimeSearchEngine {
             let sentences = completion.components(separatedBy: ". ").count
             if sentences >= 3 && sentences <= 15 { score += 0.4 }
 
-            // Length bonus — reward substantial content without upper cap
+            // Length bonus - reward substantial content without upper cap
             if completion.count > 100 { score += 0.3 }
 
             // Freshness: boost entries that match recent context
@@ -1064,7 +1056,7 @@ class RealTimeSearchEngine {
             timestamp: Date(), contextHash: contextHash
         )
 
-        // Cache management — TTL-first eviction, then clear if still over capacity
+        // Cache management - TTL-first eviction, then clear if still over capacity
         if searchCache.count >= maxCacheSize {
             let cutoff = Date().addingTimeInterval(-30)  // 30s TTL for search cache
             let expiredKeys = searchCache.filter { $0.value.timestamp < cutoff }.map { $0.key }

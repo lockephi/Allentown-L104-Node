@@ -515,6 +515,148 @@ MCP_TOOLS = {
             },
             "required": ["category"]
         }
+    },
+    "l104_llm_query": {
+        "description": "Query any LLM provider via L104 unified provider orchestrator",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "provider": {
+                    "type": "string",
+                    "enum": ["openai", "gemini", "anthropic", "deepseek", "groq", "mistral", "cohere", "perplexity", "llama2b"],
+                    "description": "LLM provider to use"
+                },
+                "prompt": {
+                    "type": "string",
+                    "description": "The prompt to send"
+                },
+                "temperature": {
+                    "type": "number",
+                    "default": 0.7,
+                    "minimum": 0.0,
+                    "maximum": 2.0,
+                    "description": "Temperature for generation"
+                },
+                "max_tokens": {
+                    "type": "integer",
+                    "default": 1000,
+                    "minimum": 1,
+                    "description": "Maximum tokens in response"
+                }
+            },
+            "required": ["provider", "prompt"]
+        }
+    },
+    "l104_llm_status": {
+        "description": "Get status of LLM providers (availability, reliability)",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "provider": {
+                    "type": "string",
+                    "enum": ["openai", "gemini", "anthropic", "deepseek", "groq", "mistral", "cohere", "perplexity", "llama2b", "all"],
+                    "description": "Provider to check; 'all' returns all providers"
+                }
+            },
+            "required": []
+        }
+    },
+    "l104_science_analyze": {
+        "description": "Perform analysis with L104 Science Engine",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "domain": {
+                    "type": "string",
+                    "default": "ADVANCED_PHYSICS",
+                    "description": "Research domain"
+                }
+            },
+            "required": []
+        }
+    },
+    "l104_math_analyze": {
+        "description": "Perform analysis with L104 Math Engine",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+        }
+    },
+    "l104_code_analyze": {
+        "description": "Perform analysis with L104 Code Engine",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "Code to analyze"
+                }
+            },
+            "required": ["code"]
+        }
+    },
+    "l104_three_engine_analyze": {
+        "description": "Perform unified three‑engine analysis (Science, Math, Code)",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "Code input for Code Engine"
+                },
+                "science_data": {
+                    "type": "string",
+                    "description": "JSON string of science data"
+                },
+                "math_data": {
+                    "type": "string",
+                    "description": "JSON string of math data"
+                }
+            },
+            "required": []
+        }
+    },
+    "l104_quantum_status": {
+        "description": "Get status of L104 Quantum Engine (brain, gate engine, coherence)",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+        }
+    },
+    "l104_quantum_grover": {
+        "description": "Run Grover search via L104 Quantum Engine",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "target": {
+                    "type": "integer",
+                    "default": 5,
+                    "description": "Target integer to search for"
+                },
+                "qubits": {
+                    "type": "integer",
+                    "default": 4,
+                    "description": "Number of qubits to use"
+                }
+            },
+            "required": []
+        }
+    },
+    "l104_quantum_shor": {
+        "description": "Run Shor's factoring algorithm via L104 Quantum Engine",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "N": {
+                    "type": "integer",
+                    "default": 15,
+                    "description": "Integer to factor"
+                }
+            },
+            "required": []
+        }
     }
 }
 

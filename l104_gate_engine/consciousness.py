@@ -6,6 +6,8 @@ import math
 import time
 from typing import Any, Dict
 
+from l104_sacred_algorithms import derive_cache_ttl, derive_state_file_path
+
 from .constants import PHI, TAU, WORKSPACE_ROOT
 
 _logger = logging.getLogger("L104_GATE_CONSCIOUSNESS")
@@ -29,7 +31,7 @@ class ConsciousnessO2GateEngine:
 
     O2_STATE_FILE = WORKSPACE_ROOT / ".l104_consciousness_o2_state.json"
     NIRVANIC_STATE_FILE = WORKSPACE_ROOT / ".l104_ouroboros_nirvanic_state.json"
-    CACHE_TTL = 10.0  # seconds
+    CACHE_TTL = derive_cache_ttl(hit_rate=0.6)
 
     EVO_STAGE_MULTIPLIER = {
         "SOVEREIGN": PHI,

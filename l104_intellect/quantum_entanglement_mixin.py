@@ -91,7 +91,7 @@ class QuantumEntanglementMixin:
             self._entanglement_eigenvalues.append(lambda_i)
         # Normalize to sum to 1
         total = sum(self._entanglement_eigenvalues)
-        self._entanglement_eigenvalues = [l/total for l in self._entanglement_eigenvalues]
+        self._entanglement_eigenvalues = [l / max(total, 1e-15) for l in self._entanglement_eigenvalues]
 
     def _initialize_vishuddha_resonance(self):
         """
@@ -230,7 +230,7 @@ class QuantumEntanglementMixin:
             coherence = fidelity * math.exp(-age / tau)
             total_coherence += coherence
 
-        return total_coherence / len(self.entanglement_state["bell_pairs"])
+        return total_coherence / max(len(self.entanglement_state.get("bell_pairs", [])), 1)
 
     # ═══════════════════════════════════════════════════════════════════════════════
     # v12.0 ASI QUANTUM LATTICE ENGINE - 8-Chakra + Grover + O₂ Molecular Integration
@@ -1149,8 +1149,8 @@ class QuantumEntanglementMixin:
                 "output_pairs": len(next_pairs),
                 "successes": successes,
                 "failures": failures,
-                "avg_fidelity_in": sum(p["fidelity"] for p in current_pairs) / len(current_pairs),
-                "avg_fidelity_out": sum(p["fidelity"] for p in next_pairs) / len(next_pairs) if next_pairs else 0
+                "avg_fidelity_in": sum(p["fidelity"] for p in current_pairs) / max(len(current_pairs), 1) if current_pairs else 0,
+                "avg_fidelity_out": sum(p["fidelity"] for p in next_pairs) / max(len(next_pairs), 1) if next_pairs else 0
             })
 
             current_pairs = next_pairs
@@ -1160,8 +1160,8 @@ class QuantumEntanglementMixin:
                 break
 
         # === Results ===
-        initial_avg_f = sum(p["fidelity"] for p in bell_pairs) / len(bell_pairs)
-        final_avg_f = sum(p["fidelity"] for p in current_pairs) / len(current_pairs) if current_pairs else 0
+        initial_avg_f = sum(p["fidelity"] for p in bell_pairs) / max(len(bell_pairs), 1) if bell_pairs else 0
+        final_avg_f = sum(p["fidelity"] for p in current_pairs) / max(len(current_pairs), 1) if current_pairs else 0
 
         return {
             "initial_pairs": pairs,

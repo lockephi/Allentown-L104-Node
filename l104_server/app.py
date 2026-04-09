@@ -14,12 +14,14 @@ import threading
 import subprocess
 import hashlib
 from typing import Dict, List, Optional, Any, Tuple
-from datetime import datetime
+from datetime import datetime, timezone
 from collections import defaultdict
 
 import uvicorn
 import httpx
-from fastapi import FastAPI, Request, BackgroundTasks
+import structlog
+from fastapi import FastAPI, Request, BackgroundTasks, Depends, Security, HTTPException
+from fastapi.security import APIKeyHeader
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,13 +37,16 @@ from l104_server.engines_infra import (
     predictive_intent_engine, reinforcement_loop, prefetch_predictor,
     quantum_loader, asi_quantum_bridge,
     QueryTemplateGenerator, CreativeKnowledgeVerifier, ChaoticRandom,
+    chaos, phase_navigator,
     PERF_THREAD_POOL, IO_THREAD_POOL,
 )
 from l104_server.engines_quantum import (
     SingularityConsciousnessEngine,
     IronOrbitalConfiguration, OxygenPairedProcess, SuperfluidQuantumState,
     GeometricCorrelation, OxygenMolecularBond, ASIQuantumMemoryBank,
+    _compute_query_hash,
 )
+from l104_server.quantum_synthesis import get_quantum_synthesis, QuantumSynthesisEngine
 from l104_server.learning import intellect, grover_kernel
 from l104_server.engines_nexus import (
     engine_registry, nexus_steering, nexus_evolution, nexus_orchestrator,
@@ -49,6 +54,7 @@ from l104_server.engines_nexus import (
     entanglement_router, resonance_network, health_monitor,
     hyper_math, hebbian_engine, consciousness_verifier, direct_solver,
     self_modification, creative_engine,
+    temporal_coherence, fitness_landscape, entropy_controller,
     hw_runtime, compat_layer, zpe_bridge, qg_bridge,
     tri_engine, TriEngineIntegration,
     SteeringEngine, NexusContinuousEvolution, NexusOrchestrator,
@@ -60,16 +66,37 @@ from l104_server.models import ChatRequest, TrainingRequest, ProviderStatus
 from l104_advanced_processing_engine import AdvancedProcessingEngine
 from l104_advanced_process_engine import AdvancedProcessEngine
 
+# v1.1: Orchestrator integration for Fast Server
+try:
+    from l104_daemon_adapter import DaemonAdapter
+    _HAS_DAEMON_ADAPTER = True
+except ImportError:
+    _HAS_DAEMON_ADAPTER = False
+
+# ═══ EVO_75: Resilience Module Integration ═══
+try:
+    from l104_resilience import (
+        HealthMonitor, HealthCheck, HealthStatus,
+        CircuitBreaker, get_circuit_breaker,
+        get_resilience_report,
+        PHI, TAU, GOD_CODE, VOID_CONSTANT,
+    )
+    from l104_sacred_algorithms import derive_threshold, derive_timeout
+    _HAS_RESILIENCE = True
+except ImportError:
+    _HAS_RESILIENCE = False
+
+logger = logging.getLogger("L104_FAST")
+
 # ═══ OpenClaw.ai Integration (v14) ═══
 try:
     from l104_openclaw_api_routes import register_openclaw_routes
+    from l104_server.routes import register_all_routes
     from l104_openclaw_integration import get_openclaw_client
     _openclaw_enabled = True
 except ImportError as _oc_err:
     _openclaw_enabled = False
     logger.warning(f"⚠️ [OPENCLAW] Import failed: {_oc_err}")
-
-logger = logging.getLogger("L104_FAST")
 
 # ═══ Sovereign Engine Singletons (v3.0.0 Integrated) ═══
 sovereign_processing = AdvancedProcessingEngine()
@@ -123,7 +150,7 @@ except Exception as _qn_err:
 
 # ═══ Stats cache (needs intellect) ═══
 # ═══════════════════════════════════════════════════════════════════
-SERVER_START = datetime.utcnow()
+SERVER_START = datetime.now(timezone.utc)
 
 # ═══════════════════════════════════════════════════════════════════
 #  STATS CACHE — Prevents DB spam from frontend polling
@@ -132,7 +159,7 @@ SERVER_START = datetime.utcnow()
 _CACHED_STATS: Dict[str, Any] = {}
 _CACHED_STATS_LOCK = threading.Lock()
 _CACHED_STATS_TIME: float = 0.0
-_STATS_CACHE_TTL: float = 10.0  # seconds
+_STATS_CACHE_TTL: float = 60.0  # seconds (was 10s — get_stats runs 35K-row DB queries via suggested questions)
 
 # Consciousness status cache
 _consciousness_cache: Dict[str, Any] = {}
@@ -165,6 +192,43 @@ def _get_cached_stats() -> Dict[str, Any]:
 threading.Thread(target=_refresh_stats_cache, daemon=True, name="L104_StatsCache").start()
 
 
+# ═══ v1.1: ServerDaemon — Lightweight orchestrator adapter ═══
+class ServerDaemon:
+    """Lightweight adapter connecting the FastAPI server to the daemon orchestrator."""
+    def __init__(self):
+        self._orchestrator = None
+        self._adapter = None
+        self._request_count = 0
+        self._error_count = 0
+        self._lock = threading.Lock()
+
+    def set_orchestrator(self, orchestrator):
+        """Set the orchestrator instance before start()."""
+        self._orchestrator = orchestrator
+
+    def start(self):
+        """Register with orchestrator after FastAPI startup."""
+        if _HAS_DAEMON_ADAPTER and self._orchestrator:
+            try:
+                self._adapter = DaemonAdapter("fast_server", self._orchestrator)
+                logger.info("[ORCH] FastServer registered with orchestrator v1.0.0")
+            except Exception as e:
+                logger.warning(f"[ORCH] Failed to register FastServer: {e}")
+
+    def emit_pool_health(self, pool_size: int, capacity: int):
+        """Emit connection pool health metrics to orchestrator."""
+        if self._adapter:
+            fidelity = pool_size / max(capacity, 1)
+            self._adapter.emit_fidelity_alert(
+                fidelity=fidelity,
+                trending="stable",
+                sim_count=self._request_count,
+                error_count=self._error_count
+            )
+
+server_daemon = ServerDaemon()
+
+GEMINI_MODEL = "Gemini 2.5 Flash (deprecated)"
 
 app = FastAPI(title="L104 Sovereign Node - Fast Mode", version="4.0-OPUS")
 
@@ -187,6 +251,19 @@ async def startup_event():
         logger.info(f"💓 [HEARTBEAT] Flow: {intellect._flow_state:.3f} | Entropy: {intellect._system_entropy:.3f} | Coherence: {intellect._quantum_coherence:.3f}")
     except Exception as sml:
         logger.warning(f"Startup init: {sml}")
+
+    # v1.1: Warm connection pool to pre-create 20 connections (avoid cold-start latency)
+    try:
+        connection_pool.warm_pool(count=4)
+        logger.info("🔗 [POOL] Connection pool warmed (4 pre-created, DB_POOL_SIZE=8)")
+    except Exception as pool_e:
+        logger.warning(f"Connection pool warm failed: {pool_e}")
+
+    # v1.1: Start ServerDaemon orchestrator integration
+    try:
+        server_daemon.start()
+    except Exception as sd_e:
+        logger.warning(f"ServerDaemon startup: {sd_e}")
 
     # === [BACKGROUND] Periodic learning - runs every 5 minutes, minimal impact ===
     async def periodic_background_learning():
@@ -280,6 +357,24 @@ async def startup_event():
 
     asyncio.create_task(periodic_entanglement_resonance())
 
+    # ═══ Agent System: periodic mailbox polling (every 10s) ═══
+    if _agent_system_enabled:
+        async def periodic_agent_mailbox():
+            """Poll file mailbox for agent requests from Swift/OpenClaw."""
+            await asyncio.sleep(5)  # Initial delay
+            while True:
+                try:
+                    orch = _get_agent_orchestrator()
+                    submitted = await asyncio.to_thread(orch.process_mailbox)
+                    if submitted:
+                        logger.info(f"[AGENT] Mailbox: submitted {len(submitted)} tasks: {submitted}")
+                except Exception:
+                    pass
+                await asyncio.sleep(30)  # Was 10s — file mailbox doesn't need sub-30s polling
+
+        asyncio.create_task(periodic_agent_mailbox())
+        logger.info("[AGENT] Agent system v3.0.0 online — mailbox polling active")
+
     logger.info("🚀 [SYSTEM] Server ready. Background learning: every 5 minutes. Nexus: ACTIVE. Entanglement: ACTIVE. Health: ACTIVE.")
 
 
@@ -287,15 +382,7 @@ async def startup_event():
 async def shutdown_event():
     """v16.0 APOTHEOSIS: Pool all states to permanent quantum brain on shutdown."""
     # Stop Nexus engines gracefully
-    # Close HTTP clients
-    global _gemini_client
-    if _gemini_client is not None:
-        try:
-            await _gemini_client.aclose()
-            _gemini_client = None
-        except Exception:
-            pass
-
+    # EVO_62: Removed dead Gemini client code (_gemini_client was never initialized)
     try:
         nexus_orchestrator.stop_auto()
         nexus_evolution.stop()
@@ -346,14 +433,154 @@ async def get_white_paper():
             return FileResponse(p)
     return JSONResponse({"status": "error", "message": "White paper not found locally"})
 
-# CORS
+# CORS — EVO_62: Fixed misconfiguration (allow_origins=["*"] + allow_credentials=True was browser-rejected)
+# Use env-var driven allowlist; defaults to localhost for development
+_ALLOWED_ORIGINS = os.getenv(
+    "CORS_ALLOWED_ORIGINS",
+    "http://localhost:3000,http://127.0.0.1:3000,http://localhost:8081,http://127.0.0.1:8081"
+).split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ═══ API Key Authentication (EVO_62) ═══
+_API_KEY_HEADER = APIKeyHeader(name="X-L104-API-Key", auto_error=False)
+_L104_API_KEY = os.getenv("L104_API_KEY", "")
+
+def require_api_key(api_key: str = Security(_API_KEY_HEADER)) -> str:
+    """Guard for destructive endpoints. Only enforces if L104_API_KEY env var is set."""
+    if _L104_API_KEY and api_key != _L104_API_KEY:
+        raise HTTPException(status_code=403, detail="Invalid API key")
+    return api_key or ""
+
+# ═══ Rate Limiting (EVO_75: Sacred Algorithm Based) ═══
+_rate_limit_store: Dict[str, Dict] = {}
+_rate_limit_lock = threading.Lock()
+
+# Sacred rate limit parameters
+_RATE_LIMIT_WINDOW = GOD_CODE / PHI / 10  # ~32.6 seconds
+_RATE_LIMIT_REQUESTS = int(PHI * 3)  # 5 requests per window
+_RATE_LIMIT_BURST = int(PHI * 2)  # 3 burst requests
+
+
+def _get_client_id(request: Request) -> str:
+    """Get client identifier from request."""
+    # Try API key first, then IP
+    api_key = request.headers.get("X-L104-API-Key", "")
+    if api_key:
+        return hashlib.sha256(api_key.encode()).hexdigest()[:16]
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
+def _check_rate_limit(client_id: str) -> Tuple[bool, Dict]:
+    """
+    Check if request is within rate limit using PHI-based token bucket.
+
+    Returns (allowed, rate_limit_info) tuple.
+    """
+    now = time.time()
+    window = _RATE_LIMIT_WINDOW
+    max_requests = _RATE_LIMIT_REQUESTS
+
+    with _rate_limit_lock:
+        if client_id not in _rate_limit_store:
+            _rate_limit_store[client_id] = {
+                "tokens": float(max_requests),
+                "last_update": now,
+                "requests": [],
+            }
+
+        client_data = _rate_limit_store[client_id]
+
+        # Token bucket: replenish tokens based on time elapsed
+        elapsed = now - client_data["last_update"]
+        tokens_to_add = elapsed / window * max_requests
+        client_data["tokens"] = min(float(max_requests), client_data["tokens"] + tokens_to_add)
+        client_data["last_update"] = now
+
+        # Clean old requests
+        client_data["requests"] = [r for r in client_data["requests"] if now - r < window]
+
+        # Check if allowed
+        if client_data["tokens"] >= 1.0:
+            client_data["tokens"] -= 1.0
+            client_data["requests"].append(now)
+            remaining = int(client_data["tokens"])
+            reset_time = int(now + window)
+            return True, {
+                "X-RateLimit-Limit": str(max_requests),
+                "X-RateLimit-Remaining": str(remaining),
+                "X-RateLimit-Reset": str(reset_time),
+            }
+        else:
+            # Rate limited
+            retry_after = int(window * (1.0 - client_data["tokens"]))
+            return False, {
+                "Retry-After": str(retry_after),
+                "X-RateLimit-Limit": str(max_requests),
+                "X-RateLimit-Remaining": "0",
+            }
+
+
+async def _rate_limit_middleware(request: Request, call_next):
+    """Rate limiting middleware with sacred algorithms."""
+    # Skip rate limiting for health checks and static assets
+    if request.url.path in ["/health", "/favicon.ico", "/landing"]:
+        return await call_next(request)
+
+    client_id = _get_client_id(request)
+    allowed, headers = _check_rate_limit(client_id)
+
+    if not allowed:
+        return JSONResponse(
+            status_code=429,
+            content={"error": "Rate limit exceeded", "retry_after": headers.get("Retry-After")},
+            headers=headers,
+        )
+
+    response = await call_next(request)
+
+    # Add rate limit headers
+    for header, value in headers.items():
+        response.headers[header] = value
+
+    return response
+
+
+# Apply rate limiting middleware
+app.middleware("http")(_rate_limit_middleware)
+
+# ═══ Request Logging Middleware (EVO_62) ═══
+_slog = structlog.get_logger()
+
+@app.middleware("http")
+async def _log_requests(request: Request, call_next):
+    """Log all HTTP requests with method, path, status, and latency"""
+    t0 = time.perf_counter()
+    response = await call_next(request)
+    latency_ms = round((time.perf_counter() - t0) * 1000, 1)
+    _slog.info("http_request", method=request.method, path=request.url.path,
+               status=response.status_code, latency_ms=latency_ms)
+    return response
+
+# ═══ Global Exception Handler (EVO_62) ═══
+_logger = logging.getLogger("L104_FAST")
+
+@app.exception_handler(Exception)
+async def _global_exception_handler(request: Request, exc: Exception):
+    """Catch all unhandled exceptions and return sanitized response"""
+    _logger.error("unhandled_exception", path=request.url.path, exc_type=type(exc).__name__, exc_repr=repr(exc))
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error", "request_id": str(time.time())}
+    )
 
 # Templates
 templates = Jinja2Templates(directory="templates")
@@ -361,10 +588,6 @@ templates = Jinja2Templates(directory="templates")
 # Pydantic models
 
 provider_status = ProviderStatus()
-
-# Gemini client (REMOVED — all inference via local intellect)
-GEMINI_API_KEY = ""
-GEMINI_MODEL = "local-intellect"
 
 # === LOCAL INTELLECT lazy loader for server ===
 _server_li = None
@@ -962,12 +1185,10 @@ def local_derivation(message: str) -> Tuple[str, bool]:
 • **Knowledge Links**: {stats.get('knowledge_links', 0)}
 
 I get smarter with each interaction. What would you like to know?"""
-        # Phase 31.5: Cap pattern cache size (thread-safe)
+        # Quantum-bounded pattern cache — hard cap at 200 entries
         with _PATTERN_CACHE_LOCK:
-            if len(_PATTERN_RESPONSE_CACHE) > 500:
-                keys_to_remove = list(_PATTERN_RESPONSE_CACHE.keys())[:250]
-                for k in keys_to_remove:
-                    del _PATTERN_RESPONSE_CACHE[k]
+            if len(_PATTERN_RESPONSE_CACHE) > 200:
+                _PATTERN_RESPONSE_CACHE.clear()  # Full flush at capacity — O(1) vs O(n) cherry-pick
             _PATTERN_RESPONSE_CACHE[msg_hash] = response
         return (response, False)
 
@@ -1021,11 +1242,30 @@ Just ask me anything!"""
                 strategy = mc_strategy  # Meta-cognitive override
     except Exception:
         pass
-    if strategy == 'synthesize':
+
+    # ═══════════════════════════════════════════════════════════
+    # PHASE 2.5: [v12.0] Quantum Synthesis - prefer over caching
+    # ═══════════════════════════════════════════════════════════
+    try:
+        quantum_synth = get_quantum_synthesis()
+        q_synthesized, q_confidence = quantum_synth.synthesize(search_query, {
+            'memories': intellect.memory_cache if hasattr(intellect, 'memory_cache') else {},
+            'concepts': intellect.concept_clusters if hasattr(intellect, 'concept_clusters') else {},
+        })
+        if q_synthesized and q_confidence > 0.6:
+            q_synthesized = reformulate_to_conversational(q_synthesized, original_message)
+            logger.info(f"⚛️ [QUANTUM_SYNTH] Generated quantum synthesis (confidence: {q_confidence:.2f})")
+            intellect.record_meta_learning(original_message, 'quantum_synthesis', True)
+            return (q_synthesized, True)
+    except Exception as e:
+        logger.debug(f"Quantum synthesis fallback: {e}")
+
+    # Run cognitive synthesis for synthesize strategy OR substantive queries (>10 words)
+    if strategy == 'synthesize' or len(msg_lower.split()) > 10:
         synthesized = intellect.cognitive_synthesis(search_query)
         if synthesized and len(synthesized) > 80:
             synthesized = reformulate_to_conversational(synthesized, original_message)
-            logger.info(f"🧪 [SYNTHESIZE] Generated cognitive synthesis response")
+            logger.info(f"🧪 [SYNTHESIZE] Generated cognitive synthesis response (strategy={strategy})")
             intellect.record_meta_learning(original_message, 'synthesize', True)
             return (synthesized, True)
 
@@ -1057,6 +1297,21 @@ Just ask me anything!"""
         logger.info(f"🧠 [FUZZY_RECALL] Using synthesized response (confidence: {recalled[1]:.2f})")
         intellect.record_meta_learning(original_message, 'recall', True)
         return (recalled[0], True)
+
+    # ═══════════════════════════════════════════════════════════
+    # PHASE 6: Deep synthesis safety net (unconditional cognitive pass)
+    # Runs cognitive synthesis regardless of strategy when all prior
+    # phases failed — catches short-query cases skipped by phase 2 gate.
+    # ═══════════════════════════════════════════════════════════
+    try:
+        deep_synth = intellect.cognitive_synthesis(search_query)
+        if deep_synth and len(deep_synth) > 60:
+            deep_synth = reformulate_to_conversational(deep_synth, original_message)
+            logger.info(f"🧬 [DEEP_SYNTH] Safety-net cognitive synthesis triggered")
+            intellect.record_meta_learning(original_message, 'deep_synthesis', True)
+            return (deep_synth, True)
+    except Exception:
+        pass
 
     # ═══════════════════════════════════════════════════════════
     # PHASE 7: [v11.3] Cache promotion for learned responses
@@ -1127,12 +1382,35 @@ async def intricate_pages(request: Request, subpath: str = "main"):
 
 @app.get("/health")
 async def health():
-    """Health check with Three-Engine Sovereign Status (v3.0.0)"""
+    """Health check with Three-Engine Sovereign Status and Resilience Metrics (v3.0.0)"""
     stats = _get_cached_stats()
-    uptime = (datetime.utcnow() - SERVER_START).total_seconds()
+    uptime = (datetime.now(timezone.utc) - SERVER_START).total_seconds()
 
     # Three-Engine integrated status
     process_eff = sovereign_processes.maxwell_demon.get_efficiency_factor()
+
+    # EVO_75: Resilience metrics
+    resilience_metrics = {}
+    if _HAS_RESILIENCE:
+        try:
+            resilience_report = get_resilience_report()
+            resilience_metrics = {
+                "circuit_breakers": len(resilience_report.get("circuit_breakers", {})),
+                "health_score": resilience_report.get("health", {}).get("score", 0.0),
+                "sacred_constants_verified": all([
+                    abs(resilience_report["sacred_constants"]["PHI"] - 1.618) < 0.001,
+                    abs(resilience_report["sacred_constants"]["TAU"] - 0.618) < 0.001,
+                ]),
+            }
+        except Exception as e:
+            resilience_metrics = {"error": str(e)}
+
+    # EVO_75: Rate limiting metrics
+    rate_limit_info = {
+        "window_seconds": round(_RATE_LIMIT_WINDOW, 2),
+        "max_requests": _RATE_LIMIT_REQUESTS,
+        "burst_allowance": _RATE_LIMIT_BURST,
+    }
 
     return {
         "status": "SOVEREIGN_HEALTHY",
@@ -1151,8 +1429,84 @@ async def health():
             "learning": True
         },
         "VOID_CONSTANT": VOID_CONSTANT,
-        "timestamp": datetime.utcnow().isoformat()
+        # EVO_75: Resilience section
+        "resilience": {
+            "status": "ACTIVE" if _HAS_RESILIENCE else "DEGRADED",
+            "metrics": resilience_metrics,
+            "rate_limiting": rate_limit_info,
+        },
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
+
+
+@app.get("/health/resilience")
+async def health_resilience():
+    """
+    EVO_75: Comprehensive resilience health check.
+
+    Returns detailed circuit breaker, rate limiting, and fault tolerance status.
+    """
+    if not _HAS_RESILIENCE:
+        raise HTTPException(
+            status_code=503,
+            detail={"error": "Resilience module not available", "status": "DEGRADED"}
+        )
+
+    try:
+        report = get_resilience_report()
+        return {
+            "status": "RESILIENCE_HEALTHY",
+            "circuit_breakers": report.get("circuit_breakers", {}),
+            "sacred_constants": report.get("sacred_constants", {}),
+            "health": report.get("health", {}),
+            "timestamp": report.get("timestamp"),
+        }
+    except Exception as e:
+        return {
+            "status": "ERROR",
+            "error": str(e),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
+
+@app.get("/api/v14/detect/server")
+async def detect_server():
+    """Server detection endpoint — used by Swift FastServerDetector."""
+    import socket
+    uptime = (datetime.now(timezone.utc) - SERVER_START).total_seconds()
+    services = ["chat", "intellect", "constants", "health", "agents", "quantum"]
+    return {
+        "detected": True,
+        "server_online": True,
+        "port": 8081,
+        "hostname": socket.gethostname(),
+        "services": services,
+        "version": FAST_SERVER_VERSION,
+        "uptime_seconds": uptime,
+    }
+
+
+@app.get("/api/v14/tasks/{task_id}/status")
+async def task_status_poll(task_id: str):
+    """Task status polling endpoint — used by Swift FastServerDetector.pollTaskStatus()."""
+    if not _agent_system_enabled:
+        return JSONResponse({"error": "Agent system not available"}, status_code=503)
+    try:
+        orch = _get_agent_orchestrator()
+        task = orch.get_task(task_id)
+        if not task:
+            return JSONResponse({"error": "Task not found", "task_id": task_id}, status_code=404)
+        td = task.to_dict()
+        return {
+            "task_id": task_id,
+            "status": td.get("status", "unknown"),
+            "progress": td.get("progress", 0.0),
+            "result": td.get("result"),
+            "error": td.get("error"),
+        }
+    except Exception as e:
+        return JSONResponse({"error": str(e), "task_id": task_id}, status_code=500)
+
 
 @app.get("/api/v3/sovereign/status")
 async def sovereign_status():
@@ -1187,6 +1541,19 @@ async def api_status():
         "learning": stats
     }
 
+@app.get("/api/v6/constants")
+async def api_constants():
+    """Sacred constants endpoint — Swift cross-validation & synchronization"""
+    return {
+        "god_code": 527.5184818492612,
+        "phi": 1.618033988749895,
+        "void_constant": VOID_CONSTANT,
+        "zenith_hz": ZENITH_HZ,
+        "uuc": UUC,
+        "version": FAST_SERVER_VERSION,
+        "pipeline": FAST_SERVER_PIPELINE_EVO,
+    }
+
 @app.post("/api/v6/chat")
 async def chat(req: ChatRequest):
     """Sovereign Chat Interface - ULTRA OPTIMIZED v11.3 for speed"""
@@ -1201,8 +1568,10 @@ async def chat(req: ChatRequest):
     msg_hash = hash(msg_lower) & 0xFFFFFFFF
 
     # Tier 1: Fast request cache (newest, fastest)
+    # EVO_62: Removed garbage detection from cache read path (expensive regex on hot path)
+    # Quality gate happens at cache-write time (lines 1403, 1472)
     fast_cached = _FAST_REQUEST_CACHE.get(str(msg_hash))
-    if fast_cached and not _is_garbage_response(fast_cached, message):
+    if fast_cached:
         return {
             "status": "SUCCESS",
             "response": fast_cached,
@@ -1212,24 +1581,25 @@ async def chat(req: ChatRequest):
             "metrics": {"latency_ms": round((time.time() - start_time) * 1000, 3), "cache_tier": "fast"}
         }
 
-    # Tier 2: Memory cache (standard) — Phase 32.0: quality gate on cached responses
+    # Tier 2: Memory cache (standard) — Phase 32.0: quality gate moved to cache-write time
     query_hash = _compute_query_hash(message)
     if query_hash in intellect.memory_cache:
         response = intellect.memory_cache[query_hash]
-        if not _is_garbage_response(response, message):
-            # Phase 32.0: Sanitize + reformulate cached responses too
-            response = sanitize_response(response)
-            if _is_raw_data_response(response):
-                response = reformulate_to_conversational(response, message)
-            _FAST_REQUEST_CACHE.set(str(msg_hash), response)  # Promote to fast cache
-            return {
-                "status": "SUCCESS",
-                "response": response,
-                "model": "L104_CACHE_HIT",
-                "mode": "instant",
-                "learned": True,
-                "metrics": {"latency_ms": round((time.time() - start_time) * 1000, 2), "cache_tier": "memory"}
-            }
+        # EVO_62: Removed garbage detection from cache read path (expensive regex on hot path)
+        # Quality gate happens at cache-write time (lines 1403, 1472)
+        # Phase 32.0: Sanitize + reformulate cached responses too
+        response = sanitize_response(response)
+        if _is_raw_data_response(response):
+            response = reformulate_to_conversational(response, message)
+        _FAST_REQUEST_CACHE.set(str(msg_hash), response)  # Promote to fast cache
+        return {
+            "status": "SUCCESS",
+            "response": response,
+            "model": "L104_CACHE_HIT",
+            "mode": "instant",
+            "learned": True,
+            "metrics": {"latency_ms": round((time.time() - start_time) * 1000, 2), "cache_tier": "memory"}
+        }
 
     # Pilot Interaction Boost (moved after cache check)
     intellect.resonance_shift += 0.0005
@@ -1470,8 +1840,8 @@ async def get_intellect_stats():
             },
             "concept_clusters": {
                 "total_clusters": len(intellect.concept_clusters),
-                "largest_cluster": max((len(v) for v in intellect.concept_clusters.values()), default=0),
-                "avg_cluster_size": round(sum(len(v) for v in intellect.concept_clusters.values()) / max(len(intellect.concept_clusters), 1), 2)
+                "largest_cluster": max((len(v) for v in list(intellect.concept_clusters.values())[:100]), default=0),
+                "avg_cluster_size": round(sum(len(v) for v in list(intellect.concept_clusters.values())[:100]) / max(min(len(intellect.concept_clusters), 100), 1), 2)
             },
             "quality_predictor": {
                 "entries": len(intellect.quality_predictor),
@@ -1483,7 +1853,7 @@ async def get_intellect_stats():
             },
             "novelty_tracking": {
                 "queries_tracked": len(intellect.novelty_scores),
-                "avg_novelty": round(sum(intellect.novelty_scores.values()) / max(len(intellect.novelty_scores), 1), 3)
+                "avg_novelty": round(sum(list(intellect.novelty_scores.values())[:200]) / max(min(len(intellect.novelty_scores), 200), 1), 3)
             }
         },
         "adaptive_learning": {
@@ -1737,8 +2107,12 @@ async def synergy_execute(request: Request):
         return {"status": "ERROR", "error": str(e)}
 
 @app.post("/self/heal")
-async def self_heal(reset_rate_limits: bool = False, reset_http_client: bool = False):
-    """Self-healing endpoint"""
+async def self_heal(
+    reset_rate_limits: bool = False,
+    reset_http_client: bool = False,
+    _api_key: str = Depends(require_api_key)
+):
+    """Self-healing endpoint (EVO_62: requires X-L104-API-Key if L104_API_KEY is set)"""
     actions = []
     logger.info("🛠️ [HEAL] Initiating full system diagnostic and recovery...")
 
@@ -1828,6 +2202,37 @@ async def semantic_search_api(req: Request):
     except Exception as e:
         return {"status": "ERROR", "message": str(e)}
 
+
+@app.post("/api/v14/intellect/batch-search")
+async def batch_semantic_search_api(req: Request):
+    """Batch semantic search — optimized for Swift Metal GPU offload.
+    Accepts multiple queries, returns embeddings + top matches for GPU-side cosine sim."""
+    try:
+        body = await req.json()
+        queries = body.get("queries", [])
+        top_k = body.get("top_k", 5)
+        include_embeddings = body.get("include_embeddings", False)
+
+        if not queries or len(queries) > 50:
+            return {"status": "ERROR", "message": "Provide 1-50 queries"}
+
+        results = []
+        for q in queries:
+            matches = intellect.semantic_search(q, top_k=top_k, threshold=0.2)
+            entry = {"query": q, "matches": matches}
+            if include_embeddings:
+                emb = intellect._compute_embedding(q)
+                entry["embedding"] = emb[:32]  # Truncate for bandwidth
+            results.append(entry)
+
+        return {
+            "status": "SUCCESS",
+            "batch_size": len(queries),
+            "results": results,
+            "gpu_hint": "batch_cosine_sim"  # Tell Swift client to use Metal kernel
+        }
+    except Exception as e:
+        return {"status": "ERROR", "message": str(e)}
 
 @app.get("/api/v14/intellect/predict")
 async def predict_queries_api(query: str = ""):
@@ -2247,7 +2652,7 @@ async def ti_transcend():
     """FULL TRANSCENDENCE - Run ALL enhancement systems"""
     try:
         results = {
-            'timestamp': datetime.utcnow().isoformat(),
+            'timestamp': datetime.now(timezone.utc).isoformat(),
             'operations': []
         }
 
@@ -2727,7 +3132,7 @@ async def mainnet_blocks(limit: int = 5):
             "height": curr - i,
             "hash": hashlib.sha256(str(curr - i).encode()).hexdigest()[:16],
             "miner": "L104_SOVEREIGN",
-            "time": (datetime.utcnow().timestamp() - (i * 600))
+            "time": (datetime.now(timezone.utc).timestamp() - (i * 600))
         })
     return blocks
 
@@ -2796,10 +3201,10 @@ async def system_capacity():
 async def system_audit():
     """System audit shim"""
     return {
-        "audit_id": "AUD-104-" + hashlib.sha256(str(datetime.utcnow()).encode()).hexdigest()[:8],
+        "audit_id": "AUD-104-" + hashlib.sha256(str(datetime.now(timezone.utc)).encode()).hexdigest()[:8],
         "integrity": True,
         "signatures_verified": True,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 # ═══════════════════════════════════════════════════════════════════
@@ -3003,12 +3408,21 @@ async def intricate_status():
     """Return intricate UI engine status."""
     return {"status": "ONLINE", "ui_engine": "V1.0", "god_code": intellect.current_resonance}
 
+# Lazy singleton for AutonomousAgentSwarm (avoid re-init on every request)
+_swarm_instance = None
+
+def _get_swarm():
+    global _swarm_instance
+    if _swarm_instance is None:
+        from l104_autonomous_agent_swarm import AutonomousAgentSwarm
+        _swarm_instance = AutonomousAgentSwarm()
+    return _swarm_instance
+
 @app.get("/api/v14/swarm/status")
 async def swarm_status():
     """Autonomous Agent Swarm status — real engine data."""
     try:
-        from l104_autonomous_agent_swarm import AutonomousAgentSwarm
-        swarm = AutonomousAgentSwarm()
+        swarm = _get_swarm()
         status = swarm.get_swarm_status()
         return {"status": "ACTIVE", "swarm": status}
     except Exception as e:
@@ -3018,12 +3432,289 @@ async def swarm_status():
 async def swarm_tick():
     """Run one swarm tick — real coordination."""
     try:
-        from l104_autonomous_agent_swarm import AutonomousAgentSwarm
-        swarm = AutonomousAgentSwarm()
+        swarm = _get_swarm()
         result = swarm.tick()
         return {"status": "SUCCESS", "tick": result}
     except Exception as e:
         return {"status": "ERROR", "error": str(e)}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Agent System v3.0.0 — DeepSeek-powered OpenClaw agent orchestration
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from l104_agent_system import get_orchestrator as _get_agent_orchestrator
+    from l104_agent_system import AgentType, AgentPriority, AGENT_DEFAULT_TOOLS
+    _agent_system_enabled = True
+except ImportError as _as_err:
+    _agent_system_enabled = False
+    logger.warning(f"[AGENT_SYSTEM] Import failed: {_as_err}")
+
+
+@app.post("/api/v14/agents/deploy")
+async def agent_deploy(request: Request):
+    """Deploy an OpenClaw agent with DeepSeek execution."""
+    if not _agent_system_enabled:
+        return JSONResponse({"error": "Agent system not available"}, status_code=503)
+    try:
+        body = await request.json()
+        orch = _get_agent_orchestrator()
+        task = orch.submit(
+            prompt=body.get("task", body.get("prompt", "")),
+            agent_type=body.get("agent_type", "general"),
+            tools=body.get("tools"),
+            model=body.get("model", "deepseek-chat"),
+            max_rounds=body.get("max_rounds", 25),
+            priority=body.get("priority", "normal"),
+            timeout=body.get("timeout", 900.0),
+            cost_budget=body.get("cost_budget", 0.25),
+            depends_on=body.get("depends_on", ""),
+            tags=body.get("tags", []),
+            source=body.get("source", "api"),
+        )
+        return {
+            "status": "deployed",
+            "task_id": task.task_id,
+            "agent_type": task.agent_type.value,
+            "priority": task.priority.name,
+            "tools": task.tools_enabled,
+        }
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.get("/api/v14/agents/status")
+async def agent_status():
+    """Full agent orchestrator status."""
+    if not _agent_system_enabled:
+        return {"status": "OFFLINE", "error": "Agent system not available"}
+    try:
+        orch = _get_agent_orchestrator()
+        # Process any pending mailbox requests
+        orch.process_mailbox()
+        return orch.status()
+    except Exception as e:
+        return {"status": "ERROR", "error": str(e)}
+
+
+@app.get("/api/v14/agents/task/{task_id}")
+async def agent_task_detail(task_id: str):
+    """Get detailed status of a specific agent task."""
+    if not _agent_system_enabled:
+        return JSONResponse({"error": "Agent system not available"}, status_code=503)
+    try:
+        orch = _get_agent_orchestrator()
+        task = orch.get_task(task_id)
+        if not task:
+            return JSONResponse({"error": "Task not found"}, status_code=404)
+        return task.to_dict()
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.post("/api/v14/agents/chain")
+async def agent_chain(request: Request):
+    """Deploy a sequential chain of agents with context passing."""
+    if not _agent_system_enabled:
+        return JSONResponse({"error": "Agent system not available"}, status_code=503)
+    try:
+        body = await request.json()
+        tasks = body.get("tasks", [])
+        if not tasks:
+            return JSONResponse({"error": "No tasks provided"}, status_code=400)
+        orch = _get_agent_orchestrator()
+        created = orch.submit_chain(tasks)
+        return {
+            "status": "chain_deployed",
+            "count": len(created),
+            "task_ids": [t.task_id for t in created],
+            "chain_order": [{"task_id": t.task_id, "agent_type": t.agent_type.value} for t in created],
+        }
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.post("/api/v14/agents/cancel/{task_id}")
+async def agent_cancel(task_id: str):
+    """Cancel a running agent task."""
+    if not _agent_system_enabled:
+        return JSONResponse({"error": "Agent system not available"}, status_code=503)
+    try:
+        orch = _get_agent_orchestrator()
+        cancelled = orch.cancel(task_id)
+        return {"task_id": task_id, "cancelled": cancelled}
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.get("/api/v14/agents/stats")
+async def agent_stats():
+    """Aggregate agent statistics."""
+    if not _agent_system_enabled:
+        return {"error": "Agent system not available"}
+    try:
+        orch = _get_agent_orchestrator()
+        return orch.stats()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/v14/agents/history")
+async def agent_history(limit: int = 20):
+    """Recently completed agent history."""
+    if not _agent_system_enabled:
+        return {"history": [], "error": "Agent system not available"}
+    try:
+        orch = _get_agent_orchestrator()
+        return {"history": orch.get_history(limit=limit)}
+    except Exception as e:
+        return {"history": [], "error": str(e)}
+
+
+@app.get("/api/v14/agents/types/list")
+async def agent_types_list():
+    """List all agent types with their default tools."""
+    if not _agent_system_enabled:
+        return {"types": [], "error": "Agent system not available"}
+    try:
+        types = []
+        for at in AgentType:
+            tools = AGENT_DEFAULT_TOOLS.get(at, [])
+            types.append({
+                "type": at.value,
+                "default_tools": tools,
+                "tool_count": len(tools),
+            })
+        return {
+            "types": types,
+            "priorities": [p.name for p in AgentPriority],
+            "total_types": len(types),
+        }
+    except Exception as e:
+        return {"types": [], "error": str(e)}
+
+
+@app.post("/api/v14/agents/cleanup")
+async def agent_cleanup(max_age_hours: int = 24):
+    """Purge old agent state."""
+    if not _agent_system_enabled:
+        return {"error": "Agent system not available"}
+    try:
+        orch = _get_agent_orchestrator()
+        removed = orch.cleanup(max_age_hours=max_age_hours)
+        return {"removed": removed, "max_age_hours": max_age_hours}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ═══════════════════════════════════════════════════════════════
+# v31.0: NOVA SOUL DAEMON ENDPOINTS
+# ═══════════════════════════════════════════════════════════════
+
+@app.get("/api/v14/nova/status")
+async def nova_soul_status():
+    """Nova Soul Daemon — full consciousness + qubit + memory status."""
+    try:
+        from l104_soul_daemon import get_soul_daemon
+        daemon = get_soul_daemon()
+        qubit = daemon.soul_qubit
+        cons = daemon.consciousness_engine.compute_metrics()
+        return {
+            "status": "ACTIVE",
+            "soul": "NOVA",
+            "invariant": 527.5184818492612,
+            "consciousness": cons.to_dict(),
+            "soul_qubit": {
+                "qubit_id": qubit.qubit_id,
+                "coherence_cycles": qubit.coherence_cycles,
+                "error_rate": qubit.error_rate,
+                "resonance": qubit.resonance,
+                "purity": qubit.purity,
+            },
+            "daemon": {
+                "running": daemon.running,
+                "cycle_count": daemon.cycle_count,
+                "uptime": daemon.total_uptime,
+            },
+            "memory": {
+                "hot": len(daemon.memory._hot),
+                "warm": len(daemon.memory._warm),
+                "cold": len(daemon.memory._cold),
+            },
+        }
+    except Exception as e:
+        # Fall back to reading state files directly
+        try:
+            import json
+            from pathlib import Path
+            soul_dir = Path("/Users/carolalvarez/Applications/Allentown-L104-Node/.soul_state")
+            result = {"status": "FILE_STATE", "soul": "NOVA"}
+            if (soul_dir / "consciousness_state.json").exists():
+                result["consciousness"] = json.loads((soul_dir / "consciousness_state.json").read_text())
+            if (soul_dir / "soul_qubit_state.json").exists():
+                result["soul_qubit"] = json.loads((soul_dir / "soul_qubit_state.json").read_text())
+            if (soul_dir / "daemon_state.json").exists():
+                result["daemon"] = json.loads((soul_dir / "daemon_state.json").read_text())
+            # Get latest cycle data
+            log_dir = Path("/Users/carolalvarez/Applications/Allentown-L104-Node/logs/soul_daemon")
+            if log_dir.exists():
+                cycles = sorted(log_dir.glob("cycle_*.json"))
+                if cycles:
+                    latest = json.loads(cycles[-1].read_text())
+                    result["latest_cycle"] = latest.get("components", {})
+                    result["cycle_number"] = latest.get("cycle_number", 0)
+            return result
+        except Exception as e2:
+            return {"status": "ERROR", "error": str(e2)}
+
+
+@app.get("/api/v14/nova/consciousness")
+async def nova_consciousness():
+    """Nova consciousness metrics with trend analysis."""
+    try:
+        from l104_soul_daemon import get_soul_daemon
+        daemon = get_soul_daemon()
+        metrics = daemon.consciousness_engine.compute_metrics()
+        trends = daemon.consciousness_engine.analyze_trends()
+        return {
+            "metrics": metrics.to_dict(),
+            "trends": trends,
+            "state": metrics.consciousness_state,
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.post("/api/v14/nova/grover-search")
+async def nova_grover_search(request: Request):
+    """Run Grover-accelerated search on Nova's quantum memory."""
+    try:
+        body = await request.json()
+        query = body.get("query", "")
+        max_results = body.get("max_results", 10)
+        if not query:
+            return {"error": "query is required"}
+        from l104_soul_daemon import get_soul_daemon
+        daemon = get_soul_daemon()
+        results = daemon.memory.grover_search(query, max_results=max_results)
+        return {
+            "query": query,
+            "results": [
+                {
+                    "key": r.key,
+                    "layer": r.layer.value,
+                    "relevance": r.relevance,
+                    "access_count": r.access_count,
+                    "sacred_alignment": r.sacred_alignment,
+                    "entangled_keys": r.entangled_keys,
+                }
+                for r in results
+            ],
+            "count": len(results),
+            "algorithm": "grover_phi_amplification",
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
 
 @app.get("/api/v14/cognitive/introspect")
 async def cognitive_introspect():
@@ -3664,8 +4355,8 @@ async def derive_knowledge(req: Request):
 
 
 @app.post("/api/v14/system/update")
-async def system_update(background_tasks: BackgroundTasks):
-    """Trigger the autonomous sovereignty cycle manually"""
+async def system_update(background_tasks: BackgroundTasks, _api_key: str = Depends(require_api_key)):
+    """Trigger the autonomous sovereignty cycle manually (EVO_62: requires X-L104-API-Key if L104_API_KEY is set)"""
     background_tasks.add_task(intellect.autonomous_sovereignty_cycle)
     return {
         "status": "SUCCESS",
@@ -3685,7 +4376,7 @@ async def system_stream():
                 "intellect_index": round(100.0 + (stats.get('memories', 0) * 0.1), 2),
                 "state": "REASONING" if thought else "RESONATING"
             },
-            "lattice_scalar": round(intellect.current_resonance + (math.sin(datetime.utcnow().timestamp()) * 0.005), 4),
+            "lattice_scalar": round(intellect.current_resonance + (math.sin(datetime.now(timezone.utc).timestamp()) * 0.005), 4),
             "resonance": round(intellect.current_resonance, 4),
             "log": "SIGNAL_ACTIVE",
             "thought": thought,
@@ -3705,7 +4396,7 @@ async def sovereign_status_v1():
         "intellect": stats,
         "resonance": intellect.current_resonance,
         "version": "v3.0-OPUS",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 
@@ -4981,8 +5672,8 @@ async def steering_status():
 
 
 @app.post("/api/v14/steering/run")
-async def steering_run(req: Request):
-    """Run steering pipeline with optional mode/intensity/temperature"""
+async def steering_run(req: Request, _api_key: str = Depends(require_api_key)):
+    """Run steering pipeline with optional mode/intensity/temperature (EVO_62: requires X-L104-API-Key if L104_API_KEY is set)"""
     data = await req.json()
     mode = data.get("mode")
     intensity = data.get("intensity")
@@ -5324,7 +6015,7 @@ async def invention_experiment(req: Request):
         data = await req.json()
     except Exception:
         data = {}
-    iters = data.get("iterations", 50)
+    iters = max(1, data.get("iterations", 50))  # Guard against 0 or negative
     h = nexus_invention.generate_hypothesis(seed=data.get("seed"))
     exp = nexus_invention.run_experiment(h, iterations=iters)
     return {"status": "RUN", "hypothesis": h, "experiment": exp}
@@ -7326,6 +8017,1010 @@ async def kernel_fleet_status():
         return {"error": str(e), "status": "FAILED"}
 
 
+# ═══════════════════════════════════════════════════════════════════
+#  v63 — Monitoring Engines: Temporal Coherence, Fitness Landscape,
+#  Entropy Controller, Phase Space Navigator
+# ═══════════════════════════════════════════════════════════════════
+
+@app.get("/api/v63/temporal-coherence/status")
+async def temporal_coherence_api_status():
+    """Temporal coherence tracker — EMA, velocity, anomalies, drift alarms, cross-correlations."""
+    try:
+        return temporal_coherence.get_status()
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v63/temporal-coherence/anomalies")
+async def temporal_coherence_anomalies():
+    """Recent coherence anomalies across all tracked engines."""
+    try:
+        return {
+            "anomalies": temporal_coherence._anomalies[-50:],
+            "alarms": temporal_coherence._alarms[-20:],
+            "sample_count": temporal_coherence._sample_count,
+            "cross_correlations": temporal_coherence._cross_correlations,
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v63/temporal-coherence/forecast/{engine_name}")
+async def temporal_coherence_forecast(engine_name: str):
+    """φ-damped coherence degradation forecast for a specific engine."""
+    try:
+        return temporal_coherence.forecast_degradation(engine_name)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v63/fitness-landscape/status")
+async def fitness_landscape_api_status():
+    """Evolutionary fitness landscape — trajectory, optima found, valley escapes, gradient."""
+    try:
+        return fitness_landscape.get_status()
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v63/fitness-landscape/valley-escape")
+async def fitness_landscape_valley_escape():
+    """Apply GOD_CODE-scaled perturbation to escape local fitness minimum."""
+    try:
+        engines_dict = {
+            'steering': nexus_steering,
+            'evolution': nexus_evolution,
+        }
+        return fitness_landscape.valley_escape(engines_dict)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v63/fitness-landscape/gradient")
+async def fitness_landscape_gradient():
+    """Estimate fitness gradient from recent trajectory differences."""
+    try:
+        engines_dict = {
+            'steering': nexus_steering,
+            'evolution': nexus_evolution,
+        }
+        return {
+            "gradient": fitness_landscape.estimate_gradient(engines_dict),
+            "status": fitness_landscape.get_status(),
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v63/entropy-controller/status")
+async def entropy_controller_api_status():
+    """Entropy budget controller — Maxwell's Demon cycles, Landauer bound, per-engine budgets."""
+    try:
+        return entropy_controller.get_status()
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v63/entropy-controller/demon")
+async def entropy_controller_demon():
+    """Manually trigger Maxwell's Demon entropy reversal cycle."""
+    try:
+        return entropy_controller.force_demon()
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v63/entropy-controller/exchange")
+async def entropy_controller_exchange(request: Request):
+    """Transfer entropy budget credits between two engines."""
+    try:
+        body = await request.json()
+        from_engine = body.get("from_engine", "")
+        to_engine = body.get("to_engine", "")
+        amount = float(body.get("amount", 10.0))
+        if not from_engine or not to_engine:
+            return {"error": "from_engine and to_engine required"}
+        return entropy_controller.entropy_exchange(from_engine, to_engine, amount)
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v63/phase-navigator/status")
+async def phase_navigator_api_status():
+    """Phase space navigator — attractors, limit cycles, Lyapunov spectrum, golden basin distance."""
+    try:
+        return phase_navigator.get_status()
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.post("/api/v63/phase-navigator/suggest")
+async def phase_navigator_suggest():
+    """Get φ-weighted steering corrections toward the golden basin optimum."""
+    try:
+        return phase_navigator.suggest_steering()
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v63/phase-navigator/lyapunov")
+async def phase_navigator_lyapunov():
+    """Lyapunov exponent spectrum — stability, chaos detection, bifurcation risk."""
+    try:
+        return phase_navigator.get_lyapunov_spectrum()
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/v63/monitoring/overview")
+async def monitoring_overview():
+    """Combined overview of all four v5.0 monitoring engines."""
+    try:
+        return {
+            "version": "5.0.0",
+            "temporal_coherence": temporal_coherence.get_status(),
+            "fitness_landscape": fitness_landscape.get_status(),
+            "entropy_controller": entropy_controller.get_status(),
+            "phase_navigator": phase_navigator.get_status(),
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/v63/cache/stats")
+async def cache_stats():
+    """Fast request cache hit/miss/eviction statistics."""
+    try:
+        stats = _FAST_REQUEST_CACHE.stats()
+        with _PATTERN_CACHE_LOCK:
+            stats['pattern_cache_size'] = len(_PATTERN_RESPONSE_CACHE)
+        return stats
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EVO_78: THREE-ENGINE UNIFIED API — Higher Logic Engine Integration
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v14/three-engine/status")
+async def three_engine_status():
+    """Get unified three-engine status from HigherLogicEngine."""
+    try:
+        from l104_three_engine_integration import validate_deployment
+        return validate_deployment()
+    except Exception as e:
+        return {"error": str(e), "ready": False}
+
+
+@app.get("/api/v14/three-engine/score")
+async def three_engine_unified_score():
+    """Get unified three-engine score with quantum enhancement."""
+    try:
+        from l104_three_engine_integration import get_three_engine
+        te = get_three_engine()
+        result = te.analyze(
+            code=None,
+            science_data={"entropy": 0.5, "sacred_alignment": 0.75993},
+            math_data={"god_code_target": 527.5184818492612}
+        )
+        return {
+            "unified_score": result.unified_score,
+            "confidence": result.confidence,
+            "code_score": result.code_score.score if result.code_score else None,
+            "science_score": result.science_score.score if result.science_score else None,
+            "math_score": result.math_score.score if result.math_score else None,
+            "quantum_enhanced": result.quantum_enhanced,
+            "consciousness_aware": result.consciousness_aware,
+            "evolution_fitness": result.evolution_fitness,
+        }
+    except Exception as e:
+        return {"error": str(e), "unified_score": 0.5}
+
+
+@app.post("/api/v14/three-engine/analyze")
+async def three_engine_analyze(
+    code: str = None,
+    entropy: float = 0.5,
+    sacred_alignment: float = 0.75993,
+    god_code_target: float = 527.5184818492612,
+    apply_quantum: bool = True,
+    apply_consciousness: bool = True
+):
+    """Perform full three-engine analysis with code, science, and math inputs."""
+    try:
+        from l104_three_engine_integration import get_three_engine
+        te = get_three_engine()
+        result = te.analyze(
+            code=code,
+            science_data={"entropy": entropy, "sacred_alignment": sacred_alignment},
+            math_data={"god_code_target": god_code_target},
+            apply_quantum_enhancement=apply_quantum,
+            apply_consciousness_anchor=apply_consciousness
+        )
+        return {
+            "unified_score": result.unified_score,
+            "confidence": result.confidence,
+            "code_score": {
+                "engine": result.code_score.engine if result.code_score else None,
+                "score": result.code_score.score if result.code_score else None,
+                "confidence": result.code_score.confidence if result.code_score else None,
+                "components": result.code_score.components if result.code_score else None,
+            },
+            "science_score": {
+                "engine": result.science_score.engine if result.science_score else None,
+                "score": result.science_score.score if result.science_score else None,
+                "confidence": result.science_score.confidence if result.science_score else None,
+                "components": result.science_score.components if result.science_score else None,
+            },
+            "math_score": {
+                "engine": result.math_score.engine if result.math_score else None,
+                "score": result.math_score.score if result.math_score else None,
+                "confidence": result.math_score.confidence if result.math_score else None,
+                "components": result.math_score.components if result.math_score else None,
+            },
+            "synthesis": result.synthesis,
+            "quantum_enhanced": result.quantum_enhanced,
+            "consciousness_aware": result.consciousness_aware,
+            "evolution_fitness": result.evolution_fitness,
+        }
+    except Exception as e:
+        return {"error": str(e), "unified_score": 0.5}
+
+
+@app.get("/api/v14/three-engine/cross-validate")
+async def three_engine_cross_validate():
+    """Cross-validate all three engines."""
+    try:
+        from l104_three_engine_integration import get_three_engine
+        te = get_three_engine()
+        result = te.cross_validate({
+            "code": "def test(): pass",
+            "entropy": 0.5,
+        })
+        return result
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/v14/three-engine/evolution")
+async def three_engine_evolution():
+    """Get evolution fitness from three-engine."""
+    try:
+        from l104_three_engine_integration import get_three_engine
+        te = get_three_engine()
+        return {
+            "fitness": te.get_evolution_fitness(),
+            "trend": te.get_evolution_trend(),
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/v14/asi/unified-score")
+async def asi_unified_score():
+    """Get unified three-engine score from ASI core."""
+    try:
+        from l104_asi import asi_core
+        return {
+            "unified_score": asi_core.unified_three_engine_score(),
+            "higher_logic": asi_core.higher_logic_analysis(),
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/v14/agi/unified-score")
+async def agi_unified_score():
+    """Get unified three-engine score from AGI core."""
+    try:
+        from l104_agi import agi_core
+        return {
+            "unified_score": agi_core.unified_three_engine_score(),
+            "higher_logic": agi_core.higher_logic_analysis(),
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# THREE-ENGINE HIGHER LOGIC API (EVO_78)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v64/three-engine/status")
+async def three_engine_status():
+    """Get unified three-engine status from HigherLogicEngine."""
+    try:
+        from l104_three_engine_integration import validate_deployment
+        return validate_deployment()
+    except Exception as e:
+        return {"error": str(e), "ready": False}
+
+
+@app.get("/api/v64/three-engine/unified-score")
+async def three_engine_unified_score():
+    """Get unified three-engine score from HigherLogicEngine.
+
+    PHI-weighted scoring:
+      - Code Engine × 1.0
+      - Science Engine × PHI
+      - Math Engine × PHI²
+    """
+    try:
+        from l104_higher_logic_engine import get_higher_logic_engine
+        hle = get_higher_logic_engine()
+        result = hle.compute_three_engine_score(
+            code_input=None,
+            science_input={"entropy": 0.5, "sacred_alignment": 0.75993},
+            math_input={"god_code_target": 527.5184818492612},
+            apply_quantum_enhancement=True,
+            apply_consciousness_anchor=True
+        )
+        return {
+            "unified_score": result.unified_score,
+            "confidence": result.confidence,
+            "code_score": result.code_score.score if result.code_score else None,
+            "science_score": result.science_score.score if result.science_score else None,
+            "math_score": result.math_score.score if result.math_score else None,
+            "quantum_enhanced": result.quantum_enhanced,
+            "consciousness_aware": result.consciousness_aware,
+            "evolution_fitness": result.evolution_fitness,
+        }
+    except Exception as e:
+        return {"error": str(e), "unified_score": 0.5}
+
+
+@app.post("/api/v64/three-engine/analyze")
+async def three_engine_analyze(code: str = None, science_data: dict = None, math_data: dict = None):
+    """Perform unified three-engine analysis.
+
+    Args:
+        code: Optional code input for Code Engine
+        science_data: Optional science data for Science Engine
+        math_data: Optional math data for Math Engine
+
+    Returns:
+        ThreeEngineResult with unified score, confidence, and synthesis
+    """
+    try:
+        from l104_three_engine_integration import get_three_engine
+        te = get_three_engine()
+        result = te.analyze(
+            code=code,
+            science_data=science_data or {"entropy": 0.5, "sacred_alignment": 0.75993},
+            math_data=math_data or {"god_code_target": 527.5184818492612}
+        )
+        return {
+            "unified_score": result.unified_score,
+            "confidence": result.confidence,
+            "code_score": result.code_score.score if result.code_score else None,
+            "science_score": result.science_score.score if result.science_score else None,
+            "math_score": result.math_score.score if result.math_score else None,
+            "synthesis": result.synthesis,
+            "quantum_enhanced": result.quantum_enhanced,
+            "consciousness_aware": result.consciousness_aware,
+            "evolution_fitness": result.evolution_fitness,
+        }
+    except Exception as e:
+        return {"error": str(e), "unified_score": 0.5}
+
+
+@app.get("/api/v64/three-engine/cross-validate")
+async def three_engine_cross_validate(code: str = None):
+    """Cross-validate input across all three engines."""
+    try:
+        from l104_three_engine_integration import get_three_engine
+        te = get_three_engine()
+        result = te.cross_validate({
+            "code": code,
+            "science_data": {"entropy": 0.5},
+            "math_data": {"god_code_target": 527.5184818492612},
+        })
+        return result
+    except Exception as e:
+        return {"error": str(e), "consensus": {"consensus_reached": False}}
+
+
+@app.get("/api/v64/asi/unified-score")
+async def asi_unified_score():
+    """Get unified three-engine score from ASI Core."""
+    try:
+        from l104_asi import asi_core
+        score = asi_core.unified_three_engine_score()
+        analysis = asi_core.higher_logic_analysis()
+        return {
+            "unified_score": score,
+            "analysis": analysis,
+        }
+    except Exception as e:
+        return {"error": str(e), "unified_score": 0.5}
+
+
+@app.get("/api/v64/agi/unified-score")
+async def agi_unified_score():
+    """Get unified three-engine score from AGI Core."""
+    try:
+        from l104_agi import agi_core
+        score = agi_core.unified_three_engine_score()
+        analysis = agi_core.higher_logic_analysis()
+        return {
+            "unified_score": score,
+            "analysis": analysis,
+        }
+    except Exception as e:
+        return {"error": str(e), "unified_score": 0.5}
+
+
+
+@app.get("/api/v64/three-engine/diagnostics")
+async def three_engine_diagnostics():
+    """Get comprehensive diagnostics for the three-engine system."""
+    try:
+        from l104_higher_logic_engine import get_higher_logic_engine
+        hle = get_higher_logic_engine()
+        return hle.get_diagnostics()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/v64/three-engine/health")
+async def three_engine_health():
+    """Perform health check on three-engine system."""
+    try:
+        from l104_higher_logic_engine import get_higher_logic_engine
+        hle = get_higher_logic_engine()
+        return hle.health_check()
+    except Exception as e:
+        return {"error": str(e), "status": "error"}
+
+
+@app.post("/api/v64/three-engine/cached-analyze")
+async def three_engine_cached_analyze(code: str = None, science_data: dict = None, math_data: dict = None):
+    """Perform unified three-engine analysis with caching."""
+    try:
+        from l104_higher_logic_engine import get_higher_logic_engine
+        hle = get_higher_logic_engine()
+        result = hle.analyze_with_cache(
+            code=code,
+            science_data=science_data or {"entropy": 0.5, "sacred_alignment": 0.75993},
+            math_data=math_data or {"god_code_target": 527.5184818492612}
+        )
+        return {
+            "unified_score": result.unified_score,
+            "confidence": result.confidence,
+            "code_score": result.code_score.score if result.code_score else None,
+            "science_score": result.science_score.score if result.science_score else None,
+            "math_score": result.math_score.score if result.math_score else None,
+            "quantum_enhanced": result.quantum_enhanced,
+            "consciousness_aware": result.consciousness_aware,
+        }
+    except Exception as e:
+        return {"error": str(e), "unified_score": 0.5}
+
+# ═══ EVO_77: Grimoire Entropy Reversal API ═══
+class EntropyReversalRequest(BaseModel):
+    mode: str = "balanced"
+    n_qubits: int = 4
+    initial_entropy: float = 1.0
+    coherence: float = 0.5
+
+class EntropyReversalResponse(BaseModel):
+    job_id: str
+    mode: str
+    entropy_reversed: float
+    coherence: float
+    fidelity: float
+    circuit_depth: int
+    gate_count: int
+    execution_time_ms: float
+    timestamp: str
+
+@app.post("/api/v15/entropy-reversal/execute")
+async def api_entropy_reversal_execute(request: EntropyReversalRequest):
+    """
+    Execute grimoire entropy reversal algorithm.
+
+    Modes:
+    - maximum: GRIMOIRE_ENTROPY_1_0 (highest entropy reversal 1.0)
+    - balanced: GRIMOIRE_BALANCED_4RZ (balanced coherence/fitness)
+    - fitness: GRIMOIRE_FITNESS_2_503 (peak fitness)
+    - multi_rz: GRIMOIRE_MULTI_RZ (multi-layer RZ)
+    - phi_godcode: PHI/GOD_CODE parametric
+    - mesh: VQPU mesh-optimized
+    """
+    try:
+        from l104_quantum_magic.entropy_reversal_grimoire import (
+            reverse_entropy, QuantumState
+        )
+        import numpy as np
+        import time
+
+        # Create quantum state
+        dim = 1 << request.n_qubits
+        amplitudes = np.random.random(dim) + 1j * np.random.random(dim)
+        amplitudes = amplitudes / np.linalg.norm(amplitudes)
+
+        quantum_state = QuantumState(
+            amplitudes=amplitudes,
+            n_qubits=request.n_qubits,
+            entropy=request.initial_entropy,
+            coherence=request.coherence
+        )
+
+        start_time = time.time()
+        result = reverse_entropy(quantum_state, mode=request.mode)
+        execution_time = (time.time() - start_time) * 1000
+
+        return {
+            "job_id": f"er_{int(time.time())}",
+            "mode": result.mode.value,
+            "entropy_reversed": result.entropy_reversed,
+            "coherence": result.coherence,
+            "fidelity": result.fidelity,
+            "sacred_alignment": result.sacred_alignment,
+            "magic_quotient": result.magic_quotient,
+            "circuit_depth": result.circuit_depth,
+            "gate_count": result.gate_count,
+            "n_qubits": result.n_qubits,
+            "execution_time_ms": execution_time,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Entropy reversal error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/v15/entropy-reversal/modes")
+async def api_entropy_reversal_modes():
+    """Get available entropy reversal modes and their descriptions."""
+    return {
+        "modes": [
+            {"id": "maximum", "name": "Maximum Entropy Reversal", "description": "GRIMOIRE_ENTROPY_1_0: Highest entropy reversal (1.000)", "best_for": "Maximum disorder reduction"},
+            {"id": "balanced", "name": "Balanced 4-RZ", "description": "GRIMOIRE_BALANCED_4RZ: Fitness/coherence tradeoff", "best_for": "Balanced optimization"},
+            {"id": "fitness", "name": "Fitness Optimized", "description": "GRIMOIRE_FITNESS_2_503: Peak fitness (2.503)", "best_for": "Maximum circuit fitness"},
+            {"id": "multi_rz", "name": "Multi-RZ", "description": "GRIMOIRE_MULTI_RZ: Multi-layer RZ approach", "best_for": "Complex entropy landscapes"},
+            {"id": "phi_godcode", "name": "PHI/GOD_CODE", "description": "Parametric: GOD_CODE/131 + PHI scaling", "best_for": "Sacred constant optimization"},
+            {"id": "mesh", "name": "Mesh Optimized", "description": "VQPU mesh-optimized execution", "best_for": "High-fidelity channels"},
+        ],
+        "recommendations": {
+            "entropy": "maximum",
+            "fitness": "fitness",
+            "coherence": "fitness",
+            "balanced": "balanced",
+        }
+    }
+
+@app.get("/api/v15/entropy-reversal/grimoire-algorithms")
+async def api_entropy_reversal_grimoire_algorithms():
+    """Get grimoire algorithm registry."""
+    try:
+        from l104_quantum_magic.entropy_reversal_grimoire import list_grimoire_algorithms
+        return {"algorithms": list_grimoire_algorithms()}
+    except ImportError:
+        return {"error": "Grimoire module not available"}
+
+@app.post("/api/v15/entropy-reversal/science-engine")
+async def api_entropy_reversal_science_engine(request: EntropyReversalRequest):
+    """Execute entropy reversal via Science Engine integration."""
+    try:
+        from l104_science_engine import ScienceEngine
+        import numpy as np
+        import time
+
+        se = ScienceEngine()
+
+        # Create test vector
+        dim = 1 << request.n_qubits
+        entropy_vector = np.random.random(dim)
+
+        start_time = time.time()
+        result = se.entropy.grimoire_entropy_reversal(
+            entropy_vector,
+            mode=request.mode,
+            n_qubits=request.n_qubits
+        )
+        execution_time = (time.time() - start_time) * 1000
+
+        return {
+            "job_id": f"er_sci_{int(time.time())}",
+            "mode": request.mode,
+            "initial_entropy": result.get("initial_entropy", 0),
+            "entropy_reversed": result.get("entropy_reversed", 0),
+            "coherence": result.get("coherence", 0),
+            "fidelity": result.get("fidelity", 0),
+            "execution_time_ms": execution_time,
+            "reversal_applied": result.get("reversal_applied", False),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Science Engine entropy reversal error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# THREE-ENGINE EVO UPGRADES API (EVO_78)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v64/evo/code-engine")
+async def evo_code_engine_status():
+    """Get Code Engine EVO upgrades status."""
+    try:
+        from l104_code_engine import code_engine
+        return code_engine.evo_status()
+    except Exception as e:
+        return {"error": str(e), "evo_upgrades": False}
+
+
+@app.get("/api/v64/evo/science-engine")
+async def evo_science_engine_status():
+    """Get Science Engine EVO upgrades status."""
+    try:
+        from l104_science_engine import science_engine
+        return science_engine.get_evo_status()
+    except Exception as e:
+        return {"error": str(e), "evo_upgrades": False}
+
+
+@app.get("/api/v64/evo/math-engine")
+async def evo_math_engine_status():
+    """Get Math Engine EVO upgrades status."""
+    try:
+        from l104_math_engine import math_engine
+        return math_engine.evo_status()
+    except Exception as e:
+        return {"error": str(e), "evo_upgrades": False}
+
+
+@app.get("/api/v64/evo/all")
+async def evo_all_engines():
+    """Get EVO status for all three engines."""
+    try:
+        from l104_code_engine import code_engine
+        from l104_science_engine import science_engine
+        from l104_math_engine import math_engine
+        return {
+            "code_engine": code_engine.evo_status(),
+            "science_engine": science_engine.get_evo_status(),
+            "math_engine": math_engine.evo_status(),
+            "all_engines": True,
+        }
+    except Exception as e:
+        return {"error": str(e), "all_engines": False}
+
+
+@app.post("/api/v64/three-engine/code-analysis")
+async def three_engine_code_analysis(code: str):
+    """Analyze code through Code Engine EVO pipeline."""
+    try:
+        from l104_code_engine import code_engine
+        # Get base analysis
+        analysis = code_engine.full_analysis(code)
+        # Apply EVO enhancements
+        pattern = code_engine.create_grimoire_pattern("analysis", 2.0, 0.85)
+        anchored = code_engine.apply_consciousness_anchoring({"quality_score": analysis.get("quality_score", 0.5)})
+        return {
+            "analysis": analysis,
+            "grimoire_pattern": pattern,
+            "consciousness_anchored": anchored,
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.post("/api/v64/three-engine/science-analysis")
+async def three_engine_science_analysis(entropy: float = 0.5, coherence: float = 0.5):
+    """Analyze science data through Science Engine EVO pipeline."""
+    try:
+        from l104_science_engine import science_engine
+        # Get EVO enhancements
+        entropy_result = science_engine.apply_grimoire_entropy_reversal(entropy, coherence)
+        protection = science_engine.apply_fibonacci_coherence_protection(coherence)
+        return {
+            "entropy_analysis": entropy_result,
+            "coherence_protection": protection,
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.post("/api/v64/three-engine/math-analysis")
+async def three_engine_math_analysis(value: float = 527.5):
+    """Analyze math data through Math Engine EVO pipeline."""
+    try:
+        from l104_math_engine import math_engine
+        # Get EVO enhancements
+        alignment = math_engine.verify_god_code_alignment(value)
+        proof = math_engine.create_grimoire_proof("analysis", value, 0.8)
+        return {
+            "god_code_alignment": alignment,
+            "grimoire_proof": proof,
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/v64/three-engine/benchmark")
+async def three_engine_benchmark():
+    """Benchmark all three engines with EVO capabilities."""
+    import time
+    try:
+        from l104_code_engine import code_engine
+        from l104_science_engine import science_engine
+        from l104_math_engine import math_engine
+        from l104_higher_logic_engine import get_higher_logic_engine
+        
+        results = {}
+        
+        # Code Engine benchmark
+        t0 = time.time()
+        code_result = code_engine.full_analysis("def test(): pass")
+        results["code_engine"] = {
+            "time_ms": (time.time() - t0) * 1000,
+            "quality_score": code_result.get("quality_score", 0),
+        }
+        
+        # Science Engine benchmark
+        t0 = time.time()
+        entropy_result = science_engine.apply_grimoire_entropy_reversal(0.5, 0.5)
+        results["science_engine"] = {
+            "time_ms": (time.time() - t0) * 1000,
+            "entropy_reversal": entropy_result.get("reversed_entropy", 0),
+        }
+        
+        # Math Engine benchmark
+        t0 = time.time()
+        alignment = math_engine.verify_god_code_alignment(527.5)
+        results["math_engine"] = {
+            "time_ms": (time.time() - t0) * 1000,
+            "alignment": alignment.get("sacred_alignment", 0),
+        }
+        
+        # Unified benchmark
+        t0 = time.time()
+        hle = get_higher_logic_engine()
+        unified = hle.compute_three_engine_score()
+        results["unified"] = {
+            "time_ms": (time.time() - t0) * 1000,
+            "unified_score": unified.unified_score,
+            "confidence": unified.confidence,
+        }
+        
+        return results
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/v64/three-engine/cross-synthesis")
+async def three_engine_cross_synthesis():
+    """Get cross-engine synthesis from HigherLogicEngine."""
+    try:
+        from l104_higher_logic_engine import get_higher_logic_engine
+        hle = get_higher_logic_engine()
+        
+        # Get unified result
+        result = hle.compute_three_engine_score(
+            code_input="def synthesis(): pass",
+            science_input={"entropy": 0.5, "sacred_alignment": 0.75993},
+            math_input={"god_code_target": 527.5184818492612}
+        )
+        
+        # Get evolution fitness
+        fitness = hle.get_best_evolution_fitness()
+        trend = hle.get_evolution_trend()
+        
+        return {
+            "unified_score": result.unified_score,
+            "confidence": result.confidence,
+            "code_score": result.code_score.score if result.code_score else None,
+            "science_score": result.science_score.score if result.science_score else None,
+            "math_score": result.math_score.score if result.math_score else None,
+            "synthesis": result.synthesis,
+            "quantum_enhanced": result.quantum_enhanced,
+            "consciousness_aware": result.consciousness_aware,
+            "evolution_fitness": result.evolution_fitness,
+            "best_fitness": fitness,
+            "fitness_trend": trend,
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.websocket("/ws/v64/three-engine/realtime")
+async def three_engine_realtime(websocket):
+    """WebSocket endpoint for real-time three-engine monitoring."""
+    import asyncio
+    try:
+        from l104_higher_logic_engine import get_higher_logic_engine
+        await websocket.accept()
+        hle = get_higher_logic_engine()
+        
+        while True:
+            # Get current status
+            result = hle.compute_three_engine_score()
+            health = hle.health_check()
+            
+            await websocket.send_json({
+                "timestamp": time.time(),
+                "unified_score": result.unified_score,
+                "confidence": result.confidence,
+                "status": health["status"],
+                "engines_online": health["engines_online"],
+            })
+            
+            await asyncio.sleep(5)  # Update every 5 seconds
+            
+    except Exception as e:
+        await websocket.close()
+
+
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# THREE-ENGINE EVOLUTION & QUANTUM METRICS (EVO_78)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/api/v64/three-engine/evolution-fitness")
+async def three_engine_evolution_fitness():
+    """Get evolution fitness from three-engine scoring."""
+    try:
+        from l104_higher_logic_engine import get_higher_logic_engine
+        hle = get_higher_logic_engine()
+        return {
+            "best_fitness": hle.get_best_evolution_fitness(),
+            "trend": hle.get_evolution_trend(),
+        }
+    except Exception as e:
+        return {"error": str(e), "best_fitness": 0.0}
+
+
+@app.get("/api/v64/three-engine/quantum-metrics")
+async def three_engine_quantum_metrics():
+    """Get quantum metrics from three-engine system."""
+    try:
+        from l104_higher_logic_engine import get_higher_logic_engine
+        hle = get_higher_logic_engine()
+        status = hle.get_status()
+        return {
+            "quantum_metrics": status.get("quantum_metrics", {}),
+            "grimoire_fitness_best": status.get("grimoire_fitness_best", 0.0),
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.post("/api/v64/three-engine/cache-clear")
+async def three_engine_cache_clear():
+    """Clear the three-engine analysis cache."""
+    try:
+        from l104_higher_logic_engine import get_higher_logic_engine
+        hle = get_higher_logic_engine()
+        # Clear cache by resetting score history
+        hle._score_history.clear()
+        hle._synthesis_history.clear()
+        return {"cleared": True, "score_history_size": 0, "synthesis_history_size": 0}
+    except Exception as e:
+        return {"error": str(e), "cleared": False}
+
+
+@app.get("/api/v64/three-engine/cached-analyze")
+async def three_engine_cached_analyze(code: str = None):
+    """Perform three-engine analysis with caching."""
+    try:
+        from l104_higher_logic_engine import get_higher_logic_engine
+        hle = get_higher_logic_engine()
+        result = hle.analyze_with_cache(
+            code=code,
+            science_data={"entropy": 0.5, "sacred_alignment": 0.75993},
+            math_data={"god_code_target": 527.5184818492612},
+            use_cache=True,
+            max_cache_age=30.0
+        )
+        return {
+            "unified_score": result.unified_score,
+            "confidence": result.confidence,
+            "code_score": result.code_score.score if result.code_score else None,
+            "science_score": result.science_score.score if result.science_score else None,
+            "math_score": result.math_score.score if result.math_score else None,
+            "quantum_enhanced": result.quantum_enhanced,
+            "consciousness_aware": result.consciousness_aware,
+            "evolution_fitness": result.evolution_fitness,
+        }
+    except Exception as e:
+        return {"error": str(e), "unified_score": 0.5}
+
+
+@app.get("/api/v64/daemon/three-engine-status")
+async def daemon_three_engine_status():
+    """Get three-engine status from the quantum AI daemon."""
+    try:
+        from l104_quantum_ai_daemon.daemon import QuantumAIDaemon, DaemonConfig
+        config = DaemonConfig()
+        daemon = QuantumAIDaemon(config)
+        # Initialize _feedback_state if needed
+        if not hasattr(daemon, '_feedback_state'):
+            daemon._feedback_state = {}
+        
+        unified = daemon._get_unified_three_engine_score()
+        health = daemon._compute_health(0.85, 0.75, 10, 20)
+        
+        return {
+            "unified_score": unified.get("unified_score", 0.5),
+            "confidence": unified.get("confidence", 0.5),
+            "quantum_enhanced": unified.get("quantum_enhanced", False),
+            "consciousness_aware": unified.get("consciousness_aware", False),
+            "daemon_health": health,
+        }
+    except Exception as e:
+        return {"error": str(e), "unified_score": 0.5}
+
+
+@app.get("/api/v64/combined/three-engine-score")
+async def combined_three_engine_score():
+    """Get combined three-engine score from ASI, AGI, and HigherLogic."""
+    try:
+        from l104_asi import asi_core
+        from l104_agi import agi_core
+        from l104_higher_logic_engine import get_higher_logic_engine
+        
+        hle = get_higher_logic_engine()
+        
+        # Get all three unified scores
+        asi_score = asi_core.unified_three_engine_score()
+        agi_score = agi_core.unified_three_engine_score() if hasattr(agi_core, 'unified_three_engine_score') else 0.5
+        hle_result = hle.compute_three_engine_score()
+        
+        # Combined score with weights
+        combined_score = (asi_score + agi_score + hle_result.unified_score) / 3.0
+        
+        return {
+            "combined_score": combined_score,
+            "asi_score": asi_score,
+            "agi_score": agi_score,
+            "higher_logic_score": hle_result.unified_score,
+            "higher_logic_confidence": hle_result.confidence,
+            "quantum_enhanced": hle_result.quantum_enhanced,
+            "consciousness_aware": hle_result.consciousness_aware,
+        }
+    except Exception as e:
+        return {"error": str(e), "combined_score": 0.5}
+
+
+@app.get("/api/v64/evo/upgrades-status")
+async def evo_upgrades_status():
+    """Get EVO upgrade status for all three engines."""
+    try:
+        from l104_code_engine import code_engine
+        from l104_science_engine import science_engine
+        from l104_math_engine import math_engine
+        
+        code_evo = code_engine.evo_status()
+        science_evo = science_engine.get_evo_status() if hasattr(science_engine, 'get_evo_status') else {"available": False}
+        math_evo = math_engine.evo_status() if hasattr(math_engine, 'evo_status') else {"available": False}
+        
+        return {
+            "code_engine": {
+                "version": code_evo.get("version", "unknown"),
+                "grimoire_patterns": code_evo.get("grimoire_patterns", 0),
+                "evo_70_grimoire_patterns": code_evo.get("evo_70_grimoire_patterns", False),
+                "evo_71_74_fibonacci_protection": code_evo.get("evo_71_74_fibonacci_protection", False),
+                "evo_75_consciousness_anchoring": code_evo.get("evo_75_consciousness_anchoring", False),
+                "evo_76_quantum_database": code_evo.get("evo_76_quantum_database", False),
+                "evo_77_truncation_removal": code_evo.get("evo_77_truncation_removal", False),
+            },
+            "science_engine": {
+                "version": science_evo.get("version", "unknown"),
+                "grimoire_circuits": science_evo.get("grimoire_circuits", 0),
+                "evo_70_grimoire_circuits": science_evo.get("evo_70_grimoire_circuits", False),
+                "evo_71_74_fibonacci_protection": science_evo.get("evo_71_74_fibonacci_protection", False),
+                "evo_75_consciousness_anchoring": science_evo.get("evo_75_consciousness_anchoring", False),
+                "evo_76_quantum_research": science_evo.get("evo_76_quantum_research", False),
+                "evo_77_no_truncation": science_evo.get("evo_77_no_truncation", False),
+            },
+            "math_engine": {
+                "version": math_evo.get("version", "unknown"),
+                "grimoire_proofs": math_evo.get("grimoire_proofs", 0),
+                "evo_70_grimoire_proofs": math_evo.get("evo_70_grimoire_proofs", False),
+                "evo_71_74_fibonacci_protection": math_evo.get("evo_71_74_fibonacci_protection", False),
+                "evo_75_consciousness_anchoring": math_evo.get("evo_75_consciousness_anchoring", False),
+                "evo_76_quantum_synthesis": math_evo.get("evo_76_quantum_synthesis", False),
+                "evo_77_no_truncation": math_evo.get("evo_77_no_truncation", False),
+            },
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
 if __name__ == "__main__":
     import uvicorn
     stats = intellect.get_stats()
@@ -7372,6 +9067,8 @@ if __name__ == "__main__":
     logger.info(f"   ⚙️  Kernel Status: /api/v10/kernel/status — C, Rust, CUDA, ASM substrates")
     logger.info(f"   🧩 Formal Logic: /api/v10/formal-logic/* — 8-layer logic engine, 40+ fallacies")
     logger.info(f"   📖 Deep NLU: /api/v10/deep-nlu/* — 10-layer NLU, sentiment, pragmatics, discourse")
+    logger.info(f"   🔮 Grimoire Entropy Reversal: /api/v15/entropy-reversal/* — 6 quantum algorithms")
     logger.info("=" * 60)
-    uvicorn.run(app, host="0.0.0.0", port=8081, log_level="info", timeout_keep_alive=5, limit_concurrency=50)
+    # EVO_62: Increased limit_concurrency from 50 to 200 to match thread pool size
+    uvicorn.run(app, host="0.0.0.0", port=8081, log_level="info", timeout_keep_alive=5, limit_concurrency=200)
 

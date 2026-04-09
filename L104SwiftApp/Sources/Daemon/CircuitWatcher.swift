@@ -1,31 +1,36 @@
-// ═══════════════════════════════════════════════════════════════════
-// CircuitWatcher.swift — L104 vQPU Bridge Circuit Watcher v5.0
-// GOD_CODE=527.5184818492612 | PHI=1.618033988749895
-//
-// High-throughput throttle-aware circuit file watcher for the L104 Daemon.
-// Watches inbox directories for JSON circuit payloads using GCD
-// DispatchSource (zero CPU when idle), routes them through the
-// MetalVQPU engine, and writes results to the outbox.
-//
-// v5.0 Upgrades (Memory Pooling + Circuit Validation + Enhanced Monitoring):
-//   - Circuit payload buffer pooling (reduces allocations by 60%)
-//   - Enhanced circuit validation with complexity analysis
-//   - Memory pressure monitoring with adaptive batch sizing
-//   - Performance profiling integration
-//   - Auto-scaling concurrency based on system load
-//   - Direct buffer writes with zero-copy where possible
-//   - Circuit complexity-based backend routing hints
-//   - Enhanced error recovery with retry logic
-//
-// v4.0 retained:
-//   - Max concurrent circuits: env-driven (default 64 bridge, 16 shared/local)
-//   - Circuit batching, pre-fetch, fast-lane priority
-//   - Per-circuit GPU utilization tracking
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
 import Foundation
+
+private let logging = Logger(subsystem: "com.l104.daemon.circuit", category: "watcher")
+
+/// Simple buffer pool for circuit data
+final class CircuitBufferPool {
+    private var available: [Data] = []
+    private let lock = NSLock()
+    private let defaultSize: Int
+
+    init(defaultSize: Int = 64 * 1024) {
+        self.defaultSize = defaultSize
+    }
+
+    func acquire() -> Data {
+        lock.lock()
+        defer { lock.unlock() }
+        if let buffer = available.popLast() {
+            return buffer
+        }
+        return Data(capacity: defaultSize)
+    }
+
+    func release(_ buffer: Data) {
+        lock.lock()
+        defer { lock.unlock() }
+        var mutable = buffer
+        mutable.removeAll(keepingCapacity: true)
+        available.append(mutable)
+    }
+}
 
 /// High-throughput throttle-aware circuit file watcher for the L104 Daemon (v4.0).
 /// Monitors inbox directories for JSON circuit payloads using GCD
@@ -34,7 +39,7 @@ import Foundation
 ///
 /// v4.0: Env-driven concurrency, 1ms inter-job delay, async write-back,
 ///        cached formatter, direct-write (no tmp+rename), unlimited.
-final class CircuitWatcher {
+final class DaemonCircuitWatcher {
 
     // ─── Paths ───
     private let baseDir: String
@@ -157,11 +162,11 @@ final class CircuitWatcher {
             queue: watchQueue
         )
 
-        src.setEventHandler { [weak self] in
+        self.src.setEventHandler { [weak self] in
             self?.processPending()
         }
 
-        src.setCancelHandler { [weak self] in
+        self.src.setCancelHandler { [weak self] in
             guard let fd = self?.fileDescriptor, fd != -1 else { return }
             close(fd)
             self?.fileDescriptor = -1
@@ -172,11 +177,11 @@ final class CircuitWatcher {
         isActive = true
 
         // Process anything already queued
-        watchQueue.async { [weak self] in
+        self.watchQueue.async { [weak self] in
             self?.processPending()
         }
 
-        daemonLog("CircuitWatcher started — inbox: \(inboxDir)")
+        daemonLog("CircuitWatcher started - inbox: \(inboxDir)")
         daemonLog("  vQPU: \(vqpu.getStatus()["gpu_name"] ?? "unknown")")
     }
 
@@ -192,7 +197,7 @@ final class CircuitWatcher {
         let avgMs = circuitsProcessed > 0
             ? String(format: "%.2f", totalExecutionMs / Double(circuitsProcessed))
             : "0"
-        daemonLog("CircuitWatcher stopped — processed: \(circuitsProcessed), " +
+        daemonLog("CircuitWatcher stopped - processed: \(circuitsProcessed), " +
                   "failed: \(circuitsFailed), avg: \(avgMs)ms, " +
                   "GPU: \(gpuExecutions), CPU: \(cpuExecutions)")
     }
@@ -445,7 +450,7 @@ final class CircuitWatcher {
         // Check throttle state
         checkThrottle()
 
-        // v4.0: Adaptive concurrency — throttled uses 4 (was 2), normal uses full max
+        // v4.0: Adaptive concurrency - throttled uses 4 (was 2), normal uses full max
         let effectiveConcurrency = isThrottled ? min(4, maxConcurrent) : maxConcurrent
         if jsonFiles.count > peakConcurrent {
             statsLock.lock()
@@ -465,10 +470,10 @@ final class CircuitWatcher {
             if effectiveConcurrency > 1 {
                 group.enter()
                 processSemaphore.wait()
-                processQueue.async { [weak self] in
+                self.processQueue.async { [weak self] in
                     self?.processCircuitFile(file)
-                    self?.processSemaphore.signal()
-                    group.leave()
+                    self?.self.processSemaphore.signal()
+                    self.group.leave()
                 }
             } else {
                 processCircuitFile(file)
@@ -554,7 +559,7 @@ final class CircuitWatcher {
             }
 
             // v5.0: Performance profiling
-            daemonProfiler.startTiming("circuit_\(filename)")
+            daemonProfiler?.startTiming("circuit_\(filename)")
 
             // Add complexity hint to payload for VQPU routing
             var enrichedPayload = payload
@@ -604,8 +609,8 @@ final class CircuitWatcher {
             let archivePath = "\(archiveDir)/\(filename)"
             let inPathCopy = inPath
             writeSemaphore.wait()
-            writeQueue.async { [weak self] in
-                defer { self?.writeSemaphore.signal() }
+            self.writeQueue.async { [weak self] in
+                defer { self?.self.writeSemaphore.signal() }
                 do {
                     try resultData.write(to: URL(fileURLWithPath: outPath), options: .atomic)
                     try FileManager.default.moveItem(atPath: inPathCopy, toPath: archivePath)
@@ -620,9 +625,9 @@ final class CircuitWatcher {
             let elapsed = (CFAbsoluteTimeGetCurrent() - start) * 1000.0
 
             // v5.0: Enhanced performance tracking
-            daemonProfiler.endTiming("circuit_\(filename)")
-            daemonProfiler.recordMetric("circuits", "complexity_\(complexity.backendHint)", Double(complexity.priority))
-            daemonProfiler.recordMetric("performance", "circuit_time_ms", elapsed)
+            daemonProfiler?.endTiming("circuit_\(filename)")
+            daemonProfiler?.recordMetric("circuits", "complexity_\(complexity.backendHint)", Double(complexity.priority))
+            daemonProfiler?.recordMetric("performance", "circuit_time_ms", elapsed)
 
             statsLock.lock()
             totalExecutionMs += elapsed
@@ -684,7 +689,7 @@ final class CircuitWatcher {
 
     /// Calculate entanglement ratio for a circuit payload (v5.0).
     /// v6.0.2 FIX: Check both "operations" (primary) and "gates" (legacy) keys.
-    /// v6.2: entanglingGateNames is now a static let — was re-created on every call.
+    /// v6.2: entanglingGateNames is now a static let - was re-created on every call.
     private static let entanglingGateNames: Set<String> = ["cnot", "cx", "cz", "swap", "fredkin", "toffoli", "ccx", "cy", "ecr", "iswap"]
 
     private func calculateEntanglementRatio(_ payload: [String: Any]) -> Double {

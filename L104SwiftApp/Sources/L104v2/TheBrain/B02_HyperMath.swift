@@ -1,20 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B02_HyperMath.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — High-Dimensional Mathematics Engine
-//
-// HyperVector (N-dimensional), HyperTensor (multi-rank),
-// and HyperDimensionalMath (topology, manifolds, PCA,
-// special functions, differential geometry).
-//
-// Extracted from L104Native.swift lines 1442-1566 & 2240-2401
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // HIGH-DIMENSIONAL MATHEMATICS ENGINE
@@ -86,7 +74,7 @@ struct HyperVector: CustomStringConvertible {
         return HyperVector(lhs.components.map { $0 / rhs })
     }
 
-    /// Dot product (inner product) — vDSP-accelerated for dim ≥ 16
+    /// Dot product (inner product) - vDSP-accelerated for dim ≥ 16
     func dot(_ other: HyperVector) -> Double {
         let n = min(components.count, other.components.count)
         if n >= 16 {
@@ -327,7 +315,7 @@ class HyperDimensionalMath {
         for k in 0..<n {
             var sum = Complex.zero
             for j in 0..<n {
-                // W_n^(jk) = twiddle[(j*k) mod n] — avoids per-element trig
+                // W_n^(jk) = twiddle[(j*k) mod n] - avoids per-element trig
                 let idx = (j * k) % n
                 sum = sum + amplitudes[j] * twiddle[idx]
             }

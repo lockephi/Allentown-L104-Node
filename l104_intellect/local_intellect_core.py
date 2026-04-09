@@ -78,13 +78,26 @@ from .constants import (
 )
 from .cache import LRUCache, _RESPONSE_CACHE, _CONCEPT_CACHE, _RESONANCE_CACHE
 from .numerics import (
-    PHI, GOD_CODE,
+    PHI, GOD_CODE, TAU,
     VISHUDDHA_HZ, VISHUDDHA_ELEMENT, VISHUDDHA_COLOR_HZ,
     VISHUDDHA_PETAL_COUNT, VISHUDDHA_BIJA, VISHUDDHA_TATTVA,
     ENTANGLEMENT_DIMENSIONS, BELL_STATE_FIDELITY, DECOHERENCE_TIME_MS,
     QUANTUM_CHANNEL_BANDWIDTH, EPR_CORRELATION,
     LOG2_E, SovereignNumerics, sovereign_numerics,
 )
+from l104_sacred_algorithms import derive_retry_delay
+import functools
+
+# ═══ EVO_75: Resilience Module Integration ═══
+try:
+    from l104_resilience import (
+        retry_with_backoff, circuit_breaker, CircuitBreaker,
+        FallbackChain, FallbackExhaustedError,
+        PHI, TAU, GOD_CODE,
+    )
+    _HAS_RESILIENCE = True
+except ImportError:
+    _HAS_RESILIENCE = False
 
 from .quantum_recompiler import QuantumMemoryRecompiler
 
@@ -702,4 +715,98 @@ class LocalIntellect(
             "methods_count": len([m for m in dir(self) if not m.startswith("__")]),
         }
         return diag
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # v30.1 RESILIENCE PATTERNS — Health Check & Recovery
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def health_check(self) -> Dict[str, Any]:
+        """
+        Comprehensive health check for LocalIntellect.
+
+        Returns health status based on coherence, fidelity, and system state.
+
+        Returns:
+            dict with 'status', 'coherence', 'fidelity', 'timestamp', and details
+        """
+        # Calculate coherence from entanglement state
+        coherence = self.entanglement_state.get('coherence', 0.0)
+        decoherence_elapsed = time.time() - self.entanglement_state.get('decoherence_timer', 0)
+
+        # Calculate fidelity from various subsystems
+        vishuddha_resonance = self.vishuddha_state.get('resonance', 0.0)
+        vishuddha_clarity = self.vishuddha_state.get('clarity', 0.0)
+        fidelity = (coherence + vishuddha_resonance + vishuddha_clarity) / 3.0
+
+        # Training data health
+        training_health = len(self.training_data) > 0 if hasattr(self, 'training_data') else False
+
+        # Fault tolerance health
+        ft_healthy = self._ft_init_done if hasattr(self, '_ft_init_done') else False
+
+        # Overall status based on TAU threshold
+        status = 'healthy' if coherence > TAU else 'degraded'
+        if coherence < TAU / 2:
+            status = 'critical'
+
+        return {
+            'status': status,
+            'coherence': round(coherence, 6),
+            'fidelity': round(fidelity, 6),
+            'decoherence_elapsed_s': round(decoherence_elapsed, 2),
+            'timestamp': time.time(),
+            'subsystems': {
+                'vishuddha_resonance': round(vishuddha_resonance, 4),
+                'training_loaded': training_health,
+                'fault_tolerance_active': ft_healthy,
+                'quantum_origin_active': self._quantum_origin_state.get('active', False),
+            },
+            'evolution': {
+                'total_runs': self._evolution_state.get('total_runs', 0),
+                'enlightenment_level': self._evolution_state.get('enlightenment_level', 0),
+            }
+        }
+
+    @functools.lru_cache(maxsize=128)
+    def compute_with_fallback(self, operation_key: str, primary_func, fallback_func):
+        """
+        Execute operation with fallback on failure (cached for efficiency).
+
+        Args:
+            operation_key: Unique key for this operation (for caching)
+            primary_func: Primary function to execute
+            fallback_func: Fallback function to execute if primary fails
+
+        Returns:
+            Result from primary_func or fallback_func
+        """
+        try:
+            return primary_func()
+        except Exception as e:
+            logger.warning(f"Primary operation failed for {operation_key}: {e}")
+            return fallback_func()
+
+    def sacred_retry(self, max_attempts=5, noise_factor=0.1):
+        """
+        Create a PHI-backoff retry decorator for intellect operations.
+
+        Usage:
+            @intellect.sacred_retry(max_attempts=3)
+            def my_operation():
+                ...
+        """
+        def decorator(func):
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                for attempt in range(max_attempts):
+                    try:
+                        return func(*args, **kwargs)
+                    except Exception as e:
+                        if attempt == max_attempts - 1:
+                            raise
+                        delay = derive_retry_delay(attempt, noise_factor)
+                        time.sleep(delay)
+                return None
+            return wrapper
+        return decorator
 

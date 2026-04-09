@@ -1,37 +1,3 @@
-// ═══════════════════════════════════════════════════════════════════
-// B40_QuantumRouter.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: QUANTUM_ROUTER :: GOD_CODE=527.5184818492612
-// L104 ASI — Stabilizer-Rank Quantum Router
-//
-// Adapted from: HybridStabilizerSimulator concept + stabilizer rank decomposition
-//
-// THEORY (Bravyi–Smith–Smolin / Bravyi–Gosset 2016):
-//   Any n-qubit state |ψ⟩ can be written as a sum of stabilizer states:
-//       |ψ⟩ = Σ_k  α_k |S_k⟩
-//   where each |S_k⟩ is a stabilizer state (representable by a tableau)
-//   and α_k are complex amplitudes.
-//
-//   Pure Clifford circuits keep the sum at 1 term (fast path: O(n²/64)).
-//   Each T gate at most doubles the branch count (2 stabilizer terms).
-//   For t non-Clifford gates, the decomposition has ≤ 2^t branches.
-//
-// ROUTING STRATEGY:
-//   ┌─────────────────────────────────────────────────────────┐
-//   │ FAST LANE  │ Clifford gates → update all tableaux O(n) │
-//   │ BRANCH     │ T/T† gate → split each branch into 2      │
-//   │ PRUNE      │ Drop branches with |α| < ε               │
-//   │ MERGE      │ Recombine identical stabilizer states      │
-//   │ FALLBACK   │ If branches > limit → statevector          │
-//   └─────────────────────────────────────────────────────────┘
-//
-// COMPLEXITY:
-//   Pure Clifford  : O(m·n/64)          — single branch, no splitting
-//   t T-gates      : O(2^t · m · n/64)  — exponential in T-count only
-//   With pruning   : often ≪ 2^t branches survive
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
-
 import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
@@ -77,7 +43,7 @@ final class QuantumRouter {
     /// Maximum number of branches before falling back to statevector.
     private(set) var maxBranches: Int
 
-    /// Amplitude pruning threshold — branches with |α|² < ε are dropped.
+    /// Amplitude pruning threshold - branches with |α|² < ε are dropped.
     private(set) var pruneEpsilon: Double
 
     /// Number of qubits.
@@ -137,7 +103,7 @@ final class QuantumRouter {
     // ═══════════════════════════════════════════════════════════════
     // MARK: - FAST LANE: Clifford Gates
     //
-    // Clifford gates act identically on every branch tableau —
+    // Clifford gates act identically on every branch tableau -
     // no splitting.  O(branches × n/64) per gate.
     // ═══════════════════════════════════════════════════════════════
 
@@ -263,13 +229,13 @@ final class QuantumRouter {
     //   T = cos(π/8) I  +  e^{iπ/4} sin(π/8) S
     //
     // Each existing branch (tableau, α) produces two new branches:
-    //   (tableau,       α · cos(π/8))         — identity component
-    //   (S·tableau,     α · e^{iπ/4}sin(π/8)) — S-rotated component
+    //   (tableau,       α · cos(π/8))         - identity component
+    //   (S·tableau,     α · e^{iπ/4}sin(π/8)) - S-rotated component
     //
     // This at most doubles the branch count per T gate.
     // ═══════════════════════════════════════════════════════════════
 
-    /// Apply T gate on qubit `q` — splits each branch into 2.
+    /// Apply T gate on qubit `q` - splits each branch into 2.
     ///
     /// After splitting, automatically prunes negligible branches
     /// and merges duplicates.  Branches whose input amplitude is
@@ -287,7 +253,7 @@ final class QuantumRouter {
             let amp0 = amp * Self.alpha0
             newBranches.append((tab, amp0))
 
-            // Branch 1: S component — skip if negligible
+            // Branch 1: S component - skip if negligible
             if aMag2 >= sinSqThresh {
                 let amp1 = amp * Self.alpha1
                 var tabS = tab  // value-type copy
@@ -303,7 +269,7 @@ final class QuantumRouter {
         pruneAndMerge()
     }
 
-    /// Apply T† gate on qubit `q` — splits each branch into 2.
+    /// Apply T† gate on qubit `q` - splits each branch into 2.
     ///
     /// T† = cos(π/8) I  +  e^{-iπ/4} sin(π/8) S†
     /// Pre-filters negligible input branches before copying.
@@ -319,7 +285,7 @@ final class QuantumRouter {
             let amp0 = amp * Self.alphaD0
             newBranches.append((tab, amp0))
 
-            // Branch 1: S† component — skip if negligible
+            // Branch 1: S† component - skip if negligible
             if aMag2 >= sinSqThresh {
                 let amp1 = amp * Self.alphaD1
                 var tabSD = tab
@@ -335,7 +301,7 @@ final class QuantumRouter {
         pruneAndMerge()
     }
 
-    /// Apply Rz(θ) on qubit `q` — decomposed into Clifford + T components.
+    /// Apply Rz(θ) on qubit `q` - decomposed into Clifford + T components.
     ///
     /// Rz(θ) = e^{-iθ/2} |0⟩⟨0| + e^{iθ/2} |1⟩⟨1|
     /// Decomposition:  Rz(θ) = cos(θ/2) I  -  i sin(θ/2) Z
@@ -387,7 +353,7 @@ final class QuantumRouter {
             // Branch 0: identity
             newBranches.append((tab, amp * ampI))
 
-            // Branch 1: Z gate (Clifford) — skip if negligible
+            // Branch 1: Z gate (Clifford) - skip if negligible
             if amp.magnitudeSquared >= sinSqThresh {
                 var tabZ = tab
                 tabZ.pauliZ(q)
@@ -609,7 +575,7 @@ final class QuantumRouter {
     /// Uses canonicalization-based merging: each tableau is reduced to
     /// row-echelon canonical form via Gaussian elimination, then used as
     /// a dictionary key.  This catches tableaux that represent the same
-    /// stabilizer state but differ in row ordering — a common occurrence
+    /// stabilizer state but differ in row ordering - a common occurrence
     /// when different T-gate decomposition paths reach the same state.
     ///
     /// Complexity: O(b · n³/64) where b = branch count, n = qubit count.
@@ -635,7 +601,7 @@ final class QuantumRouter {
             let canonicalState = branch.tableau.canonicalized()
 
             if let existing = mergedBranches[canonicalState] {
-                // Same stabilizer state — sum amplitudes (Born-rule safe)
+                // Same stabilizer state - sum amplitudes (Born-rule safe)
                 let summedAmp = QComplex(
                     re: existing.amplitude.re + branch.amplitude.re,
                     im: existing.amplitude.im + branch.amplitude.im
@@ -703,23 +669,23 @@ final class QuantumRouter {
 
         let zone: String
         if pressure < 0.25 {
-            // Low pressure — relax epsilon for better fidelity
+            // Low pressure - relax epsilon for better fidelity
             zone = "low"
             pruneEpsilon = eps * 0.1          // 10× more permissive
             maxBranches  = base               // keep base limit
         } else if pressure < 0.75 {
-            // Nominal — use base values
+            // Nominal - use base values
             zone = "nominal"
             pruneEpsilon = eps
             maxBranches  = base
         } else if pressure < 0.95 {
-            // High pressure — tighten pruning, expand limit
+            // High pressure - tighten pruning, expand limit
             zone = "high"
             pruneEpsilon = eps * 10.0         // 10× more aggressive pruning
             maxBranches  = base * 2           // double the ceiling
             pruneAndMerge()                   // immediately reclaim
         } else {
-            // Critical — maximum aggression before fallback
+            // Critical - maximum aggression before fallback
             zone = "critical"
             pruneEpsilon = eps * 100.0        // 100× aggressive
             maxBranches  = base * 4           // 4× ceiling

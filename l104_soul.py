@@ -2517,7 +2517,7 @@ class L104Soul:
                         for dname, domain in self.domain_expander.domains.items():
                             answer, score = domain.query(thought.content)
                             if answer and score > 0.1:
-                                parts.append(f"Domain[{dname}]: {answer[:100]}")
+                                parts.append(f"Domain[{dname}]: {answer}")
                                 self.metrics.domain_expansions += 1
                 except Exception:
                     pass
@@ -2773,7 +2773,7 @@ class L104Soul:
                     try:
                         cached = self.lattice.semantic_search(thought.content, limit=1)
                         if cached and cached[0].get("value", {}).get("response_hash"):
-                            response_text = f"[From lattice memory] Similar context found for: {thought.content[:100]}"
+                            response_text = f"[From lattice memory] Similar context found for: {thought.content}"
                             generation_source = "lattice_cache"
                             if lt_breaker:
                                 lt_breaker.record_success()
@@ -2886,8 +2886,8 @@ class L104Soul:
                     pass
                 try:
                     if self.knowledge:
-                        self.knowledge.add_node(_thought_content[:50], "thought")
-                        self.knowledge.add_edge(_thought_content[:50], "L104", "processed_by")
+                        self.knowledge.add_node(_thought_content, "thought")
+                        self.knowledge.add_edge(_thought_content, "L104", "processed_by")
                 except Exception:
                     pass
 

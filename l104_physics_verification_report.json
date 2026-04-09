@@ -1,0 +1,153 @@
+{
+  "verification_status": "PASSED",
+  "summary": {
+    "passed": 12,
+    "failed": 0,
+    "warnings": 1,
+    "total": 13
+  },
+  "engine_validation": {
+    "science_engine": {
+      "landauer_limit": 9.36009029110768e-19,
+      "electron_resonance": {
+        "god_code_origin": {
+          "dials": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "value": 527.5184818492611,
+          "exponent": 416
+        },
+        "bohr_radius_pm": {
+          "dials": [
+            -4,
+            1,
+            0,
+            3
+          ],
+          "value": 52.921063078108624,
+          "exponent": 71,
+          "codata_pm": 52.917721298703995,
+          "alignment_error": 6.315047818792787e-05
+        },
+        "rydberg_eV": {
+          "nearest_dials": [
+            [
+              -4,
+              -3,
+              0,
+              5,
+              13.587721760978777,
+              0.0013208707452654746
+            ],
+            [
+              -3,
+              -3,
+              1,
+              5,
+              13.587721760978777,
+              0.0013208707452654746
+            ],
+            [
+              -2,
+              -3,
+              2,
+              5,
+              13.587721760978777,
+              0.0013208707452654746
+            ]
+          ],
+          "codata_value": 13.605693120016255,
+          "exact_exponent": -132.80168517494187
+        },
+        "compton_wavelength_pm": {
+          "nearest_dials": [
+            [
+              0,
+              -1,
+              -3,
+              8,
+              2.4342248651963305,
+              0.0032620010418242347
+            ],
+            [
+              1,
+              -1,
+              -2,
+              8,
+              2.4342248651963305,
+              0.0032620010418242347
+            ],
+            [
+              2,
+              -1,
+              -1,
+              8,
+              2.4342248651963305,
+              0.0032620010418242347
+            ]
+          ],
+          "codata_value": 2.42631023867
+        },
+        "codata_cross_check": {
+          "rydberg_eV": 13.605693120016255,
+          "compton_freq_hz": 1.235589963603955e+20,
+          "hydrogen_ground_freq_hz": 3289841951317377.5,
+          "bohr_velocity_ms": 2187691.2608549925,
+          "electron_rest_energy_J": 8.187105775475753e-14
+        },
+        "equation": "G(a,b,c,d) = 286^(1/PHI) \u00d7 2^((8a+416-b-8c-104d)/104)",
+        "base": 32.96990511557882,
+        "step_size": 1.0066871364523837
+      },
+      "status": "operational"
+    },
+    "math_engine": {
+      "god_code": {
+        "value": 527.5184818492611,
+        "formula": "G(a,b,c,d) = 286^(1/\u03c6) \u00d7 2^((8a+416-b-8c-104d)/104)",
+        "canonical": 527.5184818492611,
+        "domain_tuned": {
+          "pure_math": 556.4085993716998,
+          "harmonic": 527.5184818492611,
+          "proof": 571.4416751243213,
+          "hyperdim": 474.1605007888432
+        },
+        "conservation": true,
+        "pilot": "LONDEL"
+      },
+      "phi_power": [
+        1,
+        1,
+        2,
+        3,
+        5,
+        8,
+        13,
+        21,
+        34,
+        55
+      ],
+      "status": "operational"
+    },
+    "code_engine": {
+      "status": "skipped: name 'FE_IONIZATION_EV' is not defined"
+    }
+  },
+  "reference": {
+    "job_id": "d7b9fab0g7hs73dp9r00",
+    "p_target": 0.822937,
+    "entropy_bits": 1.523,
+    "register_fidelity": {
+      "3d": 0.916,
+      "4s": 0.9848,
+      "LATTICE": 0.9468,
+      "SACRED": 0.9811,
+      "PHI": 0.9875,
+      "CORE": 0.9984,
+      "ANCHOR": 0.997
+    }
+  }
+}

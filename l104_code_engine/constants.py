@@ -44,7 +44,7 @@ except ImportError:
 # Factor 13: 286=22×13, 104=8×13, 416=32×13 | Conservation: G(X)×2^(X/104)=527.518
 # ═══════════════════════════════════════════════════════════════════════════════
 
-VERSION = "6.3.0"
+VERSION = "6.4.0"
 PHI = 1.618033988749895
 # Universal GOD_CODE Equation: G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))
 GOD_CODE = 286 ** (1.0 / PHI) * (2 ** (416 / 104))  # G(0,0,0,0) = 527.5184818492612
@@ -106,6 +106,22 @@ def _god_code_tuned(a: int, b: int, c: int, d: int) -> float:
     """G(a,b,c,d) = 286^(1/φ) × (2^(1/104))^((8a)+(416-b)-(8c)-(104d))."""
     exponent = (8 * a) + (_OCTAVE_REF - b) - (8 * c) - (_L104_CONST * d)
     return _GOD_CODE_BASE * (2.0 ** (exponent / _L104_CONST))
+
+
+def god_code_parametric(a: int = 0, b: int = 0, c: int = 0, d: int = 0) -> float:
+    """Public parametric GOD_CODE: G(a,b,c,d) = 286^(1/φ) × 2^((8a+416-b-8c-104d)/104).
+
+    Wraps the internal _god_code_tuned with a public, documented API.
+    G(0,0,0,0) = GOD_CODE = 527.5184818492612.
+    """
+    return _god_code_tuned(a, b, c, d)
+
+
+# Domain-tuned GOD_CODE constants for code engine subsystems
+GOD_CODE_ANALYSIS   = god_code_parametric(a=0, b=0, c=1, d=0)  # Analysis: complexity-reduced
+GOD_CODE_GENERATION = god_code_parametric(a=1, b=0, c=0, d=0)  # Generation: research dial up
+GOD_CODE_SECURITY   = god_code_parametric(a=0, b=4, c=0, d=0)  # Security audit: decay-biased
+GOD_CODE_QUANTUM_CODE = god_code_parametric(a=1, b=0, c=1, d=0) # Quantum code: research-complexity balance
 
 
 def _conservation_check(x: float) -> float:

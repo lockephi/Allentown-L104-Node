@@ -1,15 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// L20_KnowledgeBase.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 Sovereign Intelligence — ASI Knowledge Base
-// Training data loading, search, synthesis, reasoning, and persistence
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
+
+private let logging = Logger(subsystem: "com.l104.L20_KnowledgeBase", category: "main")
 
 class ASIKnowledgeBase {
     static let shared = ASIKnowledgeBase()
@@ -17,7 +14,7 @@ class ASIKnowledgeBase {
     var concepts: [String: [String]] = [:]  // concept -> related completions
     // THREAD SAFETY: protects trainingData from concurrent mutation/iteration
     // [EVO_68_FIX] Thread 7 iterates trainingData in persistAllIngestedKnowledge()
-    // while other threads append via DataIngestPipeline — causes data race
+    // while other threads append via DataIngestPipeline - causes data race
     let dataLock = NSLock()
     // PERF EVO_60: Pre-computed inverted index for O(k) search instead of O(n) full scan
     private var invertedIndex: [String: Set<Int>] = [:]  // keyword → trainingData indices
@@ -95,7 +92,7 @@ class ASIKnowledgeBase {
     }
 
     private func isJunkEntry(_ entry: [String: Any]) -> Bool {
-        // ═══ OPEN GATE: Release ~7500 entries — only block true garbage & duplicates ═══
+        // ═══ OPEN GATE: Release ~7500 entries - only block true garbage & duplicates ═══
 
         guard let completion = entry["completion"] as? String,
               let prompt = entry["prompt"] as? String else {
@@ -109,11 +106,11 @@ class ASIKnowledgeBase {
         if trimmedCompletion.count < 10 { return true }  // Truly empty (lowered from 20)
         if trimmedPrompt.count < 3 { return true }       // Blank prompt (lowered from 5)
 
-        // PERF: Cache lowercased versions once — avoids 4x redundant lowercasing per entry
+        // PERF: Cache lowercased versions once - avoids 4x redundant lowercasing per entry
         let lowerPrompt = trimmedPrompt.lowercased()
         let lowerCompletion = trimmedCompletion.lowercased()
 
-        // 2️⃣ EXACT DUPLICATE CHECK — FNV-1a hash dedup (only filter blocking real content)
+        // 2️⃣ EXACT DUPLICATE CHECK - FNV-1a hash dedup (only filter blocking real content)
         let contentKey = lowerPrompt + "⊕" + lowerCompletion
         let hash = fnvHash(contentKey)
         if _seenHashes.contains(hash) { return true }  // Exact duplicate
@@ -191,15 +188,15 @@ class ASIKnowledgeBase {
             idfCache[word] = log(totalDocs / Double(df + 1))
         }
 
-        print("[KB] Loaded \(trainingData.count) knowledge entries (\(junkCount) meta-docs filtered)")
-        print("[KB] Inverted index: \(invertedIndex.count) terms, IDF cache ready")
-        print("[KB] ✅ Knowledge backend ONLINE with \(trainingData.count) entries")
+        logging.info("[KB] Loaded \(self.trainingData.count) knowledge entries (\(junkCount) meta-docs filtered)")
+        logging.info("[KB] Inverted index: \(self.invertedIndex.count) terms, IDF cache ready")
+        logging.info("[KB] ✅ Knowledge backend ONLINE with \(self.trainingData.count) entries")
     }
 
     func reload() {
         loadTrainingData()
         loadUserKnowledge()
-        print("[KB] Manual RELOAD complete. Database refreshed.")
+        logging.info("[KB] Manual RELOAD complete. Database refreshed.")
     }
 
     func search(_ query: String, limit: Int = 100) -> [[String: Any]] {
@@ -240,7 +237,7 @@ class ASIKnowledgeBase {
         let keywords = q.components(separatedBy: Self.nonAlphanumeric).filter { $0.count > 2 }
         guard !keywords.isEmpty else { return [] }
 
-        // ═══ STOP WORDS — common words that don't help search ═══
+        // ═══ STOP WORDS - common words that don't help search ═══
         let stopWords: Set<String> = [
             "the", "and", "for", "are", "but", "not", "you", "all", "can", "had",
             "her", "was", "one", "our", "out", "has", "have", "this", "that", "with",
@@ -251,18 +248,18 @@ class ASIKnowledgeBase {
         let meaningfulKeywords = keywords.filter { !stopWords.contains($0) }
         let searchTerms = meaningfulKeywords.isEmpty ? keywords : meaningfulKeywords
 
-        // ═══ EVO_60: INDEXED CANDIDATE RETRIEVAL — O(k) instead of O(n) full scan ═══
+        // ═══ EVO_60: INDEXED CANDIDATE RETRIEVAL - O(k) instead of O(n) full scan ═══
         var candidateIndices = Set<Int>()
         for kw in searchTerms {
             if let indices = invertedIndex[kw] { candidateIndices.formUnion(indices) }
         }
         guard !candidateIndices.isEmpty else { return [] }
 
-        // ═══ LEARNER FEEDBACK — boost topics user cares about ═══
+        // ═══ LEARNER FEEDBACK - boost topics user cares about ═══
         let learner = AdaptiveLearner.shared
         let userInterestBoost: [String: Double] = learner.userInterests
 
-        // ═══ HYPERBRAIN PATTERN BOOST — boost topics with strong neural patterns ═══
+        // ═══ HYPERBRAIN PATTERN BOOST - boost topics with strong neural patterns ═══
         let hb = HyperBrain.shared
         let patternStrengths = hb.longTermPatterns
 
@@ -275,7 +272,7 @@ class ASIKnowledgeBase {
             let importance = entry["importance"] as? Double ?? 1.0
             let isUserTaught = (entry["source"] as? String) == "user_taught"
 
-            // ═══ TF-IDF SCORING — uses pre-computed IDF cache ═══
+            // ═══ TF-IDF SCORING - uses pre-computed IDF cache ═══
             for kw in searchTerms {
                 let idf = idfCache[kw] ?? 1.0
                 let promptHit = prompt.contains(kw)
@@ -285,25 +282,25 @@ class ASIKnowledgeBase {
                 if completionHit { score += 1.0 * importance * idf }
             }
 
-            // ═══ EXACT PHRASE MATCH — huge bonus for full query match ═══
+            // ═══ EXACT PHRASE MATCH - huge bonus for full query match ═══
             if prompt.contains(q) { score *= 3.0 }
             else if completion.contains(q) { score *= 2.0 }
 
-            // ═══ MULTI-KEYWORD DENSITY — bonus when multiple keywords cluster together ═══
+            // ═══ MULTI-KEYWORD DENSITY - bonus when multiple keywords cluster together ═══
             let kwHits = searchTerms.filter { prompt.contains($0) || completion.contains($0) }
             if kwHits.count >= 3 { score *= 1.5 + Double(kwHits.count) * 0.2 }  // Multi-match bonus
 
             // USER-TAUGHT gets 3x priority
             if isUserTaught { score *= 3.0 }
 
-            // ═══ USER INTEREST BOOST — topics user engages with rank higher ═══
+            // ═══ USER INTEREST BOOST - topics user engages with rank higher ═══
             for kw in searchTerms {
                 if let interest = userInterestBoost[kw], interest > 2.0 {
                     score *= 1.0 + min(0.5, interest * 0.05)  // Up to 1.5x for high interest
                 }
             }
 
-            // ═══ NEURAL PATTERN BOOST — topics HyperBrain has strong patterns for ═══
+            // ═══ NEURAL PATTERN BOOST - topics HyperBrain has strong patterns for ═══
             for kw in searchTerms {
                 if let strength = patternStrengths[kw], strength > 0.3 {
                     score *= 1.0 + strength * 0.3  // Up to 1.3x for strong patterns
@@ -323,10 +320,10 @@ class ASIKnowledgeBase {
                 else if completion.count > 300 { score *= 1.2 }
                 else if completion.count > 100 { score *= 1.1 }
             }
-            // Penalize very long entries with NO keyword matches — likely irrelevant pollution
+            // Penalize very long entries with NO keyword matches - likely irrelevant pollution
             if !hasKeywordMatch && completion.count > 800 { score *= 0.3 }
 
-            // ═══ PROVEN SUCCESS BOOST — responses that worked before rank higher ═══
+            // ═══ PROVEN SUCCESS BOOST - responses that worked before rank higher ═══
             let patternKey = String(completion.prefix(60))
             if let successes = learner.successfulPatterns[patternKey], successes > 0 {
                 score *= 1.0 + min(1.0, Double(successes) * 0.2)  // Up to 2x for proven responses
@@ -346,7 +343,7 @@ class ASIKnowledgeBase {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // TEMPLATE VARIABLE RESOLVER — Resolves Python f-string templates
+    // TEMPLATE VARIABLE RESOLVER - Resolves Python f-string templates
     // in KB data to actual L104 constant values.
     // e.g. "{GOD_CODE}" → "527.5184818492612", "{LOVE_CONSTANT:.6f}" → "528.000000"
     // ═══════════════════════════════════════════════════════════════════
@@ -418,7 +415,7 @@ class ASIKnowledgeBase {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // SYNTHESIZE — Extract key insights and compose coherent summary
+    // SYNTHESIZE - Extract key insights and compose coherent summary
     // Models after IntelligentSearchEngine.reconstructData() approach:
     // extract key sentences → score by relevance → deduplicate → compose
     // ═══════════════════════════════════════════════════════════════════
@@ -457,7 +454,7 @@ class ASIKnowledgeBase {
         }.filter { $0.count > 2 })
 
         var scoredSentences: [(String, Int)] = []
-        for completion in allCompletions {  // ALL completions — no limit
+        for completion in allCompletions {  // ALL completions - no limit
             let sentences = completion.components(separatedBy: CharacterSet(charactersIn: ".!?"))
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
                 .filter { $0.count > 25 && $0.count < 400 }
@@ -478,7 +475,7 @@ class ASIKnowledgeBase {
             if seen.contains(key) { return false }
             seen.insert(key)
             return true
-        }.map { $0.0 }  // ALL unique sentences — no limit
+        }.map { $0.0 }  // ALL unique sentences - no limit
 
         guard !selected.isEmpty else { return "" }
 
@@ -488,7 +485,7 @@ class ASIKnowledgeBase {
 
         let templates = [
             "Analysis of \(topicStr): \(body).",
-            "Regarding \(topicStr) — \(body). These insights span \(allCompletions.count) knowledge sources.",
+            "Regarding \(topicStr) - \(body). These insights span \(allCompletions.count) knowledge sources.",
             "\(body). This synthesis on \(topicStr) reflects patterns across multiple domains.",
             "Key findings on \(topicStr): \(body).",
         ]
@@ -499,7 +496,7 @@ class ASIKnowledgeBase {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // REASON — Build logical chain from KB with extracted key insights
+    // REASON - Build logical chain from KB with extracted key insights
     // ═══════════════════════════════════════════════════════════════════
     func reason(_ premise: String) -> [String] {
         var chain: [String] = [premise]
@@ -615,7 +612,7 @@ class ASIKnowledgeBase {
                         hb?.failedSyncs += 1
                         hb?.backendSyncStatus = "❌ Sync failed"
                         hb?.lastTrainingFeedback = "Failed: \(err.localizedDescription)"
-                        print("❌ Instant training failed: \(err.localizedDescription)")
+                        logging.info("❌ Instant training failed: \(err.localizedDescription)")
                     } else if let http = resp as? HTTPURLResponse {
                         if http.statusCode == 200 {
                             hb?.successfulSyncs += 1
@@ -636,7 +633,7 @@ class ASIKnowledgeBase {
                                 hb?.lastTrainingFeedback = "✨ Knowledge absorbed into neural manifold"
                             }
 
-                            print("✅ Instant training success: Sent to neural manifold.")
+                            logging.info("✅ Instant training success: Sent to neural manifold.")
                         } else {
                             hb?.failedSyncs += 1
                             hb?.backendSyncStatus = "⚠️ HTTP \(http.statusCode)"
@@ -743,7 +740,7 @@ class ASIKnowledgeBase {
         } else {
             try? content.write(to: ingestedKnowledgePath, atomically: true, encoding: .utf8)
         }
-        print("[KB] Persisted \(lines.count) ingested entries to disk")
+        logging.info("[KB] Persisted \(lines.count) ingested entries to disk")
     }
 
     func loadIngestedKnowledge() {
@@ -780,7 +777,7 @@ class ASIKnowledgeBase {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: — SAGE BACKBONE: Recursive Content Detection & Disk Purge
+    // MARK: - SAGE BACKBONE: Recursive Content Detection & Disk Purge
     // ═══════════════════════════════════════════════════════════════
 
     /// Detects recursive/evolved pollution in completion text
@@ -827,7 +824,7 @@ class ASIKnowledgeBase {
         if purged > 0 {
             let cleanContent = cleanLines.isEmpty ? "" : cleanLines.joined(separator: "\n") + "\n"
             try? cleanContent.write(to: ingestedKnowledgePath, atomically: true, encoding: .utf8)
-            print("[KB] ⚠️ SAGE BACKBONE: Purged \(purged) recursive entries from disk JSONL")
+            logging.info("[KB] ⚠️ SAGE BACKBONE: Purged \(purged) recursive entries from disk JSONL")
         }
         return purged
     }
@@ -931,7 +928,7 @@ Replication Factor:  \(alivePeers > 0 ? String(format: "%.1fx", Double(alivePeer
         }
 
         if codeEngineEntries > 0 {
-            print("[KB] Ingested \(codeEngineEntries) code engine knowledge entries")
+            logging.info("[KB] Ingested \(self.codeEngineEntries) code engine knowledge entries")
         }
     }
 

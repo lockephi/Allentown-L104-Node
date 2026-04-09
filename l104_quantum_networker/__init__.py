@@ -57,6 +57,7 @@ from .repeater import QuantumRepeaterChain
 from .fidelity_monitor import FidelityMonitor
 from .transport import ClassicalTransport, MessageType
 from .networker import QuantumNetworker, get_networker
+from .cross_engine import NetworkThreeEngineScorer, get_network_scorer
 
 __all__ = [
     # Orchestrator
@@ -70,6 +71,9 @@ __all__ = [
     "FidelityMonitor",
     "ClassicalTransport",
     "MessageType",
+    # Three-Engine Integration
+    "NetworkThreeEngineScorer",
+    "get_network_scorer",
     # Types
     "QuantumNode",
     "QuantumChannel",

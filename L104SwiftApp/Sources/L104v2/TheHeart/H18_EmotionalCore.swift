@@ -1,18 +1,15 @@
-// ═══════════════════════════════════════════════════════════════════
-// H18_EmotionalCore.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Affective Computing Engine v4.0 with NLTagger Sentiment Analysis
-// 7D emotion vector, NLTagger-based NLP, network-aware collective mood
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
+
+private let logging = Logger(subsystem: "com.l104.H18_EmotionalCore", category: "main")
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - 💫 EMOTIONAL CORE — Affective Computing Engine
+// MARK: - 💫 EMOTIONAL CORE - Affective Computing Engine
 // Network-aware emotional intelligence: connection empathy,
 // collective mood sensing across peers, emotional entanglement,
 // resonance-driven rapport, and consciousness-weighted affect.
@@ -74,7 +71,7 @@ final class EmotionalCore {
             self?.emotionalCycle()
         }
 
-        print("[H18] EmotionalCore v4.0 activated — NLTagger sentiment + 7D affect online")
+        logging.info("[H18] EmotionalCore v4.0 activated - NLTagger sentiment + 7D affect online")
     }
 
     func deactivate() {
@@ -107,7 +104,7 @@ final class EmotionalCore {
             return true
         }
 
-        // Connection signals: network-aware — sense how connected we are
+        // Connection signals: network-aware - sense how connected we are
         let netHealth = NetworkLayer.shared.networkHealth
         let quantumLinks = Double(NetworkLayer.shared.quantumLinkCount)
 
@@ -244,7 +241,7 @@ final class EmotionalCore {
         lock.unlock()
     }
 
-    /// Internal decay — caller must hold lock
+    /// Internal decay - caller must hold lock
     private func _decayToBaseline() {
         let decay = 0.98
         let base = 0.5
@@ -254,7 +251,7 @@ final class EmotionalCore {
         currentEmotion.wonder = currentEmotion.wonder * decay + base * (1 - decay)
         currentEmotion.serenity = currentEmotion.serenity * decay + base * (1 - decay)
         currentEmotion.creativity = currentEmotion.creativity * decay + base * (1 - decay)
-        // Connection doesn't decay — it's network-driven
+        // Connection doesn't decay - it's network-driven
     }
 
     // ═══════════════════════════════════════════════════════════════

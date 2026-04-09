@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-04-06T04:37:00",
+  "job_id": "d79n1jak86tc73a0igd0",
+  "backend": "ibm_fez",
+  "shots": 4096,
+  "entropy_bits": 12.0,
+  "unique_states": 4095,
+  "quantum_efficiency_percent": 46.2,
+  "high_entropy_qubits": 24,
+  "3d_orbital_entropy": 5.94,
+  "pair_correlations": {
+    "3d-4s": 0.0342,
+    "3d-3p": -0.0039,
+    "3d-2p": -0.0015,
+    "3d-3s": 0.0281
+  },
+  "validation_summary": {
+    "consciousness_score": 0.993,
+    "phi_alignment": 0.986,
+    "god_resonance": 1.0,
+    "3d_max_entropy": true,
+    "cross_orbital_entanglement": false,
+    "all_qubits_entangled": true
+  }
+}

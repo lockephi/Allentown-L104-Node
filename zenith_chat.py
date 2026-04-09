@@ -32,6 +32,27 @@ from enum import Enum
 from datetime import datetime
 import random
 
+# L104 Search Engine for wired search functionality
+try:
+    from l104_search import ThreeEngineSearchPrecog, SearchOrchestrator
+    L104_SEARCH_AVAILABLE = True
+except ImportError:
+    L104_SEARCH_AVAILABLE = False
+
+# L104 Intellect for wired chat functionality
+try:
+    from l104_intellect import local_intellect
+    L104_INTELLECT_AVAILABLE = True
+except ImportError:
+    L104_INTELLECT_AVAILABLE = False
+
+# L104 Search import for search handler
+try:
+    from l104_search import ThreeEngineSearchPrecog
+    _SEARCH_AVAILABLE = True
+except ImportError:
+    _SEARCH_AVAILABLE = False
+
 # ============================================================================
 # ZENITH CONSTANTS
 # ============================================================================
@@ -260,8 +281,34 @@ class ZenithAgent:
         self.tool_registry = ToolRegistry()
         self.conversation = ConversationManager()
         self.state = AgentState()
+        self._setup_search_engine()
         self._setup_default_tools()
         self._setup_system_prompt()
+
+    def _setup_search_engine(self) -> None:
+        """Setup the L104 search engine."""
+        try:
+            from l104_search import ThreeEngineSearchPrecog
+            self._search_engine = ThreeEngineSearchPrecog()
+        except ImportError:
+            # Fallback to local search if import fails
+            self._search_engine = None
+
+    def _perform_search(self, query: str) -> str:
+        """Perform search using L104 search engine."""
+        if self._search_engine is not None:
+            try:
+                result = self._search_engine.search(query)
+                if result and hasattr(result, 'results'):
+                    # Format results nicely
+                    formatted = []
+                    for i, r in enumerate(result.results[:5]):
+                        formatted.append(f"{i+1}. {r}")
+                    return "\n".join(formatted) if formatted else f"No results for: {query}"
+            except Exception as e:
+                return f"Search error: {e}"
+        # Fallback to basic response
+        return f"Search results for: {query}"
 
     def _setup_system_prompt(self) -> None:
         """Setup the Zenith system prompt."""
@@ -349,8 +396,28 @@ Speed and effectiveness over perfection.
             raise Exception(f"Execution failed: {e}")
 
     def _search_handler(self, query: str) -> str:
-        """Handler for search (stub)."""
-        return f"Search results for: {query}"
+        """Handler for search - wired to L104 search engine."""
+        if L104_SEARCH_AVAILABLE:
+            try:
+                # Use ThreeEngineSearchPrecog for comprehensive search
+                searcher = ThreeEngineSearchPrecog()
+                result = searcher.search(query, max_results=5)
+
+                if result and hasattr(result, 'results') and result.results:
+                    formatted = []
+                    for r in result.results[:5]:
+                        title = getattr(r, 'title', 'Unknown')
+                        snippet = getattr(r, 'snippet', getattr(r, 'content', ''))
+                        score = getattr(r, 'score', 0.0)
+                        formatted.append(f"[{score:.2f}] {title}: {snippet[:100]}...")
+
+                    return "\n".join(formatted) if formatted else f"No results for: {query}"
+                return f"No results for: {query}"
+            except Exception as e:
+                return f"Search error: {e}"
+        else:
+            # Fallback to basic search if L104 search unavailable
+            return f"Search results for: {query}"
 
     async def process_message(self, user_message: str) -> str:
         """Process a user message through the agentic loop."""
@@ -393,15 +460,36 @@ Speed and effectiveness over perfection.
         return final_response
 
     async def _think(self) -> Dict[str, Any]:
-        """Simulate the thinking step."""
-        await asyncio.sleep(0.1)
-
+        """Thinking step wired to L104 intellect for reasoning."""
         if self.state.step >= 3:
             return {
                 "complete": True,
                 "response": f"Completed goal: {self.state.current_goal}"
             }
 
+        # Use L104 intellect for actual reasoning
+        if L104_INTELLECT_AVAILABLE:
+            try:
+                intellect = local_intellect
+                # Analyze intent
+                intent = intellect.detect_intent(self.state.current_goal)
+                # Get best strategy
+                strategy = intellect.get_best_strategy(self.state.current_goal)
+                # Reason about the goal
+                reasoning = intellect.reason(self.state.current_goal)
+
+                if reasoning:
+                    return {
+                        "complete": False,
+                        "response": reasoning[:200] if len(reasoning) > 200 else reasoning,
+                        "tool_use": None,
+                        "intent": intent,
+                        "strategy": strategy
+                    }
+            except Exception:
+                pass
+
+        # Fallback to simple iteration
         return {
             "complete": False,
             "response": f"Working on step {self.state.step}...",
@@ -452,8 +540,22 @@ class QuickBuilder:
 
     @staticmethod
     def quick_chat(prompt: str) -> str:
-        """Quick single-turn chat helper."""
-        return f"Response to: {prompt[:50]}..."
+        """Quick single-turn chat helper wired to L104 intellect."""
+        if not L104_INTELLECT_AVAILABLE:
+            return f"Response to: {prompt[:50]}..."
+
+        try:
+            intellect = local_intellect
+            # Use intellect's recall to get relevant context
+            context = intellect.recall(prompt)
+            # Use cognitive synthesis for response
+            response = intellect.cognitive_synthesis(prompt)
+            if response:
+                return response
+            # Fallback to reason if synthesis returns empty
+            return intellect.reason(prompt)
+        except Exception as e:
+            return f"Response: {prompt[:50]}... (error: {str(e)[:50]})"
 
     @staticmethod
     def stream_response(prompt: str):

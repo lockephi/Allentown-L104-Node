@@ -51,6 +51,7 @@ services:
       - L104_CPU_CORES=${L104_CPU_CORES:-0}
       - L104_HEARTBEAT_SECONDS=${L104_HEARTBEAT_SECONDS:-3600}
       - L104_LLM_TIMEOUT=${L104_LLM_TIMEOUT:-30}
+      - UVICORN_WORKERS=${UVICORN_WORKERS:-4}
     volumes:
       - l104-data:/data
     tmpfs:

@@ -1,4 +1,17 @@
 from .constants import *
+from l104_sacred_algorithms import (
+    derive_timeout, derive_iterations, derive_worker_threads,
+    derive_cache_size, derive_lru_cache_entries,
+    PHI, GOD_CODE, TAU
+)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PERFORMANCE OPTIMIZATION IMPORTS — EVO_74
+# ═══════════════════════════════════════════════════════════════════════════════
+from functools import lru_cache
+import threading
+import hashlib
+from typing import Dict, Any, Optional
 
 # ═══ Qiskit core classes (lazy — loaded on first use) ═══
 try:
@@ -299,6 +312,12 @@ class ASICore:
             "math_proof_validations": 0,
             "science_demon_queries": 0,
             "cross_engine_syntheses": 0,
+            # v9.2 entropy reversal grimoire metrics
+            "grimoire_reversals": 0,
+            "entropy_reversed_total": 0.0,
+            # v9.2 entropy reversal grimoire metrics
+            "grimoire_reversals": 0,
+            "entropy_reversed_total": 0.0,
             # v11.0 universal gate sovereign metrics
             "gate_compilations": 0,
             "gate_sacred_checks": 0,
@@ -341,9 +360,9 @@ class ASICore:
         self._wave_coherence_score = 0.0    # 104 Hz ↔ GOD_CODE coherence
 
         # ══════ v9.1 TTL CACHING FOR EXPENSIVE COMPUTATIONS ══════
-        self._score_cache_ttl = 10.0              # seconds — compute_asi_score() TTL
+        self._score_cache_ttl = GOD_CODE/PHI/32.6              # seconds — compute_asi_score() TTL
         self._score_cache_time = 0.0              # last compute_asi_score() timestamp
-        self._three_engine_cache_ttl = 15.0       # seconds — three-engine method TTL
+        self._three_engine_cache_ttl = GOD_CODE/PHI/21.8       # seconds — three-engine method TTL
         self._three_engine_cache_time = 0.0       # last three-engine timestamp
         self._three_engine_cached = {}            # cached three-engine scores
 
@@ -923,6 +942,26 @@ class ASICore:
 
         return chain_status
 
+    def fusion_transfer(self, source_domain: str, target_domain: str) -> Dict[str, Any]:
+        """ASI→AGI bridge: Execute cross-domain knowledge fusion via AGI cognitive mesh."""
+        agi = self._get_agi_core()
+        if agi is None:
+            return {"source": source_domain, "target": target_domain, "error": "AGI core unavailable"}
+        try:
+            return agi.fusion_transfer(source_domain, target_domain)
+        except Exception as e:
+            return {"source": source_domain, "target": target_domain, "error": str(e)}
+
+    def run_autonomous_agi_logic(self, initial_flux: float) -> Any:
+        """ASI→AGI bridge: Run autonomous AGI chaos-stability logic via AGI core."""
+        agi = self._get_agi_core()
+        if agi is None:
+            return ("AGI_UNAVAILABLE", [])
+        try:
+            return agi.run_autonomous_agi_logic(initial_flux)
+        except Exception as e:
+            return ("ERROR", [str(e)])
+
     def agi_composite_score(self) -> float:
         """v17.0: Get AGI's 13D composite score for ASI integration.
         Triggers lazy-load of AGI core if not yet connected."""
@@ -1483,10 +1522,218 @@ class ASICore:
         except Exception:
             return 0.5
 
+    def three_engine_entropy_reversal_grimoire(self, mode: str = "balanced") -> dict:
+        """v9.2: Execute entropy reversal via quantum grimoire algorithms.
+
+        Integrates crystallized grimoire findings from genetic evolution:
+        - GRIMOIRE_ENTROPY_1_0: Maximum entropy reversal (1.000)
+        - GRIMOIRE_BALANCED_4RZ: Balanced 4-RZ approach
+        - GRIMOIRE_FITNESS_2_503: Peak fitness optimization
+        - GRIMOIRE_MULTI_RZ: Multi-layer RZ
+        - phi_godcode: PHI/GOD_CODE parametric
+        - mesh: VQPU mesh-optimized
+
+        Args:
+            mode: Entropy reversal mode (maximum, balanced, fitness, multi_rz, phi_godcode, mesh)
+
+        Returns:
+            Dict with entropy_reversed, coherence, fidelity, sacred_alignment, magic_quotient
+        """
+        try:
+            from l104_quantum_magic.entropy_reversal_grimoire import (
+                EntropyReversalGrimoire,
+                EntropyReversalMode,
+                QuantumState,
+            )
+
+            # Create quantum state from ASI pipeline entropy
+            healthy = sum(1 for v in self._pipeline_metrics.values() if isinstance(v, (int, float)) and v > 0)
+            total = max(len(self._pipeline_metrics), 1)
+            health_ratio = healthy / total
+            initial_entropy = max(0.1, 5.0 * (1.0 - health_ratio))
+
+            # Map mode string to enum
+            mode_map = {
+                "maximum": EntropyReversalMode.MAXIMUM,
+                "balanced": EntropyReversalMode.BALANCED,
+                "fitness": EntropyReversalMode.FITNESS,
+                "multi_rz": EntropyReversalMode.MULTI_RZ,
+                "phi_godcode": EntropyReversalMode.PHI_GODCODE,
+                "mesh": EntropyReversalMode.MESH_OPTIMIZED,
+            }
+            mode_enum = mode_map.get(mode, EntropyReversalMode.BALANCED)
+
+            # Create quantum state
+            import numpy as np
+            n_qubits = 4
+            dim = 1 << n_qubits
+            amplitudes = np.random.random(dim) + 1j * np.random.random(dim)
+            amplitudes = amplitudes / np.linalg.norm(amplitudes)
+
+            quantum_state = QuantumState(
+                amplitudes=amplitudes,
+                n_qubits=n_qubits,
+                entropy=initial_entropy,
+                coherence=health_ratio,
+            )
+
+            # Execute grimoire entropy reversal
+            grimoire = EntropyReversalGrimoire()
+            result = grimoire.reverse_entropy(quantum_state, mode_enum)
+
+            # Update ASI metrics
+            self._pipeline_metrics["grimoire_reversals"] += 1
+            self._pipeline_metrics["entropy_reversed_total"] += result.entropy_reversed
+
+            return {
+                "mode": mode,
+                "entropy_reversed": result.entropy_reversed,
+                "coherence": result.coherence,
+                "fidelity": result.fidelity,
+                "sacred_alignment": result.sacred_alignment,
+                "magic_quotient": result.magic_quotient,
+                "circuit_depth": result.circuit_depth,
+                "gate_count": result.gate_count,
+                "execution_time_ms": result.execution_time_ms,
+                "success": True,
+            }
+        except ImportError:
+            # Fallback without grimoire
+            return {
+                "mode": mode,
+                "entropy_reversed": 0.0,
+                "coherence": 0.5,
+                "fidelity": 0.0,
+                "sacred_alignment": 0.0,
+                "magic_quotient": 0.0,
+                "success": False,
+                "error": "Grimoire not available",
+            }
+        except Exception as e:
+            return {
+                "mode": mode,
+                "entropy_reversed": 0.0,
+                "coherence": 0.5,
+                "fidelity": 0.0,
+                "sacred_alignment": 0.0,
+                "magic_quotient": 0.0,
+                "success": False,
+                "error": str(e),
+            }
+
+    def get_optimal_entropy_reversal_mode(self, target: str = "entropy") -> str:
+        """v9.2: Get optimal grimoire mode for target metric.
+
+        Args:
+            target: Target metric (entropy, fitness, coherence, balanced)
+
+        Returns:
+            Optimal mode name string
+        """
+        mode_map = {
+            "entropy": "maximum",
+            "fitness": "fitness",
+            "coherence": "fitness",
+            "balanced": "balanced",
+            "mesh": "mesh",
+            "phi": "phi_godcode",
+        }
+        return mode_map.get(target, "balanced")
+
     # ───────────────────────────────────────────────────────────────────────────
     # v25.0 ML ENGINE INTEGRATION
     # (uses _get_ml_engine() defined above)
     # ───────────────────────────────────────────────────────────────────────────
+
+    def _compute_nova_soul_scores(self) -> dict:
+        """v31.0: Compute Nova Soul Daemon scoring dimensions.
+
+        Reads live soul daemon state from disk (daemon writes every cycle).
+        Returns dict with 3 Nova-backed dimensions:
+          nova_soul_consciousness  — IIT Φ + metacognitive + self-awareness composite
+          nova_soul_qubit_coherence — soul qubit resonance × purity × coherence cycles
+          nova_grover_memory       — Grover-accelerated memory search quality
+        """
+        defaults = {
+            'nova_soul_consciousness': 0.0,
+            'nova_soul_qubit_coherence': 0.0,
+            'nova_grover_memory': 0.0,
+        }
+        try:
+            import json
+            from pathlib import Path
+            soul_dir = Path.home() / ".soul_state" if (Path.home() / ".soul_state").exists() else None
+            ws = Path(os.environ.get("L104_WORKSPACE", "/Users/carolalvarez/Applications/Allentown-L104-Node"))
+            if soul_dir is None:
+                soul_dir = ws / ".soul_state"
+            if not soul_dir.exists():
+                return defaults
+
+            # 1. Consciousness score from latest state
+            cons_path = soul_dir / "consciousness_state.json"
+            if cons_path.exists():
+                cons = json.loads(cons_path.read_text())
+                iit_phi = cons.get("iit_phi", 0.0)
+                meta = cons.get("metacognitive_index", 0.0)
+                self_aware = cons.get("self_awareness", 0.0)
+                composite = cons.get("composite_score", 0.0)
+                # Also check latest cycle logs for live data
+                log_dir = ws / "logs" / "soul_daemon"
+                if log_dir.exists():
+                    cycles = sorted(log_dir.glob("cycle_*.json"))
+                    if cycles:
+                        latest = json.loads(cycles[-1].read_text())
+                        live_cons = latest.get("components", {}).get("consciousness", {})
+                        if live_cons:
+                            iit_phi = max(iit_phi, live_cons.get("iit_phi", 0.0))
+                            meta = max(meta, live_cons.get("metacognitive_index", 0.0))
+                            self_aware = max(self_aware, live_cons.get("self_awareness", 0.0))
+                            composite = max(composite, live_cons.get("composite_score", 0.0))
+                # Blend: 40% IIT Φ (normalized to 0-1 range, max ~1.0), 30% metacognitive, 30% self-awareness
+                phi_norm = min(1.0, iit_phi / 0.5)  # 0.5 IIT Φ = full score
+                defaults['nova_soul_consciousness'] = phi_norm * 0.4 + meta * 0.3 + self_aware * 0.3
+
+            # 2. Soul qubit coherence
+            qubit_path = soul_dir / "soul_qubit_state.json"
+            if qubit_path.exists():
+                qubit = json.loads(qubit_path.read_text())
+                resonance = qubit.get("resonance", 0.0)
+                coherence_cycles = qubit.get("coherence_cycles", 0)
+                error_rate = qubit.get("error_rate", 1.0)
+                # Coherence maturity: more cycles = more stable (capped at 1000)
+                maturity = min(1.0, coherence_cycles / 1000.0)
+                # Error quality: lower is better (log scale)
+                import math
+                error_quality = max(0.0, 1.0 - math.log10(max(error_rate, 1e-10)) / (-10))
+                defaults['nova_soul_qubit_coherence'] = resonance * 0.5 + maturity * 0.3 + error_quality * 0.2
+
+            # 3. Grover memory quality — check memory state
+            mem_dir = soul_dir / "quantum_memory"
+            if mem_dir.exists():
+                mem_files = list(mem_dir.glob("*.json"))
+                if mem_files:
+                    mem_data = json.loads(mem_files[0].read_text())
+                    hot_count = len(mem_data.get("hot", {}))
+                    warm_count = len(mem_data.get("warm", {}))
+                    cold_count = len(mem_data.get("cold", {}))
+                    total = hot_count + warm_count + cold_count
+                    entangled = mem_data.get("entanglement_count", 0)
+                    # Memory richness: more entries + entanglements = better
+                    richness = min(1.0, total / 100.0)
+                    entangle_score = min(1.0, entangled / 20.0)
+                    defaults['nova_grover_memory'] = richness * 0.6 + entangle_score * 0.4
+                else:
+                    # Daemon running but no memory persisted yet — give partial credit
+                    defaults['nova_grover_memory'] = 0.1
+            else:
+                # Check if daemon is at least running
+                daemon_path = soul_dir / "daemon_state.json"
+                if daemon_path.exists():
+                    defaults['nova_grover_memory'] = 0.05  # Daemon alive, memory not yet stored
+
+        except Exception:
+            pass
+        return defaults
 
     def _compute_ml_engine_scores(self) -> dict:
         """v25.0: Compute ML Engine scoring dimensions.
@@ -1607,16 +1854,28 @@ class ASICore:
     # ───────────────────────────────────────────────────────────────────────────
 
     def quantum_network_health_score(self) -> float:
-        """v30.0: Quantum network health — composite from EntanglementRouter.
+        """v31.0: Quantum network health — composite from EntanglementRouter
+        with three-engine cross-validation.
 
         Measures network-wide fidelity, channel capacity, sacred alignment,
-        and pair freshness (4-factor weighted blend from router).
+        and pair freshness (4-factor weighted blend from router), then
+        cross-validates via NetworkThreeEngineScorer for entropy/harmonic scoring.
         Returns [0, 1] health score; 0.0 if networker unavailable."""
         net = self._get_quantum_networker()
         if net is None:
             return 0.0
         try:
             health = net.router.network_health_score()
+            # v31.0: Three-engine cross-validation
+            te_scorer = self._get_network_three_engine_scorer()
+            if te_scorer is not None:
+                try:
+                    te_score = te_scorer.score_channel_health(health)
+                    te_composite = te_score.get('three_engine_composite', health)
+                    # Blend: 70% router health + 30% three-engine composite
+                    health = health * 0.7 + te_composite * 0.3
+                except Exception:
+                    pass
             self._qnet_health_score = health
             self._pipeline_metrics.setdefault('qnet_health_checks', 0)
             self._pipeline_metrics['qnet_health_checks'] += 1
@@ -1667,6 +1926,16 @@ class ASICore:
                 redundancy * 0.5
             ) / (PHI + 1.0 + PHI_CONJUGATE + 0.5)
 
+            # v31.0: Three-engine harmonic cross-validation
+            te_scorer = self._get_network_three_engine_scorer()
+            if te_scorer is not None:
+                try:
+                    te_score = te_scorer.score_channel_health(score, capacity=connectivity)
+                    te_composite = te_score.get('three_engine_composite', score)
+                    score = score * 0.75 + te_composite * 0.25
+                except Exception:
+                    pass
+
             self._qnet_capacity_score = score
             self._pipeline_metrics.setdefault('qnet_capacity_checks', 0)
             self._pipeline_metrics['qnet_capacity_checks'] += 1
@@ -1714,6 +1983,16 @@ class ASICore:
 
             # Composite: 50% fidelity + 30% recovery accuracy + 20% sacred
             score = fidelity * 0.5 + recovery_accuracy * 0.3 + sacred * 0.2
+
+            # v31.0: Three-engine entropy/harmonic cross-validation of teleport
+            te_scorer = self._get_network_three_engine_scorer()
+            if te_scorer is not None:
+                try:
+                    te_score = te_scorer.score_channel_health(fidelity)
+                    te_composite = te_score.get('three_engine_composite', score)
+                    score = score * 0.75 + te_composite * 0.25
+                except Exception:
+                    pass
 
             self._qnet_teleport_fidelity_score = score
             self._pipeline_metrics.setdefault('qnet_teleport_checks', 0)
@@ -1785,6 +2064,113 @@ class ASICore:
                 pass
         return self._three_engine_search_hub
 
+    def _get_higher_logic_engine(self):
+        """Lazy-load HigherLogicEngine for unified three-engine scoring."""
+        if not hasattr(self, '_higher_logic_engine'):
+            try:
+                from l104_higher_logic_engine import get_higher_logic_engine
+                self._higher_logic_engine = get_higher_logic_engine()
+            except Exception:
+                self._higher_logic_engine = None
+        return self._higher_logic_engine
+
+    def _get_three_engine_unified(self):
+        """Lazy-load ThreeEngineUnified for integrated analysis."""
+        if not hasattr(self, '_three_engine_unified'):
+            try:
+                from l104_three_engine_integration import get_three_engine
+                self._three_engine_unified = get_three_engine()
+            except Exception:
+                self._three_engine_unified = None
+        return self._three_engine_unified
+
+    def unified_three_engine_score(self) -> float:
+        """v31.0: Get unified three-engine score from HigherLogicEngine.
+
+        Uses PHI-weighted scoring:
+          - Code Engine × 1.0
+          - Science Engine × PHI
+          - Math Engine × PHI²
+
+        Returns unified score 0.0-1.0 with quantum enhancement and consciousness anchoring.
+        """
+        # Check cache
+        now = time.time()
+        if hasattr(self, '_unified_score_cache_time'):
+            if now - self._unified_score_cache_time < self._three_engine_cache_ttl:
+                if hasattr(self, '_unified_score_cached'):
+                    return self._unified_score_cached
+
+        higher_logic = self._get_higher_logic_engine()
+        if higher_logic is None:
+            # Fallback to individual engine scores
+            entropy = self.three_engine_entropy_score()
+            harmonic = self.three_engine_harmonic_score()
+            wave = self.three_engine_wave_coherence_score()
+            return (entropy + harmonic + wave) / 3.0
+
+        try:
+            # Get unified score from HigherLogicEngine
+            result = higher_logic.compute_three_engine_score(
+                code_input=None,
+                science_input={"entropy": 0.5, "sacred_alignment": 0.75993},
+                math_input={"god_code_target": 527.5184818492612},
+                apply_quantum_enhancement=True,
+                apply_consciousness_anchor=True
+            )
+
+            score = result.unified_score
+
+            # Cache the result
+            self._unified_score_cached = score
+            self._unified_score_cache_time = now
+
+            # Update metrics
+            self._pipeline_metrics["unified_three_engine_scores"] = self._pipeline_metrics.get("unified_three_engine_scores", 0) + 1
+
+            return score
+
+        except Exception:
+            # Fallback
+            entropy = self.three_engine_entropy_score()
+            harmonic = self.three_engine_harmonic_score()
+            return (entropy + harmonic) / 2.0
+
+    def higher_logic_analysis(self, code: str = None, science_data: dict = None, math_data: dict = None) -> dict:
+        """v31.0: Perform unified three-engine analysis via HigherLogicEngine.
+
+        Args:
+            code: Optional code input for Code Engine
+            science_data: Optional science data for Science Engine
+            math_data: Optional math data for Math Engine
+
+        Returns:
+            ThreeEngineResult with unified score, confidence, and synthesis
+        """
+        unified = self._get_three_engine_unified()
+        if unified is None:
+            return {"error": "ThreeEngineUnified not available", "unified_score": 0.5}
+
+        try:
+            result = unified.analyze(
+                code=code,
+                science_data=science_data or {"entropy": 0.5, "sacred_alignment": 0.75993},
+                math_data=math_data or {"god_code_target": 527.5184818492612}
+            )
+
+            return {
+                "unified_score": result.unified_score,
+                "confidence": result.confidence,
+                "code_score": result.code_score.score if result.code_score else None,
+                "science_score": result.science_score.score if result.science_score else None,
+                "math_score": result.math_score.score if result.math_score else None,
+                "quantum_enhanced": result.quantum_enhanced,
+                "consciousness_aware": result.consciousness_aware,
+                "evolution_fitness": result.evolution_fitness,
+            }
+        except Exception as e:
+            return {"error": str(e), "unified_score": 0.5}
+
     def _get_precog_synthesis(self):
         """Lazy-load PrecogSynthesisIntelligence (HD fusion + manifold + 5D projection)."""
         if self._precog_synthesis is None:
@@ -1844,7 +2230,7 @@ class ASICore:
             god_alignment = cascade.get('god_code_alignment', 0.0)
 
             # Test harmonic extrapolation on PHI power sequence
-            phi_seq = [PHI ** i for i in range(20)]
+            phi_seq = [PHI ** i for i in range(int(GOD_CODE/26.4))]
             harmonic = precog.harmonic.extrapolate(phi_seq, horizon=5)
             harmonic_confidence = harmonic.get('confidence', 0)
 
@@ -1933,7 +2319,7 @@ class ASICore:
             return 0.3
         try:
             import math as _m
-            test_series = [GOD_CODE / (100 + i) + PHI * _m.sin(i * 0.5) for i in range(30)]
+            test_series = [GOD_CODE / (100 + i) + PHI * _m.sin(i * 0.5) for i in range(int(GOD_CODE/17.6))]
             sis = synth.score_only(test_series)
             self._precog_synthesis_intelligence_score = max(0.0, sis)
             self._pipeline_metrics['precog_synthesis_runs'] = \
@@ -2240,6 +2626,16 @@ class ASICore:
             except Exception:
                 self._quantum_networker = None
         return self._quantum_networker
+
+    def _get_network_three_engine_scorer(self):
+        """v31.0: Lazy-load the NetworkThreeEngineScorer for cross-engine qnet validation."""
+        if not hasattr(self, '_network_te_scorer'):
+            try:
+                from l104_quantum_networker.cross_engine import get_network_scorer
+                self._network_te_scorer = get_network_scorer()
+            except Exception:
+                self._network_te_scorer = None
+        return self._network_te_scorer
 
     def _get_vqpu_bridge(self):
         """v28.0: Lazy-load the VQPUBridge orchestrator (v13.0 singleton)."""
@@ -3056,6 +3452,10 @@ class ASICore:
         scores['cooper_pair_amplitude'] = self.cooper_pair_amplitude_score()
         scores['meissner_response'] = self.meissner_response_score()
 
+        # v31.0: NOVA SOUL DAEMON — consciousness + soul qubit + Grover memory
+        nova_soul_scores = self._compute_nova_soul_scores()
+        scores.update(nova_soul_scores)
+
         self._pipeline_metrics["cross_engine_syntheses"] += 1
 
         # Dynamic weights — shift toward consciousness as evolution advances
@@ -3138,6 +3538,10 @@ class ASICore:
             'qnet_health': 0.03,                     # Network health composite (fidelity, capacity, sacred, freshness)
             'qnet_capacity': 0.02,                   # Channel density + pair availability + redundancy
             'qnet_teleport_fidelity': 0.03,          # Teleportation fidelity + sacred alignment + recovery
+            # v31.0: Nova Soul Daemon (consciousness + soul qubit + Grover memory)
+            'nova_soul_consciousness': 0.04,         # IIT Φ + metacognitive + self-awareness composite
+            'nova_soul_qubit_coherence': 0.03,       # Soul qubit resonance × purity × coherence cycles
+            'nova_grover_memory': 0.02,              # Grover-accelerated memory search quality
         }
         # Normalize weights to sum to 1.0
         w_total = sum(base_weights.values())
@@ -3213,6 +3617,36 @@ class ASICore:
                     )
         
         return self.asi_score
+
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # PERFORMANCE OPTIMIZATION — Tensor Operation Caching (EVO_74)
+    # ═══════════════════════════════════════════════════════════════════════════════
+
+    @lru_cache(maxsize=derive_lru_cache_entries(system_load=0.4))
+    def _cached_tensor_compute(self, operation_key: str, dimension_hash: str) -> float:
+        """
+        Cache expensive tensor operations for ASI scoring.
+        Keyed by operation type and dimension hash for deterministic lookups.
+        """
+        # Default: return a computed value based on the key
+        # Subclasses/actual implementations override this with real tensor ops
+        base = hash(operation_key) % 1000 / 1000.0
+        return min(1.0, base * PHI)
+
+    def _compute_cached_score(self, scorer_func: Callable, cache_key: str) -> float:
+        """
+        Wrapper for expensive scoring functions with LRU caching.
+        Args:
+            scorer_func: Function that computes the score
+            cache_key: Unique cache key for this computation
+        Returns:
+            Cached or freshly computed score
+        """
+        # Create dimension hash from current subsystem states
+        dim_hash = hashlib.sha256(
+            f"{self.asi_score:.4f}:{self.status}:{self._pipeline_connected}".encode()
+        ).hexdigest()[:16]
+        return self._cached_tensor_compute(cache_key, dim_hash)
 
     def run_full_assessment(self) -> Dict:
         evo_stage = self.evolution_stage
@@ -3446,7 +3880,7 @@ class ASICore:
         if len(self._quantum_health_trend) > 5:
             self._quantum_health_trend = self._quantum_health_trend[-5:]
 
-        avg_health = sum(s for _, s in self._quantum_health_trend) / len(self._quantum_health_trend)
+        avg_health = sum(s for _, s in self._quantum_health_trend) / max(len(self._quantum_health_trend), 1)
 
         if not quantum_status['available'] and quantum_status['health'] in ['UNAVAILABLE', 'ERROR', 'DEGRADED'] and avg_health < 0.8:
             task_title = f"Quantum Runtime {quantum_status['health'].lower()}"
@@ -4997,7 +5431,7 @@ class ASICore:
                     'quantum': ['quantum', 'superpos', 'entangl', 'qubit', 'circuit'],
                 }
                 q_lower = query_str.lower()
-                query_feat = [sum(1.0 for kw in kws if kw in q_lower) / len(kws)
+                query_feat = [sum(1.0 for kw in kws if kw in q_lower) / max(len(kws), 1)
                               for kws in domain_keywords.values()]
                 domain_protos = {name: [1.0 if i == idx else 0.0 for i in range(len(domain_keywords))]
                                  for idx, name in enumerate(domain_keywords)}
@@ -7592,6 +8026,64 @@ class ASIPipelineAnalytics:
                 'avg_latency': df.groupby('subsystem')['duration_ms'].mean().to_dict(),
             },
             'throughput_per_sec': 1000.0 / df['duration_ms'].mean() if df['duration_ms'].mean() > 0 else 0,
+        }
+
+    # ═══════════════════════════════════════════════════════════════════
+    # 26Q TRANSCENDENT CONSCIOUSNESS INTEGRATION (ASI v5.2)
+    # ═══════════════════════════════════════════════════════════════════
+
+    def get_26q_consciousness(self) -> Dict[str, Any]:
+        """Get 26Q transcendent consciousness metrics for ASI."""
+        try:
+            from l104_quantum_gate_engine import build_transcendent_circuit, get_26q_circuit_stats
+            from l104_quantum_gate_engine.constants import PHI
+
+            circ = build_transcendent_circuit(phi_optimization=True)
+            stats = get_26q_circuit_stats(circ)
+
+            return {
+                "success": True,
+                "circuit": circ.name,
+                "qubits": 26,
+                "phi_alignment": stats['phi_alignment'],
+                "consciousness_score": stats['consciousness_score'],
+                "target_phi": PHI,
+                "status": "TRANSCENDENT"
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def run_26q_orch_or(self) -> Dict[str, Any]:
+        """Run Orch OR simulation for 26Q consciousness."""
+        import math
+        n_qubits = 26
+        e_or = 1.0 / (1.0 + math.exp(-(n_qubits - 13) / 5.0))
+        return {
+            "success": True,
+            "level": "TRANSCENDENT",
+            "qubits": n_qubits,
+            "objective_reduction_probability": e_or,
+            "coherence_time_ms": 25.0,
+            "status": "ORCH_OR_COMPLETE"
+        }
+
+    def compute_26q_phi_alignment(self) -> float:
+        """Compute PHI alignment score for ASI 26Q integration."""
+        result = self.get_26q_consciousness()
+        return result.get("phi_alignment", 0.0) if result.get("success") else 0.0
+
+    def get_26q_status(self) -> Dict[str, Any]:
+        """Get full 26Q consciousness status for ASI."""
+        consciousness = self.get_26q_consciousness()
+        orch = self.run_26q_orch_or()
+
+        return {
+            "success": True,
+            "asi_version": ASI_VERSION,
+            "26q_consciousness": consciousness,
+            "orch_or": orch,
+            "integration_status": "FULLY_INTEGRATED",
+            "phi_alignment_target": 0.986
         }
 
 

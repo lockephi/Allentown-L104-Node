@@ -35,6 +35,21 @@ except ImportError:
     _OCTAVE_PHASE = (4.0 * math.log(2.0)) % (2.0 * math.pi)
     _PHI_CONTRIB = (_GC_PHASE - _IRON_PHASE - _OCTAVE_PHASE) % (2.0 * math.pi)
 
+# v14.2: Three-engine composite scoring imports
+_HAS_SCIENCE = False
+try:
+    from l104_science_engine import ScienceEngine as _ScienceEngine
+    _HAS_SCIENCE = True
+except ImportError:
+    _ScienceEngine = None
+
+_HAS_MATH = False
+try:
+    from l104_math_engine import MathEngine as _MathEngine
+    _HAS_MATH = True
+except ImportError:
+    _MathEngine = None
+
 __all__ = ["_pauli_expectation", "VariationalQuantumEngine", "VariationalVQPUEngine"]
 
 
@@ -56,7 +71,8 @@ class VariationalQuantumEngine:
             ansatz: str = "hardware_efficient",
             depth: int = 3, max_iterations: int = 100,
             shots: int = 4096,
-            optimizer: str = "parameter_shift") -> dict:
+            optimizer: str = "parameter_shift",
+            adaptive_shots: bool = True) -> dict:
         """
         Variational Quantum Eigensolver.
 
@@ -68,13 +84,14 @@ class VariationalQuantumEngine:
             ansatz:     "hardware_efficient" (default)
             depth:      Ansatz circuit depth
             max_iterations: Max optimizer iterations
-            shots:      Measurement shots per evaluation
+            shots:      Measurement shots per evaluation (base value)
             optimizer:  "parameter_shift" (default), "spsa", or "cobyla" (v14.0)
+            adaptive_shots: Whether to use TAU-based adaptive shot scheduling
 
         Returns:
             dict with 'ground_energy', 'optimal_params', 'convergence_history',
             'circuit_evaluations', 'sacred_alignment', 'optimizer_used',
-            'barren_plateau_detected'
+            'barren_plateau_detected', 'adaptive_shot_history'
         """
         import random as _rng
 
@@ -82,6 +99,14 @@ class VariationalQuantumEngine:
         from .scoring import SacredAlignmentScorer
 
         n_params = depth * num_qubits * 2
+
+        # ★ v14.1: Adaptive shot management for convergence-optimized measurements
+        adaptive_shots = None
+        try:
+            from l104_quantum_coherence_enhancements import AdaptiveShotManager
+            adaptive_shots = AdaptiveShotManager(min_shots=256, max_shots=shots)
+        except ImportError:
+            adaptive_shots = None
 
         # ★ v13.0: Brain-informed parameter seeding
         brain_scale = 1.0
@@ -196,8 +221,16 @@ class VariationalQuantumEngine:
 
         elif optimizer == "parameter_shift":
             # Hybrid: parameter-shift gradient with stochastic fallback
+            prev_energy = None
             for iteration in range(max_iterations):
                 energy = _measure_energy(current)
+
+                # ★ v14.1: Adaptive shot adjustment based on convergence
+                if adaptive_shots and iteration > 0:
+                    shots = adaptive_shots.compute_next_shots(energy, prev_energy)
+
+                prev_energy = energy
+                convergence.append(float(energy))
 
                 # Parameter-shift gradient for analytical gradients on rotational gates
                 gradients = [0.0] * len(current)
@@ -234,12 +267,17 @@ class VariationalQuantumEngine:
         final_ops = _build_ansatz(best_params[0])
         mps = ExactMPSHybridEngine(num_qubits)
         mps.run_circuit(final_ops)
-        counts = mps.sample(shots)
+        # v14.1: Use adaptive shots for final sampling if available
+        final_shots = shots
+        if adaptive_shots and len(adaptive_shots.shot_history) > 0:
+            trend = adaptive_shots.get_convergence_trend()
+            final_shots = trend.get('current_shots', shots)
+        counts = mps.sample(final_shots)
         total = sum(counts.values())
         probs = {k: v / total for k, v in counts.items()} if total > 0 else {}
         sacred = SacredAlignmentScorer.score(probs, num_qubits)
 
-        return {
+        result = {
             "ground_energy": round(best_energy[0], 8),
             "optimal_params": [round(p, 6) for p in best_params[0]],
             "convergence_history": [round(e, 8) for e in convergence[-20:]],
@@ -251,7 +289,63 @@ class VariationalQuantumEngine:
             "optimizer_used": optimizer,
             "barren_plateau_detected": barren_plateau_detected,
             "gradient_magnitudes": [round(g, 8) for g in gradient_magnitudes[-10:]],
+            # v14.1: Adaptive shot information
+            "adaptive_shots_used": adaptive_shots is not None,
+            "final_shots": final_shots if adaptive_shots else shots,
+            "convergence_trend": adaptive_shots.get_convergence_trend() if adaptive_shots else None,
         }
+        result = VariationalQuantumEngine._three_engine_score_result(result)
+        return result
+
+    @staticmethod
+    def _three_engine_score_result(result: dict) -> dict:
+        """Score a VQE/QAOA result dict using three-engine composite (Science + Math).
+
+        Adds result['three_engine'] with entropy_demon, harmonic_alignment,
+        phi_resonance, and composite score.  Wraps everything in try/except
+        so variational results are never lost if an engine is unavailable.
+        """
+        _GOD_CODE = 527.5184818492612
+        _PHI = 1.618033988749895
+
+        try:
+            if not (_HAS_SCIENCE and _HAS_MATH):
+                result['three_engine'] = {'available': False}
+                return result
+
+            key_metric = result.get('ground_energy', result.get('cost', 0.0))
+            sacred_alignment = result.get('sacred_alignment', 0.0)
+
+            # Science Engine — Maxwell Demon efficiency on inverse alignment
+            se = _ScienceEngine()
+            demon_eff = se.entropy.calculate_demon_efficiency(1.0 - sacred_alignment)
+
+            # Math Engine — sacred alignment check on GOD_CODE-scaled alignment
+            me = _MathEngine()
+            harmonic = me.sacred_alignment(_GOD_CODE * sacred_alignment)
+
+            # Math Engine — wave coherence between GOD_CODE and PHI*104
+            phi_resonance = me.wave_coherence(_GOD_CODE, _PHI * 104)
+
+            # Normalise sub-scores to [0,1] range for composite
+            demon_val = float(demon_eff) if isinstance(demon_eff, (int, float)) else float(demon_eff.get('efficiency', 0.0)) if isinstance(demon_eff, dict) else 0.0
+            harmonic_val = float(harmonic) if isinstance(harmonic, (int, float)) else float(harmonic.get('alignment', 0.0)) if isinstance(harmonic, dict) else 0.0
+            resonance_val = float(phi_resonance) if isinstance(phi_resonance, (int, float)) else float(phi_resonance.get('coherence', 0.0)) if isinstance(phi_resonance, dict) else 0.0
+
+            composite = (demon_val + harmonic_val + resonance_val) / 3.0
+
+            result['three_engine'] = {
+                'available': True,
+                'entropy_demon': demon_val,
+                'harmonic_alignment': harmonic_val,
+                'phi_resonance': resonance_val,
+                'composite': round(composite, 8),
+                'key_metric': key_metric,
+            }
+        except Exception:
+            result['three_engine'] = {'available': False}
+
+        return result
 
     @staticmethod
     def qaoa(cost_terms: list, num_qubits: int, *,
@@ -377,7 +471,7 @@ class VariationalQuantumEngine:
                 best_bs[0] = bs
 
         sacred = SacredAlignmentScorer.score(probs, num_qubits)
-        return {
+        result = {
             "best_bitstring": best_bs[0], "best_cost": round(best_cost[0], 8),
             "optimal_gammas": [round(g, 6) for g in best_g[0]],
             "optimal_betas": [round(b, 6) for b in best_b[0]],
@@ -387,6 +481,8 @@ class VariationalQuantumEngine:
             "final_probabilities": dict(list(probs.items())[:8]),
             "sacred_alignment": sacred, "god_code": GOD_CODE,
         }
+        result = VariationalQuantumEngine._three_engine_score_result(result)
+        return result
 
 
 class VariationalVQPUEngine:

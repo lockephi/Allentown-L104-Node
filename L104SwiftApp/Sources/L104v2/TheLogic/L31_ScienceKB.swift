@@ -1,13 +1,5 @@
-// ═══════════════════════════════════════════════════════════════════
-// L31_ScienceKB.swift
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-// L104 Sovereign Intelligence — Science Knowledge Base
-// 500+ RDF-style fact triples across 9 domains for commonsense reasoning
-// ARC benchmark MCQ scoring, fact retrieval, and knowledge graph queries
-// ═══════════════════════════════════════════════════════════════════
-
-import Foundation
 import Accelerate
+import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - ScienceFact Triple
@@ -36,7 +28,7 @@ struct ScienceFact: Hashable {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - ScienceKB — Singleton Knowledge Base
+// MARK: - ScienceKB - Singleton Knowledge Base
 // ═══════════════════════════════════════════════════════════════════
 
 final class ScienceKB {
@@ -712,7 +704,7 @@ final class ScienceKB {
                 candidates = allFacts.filter { $0.obj.lowercased().contains(o) }
             }
         } else {
-            // No filters — return all
+            // No filters - return all
             return allFacts
         }
 

@@ -334,6 +334,79 @@ class EntanglementQuantifier:
         result["qpu_calibrated"] = True
         return result
 
+    @staticmethod
+    def compute_coherence_fidelity(statevector, num_qubits: int,
+                                     noise_level: float = 0.0) -> float:
+        """
+        Compute PHI-weighted coherence fidelity for a quantum state.
+
+        Golden ratio weighted coherence provides enhanced sensitivity to
+        quantum correlations by leveraging the sacred proportion PHI.
+
+        Formula: fidelity = base_fidelity * (PHI / (PHI + TAU * noise))
+
+        Args:
+            statevector: Complex amplitude array
+            num_qubits: Total qubit count
+            noise_level: Current noise level (0.0 = perfect, 1.0 = maximum)
+
+        Returns:
+            PHI-weighted coherence fidelity value
+        """
+        # Compute base fidelity from state purity
+        sv = np.array(statevector, dtype=np.complex128)
+        dim = 1 << num_qubits
+        if len(sv) < dim:
+            sv = np.pad(sv, (0, dim - len(sv)))
+        norm = np.linalg.norm(sv)
+        if norm > 0:
+            sv = sv / norm
+
+        # Purity as base fidelity measure
+        psi = sv.reshape(dim, 1)
+        rho = psi @ psi.conj().T
+        purity = np.real(np.trace(rho @ rho))
+        base_fidelity = float(purity)
+
+        # Compute PHI-weighted coherence factor
+        tau = PHI_INV  # 1/PHI ≈ 0.618
+        phi_weight = PHI / (PHI + tau * max(0.0, min(1.0, noise_level)))
+
+        # Apply sacred coherence weighting
+        coherence_fidelity = base_fidelity * phi_weight
+
+        # Apply GOD_CODE harmonic correction
+        gc_correction = GOD_CODE / 1000.0 / PHI
+        corrected_fidelity = min(1.0, coherence_fidelity * gc_correction)
+
+        return round(corrected_fidelity, 6)
+
+    @staticmethod
+    def derive_entanglement_strength(coherence_time: float) -> float:
+        """
+        Derive entanglement strength from coherence time using sacred algorithms.
+
+        Uses GOD_CODE-derived scaling to compute entanglement strength
+        from the coherence lifetime of quantum states.
+
+        Args:
+            coherence_time: Coherence time in seconds
+
+        Returns:
+            Entanglement strength value (0.0 to 1.0+)
+        """
+        if coherence_time <= 0:
+            return 0.0
+
+        # Sacred scaling: coherence_time * PHI scaled by GOD_CODE
+        scaled_coherence = coherence_time * PHI * (GOD_CODE / 1000.0)
+
+        # Entanglement strength grows logarithmically with coherence
+        strength = np.log1p(scaled_coherence) / np.log(PHI ** 2)
+
+        # Apply PHI-resonant ceiling
+        return round(min(1.0, strength * PHI_INV), 6)
+
 
 # ═══════════════════════════════════════════════════════════════════
 # QUANTUM INFORMATION METRICS (v8.0) — Advanced Quantum Equations

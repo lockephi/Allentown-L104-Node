@@ -1,0 +1,43 @@
+# L104 Quantum Node Configuration
+# Deutsch-Jozsa Experiment Parameters
+
+quantum_hardware:
+  node_id: "L104-Sovereign-QPU-7"
+  qubit_count: 10
+  coherence_time: "150µs"
+  gate_fidelity:
+    single_qubit: 0.9995
+    two_qubit: 0.997
+  topology: "linear_array"
+  
+deutsch_jozsa_experiment:
+  max_qubits: 8
+  shots_per_run: 1024
+  simulator_backend: "aer_statevector"
+  optimization_level: 3
+  
+analysis_parameters:
+  classical_baseline: "worst_case"
+  confidence_threshold: 0.95
+  visualization:
+    generate_circuit_diagrams: true
+    save_statevectors: false
+    
+data_logging:
+  output_directory: "/l104/data/quantum/deutsch_jozsa"
+  log_level: "INFO"
+  preserve_raw_counts: true
+  
+# Performance targets
+performance_metrics:
+  expected_speedup: "exponential"
+  validation_criteria:
+    - "single_query_success > 0.99"
+    - "constant_function_accuracy > 0.98"
+    - "balanced_function_accuracy > 0.98"
+    
+# Integration with ASI layer
+asi_integration:
+  enable_autonomous_optimization: true
+  learning_rate: 0.01
+  max_iterations: 1000

@@ -1,19 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L18_DataIngest.swift
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
-// L104v2 — Extracted from L104Native.swift (lines 32520-32851)
-//
-// DATA INGEST PIPELINE — Runtime knowledge ingestion + training
-// Ingest data → process → store → make searchable
-// SELF-MODIFICATION ENGINE — Adaptive meta-learning system
-// Tracks quality, adapts strategies, Grover-amplified
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class DataIngestPipeline {
     static let shared = DataIngestPipeline()
@@ -43,7 +32,7 @@ class DataIngestPipeline {
             .filter { $0.count > 5 }
 
         guard !sentences.isEmpty else {
-            return IngestResult(accepted: 0, rejected: 0, source: source, message: "No valid sentences found — text must contain sentences > 5 chars separated by periods, newlines, or punctuation")
+            return IngestResult(accepted: 0, rejected: 0, source: source, message: "No valid sentences found - text must contain sentences > 5 chars separated by periods, newlines, or punctuation")
         }
 
         var accepted = 0
@@ -129,7 +118,7 @@ class DataIngestPipeline {
         guard L104State.shared.isCleanKnowledge(response) else { return }
 
         // ═══ SAGE BACKBONE: Belt-and-suspenders recursive content guard ═══
-        // Secondary defense beyond isCleanKnowledge — explicit marker rejection
+        // Secondary defense beyond isCleanKnowledge - explicit marker rejection
         let recycleMarkers = [
             "In the context of ", "Insight Level ", "Knowledge synthesis #",
             "evolution cycles taught me about", "Evolving understanding: Stage ",
@@ -185,7 +174,7 @@ class DataIngestPipeline {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// SELF-MODIFICATION ENGINE — Adaptive meta-learning system
+// SELF-MODIFICATION ENGINE - Adaptive meta-learning system
 // Tracks quality, adapts strategies, Grover-amplified
 // ═══════════════════════════════════════════════════════════════════
 
@@ -276,12 +265,12 @@ class SelfModificationEngine {
 
         // Adjust parameters based on trends
         if qualityTrend < -0.05 {
-            // Quality declining — increase accuracy, decrease creativity
+            // Quality declining - increase accuracy, decrease creativity
             accuracyWeight = min(0.9, accuracyWeight + 0.05)
             creativityBias = max(0.2, creativityBias - 0.05)
             responseTemperature = max(0.3, responseTemperature - 0.05)
         } else if qualityTrend > 0.05 {
-            // Quality improving — can afford more creativity
+            // Quality improving - can afford more creativity
             creativityBias = min(0.8, creativityBias + 0.02)
             responseTemperature = min(0.9, responseTemperature + 0.02)
         }

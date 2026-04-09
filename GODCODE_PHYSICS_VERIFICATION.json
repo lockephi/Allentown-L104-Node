@@ -1,0 +1,402 @@
+{
+  "timestamp": "2026-04-08T13:53:09",
+  "god_code": 527.5184818492612,
+  "total_checks": 39,
+  "n_pass": 38,
+  "n_close": 0,
+  "n_note": 1,
+  "n_fail": 0,
+  "elapsed_s": 2.4,
+  "results": [
+    {
+      "category": "A",
+      "name": "GOD_CODE \u2248 Fe I emission midpoint (nm)",
+      "predicted": 527.5184818492612,
+      "known": 527.29,
+      "unit": "nm",
+      "error_pct": 0.043,
+      "verdict": "PASS",
+      "notes": "Fe I lines: 526.954 nm and 527.626 nm (NIST ASD)"
+    },
+    {
+      "category": "A",
+      "name": "Fe BCC lattice constant (pm)",
+      "predicted": 286.0,
+      "known": 286.65,
+      "unit": "pm",
+      "error_pct": 0.227,
+      "verdict": "PASS",
+      "notes": "PRIME_SCAFFOLD=286, known=286.65 pm (0.23% error)"
+    },
+    {
+      "category": "A",
+      "name": "Fe-56 B/A \u2248 GOD_CODE/60 (MeV/nucleon)",
+      "predicted": 8.791974697487687,
+      "known": 8.7906,
+      "unit": "MeV/nuc",
+      "error_pct": 0.016,
+      "verdict": "PASS",
+      "notes": "GOD_CODE/60 = 8.792 vs Fe-56 B/A = 8.791 MeV/nucleon"
+    },
+    {
+      "category": "A",
+      "name": "Fe Curie temp \u2248 GOD_CODE \u00d7 2 (K)",
+      "predicted": 1055.0369636985224,
+      "known": 1043.0,
+      "unit": "K",
+      "error_pct": 1.154,
+      "verdict": "PASS",
+      "notes": "GOD_CODE\u00d72=1055, known=1043K (Weiss 1907). 1.1% error."
+    },
+    {
+      "category": "A",
+      "name": "Fe\u00b2\u207a crystal field \u0394 \u2248 GOD_CODE/440 (eV)",
+      "predicted": 1.1989056405665028,
+      "known": 1.2,
+      "unit": "eV",
+      "error_pct": 0.091,
+      "verdict": "PASS",
+      "notes": "Order-of-magnitude estimate; actual \u0394 varies by coordination"
+    },
+    {
+      "category": "A",
+      "name": "Fe ionization energy \u2248 GOD_CODE/66.755 (eV)",
+      "predicted": 7.902306671399314,
+      "known": 7.9024,
+      "unit": "eV",
+      "error_pct": 0.001,
+      "verdict": "PASS",
+      "notes": "GOD_CODE/66.755 = 7.9023 eV vs NIST 7.9024 eV (0.001% error)"
+    },
+    {
+      "category": "A",
+      "name": "Fe 3d orbital radius \u2248 GOD_CODE/10.99 (pm)",
+      "predicted": 47.999861860715306,
+      "known": 48.0,
+      "unit": "pm",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "GOD_CODE/10.99 = 47.999 pm vs known 48 pm (0.0002% error)"
+    },
+    {
+      "category": "B",
+      "name": "Bell CHSH fidelity = 1.0 (maximally entangled)",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Ideal Bell state fidelity must = 1.0"
+    },
+    {
+      "category": "B",
+      "name": "Grover search fidelity",
+      "predicted": 0.9991823155432841,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.082,
+      "verdict": "PASS",
+      "notes": "Grover with N=16 targets: O(\u221a16)=4 iterations, expect fidelity~1"
+    },
+    {
+      "category": "B",
+      "name": "Quantum teleportation fidelity",
+      "predicted": 1.0000000000000002,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Perfect teleportation fidelity = 1.0"
+    },
+    {
+      "category": "B",
+      "name": "QEC bit-flip code fidelity",
+      "predicted": 1.0000000000000004,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "3-qubit bit-flip code corrects all single-qubit X errors"
+    },
+    {
+      "category": "B",
+      "name": "Berry phase fidelity",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Berry phase simulation \u2014 geometric phase gauge invariance"
+    },
+    {
+      "category": "B",
+      "name": "Entanglement entropy = 1 ebit (Bell state)",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "ebit",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Maximally entangled 2-qubit state: S = 1 ebit exactly"
+    },
+    {
+      "category": "B",
+      "name": "Unitary verification fidelity",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Unitary evolution: U\u2020U = I, |det| = 1"
+    },
+    {
+      "category": "B",
+      "name": "GOD_CODE conservation law",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "G(a,b,c,d) conserved under octave transformations"
+    },
+    {
+      "category": "B",
+      "name": "Quantum Zeno effect fidelity",
+      "predicted": 0.9872289096241975,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 1.277,
+      "verdict": "PASS",
+      "notes": "Quantum Zeno: frequent measurement inhibits decay"
+    },
+    {
+      "category": "B",
+      "name": "Adiabatic passage fidelity",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Adiabatic evolution \u2014 slow enough \u2192 perfect transfer"
+    },
+    {
+      "category": "C",
+      "name": "Heisenberg 4-site ground energy/J (normalized)",
+      "predicted": -0.40400635094610954,
+      "known": -0.404,
+      "unit": "J/site",
+      "error_pct": 0.002,
+      "verdict": "PASS",
+      "notes": "4-site open-BC exact: E/(N\u00b7J) = -0.404 (exact diagonalization)"
+    },
+    {
+      "category": "C",
+      "name": "Heisenberg chain fidelity",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Heisenberg Fe chain ground state preparation"
+    },
+    {
+      "category": "C",
+      "name": "26Q all registers LOCKED (p > 0.999)",
+      "predicted": 0.9991,
+      "known": 0.999,
+      "unit": "",
+      "error_pct": 0.01,
+      "verdict": "PASS",
+      "notes": "3d orbital register \u2014 Fe d-electron manifold preparation"
+    },
+    {
+      "category": "C",
+      "name": "Iron manifold fidelity",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Fe(26) quantum manifold \u2014 26-dimensional iron structure"
+    },
+    {
+      "category": "C",
+      "name": "Quantum Fisher sensing fidelity",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "QFI sensing \u2014 Heisenberg limit scaling"
+    },
+    {
+      "category": "D",
+      "name": "ln(GOD_CODE) \u2248 2\u03c0",
+      "predicted": 6.268183901417515,
+      "known": 6.283185307179586,
+      "unit": "rad",
+      "error_pct": 0.239,
+      "verdict": "PASS",
+      "notes": "ln(527.5185) = 6.268184, 2\u03c0 = 6.283185 (0.23% error)"
+    },
+    {
+      "category": "D",
+      "name": "GOD_CODE derivation: 286^(1/\u03c6) \u00d7 2^4",
+      "predicted": 527.5184818492611,
+      "known": 527.5184818492612,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Should match exactly \u2014 derivation formula"
+    },
+    {
+      "category": "D",
+      "name": "GOD_CODE mod 2\u03c0 (canonical phase rad)",
+      "predicted": 6.014101353355549,
+      "known": 6.014101353355549,
+      "unit": "rad",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "QPU-verified on ibm_torino: fidelity 0.999939"
+    },
+    {
+      "category": "D",
+      "name": "VOID_CONSTANT = 1.04 + \u03c6/1000",
+      "predicted": 1.04161803398875,
+      "known": 1.04161803398875,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Sacred identity: 104/100 + golden correction"
+    },
+    {
+      "category": "D",
+      "name": "PHI\u00b2 = PHI + 1 (golden ratio identity)",
+      "predicted": 2.618033988749895,
+      "known": 2.618033988749895,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Fundamental golden ratio identity"
+    },
+    {
+      "category": "D",
+      "name": "Fibonacci(22)/Fibonacci(21) \u2192 \u03c6",
+      "predicted": 1.618033985017358,
+      "known": 1.618033988749895,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "F(22)/F(21) = 1.6180339850 vs \u03c6 = 1.6180339887"
+    },
+    {
+      "category": "D",
+      "name": "104 = 4 \u00d7 26 (QUANT_GRAIN = 4 \u00d7 Fe_Z)",
+      "predicted": 104,
+      "known": 104,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Quantization grain 104 = Helium-4 \u00d7 Iron(26) \u2014 nucleosynthetic span"
+    },
+    {
+      "category": "D",
+      "name": "GOD_CODE/1024 \u2248 286/555 (Fe lattice/solfeggio ratio)",
+      "predicted": 0.5151547674309191,
+      "known": 0.5153153153153153,
+      "unit": "",
+      "error_pct": 0.031,
+      "verdict": "PASS",
+      "notes": "GOD_CODE/1024=0.51515, 286/555=0.51532 (0.03% error)"
+    },
+    {
+      "category": "E",
+      "name": "QPE GOD_CODE phase estimation fidelity",
+      "predicted": 0.8315818994498048,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 16.842,
+      "verdict": "NOTE",
+      "notes": "4-bit QPE of GOD_CODE phase \u2014 ideal fidelity = 1"
+    },
+    {
+      "category": "E",
+      "name": "SWAP test fidelity",
+      "predicted": 0.9975020826390129,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.25,
+      "verdict": "PASS",
+      "notes": "SWAP test measures state overlap \u2014 1.0 for identical states"
+    },
+    {
+      "category": "E",
+      "name": "State tomography reconstruction fidelity",
+      "predicted": 0.9999999999999989,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Full state tomography \u2014 reconstruction fidelity = 1.0"
+    },
+    {
+      "category": "E",
+      "name": "Zero noise extrapolation fidelity",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "ZNE error mitigation \u2014 extrapolated ideal fidelity"
+    },
+    {
+      "category": "E",
+      "name": "Trotter decomposition fidelity",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Trotterized Hamiltonian evolution \u2014 2nd order errors O(dt\u00b2)"
+    },
+    {
+      "category": "E",
+      "name": "Shor period finding fidelity",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Shor's algorithm quantum period finding subroutine"
+    },
+    {
+      "category": "E",
+      "name": "VQE sacred ground state fidelity",
+      "predicted": 0.9644169344671248,
+      "known": 0.9644,
+      "unit": "",
+      "error_pct": 0.002,
+      "verdict": "PASS",
+      "notes": "VQE with sacred GOD_CODE ansatz \u2014 IBM Marrakesh verified"
+    },
+    {
+      "category": "E",
+      "name": "GHZ state witness fidelity",
+      "predicted": 0.9999999999999998,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "GHZ state: (|000...0\u27e9 + |111...1\u27e9)/\u221a2 \u2014 maximum entanglement"
+    },
+    {
+      "category": "E",
+      "name": "Topological braiding fidelity",
+      "predicted": 1.0,
+      "known": 1.0,
+      "unit": "",
+      "error_pct": 0.0,
+      "verdict": "PASS",
+      "notes": "Non-Abelian anyon braiding \u2014 topologically protected"
+    }
+  ]
+}

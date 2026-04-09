@@ -1,15 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L24_PermanentMemory.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104v2 Architecture — PermanentMemory + AdaptiveLearner
-// Extracted from L104Native.swift lines 20952–21374
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class PermanentMemory {
     static let shared = PermanentMemory()
@@ -72,7 +65,7 @@ class PermanentMemory {
         scheduleSave()
     }
 
-    /// Debounced save — coalesces rapid writes into a single disk write
+    /// Debounced save - coalesces rapid writes into a single disk write
     private func scheduleSave() {
         isDirty = true
         DispatchQueue.main.async { [weak self] in
@@ -232,22 +225,22 @@ class AdaptiveLearner {
     // Thread safety
     let learnerLock = NSLock()
 
-    // User model — built over time through interaction
+    // User model - built over time through interaction
     var userInterests: [String: Double] = [:]   // topic → interest score
     var userStyle: [String: Double] = [:]       // "prefers_detail", "prefers_brevity", etc.
     var correctionLog: [(query: String, badResponse: String, timestamp: Date)] = []
     var successfulPatterns: [String: Int] = [:] // response pattern → success count
     var failedPatterns: [String: Int] = [:]     // response pattern → failure count
 
-    // Topic mastery — tracks how well ASI knows each domain
+    // Topic mastery - tracks how well ASI knows each domain
     var topicMastery: [String: TopicMastery] = [:]
 
-    // Conversation synthesis — distilled learnings
+    // Conversation synthesis - distilled learnings
     var synthesizedInsights: [String] = []
     var interactionCount: Int = 0
     var lastSynthesisAt: Int = 0
 
-    // User-taught facts — knowledge the user explicitly taught
+    // User-taught facts - knowledge the user explicitly taught
     var userTaughtFacts: [String: String] = [:]
 
     let storagePath: URL
@@ -493,7 +486,7 @@ class AdaptiveLearner {
 
     func getStats() -> String {
         let topMastered = topicMastery.values.sorted { $0.masteryLevel > $1.masteryLevel }.prefix(8)
-        let masteryLines = topMastered.map { "   \($0.tier) \($0.topic) — \(String(format: "%.0f%%", $0.masteryLevel * 100)) (\($0.queryCount) queries)" }
+        let masteryLines = topMastered.map { "   \($0.tier) \($0.topic) - \(String(format: "%.0f%%", $0.masteryLevel * 100)) (\($0.queryCount) queries)" }
 
         let topInterests = userInterests.sorted { $0.value > $1.value }.prefix(5)
         let interestLines = topInterests.map { "   • \($0.key): \(Int($0.value)) interactions" }

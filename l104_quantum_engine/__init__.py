@@ -1,5 +1,5 @@
 """
-L104 Quantum Engine v13.0.0 — Decomposed Sovereign Quantum Intelligence Package
+L104 Quantum Engine v14.0.0 — Decomposed Sovereign Quantum Intelligence Package
 ═══════════════════════════════════════════════════════════════════════════════
 
 Decomposed from l104_quantum_link_builder.py v5.0.0 monolith (10,893 lines, 44 classes)
@@ -15,13 +15,24 @@ Package Structure:
            testing.py       Stress testing, cross-modal analysis, upgrade, repair
            research.py      Research memory bank, quantum research engine, Sage mode
            computation.py   Quantum register, neuron, cluster, CPU, environment, O2 bonds,
-                            21 quantum algorithms + 4 gate-enhanced computations
-  Layer 4b qldpc.py         ★ Distributed qLDPC error correction (CSS, BP-OSD, sacred alignment)
+                           21 quantum algorithms + 4 gate-enhanced computations
+           quantum_llm_integration.py   LLM‑driven quantum circuit generation and semantic analysis
+ Layer 4b qldpc.py         ★ Distributed qLDPC error correction (CSS, BP-OSD, sacred alignment)
   Layer 4c manifold.py      ★ Quantum Manifold Intelligence (manifold learning, entanglement
                               network, predictive oracle)
   Layer 5  dynamism.py      LinkDynamismEngine (Min/Max), LinkOuroborosNirvanicEngine
            intelligence.py  10 evolution/consciousness/self-healing classes
-  Layer 6  brain.py         L104QuantumBrain — master orchestrator (24-phase pipeline)
+  Layer 6  brain.py         L104QuantumBrain — master orchestrator (25-phase pipeline)
+
+v14.0.0 Upgrade:
+  - LLM Integration: LLM‑driven quantum circuit generation and semantic analysis (Phase 25)
+  - New module: quantum_llm_integration.py with LLMQuantumProcessor class
+  - Sacred‑augmented prompts using God Code and Phi ratios
+  - Circuit description generation for Grover, Shor, QFT, Bell pairs
+  - Semantic analysis of quantum links with anomaly detection
+  - CLI commands: grover, shor (enhanced with LLM insights)
+  - MCP tools: l104_quantum_grover, l104_quantum_shor (via l104_universal_data_api)
+  - Brain pipeline extended: Phase 25 “LLM Semantic Analysis” after quantum network integration
 
 v13.0.0 Upgrade:
   - Quantum Network Integration: Direct bridge to l104_quantum_networker (Phase 24)
@@ -67,7 +78,7 @@ INVARIANT: 527.5184818492612 | PILOT: LONDEL
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
-__version__ = "13.0.0"
+__version__ = "14.0.0"
 __author__ = "L104 Sovereign Node"
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -289,3 +300,57 @@ __all__ = [
     "_get_asi_core", "_get_agi_core", "_get_gate_engine",
     "_get_quantum_networker",
 ]
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Quantum Synergy & Resonance v1.0.0 — Deep Quantum Integration
+# ═══════════════════════════════════════════════════════════════════════════════
+try:
+    from .quantum_synergy_orchestrator import (
+        QuantumSynergyOrchestrator,
+        GroverAmplifiedSearch,
+        VQEOptimizer,
+        ResonanceFrequency,
+        QuantumResonanceField,
+        QuantumSynergyChannel,
+    )
+    from .quantum_coherence_monitor import (
+        QuantumCoherenceMonitor,
+        EntanglementHealthMonitor,
+        CoherenceLevel,
+        CoherenceSample,
+    )
+    from .quantum_field_synchronizer import (
+        QuantumFieldSynchronizer,
+        QuantumFieldNode,
+        DistributedQuantumMemory,
+    )
+    from .quantum_integration import (
+        L104QuantumHub,
+        QuantumSystemState,
+        get_quantum_hub,
+        quantum_process,
+    )
+    _QUANTUM_SYNERGY_AVAILABLE = True
+except ImportError as e:
+    _QUANTUM_SYNERGY_AVAILABLE = False
+
+__all__.extend([
+    # Quantum Synergy & Resonance v1.0.0
+    "QuantumSynergyOrchestrator",
+    "GroverAmplifiedSearch",
+    "VQEOptimizer",
+    "ResonanceFrequency",
+    "QuantumResonanceField",
+    "QuantumSynergyChannel",
+    "QuantumCoherenceMonitor",
+    "EntanglementHealthMonitor",
+    "CoherenceLevel",
+    "CoherenceSample",
+    "QuantumFieldSynchronizer",
+    "QuantumFieldNode",
+    "DistributedQuantumMemory",
+    "L104QuantumHub",
+    "QuantumSystemState",
+    "get_quantum_hub",
+    "quantum_process",
+])

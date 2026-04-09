@@ -1,0 +1,321 @@
+{
+  "total_files": 1797,
+  "total_lines": 1035456,
+  "l104_packages": [
+    "l104_agent_system",
+    "l104_agi",
+    "l104_asi",
+    "l104_asi/commonsense_reasoning",
+    "l104_asi/knowledge_data",
+    "l104_asi/language_comprehension",
+    "l104_audio_simulation",
+    "l104_code_engine",
+    "l104_gate_engine",
+    "l104_gate_engine/analyzers",
+    "l104_god_code_simulator",
+    "l104_god_code_simulator/simulations",
+    "l104_intellect",
+    "l104_math_engine",
+    "l104_ml_engine",
+    "l104_numerical_engine",
+    "l104_numerical_engine/math_research",
+    "l104_quantum_ai_daemon",
+    "l104_quantum_data_analyzer",
+    "l104_quantum_engine",
+    "l104_quantum_gate_engine",
+    "l104_quantum_magic",
+    "l104_quantum_networker",
+    "l104_science_engine",
+    "l104_search",
+    "l104_server",
+    "l104_server/learning",
+    "l104_simulator",
+    "l104_soul_daemon",
+    "l104_vqpu",
+    "routers",
+    "tests"
+  ],
+  "all_packages": [
+    "l104_agent_system",
+    "l104_agi",
+    "l104_asi",
+    "l104_asi/commonsense_reasoning",
+    "l104_asi/knowledge_data",
+    "l104_asi/language_comprehension",
+    "l104_audio_simulation",
+    "l104_code_engine",
+    "l104_gate_engine",
+    "l104_gate_engine/analyzers",
+    "l104_god_code_simulator",
+    "l104_god_code_simulator/simulations",
+    "l104_intellect",
+    "l104_math_engine",
+    "l104_ml_engine",
+    "l104_numerical_engine",
+    "l104_numerical_engine/math_research",
+    "l104_quantum_ai_daemon",
+    "l104_quantum_data_analyzer",
+    "l104_quantum_engine",
+    "l104_quantum_gate_engine",
+    "l104_quantum_magic",
+    "l104_quantum_networker",
+    "l104_science_engine",
+    "l104_search",
+    "l104_server",
+    "l104_server/learning",
+    "l104_simulator",
+    "l104_soul_daemon",
+    "l104_vqpu",
+    "routers",
+    "tests"
+  ],
+  "directory_stats": {
+    "root": {
+      "files": 1259,
+      "lines": 596377,
+      "size": 24600860
+    },
+    "l104_asi": {
+      "files": 34,
+      "lines": 61875,
+      "size": 2758796
+    },
+    "l104_intellect": {
+      "files": 34,
+      "lines": 35372,
+      "size": 1639005
+    },
+    "tests": {
+      "files": 33,
+      "lines": 13286,
+      "size": 522642
+    },
+    "l104_vqpu": {
+      "files": 23,
+      "lines": 21136,
+      "size": 902024
+    },
+    "l104_audio_simulation": {
+      "files": 22,
+      "lines": 9629,
+      "size": 382451
+    },
+    "l104_quantum_engine": {
+      "files": 22,
+      "lines": 28460,
+      "size": 1306203
+    },
+    "l104_gate_engine": {
+      "files": 22,
+      "lines": 5836,
+      "size": 253501
+    },
+    "l104_quantum_gate_engine": {
+      "files": 21,
+      "lines": 19944,
+      "size": 835247
+    },
+    "l104_simulator": {
+      "files": 20,
+      "lines": 15778,
+      "size": 651253
+    },
+    "l104_numerical_engine/math_research": {
+      "files": 20,
+      "lines": 4199,
+      "size": 175766
+    },
+    "l104_math_engine": {
+      "files": 19,
+      "lines": 11733,
+      "size": 519408
+    },
+    "l104_numerical_engine": {
+      "files": 19,
+      "lines": 5071,
+      "size": 217823
+    },
+    "l104_code_engine": {
+      "files": 18,
+      "lines": 26178,
+      "size": 1211823
+    },
+    "routers": {
+      "files": 15,
+      "lines": 4626,
+      "size": 208296
+    },
+    "l104_asi/language_comprehension": {
+      "files": 15,
+      "lines": 10689,
+      "size": 575271
+    },
+    "l104_god_code_simulator": {
+      "files": 13,
+      "lines": 6653,
+      "size": 286902
+    },
+    "l104_science_engine": {
+      "files": 13,
+      "lines": 9590,
+      "size": 436514
+    },
+    "l104_server": {
+      "files": 13,
+      "lines": 31144,
+      "size": 1351187
+    },
+    "l104_magic_synthesis": {
+      "files": 12,
+      "lines": 3654,
+      "size": 149759
+    },
+    "l104_agi": {
+      "files": 12,
+      "lines": 9436,
+      "size": 433876
+    },
+    "l104_asi/commonsense_reasoning": {
+      "files": 12,
+      "lines": 9900,
+      "size": 579624
+    },
+    "l104_ml_engine": {
+      "files": 11,
+      "lines": 3868,
+      "size": 156068
+    },
+    "l104_quantum_ai_daemon": {
+      "files": 11,
+      "lines": 3835,
+      "size": 152764
+    },
+    "l104_quantum_networker": {
+      "files": 11,
+      "lines": 6106,
+      "size": 242235
+    },
+    "l104_quantum_magic": {
+      "files": 10,
+      "lines": 5553,
+      "size": 214748
+    },
+    "l104_god_code_simulator/simulations": {
+      "files": 10,
+      "lines": 6411,
+      "size": 281259
+    },
+    "l104_quantum_data_analyzer": {
+      "files": 9,
+      "lines": 6856,
+      "size": 288100
+    },
+    "l104_gate_engine/analyzers": {
+      "files": 9,
+      "lines": 1012,
+      "size": 42973
+    },
+    "l104_soul_daemon": {
+      "files": 8,
+      "lines": 3612,
+      "size": 143242
+    },
+    "l104_core_engines": {
+      "files": 8,
+      "lines": 5027,
+      "size": 205466
+    },
+    "l104_asi/knowledge_data": {
+      "files": 7,
+      "lines": 12576,
+      "size": 1314052
+    },
+    "l104_api": {
+      "files": 5,
+      "lines": 1447,
+      "size": 58293
+    },
+    "l104_search": {
+      "files": 5,
+      "lines": 5727,
+      "size": 235501
+    },
+    "l104_agent_system": {
+      "files": 5,
+      "lines": 2527,
+      "size": 109172
+    },
+    "l104_consciousness_engine": {
+      "files": 3,
+      "lines": 1234,
+      "size": 53031
+    },
+    "l104_asi_mastery": {
+      "files": 3,
+      "lines": 383,
+      "size": 18321
+    },
+    "l104_server/learning": {
+      "files": 3,
+      "lines": 12184,
+      "size": 584683
+    },
+    "L104SwiftApp/Sources": {
+      "files": 2,
+      "lines": 1643,
+      "size": 87720
+    },
+    "l104_research": {
+      "files": 1,
+      "lines": 723,
+      "size": 31163
+    },
+    "L104SwiftApp": {
+      "files": 1,
+      "lines": 123,
+      "size": 3925
+    },
+    "scripts": {
+      "files": 1,
+      "lines": 58,
+      "size": 2144
+    },
+    "l104_interfaces": {
+      "files": 1,
+      "lines": 2046,
+      "size": 100503
+    },
+    "fine_tune_exports": {
+      "files": 1,
+      "lines": 11809,
+      "size": 2246931
+    },
+    "quantum/deutsch_jozsa": {
+      "files": 1,
+      "lines": 130,
+      "size": 4625
+    }
+  },
+  "missing_init_files": [
+    "l104_api",
+    "l104_asi_mastery",
+    "l104_config",
+    "l104_consciousness_engine",
+    "l104_core_asm",
+    "l104_core_c",
+    "l104_core_cuda",
+    "l104_core_engines",
+    "l104_core_rust",
+    "l104_data",
+    "l104_data_management",
+    "l104_evolution_engine",
+    "l104_interfaces",
+    "l104_macos_sovereign",
+    "l104_magic_synthesis",
+    "l104_mcp",
+    "l104_mobile",
+    "l104_neural_engine",
+    "l104_research",
+    "l104_unification"
+  ]
+}

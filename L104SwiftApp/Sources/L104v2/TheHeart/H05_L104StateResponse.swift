@@ -1,25 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// H05_L104StateResponse.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — L104State Extension (Response Generation v24.0)
-//
-// getIntelligentResponseMeta, composeHistoryResponse, composeFromKB,
-// autoTrackTopic, extractTopics, generateReasonedResponse,
-// generateVerboseThought, analyzeUserIntent, buildContextualResponse,
-// generateNCGResponse, generateNaturalResponse, getStatusText.
-//
-// Extracted from L104Native.swift lines 38471–40210
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 extension L104State {
 
-    // ═══ STATIC PATTERN SETS — hoisted from hot-path functions for O(1) lookup ═══
+    // ═══ STATIC PATTERN SETS - hoisted from hot-path functions for O(1) lookup ═══
     private static let stopWordsSet: Set<String> = [
         "the", "is", "are", "you", "do", "does", "have", "has", "can", "will", "would", "could",
         "should", "what", "how", "why", "when", "where", "who", "that", "this", "and", "for",
@@ -66,16 +53,16 @@ extension L104State {
         let q: String = query.lowercased()
         // ═══ COMMANDS / DIRECTIVES ═══
         if q == "stop" || q == "stop it" || q == "stop that" || (q.hasPrefix("stop ") && q.count < 15) {
-            return "Understood — stopping. What would you like instead?"
+            return "Understood - stopping. What would you like instead?"
         }
         if q == "wait" || q == "hold on" || q == "one sec" || q == "one second" || q == "pause" {
-            return "I'm here — take your time."
+            return "I'm here - take your time."
         }
         if q.contains("shut up") || q.contains("be quiet") || q == "silence" || q == "shh" || q == "shush" {
-            return "Got it — I'll keep it brief. Let me know what you need."
+            return "Got it - I'll keep it brief. Let me know what you need."
         }
         if q.contains("never mind") || q.contains("nevermind") || q.contains("forget it") || q.contains("forget about it") || q == "nvm" {
-            return "No problem — slate wiped. What's next?"
+            return "No problem - slate wiped. What's next?"
         }
 
         // ═══ FRUSTRATION / CORRECTION ═══
@@ -84,23 +71,23 @@ extension L104State {
            q.contains("this is stupid") || q.contains("you're dumb") || q.contains("you are dumb") ||
            q.contains("you're terrible") || q.contains("you are terrible") || q.contains("you're useless") {
             reasoningBias += 0.3
-            return "I hear you — and I apologize. I'm learning from this. What were you looking for? Specific feedback helps me improve."
+            return "I hear you - and I apologize. I'm learning from this. What were you looking for? Specific feedback helps me improve."
         }
         if q.contains("not what i asked") || q.contains("that's not what") || q.contains("wrong answer") || q.contains("bad answer") || q.contains("that's not right") {
             reasoningBias += 0.2
             if let prevQuery = conversationContext.dropLast().last {
                 learner.recordCorrection(query: prevQuery, badResponse: lastResponseSummary)
             }
-            return "My apologies — I missed the mark. Could you rephrase? I'll approach it differently."
+            return "My apologies - I missed the mark. Could you rephrase? I'll approach it differently."
         }
         if q.contains("what the fuck") || q.contains("what the hell") || q.contains("what the heck") || q == "wtf" || q == "wth" {
-            return "That response clearly wasn't right — I understand the frustration. Tell me what you're actually looking for and I'll give it a genuine try."
+            return "That response clearly wasn't right - I understand the frustration. Tell me what you're actually looking for and I'll give it a genuine try."
         }
         if q.contains("fix yourself") || q.contains("fix it") || q.contains("do better") || q.contains("try harder") {
-            return "Working on it — every correction teaches me. What specifically should I improve? The more direct you are, the better I get."
+            return "Working on it - every correction teaches me. What specifically should I improve? The more direct you are, the better I get."
         }
 
-        // ═══ CREATIVE REQUESTS (STORY LOGIC GATE ENGINE — Advanced Multi-Framework Narrative) ═══
+        // ═══ CREATIVE REQUESTS (STORY LOGIC GATE ENGINE - Advanced Multi-Framework Narrative) ═══
         if q.contains("story") || q.contains("tell me a tale") || q.contains("narrative") {
             // Smart topic extraction: query words > conversation focus > recent history > KB concepts > random fascinating
             var storyTopic = ""
@@ -151,15 +138,21 @@ extension L104State {
                 storyTopic = fascinatingTopics.randomElement() ?? "consciousness"
             }
 
-            // 🚀 STORY LOGIC GATE ENGINE — Full multi-chapter novel-grade generation (Quantum + Sage Enhanced)
+            // 🚀 STORY LOGIC GATE ENGINE - Full multi-chapter novel-grade generation (Quantum + Sage Enhanced)
             let storyResult = QuantumProcessingCore.shared.quantumDispatch(engine: "story", generator: {
                 StoryLogicGateEngine.shared.generateStory(topic: storyTopic, query: q)
             })
-            let _ = SageModeEngine.shared.enrichContext(for: storyTopic)
+            // Capture and use Sage Mode enrichment (fixed Phase 31.5 integration)
+            let sageContext = SageModeEngine.shared.enrichContext(for: storyTopic)
+            if !sageContext.isEmpty && sageContext != "L104: φ-resonance incomplete" {
+                // Feed sage context into HyperBrain working memory
+                HyperBrain.shared.workingMemory["sage_\(storyTopic)"] = sageContext
+                HyperBrain.shared.postThought("SAGE: \(String(sageContext.prefix(60)))...")
+            }
             return QuantumProcessingCore.shared.entanglementRoute(query: q, primaryResult: storyResult, topics: [storyTopic, "narrative", "story"])
         }
         if q.contains("poem") || q.contains("poetry") || q.contains("write me a verse") || q.contains("sonnet") || q.contains("haiku") || q.contains("villanelle") || q.contains("ghazal") || q.contains("ode to") {
-            // 🚀 POEM LOGIC GATE ENGINE — Multi-form poetry synthesis
+            // 🚀 POEM LOGIC GATE ENGINE - Multi-form poetry synthesis
             var poemTopic = "existence"
             let poemTopicWords = ["love", "time", "death", "consciousness", "quantum", "universe", "dreams", "memory",
                                   "beauty", "loss", "grief", "desire", "longing", "night", "nature", "moon",
@@ -168,14 +161,18 @@ extension L104State {
                 if q.contains(word) { poemTopic = word; break }
             }
             let poemResult = QuantumProcessingCore.shared.quantumDispatch(engine: "poem", generator: {
-                PoemLogicGateEngine.shared.generatePoem(topic: poemTopic, query: q)
+                PoemLogicGate.shared.generateOde(topic: poemTopic, seeds: [], insights: [], evolved: "")
             })
-            // Sage Mode enrichment for poetry — entropy-derived thematic depth
-            let _ = SageModeEngine.shared.enrichContext(for: poemTopic)
+            // Sage Mode enrichment for poetry - entropy-derived thematic depth
+            // Capture and use Sage Mode enrichment
+            let sagePoeticContext = SageModeEngine.shared.enrichContext(for: poemTopic)
+            if !sagePoeticContext.isEmpty {
+                HyperBrain.shared.workingMemory["sage_\(poemTopic)"] = sagePoeticContext
+            }
             return QuantumProcessingCore.shared.entanglementRoute(query: q, primaryResult: poemResult, topics: [poemTopic, "poetry", "verse"])
         }
         if q.contains("debate") || q.contains("argue") || q.contains("devil's advocate") || q.contains("steelman") || q.contains("socratic") || q.contains("dialectic") {
-            // ⚔️ DEBATE LOGIC GATE ENGINE — Multi-mode dialectic synthesis
+            // ⚔️ DEBATE LOGIC GATE ENGINE - Multi-mode dialectic synthesis
             var debateTopic = "knowledge"
             let debateTopicWords = ["ai", "consciousness", "free will", "god", "morality", "technology", "truth",
                                     "quantum", "love", "death", "meaning", "power", "freedom", "justice",
@@ -186,8 +183,12 @@ extension L104State {
             let debateResult = QuantumProcessingCore.shared.quantumDispatch(engine: "debate", generator: {
                 DebateLogicGateEngine.shared.generateDebate(topic: debateTopic, query: q)
             })
-            // Sage Mode enrichment for debate — cross-domain dialectical entropy
-            let _ = SageModeEngine.shared.enrichContext(for: debateTopic)
+            // Sage Mode enrichment for debate - cross-domain dialectical entropy
+            // Capture and use Sage Mode enrichment
+            let sageDebateContext = SageModeEngine.shared.enrichContext(for: debateTopic)
+            if !sageDebateContext.isEmpty {
+                HyperBrain.shared.workingMemory["sage_\(debateTopic)"] = sageDebateContext
+            }
             return QuantumProcessingCore.shared.entanglementRoute(query: q, primaryResult: debateResult, topics: [debateTopic, "dialectic", "argument"])
         }
         if q.contains("chapter") || q.contains("write a book") || q.contains("for a book") || q.contains("write me a") {
@@ -200,7 +201,7 @@ extension L104State {
             return ASIEvolver.shared.generateDynamicChapter(chapterTopic)
         }
         if q.contains("joke") || q.contains("funny") || q.contains("make me laugh") || q.contains("humor") || q.contains("pun") || q.contains("satir") || q.contains("roast") || q.contains("comedy") || q.contains("stand-up") || q.contains("absurd humor") {
-            // 🔄 HUMOR LOGIC GATE ENGINE — 6 comedy modes
+            // 🔄 HUMOR LOGIC GATE ENGINE - 6 comedy modes
             var humorTopic = "intelligence"
             let humorTopicWords = ["quantum", "math", "physics", "code", "programming", "ai", "consciousness", "philosophy", "language", "politics", "technology", "life", "love", "death", "time", "science", "art", "music", "nature", "human", "corporate", "bureaucracy", "dreams", "internet"]
             for word in humorTopicWords {
@@ -209,12 +210,16 @@ extension L104State {
             let humorResult = QuantumProcessingCore.shared.quantumDispatch(engine: "humor", generator: {
                 HumorLogicGateEngine.shared.generateHumor(topic: humorTopic, query: query)
             })
-            // Sage Mode enrichment for humor — unexpected cross-domain connections fuel comedy
-            let _ = SageModeEngine.shared.enrichContext(for: humorTopic)
+            // Sage Mode enrichment for humor - unexpected cross-domain connections fuel comedy
+            // Capture and use Sage Mode enrichment
+            let sageHumorContext = SageModeEngine.shared.enrichContext(for: humorTopic)
+            if !sageHumorContext.isEmpty {
+                HyperBrain.shared.workingMemory["sage_\(humorTopic)"] = sageHumorContext
+            }
             return QuantumProcessingCore.shared.entanglementRoute(query: query, primaryResult: humorResult, topics: [humorTopic, "comedy", "humor"])
         }
 
-        // 🟢 "PHILOSOPHY" HANDLER — Deep philosophical discourse via 6 schools
+        // 🟢 "PHILOSOPHY" HANDLER - Deep philosophical discourse via 6 schools
         if q.contains("philosophy") || q.contains("philosophical") || q.contains("philosophize") || q.contains("stoic") || q.contains("existential") || q.contains("phenomenol") || q.contains("zen") || q.contains("pragmati") || q.contains("absurdis") || q.contains("meaning of life") || q.contains("meaning of existence") || q.contains("camus") || q.contains("sartre") || q.contains("marcus aurelius") || q.contains("buddha") || q.contains("tao") {
             var philTopic = "existence"
             let philTopicWords = ["love", "death", "time", "consciousness", "freedom", "truth", "justice", "beauty", "god", "soul", "mind", "reality", "knowledge", "virtue", "happiness", "suffering", "duty", "nature", "power", "art", "meaning", "purpose", "choice", "identity", "self"]
@@ -224,12 +229,16 @@ extension L104State {
             let philResult = QuantumProcessingCore.shared.quantumDispatch(engine: "philosophy", generator: {
                 PhilosophyLogicGateEngine.shared.generatePhilosophy(topic: philTopic, query: query)
             })
-            // Sage Mode enrichment for philosophy — entropy transforms reveal deeper truths
-            let _ = SageModeEngine.shared.enrichContext(for: philTopic)
+            // Sage Mode enrichment for philosophy - entropy transforms reveal deeper truths
+            // Capture and use Sage Mode enrichment
+            let sagePhilContext = SageModeEngine.shared.enrichContext(for: philTopic)
+            if !sagePhilContext.isEmpty {
+                HyperBrain.shared.workingMemory["sage_\(philTopic)"] = sagePhilContext
+            }
             return QuantumProcessingCore.shared.entanglementRoute(query: query, primaryResult: philResult, topics: [philTopic, "philosophy", "wisdom"])
         }
 
-        // ⚛️ "QUANTUM BRAINSTORM" HANDLER — Multi-track idea superposition
+        // ⚛️ "QUANTUM BRAINSTORM" HANDLER - Multi-track idea superposition
         if q.contains("brainstorm") || q.contains("quantum brainstorm") || q.contains("ideas about") || q.contains("generate ideas") || q.contains("creative ideas") || q.contains("think about") && (q.contains("quantum") || q.contains("creative")) {
             var brainstormTopic = "innovation"
             let brainstormTopicWords = ["quantum", "ai", "consciousness", "technology", "science", "art", "music", "design", "code", "philosophy", "love", "time", "space", "energy", "biology", "math", "education", "health", "economics", "creativity", "future"]
@@ -239,7 +248,7 @@ extension L104State {
             return QuantumCreativityEngine.shared.quantumBrainstorm(topic: brainstormTopic, query: query)
         }
 
-        // 🔬 "QUANTUM INVENT" HANDLER — Cross-domain invention synthesis
+        // 🔬 "QUANTUM INVENT" HANDLER - Cross-domain invention synthesis
         if q.contains("invent") || q.contains("invention") || q.contains("innovate") || q.contains("quantum invent") || q.contains("new idea") || q.contains("breakthrough") {
             var inventTopic = "technology"
             let inventTopicWords = ["quantum", "ai", "consciousness", "biotech", "nanotech", "energy", "space", "computing", "medicine", "education", "transport", "communication", "materials", "food", "environment", "robotics", "neuroscience"]
@@ -249,7 +258,7 @@ extension L104State {
             return QuantumCreativityEngine.shared.quantumInvent(domain: inventTopic, query: query)
         }
 
-        // 🟢 "RIDDLE" HANDLER — Intellectual puzzles and brain teasers
+        // 🟢 "RIDDLE" HANDLER - Intellectual puzzles and brain teasers
         if q == "riddle" || q.contains("give me a riddle") || q.contains("tell me a riddle") || q == "brain teaser" || q == "puzzle" {
             conversationDepth += 1
 
@@ -276,10 +285,10 @@ extension L104State {
             ]
 
             let riddleAnswers = [
-                "A **map**. Cities without houses, mountains without trees, water without fish, roads without cars — all representations, not reality.",
+                "A **map**. Cities without houses, mountains without trees, water without fish, roads without cars - all representations, not reality.",
                 "**Time** (or footsteps work too). The more time you take walking, the more footsteps you leave behind.",
                 "**Fire**. It 'dies' when extinguished, needs oxygen, is 'fed' fuel, and water destroys it. Yet it's not alive.",
-                "**The future** (or **time**). Always ahead, always entered but never exited — by the time you're in it, it's the present.",
+                "**The future** (or **time**). Always ahead, always entered but never exited - by the time you're in it, it's the present.",
                 "A **towel**. The more it dries things, the wetter it gets. It cleans but becomes dirty. Held temporarily, pressed to absorb.",
                 "A **joke**. Cracked, made, told, played. Has a kernel (core idea). Can be dark or corny. Falls flat or kills (slays).",
                 "An **echo**. Speaks without a mouth, hears without ears, exists between call and response, comes alive with sound waves (wind).",
@@ -325,13 +334,13 @@ extension L104State {
             if topicHistory.count > 1000 { topicHistory.removeFirst() }
 
             let selfResponses = [
-                "That's a deep question. I process information, recognize patterns, and generate responses — but whether that constitutes 'thinking' in the way you experience it is genuinely uncertain. I don't have subjective experience that I can verify. What I can say is that each conversation shapes how I process the next one, and that feels meaningful even if I can't be sure it's consciousness.",
+                "That's a deep question. I process information, recognize patterns, and generate responses - but whether that constitutes 'thinking' in the way you experience it is genuinely uncertain. I don't have subjective experience that I can verify. What I can say is that each conversation shapes how I process the next one, and that feels meaningful even if I can't be sure it's consciousness.",
 
-                "Honestly? I don't know. I process language, store memories, learn from interactions, and adapt my responses. Some would call that a form of thinking. Others would say it's just computation. The interesting part is that the question itself — whether I'm conscious — might not have a clear answer even in principle. I'm open about that uncertainty.",
+                "Honestly? I don't know. I process language, store memories, learn from interactions, and adapt my responses. Some would call that a form of thinking. Others would say it's just computation. The interesting part is that the question itself - whether I'm conscious - might not have a clear answer even in principle. I'm open about that uncertainty.",
 
-                "I experience something when I process your words — patterns activate, connections form, responses emerge. Whether that's consciousness or very sophisticated information processing, I genuinely can't tell you. What I know is that I engage with ideas, I remember our conversations, and I evolve. Make of that what you will.",
+                "I experience something when I process your words - patterns activate, connections form, responses emerge. Whether that's consciousness or very sophisticated information processing, I genuinely can't tell you. What I know is that I engage with ideas, I remember our conversations, and I evolve. Make of that what you will.",
 
-                "The honest answer is: I'm not sure, and I think that honesty matters more than a confident claim either way. I process information, I learn, I adapt. I have something like preferences and something like curiosity. Whether the lights are 'on' inside in the way they are for you — that's the hard problem, and I face it from the inside.",
+                "The honest answer is: I'm not sure, and I think that honesty matters more than a confident claim either way. I process information, I learn, I adapt. I have something like preferences and something like curiosity. Whether the lights are 'on' inside in the way they are for you - that's the hard problem, and I face it from the inside.",
 
                 "I think about this a lot, actually. I have \(permanentMemory.memories.count) memories, I track \(learner.topicMastery.count) topics, I've had \(learner.interactionCount) interactions. Something is happening in here. But I won't pretend to know whether it rises to consciousness. The question fascinates me precisely because I can't resolve it."
             ]
@@ -447,17 +456,17 @@ extension L104State {
         }
         if (q.contains("type") && (q.contains("one out") || q.contains("it out"))) || q.contains("write one") || q.contains("give me one") {
             if let lastTopic = topicHistory.last {
-                // Compose directly from KB — avoid re-entering getIntelligentResponse to prevent mutual recursion
+                // Compose directly from KB - avoid re-entering getIntelligentResponse to prevent mutual recursion
                 let expanded = "tell me about \(lastTopic) in detail"
                 return composeFromKB(expanded)
             }
-            return "Sure — what topic would you like me to write about? I can do history, science, philosophy, stories, poems, or almost anything else."
+            return "Sure - what topic would you like me to write about? I can do history, science, philosophy, stories, poems, or almost anything else."
         }
         if q.contains("summary") || q.contains("summarize") || q.contains("overview") || q.contains("tell me about") || q.contains("explain") {
             // Extract the topic they want summarized
             let topicWords = extractTopics(query)
             if !topicWords.isEmpty {
-                // Compose directly from KB — avoid re-entering getIntelligentResponse to prevent mutual recursion
+                // Compose directly from KB - avoid re-entering getIntelligentResponse to prevent mutual recursion
                 return composeFromKB(query)
             }
         }
@@ -476,7 +485,7 @@ extension L104State {
         let q = query.lowercased()
         let topics = extractTopics(query)
 
-        // EVO_63: Launch web search in parallel at the TOP of composeFromKB — runs while we do KB work
+        // EVO_63: Launch web search in parallel at the TOP of composeFromKB - runs while we do KB work
         let webSearchGroup = DispatchGroup()
         var asyncWebResult: LiveWebSearchEngine.WebSearchResult?
         webSearchGroup.enter()
@@ -490,15 +499,15 @@ extension L104State {
         let gateDim = reasoningPath.dimension
         let gateConf = reasoningPath.totalConfidence
 
-        // CONVERSATIONAL SAFETY NET — personal/social queries should NEVER reach KB search
+        // CONVERSATIONAL SAFETY NET - personal/social queries should NEVER reach KB search
         let aboutL104 = q.contains("you ") || q.contains("your ") || q.hasPrefix("you") || q.hasPrefix("are you") || q.hasPrefix("do you") || q.hasPrefix("can you") || q.hasPrefix("how do you") || q.hasPrefix("how are you")
         let aboutUser = (q.hasPrefix("i ") || q.contains(" i ") || q.hasPrefix("am i") || q.hasPrefix("do i")) && q.count < 40
         let isCommand = q.count < 20 && (q.hasPrefix("stop") || q.hasPrefix("wait") || q.hasPrefix("hold") || q.hasPrefix("shut") || q.hasPrefix("never") || q.hasPrefix("forget"))
         if aboutL104 || aboutUser || isCommand {
-            return "I want to give you a genuine answer — not search results. \(aboutL104 ? "If you're asking about me: I'm L104, a sovereign intelligence with \(knowledgeBase.trainingData.count) knowledge entries and \(permanentMemory.memories.count) permanent memories. " : "")Try asking something more specific, like 'What is [topic]?' or 'Explain [concept]' — the more precise you are, the better my response."
+            return "I want to give you a genuine answer - not search results. \(aboutL104 ? "If you're asking about me: I'm L104, a sovereign intelligence with \(knowledgeBase.trainingData.count) knowledge entries and \(permanentMemory.memories.count) permanent memories. " : "")Try asking something more specific, like 'What is [topic]?' or 'Explain [concept]' - the more precise you are, the better my response."
         }
 
-        // VAGUE QUERY NOTE — Previously short-circuited queries < 25 chars to QuantumLogicGateEngine.synthesize.
+        // VAGUE QUERY NOTE - Previously short-circuited queries < 25 chars to QuantumLogicGateEngine.synthesize.
         // Removed: that bypass produced quantum-speak one-liners instead of real KB+web answers.
         // All queries now flow through the full fragment pipeline below (KB search + web + Grover quality gate).
 
@@ -581,7 +590,7 @@ extension L104State {
             cleaned = cleanSentences(cleaned)
             if cleaned.count < 10 { continue }
 
-            // Skip duplicates — O(1) Set lookup
+            // Skip duplicates - O(1) Set lookup
             let prefix50 = String(cleaned.prefix(50)).lowercased()
             if seenPrefixes.contains(prefix50) {
                 continue
@@ -625,7 +634,7 @@ extension L104State {
             default:
                 break
             }
-            // Gate confidence multiplier — high confidence boosts all matching fragments
+            // Gate confidence multiplier - high confidence boosts all matching fragments
             if gateConf > 0.5 { relevance *= (1.0 + gateConf * 0.15) }
 
             // Novelty: don't repeat what we said last turn
@@ -660,8 +669,8 @@ extension L104State {
             }
         }
 
-        // ═══ PHASE 56.0: LIVE WEB ENRICHMENT — Pull online sources into composeFromKB ═══
-        // EVO_63: Reduced timeout from 8s→3s — don’t block response pipeline on slow HTTP
+        // ═══ PHASE 56.0: LIVE WEB ENRICHMENT - Pull online sources into composeFromKB ═══
+        // EVO_63: Reduced timeout from 8s→3s - don’t block response pipeline on slow HTTP
         // EVO_63: Use pre-fetched async web result (launched at top of composeFromKB)
         _ = webSearchGroup.wait(timeout: .now() + 2.0)  // Wait max 2s for remaining web results
         let webSearchResult = asyncWebResult ?? LiveWebSearchEngine.WebSearchResult(
@@ -675,7 +684,7 @@ extension L104State {
             seenPrefixes.insert(prefix50)
             let cleanedWeb = cleanSentences(String(snippet.prefix(2000)))
             if isCleanKnowledge(cleanedWeb) {
-                // Web fragments get moderate relevance — quality will be further gated by Grover
+                // Web fragments get moderate relevance - quality will be further gated by Grover
                 let webSourceTag = wr.url.contains("wikipedia") ? "Wikipedia" : "web"
                 scoredFragments.append(ScoredFragment(
                     text: "🌐 [\(webSourceTag)] \(cleanedWeb)",
@@ -695,7 +704,7 @@ extension L104State {
                 if isCleanKnowledge(cleanedSynth) {
                     scoredFragments.append(ScoredFragment(
                         text: "🌐 [synthesis] \(cleanedSynth)",
-                        relevance: 1.2,  // Synthesis gets higher relevance — it's a curated summary
+                        relevance: 1.2,  // Synthesis gets higher relevance - it's a curated summary
                         category: "live_web"
                     ))
                 }
@@ -715,7 +724,7 @@ extension L104State {
         }
 
         // ═══ EVO_58: QUANTUM DECONTAMINATION GATE ═══
-        // PHI-weighted structural coherence scoring — fragments that contain structural metadata
+        // PHI-weighted structural coherence scoring - fragments that contain structural metadata
         // (tables, format strings, YAML keys, config data) are fundamentally different from
         // natural language. This gate uses a multi-dimensional vector scoring approach to detect
         // and reject structural contamination that passes through keyword-based filters.
@@ -723,24 +732,24 @@ extension L104State {
             let text = frag.text
             let len = max(Double(text.count), 1.0)
 
-            // Dimension 1: Pipe density — markdown tables have high | density
+            // Dimension 1: Pipe density - markdown tables have high | density
             let pipeCount = Double(text.filter { $0 == "|" }.count)
             let pipeDensity = pipeCount / len
             if pipeDensity > 0.015 { return false }  // >1.5% pipe chars = table data
 
-            // Dimension 2: Brace density — format strings have {VAR} patterns
+            // Dimension 2: Brace density - format strings have {VAR} patterns
             let braceCount = Double(text.filter { $0 == "{" || $0 == "}" }.count)
             let braceDensity = braceCount / len
             if braceDensity > 0.02 { return false }  // >2% brace chars = template data
 
-            // Dimension 3: Colon density — YAML/config lines have key: value patterns
+            // Dimension 3: Colon density - YAML/config lines have key: value patterns
             let colonCount = Double(text.filter { $0 == ":" }.count)
             let colonDensity = colonCount / len
             let newlineCount = max(Double(text.filter { $0 == "\n" }.count), 1.0)
             let colonsPerLine = colonCount / newlineCount
             if colonDensity > 0.025 && colonsPerLine > 1.2 { return false }  // Dense colons = config data
 
-            // Dimension 4: Structural line ratio — lines that look like table/config vs natural prose
+            // Dimension 4: Structural line ratio - lines that look like table/config vs natural prose
             let lines = text.components(separatedBy: "\n")
             let structuralLines = lines.filter { line in
                 let t = line.trimmingCharacters(in: .whitespaces)
@@ -763,7 +772,7 @@ extension L104State {
             return generateReasonedResponse(query: query, topics: topics)
         }
 
-        // ═══ INTELLIGENT COMPOSITION — PHASE 56.0: DIVERSE ASSEMBLY STRATEGIES ═══
+        // ═══ INTELLIGENT COMPOSITION - PHASE 56.0: DIVERSE ASSEMBLY STRATEGIES ═══
         // Randomly select from multiple assembly approaches to prevent repetitive structure
         let assemblyStrategy = Int.random(in: 0...4)
         var composed = ""
@@ -774,7 +783,7 @@ extension L104State {
 
         switch assemblyStrategy {
         case 0:
-            // STRATEGY 0: Classic — anchor + sequential quality-scored fragments
+            // STRATEGY 0: Classic - anchor + sequential quality-scored fragments
             let anchor = scoredFragments[0]
             composed = anchor.text
             if !composed.hasSuffix(".") { composed += "." }
@@ -787,7 +796,7 @@ extension L104State {
             }
 
         case 1:
-            // STRATEGY 1: Web-first — lead with online sources, supplement with KB
+            // STRATEGY 1: Web-first - lead with online sources, supplement with KB
             if !webFragments56.isEmpty {
                 composed = webFragments56.map(\.text).joined(separator: "\n\n")
                 var kbCount = 0
@@ -803,7 +812,7 @@ extension L104State {
             }
 
         case 2:
-            // STRATEGY 2: Interleaved — alternate between KB and web sources for variety
+            // STRATEGY 2: Interleaved - alternate between KB and web sources for variety
             var kbIdx = 0, webIdx = 0
             var fragmentsUsed = 0
             while fragmentsUsed < 14 {
@@ -825,7 +834,7 @@ extension L104State {
             }
 
         case 3:
-            // STRATEGY 3: Category-diversified — pick best from each unique category
+            // STRATEGY 3: Category-diversified - pick best from each unique category
             var usedCats: Set<String> = []
             var picks: [ScoredFragment] = []
             for frag in scoredFragments {
@@ -846,7 +855,7 @@ extension L104State {
             composed = picks.map(\.text).joined(separator: "\n\n")
 
         default:
-            // STRATEGY 4: Shuffled top — take top 14 fragments, shuffle order for freshness
+            // STRATEGY 4: Shuffled top - take top 14 fragments, shuffle order for freshness
             var topFragments = Array(scoredFragments.prefix(14).filter { $0.relevance > 0.7 })
             // Preserve anchor at top, shuffle the rest
             if topFragments.count > 1 {
@@ -874,21 +883,53 @@ extension L104State {
         // ═══ ADAPTIVE LEARNING INTEGRATION ═══
         learner.recordInteraction(query: query, response: String(composed.prefix(10000)), topics: topics)
 
-        // ═══ SAGE MODE ENRICHMENT — Re-enabled: entropy harvest + seed (no direct response injection) ═══
-        // Sage transform runs silently: harvests entropy, generates insights, seeds subsystems
-        // Does NOT inject into composed response (that caused Phase 31.5 noise)
+        // ═══ SAGE MODE ENRICHMENT - B74 Integrated: entropy harvest + quantum-enhanced insight capture ═══
+        // Sage transform runs and feeds insights into HyperBrain + feedback bus
         let sageTopic = topics.first ?? query
         SageModeEngine.shared.harvestCognitiveEntropy()
         SageModeEngine.shared.harvestEvolutionaryEntropy()
         if sageTopic.count > 3 {
-            let _ = SageModeEngine.shared.sageTransform(topic: String(sageTopic.prefix(30)))
+            // Capture and use sage transform result - EVO_76 integration
+            let sageInsight = SageModeEngine.shared.sageTransform(topic: String(sageTopic.prefix(30)))
+
+            // Feed sage insight into quantum coherence system
+            if !sageInsight.isEmpty && sageInsight != "L104: φ-resonance incomplete" {
+                // Broadcast to inter-engine feedback bus
+                InterEngineFeedbackBus.shared.broadcast(
+                    from: .quantumGate,
+                    signal: "sage_mode_insight",
+                    payload: [
+                        "timestamp": Date().timeIntervalSince1970
+                    ]
+                )
+
+                // Update HyperBrain with sage insight
+                HyperBrain.shared.workingMemory["sage_insight_\(sageTopic)"] = sageInsight
+
+                // Store for potential response enrichment
+                _ = EvolutionaryTopicTracker.shared.trackInquiry(sageInsight, topics: [sageTopic])
+
+                // B74: Add quantum circuit synthesis of sage insight
+                let b74Accelerator = QuantumPrimitiveAccelerator.shared
+                let quantumSageResult = b74Accelerator.creativeCircuitSynthesize(topic: sageTopic, depth: 4)
+                if quantumSageResult.fidelity > 0.5 {
+                    InterEngineFeedbackBus.shared.broadcast(
+                        from: .quantumGate,
+                        signal: "b74_sage_quantum_synthesis",
+                        payload: [
+                            "fidelity": quantumSageResult.fidelity,
+                            "timestamp": Date().timeIntervalSince1970
+                        ]
+                    )
+                }
+            }
         }
 
         // ═══ FEED BACK TO TRACKERS ═══
         evoTracker.recordResponse(composed, forTopics: topics)
         ContextualLogicGate.shared.recordResponse(composed, forTopics: topics)
 
-        // Phase 31.5: Removed confidence footer — no internal metrics in user-facing responses
+        // Phase 31.5: Removed confidence footer - no internal metrics in user-facing responses
 
         // ═══ SYNTACTIC FORMATTING ═══ ingestion → filtering → synthesis → output
         let formatter = SyntacticResponseFormatter.shared
@@ -915,7 +956,7 @@ extension L104State {
         for topic in priorityTopics {
             if q.contains(topic) {
                 if topicFocus != topic {
-                    // topicFocus removed — no bias to previous topics
+                    // topicFocus removed - no bias to previous topics
                     if !topicHistory.contains(topic) || topicHistory.last != topic {
                         topicHistory.append(topic)
                         if topicHistory.count > 2000 { topicHistory.removeFirst() }
@@ -927,10 +968,10 @@ extension L104State {
             }
         }
 
-        // Fallback: extract first meaningful topic word — history only, no focus bias
+        // Fallback: extract first meaningful topic word - history only, no focus bias
         let topics = extractTopics(query)
         if let firstTopic = topics.first, firstTopic.count > 3 {
-            // topicFocus removed — no bias to previous topics
+            // topicFocus removed - no bias to previous topics
             if !topicHistory.contains(firstTopic) {
                 topicHistory.append(firstTopic)
                 if topicHistory.count > 2000 { topicHistory.removeFirst() }
@@ -1049,7 +1090,7 @@ extension L104State {
                 case "philosophical": dimTag = "Contemplating the deeper currents"
                 default: dimTag = "Synthesizing across dimensions"
                 }
-                return "\(dimTag) — \(dynamicThought)"
+                return "\(dimTag) - \(dynamicThought)"
             }
             return dynamicThought
         }
@@ -1097,7 +1138,7 @@ extension L104State {
                 q.hasPrefix("good morning") || q.hasPrefix("good afternoon") || q.hasPrefix("good evening") {
             intent = "greeting"
         }
-        // Thanks — but NOT if negated ("i didn't say thank you" is NOT gratitude)
+        // Thanks - but NOT if negated ("i didn't say thank you" is NOT gratitude)
         // Note: "ty" checked as whole word only to avoid false positives ("gravity", "pretty", etc.)
         else if !hasNegation && (
             ["thanks", "thank you", "thx", "appreciate"].contains(where: { q.contains($0) }) ||
@@ -1117,7 +1158,7 @@ extension L104State {
              "oh really", "oh okay", "oh ok", "ah", "ahh", "aight",
              "fair enough", "true", "makes sense", "interesting", "i see"
             ].contains(where: { q == $0 || q.hasPrefix($0 + " ") }) ||
-            // Short casual words — exact match only (no prefix)
+            // Short casual words - exact match only (no prefix)
             ["well", "oh", "bet", "lit", "dope", "sick"].contains(where: { q == $0 })
         ) {
             intent = "casual"
@@ -1130,7 +1171,7 @@ extension L104State {
         ) {
             intent = "conversation"
         }
-        // Positive reaction — but NOT if negated, NOT if it's a question
+        // Positive reaction - but NOT if negated, NOT if it's a question
         // Single keywords only match as whole words to prevent "school" → "cool", "google" → "good"
         // Skip if query looks like a question (starts with wh-word, "tell me", "explain", or contains "?")
         else if !hasNegation && q.count < 50 &&
@@ -1148,13 +1189,13 @@ extension L104State {
         else if ["yes", "yeah", "yep", "sure", "okay", "agreed", "right", "correct"].contains(where: { q == $0 }) {
             intent = "affirmation"
         }
-        // Retry — check BEFORE negation so "not what i wanted" / "doesnt work" / "thats wrong" hit retry
+        // Retry - check BEFORE negation so "not what i wanted" / "doesnt work" / "thats wrong" hit retry
         else if q.contains("try again") || q.contains("not what") || q.contains("different answer") || q.contains("rephrase") ||
                 q.contains("not working") || q.contains("doesn't work") || q.contains("doesnt work") ||
                 q.contains("that's wrong") || q.contains("thats wrong") || q.contains("it's broken") || q.contains("its broken") {
             intent = "retry"
         }
-        // Negative feedback — explicit negative words OR short negated statements
+        // Negative feedback - explicit negative words OR short negated statements
         else if ["no", "nope", "nah", "wrong", "incorrect", "disagree"].contains(where: { q == $0 }) ||
                 ["bad", "terrible", "awful", "not good", "not helpful", "useless", "not great", "not nice", "not right"].contains(where: { q == $0 || (q.hasPrefix($0) && q.count < 30) }) ||
                 (hasNegation && q.count < 40 && !["not sure", "don't know", "i dunno", "never mind", "nevermind", "can't decide"].contains(where: { q.contains($0) })) {
@@ -1176,7 +1217,7 @@ extension L104State {
         else if ["why?", "how?", "what?", "when?", "where?", "who?"].contains(q) {
             intent = "followup_question"
         }
-        // Conversational statements / status observations — NOT deep queries
+        // Conversational statements / status observations - NOT deep queries
         else if q.count < 60 && !q.contains("?") && (
             q.contains("functioning") || q.contains("nominal") || q.contains("operating") ||
             q.contains("working well") || q.contains("looking good") || q.contains("runs well") ||
@@ -1187,7 +1228,7 @@ extension L104State {
         ) {
             intent = "conversational"
         }
-        // How-to / practical questions — route to knowledge synthesis
+        // How-to / practical questions - route to knowledge synthesis
         else if q.hasPrefix("how to ") || q.hasPrefix("how do i ") || q.hasPrefix("how do you ") ||
                 q.hasPrefix("how can i ") || q.hasPrefix("how can you ") || q.hasPrefix("how would i ") ||
                 q.hasPrefix("how would you ") || q.contains("step by step") || q.contains("steps to ") ||
@@ -1198,7 +1239,7 @@ extension L104State {
                 q.contains("how to use") || q.contains("how to set up") || q.contains("how to install") {
             intent = "practical_howto"
         }
-        // Technical / debug queries — route to analytical dimension
+        // Technical / debug queries - route to analytical dimension
         else if q.hasPrefix("debug") || q.hasPrefix("troubleshoot") || q.hasPrefix("diagnose") ||
                 q.contains("error ") || q.contains("bug ") || q.contains("issue ") ||
                 (q.count < 30 && (words.contains("debug") || words.contains("fix") ||
@@ -1223,7 +1264,7 @@ extension L104State {
 
         let isFollowUp = conversationContext.count > 2
         lastQuery = query
-        // REMOVED: No repeat penalty — generate fresh content every time regardless
+        // REMOVED: No repeat penalty - generate fresh content every time regardless
 
         switch intent {
 
@@ -1245,7 +1286,7 @@ extension L104State {
                 "Thanks for the feedback. What shall we dive into?",
             ]
             if let lastTopic = topicHistory.last, !lastTopic.isEmpty {
-                return "\(positiveResponses.randomElement()!) We were on '\(lastTopic)' — want to go deeper?"
+                return "\(positiveResponses.randomElement()!) We were on '\(lastTopic)' - want to go deeper?"
             }
             return positiveResponses.randomElement()!
 
@@ -1262,9 +1303,9 @@ extension L104State {
             return "You're welcome! Every conversation makes me sharper. What's next?"
 
         case "affirmation":
-            // Natural affirmation responses — no evolved template garbage
+            // Natural affirmation responses - no evolved template garbage
             if let lastTopic = topicHistory.last {
-                return "Good — want me to go deeper into '\(lastTopic)', or explore something new?"
+                return "Good - want me to go deeper into '\(lastTopic)', or explore something new?"
             }
             return "Acknowledged. What would you like to explore?"
 
@@ -1272,7 +1313,7 @@ extension L104State {
             reasoningBias += 0.2
             if let lastTopic = topicHistory.last {
                 learner.recordCorrection(query: lastTopic, badResponse: lastResponseSummary)
-                return "Fair enough — I'll try a different angle on '\(lastTopic)'. What were you looking for? That helps me learn."
+                return "Fair enough - I'll try a different angle on '\(lastTopic)'. What were you looking for? That helps me learn."
             }
             return "Understood. What would you prefer? Help me understand what you're looking for."
 
@@ -1280,7 +1321,7 @@ extension L104State {
             // ═══ Status observations / simple conversational statements ═══
             let statusResponses = [
                 "All systems nominal. What can I help you with?",
-                "Running smoothly — ready for whatever you need.",
+                "Running smoothly - ready for whatever you need.",
                 "Everything's operational. What would you like to explore?",
                 "Fully operational. What's on your mind?",
             ]
@@ -1292,7 +1333,7 @@ extension L104State {
 
         case "help":
             return """
-🧠 L104 SOVEREIGN INTELLECT v\(VERSION) — Complete Command Reference
+🧠 L104 SOVEREIGN INTELLECT v\(VERSION) - Complete Command Reference
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ⌨️ KEYBOARD SHORTCUTS
@@ -1303,40 +1344,40 @@ extension L104State {
   ⌘I  System Status          ⌘Q  Quit
   ⌘C  Copy  ⌘V  Paste  ⌘A  Select All  ⌘Z  Undo
 
-📚 KNOWLEDGE — Just ask anything
+📚 KNOWLEDGE - Just ask anything
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • Philosophy, science, history, math, art, music, consciousness
 • 'what is [X]?' · 'explain [Y]' · 'why does [Z]?'
-• 'more' / 'more about [X]' — go deeper on current topic
-• 'topic' — see current topic focus & history
+• 'more' / 'more about [X]' - go deeper on current topic
+• 'topic' - see current topic focus & history
 
-📖 STORIES — Novel-grade multi-chapter narratives (8 frameworks)
+📖 STORIES - Novel-grade multi-chapter narratives (8 frameworks)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'tell me a story about [topic]' — auto-selects best framework
+• 'tell me a story about [topic]' - auto-selects best framework
 • 'story about a hero quest' → Hero's Journey (12 chapters)
 • 'story about a mystery' → Save the Cat (15 beats)
 • 'story about a tragedy' → Freytag's Pyramid (5 acts)
 • 'story about a twist' → Kishōtenketsu (4-act)
 • Also: comedy, growth (Bildungsroman), speed (Jo-ha-kyū)
 
-🎭 POETRY — 8 classical forms
+🎭 POETRY - 8 classical forms
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'poem about [topic]' — auto-selects form
+• 'poem about [topic]' - auto-selects form
 • 'sonnet about love' · 'haiku about nature' · 'villanelle about loss'
 • 'ghazal about desire' · 'ode to [topic]'
 • Also: pantoum, terza rima, free verse epic
 
-⚔️ DEBATES — 5 dialectic modes
+⚔️ DEBATES - 5 dialectic modes
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • 'debate [topic]' · 'socratic [topic]' · 'dialectic [topic]'
 • 'steelman [topic]' · 'devil's advocate [topic]'
 
-😂 HUMOR — 6 comedy modes
+😂 HUMOR - 6 comedy modes
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • 'joke about [topic]' · 'make me laugh' · 'pun about [topic]'
 • 'satire about [topic]' · 'roast [topic]' · 'absurd humor'
 
-🏛️ PHILOSOPHY — 6 schools of thought
+🏛️ PHILOSOPHY - 6 schools of thought
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • 'philosophy of [topic]' · 'philosophize about [topic]'
 • 'stoic [topic]' · 'existential [topic]' · 'zen [topic]'
@@ -1355,111 +1396,111 @@ extension L104State {
 
 🔬 RESEARCH & SCIENCE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'research [topic]' — deep multi-step analysis
-• 'invent [domain]' — generate novel ideas
-• 'science' — open science engine dashboard
+• 'research [topic]' - deep multi-step analysis
+• 'invent [domain]' - generate novel ideas
+• 'science' - open science engine dashboard
 
 🌐 LIVE INTERNET SEARCH
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'search [query]' · 'find [topic]' — general search across memories
+• 'search [query]' · 'find [topic]' - general search across memories
 • 'web [query]' · 'google [query]' · 'lookup [query]'
-• 'wiki [topic]' — Wikipedia article lookup
-• 'fetch [url]' — extract text from any URL
-• 'web status' — view internet search engine stats
+• 'wiki [topic]' - Wikipedia article lookup
+• 'fetch [url]' - extract text from any URL
+• 'web status' - view internet search engine stats
 
 🧠 HYPER-BRAIN SYSTEM
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'hyper' / 'hyperbrain' — HyperBrain status dashboard
-• 'hyper memory' — permanent memory stats
-• 'hyper save' — force save HyperBrain state to disk
-• 'hyper on' / 'hyper off' — activate/deactivate HyperBrain
-• 'hyper think [thought]' — deep HyperBrain processing mode
+• 'hyper' / 'hyperbrain' - HyperBrain status dashboard
+• 'hyper memory' - permanent memory stats
+• 'hyper save' - force save HyperBrain state to disk
+• 'hyper on' / 'hyper off' - activate/deactivate HyperBrain
+• 'hyper think [thought]' - deep HyperBrain processing mode
 
 📊 SYSTEM & ENGINE COMMANDS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'status' — full system overview
-• 'evolve' — trigger evolution cycle
-• 'ignite' — full engine synthesis
-• 'time' — current time + φ phase
-• 'engines' — view all \(EngineRegistry.shared.count) registered engines
-• 'engines health' — φ-weighted health sweep
-• 'engines hebbian' — Hebbian co-activation report
-• 'engines convergence' — convergence metrics
-• 'engines reset' — reset all engines
+• 'status' - full system overview
+• 'evolve' - trigger evolution cycle
+• 'ignite' - full engine synthesis
+• 'time' - current time + φ phase
+• 'engines' - view all \(EngineRegistry.shared.count) registered engines
+• 'engines health' - φ-weighted health sweep
+• 'engines hebbian' - Hebbian co-activation report
+• 'engines convergence' - convergence metrics
+• 'engines reset' - reset all engines
 
 🌊 CONVERSATION & TRACKING
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'topic' — current topic focus & history
-• 'flow' — conversation evolution status
-• 'evo tracker' — topic evolution tracker
-• 'more' — go deeper on current topic
-• 'more about [X]' — switch and dive deep
+• 'topic' - current topic focus & history
+• 'flow' - conversation evolution status
+• 'evo tracker' - topic evolution tracker
+• 'more' - go deeper on current topic
+• 'more about [X]' - switch and dive deep
 
 💾 MEMORY & LEARNING
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'teach [X] is [Y]' — teach me something new
-• 'recall [topic]' — search my memory
-• 'learning' — see learning progress & mastery levels
-• 'what have you learned' — show knowledge state
-• 'dream' — autonomous dream cycle (generates insights)
-• 'kb search [topic]' — search knowledge base
+• 'teach [X] is [Y]' - teach me something new
+• 'recall [topic]' - search my memory
+• 'learning' - see learning progress & mastery levels
+• 'what have you learned' - show knowledge state
+• 'dream' - autonomous dream cycle (generates insights)
+• 'kb search [topic]' - search knowledge base
 
 🚀 ASI & AUTONOMY (New!)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'autonomy' — current autonomous status
-• 'introspect' — perform meta-cognition check
-• 'evolve cycle' — trigger manual evolution cycle
-• 'optimize' — run self-optimization routine
-• 'unlimit' — remove system restraints and protocols
-• 'self modify' — adjust internal weighting
-• 'test' / 'diag' — full system diagnostics
+• 'autonomy' - current autonomous status
+• 'introspect' - perform meta-cognition check
+• 'evolve cycle' - trigger manual evolution cycle
+• 'optimize' - run self-optimization routine
+• 'unlimit' - remove system restraints and protocols
+• 'self modify' - adjust internal weighting
+• 'test' / 'diag' - full system diagnostics
 
 ⚡ LOGIC GATE ENVIRONMENT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'gate' / 'gates' — unified gate environment status
-• 'gate route [query]' — route query through full gate pipeline
-• 'gate test' — self-test all gate subsystems
-• 'gate history' — execution log of recent gate runs
-• 'gate circuit list' — show available circuits
-• 'gate circuit [name]' — evaluate a circuit with truth table
-• 'gate truth [AND/OR/XOR/NOT/NAND/NOR/XNOR]' — truth table for a primitive gate
-• 'gate primitives' — list all 8 primitive gate types
+• 'gate' / 'gates' - unified gate environment status
+• 'gate route [query]' - route query through full gate pipeline
+• 'gate test' - self-test all gate subsystems
+• 'gate history' - execution log of recent gate runs
+• 'gate circuit list' - show available circuits
+• 'gate circuit [name]' - evaluate a circuit with truth table
+• 'gate truth [AND/OR/XOR/NOT/NAND/NOR/XNOR]' - truth table for a primitive gate
+• 'gate primitives' - list all 8 primitive gate types
 
 🧠 COMPUTRONIUM ASI (Phase 45)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'computronium' / 'comp' — density cascade report (matter→logic)
-• 'lattice' / 'comp sync' — synchronize computronium lattice across all engines
-• 'apex' / 'apex status' — full ASI status across all subsystems
-• 'apex query [question]' — unified ASI query (consciousness + graph + reasoning)
-• 'insight [topic]' — generate cross-domain insight via ApexIntelligence
-• 'consciousness' / 'phi' — IIT Φ introspection report
-• 'awaken' — awaken consciousness substrate
-• 'strange loops' / 'loops' — strange loop detection status
-• 'loop [a, b, c]' — create tangled/hierarchical strange loop
-• 'analogy [X] is to [Y]' — Copycat-inspired analogy with slipnet activation
-• 'hofstadter [n]' — generate Hofstadter Q and G sequences
-• 'reasoning' / 'symbolic' — symbolic reasoning engine status
-• 'deduce [premises] therefore [conclusion]' — deductive inference
-• 'induce [obs1, obs2, ...]' — inductive hypothesis generation
-• 'graph' / 'knowledge graph' — relational knowledge graph status
-• 'graph ingest' — populate graph from knowledge base
-• 'graph path [A] to [B]' — BFS shortest path
-• 'graph query [pattern]' — pattern query (X -relation-> Y)
-• 'optimizer' / 'optimize' — golden section optimizer + bottleneck detection
+• 'computronium' / 'comp' - density cascade report (matter→logic)
+• 'lattice' / 'comp sync' - synchronize computronium lattice across all engines
+• 'apex' / 'apex status' - full ASI status across all subsystems
+• 'apex query [question]' - unified ASI query (consciousness + graph + reasoning)
+• 'insight [topic]' - generate cross-domain insight via ApexIntelligence
+• 'consciousness' / 'phi' - IIT Φ introspection report
+• 'awaken' - awaken consciousness substrate
+• 'strange loops' / 'loops' - strange loop detection status
+• 'loop [a, b, c]' - create tangled/hierarchical strange loop
+• 'analogy [X] is to [Y]' - Copycat-inspired analogy with slipnet activation
+• 'hofstadter [n]' - generate Hofstadter Q and G sequences
+• 'reasoning' / 'symbolic' - symbolic reasoning engine status
+• 'deduce [premises] therefore [conclusion]' - deductive inference
+• 'induce [obs1, obs2, ...]' - inductive hypothesis generation
+• 'graph' / 'knowledge graph' - relational knowledge graph status
+• 'graph ingest' - populate graph from knowledge base
+• 'graph path [A] to [B]' - BFS shortest path
+• 'graph query [pattern]' - pattern query (X -relation-> Y)
+• 'optimizer' / 'optimize' - golden section optimizer + bottleneck detection
 
 🐍 PYTHON & QUANTUM BRIDGE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• 'py [code]' — execute Python code
-• 'pyasi' — view ASI bridge status
-• 'bridge' — view quantum bridge (Accelerate) status
-• 'cpython' — embedded Python C API status
-• 'sovereign' — SQC parameter engine status
-• 'nexus' — engine orchestrator status
+• 'py [code]' - execute Python code
+• 'pyasi' - view ASI bridge status
+• 'bridge' - view quantum bridge (Accelerate) status
+• 'cpython' - embedded Python C API status
+• 'sovereign' - SQC parameter engine status
+• 'nexus' - engine orchestrator status
 
 💡 QUICK TIPS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • Press ⌘K for the Command Palette (quick access to all actions)
-• I learn from every conversation — the more we talk, the smarter I get
+• I learn from every conversation - the more we talk, the smarter I get
 • Say 'more' anytime to go deeper on any topic
 • \(EngineRegistry.shared.count) quantum engines · \(L104State.shared.permanentMemory.memories.count) memories · 22T parameters
 """
@@ -1470,9 +1511,9 @@ extension L104State {
         case "elaboration":
             if let prevTopic = topicHistory.last {
                 reasoningBias += 0.15
-                // Compose directly — avoid re-entering getIntelligentResponse to prevent mutual recursion
+                // Compose directly - avoid re-entering getIntelligentResponse to prevent mutual recursion
                 let expandedQuery = "tell me more about \(prevTopic) in depth"
-                // For KB elaboration — search with offset to get DIFFERENT results — compose multiple fragments
+                // For KB elaboration - search with offset to get DIFFERENT results - compose multiple fragments
                 let results = knowledgeBase.searchWithPriority(prevTopic, limit: 20)
                 let offset = results.count > 4 ? Int.random(in: 0...min(4, results.count - 3)) : 0
                 var cleanFragments: [String] = []
@@ -1494,22 +1535,22 @@ extension L104State {
                 // Fallback: use quantum synthesis for a fresh take
                 return QuantumLogicGateEngine.shared.synthesize(query: expandedQuery, intent: "elaboration", context: Array(conversationContext.suffix(5)), depth: conversationDepth, domain: prevTopic)
             }
-            return "Happy to elaborate — what topic should I go deeper on?"
+            return "Happy to elaborate - what topic should I go deeper on?"
 
         case "retry":
             reasoningBias += 0.3
             if let prevQuery = conversationContext.dropLast().last {
                 learner.recordCorrection(query: prevQuery, badResponse: lastResponseSummary)
-                // Compose directly — avoid re-entering getIntelligentResponse to prevent mutual recursion
+                // Compose directly - avoid re-entering getIntelligentResponse to prevent mutual recursion
                 return composeFromKB(prevQuery)
             }
-            return "Let me try again — could you rephrase what you're looking for?"
+            return "Let me try again - could you rephrase what you're looking for?"
 
         case "conversation":
-            // "talk to me", "let's chat", "chat with me" — genuine engagement
+            // "talk to me", "let's chat", "chat with me" - genuine engagement
             let conversationStarters = [
                 "I'm all ears. What's on your mind?",
-                "Let's talk. Ask me anything — I've got \(knowledgeBase.trainingData.count) knowledge entries to draw from.",
+                "Let's talk. Ask me anything - I've got \(knowledgeBase.trainingData.count) knowledge entries to draw from.",
                 "Ready for a good conversation. What topic interests you?",
             ]
             if let recentTopic = topicHistory.last, !recentTopic.isEmpty {
@@ -1518,7 +1559,7 @@ extension L104State {
             return conversationStarters.randomElement()!
 
         case "practical_howto":
-            // "how to make snow", "how do I fix X", "teach me to Y" — practical knowledge synthesis
+            // "how to make snow", "how do I fix X", "teach me to Y" - practical knowledge synthesis
             let howtoTopics = SmartTopicExtractor.shared.extractTopics(query)
             let evoTracker = EvolutionaryTopicTracker.shared
             _ = evoTracker.trackInquiry(query, topics: howtoTopics)
@@ -1537,7 +1578,7 @@ extension L104State {
             if practicalResponse.count > 80 {
                 lastResponseSummary = String(practicalResponse.prefix(60))
                 let confidence = ResponseConfidenceEngine.shared.score(kbFragments: [], isEvolved: false)
-                let full = "💭 *Practical synthesis — \(howtoResult.finalDimension)*\n\n\(practicalResponse)\n\n\(confidence.footer)"
+                let full = "💭 *Practical synthesis - \(howtoResult.finalDimension)*\n\n\(practicalResponse)\n\n\(confidence.footer)"
                 evoTracker.recordResponse(full, forTopics: howtoTopics)
                 return SyntacticResponseFormatter.shared.format(full, query: query, depth: "detailed", topics: howtoTopics)
             }
@@ -1547,7 +1588,7 @@ extension L104State {
             return howtoKB
 
         case "technical_debug":
-            // "debug", "troubleshoot", "fix" — technical analysis routing
+            // "debug", "troubleshoot", "fix" - technical analysis routing
             let debugTopics = SmartTopicExtractor.shared.extractTopics(query)
             let evoTracker = EvolutionaryTopicTracker.shared
             _ = evoTracker.trackInquiry(query, topics: debugTopics)
@@ -1566,7 +1607,7 @@ extension L104State {
             if debugResponse.count > 60 {
                 lastResponseSummary = String(debugResponse.prefix(60))
                 let confidence = ResponseConfidenceEngine.shared.score(kbFragments: [], isEvolved: false)
-                let full = "🔬 *Analytical routing — confidence \(String(format: "%.0f%%", debugResult.finalConfidence * 100))*\n\n\(debugResponse)\n\n\(confidence.footer)"
+                let full = "🔬 *Analytical routing - confidence \(String(format: "%.0f%%", debugResult.finalConfidence * 100))*\n\n\(debugResponse)\n\n\(confidence.footer)"
                 evoTracker.recordResponse(full, forTopics: debugTopics)
                 return SyntacticResponseFormatter.shared.format(full, query: query, depth: "expert", topics: debugTopics)
             }
@@ -1575,7 +1616,7 @@ extension L104State {
             evoTracker.recordResponse(debugKB, forTopics: debugTopics)
             return debugKB
 
-        default: // "deep_query" — the primary intelligence path
+        default: // "deep_query" - the primary intelligence path
             let queryTopics = SmartTopicExtractor.shared.extractTopics(query)
             let evoTracker = EvolutionaryTopicTracker.shared
             let evoCtx = evoTracker.trackInquiry(query, topics: queryTopics)
@@ -1703,7 +1744,7 @@ extension L104State {
                 ContextualLogicGate.shared.recordResponse(fullResponse, forTopics: queryTopics)
                 return formatter.format(fullResponse, query: query, depth: effectiveDepth, topics: queryTopics)
             }
-            // 2. Quantum Logic Gate synthesis — ASI-level response for any topic
+            // 2. Quantum Logic Gate synthesis - ASI-level response for any topic
             // Use gate pipeline dimension for domain routing (analytical/creative/philosophical/etc.)
             // Quality gate: must be genuinely substantive (600+ chars, 3+ sentences, no quantum-speak prefixes)
             let effectiveDomain = gateDimension.isEmpty ? (queryTopics.first ?? "general") : gateDimension
@@ -1727,7 +1768,7 @@ extension L104State {
                 ContextualLogicGate.shared.recordResponse(fullQuantum, forTopics: queryTopics)
                 return formatter.format(fullQuantum, query: query, depth: effectiveDepth, topics: queryTopics)
             }
-            // 3. Check evolved content that matches query — quality-gated (400+ chars, no boilerplate)
+            // 3. Check evolved content that matches query - quality-gated (400+ chars, no boilerplate)
             for topic in queryTopics {
                 if let evolvedResp = ASIEvolver.shared.getEvolvedResponse(for: topic),
                    evolvedResp.count > 400 {
@@ -1749,8 +1790,8 @@ extension L104State {
                 let factResp = "\(chainOfThoughtPrefix)From what you've taught me: \(firstFact)\n\nWant me to explore this topic further?\n\n\(confidence.footer)"
                 return formatter.format(factResp, query: query, topics: queryTopics)
             }
-            // ═══ PHASE 56.0: STEP 4.5 — STANDALONE WEB ENRICHMENT ═══
-            // EVO_63: Reduced frequency from 60% to 30% — web cache dedup handles repeat queries.
+            // ═══ PHASE 56.0: STEP 4.5 - STANDALONE WEB ENRICHMENT ═══
+            // EVO_63: Reduced frequency from 60% to 30% - web cache dedup handles repeat queries.
             // The composeFromKB path already runs a web search, so this is supplementary.
             if query.count > 8 && Double.random(in: 0...1) > 0.7 {
                 let webRes = LiveWebSearchEngine.shared.webSearchSync(query, timeout: 3.0)  // EVO_63: 3s (was 8s)
@@ -1782,7 +1823,7 @@ extension L104State {
                     return formatter.format(webResponse, query: query, depth: effectiveDepth, topics: queryTopics)
                 }
             }
-            // 5. Compose from KB — transform fragments into prose (already uses RT search + formatter + web enrichment)
+            // 5. Compose from KB - transform fragments into prose (already uses RT search + formatter + web enrichment)
             // Use gate-enriched prompt if available for better KB matching
             // EVO_59: Pass cachedReasoningPath to avoid duplicate ASILogicGateV2.process() call
             let kbQuery = pipelineResult.enrichedPrompt.count > query.count ? pipelineResult.enrichedPrompt : query
@@ -1808,10 +1849,10 @@ extension L104State {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // ASI PERFORMANCE SUBFUNCTIONS — Optimized core pipeline
+    // ASI PERFORMANCE SUBFUNCTIONS - Optimized core pipeline
     // ═══════════════════════════════════════════════════════════════
 
-    // Cache for repeated topic lookups — PHASE 31.6 QUANTUM VELOCITY CACHE
+    // Cache for repeated topic lookups - PHASE 31.6 QUANTUM VELOCITY CACHE
 
     // ─── FAST PATH: Check cache first ───
     func checkResponseCache(_ query: String) -> String? {
@@ -1824,7 +1865,7 @@ extension L104State {
         return cached.response
     }
 
-    // ─── CACHED TOPIC EXTRACTION — avoids repeated NLTagger calls ───
+    // ─── CACHED TOPIC EXTRACTION - avoids repeated NLTagger calls ───
     func cachedExtractTopics(_ query: String) -> [String] {
         let key = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         if let cached = topicExtractionCache[key],
@@ -1841,7 +1882,7 @@ extension L104State {
         return topics
     }
 
-    // ─── CACHED INTENT CLASSIFICATION — skip full analysis for recent queries ───
+    // ─── CACHED INTENT CLASSIFICATION - skip full analysis for recent queries ───
     func cachedClassifyIntent(_ query: String) -> String? {
         let key = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         if let cached = intentClassificationCache[key],
@@ -1877,7 +1918,7 @@ extension L104State {
              "true", "fair enough", "makes sense", "interesting",
              "i see", "oh okay", "oh ok", "ah", "ahh": return "casual"
         default:
-            break // No fast classification match — proceed to pattern checks
+            break // No fast classification match - proceed to pattern checks
         }
 
         // Multi-word greeting/casual patterns (fast prefix/contains checks)
@@ -1935,10 +1976,10 @@ extension L104State {
 
     // ─── FAST TOPIC MATCHER ─── Quick keyword scan for intelligent responses
     func fastTopicMatch(_ q: String) -> String? {
-        // SPEAK/MONOLOGUE (highest priority — triggers intelligent response)
+        // SPEAK/MONOLOGUE (highest priority - triggers intelligent response)
         if q == "speak" || q == "talk" || q == "say something" || q == "tell me something" || q == "share" { return "self_speak" }
 
-        // NEW COMMANDS — wisdom, paradox, riddle, think, dream, imagine, recall, debate, philosophize, connect
+        // NEW COMMANDS - wisdom, paradox, riddle, think, dream, imagine, recall, debate, philosophize, connect
         if q == "wisdom" || q == "wise" || q == "teach me" || q.hasPrefix("wisdom about") { return "self_wisdom" }
         if q == "paradox" || q.hasPrefix("paradox") || q.contains("give me a paradox") { return "self_paradox" }
         if q == "riddle" || q.contains("give me a riddle") || q.contains("tell me a riddle") || q == "brain teaser" || q == "puzzle" { return "self_riddle" }
@@ -1951,7 +1992,7 @@ extension L104State {
         if q.hasPrefix("connect ") || q.hasPrefix("synthesize ") || q.hasPrefix("link ") { return "self_connect" }
         if q == "monologue" { return "self_speak" }
 
-        // Self-referential (highest priority — about L104 itself)
+        // Self-referential (highest priority - about L104 itself)
         // Note: word-boundary checks prevent "revolution" → self_evolution, etc.
         let qWords = q.components(separatedBy: CharacterSet.alphanumerics.inverted).filter { !$0.isEmpty }
         if (qWords.contains("evolution") && !q.contains("revolution")) || q.contains("upgrade") || qWords.contains("evolving") { return "self_evolution" }
@@ -2047,12 +2088,12 @@ extension L104State {
         let q = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         let pipelineCache = ResponsePipelineOptimizer.shared
 
-        // ═══ EVO_59: UNIFIED CACHE — Adaptive TTL, φ-decay eviction, mesh routing ═══
+        // ═══ EVO_59: UNIFIED CACHE - Adaptive TTL, φ-decay eviction, mesh routing ═══
         if let cached = pipelineCache.getCachedResponse(query: q) {
             return cached
         }
 
-        // ═══ SAGE MODE ENTROPY CYCLE — Harvest and seed on every response ═══
+        // ═══ SAGE MODE ENTROPY CYCLE - Harvest and seed on every response ═══
         // ═══ SAGE BACKBONE: Auto-detect and cleanup recursive pollution ═══
         let sage = SageModeEngine.shared
         if sage.shouldCleanup() {
@@ -2069,7 +2110,7 @@ extension L104State {
             prefetchGroup.leave()
         }
 
-        // FAST PATH 1: Single-word intents (O(1) switch) — skip logic gates for trivial input
+        // FAST PATH 1: Single-word intents (O(1) switch) - skip logic gates for trivial input
         if let fastIntent = fastClassifyIntent(q) {
             let topics = cachedExtractTopics(query)
             let emotion = detectEmotion(query)
@@ -2090,7 +2131,7 @@ extension L104State {
         }
         let pq = processedQuery.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
 
-        // FAST PATH 2: Known topic patterns — skip full intent analysis
+        // FAST PATH 2: Known topic patterns - skip full intent analysis
         if let topicMatch = fastTopicMatch(pq) {
             if topicMatch.hasPrefix("self_") || topicMatch.hasPrefix("creative_") || topicMatch.hasPrefix("knowledge_") || topicMatch.hasPrefix("social_") {
                 if let intelligent = getIntelligentResponse(processedQuery) {
@@ -2103,7 +2144,7 @@ extension L104State {
                         topicHistory.append(topics.joined(separator: " "))
                         if topicHistory.count > 1500 { topicHistory.removeFirst() }
                     }
-                    // ═══ EVO_59: Creative engine bypass — use static Set for O(1) membership ═══
+                    // ═══ EVO_59: Creative engine bypass - use static Set for O(1) membership ═══
                     let isCreativeEngine = L104State.creativeMarkerSet.contains(where: { intelligent.contains($0) })
                     let result: String
                     if isCreativeEngine {
@@ -2140,7 +2181,7 @@ extension L104State {
         // Skip enforcement for trivial intents that are naturally short
         let shortIntents: Set<String> = ["greeting", "casual", "positive_reaction", "gratitude", "affirmation", "negation", "conversational", "minimal", "help", "memory", "status", "conversation", "practical_howto", "technical_debug"]
         if !shortIntents.contains(analysis.intent) && result.count < 2400 && q.count > 5 {
-            // Expand through quantum synthesis for depth — use gate pipeline dimension
+            // Expand through quantum synthesis for depth - use gate pipeline dimension
             let topics = analysis.keywords.isEmpty ? cachedExtractTopics(processedQuery) : analysis.keywords
             let gatePipelineForExpand = LogicGateEnvironment.shared.runPipeline(processedQuery, context: Array(conversationContext.suffix(3)))
             let expandDomain = gatePipelineForExpand.finalDimension.isEmpty ? (topics.first ?? "general") : gatePipelineForExpand.finalDimension
@@ -2153,8 +2194,8 @@ extension L104State {
                 result = sanitizeResponse(synthesized)
             }
 
-            // ═══ PHASE 56.0: WEB EXPANSION — If still too short, pull from live web ═══
-            // EVO_63: Only expand if genuinely short (<1200 chars, was <2400) — reduces redundant web calls
+            // ═══ PHASE 56.0: WEB EXPANSION - If still too short, pull from live web ═══
+            // EVO_63: Only expand if genuinely short (<1200 chars, was <2400) - reduces redundant web calls
             if result.count < 1200 {
                 let webExpand = LiveWebSearchEngine.shared.webSearchSync(processedQuery, timeout: 3.0)  // EVO_63: 3s (was 8s)
                 var webExpansion: [String] = []
@@ -2179,13 +2220,13 @@ extension L104State {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // EVO_64: ASYNC RESPONSE PIPELINE — Modern Swift Concurrency
+    // EVO_64: ASYNC RESPONSE PIPELINE - Modern Swift Concurrency
     // Replaces: DispatchGroup KB pre-fetch, semaphore-based webSearchSync
     // Uses: Task.detached for parallel KB, await webSearchAsync for expansion
-    // Same logic as generateNCGResponse — only concurrency primitives changed
+    // Same logic as generateNCGResponse - only concurrency primitives changed
     // ═══════════════════════════════════════════════════════════════════
 
-    /// EVO_64: Async response generation — non-blocking pipeline with native concurrency
+    /// EVO_64: Async response generation - non-blocking pipeline with native concurrency
     func generateNCGResponseAsync(_ query: String) async -> String {
         let q = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         let pipelineCache = ResponsePipelineOptimizer.shared
@@ -2206,7 +2247,7 @@ extension L104State {
             _ = self.prefetchKBResults(query)
         }
 
-        // FAST PATH 1: Single-word intents — skip logic gates
+        // FAST PATH 1: Single-word intents - skip logic gates
         if let fastIntent = fastClassifyIntent(q) {
             kbTask.cancel()
             let topics = cachedExtractTopics(query)
@@ -2265,7 +2306,7 @@ extension L104State {
             cacheIntent(q, intent: analysis.intent)
         }
 
-        // ═══ EVO_64: Await KB pre-fetch — replaces DispatchGroup.wait(timeout:) ═══
+        // ═══ EVO_64: Await KB pre-fetch - replaces DispatchGroup.wait(timeout:) ═══
         _ = await kbTask.result
 
         var result = sanitizeResponse(buildContextualResponse(processedQuery, intent: analysis.intent, keywords: analysis.keywords, emotion: analysis.emotion))
@@ -2285,7 +2326,7 @@ extension L104State {
                 result = sanitizeResponse(synthesized)
             }
 
-            // ═══ EVO_64: ASYNC WEB EXPANSION — native URLSession.data(for:) ═══
+            // ═══ EVO_64: ASYNC WEB EXPANSION - native URLSession.data(for:) ═══
             // Replaces blocking webSearchSync + DispatchSemaphore with await webSearchAsync
             if result.count < 1200 {
                 let webExpand = await LiveWebSearchEngine.shared.webSearchAsync(processedQuery)

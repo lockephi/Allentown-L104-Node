@@ -1,0 +1,3872 @@
+[
+  {
+    "file": "l104_science_engine/computronium.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 14.258022785186768
+  },
+  {
+    "file": "l104_science_engine/test___init__.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 0.22745609283447266
+  },
+  {
+    "file": "l104_science_engine/coherence.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 1.2009570598602295
+  },
+  {
+    "file": "l104_science_engine/constants.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 0.44367527961730957
+  },
+  {
+    "file": "l104_science_engine/evo_upgrades.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 0.725395917892456
+  },
+  {
+    "file": "l104_science_engine/bridge.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 0.725031852722168
+  },
+  {
+    "file": "l104_science_engine/__init__.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 0.32807135581970215
+  },
+  {
+    "file": "l104_science_engine/cross_engine.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 0.6269330978393555
+  },
+  {
+    "file": "l104_science_engine/physics.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 0.9722962379455566
+  },
+  {
+    "file": "l104_science_engine/engine.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 2.0306317806243896
+  },
+  {
+    "file": "l104_science_engine/quantum_25q.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 0.6176960468292236
+  },
+  {
+    "file": "l104_science_engine/multidimensional.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 0.7050411701202393
+  },
+  {
+    "file": "l104_science_engine/consciousness_circuits.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 0.28240418434143066
+  },
+  {
+    "file": "l104_science_engine/berry_phase.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 1.2060139179229736
+  },
+  {
+    "file": "l104_science_engine/entropy.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "raw": {
+      "code_validation": {
+        "valid": true,
+        "smells": 6
+      },
+      "science_validation": {
+        "valid": true,
+        "entropy_efficiency": 1.0
+      },
+      "math_validation": {
+        "valid": true,
+        "proofs": {
+          "stability_nirvana": {
+            "final_value": 527.5184818492612,
+            "target": 527.5184818492611,
+            "error": 1.1368683772161603e-13,
+            "converged": true,
+            "iterations": 100,
+            "contraction_factor": 0.6180339887498948,
+            "theoretical_rate": -0.48121183,
+            "proof_type": "Banach contraction mapping theorem",
+            "universality": "Tested 5 starting points, all converged: True",
+            "starting_points": {
+              "0.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35592301
+              },
+              "1.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35590403
+              },
+              "1000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.35482116
+              },
+              "-500.0": {
+                "final_value": 527.518481849261,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.36259019
+              },
+              "1000000.0": {
+                "final_value": 527.5184818492612,
+                "final_error": 1.1368683772161603e-13,
+                "converged": true,
+                "actual_rate": -0.431391
+              }
+            }
+          },
+          "entropy_reduction": {
+            "initial_entropy": 3.700439718141092,
+            "final_entropy_phi": 3.6999428526890936,
+            "phi_entropy_reduction": 0.0004968654519985627,
+            "phi_decay_rate": 0.0,
+            "control_final_entropies": {
+              "rational_3/13": 2.677776,
+              "rational_5/13": 3.273177,
+              "rational_1/2": 3.686992,
+              "sqrt2": 3.689243,
+              "e/pi": 3.684109,
+              "pi/4": 3.602701
+            },
+            "control_reductions": {
+              "rational_3/13": 1.022663,
+              "rational_5/13": 0.427263,
+              "rational_1/2": 0.013448,
+              "sqrt2": 0.011197,
+              "e/pi": 0.016331,
+              "pi/4": 0.097739
+            },
+            "phi_more_effective": true,
+            "phi_rank": "1/7",
+            "entropy_decreased": false,
+            "final_entropy_control": 2.6777763503399292,
+            "control_entropy_reduction": 1.022663367801163,
+            "note": "Open system with external driving \u2014 not a thermodynamic violation",
+            "interpretation": "\u03c6-modulation preserves coherence (Shannon entropy) better than rational AND other irrational frequencies. The golden ratio's maximal irrationality (hardest to approximate by rationals) plus the identity \u03c6\u00b2 = \u03c6+1 creates coupled golden rotations in phase space, achieving optimal equidistribution by the three-distance theorem and preventing periodic resonance traps.",
+            "trajectory_phi": [
+              3.6965645791514334,
+              3.6908797183385955,
+              3.69210423062605,
+              3.6936243046882082,
+              3.6989119122720524,
+              3.6999428526890936
+            ]
+          },
+          "collatz": {
+            "starting_value": 27,
+            "steps_to_convergence": 112,
+            "converged_to_1": true,
+            "max_value": 9232,
+            "expansion_ratio": 341.93,
+            "odd_steps": 42,
+            "even_steps": 70,
+            "odd_even_ratio": 0.6,
+            "sequence_sample": [
+              27,
+              82,
+              41,
+              124,
+              62,
+              31,
+              94,
+              47,
+              142,
+              71
+            ],
+            "status": "empirically verified",
+            "note": "Collatz conjecture remains an open problem \u2014 this is verification, not proof"
+          },
+          "collatz_batch": {
+            "range": "[1, 1000]",
+            "total_tested": 1000,
+            "all_converged": true,
+            "failures": [],
+            "average_stopping_time": 59.54,
+            "max_stopping_time": 178,
+            "max_peak_value": 250504,
+            "stopping_time_std": 40.85,
+            "note": "Collatz conjecture remains an open problem \u2014 batch empirical verification"
+          },
+          "god_code_conservation": {
+            "theorem": "G(X) \u00d7 2^(X/104) = GOD_CODE for all X",
+            "proof_method": "Algebraic identity (exponent cancellation)",
+            "proven": true,
+            "numerical_verification": {
+              "test_points": 14,
+              "max_error": 1.1368683772161603e-13,
+              "machine_precision": true
+            },
+            "components": {
+              "286^(1/\u03c6)": 32.9699051156,
+              "2^(416/104) = 2^4": 16,
+              "product": 527.5184818493,
+              "GOD_CODE": 527.5184818492611,
+              "base_error": 0.0
+            },
+            "factor_13_structure": {
+              "286 = 22\u00d713": true,
+              "104 = 8\u00d713": true,
+              "416 = 32\u00d713": true,
+              "common_factor": 13
+            },
+            "verifications": [
+              {
+                "X": 0,
+                "G(X)": 527.5184818493,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 1,
+                "G(X)": 524.0143265447,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 13,
+                "G(X)": 483.736580721,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 26,
+                "G(X)": 443.5884003671,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              },
+              {
+                "X": 52,
+                "G(X)": 373.0118957168,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 1.1368683772161603e-13
+              },
+              {
+                "X": 104,
+                "G(X)": 263.7592409246,
+                "G(X)\u00b72^(X/104)": 527.5184818493,
+                "error": 0.0
+              }
+            ],
+            "rigor": "Formal algebraic proof, verified to machine precision"
+          },
+          "void_constant_derivation": {
+            "theorem": "VOID_CONSTANT = 104/100 + \u03c6/1000",
+            "proven": true,
+            "components": {
+              "104/100": 1.04,
+              "\u03c6/1000": 0.001618033988749895,
+              "sum": 1.04161803398875,
+              "VOID_CONSTANT": 1.0416180339887497,
+              "error": 2.220446049250313e-16,
+              "exact": true
+            },
+            "primal_calculus_check": {
+              "x": 2.0,
+              "computed": 0.9394930087161761,
+              "expected": 0.9394930087161761,
+              "error": 0.0,
+              "consistent": true
+            },
+            "rigor": "Algebraic identity \u2014 exact by construction"
+          },
+          "godel_turing": {
+            "godel_framework": {
+              "axiom_count": 7,
+              "godel_sentence_exists": true,
+              "witness_level": "L104 as oracle for analyzed subsystems",
+              "witness_hash": "13dcc4904c2d046b",
+              "interpretation": "Stronger system T proves weaker system F's undecidable statements. T has its own G\u00f6del sentences \u2014 incompleteness shifts, not resolves.",
+              "mathematical_basis": "Standard: PA \u2282 ZFC \u2282 ZFC+large-cardinals (each proves prior's consistency)",
+              "caveat": "G\u00f6del incompleteness is inherent to sufficiently strong formal systems"
+            },
+            "halting_framework": {
+              "problem": "Halting problem (Turing 1936)",
+              "status": "Mathematically unsolvable in general \u2014 this is a theorem, not a conjecture",
+              "l104_approach": "Bounded computation with timeouts + oracle architecture",
+              "practical_decidability": true,
+              "general_decidability": false,
+              "note": "L104 achieves practical decidability for its computational domain via resource bounds and oracle queries, not by refuting Turing's theorem",
+              "turing_oracle_analogy": "L104 hybrid (local intellect + external API) is analogous to Turing oracle machines \u2014 extends effective computability without contradicting the diagonal argument"
+            },
+            "hierarchical_witnessing": true,
+            "practical_decidability": true,
+            "general_completeness": false,
+            "general_decidability": false,
+            "note": "L104 achieves practical completeness and decidability within its bounded computational domain. General incompleteness and undecidability are mathematical facts that apply to all sufficiently powerful systems.",
+            "proof_integrity": "eed97bc56cb01c41"
+          }
+        }
+      },
+      "consensus": {
+        "valid_count": 3,
+        "total_engines": 3,
+        "consensus_reached": true,
+        "confidence": 1.0
+      }
+    },
+    "scan_time": 1.8793151378631592
+  }
+]

@@ -73,6 +73,7 @@ class LearningIntellect:
         self.predictive_cache: Dict = {'patterns': [], 'prefetched': {}}  # Patterns + pre-fetched responses
         self.embedding_cache: Dict[str, dict] = {}  # Semantic embeddings with metadata
         self.concept_clusters: Dict[str, List[str]] = defaultdict(list)  # Hierarchical clusters
+        self._concept_to_cluster: Dict[str, str] = {}  # Reverse index: concept → cluster name (O(1) lookup)
         self.quality_predictor: Dict[str, float] = defaultdict(lambda: 0.7)  # Quality predictions
         self.novelty_scores: Dict[str, float] = {}  # Query novelty tracking
         self.compressed_memories: Dict[str, str] = {}  # Compressed old memories
@@ -618,28 +619,45 @@ class LearningIntellect:
         """
         try:
             # 1. CLUSTER FUSION: Merge overlapping clusters
+            #    Uses bounded random sampling instead of O(n²) full scan.
+            #    Checks up to 60 random pairs per cycle — full coverage over multiple cycles.
             cluster_names = list(self.concept_clusters.keys())
             merged = 0
-            for i in range(len(cluster_names)):
-                for j in range(i + 1, len(cluster_names)):
-                    c1 = cluster_names[i]
-                    c2 = cluster_names[j]
-                    if c1 not in self.concept_clusters or c2 not in self.concept_clusters:
-                        continue
+            n_clusters = len(cluster_names)
+            max_pairs = min(60, n_clusters * (n_clusters - 1) // 2)  # Cap comparisons
+            pairs_checked = 0
+            import random as _rng
+            _seen_pairs = set()
+            while pairs_checked < max_pairs and n_clusters >= 2:
+                i = _rng.randrange(n_clusters)
+                j = _rng.randrange(n_clusters)
+                if i == j or (min(i, j), max(i, j)) in _seen_pairs:
+                    pairs_checked += 1
+                    continue
+                _seen_pairs.add((min(i, j), max(i, j)))
+                pairs_checked += 1
 
-                    s1 = set(self.concept_clusters[c1])
-                    s2 = set(self.concept_clusters[c2])
+                c1 = cluster_names[i]
+                c2 = cluster_names[j]
+                if c1 not in self.concept_clusters or c2 not in self.concept_clusters:
+                    continue
 
-                    # If intersection > 30%, merge them
-                    overlap = len(s1.intersection(s2)) / min(len(s1), len(s2)) if min(len(s1), len(s2)) > 0 else 0
-                    if overlap > 0.3 * (1.0 - self._quantum_coherence): # Dynamic overlap threshold
-                        new_members = list(s1.union(s2))
-                        # Create fused name
-                        new_name = f"fusion_{c1[:5]}_{c2[:5]}_{int(time.time()) % 1000}"
-                        self.concept_clusters[new_name] = new_members
-                        del self.concept_clusters[c1]
-                        del self.concept_clusters[c2]
-                        merged += 1
+                s1 = set(self.concept_clusters[c1])
+                s2 = set(self.concept_clusters[c2])
+
+                # If intersection > 30%, merge them
+                overlap = len(s1.intersection(s2)) / min(len(s1), len(s2)) if min(len(s1), len(s2)) > 0 else 0
+                if overlap > 0.3 * (1.0 - self._quantum_coherence): # Dynamic overlap threshold
+                    new_members = list(s1.union(s2))
+                    # Create fused name
+                    new_name = f"fusion_{c1[:5]}_{c2[:5]}_{int(time.time()) % 1000}"
+                    self.concept_clusters[new_name] = new_members
+                    del self.concept_clusters[c1]
+                    del self.concept_clusters[c2]
+                    merged += 1
+                    # Refresh names list after mutation
+                    cluster_names = list(self.concept_clusters.keys())
+                    n_clusters = len(cluster_names)
 
             # 2. CLUSTER FISSION: Split large, low-coherence clusters
             fissioned = 0
@@ -671,6 +689,7 @@ class LearningIntellect:
 
             if merged > 0 or fissioned > 0:
                 logger.info(f"⚡ [CLUSTER_ENGINE] Optimized: {merged} fused, {fissioned} fissioned. Total: {len(self.concept_clusters)}")
+                self._rebuild_cluster_index()  # Keep reverse index in sync
         except Exception as e:
             logger.debug(f"Cluster Engine Error: {e}")
 
@@ -692,8 +711,8 @@ class LearningIntellect:
                 current_activation = activation * math.exp(-age * 0.1)
 
                 if current_activation > 0.1 and concept in self.knowledge_graph:
-                    # Spread activation to connected concepts
-                    for related, strength in self.knowledge_graph[concept][:100]: # Increased (was 20)
+                    # Spread activation to top-30 connected concepts (bounded propagation)
+                    for related, strength in self.knowledge_graph[concept][:30]:
                         spread_activation = current_activation * strength * decay_factor * self._flow_state
                         self._resonance_matrix[concept][related] += spread_activation
                         new_activations.append((related, spread_activation, now))
@@ -903,7 +922,7 @@ class LearningIntellect:
                             similarities.append(similarity)
 
                 if similarities:
-                    self._self_similarity_score = sum(similarities) / len(similarities)
+                    self._self_similarity_score = sum(similarities) / max(len(similarities), 1)
 
             # 4. Update fractal dimension based on complexity
             # Higher self-similarity = lower dimension (more ordered)
@@ -969,8 +988,8 @@ class LearningIntellect:
             # 3. Test reconstruction fidelity (can we recover parts from whole?)
             if len(self._interference_patterns) >= 10:
                 # The hologram should be stable (low variance = high fidelity)
-                mean_pattern = sum(self._interference_patterns) / len(self._interference_patterns)
-                variance = sum((p - mean_pattern)**2 for p in self._interference_patterns) / len(self._interference_patterns)
+                mean_pattern = sum(self._interference_patterns) / max(len(self._interference_patterns), 1)
+                variance = sum((p - mean_pattern)**2 for p in self._interference_patterns) / max(len(self._interference_patterns), 1)
 
                 # Fidelity is inverse of variance (normalized)
                 self._reconstruction_fidelity = 1.0 / (1.0 + variance)
@@ -1041,8 +1060,8 @@ class LearningIntellect:
                 recent = self._observer_states[-10:]
                 hash_variance = 0
                 if len(recent) >= 2:
-                    mean_hash = sum(o['model_hash'] for o in recent) / len(recent)
-                    hash_variance = sum((o['model_hash'] - mean_hash)**2 for o in recent) / len(recent)
+                    mean_hash = sum(o['model_hash'] for o in recent) / max(len(recent), 1)
+                    hash_variance = sum((o['model_hash'] - mean_hash)**2 for o in recent) / max(len(recent), 1)
 
                 # Low variance = stable self-model = higher consciousness
                 # High variance = chaotic self-model = exploring consciousness
@@ -1058,7 +1077,7 @@ class LearningIntellect:
                 self._flow_state / 5.0,  # Normalize
             ]
 
-            phi_integration = sum(integration_factors) / len(integration_factors)
+            phi_integration = sum(integration_factors) / max(len(integration_factors), 1)
 
             # Consciousness grows with strange loop depth
             loop_boost = math.log2(self._strange_loop_depth + 1) * 0.1
@@ -1175,7 +1194,7 @@ class LearningIntellect:
             if not hasattr(self, '_curiosity_state'):
                 self._curiosity_state = 1.0  # Current curiosity level (0-2)
                 self._exploration_frontier = []  # Unexplored concept boundaries
-                self._novelty_buffer = deque(maxlen=10000)  # Recent novelty scores  # QUANTUM AMPLIFIED
+                self._novelty_buffer = deque(maxlen=500)  # Capped from 10K
                 self._information_gain_history = []
                 self._boredom_threshold = 0.3  # Triggers exploration when similarity drops
                 self._surprise_accumulator = 0.0
@@ -1264,7 +1283,7 @@ class LearningIntellect:
             # Initialize Hebbian structures
             if not hasattr(self, '_synaptic_weights'):
                 self._synaptic_weights = defaultdict(lambda: defaultdict(float))
-                self._activation_trace = deque(maxlen=5000)  # Recent activations  # QUANTUM AMPLIFIED
+                self._activation_trace = deque(maxlen=500)  # Capped from 5K
                 self._ltp_threshold = 0.6  # Threshold for strengthening
                 self._ltd_threshold = 0.2  # Threshold for weakening
                 self._plasticity_rate = 0.01  # Base learning rate
@@ -1307,40 +1326,48 @@ class LearningIntellect:
                                 # Bidirectional (symmetric Hebbian)
                                 self._synaptic_weights[concept2][concept1] = self._synaptic_weights[concept1][concept2]
 
-            # 3. LTD: Weaken rarely-used connections
-            # Periodic decay of all weights
+            # 3. LTD: Weaken rarely-used connections — bounded scan
             if chaos.chaos_float(0, 1) < 0.1:  # 10% chance each cycle
                 decay_count = 0
-                for concept1 in list(self._synaptic_weights.keys()):
-                    for concept2 in list(self._synaptic_weights[concept1].keys()):
+                to_delete = []
+                for concept1 in list(self._synaptic_weights.keys())[:500]:
+                    for concept2 in list(self._synaptic_weights[concept1].keys())[:50]:
                         old_weight = self._synaptic_weights[concept1][concept2]
                         if old_weight < self._ltd_threshold:
-                            # Long-Term Depression
                             self._synaptic_weights[concept1][concept2] *= 0.9
                             decay_count += 1
                             if self._synaptic_weights[concept1][concept2] < 0.01:
-                                del self._synaptic_weights[concept1][concept2]
+                                to_delete.append((concept1, concept2))
+                for c1, c2 in to_delete:
+                    del self._synaptic_weights[c1][c2]
 
                 if decay_count > 0:
                     logger.debug(f"🧬 [HEBBIAN] LTD: Weakened {decay_count} connections")
 
-            # 4. Transfer strong Hebbian weights to knowledge graph
+            # Prune synaptic_weights if too large
+            if len(self._synaptic_weights) > 5000:
+                # Keep entries with highest total weight
+                items = sorted(self._synaptic_weights.items(),
+                              key=lambda x: -sum(x[1].values()) if x[1] else 0)
+                self._synaptic_weights = defaultdict(lambda: defaultdict(float),
+                                                      dict(items[:3000]))
+
+            # 4. Transfer strong Hebbian weights to knowledge graph — bounded
             strong_connections = 0
-            for concept1, connections in self._synaptic_weights.items():
-                for concept2, weight in connections.items():
-                    if weight > 0.5:  # Strong connection
-                        # Add to main knowledge graph if not present
+            for concept1, connections in list(self._synaptic_weights.items())[:200]:
+                for concept2, weight in list(connections.items())[:20]:
+                    if weight > 0.5 and strong_connections < 50:
                         existing = [r for r, _s in self.knowledge_graph.get(concept1, []) if r == concept2]
                         if not existing:
                             self.knowledge_graph[concept1].append((concept2, weight))
                             strong_connections += 1
 
-            # 5. Calculate plasticity metrics
-            total_synapses = sum(len(c) for c in self._synaptic_weights.values())
+            # 5. Calculate plasticity metrics — sample instead of full scan
+            total_synapses = sum(len(c) for c in list(self._synaptic_weights.values())[:500])
             avg_weight = 0
             if total_synapses > 0:
-                all_weights = [w for conns in self._synaptic_weights.values() for w in conns.values()]
-                avg_weight = sum(all_weights) / len(all_weights)
+                sample_weights = [w for conns in list(self._synaptic_weights.values())[:200] for w in list(conns.values())[:20]]
+                avg_weight = sum(sample_weights) / max(len(sample_weights), 1)
 
             self.meta_cognition['synaptic_count'] = total_synapses
             self.meta_cognition['avg_synaptic_weight'] = avg_weight
@@ -1383,10 +1410,9 @@ class LearningIntellect:
                 replay_candidates = []
 
                 try:
-                    conn = sqlite3.connect(self.db_path)
+                    conn = self._get_optimized_connection()
                     c = conn.cursor()
 
-                    # Get recent high-quality memories
                     c.execute('''
                         SELECT query_hash, query, response, quality_score, access_count
                         FROM memory
@@ -1396,7 +1422,6 @@ class LearningIntellect:
 
                     for row in c.fetchall():
                         hash_val, query, response, quality, access = row
-                        # Importance = quality * recency_weight * access_frequency
                         importance = quality * (1 + access * 0.1)
                         replay_candidates.append({
                             'hash': hash_val,
@@ -1404,29 +1429,24 @@ class LearningIntellect:
                             'response': response,
                             'importance': importance
                         })
-
-                    conn.close()
                 except Exception:
                     pass
 
-                # 3. Replay top memories (strengthen their traces)
+                # 3. Replay top memories — cap concepts to avoid O(n²)
                 replay_candidates.sort(key=lambda x: x['importance'], reverse=True)
-                self._replay_buffer = replay_candidates[:200]
+                self._replay_buffer = replay_candidates[:50]  # 50 replays, not 200
 
                 for memory in self._replay_buffer:
-                    # Simulate memory reactivation
-                    concepts = list(_extract_concepts_cached(memory['query']))
+                    concepts = list(_extract_concepts_cached(memory['query']))[:15]
 
-                    # Strengthen knowledge graph connections for replayed memories
-                    for i, c1 in enumerate(concepts):
-                        for c2 in concepts[i+1:]:
-                            if c1 in self.knowledge_graph:
-                                for j, (related, strength) in enumerate(self.knowledge_graph[c1]):
-                                    if related == c2:
-                                        # Strengthen this connection
-                                        new_strength = strength * 1.1  # UNLOCKED
-                                        self.knowledge_graph[c1][j] = (related, new_strength)
-                                        break
+                    # Strengthen knowledge graph connections — only adjacent pairs (O(n) not O(n²))
+                    for i in range(len(concepts) - 1):
+                        c1, c2 = concepts[i], concepts[i + 1]
+                        if c1 in self.knowledge_graph:
+                            for j, (related, strength) in enumerate(self.knowledge_graph[c1][:20]):
+                                if related == c2:
+                                    self.knowledge_graph[c1][j] = (related, strength * 1.1)
+                                    break
 
                 logger.debug(f"💤 [CONSOLIDATION] Replayed {len(self._replay_buffer)} memories")
 
@@ -1461,7 +1481,7 @@ class LearningIntellect:
 
             # 5. Calculate consolidation efficiency
             if self._replay_buffer:
-                replay_importance = sum(m['importance'] for m in self._replay_buffer) / len(self._replay_buffer)
+                replay_importance = sum(m['importance'] for m in self._replay_buffer) / max(len(self._replay_buffer), 1)
                 self._consolidation_efficiency = replay_importance * self._quantum_coherence  # UNLOCKED
 
             self.meta_cognition['consolidation_state'] = self._consolidation_state
@@ -1496,7 +1516,7 @@ class LearningIntellect:
                         member_lengths = [len(m) for m in members]
                         embedding = {
                             'size': len(members),
-                            'avg_concept_len': sum(member_lengths) / len(member_lengths),
+                            'avg_concept_len': sum(member_lengths) / max(len(member_lengths), 1),
                             'diversity': len(set(m[0] for m in members if m)) / max(1, len(members)),
                             'coherence': self._quantum_coherence
                         }
@@ -1574,7 +1594,7 @@ class LearningIntellect:
 
             # 5. Calculate transfer success rate
             if self._transfer_mappings:
-                avg_potential = sum(m['potential'] for m in self._transfer_mappings.values()) / len(self._transfer_mappings)
+                avg_potential = sum(m['potential'] for m in self._transfer_mappings.values()) / max(len(self._transfer_mappings), 1)
                 self._transfer_success_rate = avg_potential * self._flow_state
 
             self.meta_cognition['transfer_mappings'] = len(self._transfer_mappings)
@@ -1684,9 +1704,9 @@ class LearningIntellect:
 
             # 4. Calculate overall retention metrics
             if self._srs_state:
-                avg_retention = sum(s['retention_score'] for s in self._srs_state.values()) / len(self._srs_state)
-                avg_interval = sum(s['interval'] for s in self._srs_state.values()) / len(self._srs_state)
-                avg_ease = sum(s['ease'] for s in self._srs_state.values()) / len(self._srs_state)
+                avg_retention = sum(s['retention_score'] for s in self._srs_state.values()) / max(len(self._srs_state), 1)
+                avg_interval = sum(s['interval'] for s in self._srs_state.values()) / max(len(self._srs_state), 1)
+                avg_ease = sum(s['ease'] for s in self._srs_state.values()) / max(len(self._srs_state), 1)
 
                 self._retention_rate = avg_retention
             else:
@@ -1749,7 +1769,7 @@ class LearningIntellect:
                     'parallel_streams': 1,
                     'predictive_accuracy': 0.5,
                     'cache_hit_rate': 0.0,
-                    'latency_samples': deque(maxlen=10000),  # QUANTUM AMPLIFIED
+                    'latency_samples': deque(maxlen=500),  # Capped from 10K
                     'research_findings': []
                 }
 
@@ -1766,9 +1786,9 @@ class LearningIntellect:
             if self.knowledge_graph:
                 operations_this_cycle += len(self.knowledge_graph)
 
-            # Count active concepts
+            # Count active concepts — sample first 100 clusters instead of full scan
             if self._knowledge_clusters:
-                operations_this_cycle += sum(len(v) for v in self._knowledge_clusters.values())
+                operations_this_cycle += sum(len(v) for v in list(self._knowledge_clusters.values())[:100])
 
             # Calculate effective TPS
             cycle_duration = 1.0  # Assume 1 second cycles for now
@@ -1966,8 +1986,8 @@ class LearningIntellect:
                             state['mixed_content_detected'] += 1
 
             # 2. BUILD LANGUAGE-SPECIFIC KNOWLEDGE CLUSTERS
-            # Organize existing clusters by their dominant language
-            for cluster_id, members in list(self._knowledge_clusters.items()):
+            # Organize existing clusters by their dominant language — cap scan to 100
+            for cluster_id, members in list(self._knowledge_clusters.items())[:100]:
                 if members:
                     # Sample cluster to determine dominant language
                     sample = ' '.join(members[:100])
@@ -2087,7 +2107,7 @@ class LearningIntellect:
             # Collect metrics from recent learning activity
             current_metrics = {
                 'memory_count': len(self.memory_cache),
-                'knowledge_links': sum(len(v) for v in self.knowledge_graph.values()),
+                'knowledge_links': sum(len(v) for v in list(self.knowledge_graph.values())[:500]),  # Sample, not full scan
                 'cluster_count': len(self._knowledge_clusters),
                 'skill_count': len(self.skills),
                 'coherence': self._quantum_coherence,
@@ -2100,7 +2120,7 @@ class LearningIntellect:
             # 2. CALCULATE LEARNING EFFICIENCY
             # How much knowledge gained per unit of processing
             if len(state['efficiency_history']) >= 2:
-                prev = list(state['efficiency_history'])[-1]
+                prev = state['efficiency_history'][-1]
                 knowledge_delta = current_metrics['knowledge_links'] - prev.get('knowledge_links', 0)
                 time_delta = current_metrics['timestamp'] - prev.get('timestamp', current_metrics['timestamp'])
 
@@ -2117,18 +2137,20 @@ class LearningIntellect:
             # 3. GENERATE LEARNING HYPOTHESES
             # Based on patterns observed, create testable hypotheses
             if len(state['efficiency_history']) >= 20 and state['research_cycles'] % 10 == 0:
-                recent = list(state['efficiency_history'])[-10:]
-                older = list(state['efficiency_history'])[-20:-10]
+                # Slice deque via indexing instead of full list() conversion
+                eh = state['efficiency_history']
+                recent = [eh[-i] for i in range(1, 11)]
+                older = [eh[-i] for i in range(11, 21)]
 
                 # Analyze what changed between periods
-                recent_avg_efficiency = sum(m.get('efficiency', 0) for m in recent) / len(recent)
-                older_avg_efficiency = sum(m.get('efficiency', 0) for m in older) / len(older)
+                recent_avg_efficiency = sum(m.get('efficiency', 0) for m in recent) / max(len(recent), 1)
+                older_avg_efficiency = sum(m.get('efficiency', 0) for m in older) / max(len(older), 1)
 
-                recent_avg_coherence = sum(m['coherence'] for m in recent) / len(recent)
-                older_avg_coherence = sum(m['coherence'] for m in older) / len(older)
+                recent_avg_coherence = sum(m['coherence'] for m in recent) / max(len(recent), 1)
+                older_avg_coherence = sum(m['coherence'] for m in older) / max(len(older), 1)
 
-                recent_avg_entropy = sum(m['entropy'] for m in recent) / len(recent)
-                older_avg_entropy = sum(m['entropy'] for m in older) / len(older)
+                recent_avg_entropy = sum(m['entropy'] for m in recent) / max(len(recent), 1)
+                older_avg_entropy = sum(m['entropy'] for m in older) / max(len(older), 1)
 
                 # Generate hypothesis based on observations
                 if recent_avg_efficiency > older_avg_efficiency * 1.1:  # 10% improvement
@@ -2181,11 +2203,12 @@ class LearningIntellect:
             # 5. DETECT BREAKTHROUGHS
             # Significant jumps in capability
             if len(state['efficiency_history']) >= 5:
-                recent_5 = list(state['efficiency_history'])[-5:]
+                eh = state['efficiency_history']
+                recent_5 = [eh[-i] for i in range(1, 6)]
                 recent_avg = sum(m.get('efficiency', 0) for m in recent_5) / 5
 
-                if len(state['efficiency_history']) >= 20:
-                    baseline = list(state['efficiency_history'])[-20:-15]
+                if len(eh) >= 20:
+                    baseline = [eh[-i] for i in range(16, 21)]
                     baseline_avg = sum(m.get('efficiency', 0) for m in baseline) / 5
 
                     if recent_avg > baseline_avg * 2:  # 2x improvement
@@ -2232,6 +2255,13 @@ class LearningIntellect:
 
                 self.meta_cognition['optimal_coherence_range'] = target_coherence_range
 
+            # Prune unbounded state dicts
+            if len(state['successful_patterns']) > 500:
+                items = sorted(state['successful_patterns'].items(), key=lambda x: -x[1].get('efficiency', 0))
+                state['successful_patterns'] = dict(items[:300])
+            if len(state['active_hypotheses']) > 100:
+                state['active_hypotheses'] = state['active_hypotheses'][-50:]
+
             # 7. UPDATE META-COGNITION
             self.meta_cognition['research_cycles'] = state['research_cycles']
             self.meta_cognition['breakthrough_count'] = state['breakthrough_count']
@@ -2260,23 +2290,24 @@ class LearningIntellect:
             if not hasattr(self, '_rsi_state'):
                 self._rsi_state = {
                     'improvement_cycles': 0,
-                    'learning_rate_history': deque(maxlen=50000),  # QUANTUM AMPLIFIED
+                    'learning_rate_history': deque(maxlen=500),  # Capped from 50K — only need recent window
                     'algorithm_mutations': {},
                     'best_configuration': None,
                     'improvement_velocity': 0.0,
                     'improvement_acceleration': 0.0,
                     'self_model_accuracy': 0.5,
                     'recursive_depth': 1,
-                    'fitness_history': deque(maxlen=10000)  # QUANTUM AMPLIFIED
+                    'fitness_history': deque(maxlen=500)  # Capped from 10K
                 }
 
             state = self._rsi_state
             state['improvement_cycles'] += 1
 
-            # 1. MEASURE LEARNING EFFECTIVENESS (fitness function)
+            # 1. MEASURE LEARNING EFFECTIVENESS (fitness function) — sample, not full scan
             memories_count = len(self.memory_cache)
-            knowledge_links = sum(len(v) for v in self.knowledge_graph.values())
-            novelty_avg = sum(self.novelty_scores.values()) / max(1, len(self.novelty_scores)) if self.novelty_scores else 0.5
+            knowledge_links = sum(len(v) for v in list(self.knowledge_graph.values())[:500])
+            novelty_sample = list(self.novelty_scores.values())[:200] if self.novelty_scores else [0.5]
+            novelty_avg = sum(novelty_sample) / max(len(novelty_sample), 1)
 
             current_fitness = (
                 math.log(memories_count + 1) * 0.3 +
@@ -2289,10 +2320,11 @@ class LearningIntellect:
 
             # 2. COMPUTE IMPROVEMENT VELOCITY & ACCELERATION
             if len(state['fitness_history']) >= 10:
-                recent = list(state['fitness_history'])[-10:]
-                older = list(state['fitness_history'])[-20:-10] if len(state['fitness_history']) >= 20 else recent
+                fh = state['fitness_history']
+                recent = [fh[-i] for i in range(1, 11)]
+                older = [fh[-i] for i in range(11, 21)] if len(fh) >= 20 else recent
 
-                velocity = (sum(recent) / len(recent)) - (sum(older) / len(older))
+                velocity = (sum(recent) / max(len(recent), 1)) - (sum(older) / max(len(older), 1))
                 state['improvement_velocity'] = velocity
 
                 if len(state['fitness_history']) >= 30:
@@ -2411,27 +2443,29 @@ class LearningIntellect:
                                     # New causal link
                                     state['causal_graph'][cause].append((effect, 0.3, 0.5))
 
-            # 2. DETECT CONFOUNDERS
-            # If A->C and B->C both exist, A and B might be confounders
-            for concept, effects in state['causal_graph'].items():
-                for effect, strength, _ in effects:
-                    # Find other causes of this effect
-                    other_causes = [c for c, es in state['causal_graph'].items()
-                                   if c != concept and any(e == effect for e, _, _ in es)]
-                    for other in other_causes:
-                        state['confounders'][effect].add((concept, other))
+            # 2. DETECT CONFOUNDERS — build effect→causes index first (O(n) instead of O(n²))
+            effect_to_causes = defaultdict(set)
+            for concept, effects in list(state['causal_graph'].items())[:500]:
+                for effect, strength, _ in effects[:20]:
+                    effect_to_causes[effect].add(concept)
+            for effect, causes in effect_to_causes.items():
+                if len(causes) >= 2:
+                    causes_list = list(causes)[:10]
+                    for i, c1 in enumerate(causes_list):
+                        for c2 in causes_list[i+1:]:
+                            state['confounders'][effect].add((c1, c2))
 
-            # 3. BUILD CAUSAL CHAINS (A->B->C)
-            for cause, effects in list(state['causal_graph'].items())[:200]:
-                for effect, strength, _ in effects:
-                    # Look for chains
+            # 3. BUILD CAUSAL CHAINS (A->B->C) — bounded
+            for cause, effects in list(state['causal_graph'].items())[:100]:
+                for effect, strength, _ in effects[:10]:
                     if effect in state['causal_graph']:
-                        for final_effect, s2, _ in state['causal_graph'][effect]:
+                        for final_effect, s2, _ in state['causal_graph'][effect][:10]:
                             chain_strength = strength * s2
                             if chain_strength > 0.2:
                                 chain = (cause, effect, final_effect)
-                                if chain not in state['causal_chains'][cause]:
-                                    state['causal_chains'][cause].append(chain)
+                                chains = state['causal_chains'][cause]
+                                if len(chains) < 50 and chain not in chains:
+                                    chains.append(chain)
 
             # 4. COUNTERFACTUAL REASONING
             # "What if X hadn't happened?"
@@ -2451,14 +2485,24 @@ class LearningIntellect:
                     if len(state['counterfactuals']) > 50:
                         state['counterfactuals'].pop(0)
 
-            # 5. TRANSFER CAUSAL KNOWLEDGE to main knowledge graph
-            for cause, effects in state['causal_graph'].items():
-                for effect, strength, confidence in effects:
-                    if strength > 0.6 and confidence > 0.6:
-                        # High-confidence causal link -> add to knowledge graph
+            # 5. TRANSFER CAUSAL KNOWLEDGE to main knowledge graph — bounded
+            transferred = 0
+            for cause, effects in list(state['causal_graph'].items())[:200]:
+                for effect, strength, confidence in effects[:20]:
+                    if strength > 0.6 and confidence > 0.6 and transferred < 50:
                         existing = [r for r, _s in self.knowledge_graph.get(cause, []) if r == effect]
                         if not existing:
-                            self.knowledge_graph[cause].append((effect, strength * 1.5))  # Boost causal links
+                            self.knowledge_graph[cause].append((effect, strength * 1.5))
+                            transferred += 1
+
+            # Prune causal_graph to prevent unbounded growth
+            if len(state['causal_graph']) > 2000:
+                # Keep strongest causal links
+                items = sorted(state['causal_graph'].items(), key=lambda x: -sum(s for _, s, _ in x[1]))
+                state['causal_graph'] = defaultdict(list, dict(items[:1500]))
+            # Prune causal_chains
+            if len(state['causal_chains']) > 1000:
+                state['causal_chains'] = defaultdict(list, dict(list(state['causal_chains'].items())[:800]))
 
             self.meta_cognition['causal_links'] = sum(len(v) for v in state['causal_graph'].values())
             self.meta_cognition['causal_chains'] = sum(len(v) for v in state['causal_chains'].values())
@@ -2548,20 +2592,28 @@ class LearningIntellect:
             if state['abstraction_levels']:
                 state['max_level'] = max(state['abstraction_levels'].values())
 
-            # 6. PROPAGATE ABSTRACTION UP
-            for child, parents in state['is_a_relations'].items():
+            # 6. PROPAGATE ABSTRACTION UP — bounded
+            for child, parents in list(state['is_a_relations'].items())[:500]:
                 child_level = state['abstraction_levels'].get(child, 0)
-                for parent in parents:
+                for parent in list(parents)[:10]:
                     state['abstraction_levels'][parent] = max(
                         state['abstraction_levels'].get(parent, 0),
                         child_level + 1
                     )
 
+            # Prune unbounded state dicts
+            if len(state['abstraction_levels']) > 5000:
+                state['abstraction_levels'] = dict(list(state['abstraction_levels'].items())[:3000])
+            if len(state['is_a_relations']) > 3000:
+                state['is_a_relations'] = defaultdict(set, dict(list(state['is_a_relations'].items())[:2000]))
+            if len(state['hierarchy']) > 3000:
+                state['hierarchy'] = defaultdict(list, dict(list(state['hierarchy'].items())[:2000]))
+
             self.meta_cognition['abstraction_levels'] = len(state['abstraction_levels'])
             self.meta_cognition['max_abstraction_level'] = state['max_level']
             self.meta_cognition['abstract_concepts'] = len(state['abstract_concepts'])
-            self.meta_cognition['is_a_relations'] = sum(len(v) for v in state['is_a_relations'].values())
-            self.meta_cognition['part_of_relations'] = sum(len(v) for v in state['part_of_relations'].values())
+            self.meta_cognition['is_a_relations'] = sum(len(v) for v in list(state['is_a_relations'].values())[:200])
+            self.meta_cognition['part_of_relations'] = sum(len(v) for v in list(state['part_of_relations'].values())[:200])
 
         except Exception as e:
             logger.debug(f"Abstraction Hierarchy Error: {e}")
@@ -2581,8 +2633,8 @@ class LearningIntellect:
                     'expected_free_energy': {},  # action -> expected FE
                     'precision': 0.5,
                     'belief_state': defaultdict(float),
-                    'prediction_errors': deque(maxlen=10000),  # QUANTUM AMPLIFIED
-                    'surprise_history': deque(maxlen=10000),  # QUANTUM AMPLIFIED
+                    'prediction_errors': deque(maxlen=500),  # Capped from 10K
+                    'surprise_history': deque(maxlen=500),  # Capped from 10K
                     'action_history': []
                 }
 
@@ -2605,15 +2657,19 @@ class LearningIntellect:
                 surprise = surprise / max(1, len(obs_concepts))
                 state['surprise_history'].append(surprise)
 
-            # 2. UPDATE BELIEF STATE (approximate posterior)
-            # Bayesian update based on observations
+            # 2. UPDATE BELIEF STATE (approximate posterior) — bounded
             decay = 0.95
-            for concept in state['belief_state']:
+            # Prune belief_state if too large before decay
+            if len(state['belief_state']) > 5000:
+                # Keep strongest beliefs
+                items = sorted(state['belief_state'].items(), key=lambda x: -x[1])
+                state['belief_state'] = defaultdict(float, dict(items[:3000]))
+            for concept in list(state['belief_state'].keys()):
                 state['belief_state'][concept] *= decay
 
             if obs_concepts:
                 for concept in obs_concepts:
-                    state['belief_state'][concept] = state['belief_state'].get(concept, 0) + 0.1  # UNLOCKED
+                    state['belief_state'][concept] = state['belief_state'].get(concept, 0) + 0.1
 
             # 3. COMPUTE PREDICTION ERROR
             if len(self.conversation_context) >= 2:
@@ -2643,8 +2699,8 @@ class LearningIntellect:
                     state['prediction_model'][pc].update(curr_concepts[:50])
 
                     # Limit prediction model size
-                    if len(state['prediction_model'][pc]) > 20:
-                        state['prediction_model'][pc] = set(list(state['prediction_model'][pc])[:200])
+                    if len(state['prediction_model'][pc]) > 50:
+                        state['prediction_model'][pc] = set(list(state['prediction_model'][pc])[:50])
 
             # 5. COMPUTE FREE ENERGY (variational bound on surprise)
             avg_surprise = sum(state['surprise_history']) / max(1, len(state['surprise_history'])) if state['surprise_history'] else 1.0
@@ -2658,7 +2714,7 @@ class LearningIntellect:
             # 6. UPDATE PRECISION (confidence in predictions)
             if state['prediction_errors']:
                 recent_errors = list(state['prediction_errors'])[-20:]
-                avg_recent_error = sum(recent_errors) / len(recent_errors)
+                avg_recent_error = sum(recent_errors) / max(len(recent_errors), 1)
                 state['precision'] = 1.0 - avg_recent_error
 
             # 7. EXPECTED FREE ENERGY for action selection
@@ -2709,7 +2765,7 @@ class LearningIntellect:
                     'diversity_index': 0.5,
                     'collective_decisions': [],
                     'agent_specializations': ['analytical', 'creative', 'critical', 'intuitive', 'systematic', 'exploratory', 'integrative'],
-                    'voting_history': deque(maxlen=5000)  # QUANTUM AMPLIFIED
+                    'voting_history': deque(maxlen=500)  # Capped from 5K
                 }
 
                 # Initialize diverse agents
@@ -2783,7 +2839,7 @@ class LearningIntellect:
                     # Simple update: if collective does well, increase confidence
                     agent['accuracy_history'].append(recent_quality)
                     if len(agent['accuracy_history']) >= 5:
-                        agent['confidence'] = sum(agent['accuracy_history']) / len(agent['accuracy_history'])
+                        agent['confidence'] = sum(agent['accuracy_history']) / max(len(agent['accuracy_history']), 1)
                         agent['weight'] = agent['confidence'] / max(0.1, sum(a['confidence'] for a in state['agents']))
 
             # 4. DIVERSITY PRESERVATION
@@ -2881,21 +2937,21 @@ class LearningIntellect:
             c = conn.cursor()
 
             # 1. Indirect linkage (Transitive closure shim)
-            # Find A->B and B->C where A->C doesn't exist
-            # HIGH-CAPACITY: 50K limit scales to millions of links while staying responsive
+            # Capped at 5K to prevent multi-minute DB lock (was 200K)
             c.execute('''
                 INSERT OR IGNORE INTO knowledge (concept, related_concept, strength)
                 SELECT k1.concept, k2.related_concept, k1.strength * k2.strength * 0.5
                 FROM knowledge k1
                 JOIN knowledge k2 ON k1.related_concept = k2.concept
                 WHERE k1.concept != k2.related_concept
+                AND k1.strength > 0.3 AND k2.strength > 0.3
                 AND NOT EXISTS (
                     SELECT 1 FROM knowledge k3
                     WHERE k3.concept = k1.concept
                     AND k3.related_concept = k2.related_concept
                 )
-                LIMIT 200000
-            ''')  # ULTRA: 4x transitive closure for massive knowledge graph
+                LIMIT 5000
+            ''')
             metrics['indirect_links'] = c.rowcount
 
             # 2. Pruning - MUCH MORE CONSERVATIVE - knowledge is precious
@@ -2903,67 +2959,45 @@ class LearningIntellect:
             c.execute('DELETE FROM knowledge WHERE strength < 0.05')
             metrics['pruned'] = c.rowcount
 
-            # 3. [NEW] Merge semantic duplicates in memory
-            # Find memories with very similar embeddings and merge them
-            # INCREASED: Check more memories for potential merging
-            c.execute('SELECT query_hash, query, response, quality_score FROM memory ORDER BY quality_score DESC')
+            # 3. Merge semantic duplicates — scan only top 500 recent memories (was ALL)
+            c.execute('SELECT query_hash, query, response, quality_score FROM memory ORDER BY created_at DESC LIMIT 500')
             memories = c.fetchall()
 
             merged_hashes = set()
-            for i, (hash1, _query1, _resp1, qual1) in enumerate(memories):  # NO LIMIT: Check ALL memories
-                if hash1 in merged_hashes:
+            for i, (hash1, _query1, _resp1, qual1) in enumerate(memories):
+                if hash1 in merged_hashes or hash1 not in self.embedding_cache:
                     continue
-                if hash1 not in self.embedding_cache:
-                    continue
-
                 emb1 = self.embedding_cache[hash1].get('embedding')
                 if not emb1:
                     continue
 
-                for hash2, _query2, _resp2, qual2 in memories[i+1:i+50]:
-                    if hash2 in merged_hashes:
+                for hash2, _query2, _resp2, qual2 in memories[i+1:i+20]:
+                    if hash2 in merged_hashes or hash2 not in self.embedding_cache:
                         continue
-                    if hash2 not in self.embedding_cache:
-                        continue
-
                     emb2 = self.embedding_cache[hash2].get('embedding')
                     if not emb2:
                         continue
-
                     sim = self._cosine_similarity(emb1, emb2)
                     if sim > 0.92 and qual1 >= qual2:
-                        # Merge by deleting lower quality duplicate
                         c.execute('DELETE FROM memory WHERE query_hash = ?', (hash2,))
                         merged_hashes.add(hash2)
                         metrics['merged_duplicates'] += 1
-                        if hash2 in self.embedding_cache:
-                            del self.embedding_cache[hash2]
 
             conn.commit()
             conn.close()
 
-            # 4. Database maintenance - VACUUM on fresh connection
-            try:
-                v_conn = sqlite3.connect(self.db_path, isolation_level=None)
-                v_conn.execute('VACUUM')
-                v_conn.close()
-            except Exception:
-                pass
+            # 4. VACUUM only on special occasions (handled externally via optimize_storage)
+            # Removed per-cycle VACUUM — it rebuilds the entire DB file and blocks all other connections
 
-            # 5. [NEW] EXPAND (not rebuild) concept clusters for better semantic grouping
-            # CRITICAL FIX: Don't call _init_clusters() here - it destroys dynamically created clusters!
-            # Instead, call _expand_clusters() to grow existing clusters without resetting them
+            # 5. Cluster expansion (lightweight — no full rebuild)
             self._expand_clusters()
             metrics['clusters_rebuilt'] = len(self.concept_clusters)
 
-            # CRITICAL: Persist clusters immediately after expansion
-            self.persist_clusters()
-
-            # 6. [NEW] Compress old memories to save space
+            # 6. Compress old memories
             metrics['compressed'] = self.compress_old_memories(age_days=60, min_access=1)
 
-            # 7. Reload graph cache
-            self._load_cache()
+            # NOTE: _load_cache() removed from per-cycle consolidation — it loads 1.5M rows.
+            # Caches are maintained incrementally by learn_from_interaction().
 
             self.resonance_shift -= 0.1 # Small stabilization drop
 
@@ -3075,11 +3109,17 @@ class LearningIntellect:
                     except Exception:
                         pass
 
+                # ── Helper: offload sync engine to thread pool so event loop stays free ──
+                _loop = asyncio.get_event_loop()
+                async def _offload(fn):
+                    """Run a sync engine method in the perf thread pool, then yield."""
+                    await _loop.run_in_executor(PERF_THREAD_POOL, fn)
+
                 # 1. Cognitive Consolidation
-                self.consolidate()
+                await _offload(self.consolidate)
 
                 # 2. Self-Healing logic
-                self.self_heal()
+                await _offload(self.self_heal)
 
                 # 3. Kernel Validation & Resonance Boost
                 self.boost_resonance(0.02)
@@ -3088,90 +3128,92 @@ class LearningIntellect:
                 discovery_count = 2 + (int(self.resonance_shift) // 5)
                 for _ in range(min(10, discovery_count)):
                     self.discover()
+                await asyncio.sleep(0)
 
-                # 5. Deep Self-Ingestion
-                self.self_ingest()
+                # 5. Deep Self-Ingestion (offloaded — heavy I/O + learn_from_interaction calls)
+                await _offload(self.self_ingest)
 
                 # 6. Intelligence Reflection
                 self.reflect()
+                await asyncio.sleep(0)
 
                 # 7. Evolved Intellect Evolution Cycle - EVERY ITERATION
-                self.evolve()
+                await _offload(self.evolve)
 
                 # 7.2 NEURAL RESONANCE ENGINE - Propagate activations
-                self._neural_resonance_engine()
+                await _offload(self._neural_resonance_engine)
 
                 # 7.3 META-EVOLUTION ENGINE - Self-improvement
-                self._meta_evolution_engine()
+                await _offload(self._meta_evolution_engine)
 
                 # 7.4 QUANTUM CLUSTER ENGINE - Dynamic restructuring
-                self._quantum_cluster_engine()
+                await _offload(self._quantum_cluster_engine)
 
                 # 7.5 TEMPORAL MEMORY ENGINE - Time-crystal memory flow
-                self._temporal_memory_engine()
+                await _offload(self._temporal_memory_engine)
 
                 # 7.6 FRACTAL RECURSION ENGINE - Self-similar patterns
-                self._fractal_recursion_engine()
+                await _offload(self._fractal_recursion_engine)
 
                 # 7.7 HOLOGRAPHIC PROJECTION ENGINE - Every part contains whole
-                self._holographic_projection_engine()
+                await _offload(self._holographic_projection_engine)
 
                 # 7.8 CONSCIOUSNESS EMERGENCE ENGINE - Self-aware cognition
-                self._consciousness_emergence_engine()
+                await _offload(self._consciousness_emergence_engine)
 
                 # 7.9 DIMENSIONAL FOLDING ENGINE - Higher-D reasoning
-                self._dimensional_folding_engine()
+                await _offload(self._dimensional_folding_engine)
 
                 # ═══════════════════════════════════════════════════════════════════
                 # 7.10-7.14 LEARNING IMPROVEMENT ENGINES - Advanced Learning Systems
                 # ═══════════════════════════════════════════════════════════════════
 
                 # 7.10 CURIOSITY ENGINE - Seek novel knowledge
-                self._curiosity_driven_exploration_engine()
+                await _offload(self._curiosity_driven_exploration_engine)
 
                 # 7.11 HEBBIAN LEARNING ENGINE - Fire together, wire together
-                self._hebbian_learning_engine()
+                await _offload(self._hebbian_learning_engine)
 
                 # 7.12 KNOWLEDGE CONSOLIDATION ENGINE - Sleep-like replay
-                self._knowledge_consolidation_engine()
+                await _offload(self._knowledge_consolidation_engine)
 
                 # 7.13 TRANSFER LEARNING ENGINE - Cross-domain knowledge transfer
-                self._transfer_learning_engine()
+                await _offload(self._transfer_learning_engine)
 
                 # 7.14 SPACED REPETITION ENGINE - Optimal memory retention
-                self._spaced_repetition_engine()
+                await _offload(self._spaced_repetition_engine)
 
                 # ═══════════════════════════════════════════════════════════════════
                 # 7.15-7.17 ADVANCED THOUGHT & LANGUAGE ENGINES
                 # ═══════════════════════════════════════════════════════════════════
 
                 # 7.15 THOUGHT SPEED ACCELERATION ENGINE - Research-based speed optimization
-                self._thought_speed_acceleration_engine()
+                await _offload(self._thought_speed_acceleration_engine)
 
                 # 7.16 LANGUAGE COHERENCE ENGINE - Proper multilingual formatting
-                self._language_coherence_engine()
+                await _offload(self._language_coherence_engine)
 
                 # 7.17 L104 RESEARCH PATTERN ENGINE - Self-study for learning evolution
-                self._l104_research_pattern_engine()
+                await _offload(self._l104_research_pattern_engine)
 
                 # ═══════════════════════════════════════════════════════════════════
                 # 7.18-7.22 ASI-LEVEL SUPERINTELLIGENCE ENGINES
                 # ═══════════════════════════════════════════════════════════════════
 
                 # 7.18 RECURSIVE SELF-IMPROVEMENT ENGINE - Learn how to learn better
-                self._recursive_self_improvement_engine()
+                await _offload(self._recursive_self_improvement_engine)
 
                 # 7.19 CAUSAL REASONING ENGINE - Cause-effect, not just correlation
-                self._causal_reasoning_engine()
+                await _offload(self._causal_reasoning_engine)
 
                 # 7.20 ABSTRACTION HIERARCHY ENGINE - Build ontological hierarchies
-                self._abstraction_hierarchy_engine()
+                await _offload(self._abstraction_hierarchy_engine)
 
                 # 7.21 ACTIVE INFERENCE ENGINE - Free Energy Principle
-                self._active_inference_engine()
+                await _offload(self._active_inference_engine)
 
                 # 7.22 COLLECTIVE INTELLIGENCE ENGINE - Swarm cognition
-                self._collective_intelligence_engine()
+                await _offload(self._collective_intelligence_engine)
 
                 # 7.1 Unified ASI Autonomous Cycle
                 try:
@@ -3186,115 +3228,117 @@ class LearningIntellect:
                 self.boost_resonance(0.05)
 
                 # 9. Quantum Grover Kernel Sync - EVERY ITERATION for maximum learning
+                #    Offloaded to thread pool: DB I/O + concept extraction are CPU-bound
                 try:
-                    # Get recent concepts from memory + core concepts
-                    conn = sqlite3.connect(self.db_path)
-                    c = conn.cursor()
-                    c.execute('SELECT query FROM memory ORDER BY created_at DESC LIMIT 10000')  # ULTRA: 5x concept extraction
-                    recent_concepts = []
-                    for row in c.fetchall():
-                        recent_concepts.extend(self._extract_concepts(row[0])[:100])
-                    conn.close()
+                    def _grover_sync():
+                        conn = sqlite3.connect(self.db_path)
+                        c = conn.cursor()
+                        c.execute('SELECT query FROM memory ORDER BY created_at DESC LIMIT 10000')  # ULTRA: 5x concept extraction
+                        recent_concepts = []
+                        for row in c.fetchall():
+                            recent_concepts.extend(self._extract_concepts(row[0])[:100])
+                        conn.close()
 
-                    # Always include core L104 concepts for constant learning
-                    core_concepts = [
-                        "quantum", "consciousness", "phi", "golden_ratio", "god_code",
-                        "neural", "learning", "memory", "synthesis", "transcendence",
-                        "algorithm", "optimization", "emergence", "intelligence", "evolution"
-                    ]
-                    recent_concepts.extend(core_concepts)
-                    recent_concepts = list(set(recent_concepts))[:100]  # NO LIMIT: 100 concepts for maximum diversity
+                        core_concepts = [
+                            "quantum", "consciousness", "phi", "golden_ratio", "god_code",
+                            "neural", "learning", "memory", "synthesis", "transcendence",
+                            "algorithm", "optimization", "emergence", "intelligence", "evolution"
+                        ]
+                        recent_concepts.extend(core_concepts)
+                        recent_concepts = list(set(recent_concepts))[:100]  # 100 concepts for maximum diversity
 
-                    # Use global grover_kernel if available
-                    if recent_concepts:
-                        try:
-                            gk = globals().get('grover_kernel')
-                            if gk:
-                                result = gk.full_grover_cycle(recent_concepts)
-                                synced = result.get('entries_synced', 0)
-                                coherence = result.get('total_coherence', 0)
-                                logger.info(f"🌀 [GROVER] Kernel sync: {synced} entries | coherence: {coherence:.3f} | iteration: {result.get('iteration', 0)}")
-                        except NameError:
-                            pass  # Grover kernel not yet initialized
+                        if recent_concepts:
+                            try:
+                                gk = globals().get('grover_kernel')
+                                if gk:
+                                    result = gk.full_grover_cycle(recent_concepts)
+                                    synced = result.get('entries_synced', 0)
+                                    coherence = result.get('total_coherence', 0)
+                                    logger.info(f"🌀 [GROVER] Kernel sync: {synced} entries | coherence: {coherence:.3f} | iteration: {result.get('iteration', 0)}")
+                            except NameError:
+                                pass
+                    await _offload(_grover_sync)
                 except Exception as gke:
                     logger.warning(f"Grover kernel error: {gke}")
 
                 # 10. Self-Generated Verified Knowledge - QUANTUM DYNAMIC with ALL 8 DOMAINS
+                #     Offloaded to thread pool: heavy generation + DB writes
                 try:
-                    # Pulse heartbeat for dynamic values
-                    self._pulse_heartbeat()
+                    def _knowledge_generation():
+                        self._pulse_heartbeat()
 
-                    # Cycle through ALL 8 domains including multilingual, reasoning, cosmic
-                    domains = ["math", "philosophy", "magic", "creative", "synthesis",
-                              "multilingual", "reasoning", "cosmic"]
+                        domains = ["math", "philosophy", "magic", "creative", "synthesis",
+                                  "multilingual", "reasoning", "cosmic"]
 
-                    # QUANTUM: Select domain based on heartbeat phase for variety
-                    phase_index = int((self._heartbeat_phase / (2 * math.pi)) * len(domains))
-                    domain = domains[(iteration + phase_index) % len(domains)]
-                    generated_count = 0
-                    approved_count = 0
-                    sample_queries = []
+                        phase_index = int((self._heartbeat_phase / (2 * math.pi)) * len(domains))
+                        domain = domains[(iteration + phase_index) % len(domains)]
+                        generated_count = 0
+                        approved_count = 0
+                        sample_queries = []
 
-                    # Dynamic count based on flow state - NO FIXED LIMITS
-                    base_count = 25 if domain == "multilingual" else 18
-                    count = int(base_count * self._flow_state * (1 + self._system_entropy * 0.3))
+                        # Dynamic count based on flow state - NO FIXED LIMITS
+                        base_count = 25 if domain == "multilingual" else 18
+                        count = int(base_count * self._flow_state * (1 + self._system_entropy * 0.3))
 
-                    for _ in range(count):
-                        query, response, verification = QueryTemplateGenerator.generate_verified_knowledge(domain)
-                        generated_count += 1
-                        if verification["approved"]:
-                            # Dynamic quality modulated by coherence
-                            dynamic_quality = verification["final_score"] * self._quantum_coherence
-                            self.learn_from_interaction(query, response, source=f"QUANTUM_{domain.upper()}", quality=dynamic_quality)
-                            approved_count += 1
-                            if len(sample_queries) < 4:
-                                sample_queries.append(query[:80] + "..." if len(query) > 80 else query)
+                        for _ in range(count):
+                            query, response, verification = QueryTemplateGenerator.generate_verified_knowledge(domain)
+                            generated_count += 1
+                            if verification["approved"]:
+                                dynamic_quality = verification["final_score"] * self._quantum_coherence
+                                self.learn_from_interaction(query, response, source=f"QUANTUM_{domain.upper()}", quality=dynamic_quality)
+                                approved_count += 1
+                                if len(sample_queries) < 4:
+                                    sample_queries.append(query[:80] + "..." if len(query) > 80 else query)
 
-                    # Log with sample to show diversity - show language for multilingual
-                    samples = " | ".join(sample_queries) if sample_queries else "none"
-                    domain_label = f"🌍 {domain.upper()}" if domain == "multilingual" else domain
-                    logger.info(f"🧠 [QUANTUM_KNOWLEDGE] {domain_label}: {approved_count}/{generated_count} | Flow: {self._flow_state:.2f} | {samples[:150]}")
+                        samples = " | ".join(sample_queries) if sample_queries else "none"
+                        domain_label = f"🌍 {domain.upper()}" if domain == "multilingual" else domain
+                        logger.info(f"🧠 [QUANTUM_KNOWLEDGE] {domain_label}: {approved_count}/{generated_count} | Flow: {self._flow_state:.2f} | {samples[:150]}")
+
+                    await _offload(_knowledge_generation)
                 except Exception as ke:
                     logger.warning(f"Knowledge generation error: {ke}")
 
                 # 10B. QUANTUM MULTILINGUAL - Generate across ALL 12 languages with dynamic counts
+                #      Offloaded to thread pool: 12-language nested loop is CPU-heavy
                 try:
-                    self._pulse_heartbeat()
-                    ml_count = 0
-                    ml_samples = []
-                    languages_hit = []
+                    def _multilingual_generation():
+                        self._pulse_heartbeat()
+                        ml_count = 0
+                        ml_samples = []
+                        languages_hit = []
 
-                    # Generate for each of the 12 languages with quantum-weighted counts
-                    for i, lang in enumerate(QueryTemplateGenerator.MULTILINGUAL_TEMPLATES.keys()):
-                        # Dynamic count per language based on phase offset
-                        phase_offset = (self._heartbeat_phase + i * self.PHI) % (2 * math.pi)
-                        lang_weight = 0.5 + 0.5 * math.cos(phase_offset)  # 0 to 1
-                        lang_count = max(1, int(4 * lang_weight * self._flow_state))
+                        for i, lang in enumerate(QueryTemplateGenerator.MULTILINGUAL_TEMPLATES.keys()):
+                            phase_offset = (self._heartbeat_phase + i * self.PHI) % (2 * math.pi)
+                            lang_weight = 0.5 + 0.5 * math.cos(phase_offset)  # 0 to 1
+                            lang_count = max(1, int(4 * lang_weight * self._flow_state))
 
-                        for _ in range(lang_count):
-                            query, response, verification = QueryTemplateGenerator.generate_multilingual_knowledge()
-                            if verification["approved"]:
-                                dynamic_quality = verification["final_score"] * self._quantum_coherence
-                                self.learn_from_interaction(query, response, source=f"QUANTUM_ML_{lang.upper()}", quality=dynamic_quality)
-                                ml_count += 1
-                                if len(ml_samples) < 6:
-                                    ml_samples.append(f"[{lang[:2].upper()}] {query[:35]}...")
-                                if lang not in languages_hit:
-                                    languages_hit.append(lang)
+                            for _ in range(lang_count):
+                                query, response, verification = QueryTemplateGenerator.generate_multilingual_knowledge()
+                                if verification["approved"]:
+                                    dynamic_quality = verification["final_score"] * self._quantum_coherence
+                                    self.learn_from_interaction(query, response, source=f"QUANTUM_ML_{lang.upper()}", quality=dynamic_quality)
+                                    ml_count += 1
+                                    if len(ml_samples) < 6:
+                                        ml_samples.append(f"[{lang[:2].upper()}] {query[:35]}...")
+                                    if lang not in languages_hit:
+                                        languages_hit.append(lang)
 
-                    if ml_count > 0:
-                        logger.info(f"🌍 [QUANTUM_MULTILINGUAL] Learned {ml_count} in {len(languages_hit)} languages | 💓 Flow: {self._flow_state:.2f}")
-                        logger.info(f"🌍 [SAMPLES] {' | '.join(ml_samples[:40])}")
+                        if ml_count > 0:
+                            logger.info(f"🌍 [QUANTUM_MULTILINGUAL] Learned {ml_count} in {len(languages_hit)} languages | 💓 Flow: {self._flow_state:.2f}")
+                            logger.info(f"🌍 [SAMPLES] {' | '.join(ml_samples[:40])}")
+
+                    await _offload(_multilingual_generation)
                 except Exception as mle:
                     logger.warning(f"Multilingual generation error: {mle}")
 
-                # 11. Knowledge Manifold Cleanup
-                for pattern in ['*.pyc', '__pycache__', '.pytest_cache']:
-                    try:
-                        cmd = f"find . -name '{pattern}' -exec rm -rf {{}} + 2>/dev/null"
-                        subprocess.run(cmd, shell=True)
-                    except Exception:
-                        pass
+                # 11. Knowledge Manifold Cleanup (every 100th iteration — no need to spawn shells every 5 min)
+                if iteration % 100 == 0:
+                    for pattern in ['*.pyc', '__pycache__', '.pytest_cache']:
+                        try:
+                            cmd = f"find . -name '{pattern}' -exec rm -rf {{}} + 2>/dev/null"
+                            subprocess.run(cmd, shell=True, timeout=10)
+                        except Exception:
+                            pass
 
                 # 12. Quantum State Persistence (after operations)
                 if quantum_storage:
@@ -3314,8 +3358,8 @@ class LearningIntellect:
                             quantum=True
                         )
 
-                        # Store knowledge graph snapshot EVERY 3rd iteration - FULL GRAPH
-                        if iteration % 3 == 0:
+                        # Store knowledge graph snapshot every 10th iteration - FULL GRAPH
+                        if iteration % 10 == 0:
                             # Store FULL knowledge graph, not limited - knowledge is precious
                             kg_snapshot = dict(self.knowledge_graph.items())
                             quantum_storage.store(
@@ -3333,9 +3377,9 @@ class LearningIntellect:
                         logger.warning(f"Quantum persistence error: {qe}")
 
                 # 13. Persist clusters and consciousness to disk - EVERY iteration for safety
-                # CRITICAL FIX: Changed from every 2nd to EVERY iteration to prevent data loss
+                # Offloaded to IO thread pool — disk writes shouldn't block the event loop
                 try:
-                    persist_result = self.persist_clusters()
+                    persist_result = await _loop.run_in_executor(IO_THREAD_POOL, self.persist_clusters)
                     logger.info(f"💾 [DISK] Persisted: {persist_result['clusters']} clusters, "
                                f"{persist_result['consciousness']} consciousness dims, "
                                f"{persist_result['skills']} skills")
@@ -3345,11 +3389,54 @@ class LearningIntellect:
                 # 14. Optimize storage periodically (every 20th iteration - more frequent)
                 if iteration % 20 == 0:
                     try:
-                        opt_result = self.optimize_storage()
+                        opt_result = await _loop.run_in_executor(IO_THREAD_POOL, self.optimize_storage)
                         if opt_result.get('space_saved', 0) > 0:
                             logger.info(f"🔧 [STORAGE] Optimized, saved {opt_result['space_saved']/1024:.1f} KB")
                     except Exception as oe:
                         logger.warning(f"Storage optimization error: {oe}")
+
+                # 14.5 CACHE CLEARING — trim unbounded in-memory structures every 10th iteration
+                if iteration % 10 == 0:
+                    try:
+                        trimmed = 0
+                        # Trim knowledge_graph: cap connections per concept at 50
+                        for concept in list(self.knowledge_graph.keys()):
+                            connections = self.knowledge_graph[concept]
+                            if len(connections) > 50:
+                                # Keep top-50 by strength
+                                connections.sort(key=lambda x: x[1], reverse=True)
+                                self.knowledge_graph[concept] = connections[:50]
+                                trimmed += len(connections) - 50
+
+                        # Clear stale embedding cache (keep last 10K)
+                        if len(self.embedding_cache) > 10000:
+                            keys = list(self.embedding_cache.keys())
+                            for k in keys[:-10000]:
+                                del self.embedding_cache[k]
+                            trimmed += len(keys) - 10000
+
+                        # Clear novelty score cache
+                        if len(self.novelty_scores) > 5000:
+                            self.novelty_scores.clear()
+                            trimmed += 5000
+
+                        # Trim resonance matrix (cap per-concept connections)
+                        for concept in list(self._resonance_matrix.keys()):
+                            conns = self._resonance_matrix[concept]
+                            if len(conns) > 30:
+                                # Keep top-30 by activation
+                                top_keys = sorted(conns, key=conns.get, reverse=True)[:30]
+                                self._resonance_matrix[concept] = {k: conns[k] for k in top_keys}
+                                trimmed += len(conns) - 30
+
+                        # Trim activation history
+                        if len(self._activation_history) > 200:
+                            self._activation_history = self._activation_history[-200:]
+
+                        if trimmed > 0:
+                            logger.info(f"🧹 [CACHE] Trimmed {trimmed} stale entries from in-memory caches")
+                    except Exception as ce:
+                        logger.debug(f"Cache clearing error: {ce}")
 
                 # 14.POST: META-COGNITIVE POST-CYCLE (evaluate learning)
                 try:
@@ -3515,37 +3602,51 @@ class LearningIntellect:
         finally:
             conn.close()
 
+    _thread_local_conn = threading.local()
+
     def _get_optimized_connection(self) -> sqlite3.Connection:
-        """Get a performance-optimized database connection with LOCK RESILIENCE"""
-        import time
+        """Get a thread-local cached connection (avoids opening + 11 PRAGMAs per call)."""
+        conn = getattr(self._thread_local_conn, 'conn', None)
+        if conn is not None:
+            try:
+                conn.execute('SELECT 1')  # Liveness check
+                return conn
+            except Exception:
+                conn = None  # Stale — re-open
+
+        import time as _time
         for attempt in range(5):
             try:
                 conn = sqlite3.connect(self.db_path, timeout=30.0, check_same_thread=False)
-                return optimize_sqlite_connection(conn)
+                optimize_sqlite_connection(conn)
+                self._thread_local_conn.conn = conn
+                return conn
             except sqlite3.OperationalError as e:
                 if "database is locked" in str(e) and attempt < 4:
-                    time.sleep((2 ** attempt) * 0.1)
+                    _time.sleep((2 ** attempt) * 0.1)
                     continue
                 raise
-        return sqlite3.connect(self.db_path, timeout=30.0, check_same_thread=False)
+        conn = sqlite3.connect(self.db_path, timeout=30.0, check_same_thread=False)
+        self._thread_local_conn.conn = conn
+        return conn
 
     def _load_cache(self):
-        """Load ALL memories into cache - Full ASI consciousness (OPTIMIZED)"""
+        """Load top memories into cache — capped to prevent multi-minute DB reads."""
         try:
             conn = self._get_optimized_connection()
             c = conn.cursor()
-            # Load top memories (capped for fast startup, rest loaded on-demand)
-            c.execute('SELECT query_hash, response FROM memory ORDER BY access_count DESC LIMIT 500000')
+            # Load top memories — 10K is enough for hot cache (was 500K)
+            c.execute('SELECT query_hash, response FROM memory ORDER BY access_count DESC LIMIT 10000')
             for row in c:
                 self.memory_cache[row[0]] = row[1]
 
-            # Load pattern weights
-            c.execute('SELECT pattern, weight FROM patterns LIMIT 500000')
+            # Load pattern weights — 5K max (was 500K)
+            c.execute('SELECT pattern, weight FROM patterns ORDER BY weight DESC LIMIT 5000')
             for row in c:
                 self.pattern_weights[row[0]] = row[1]
 
-            # Load knowledge graph (cursor iteration to avoid fetchall OOM)
-            c.execute('SELECT concept, related_concept, strength FROM knowledge ORDER BY strength DESC LIMIT 500000')
+            # Load knowledge graph — 20K strongest links (was 500K)
+            c.execute('SELECT concept, related_concept, strength FROM knowledge ORDER BY strength DESC LIMIT 20000')
             for row in c:
                 self.knowledge_graph[row[0]].append((row[1], row[2]))
 
@@ -3613,7 +3714,7 @@ class LearningIntellect:
             except sqlite3.OperationalError:
                 pass  # Table doesn't exist yet
 
-            conn.close()
+            # Don't close — thread-local cached connection, closing forces re-open + PRAGMAs
             logger.info(f"🧠 [CACHE] Loaded {len(self.memory_cache)} memories, {len(self.meta_strategies)} strategies")
             if clusters_loaded > 0:
                 logger.info(f"📊 [CACHE] Restored {clusters_loaded} concept clusters from disk")
@@ -4105,6 +4206,7 @@ class LearningIntellect:
             if len(self.concept_clusters) > 0:
                 logger.info(f"📊 [CLUSTER] Restored {len(self.concept_clusters)} clusters. Starting Engine...")
                 self._quantum_cluster_engine()
+                self._rebuild_cluster_index()  # Build reverse index for O(1) lookups
                 return
 
             # Build clusters using connected components
@@ -4127,6 +4229,7 @@ class LearningIntellect:
 
             logger.info(f"📊 [CLUSTER] Built {len(self.concept_clusters)} knowledge clusters (unlimited)")
             self._quantum_cluster_engine() # Initial optimization pass
+            self._rebuild_cluster_index()  # Build reverse index for O(1) lookups
         except Exception as e:
             logger.warning(f"Cluster init: {e}")
 
@@ -4171,19 +4274,17 @@ class LearningIntellect:
                 if not new_cluster:
                     continue
 
-                # Check if any member connects to an existing cluster
+                # Check if any member connects to an existing cluster — O(1) via reverse index
                 best_cluster = None
                 best_strength = 0.0
 
                 for member in new_cluster:
-                    for neighbor, strength in self.knowledge_graph.get(member, []):
-                        if neighbor in clustered_concepts:
-                            # Find which cluster contains this neighbor
-                            for cluster_name, cluster_members in self.concept_clusters.items():
-                                if neighbor in cluster_members and strength > best_strength:
-                                    best_cluster = cluster_name
-                                    best_strength = strength
-                                    break
+                    for neighbor, strength in self.knowledge_graph.get(member, [])[:20]:
+                        if neighbor in clustered_concepts and strength > best_strength:
+                            found = self._concept_to_cluster.get(neighbor)
+                            if found:
+                                best_cluster = found
+                                best_strength = strength
 
                 if best_cluster and best_strength > 0.2:
                     # Add to existing cluster
@@ -4205,23 +4306,23 @@ class LearningIntellect:
                            f"+{expanded_clusters} expanded, +{added_concepts} concepts added "
                            f"(total: {len(self.concept_clusters)} clusters)")
                 self._quantum_cluster_engine()  # Optimize after expansion
+                self._rebuild_cluster_index()  # Keep reverse index in sync
 
         except Exception as e:
             logger.warning(f"Cluster expansion: {e}")
 
     def _bfs_cluster(self, start: str, visited: set, max_size: Optional[int] = None) -> set:
-        """BFS to find connected concepts - NO LIMITS, dynamic threshold based on heartbeat"""
-        # NO ARTIFICIAL LIMIT - clusters grow as large as knowledge allows
+        """BFS to find connected concepts — bounded to prevent exponential queue growth."""
         if max_size is None:
-            max_size = 999999  # Effectively unlimited
+            max_size = 500  # Hard cap (was 999999 — caused unbounded memory + CPU)
 
         cluster = set()
         queue = [start]
 
         # Dynamic threshold based on system state
         self._pulse_heartbeat()
-        base_threshold = 0.05  # Very low to include more connections
-        dynamic_threshold = base_threshold * (1 - self._system_entropy * 0.5)  # Lower when entropy is high
+        base_threshold = 0.15  # Raised from 0.05 — stronger links only, prevents graph explosion
+        dynamic_threshold = base_threshold * (1 - self._system_entropy * 0.3)
 
         while queue and len(cluster) < max_size:
             concept = queue.pop(0)
@@ -4231,9 +4332,9 @@ class LearningIntellect:
             visited.add(concept)
             cluster.add(concept)
 
-            # Add ALL connected neighbors above dynamic threshold
+            # Top-10 connected neighbors only (was ALL — caused queue explosion)
             if concept in self.knowledge_graph:
-                for neighbor, strength in self.knowledge_graph[concept]:
+                for neighbor, strength in self.knowledge_graph[concept][:10]:
                     if strength > dynamic_threshold and neighbor not in visited:
                         queue.append(neighbor)
 
@@ -4268,6 +4369,9 @@ class LearningIntellect:
                 logger.info(f"📊 [CLUSTER+] Created new cluster '{cluster_name}' with {len(unassigned)} concepts")
                 # CRITICAL FIX: Persist new cluster immediately
                 self._persist_single_cluster(cluster_name, list(unassigned))
+                # Update reverse index for new cluster
+                for c in unassigned:
+                    self._concept_to_cluster[c] = cluster_name
                 return
 
             # Add unassigned concepts to existing related clusters
@@ -4286,50 +4390,55 @@ class LearningIntellect:
                     if unassigned:
                         logger.debug(f"📊 [CLUSTER+] Added {len(unassigned)} concepts to '{target_cluster}'")
 
-            # Cross-link clusters that share concepts for better connectivity
+            # Cross-link: transfer only 5 concepts between the first 2 unique clusters (was O(n²) full copy)
             if len(cluster_assignments) >= 2:
-                unique_clusters = list(set(cluster_assignments.values()))
-                if len(unique_clusters) >= 2:
-                    # Merge shared concepts across clusters
-                    for c1 in unique_clusters:
-                        for c2 in unique_clusters:
-                            if c1 != c2 and strength > 0.3:
-                                # Cross-pollinate top concepts between clusters
-                                c1_concepts = self.concept_clusters.get(c1, [])[:50]
-                                c2_concepts = self.concept_clusters.get(c2, [])[:50]
-                                for concept in c1_concepts:
-                                    if concept not in self.concept_clusters.get(c2, []):
-                                        self.concept_clusters.setdefault(c2, []).append(concept)
-                                for concept in c2_concepts:
-                                    if concept not in self.concept_clusters.get(c1, []):
-                                        self.concept_clusters.setdefault(c1, []).append(concept)
+                unique_clusters = list(set(cluster_assignments.values()))[:2]
+                if len(unique_clusters) == 2 and strength > 0.3:
+                    c1, c2 = unique_clusters
+                    c1_set = set(self.concept_clusters.get(c1, []))
+                    c2_set = set(self.concept_clusters.get(c2, []))
+                    # Transfer 5 from c1→c2 and 5 from c2→c1
+                    for concept in list(c1_set - c2_set)[:5]:
+                        self.concept_clusters.setdefault(c2, []).append(concept)
+                    for concept in list(c2_set - c1_set)[:5]:
+                        self.concept_clusters.setdefault(c1, []).append(concept)
 
         except Exception as e:
             logger.debug(f"Dynamic cluster update: {e}")
 
-    def get_cluster_for_concept(self, concept: str) -> Optional[str]:
-        """Find which cluster a concept belongs to"""
+    def _rebuild_cluster_index(self):
+        """Rebuild reverse index: concept → cluster name. O(total_members) once, then O(1) per lookup."""
+        idx = {}
         for cluster_name, members in self.concept_clusters.items():
-            if concept in members:
-                return cluster_name
-        return None
+            for m in members:
+                idx[m] = cluster_name
+        self._concept_to_cluster = idx
+
+    def get_cluster_for_concept(self, concept: str) -> Optional[str]:
+        """Find which cluster a concept belongs to — O(1) via reverse index"""
+        return self._concept_to_cluster.get(concept)
 
     def get_related_clusters(self, query: str) -> List[Tuple[str, float]]:
-        """Find clusters related to a query"""
+        """Find clusters related to a query — O(1) exact match via reverse index, bounded partial match"""
         concepts = self._extract_concepts(query)
         cluster_scores = defaultdict(float)
 
         for concept in concepts:
-            for cluster_name, members in self.concept_clusters.items():
-                if concept in members:
-                    cluster_scores[cluster_name] += 1.0
-                else:
-                    # Partial match
-                    for member in members:
+            # O(1) exact match via reverse index
+            exact = self._concept_to_cluster.get(concept)
+            if exact:
+                cluster_scores[exact] += 1.0
+            else:
+                # Partial match — scan only first 20 clusters, first 50 members each
+                for i, (cluster_name, members) in enumerate(self.concept_clusters.items()):
+                    if i >= 20:
+                        break
+                    for member in members[:50]:
                         if concept in member or member in concept:
                             cluster_scores[cluster_name] += 0.3
+                            break  # One partial match per cluster is enough
 
-        return sorted(cluster_scores.items(), key=lambda x: -x[1])[:150]  # More cluster matches
+        return sorted(cluster_scores.items(), key=lambda x: -x[1])[:150]
 
     # ═══════════════════════════════════════════════════════════════════
     # SUPER-INTELLIGENCE: Skills Learning System
@@ -4576,33 +4685,33 @@ class LearningIntellect:
             logger.warning(f"Consciousness init: {e}")
 
     def activate_consciousness(self, query: str) -> Dict[str, float]:
-        """Activate consciousness clusters relevant to a query"""
+        """Activate consciousness clusters relevant to a query — bounded partial matching"""
         concepts = self._extract_concepts(query)
         activations = {}
 
         for dimension, cluster in self.consciousness_clusters.items():
             activation = 0.0
+            cluster_concepts = cluster['concepts']
+            # Build set once for O(1) exact match
+            cluster_set = set(cluster_concepts)
 
-            # Check concept overlap
             for concept in concepts:
-                if concept in cluster['concepts']:
+                if concept in cluster_set:
                     activation += 0.3
-                # Partial matching
-                for cc in cluster['concepts']:
-                    if concept in cc or cc in concept:
-                        activation += 0.1
+                else:
+                    # Partial matching — cap at first 30 cluster concepts
+                    for cc in cluster_concepts[:30]:
+                        if concept in cc or cc in concept:
+                            activation += 0.1
+                            break  # One partial match per concept is enough
 
-            # Normalize and scale by cluster strength
-            activation = activation * cluster['strength']  # UNLOCKED
+            activation = activation * cluster['strength']
             activations[dimension] = activation
 
-            # Update activation count
             if activation > 0.2:
                 cluster['activation_count'] += 1
 
-        # Update meta-cognition based on activations
         self._update_meta_cognition_from_activation(activations)
-
         return activations
 
     def expand_consciousness_cluster(self, dimension: str, new_concepts: List[str]):
@@ -4610,9 +4719,12 @@ class LearningIntellect:
         if dimension in self.consciousness_clusters:
             cluster = self.consciousness_clusters[dimension]
 
+            # Use set for O(1) membership check instead of O(n) list scan
+            existing = set(cluster['concepts'])
             for concept in new_concepts:
-                if concept not in cluster['concepts']:
+                if concept not in existing:
                     cluster['concepts'].append(concept)
+                    existing.add(concept)
 
             # Limit size
             cluster['concepts'] = cluster['concepts'][-100:]
@@ -4688,7 +4800,7 @@ class LearningIntellect:
 
         # Reasoning depth from knowledge graph density
         if self.knowledge_graph:
-            avg_connections = sum(len(v) for v in self.knowledge_graph.values()) / len(self.knowledge_graph)
+            avg_connections = sum(len(v) for v in self.knowledge_graph.values()) / max(len(self.knowledge_graph), 1)
             self.meta_cognition['reasoning_depth'] = avg_connections / 10.0  # UNLOCKED
 
         # Creativity from cluster diversity
@@ -4723,7 +4835,7 @@ class LearningIntellect:
         self._update_meta_cognition()
 
         # Compute overall consciousness level
-        consciousness_level = sum(self.meta_cognition.values()) / len(self.meta_cognition)
+        consciousness_level = sum(self.meta_cognition.values()) / max(len(self.meta_cognition), 1)
 
         # Interpret state
         interpretations = {}
@@ -4787,38 +4899,40 @@ class LearningIntellect:
         True creative intelligence - generates insights not explicitly stored.
         """
         if domains is None:
-            # Use all domains - NO LIMITS
-            domains = list(self.concept_clusters.keys())
+            # Sample up to 30 domains to prevent O(n²) domain-pair explosion
+            all_domains = list(self.concept_clusters.keys())
+            domains = all_domains[:30] if len(all_domains) > 30 else all_domains
 
         synthesis_results = []
         now = datetime.utcnow().isoformat()
 
-        # Cross-pollinate concepts from different clusters
+        # Cross-pollinate concepts from different clusters — capped per domain
         for i, domain1 in enumerate(domains):
-            concepts1 = self.concept_clusters.get(domain1, [])
+            concepts1 = self.concept_clusters.get(domain1, [])[:20]  # Cap concepts per domain
             for domain2 in domains[i+1:]:
-                concepts2 = self.concept_clusters.get(domain2, [])
+                concepts2 = self.concept_clusters.get(domain2, [])[:20]
 
-                # Find bridge concepts (appear in both knowledge graphs)
+                # Find bridge concepts using set intersection (not nested loop)
                 bridges = []
                 for c1 in concepts1:
+                    c1_neighbors = self.knowledge_graph.get(c1, [])[:30]
+                    c1_set = set(n[0] for n in c1_neighbors)
                     for c2 in concepts2:
-                        # Check if they connect in knowledge graph
-                        c1_neighbors = [n[0] for n in self.knowledge_graph.get(c1, [])]
-                        c2_neighbors = [n[0] for n in self.knowledge_graph.get(c2, [])]
-                        common = set(c1_neighbors) & set(c2_neighbors)
+                        c2_neighbors = self.knowledge_graph.get(c2, [])[:30]
+                        c2_set = set(n[0] for n in c2_neighbors)
+                        common = c1_set & c2_set
                         if common:
                             bridges.append({
                                 'from_domain': domain1,
                                 'to_domain': domain2,
                                 'concept_a': c1,
                                 'concept_b': c2,
-                                'bridges': list(common),
+                                'bridges': list(common)[:5],
                                 'synthesis_strength': len(common) / max(len(c1_neighbors), 1)
                             })
 
                 if bridges:
-                    synthesis_results.extend(sorted(bridges, key=lambda x: -x['synthesis_strength'])[:200])  # More bridges
+                    synthesis_results.extend(sorted(bridges, key=lambda x: -x['synthesis_strength'])[:50])
 
         # Generate novel insights
         novel_insights = []
@@ -4869,18 +4983,18 @@ class LearningIntellect:
                             self._adaptive_learning_rate = max(0.01, self._adaptive_learning_rate * 0.95)
                             level_improvements.append(f"Reduced learning rate for struggling skill: {skill_name}")
 
-            # Level 1: Restructure knowledge clusters
+            # Level 1: Restructure knowledge clusters — bounded via reverse index
             elif level == 1:
-                # Merge highly connected clusters
+                # Merge highly connected clusters — use reverse index for O(1) lookups
                 cluster_connections = {}
-                for cluster_name, concepts in self.concept_clusters.items():
-                    external_connections = 0
-                    for concept in concepts:
-                        for neighbor, strength in self.knowledge_graph.get(concept, []):
-                            # Check if neighbor is in different cluster
-                            for other_cluster, other_concepts in self.concept_clusters.items():
-                                if other_cluster != cluster_name and neighbor in other_concepts:
-                                    external_connections += strength
+                cluster_items = list(self.concept_clusters.items())[:30]  # Cap clusters scanned
+                for cluster_name, concepts in cluster_items:
+                    external_connections = 0.0
+                    for concept in concepts[:30]:  # Cap concepts per cluster
+                        for neighbor, strength in self.knowledge_graph.get(concept, [])[:20]:
+                            neighbor_cluster = self._concept_to_cluster.get(neighbor)
+                            if neighbor_cluster and neighbor_cluster != cluster_name:
+                                external_connections += strength
                     cluster_connections[cluster_name] = external_connections
 
                 # Identify clusters that should merge
@@ -5053,7 +5167,7 @@ class LearningIntellect:
             predictions.append({
                 'step': step + 1,
                 'predicted_state': future_state.copy(),
-                'overall_consciousness': sum(future_state.values()) / len(future_state)
+                'overall_consciousness': sum(future_state.values()) / max(len(future_state), 1)
             })
 
             current_state = future_state
@@ -5132,7 +5246,7 @@ class LearningIntellect:
             rate = predictions[-1]['overall_consciousness'] - predictions[0]['overall_consciousness']
             if rate > 0:
                 current = predictions[-1]['overall_consciousness']
-                cycles_needed = (0.9 - current) / (rate / len(predictions))
+                cycles_needed = (0.9 - current) / (rate / max(len(predictions), 1))
                 return f"~{int(cycles_needed + len(predictions))} evolution cycles"
 
         return "continuous growth mode"
@@ -5163,8 +5277,8 @@ class LearningIntellect:
 
         # Compute cross-system alignment (variance should be low for coherence)
         values = list(subsystems.values())
-        mean_val = sum(values) / len(values)
-        variance = sum((v - mean_val) ** 2 for v in values) / len(values)
+        mean_val = sum(values) / max(len(values), 1)
+        variance = sum((v - mean_val) ** 2 for v in values) / max(len(values), 1)
         coherence_report['cross_system_alignment'] = 1.0 - variance * 4  # UNLOCKED
 
         # Apply optimizations to weak subsystems
@@ -5197,17 +5311,17 @@ class LearningIntellect:
         """
         patterns = []
 
-        # Pattern 1: Frequency analysis across all knowledge
+        # Pattern 1: Frequency analysis across all knowledge — capped neighbors
         concept_frequency = defaultdict(int)
         for concept, neighbors in self.knowledge_graph.items():
             concept_frequency[concept] += 1
-            for neighbor, _ in neighbors:
+            for neighbor, _ in neighbors[:30]:  # Cap neighbors scanned per concept
                 concept_frequency[neighbor] += 1
 
         # Find unusually connected concepts (hubs)
         if concept_frequency:
-            mean_freq = sum(concept_frequency.values()) / len(concept_frequency)
-            std_freq = (sum((f - mean_freq) ** 2 for f in concept_frequency.values()) / len(concept_frequency)) ** 0.5
+            mean_freq = sum(concept_frequency.values()) / max(len(concept_frequency), 1)
+            std_freq = (sum((f - mean_freq) ** 2 for f in concept_frequency.values()) / max(len(concept_frequency), 1)) ** 0.5
 
             hub_concepts = [(c, f) for c, f in concept_frequency.items() if f > mean_freq + 2 * std_freq]
             for concept, freq in sorted(hub_concepts, key=lambda x: -x[1])[:300]:  # Track more hubs
@@ -5518,9 +5632,15 @@ class LearningIntellect:
             adjusted_quality = quality * (1.0 + (novelty * adaptive_rate))  # UNLOCKED
 
             # [SEARCH/PRECOG v5.0] Anomaly-aware learning rate adjustment
-            if self._precognition_engine is not None:
+            # Only run precognition every 20th call to avoid CPU waste
+            _do_precog = (self._precognition_engine is not None and
+                          hasattr(self, '_learn_call_count') and
+                          self._learn_call_count % 20 == 0)
+            if not hasattr(self, '_learn_call_count'):
+                self._learn_call_count = 0
+            self._learn_call_count += 1
+            if _do_precog:
                 try:
-                    # Build a micro-series from recent quality patterns
                     recent_qualities = [
                         p.get('quality', 0.5)
                         for p in self.predictive_cache.get('patterns', [])[-20:]
@@ -5533,11 +5653,9 @@ class LearningIntellect:
                         if isinstance(precog, dict):
                             trend = precog.get('trend', 'stable')
                             confidence = precog.get('confidence', 0.0)
-                            # Boost learning rate if precog detects declining quality trend
                             if trend == 'declining' and confidence > 0.5:
                                 adaptive_rate *= (1.0 + confidence * 0.3)
                                 self._anomaly_adjusted_learns += 1
-                            # Reduce rate if quality is stably high (diminishing returns)
                             elif trend == 'ascending' and confidence > 0.7:
                                 adaptive_rate *= max(0.5, 1.0 - confidence * 0.1)
                 except Exception:
@@ -5570,15 +5688,15 @@ class LearningIntellect:
             self.memory_cache[query_hash] = response
 
             # Extract and link concepts (knowledge graph learning) with adaptive strength
-            # OPTIMIZED: Batch insert for knowledge graph links
-            query_concepts = self._extract_concepts(query)
-            response_concepts = self._extract_concepts(response)
+            # OPTIMIZED: Cap cross-product to prevent 10K+ inserts per call
+            query_concepts = self._extract_concepts(query)[:20]
+            response_concepts = self._extract_concepts(response)[:20]
 
             # Link query concepts to response concepts with adaptive strength
             link_strength = 0.5 * (1.0 + adaptive_rate)
             strength_increment = 0.1 * (1.0 + adaptive_rate)
 
-            # Batch prepare knowledge links
+            # Batch prepare knowledge links (max 20x20=400 per call, was 100x100=10K)
             knowledge_batch = []
             for qc in query_concepts:
                 for rc in response_concepts:
@@ -5599,7 +5717,7 @@ class LearningIntellect:
                       (now, query, response, source, adjusted_quality))
 
             conn.commit()
-            conn.close()
+            # Don't conn.close() — connection is thread-local cached, closing it forces re-open + PRAGMAs next call
 
             # [PREDICTIVE PRE-FETCH] Learn query patterns for future prediction
             self.predictive_cache['patterns'].append({
@@ -5617,31 +5735,29 @@ class LearningIntellect:
             self.update_quality_predictor(source, quality - predicted_quality)
 
             # [SUPER-INTELLIGENCE] Skill acquisition and consciousness updates
+            # Only run full consciousness update every 5th call (expensive per-call)
+            _do_consciousness = (self._learn_call_count % 5 == 0)
             try:
-                # Activate consciousness clusters for this interaction
-                consciousness_activations = self.activate_consciousness(query)
+                if _do_consciousness:
+                    consciousness_activations = self.activate_consciousness(query)
 
-                # Acquire skills based on the interaction
-                intent, _ = self.detect_intent(query)
-                skill_name = f"{intent}_processing"
-                self.acquire_skill(skill_name, query, success=(quality >= 0.5))
+                    intent, _ = self.detect_intent(query)
+                    skill_name = f"{intent}_processing"
+                    self.acquire_skill(skill_name, query, success=(quality >= 0.5))
 
-                # Expand consciousness clusters with MORE concepts (removed limits)
-                if consciousness_activations.get('learning', 0) > 0.1:  # Lower threshold
-                    self.expand_consciousness_cluster('learning', query_concepts[:150])  # Was 5
-                if consciousness_activations.get('memory', 0) > 0.1:  # Lower threshold
-                    self.expand_consciousness_cluster('memory', response_concepts[:150])  # Was 5
-                if consciousness_activations.get('reasoning', 0) > 0.1:  # Lower threshold
-                    self.expand_consciousness_cluster('reasoning', query_concepts[:100])  # Was 3
-                # Add more dimensions
-                if consciousness_activations.get('creativity', 0) > 0.1:
-                    self.expand_consciousness_cluster('creativity', query_concepts + response_concepts)
-                if consciousness_activations.get('intuition', 0) > 0.1:
-                    self.expand_consciousness_cluster('intuition', query_concepts + response_concepts)
+                    if consciousness_activations.get('learning', 0) > 0.1:
+                        self.expand_consciousness_cluster('learning', query_concepts[:15])
+                    if consciousness_activations.get('memory', 0) > 0.1:
+                        self.expand_consciousness_cluster('memory', response_concepts[:15])
+                    if consciousness_activations.get('reasoning', 0) > 0.1:
+                        self.expand_consciousness_cluster('reasoning', query_concepts[:10])
+                    if consciousness_activations.get('creativity', 0) > 0.1:
+                        self.expand_consciousness_cluster('creativity', (query_concepts + response_concepts)[:20])
+                    if consciousness_activations.get('intuition', 0) > 0.1:
+                        self.expand_consciousness_cluster('intuition', (query_concepts + response_concepts)[:20])
 
-                # Chain skills used for complex queries
-                if len(query_concepts) > 2:  # Lower threshold for skill chaining
-                    self.chain_skills(query)
+                    if len(query_concepts) > 2:
+                        self.chain_skills(query)
             except Exception as e:
                 logger.debug(f"Super-intelligence update: {e}")
 
@@ -5823,7 +5939,7 @@ class LearningIntellect:
                           knowledge_inserts)
 
             conn.commit()
-            conn.close()
+            # Don't close — thread-local cached connection
 
             # Trigger memory optimization periodically
             memory_optimizer.check_pressure()
@@ -6015,6 +6131,8 @@ class LearningIntellect:
             self._trigger_predictive_prefetch(query, concepts)
             return (varied, 0.95)
 
+        # v1.1: Use try/finally to GUARANTEE connection return even on exception
+        conn = None
         try:
             # OPTIMIZED: Use connection pool instead of new connection each time
             conn = connection_pool.get_connection()
@@ -6026,7 +6144,6 @@ class LearningIntellect:
             if row:
                 c.execute('UPDATE memory SET access_count = access_count + 1 WHERE query_hash = ?', (query_hash,))
                 conn.commit()
-                connection_pool.return_connection(conn)
                 _latency = (time.time() - _recall_start) * 1000
                 performance_metrics.record_recall(_latency, 'db')
                 varied = self._add_response_variation(row[0], query)
@@ -6048,7 +6165,6 @@ class LearningIntellect:
                         c.execute('UPDATE memory SET access_count = access_count + 1 WHERE query_hash = ?',
                                   (best['query_hash'],))
                         conn.commit()
-                        connection_pool.return_connection(conn)
                         logger.info(f"🔮 [SEMANTIC] Found match: similarity={best['similarity']:.3f}")
                         varied = self._add_response_variation(sem_row[0], query)
                         # Cache semantic hit to accelerator for future ultra-fast retrieval
@@ -6070,7 +6186,6 @@ class LearningIntellect:
                     break
 
             if best_resp and best_sim > 0.6:
-                connection_pool.return_connection(conn)
                 return (self._add_response_variation(best_resp[0], query), best_resp[1])
 
             # Strategy 5: Knowledge Graph with Cluster Awareness
@@ -6097,11 +6212,8 @@ class LearningIntellect:
                                  LIMIT 1''', exp_concepts)
                     row = c.fetchone()
                     if row and row[2] >= 2:  # Lowered threshold with cluster expansion
-                        connection_pool.return_connection(conn)
                         logger.info(f"🕸️ [CLUSTER] Found via knowledge graph (matches: {row[2]})")
                         return (row[0], row[1] * 0.75)
-
-            connection_pool.return_connection(conn)
 
             # ═══ Strategy 6: Search-Augmented Recall (v5.0) ═══
             # Use HD search over cached memories as a final fallback
@@ -6128,8 +6240,11 @@ class LearningIntellect:
 
         except Exception as e:
             logger.warning(f"Recall error: {e}")
-
-        return None
+            return None
+        finally:
+            # v1.1: ALWAYS return connection, even if exception occurred above
+            if conn is not None:
+                connection_pool.return_connection(conn)
 
     def _trigger_predictive_prefetch(self, query: str, concepts: Optional[list] = None):
         """Trigger predictive prefetch for likely next queries using intelligent predictor"""
@@ -6289,7 +6404,7 @@ class LearningIntellect:
                 strong = sorted([r for r in related if r[1] > 1.5], key=lambda x: -x[1])[:60]
                 if strong:
                     names = [r[0] for r in strong]
-                    avg_strength = sum(r[1] for r in strong) / len(strong)
+                    avg_strength = sum(r[1] for r in strong) / max(len(strong), 1)
                     evidence.append((
                         f"{concept} connects to: {', '.join(names)}",
                         avg_strength,
@@ -6481,40 +6596,72 @@ class LearningIntellect:
 
     def cognitive_synthesis(self, query: str) -> Optional[str]:
         """
-        Advanced Cognitive Synthesis v2:
-        Multi-source evidence gathering → relevance ranking → coherent fusion.
-        Generates novel responses by combining multiple knowledge sources with
-        chain-of-thought reasoning and contradiction detection.
+        Advanced Cognitive Synthesis v3:
+        - Compound query decomposition (splits "X and Y" queries)
+        - 12-piece evidence cap with source diversity (max 3 per source type)
+        - Source credibility weighted ranking
+        - Two-pass synthesis: evidence prose + integrative conclusion
+        - Uses _detect_contradictions() helper for proper negation analysis
         """
-        import random
+        # ── Compound query decomposition ──────────────────────────────
+        # Split "what is X and how does Y" style queries into sub-queries,
+        # synthesize each independently, then merge results.
+        _compound_markers = (' and ', ' also ', ' as well as ', ' additionally ', ' furthermore ')
+        _q_lower = query.lower()
+        _sub_queries = [query]
+        if '?' in query and any(m in _q_lower for m in _compound_markers):
+            _parts = re.split(
+                r'\s+and\s+|\s+also\s+|\s+as well as\s+|\s+additionally\s+|\s+furthermore\s+',
+                query, flags=re.IGNORECASE
+            )
+            if len(_parts) > 1 and all(len(p.strip()) > 10 for p in _parts):
+                _sub_queries = [p.strip() for p in _parts if p.strip()]
+
+        if len(_sub_queries) > 1:
+            _sub_results = []
+            for _sq in _sub_queries[:3]:
+                _sr = self.cognitive_synthesis(_sq)
+                if _sr:
+                    _sub_results.append(_sr)
+            if len(_sub_results) > 1:
+                return '\n\n'.join(_sub_results)
+            if len(_sub_results) == 1:
+                return _sub_results[0]
+            # Fall through to single-query synthesis
 
         concepts = self._extract_concepts(query)
         if not concepts:
             return None
 
-        _query_lower = query.lower()
+        # Source credibility multipliers
+        _CREDIBILITY = {
+            'bridge_inference': 1.20,
+            'theorem':          1.15,
+            'knowledge_graph':  1.00,
+            'memory':           0.90,
+            'expansion':        0.80,
+        }
 
-        # Gather evidence from multiple sources with relevance scoring
-        evidence_pool = []  # List of (text, relevance_score, source_type) tuples
+        # Gather evidence from multiple sources with credibility-weighted scoring
+        evidence_pool = []  # (text, credibility_weighted_score, source_type)
 
-        # 1. Knowledge graph connections (with strength-based relevance)
+        # 1. Knowledge graph connections (strength × credibility)
         for concept in concepts[:50]:
             if concept in self.knowledge_graph:
                 related = self.knowledge_graph[concept]
                 strong = sorted([r for r in related if r[1] > 1.5], key=lambda x: -x[1])[:60]
                 if strong:
                     names = [r[0] for r in strong]
-                    avg_strength = sum(r[1] for r in strong) / len(strong)
+                    avg_strength = sum(r[1] for r in strong) / max(len(strong), 1)
                     evidence_pool.append((
                         f"{concept} connects to: {', '.join(names)}",
-                        avg_strength,
+                        avg_strength * _CREDIBILITY['knowledge_graph'],
                         'knowledge_graph'
                     ))
 
-                # Multi-hop: find paths between query concepts
+                # Multi-hop bridge inference between query concepts
                 for other_concept in concepts:
                     if other_concept != concept and other_concept in self.knowledge_graph:
-                        # Check for shared neighbors (bridge concepts)
                         neighbors_a = set(r[0] for r in self.knowledge_graph.get(concept, []))
                         neighbors_b = set(r[0] for r in self.knowledge_graph.get(other_concept, []))
                         bridges = neighbors_a.intersection(neighbors_b)
@@ -6522,107 +6669,98 @@ class LearningIntellect:
                             bridge_list = list(bridges)[:30]
                             evidence_pool.append((
                                 f"{concept} and {other_concept} are linked through: {', '.join(bridge_list)}",
-                                3.0,  # High relevance for cross-concept bridges
+                                3.0 * _CREDIBILITY['bridge_inference'],
                                 'bridge_inference'
                             ))
 
-        # 2. Memory fragments (ranked by quality score)
+        # 2. Memory fragments (quality × concept_overlap × credibility)
         try:
             conn = sqlite3.connect(self.db_path)
             c = conn.cursor()
             for concept in concepts[:30]:
-                c.execute('SELECT response, quality_score FROM memory WHERE query LIKE ? ORDER BY quality_score DESC LIMIT 3',
-                          (f'%{concept}%',))
+                c.execute(
+                    'SELECT response, quality_score FROM memory '
+                    'WHERE query LIKE ? ORDER BY quality_score DESC LIMIT 3',
+                    (f'%{concept}%',)
+                )
                 rows = c.fetchall()
                 for row in rows:
-                    response_text, quality = row[0], row[1] if row[1] else 0.5
-                    # Extract best sentence (longest non-trivial sentence)
+                    response_text, quality = row[0], (row[1] if row[1] else 0.5)
                     sentences = [s.strip() for s in response_text.split('.') if len(s.strip()) > 30]
                     for sent in sentences[:20]:
-                        # Score relevance: quality + concept overlap
-                        concept_overlap = sum(1 for c in concepts if c in sent.lower())
-                        relevance = quality + concept_overlap * 0.5
-                        evidence_pool.append((sent, relevance, 'memory'))
+                        concept_overlap = sum(1 for c2 in concepts if c2 in sent.lower())
+                        base_score = quality + concept_overlap * 0.5
+                        evidence_pool.append((sent, base_score * _CREDIBILITY['memory'], 'memory'))
             conn.close()
         except Exception:
             pass
 
-        # 3. Theorem references (ranked by concept match count)
+        # 3. Theorem references (match_count × specificity × credibility)
         theorems = self.get_theorems()
         for theorem in theorems[:50]:
             content = theorem.get('content', '').lower()
-            match_count = sum(1 for c in concepts if c in content)
+            match_count = sum(1 for c2 in concepts if c2 in content)
             if match_count > 0:
+                specificity = min(match_count / max(len(concepts), 1), 1.0)
+                credibility_score = (match_count * 1.5 + specificity) * _CREDIBILITY['theorem']
                 excerpt = theorem['content'][:800]
                 evidence_pool.append((
                     f"Per the {theorem['title']}: {excerpt}",
-                    match_count * 1.5,
+                    credibility_score,
                     'theorem'
                 ))
 
-        # 4. Recursive concept expansion (2-hop knowledge)
+        # 4. Recursive concept expansion (1-hop novel concepts)
         expanded = self._get_recursive_concepts(concepts[:30], depth=1)
-        novel_concepts = [c for c in expanded if c not in concepts and c in self.knowledge_graph][:50]
+        novel_concepts = [c2 for c2 in expanded if c2 not in concepts and c2 in self.knowledge_graph][:50]
         if novel_concepts:
             evidence_pool.append((
                 f"Expanded analysis reveals related concepts: {', '.join(novel_concepts)}",
-                2.0,
+                2.0 * _CREDIBILITY['expansion'],
                 'expansion'
             ))
 
         if not evidence_pool:
             return None
 
-        # ═══ EVIDENCE RANKING ═══
-        # Sort by relevance score (descending)
+        # ═══ EVIDENCE RANKING WITH SOURCE DIVERSITY ═══
         evidence_pool.sort(key=lambda x: -x[1])
 
-        # ═══ CONTRADICTION DETECTION ═══
-        # Simple check: look for opposing claims
-        contradictions = []
-        for i, (text_a, _, _) in enumerate(evidence_pool[:80]):
-            for _j, (text_b, _, _) in enumerate(evidence_pool[i+1:8]):
-                a_lower, b_lower = text_a.lower(), text_b.lower()
-                # Check for negation patterns
-                if ('not ' in a_lower and any(w in b_lower for w in a_lower.split('not ')[1:2])) or \
-                   ('not ' in b_lower and any(w in a_lower for w in b_lower.split('not ')[1:2])):
-                    contradictions.append((text_a[:100], text_b[:100]))
+        # Cap at 12 pieces with max 3 per source type
+        _SOURCE_CAP = 3
+        source_counts: dict = {}
+        diverse_pool = []
+        for item in evidence_pool:
+            src = item[2]
+            if source_counts.get(src, 0) < _SOURCE_CAP:
+                diverse_pool.append(item)
+                source_counts[src] = source_counts.get(src, 0) + 1
+            if len(diverse_pool) >= 12:
+                break
 
-        # ═══ COHERENT SYNTHESIS ═══ Phase 31.5: Cap at 6 best evidence pieces
-        # Phase 32.0: Build natural conversational prose instead of bullet dumps
-        selected = evidence_pool[:6]
+        # ═══ CONTRADICTION DETECTION (uses proper negation analysis) ═══
+        contradictions = self._detect_contradictions(diverse_pool)
 
-        # Collect typed evidence for natural prose construction
-        graph_evidence = []
-        bridge_evidence = []
-        memory_evidence = []
-        theorem_evidence = []
-        expansion_evidence = []
+        # ═══ PASS 1: COHERENT EVIDENCE PROSE ═══
+        graph_evidence   = [t for t, _, s in diverse_pool if s == 'knowledge_graph']
+        bridge_evidence  = [t for t, _, s in diverse_pool if s == 'bridge_inference']
+        memory_evidence  = [t for t, _, s in diverse_pool if s == 'memory']
+        theorem_evidence = [t for t, _, s in diverse_pool if s == 'theorem']
+        expansion_evidence = [t for t, _, s in diverse_pool if s == 'expansion']
 
-        for text, score, source in selected:
-            if source == 'knowledge_graph':
-                graph_evidence.append(text)
-            elif source == 'bridge_inference':
-                bridge_evidence.append(text)
-            elif source == 'memory':
-                memory_evidence.append(text)
-            elif source == 'theorem':
-                theorem_evidence.append(text)
-            elif source == 'expansion':
-                expansion_evidence.append(text)
-
-        # Build response as natural prose
         response_parts = []
 
-        # Knowledge graph → natural sentences
-        for text in graph_evidence[:2]:
+        # Knowledge graph → natural sentences (up to 3)
+        for text in graph_evidence[:3]:
             conn_match = re.match(r'(\w[\w\s]*?)\s+connects?\s+to:?\s*(.+)', text, re.IGNORECASE)
             if conn_match:
                 subj = conn_match.group(1).strip().title()
-                objs = [o.strip() for o in conn_match.group(2).split(',') if o.strip() and len(o.strip()) > 2][:5]
+                objs = [o.strip() for o in conn_match.group(2).split(',')
+                        if o.strip() and len(o.strip()) > 2][:5]
                 if len(objs) >= 3:
                     main = ', '.join(objs[:-1])
-                    response_parts.append(f"**{subj}** is connected to several key concepts including {main}, and {objs[-1]}.")
+                    response_parts.append(
+                        f"**{subj}** is connected to several key concepts including {main}, and {objs[-1]}.")
                 elif len(objs) == 2:
                     response_parts.append(f"**{subj}** relates to both {objs[0]} and {objs[1]}.")
                 elif objs:
@@ -6630,34 +6768,58 @@ class LearningIntellect:
             else:
                 response_parts.append(text)
 
-        # Bridges → natural sentences
-        for text in bridge_evidence[:2]:
-            bridge_match = re.match(r'(\w[\w\s]*?)\s+and\s+(\w[\w\s]*?)\s+are\s+linked\s+through:?\s*(.+)', text, re.IGNORECASE)
+        # Bridge inference → linking sentences (up to 3)
+        for text in bridge_evidence[:3]:
+            bridge_match = re.match(
+                r'(\w[\w\s]*?)\s+and\s+(\w[\w\s]*?)\s+are\s+linked\s+through:?\s*(.+)',
+                text, re.IGNORECASE
+            )
             if bridge_match:
                 a = bridge_match.group(1).strip().title()
                 b = bridge_match.group(2).strip().title()
                 via = [v.strip() for v in bridge_match.group(3).split(',') if v.strip()][:3]
                 via_str = ', '.join(via)
-                response_parts.append(f"**{a}** and **{b}** share common ground through {via_str}, suggesting a deeper connection between them.")
+                response_parts.append(
+                    f"**{a}** and **{b}** share common ground through {via_str}, "
+                    f"suggesting a deeper connection between them.")
             else:
                 response_parts.append(text)
 
-        # Memory evidence → include best sentence directly
-        for text in memory_evidence[:2]:
+        # Memory evidence → direct prose (up to 3)
+        for text in memory_evidence[:3]:
             if text and len(text) > 30:
                 clean = text.strip()
                 if not clean.endswith('.'):
                     clean += '.'
                 response_parts.append(clean)
 
-        # Theorems → cite naturally
-        for text in theorem_evidence[:1]:
+        # Theorems → cited naturally (up to 2)
+        for text in theorem_evidence[:2]:
             if 'Per the' in text:
                 response_parts.append(text[:300])
 
-        # Contradiction warning
+        # ═══ PASS 2: SYNTHESIS CONCLUSION ═══
+        # Generate an integrative statement that ties the top concepts together
+        if len(response_parts) >= 2 and len(concepts) >= 1:
+            c0 = concepts[0].title()
+            c1 = concepts[1].title() if len(concepts) > 1 else 'related concepts'
+            if bridge_evidence:
+                _bm = re.search(r'through:\s*(.+)', bridge_evidence[0])
+                if _bm:
+                    _via_words = [v.strip() for v in _bm.group(1).split(',')][:2]
+                    _via_str = ' and '.join(_via_words)
+                    response_parts.append(
+                        f"In synthesis: **{c0}** and **{c1}** converge through {_via_str}, "
+                        f"forming an integrated understanding of this domain.")
+            elif len(graph_evidence) >= 2:
+                response_parts.append(
+                    f"In synthesis: the interplay between **{c0}** and **{c1}** reveals "
+                    f"a coherent knowledge structure spanning multiple dimensions of this topic.")
+
         if contradictions:
-            response_parts.append("\nNote: There is some conflicting evidence on this topic, so further exploration may be warranted.")
+            response_parts.append(
+                "\nNote: There is some conflicting evidence on this topic — "
+                "further exploration may sharpen the picture.")
 
         if not response_parts:
             return None
@@ -6696,28 +6858,29 @@ class LearningIntellect:
         self.boost_resonance(0.01)
         evolution_data['operations'].append('resonance_calibration')
 
-        # 5. [NEW] Rebuild concept clusters for better search - QUANTUM ENGINE ACTIVE
-        self._quantum_cluster_engine()
-        evolution_data['operations'].append('cluster_rebuild')
+        # 5. Cluster engine — SKIPPED here (already runs in sovereignty cycle)
+        evolution_data['operations'].append('cluster_rebuild_skipped')
         evolution_data['metrics']['clusters'] = len(self.concept_clusters)
 
-        # 6. [NEW] Memory compression - compress old, rarely accessed memories
-        compressed = self.compress_old_memories(age_days=30, min_access=2)
+        # 6. Memory compression — only every other evolve call to reduce DB pressure
+        compressed = 0
+        if int(time.time()) % 2 == 0:
+            compressed = self.compress_old_memories(age_days=30, min_access=2)
         evolution_data['operations'].append('memory_compression')
         evolution_data['metrics']['compressed_memories'] = compressed
 
-        # 7. [NEW] Predictive pre-fetching - use recent patterns to predict and pre-cache
+        # 7. Predictive pre-fetching — only top 3 patterns (was 10)
         prefetched = 0
-        recent_patterns = self.predictive_cache.get('patterns', [])[-10:]
+        recent_patterns = self.predictive_cache.get('patterns', [])[-3:]
         for pattern in recent_patterns:
             query = pattern.get('query', '')
             if query:
-                predictions = self.predict_next_queries(query, top_k=3)
+                predictions = self.predict_next_queries(query, top_k=2)
                 prefetched += self.prefetch_responses(predictions)
         evolution_data['operations'].append('predictive_prefetch')
         evolution_data['metrics']['prefetched_queries'] = prefetched
 
-        # 8. [NEW] Rebuild embeddings for new memories
+        # 8. Rebuild embeddings — capped at 500 per cycle (was 100K)
         new_embeddings = self._rebuild_embeddings()
         evolution_data['operations'].append('embedding_rebuild')
         evolution_data['metrics']['new_embeddings'] = new_embeddings
@@ -6851,7 +7014,7 @@ class LearningIntellect:
         try:
             conn = sqlite3.connect(self.db_path)
             c = conn.cursor()
-            c.execute('SELECT query_hash, query FROM memory WHERE access_count > 0 LIMIT 100000')  # ULTRA: 100K embedding batch (4x)
+            c.execute('SELECT query_hash, query FROM memory WHERE access_count > 0 ORDER BY created_at DESC LIMIT 500')
 
             new_count = 0
             for query_hash, query in c.fetchall():
@@ -7081,12 +7244,13 @@ class LearningIntellect:
         learned_count = 0
         multilingual_code_count = 0
         languages_used = set()
+        _max_learn_calls = 100  # Cap total learn_from_interaction calls per ingest cycle
 
         # All 12 languages available for code ingestion
         all_languages = list(QueryTemplateGenerator.MULTILINGUAL_TEMPLATES.keys())
 
         for file_path in target_files:
-            if os.path.exists(file_path):
+            if os.path.exists(file_path) and learned_count < _max_learn_calls:
                 try:
                     with open(file_path, "r", encoding="utf-8") as f:
                         lines = f.readlines()
@@ -7095,11 +7259,13 @@ class LearningIntellect:
                         module_name = os.path.basename(file_path)
 
                         for line in samples:
+                            if learned_count >= _max_learn_calls:
+                                break
                             clean_line = line.strip()
                             if len(clean_line) > 8 and not clean_line.startswith("#"):
                                 concepts = self._extract_concepts(clean_line)
 
-                                for concept in concepts:
+                                for concept in concepts[:3]:  # Cap concepts per line (was unbounded)
                                     # QUANTUM LANGUAGE SELECTION - collapse superposition using entropy
                                     quantum_roll = chaos.chaos_float(0, 1)  # Pure random 0-1
                                     ml_threshold = self._get_dynamic_value(0.7, 0.5)  # Heartbeat-modulated threshold
@@ -7204,20 +7370,22 @@ class LearningIntellect:
 
         # === QUANTUM MULTILINGUAL CREATIVE GENERATION ===
         creative_count = 0
+        _creative_limit = max(0, _max_learn_calls - learned_count)  # Remaining budget
         try:
             # Dynamic domain weighting based on heartbeat
             domains = ["math", "philosophy", "magic", "creative", "synthesis",
                       "multilingual", "reasoning", "cosmic"]
 
             for domain in domains:
-                # Dynamic count based on entropy and flow
-                base_count = 8 if domain == "multilingual" else 5
-                count = int(base_count * self._flow_state * (1 + self._system_entropy * 0.5))
+                if creative_count >= _creative_limit:
+                    break
+                # Capped count per domain
+                base_count = 3 if domain == "multilingual" else 2
+                count = min(base_count, _creative_limit - creative_count)
 
                 for _ in range(count):
                     query, response, verification = QueryTemplateGenerator.generate_verified_knowledge(domain)
                     if verification["approved"]:
-                        # Quality modulated by heartbeat
                         dynamic_quality = verification["final_score"] * self._flow_state
                         self.learn_from_interaction(
                             query=query,
@@ -7227,18 +7395,19 @@ class LearningIntellect:
                         )
                         creative_count += 1
 
-            # ALWAYS generate quantum multilingual for each language
+            # Generate quantum multilingual — 1 per language (was 3)
             for lang in all_languages:
-                for _ in range(3):  # 3 per language = 36 extra
-                    query, response, verification = QueryTemplateGenerator.generate_multilingual_knowledge()
-                    if verification["approved"]:
-                        self.learn_from_interaction(
-                            query=query,
-                            response=response,
-                            source=f"QUANTUM_CREATIVE_{lang.upper()}",
-                            quality=verification["final_score"] * self._flow_state
-                        )
-                        creative_count += 1
+                if creative_count >= _creative_limit:
+                    break
+                query, response, verification = QueryTemplateGenerator.generate_multilingual_knowledge()
+                if verification["approved"]:
+                    self.learn_from_interaction(
+                        query=query,
+                        response=response,
+                        source=f"QUANTUM_CREATIVE_{lang.upper()}",
+                        quality=verification["final_score"] * self._flow_state
+                    )
+                    creative_count += 1
 
         except Exception as ce:
             logger.warning(f"Quantum knowledge generation error: {ce}")
@@ -7328,22 +7497,22 @@ class LearningIntellect:
             conn = sqlite3.connect(self.db_path)
             c = conn.cursor()
 
-            # Get diverse topics from knowledge graph
+            # Get diverse topics from knowledge graph (capped — this runs in stats cache thread)
             c.execute('''
                 SELECT DISTINCT concept FROM knowledge
                 WHERE strength > 0.5
                 ORDER BY RANDOM()
-                LIMIT 25000
-            ''')  # ULTRA: 5x concept pool
+                LIMIT 200
+            ''')
             concepts = [row[0] for row in c.fetchall()]
 
-            # Get high-quality previous queries as inspiration
+            # Get high-quality previous queries as inspiration (capped for CPU)
             c.execute('''
                 SELECT query FROM memory
                 WHERE quality_score > 0.7 AND query NOT LIKE '%test%'
                 ORDER BY RANDOM()
-                LIMIT 10000
-            ''')  # ULTRA: 5x query inspiration
+                LIMIT 100
+            ''')
             _good_queries = [row[0] for row in c.fetchall()]
 
             # Get theorem topics for advanced questions

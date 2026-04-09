@@ -1,15 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════════════════
-// B21_MathEngines1.swift — L104 · TheBrain · v2 Architecture
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// Extracted from L104Native.swift lines 12883-14127
-// Classes: AdvancedMathEngine, FluidWaveEngine, InformationSignalEngine
-// ═══════════════════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // MARK: - 📐 ADVANCED MATH ENGINE
@@ -137,7 +130,7 @@ class AdvancedMathEngine {
     }
 
     /// EVO_55: O(n³) determinant via LU decomposition (LAPACK dgetrf)
-    /// Replaces O(n!) cofactor expansion — safe for any matrix size
+    /// Replaces O(n!) cofactor expansion - safe for any matrix size
     func determinant(_ matrix: [[Double]]) -> Double {
         computations += 1
         let n = matrix.count
@@ -162,7 +155,7 @@ class AdvancedMathEngine {
         dgetrf_(&M, &N, &a, &lda, &ipiv, &info)
 
         guard info == 0 else {
-            // Singular or error — fall back to manual for small matrices
+            // Singular or error - fall back to manual for small matrices
             if n == 3 {
                 return matrix[0][0] * (matrix[1][1]*matrix[2][2] - matrix[1][2]*matrix[2][1])
                      - matrix[0][1] * (matrix[1][0]*matrix[2][2] - matrix[1][2]*matrix[2][0])
@@ -379,7 +372,7 @@ class AdvancedMathEngine {
         let skewness: Double = skewnessSum / n
         let kurtosis: Double = kurtosisSum / n - 3.0
         return ["count": n, "mean": mean, "median": median, "variance": variance, "stddev": stddev,
-                "min": sorted.first!, "max": sorted.last!, "q1": q1, "q3": q3, "iqr": iqr,
+                "min": sorted.first ?? 0, "max": sorted.last ?? 0, "q1": q1, "q3": q3, "iqr": iqr,
                 "skewness": skewness, "kurtosis": kurtosis, "range": sorted.last! - sorted.first!]
     }
 
@@ -458,7 +451,7 @@ class AdvancedMathEngine {
             let coeffs = (0..<terms).map { "x^\($0)" }
             return "1/(1-x) = " + coeffs.joined(separator: " + ") + " + ... (|x| < 1)"
         default:
-            return "Taylor[\(function)] — Use: exp, sin, cos, ln(1+x), 1/(1-x)"
+            return "Taylor[\(function)] - Use: exp, sin, cos, ln(1+x), 1/(1-x)"
         }
     }
 
@@ -558,7 +551,7 @@ class AdvancedMathEngine {
 
     private func matMul(_ a: [[Double]], _ b: [[Double]]) -> [[Double]] {
         let m = a.count, n = b[0].count, p = b.count
-        // v9.4 Perf: use BLAS dgemm for matrices ≥ 4×4 — O(n³) SIMD vs scalar triple loop
+        // v9.4 Perf: use BLAS dgemm for matrices ≥ 4×4 - O(n³) SIMD vs scalar triple loop
         if m >= 4 && n >= 4 && p >= 4 {
             var flatA = [Double](repeating: 0, count: m * p)
             var flatB = [Double](repeating: 0, count: p * n)
@@ -670,7 +663,7 @@ class FluidWaveEngine {
     // MARK: FLUID DYNAMICS
     // ═══════════════════════════════════════════════════════════════
 
-    /// Reynolds number: Re = ρvL/μ — predicts laminar vs turbulent flow
+    /// Reynolds number: Re = ρvL/μ - predicts laminar vs turbulent flow
     func reynoldsNumber(density: Double, velocity: Double, length: Double, viscosity: Double) -> (Re: Double, regime: String) {
         computations += 1
         let Re = density * velocity * length / viscosity
@@ -689,7 +682,7 @@ class FluidWaveEngine {
         return p1 + 0.5 * density * (v1 * v1 - v2 * v2) + density * g * (h1 - h2)
     }
 
-    /// Hagen-Poiseuille equation: Q = πr⁴ΔP / (8μL) — laminar pipe flow
+    /// Hagen-Poiseuille equation: Q = πr⁴ΔP / (8μL) - laminar pipe flow
     func poiseuille(radius: Double, pressureDrop: Double, viscosity: Double, length: Double) -> Double {
         computations += 1
         return .pi * pow(radius, 4) * pressureDrop / (8.0 * viscosity * length)
@@ -737,13 +730,13 @@ class FluidWaveEngine {
         return Foundation.sqrt(2.0 * gravity * height)
     }
 
-    /// Navier-Stokes viscous stress term: τ = μ(∂u/∂y) — 1D shear stress
+    /// Navier-Stokes viscous stress term: τ = μ(∂u/∂y) - 1D shear stress
     func viscousShearStress(viscosity: Double, velocityGradient: Double) -> Double {
         computations += 1
         return viscosity * velocityGradient
     }
 
-    /// Froude number: Fr = v / √(gL) — gravitational flow regime
+    /// Froude number: Fr = v / √(gL) - gravitational flow regime
     func froudeNumber(velocity: Double, gravity: Double = 9.80665, length: Double) -> (Fr: Double, regime: String) {
         computations += 1
         let Fr = velocity / Foundation.sqrt(gravity * length)
@@ -751,13 +744,13 @@ class FluidWaveEngine {
         return (Fr, regime)
     }
 
-    /// Weber number: We = ρv²L/σ — inertial vs surface tension forces
+    /// Weber number: We = ρv²L/σ - inertial vs surface tension forces
     func weberNumber(density: Double, velocity: Double, length: Double, surfaceTension: Double) -> Double {
         computations += 1
         return density * velocity * velocity * length / surfaceTension
     }
 
-    /// Euler number: Eu = ΔP / (½ρv²) — pressure losses in flow
+    /// Euler number: Eu = ΔP / (½ρv²) - pressure losses in flow
     func eulerNumber(pressureDrop: Double, density: Double, velocity: Double) -> Double {
         computations += 1
         return pressureDrop / (0.5 * density * velocity * velocity)
@@ -785,7 +778,7 @@ class FluidWaveEngine {
         return sourceFreq * (soundSpeed + (approaching ? observerVelocity : -observerVelocity)) / soundSpeed
     }
 
-    /// Standing wave on string: fₙ = n·v / (2L) — harmonic frequencies
+    /// Standing wave on string: fₙ = n·v / (2L) - harmonic frequencies
     func standingWaveHarmonics(waveSpeed: Double, length: Double, harmonics: Int = 8) -> [(n: Int, freq: Double, wavelength: Double)] {
         computations += 1
         return (1...harmonics).map { n in
@@ -1011,7 +1004,7 @@ class InformationSignalEngine {
         for k in 0..<N {
             var sumR = 0.0, sumI = 0.0
             for n in 0..<N {
-                // W^(kn) = twiddles[(k*n) % N] — periodic property
+                // W^(kn) = twiddles[(k*n) % N] - periodic property
                 let tw = twiddles[(k * n) % N]
                 sumR += signal[n] * tw.real
                 sumI += signal[n] * tw.imag
@@ -1057,7 +1050,7 @@ class InformationSignalEngine {
     }
 
     /// Linear convolution: (f * g)[n] = Σ f[m]·g[n-m]
-    /// v9.4 Perf: use vDSP_convD for vectors ≥16 — SIMD-accelerated vs O(n²) scalar
+    /// v9.4 Perf: use vDSP_convD for vectors ≥16 - SIMD-accelerated vs O(n²) scalar
     func convolve(_ f: [Double], _ g: [Double]) -> [Double] {
         computations += 1
         let outLen = f.count + g.count - 1

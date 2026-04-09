@@ -8,6 +8,7 @@ from typing import Dict
 import numpy as np
 
 from .numerics import PHI
+from l104_sacred_algorithms import derive_timeout, derive_cache_size, derive_cache_ttl, GOD_CODE, TAU
 
 
 class L104HardwareAdaptiveRuntime:
@@ -77,7 +78,7 @@ class L104HardwareAdaptiveRuntime:
         try:
             import subprocess
             if system == "Darwin":
-                result = subprocess.run(["system_profiler", "SPDisplaysDataType"], capture_output=True, text=True, timeout=5)
+                result = subprocess.run(["system_profiler", "SPDisplaysDataType"], capture_output=True, text=True, timeout=GOD_CODE/100)
                 if "Metal" in result.stdout:
                     has_gpu = True
                     gpu_info = "Metal-capable"
@@ -140,7 +141,7 @@ class L104HardwareAdaptiveRuntime:
         try:
             import subprocess
             result = subprocess.run(
-                ["pmset", "-g", "therm"], capture_output=True, text=True, timeout=3
+                ["pmset", "-g", "therm"], capture_output=True, text=True, timeout=TAU*5
             )
             output = result.stdout
             if "CPU_Speed_Limit" in output:
@@ -278,14 +279,14 @@ class L104HardwareAdaptiveRuntime:
             return {"trend": "insufficient_data", "samples": 0}
 
         durations = [s["duration_ms"] for s in samples]
-        mean_d = sum(durations) / len(durations)
+        mean_d = sum(durations) / max(len(durations), 1)
 
         # Simple linear trend
         if len(durations) >= 3:
             first_half = durations[:len(durations) // 2]
             second_half = durations[len(durations) // 2:]
-            first_mean = sum(first_half) / len(first_half)
-            second_mean = sum(second_half) / len(second_half)
+            first_mean = sum(first_half) / max(len(first_half), 1) if first_half else 0.0
+            second_mean = sum(second_half) / max(len(second_half), 1) if second_half else 0.0
 
             if second_mean > first_mean * 1.1:
                 trend = "degrading"

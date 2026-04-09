@@ -1,0 +1,114 @@
+{
+  "target_state": "00111111110000000000000000",
+  "target_state_qiskit": "00000000000000111111111100",
+  "n_qubits": 26,
+  "ibm_validation": {
+    "p_target": 0.822937,
+    "entropy_bits": 1.523,
+    "fidelity_2q": 0.995,
+    "t1_us": 200.0,
+    "t2_us": 100.0
+  },
+  "sacred_constants": {
+    "GOD_CODE": 527.5184818492612,
+    "PHI": 1.618033988749895,
+    "VOID_CONSTANT": 1.0416180339887497
+  },
+  "full_26Q": {
+    "F_Q": 31.551462,
+    "N": 26,
+    "xi_squared": 1.213518,
+    "quantum_enhancement": false,
+    "E": -13.090169,
+    "variance": 7.887866
+  },
+  "per_register": {
+    "CORE": {
+      "F_Q": 6.471874,
+      "N": 2,
+      "xi_squared": 3.235937,
+      "E": -1.618034,
+      "variance": 1.617969,
+      "target": "00",
+      "qubits": [0, 1],
+      "status": "CLASSICAL"
+    },
+    "3d": {
+      "F_Q": 9.708181,
+      "N": 6,
+      "xi_squared": 1.618030,
+      "E": -4.854090,
+      "variance": 2.427045,
+      "target": "111111",
+      "qubits": [2, 3, 4, 5, 6, 7],
+      "status": "CLASSICAL"
+    },
+    "4s": {
+      "F_Q": 3.236062,
+      "N": 2,
+      "xi_squared": 1.618031,
+      "E": -1.618031,
+      "variance": 0.809016,
+      "target": "11",
+      "qubits": [8, 9],
+      "status": "CLASSICAL"
+    },
+    "LATTICE": {
+      "F_Q": 5.454113,
+      "N": 6,
+      "xi_squared": 0.909019,
+      "E": 3.272058,
+      "variance": 1.363528,
+      "target": "000000",
+      "qubits": [10, 11, 12, 13, 14, 15],
+      "status": "QUANTUM"
+    },
+    "SACRED": {
+      "F_Q": 4.045085,
+      "N": 5,
+      "xi_squared": 0.809017,
+      "E": 2.427051,
+      "variance": 1.011271,
+      "target": "00000",
+      "qubits": [16, 17, 18, 19, 20],
+      "status": "QUANTUM"
+    },
+    "PHI": {
+      "F_Q": 3.236068,
+      "N": 4,
+      "xi_squared": 0.809017,
+      "E": 1.942022,
+      "variance": 0.809017,
+      "target": "0000",
+      "qubits": [21, 22, 23, 24],
+      "status": "QUANTUM"
+    },
+    "ANCHOR": {
+      "F_Q": 1.618034,
+      "N": 1,
+      "xi_squared": 1.618034,
+      "E": 0.0,
+      "variance": 0.404508,
+      "target": "0",
+      "qubits": [25],
+      "status": "CLASSICAL"
+    }
+  },
+  "analysis": {
+    "hamiltonian_type": "Heisenberg",
+    "coupling_form": "J_ij (X_i X_j + Y_i Y_j + Z_i Z_j) + h_i Z_i",
+    "intra_register_coupling": -0.809017,
+    "inter_register_coupling": -0.04045085,
+    "interference_term": -6.422061,
+    "quantum_enhanced_registers": ["LATTICE", "SACRED", "PHI"],
+    "classical_registers": ["CORE", "3d", "4s", "ANCHOR"]
+  },
+  "interpretation": {
+    "full_state_F_Q": "31.55 (26Q correlated state)",
+    "squeezing_parameter": "1.21 (>1 indicates no metrological enhancement for full state)",
+    "per_register_quantum_advantage": "3 registers (LATTICE, SACRED, PHI) show ξ² < 1 (quantum squeezing)",
+    "fe_structure": "Valence (3d, 4s) registers show classical behavior due to high occupancy correlation",
+    "sacred_phase_manifold": "SACRED register shows quantum enhancement (ξ² = 0.809 = 1/φ)",
+    "physical_meanance": "F_Q scales with φ for Fe (atomic number 26) configuration"
+  }
+}

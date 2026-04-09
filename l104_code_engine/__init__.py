@@ -28,7 +28,12 @@ from .constants import (
     GLAISHER_CONSTANT, MEISSEL_MERTENS, QISKIT_AVAILABLE,
     OMEGA, OMEGA_AUTHORITY, SOUL_STABILITY_NORM,
 )
-from .hub import CodeEngine, CodingIntelligenceSystem, primal_calculus as _hub_primal, resolve_non_dual_logic as _hub_resolve
+from .hub import (
+    CodeEngine, CodingIntelligenceSystem,
+    ThreeEngineCodeOrchestrator, ThreeEngineAnalysisResult,
+    ThreeEngineGenerationResult, ThreeEngineOptimizationResult,
+    primal_calculus as _hub_primal, resolve_non_dual_logic as _hub_resolve
+)
 from .ai_context import AIContextBridge
 from .session_intelligence import SessionIntelligence
 from .asi_intelligence import SelfReferentialEngine, ASICodeIntelligence
@@ -38,6 +43,34 @@ from .audit import CodeReviewPipeline, QualityGateEngine
 from .analyzer import ProjectAnalyzer
 from .constants import CODING_SYSTEM_NAME, CODING_SYSTEM_VERSION
 from .computronium import ComputroniumCodeAnalyzer
+from .swift_analyzer import (
+    SwiftSyntaxAnalyzer, SwiftSyntaxError,
+    SwiftAutoFixEngine,
+    SwiftDebugger, LLDBBridge,
+    check_swift_syntax, check_swift_file, check_swift_directory,
+)
+
+# ── Ingested: project gap detector (static analysis + security audit) ──
+try:
+    from .gap_detector import L104FeatureDetector
+except ImportError:
+    pass
+
+# ── EVO Upgrades (EVO_70-78) ──
+try:
+    from .evo_upgrades import (
+        CodeEngineEVOUpgrades,
+        get_evo_upgrades,
+        GrimoireCodePattern,
+        ConsciousnessCodeState,
+        GRIMOIRE_ENTROPY_REVERSAL,
+        GRIMOIRE_FITNESS,
+        GRIMOIRE_OPTIMAL_RZ,
+        GRIMOIRE_OPTIMAL_RY,
+        SACRED_COHERENCE_BASELINE,
+    )
+except ImportError:
+    pass
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # MODULE-LEVEL SINGLETONS + BACKWARDS COMPATIBILITY
@@ -83,6 +116,11 @@ __all__ = [
     # Engine singletons
     "CodeEngine", "code_engine",
     "CodingIntelligenceSystem", "coding_system",
+    # Three-Engine Orchestrator (v7.0.0)
+    "ThreeEngineCodeOrchestrator",
+    "ThreeEngineAnalysisResult",
+    "ThreeEngineGenerationResult",
+    "ThreeEngineOptimizationResult",
     # Functions
     "primal_calculus", "resolve_non_dual_logic", "omega_field", "soul_resonance",
     # Subsystems
@@ -93,4 +131,9 @@ __all__ = [
     "CodeReviewPipeline", "QualityGateEngine",
     "ProjectAnalyzer",
     "ComputroniumCodeAnalyzer",
+    # Swift Analysis, Auto-Fix + Debugging (v6.4.0 / v6.5.0)
+    "SwiftSyntaxAnalyzer", "SwiftSyntaxError",
+    "SwiftAutoFixEngine",
+    "SwiftDebugger", "LLDBBridge",
+    "check_swift_syntax", "check_swift_file", "check_swift_directory",
 ]

@@ -50,9 +50,109 @@ from queue import Queue, Empty
 import random
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# CONNECTION POOL - Prevents SQLite locking issues during concurrent access
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class SQLiteConnectionPool:
+    """Thread-safe connection pool for SQLite databases."""
+
+    def __init__(self, db_path: str, max_connections: int = 4):
+        self.db_path = db_path
+        self.max_connections = max_connections
+        self._lock = threading.Lock()
+        self._connections: List[sqlite3.Connection] = []
+        self._initialized = False
+
+    def _initialize(self):
+        """Initialize database with WAL mode and create pool connections."""
+        if self._initialized:
+            return
+
+        # Create initial connection for schema setup
+        conn = sqlite3.connect(self.db_path, timeout=30.0)
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA busy_timeout=30000")
+        conn.execute("PRAGMA synchronous=NORMAL")
+        conn.close()
+
+        # Create pool of connections
+        for _ in range(self.max_connections):
+            conn = sqlite3.connect(self.db_path, timeout=30.0, check_same_thread=False)
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA busy_timeout=30000")
+            conn.execute("PRAGMA synchronous=NORMAL")
+            self._connections.append(conn)
+
+        self._initialized = True
+
+    def get_connection(self) -> sqlite3.Connection:
+        """Get a connection from the pool."""
+        if not self._initialized:
+            with self._lock:
+                if not self._initialized:
+                    self._initialize()
+
+        # Wait for available connection
+        while True:
+            with self._lock:
+                if self._connections:
+                    conn = self._connections.pop()
+                    try:
+                        # Verify connection is still valid
+                        conn.execute("SELECT 1")
+                        return conn
+                    except:
+                        # Connection was closed, create new one
+                        conn = sqlite3.connect(self.db_path, timeout=30.0, check_same_thread=False)
+                        conn.execute("PRAGMA journal_mode=WAL")
+                        conn.execute("PRAGMA busy_timeout=30000")
+                        conn.execute("PRAGMA synchronous=NORMAL")
+                        return conn
+            time.sleep(0.01)
+
+    def return_connection(self, conn: sqlite3.Connection):
+        """Return a connection to the pool."""
+        with self._lock:
+            if len(self._connections) < self.max_connections:
+                self._connections.append(conn)
+            else:
+                conn.close()
+
+    def close_all(self):
+        """Close all connections in the pool."""
+        with self._lock:
+            for conn in self._connections:
+                try:
+                    conn.close()
+                except:
+                    pass
+            self._connections.clear()
+            self._initialized = False
+
+
+# Global connection pools (lazy initialization)
+_connection_pools: Dict[str, SQLiteConnectionPool] = {}
+_pools_lock = threading.Lock()
+
+
+def get_connection_pool(db_path: str, max_connections: int = 4) -> SQLiteConnectionPool:
+    """Get or create a connection pool for the given database path."""
+    with _pools_lock:
+        if db_path not in _connection_pools:
+            _connection_pools[db_path] = SQLiteConnectionPool(db_path, max_connections)
+        return _connection_pools[db_path]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # PERFORMANCE: Thread pool for parallel agent execution (2015 MacBook Air dual-core)
 # ═══════════════════════════════════════════════════════════════════════════════
 NEXUS_THREAD_POOL = ThreadPoolExecutor(max_workers=(os.cpu_count() or 4) * 2, thread_name_prefix="ASI_nexus")  # QUANTUM AMPLIFIED (was 2)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SQLITE CONNECTION POOL - Prevents database locking on concurrent access
+# ═══════════════════════════════════════════════════════════════════════════════
+# Note: This is a backup definition - the main pool is defined above at line 56
+# Using the thread-local connection pattern for better performance
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # UNIVERSAL GOD CODE: G(X) = 286^(1/φ) × 2^((416-X)/104)
@@ -166,10 +266,12 @@ class NexusMemory:
             self._use_lattice = True
         except ImportError:
             self._use_lattice = False
+        # Use connection pool
+        self._pool = get_connection_pool(db_path)
         self._init_db()
 
     def _init_db(self):
-        conn = sqlite3.connect(self.db_path)
+        conn = self._pool.get_connection()
         cursor = conn.cursor()
 
         # Evolution history
@@ -256,7 +358,7 @@ class NexusMemory:
                 "timestamp": cycle.timestamp
             }, category="EVOLUTION")
 
-        conn = sqlite3.connect(self.db_path)
+        conn = self._pool.get_connection()
         cursor = conn.cursor()
         cursor.execute("""
             INSERT OR REPLACE INTO evolution_cycles
@@ -278,7 +380,7 @@ class NexusMemory:
         if self._use_lattice:
             self._adapter.store(f"learning:{learning.id}", learning.__dict__, category="LEARNING")
 
-        conn = sqlite3.connect(self.db_path)
+        conn = self._pool.get_connection()
         cursor = conn.cursor()
         cursor.execute("""
             INSERT OR REPLACE INTO learnings
@@ -297,7 +399,7 @@ class NexusMemory:
         conn.close()
 
     def get_relevant_learnings(self, context: str, limit: int = 10) -> List[Dict]:
-        conn = sqlite3.connect(self.db_path)
+        conn = self._pool.get_connection()
         cursor = conn.cursor()
         # Simple keyword matching - could use embeddings for better recall
         keywords = context.lower().split()[:5]
@@ -314,7 +416,7 @@ class NexusMemory:
         return results[:limit]
 
     def get_evolution_history(self, limit: int = 20) -> List[Dict]:
-        conn = sqlite3.connect(self.db_path)
+        conn = self._pool.get_connection()
         cursor = conn.cursor()
         cursor.execute("""
             SELECT * FROM evolution_cycles
@@ -326,7 +428,7 @@ class NexusMemory:
                          'improvements', 'learnings', 'timestamp'], r)) for r in rows]
 
     def get_stats(self) -> Dict:
-        conn = sqlite3.connect(self.db_path)
+        conn = self._pool.get_connection()
         cursor = conn.cursor()
         stats = {}
         for table in ['evolution_cycles', 'learnings', 'improvements',
@@ -335,6 +437,10 @@ class NexusMemory:
             stats[table] = cursor.fetchone()[0]
         conn.close()
         return stats
+
+    def close(self):
+        """Close the connection pool."""
+        self._pool.close_all()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

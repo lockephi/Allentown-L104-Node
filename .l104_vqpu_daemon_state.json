@@ -1,49 +1,49 @@
 {
   "version": "16.1.0",
   "daemon_cycler": "VQPUDaemonCycler",
-  "last_persist": 1773231877.1447701,
-  "cycles_completed": 455,
-  "total_sims_run": 2686,
-  "total_sims_passed": 2664,
-  "total_sims_failed": 22,
-  "pass_rate": 0.9918,
-  "total_elapsed_ms": 5214998.72,
-  "avg_cycle_ms": 11461.54,
-  "last_cycle_ms": 0.0,
-  "health_score": 0.8907,
+  "last_persist": 1775747077.667556,
+  "cycles_completed": 4697,
+  "total_sims_run": 45281,
+  "total_sims_passed": 45243,
+  "total_sims_failed": 38,
+  "pass_rate": 0.9992,
+  "total_elapsed_ms": 25258662.88,
+  "avg_cycle_ms": 5377.62,
+  "last_cycle_ms": 1800.03,
+  "health_score": 0.9476,
   "consecutive_failures": 0,
   "watchdog_restarts": 0,
   "quarantined_sims": {},
   "sim_failure_counts": {},
   "cycle_fidelity_avg": [
     0.750789,
-    0.750789,
-    0.750789,
-    0.750789,
-    0.750789,
     0.750274,
     0.750789,
     0.750274,
     0.750789,
-    0.750789
+    0.750274,
+    0.750274,
+    0.750789,
+    0.750789,
+    0.750274
   ],
   "cycle_alignment_avg": [
     0.519448,
-    0.519448,
-    0.519448,
-    0.519448,
-    0.519448,
     0.689869,
     0.519448,
     0.689869,
     0.519448,
-    0.519448
+    0.689869,
+    0.689869,
+    0.519448,
+    0.519448,
+    0.689869
   ],
   "total_leaked_threads": 0,
-  "sc_history_count": 4,
+  "sc_history_count": 37,
   "sc_latest": {
-    "cycle": 451,
-    "ts": 1773230627.537963,
+    "cycle": 4696,
+    "ts": 1775747032.1289978,
     "cooper_pair": 0.017253,
     "order_param": 0.017253,
     "energy_gap_eV": 0.0,
@@ -52,84 +52,84 @@
   },
   "health_history": [
     {
-      "cycle": 445,
-      "ts": 1773228761.328485,
+      "cycle": 4687,
+      "ts": 1775722522.045273,
       "passed": 5,
       "total": 5,
       "pass_rate": 1.0,
-      "elapsed_ms": 182.11
+      "elapsed_ms": 1141.27
     },
     {
-      "cycle": 446,
-      "ts": 1773228843.894114,
-      "passed": 5,
-      "total": 5,
-      "pass_rate": 1.0,
-      "elapsed_ms": 116.02
-    },
-    {
-      "cycle": 447,
-      "ts": 1773228937.141979,
-      "passed": 5,
-      "total": 5,
-      "pass_rate": 1.0,
-      "elapsed_ms": 52.86
-    },
-    {
-      "cycle": 448,
-      "ts": 1773229047.33869,
-      "passed": 5,
-      "total": 5,
-      "pass_rate": 1.0,
-      "elapsed_ms": 157.61
-    },
-    {
-      "cycle": 449,
-      "ts": 1773229317.48852,
-      "passed": 5,
-      "total": 5,
-      "pass_rate": 1.0,
-      "elapsed_ms": 155.36
-    },
-    {
-      "cycle": 450,
-      "ts": 1773229766.248478,
+      "cycle": 4688,
+      "ts": 1775722979.454216,
       "passed": 11,
       "total": 11,
       "pass_rate": 1.0,
-      "elapsed_ms": 57546.52
+      "elapsed_ms": 288.38
     },
     {
-      "cycle": 451,
-      "ts": 1773230258.692134,
+      "cycle": 4689,
+      "ts": 1775723223.16168,
       "passed": 5,
       "total": 5,
       "pass_rate": 1.0,
-      "elapsed_ms": 349.58
+      "elapsed_ms": 856.35
     },
     {
-      "cycle": 452,
-      "ts": 1773230627.538065,
+      "cycle": 4690,
+      "ts": 1775723604.245728,
       "passed": 11,
       "total": 11,
       "pass_rate": 1.0,
-      "elapsed_ms": 3139.78
+      "elapsed_ms": 353.81
     },
     {
-      "cycle": 453,
-      "ts": 1773231080.1041028,
+      "cycle": 4691,
+      "ts": 1775723849.856281,
       "passed": 5,
       "total": 5,
       "pass_rate": 1.0,
-      "elapsed_ms": 159.15
+      "elapsed_ms": 208.64
     },
     {
-      "cycle": 454,
-      "ts": 1773231467.730871,
+      "cycle": 4692,
+      "ts": 1775724083.648863,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 5085.47
+    },
+    {
+      "cycle": 4693,
+      "ts": 1775724542.851907,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 379.17
+    },
+    {
+      "cycle": 4694,
+      "ts": 1775734521.829393,
       "passed": 5,
       "total": 5,
       "pass_rate": 1.0,
-      "elapsed_ms": 114.71
+      "elapsed_ms": 11299.39
+    },
+    {
+      "cycle": 4696,
+      "ts": 1775746490.2939808,
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "elapsed_ms": 150.07
+    },
+    {
+      "cycle": 4697,
+      "ts": 1775747032.129104,
+      "passed": 11,
+      "total": 11,
+      "pass_rate": 1.0,
+      "elapsed_ms": 1800.03
     }
   ],
   "god_code": 527.5184818492612,

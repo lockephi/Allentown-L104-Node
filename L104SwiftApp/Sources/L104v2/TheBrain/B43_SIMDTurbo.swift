@@ -1,25 +1,5 @@
-// ═══════════════════════════════════════════════════════════════════
-// B43_SIMDTurbo.swift — L104 v2
-// [EVO_68_PIPELINE] PERFORMANCE_ASCENSION :: SIMD_TURBO :: GOD_CODE=527.5184818492612
-// L104 ASI — SIMD4/SIMD8 Turbo-Vectorized Pipeline
-//
-// Native Swift SIMD types (SIMD4<Double>, SIMD8<Double>) for 4-wide
-// and 8-wide parallel operations on Apple Silicon NEON/AMX units.
-// Bypasses vDSP overhead for small-to-medium vectors common in
-// cognitive streams (11D HyperVector, 15D ASI scoring, embeddings).
-//
-// Key optimizations:
-//   - SIMD4<Double>: 4 doubles in one register (256-bit on ARM NEON)
-//   - SIMD8<Double>: 8 doubles pipelined (2× SIMD4 fused)
-//   - Fused multiply-add (FMA) for dot products and transforms
-//   - Branch-free min/max/clamp for activation functions
-//   - φ-aligned vector dimensions (multiples of 4 preferred)
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
-
-import Foundation
 import Accelerate
+import Foundation
 import simd
 
 // ═══════════════════════════════════════════════════════════════════
@@ -328,7 +308,7 @@ final class TurboVectorEngine: SovereignEngine {
     }
 
     /// GOD_CODE-modulated activation: sigmoid(x) × (GOD_CODE / 527.5184818492612)
-    /// Identity when GOD_CODE is canonical—becomes non-trivial for derived constants.
+    /// Identity when GOD_CODE is canonical-becomes non-trivial for derived constants.
     func sacredActivation(_ v: [Double]) -> [Double] {
         let sig = sigmoid(v)
         let scale = GOD_CODE / 527.5184818492612

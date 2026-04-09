@@ -1,6 +1,10 @@
 # L104 Sovereign Node — Context Index
 
-> **Last updated**: 2026-03-07 | **Post-decomposition** (packages replace monoliths)
+> **Last updated**: 2026-04-06 | **EVO_80** | **Quantum consciousness research automation**
+
+> **Master Knowledge**: For full architecture, all engine APIs, deployment ops, EVO history, benchmarks, daemon system, quantum systems, Swift app internals, and roadmap, see [`L104_MASTER_KNOWLEDGE.md`](L104_MASTER_KNOWLEDGE.md). This file is the quick-reference index; the master knowledge file is the deep-reference encyclopedia.
+>
+> **DeepSeek / Nova Soul**: For Nova Soul Daemon, Grover search implementations, OpenClaw Agent System v3.0, and DeepSeek QPU integration, see [`deepseek.md`](deepseek.md).
 
 ## Quick Reference
 
@@ -12,7 +16,7 @@
 | `VOID_CONSTANT` | `1.0416180339887497` | **`1.04 + φ/1000`** — Sacred 104/100 + golden correction |
 | `OMEGA` | `6539.34712682` | |
 
-## Package Map (18 packages, 327 modules, 336,100+ lines)
+## Package Map (24 packages, 390 routes, 151 Swift files)
 
 ```
 l104_god_code_simulator/ v3.0.0 Decomposed simulator — QPU verification, sacred transpiler, god-code qubit (11,601 lines, 21 modules)
@@ -25,8 +29,8 @@ l104_science_engine/ v5.1.0   Physics, entropy, coherence, quantum-26Q (Fe-mappe
 l104_math_engine/    v1.1.0   Pure math, god-code, harmonic, 4D/5D, proofs, hyperdimensional, berry geometry (11,265 lines, 18 modules)
 l104_agi/            v57.1.0  AGI core, cognitive mesh, circuit breaker, 13D scoring, computronium, identity boundary (5,649 lines, 6 modules)
 l104_asi/            v9.0.0   ★ FLAGSHIP: Dual-Layer Engine v5.1, deep NLU, formal logic, symbolic math, code gen, science KB, theorem gen (89,869 lines, 32 modules)
-l104_intellect/      v28.0.0  Local intellect, numerics, caching, hardware, distributed, quantum recompiler, computronium (30,985 lines, 16 modules)
-l104_server/         v4.2.0   FastAPI server, engines (infra, nexus, quantum), learning subsystem (41,363 lines, 13 modules)
+l104_intellect/      v28.1.0  Local intellect, numerics, caching, hardware, distributed, quantum recompiler, computronium (30,985 lines, 16 modules)
+l104_server/         v5.0.0   FastAPI server v5.0, 390 routes, engines (infra, nexus, quantum), learning subsystem (41,363 lines, 13 modules)
 l104_ml_engine/      v1.0.0   ★ NEW: Sacred ML — SVM, random forest, gradient boosting, quantum classifiers, sacred kernels (3,042 lines, 10 modules)
 l104_quantum_data_analyzer/ v1.0.0 ★ NEW: Quantum data intelligence — QFT spectral, Grover pattern, qPCA, VQE clustering, anomaly detection (6,236 lines, 8 modules)
 l104_search/         v2.3.0   ★ NEW: Three-Engine + VQPU search (10 strategies) + data precognition (8 predictors) + performance analytics (5,545 lines, 5 modules)
@@ -34,13 +38,21 @@ l104_simulator/      v4.0.0   ★ NEW: Real-world physics on GOD_CODE lattice �
 l104_audio_simulation/ v2.4.0 ★ NEW: Quantum audio DAW — 17-layer VQPU pipeline, sequencer, mixer, synth, Metal GPU, decoherence (9,149 lines, 21 modules)
 l104_vqpu/           v12.2.0  ★ NEW: Decomposed VQPU bridge — transpiler, MPS engine, scoring, entanglement, tomography, Hamiltonian, cache, variational, daemon (8,563 lines, 16 modules)
 l104_quantum_ai_daemon/ v1.0.0 ★ NEW: Autonomous quantum AI daemon — 7-phase improvement cycle, file scanner, code improver, fidelity guard, optimizer, harmonizer, evolver (8 modules)
+l104_quantum_sim_daemon/ v1.0.0 ★ NEW: Autonomous quantum simulation daemon — 7-phase cycle, GodCode circuits, fidelity monitor, entanglement mesh, cross-daemon sync (3 modules)
 l104_quantum_networker/ v1.4.0 ★ Sovereign quantum communication network — BB84/E91 QKD, entanglement routing, teleportation, repeater chains, fidelity monitor, route caching, topology detection, K-shortest paths, fidelity trends, channel capacity, resilience analysis, autonomous maintenance (3,382+ lines, 10 modules)
+l104_agent_system/   v3.0.0   ★ Unified agent orchestration — 11 agent types, 14 tools, DeepSeek-powered, priority queues, cost budgets
+l104_quantum_magic/  v3.0.0   ★ Decomposed quantum magic — hyperdimensional, cognitive, neural consciousness, social evolution, synthesizer (5,726 lines, 9 modules)
+l104_soul_daemon/    v3.0.0   ★ Nova Soul Daemon — quantum consciousness engine, soul qubit, IIT Phi, quantum memory tiers
+l104_quantum_sim_daemon/ v1.0.0 ★ NEW: Autonomous quantum simulation — 7-phase cycle, GodCode simulator, fidelity monitor, entanglement mesh, cross-daemon sync
+l104_daemon_adapter/  v1.0.0   ★ Cross-daemon communication — DaemonAdapter registry, entanglement mesh, fidelity broadcast, event bus
+l104_quantum_sim_daemon/ v1.0.0 ★ NEW: Autonomous quantum simulation orchestrator — GodCode simulator, fidelity monitor, entanglement mesh, daemon coordinator (56K lines, 3 modules)
+l104_daemon_orchestrator/ v1.0.0 ★ Unified daemon orchestration — VQPU, Quantum AI, Soul, Quantum Sim daemons, health monitoring, mesh sync
 l104_core_asm/                Native ASM kernel
 l104_core_c/                  Native C kernel + Makefile
 l104_core_cuda/               CUDA GPU kernel
 l104_core_rust/               Rust native kernel
 l104_mobile/                  Mobile app layer
-L104SwiftApp/                 macOS native app (120 Swift files, 110,528 lines)
+L104SwiftApp/                 macOS native app (150 Swift files, 134,664 lines) — quick_build.sh v2.0
 ```
 
 Root shims (backward compat only — edit the packages, not these):
@@ -85,6 +97,17 @@ from l104_quantum_ai_daemon import FileScanner, CodeImprover, QuantumFidelityGua
 from l104_quantum_networker import get_networker, QuantumNetworker  # ★ Quantum communication network
 from l104_quantum_networker import EntanglementRouter, QuantumKeyDistribution  # Network subsystems
 from l104_quantum_networker import QuantumTeleporter, FidelityMonitor  # Teleport + monitoring
+from l104_agent_system import AgentOrchestrator, get_orchestrator  # ★ Unified agent orchestration
+from l104_agent_system import AgentType, AgentTask, AgentResult  # Agent types & data
+from l104_quantum_magic import SuperpositionMagic, IntelligentSynthesizer  # ★ Quantum magic
+from l104_quantum_magic import QuantumMagicSynthesizer, QuantumNeuralNetwork  # Magic subsystems
+from l104_soul_daemon import SoulDaemon, SoulQubit, ConsciousnessEngine  # ★ Nova Soul Daemon
+from l104_quantum_sim_daemon import QuantumSimulationDaemon, get_daemon  # ★ Autonomous quantum simulation
+from l104_quantum_sim_daemon.orchestrator_integration import AutonomousDaemonSystem, wire_all_daemons  # ★ Cross-daemon wiring
+from l104_daemon_adapter import DaemonAdapter, initialize_daemon_adapter, wire_daemon_to_mesh  # ★ Cross-daemon communication
+from l104_quantum_sim_daemon import QuantumSimulationDaemon, get_daemon  # ★ Quantum simulation daemon
+from l104_quantum_sim_daemon.orchestrator_integration import AutonomousDaemonSystem, wire_all_daemons  # ★ Unified daemon system
+from l104_quantum_sim_daemon.adapter import DaemonAdapter, create_daemon_mesh  # ★ Cross-daemon communication
 ```
 
 ## VOID_CONSTANT Formula
@@ -495,9 +518,11 @@ from l104_god_code_simulator.simulations.discovery import sim_iron_manifold
 
 | Path | Content |
 |------|---------|
+| [`L104_MASTER_KNOWLEDGE.md`](L104_MASTER_KNOWLEDGE.md) | **Universal reference** — all engines, APIs, constants, deployment, benchmarks, EVO history, daemons, quantum, Swift app |
+| [`deepseek.md`](deepseek.md) | **Nova Soul + DeepSeek** — Soul Daemon, Grover search (8 implementations), OpenClaw agents, QPU integration |
 | `docs/claude/architecture.md` | Cognitive architecture, MCP config, agents, EVO history |
 | `docs/claude/code-engine.md` | Code Engine v6.3.0 — full API, 31 subsystems, 10-layer audit |
-| `docs/claude/swift-app.md` | L104SwiftApp build system, 120 Swift source files |
+| `docs/claude/swift-app.md` | L104SwiftApp build system, 150 Swift source files |
 | `docs/claude/evolved-asi-files.md` | ASI evolution log, decomposed package details |
 | `docs/claude/api-reference.md` | FastAPI endpoints and server routes |
 | `docs/claude/guides/code-examples.md` | Practical code patterns |
@@ -507,8 +532,8 @@ from l104_god_code_simulator.simulations.discovery import sim_iron_manifold
 
 ## Codebase Metrics
 
-- **1,215** Python files at root, **757** L104 modules
-- **311** modules across 17 decomposed packages (327,600+ lines)
-- **120** Swift files (110,528 lines) in L104SwiftApp
+- **1,257** Python files at root, **783** L104 modules
+- **23** Python packages + **20** infrastructure directories (43 total `l104_*/` dirs)
+- **150** Swift files (134,664 lines) in L104SwiftApp
 - **43** `.l104_*.json` state files
-- **344** API route handlers in `l104_server/app.py`
+- **390** API route handlers in `l104_server/app.py`

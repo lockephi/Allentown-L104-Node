@@ -1,13 +1,7 @@
-// ═══════════════════════════════════════════════════════════════
-// B33_CommonsenseReasoning.swift — Commonsense Reasoning Engine
-// L104v2 — TheBrain Layer — EVO_68 SOVEREIGN_CONVERGENCE
-// 8-Layer Reasoning + ScienceEngineBridge + MCQ Solver
-// ═══════════════════════════════════════════════════════════════
-
 import Foundation
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - CommonsenseResult — Structured output of reasoning
+// MARK: - CommonsenseResult - Structured output of reasoning
 // ═══════════════════════════════════════════════════════════════
 
 struct CommonsenseResult {
@@ -19,7 +13,7 @@ struct CommonsenseResult {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - CommonsenseRule — A single commonsense rule
+// MARK: - CommonsenseRule - A single commonsense rule
 // ═══════════════════════════════════════════════════════════════
 
 struct CommonsenseRule {
@@ -29,7 +23,7 @@ struct CommonsenseRule {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - EventScript — A script for a common activity
+// MARK: - EventScript - A script for a common activity
 // ═══════════════════════════════════════════════════════════════
 
 struct EventScript {
@@ -39,7 +33,7 @@ struct EventScript {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - AnalogicalPattern — A structural mapping between domains
+// MARK: - AnalogicalPattern - A structural mapping between domains
 // ═══════════════════════════════════════════════════════════════
 
 struct AnalogicalPattern {
@@ -50,7 +44,7 @@ struct AnalogicalPattern {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - ScienceEngineBridge — Bridge to ScienceKB
+// MARK: - ScienceEngineBridge - Bridge to ScienceKB
 // ═══════════════════════════════════════════════════════════════
 
 struct ScienceEngineBridge {
@@ -101,7 +95,7 @@ struct ScienceEngineBridge {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - CommonsenseReasoningEngine — Main Engine
+// MARK: - CommonsenseReasoningEngine - Main Engine
 // ═══════════════════════════════════════════════════════════════
 
 final class CommonsenseReasoningEngine {
@@ -1576,7 +1570,7 @@ final class CommonsenseReasoningEngine {
         // ─── Build reasoning string ───
         var reasoningParts: [String] = []
         reasoningParts.append("MCQ Analysis for: \(question)")
-        reasoningParts.append("Best answer: choice \(bestIndex) — \"\(choices[bestIndex])\"")
+        reasoningParts.append("Best answer: choice \(bestIndex) - \"\(choices[bestIndex])\"")
         reasoningParts.append("Confidence: \(String(format: "%.4f", bestConfidence))")
         reasoningParts.append("PHI-weighted aggregation across 8 layers + ScienceKB")
 
@@ -2601,7 +2595,7 @@ final class CommonsenseReasoningEngine {
         // ─── Build reasoning string ───
         var reasoningParts: [String] = []
         reasoningParts.append("Extended MCQ Analysis for: \(question)")
-        reasoningParts.append("Best answer: choice \(bestIndex) — \"\(choices[bestIndex])\"")
+        reasoningParts.append("Best answer: choice \(bestIndex) - \"\(choices[bestIndex])\"")
         reasoningParts.append("Confidence: \(String(format: "%.4f", bestConfidence))")
         reasoningParts.append("PHI-weighted + OMEGA-modulated aggregation across 8 extended layers + ScienceKB")
 

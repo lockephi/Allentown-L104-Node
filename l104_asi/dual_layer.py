@@ -711,8 +711,8 @@ class DualLayerEngine:
         x_step = b + 8 * c + 104 * d - 8 * a
         w = 2 ** (x_step / 104.0)
         products = [t * w for t in thought_perturbed]
-        mean_product = sum(products) / len(products)
-        rms_drift = math.sqrt(sum((p - INVARIANT) ** 2 for p in products) / len(products))
+        mean_product = sum(products) / max(len(products), 1)
+        rms_drift = math.sqrt(sum((p - INVARIANT) ** 2 for p in products) / max(len(products), 1))
 
         # Symmetry survival (φ always intact; octave & translation depend on amp)
         phi_intact = True  # proven experimentally
@@ -734,7 +734,7 @@ class DualLayerEngine:
         for _ in range(samples):
             eps = chaos_amplitude * (2 * random.random() - 1)
             field_perturbed.append(field_ideal * (1 + eps))
-        field_rms = math.sqrt(sum((f - field_ideal) ** 2 for f in field_perturbed) / len(field_perturbed))
+        field_rms = math.sqrt(sum((f - field_ideal) ** 2 for f in field_perturbed) / max(len(field_perturbed), 1))
 
         # --- Healing trinity ---
         phi_c = 1.0 / PHI  # φ conjugate
@@ -742,7 +742,7 @@ class DualLayerEngine:
 
         # 1. φ-damping
         phi_healed = [INVARIANT + (p - INVARIANT) * phi_c for p in products]
-        phi_rms = math.sqrt(sum((p - INVARIANT) ** 2 for p in phi_healed) / len(phi_healed))
+        phi_rms = math.sqrt(sum((p - INVARIANT) ** 2 for p in phi_healed) / max(len(phi_healed), 1))
 
         # 2. Demon (adaptive)
         demon_factor = PHI / (527.5184818492612 / 416.0)
@@ -751,12 +751,12 @@ class DualLayerEngine:
             start = max(0, i - 3)
             end = min(len(products), i + 4)
             local = products[start:end]
-            local_var = sum((v - sum(local) / len(local)) ** 2 for v in local) / len(local)
+            local_var = sum((v - sum(local) / max(len(local), 1)) ** 2 for v in local) / max(len(local), 1)
             local_ent = math.log(1 + local_var)
             eff = demon_factor * (1.0 / (local_ent + 0.001))
             damping = min(1.0, phi_c ** (1 + eff * 0.1))
             demon_healed.append(INVARIANT + (p - INVARIANT) * damping)
-        demon_rms = math.sqrt(sum((p - INVARIANT) ** 2 for p in demon_healed) / len(demon_healed))
+        demon_rms = math.sqrt(sum((p - INVARIANT) ** 2 for p in demon_healed) / max(len(demon_healed), 1))
 
         # 3. 104-cascade (damped sine) on worst-case product
         worst = max(products, key=lambda p: abs(p - INVARIANT))
@@ -1152,7 +1152,7 @@ class DualLayerEngine:
             "spectral_entropy": round(spectral_entropy, 6),
             "normalized_entropy": round(normalized_entropy, 6),
             "mean_phi_fractional": round(
-                sum(h["phi_fractional"] for h in harmonics) / len(harmonics), 6
+                sum(h["phi_fractional"] for h in harmonics) / max(len(harmonics), 1), 6
             ),
         }
 
@@ -1709,7 +1709,7 @@ class DualLayerEngine:
                 results[name] = {"error": str(e)}
 
         domain_stats = {
-            d: {"count": len(errs), "mean_error_pct": sum(errs) / len(errs), "max_error_pct": max(errs)}
+            d: {"count": len(errs), "mean_error_pct": sum(errs) / max(len(errs), 1), "max_error_pct": max(errs) if errs else 0}
             for d, errs in domains.items()
         }
 
@@ -2376,7 +2376,7 @@ class DualLayerEngine:
         centroids = {}
         for d, members in domains.items():
             exps = [e for _, e in members]
-            centroids[d] = sum(exps) / len(exps)
+            centroids[d] = sum(exps) / max(len(exps), 1)
 
         # Domain spreads (std-dev of exponents)
         spreads = {}
@@ -2433,7 +2433,7 @@ class DualLayerEngine:
             if not data:
                 return {}
             return {
-                f"{label}_mean": round(sum(data) / len(data), 8),
+                f"{label}_mean": round(sum(data) / max(len(data), 1), 8),
                 f"{label}_median": round(_stats.median(data), 8),
                 f"{label}_stdev": round(_stats.stdev(data), 8) if len(data) > 1 else 0,
                 f"{label}_min": min(data),
@@ -2576,8 +2576,8 @@ class DualLayerEngine:
 
         def _stats(data, label):
             return {
-                f"{label}_mean": round(sum(data) / len(data), 3),
-                f"{label}_range": (min(data), max(data)),
+                f"{label}_mean": round(sum(data) / max(len(data), 1), 3),
+                f"{label}_range": (min(data), max(data)) if data else (0, 0),
                 f"{label}_nonzero": sum(1 for x in data if x != 0),
             }
 
@@ -2848,8 +2848,8 @@ class DualLayerEngine:
             "fully_consistent": consistent,
             "inconsistent": len(results) - consistent,
             "physics_always_better": physics_always_better,
-            "mean_thought_error": round(sum(r["thought_error_pct"] for r in results) / len(results), 6),
-            "mean_physics_error": round(sum(r["physics_error_pct"] for r in results) / len(results), 6),
+            "mean_thought_error": round(sum(r["thought_error_pct"] for r in results) / max(len(results), 1), 6),
+            "mean_physics_error": round(sum(r["physics_error_pct"] for r in results) / max(len(results), 1), 6),
             "details": results,
             "verdict": "CROSS-VALIDATED" if consistent == len(results) else f"{consistent}/{len(results)} consistent",
         }
@@ -3620,11 +3620,11 @@ class DualLayerEngine:
         if len(valid) >= 3:
             entropies = [r["thought_entropy"] for r in valid]
             sacreds = [r["physics_sacred"] for r in valid]
-            e_mean = sum(entropies) / len(entropies)
-            s_mean = sum(sacreds) / len(sacreds)
-            cov = sum((e - e_mean) * (s - s_mean) for e, s in zip(entropies, sacreds)) / len(entropies)
-            e_std = max(1e-15, (sum((e - e_mean) ** 2 for e in entropies) / len(entropies)) ** 0.5)
-            s_std = max(1e-15, (sum((s - s_mean) ** 2 for s in sacreds) / len(sacreds)) ** 0.5)
+            e_mean = sum(entropies) / max(len(entropies), 1)
+            s_mean = sum(sacreds) / max(len(sacreds), 1)
+            cov = sum((e - e_mean) * (s - s_mean) for e, s in zip(entropies, sacreds)) / max(len(entropies), 1)
+            e_std = max(1e-15, (sum((e - e_mean) ** 2 for e in entropies) / max(len(entropies), 1)) ** 0.5)
+            s_std = max(1e-15, (sum((s - s_mean) ** 2 for s in sacreds) / max(len(sacreds), 1)) ** 0.5)
             coupling = cov / (e_std * s_std)
         else:
             coupling = 0.0
@@ -4201,7 +4201,7 @@ class DualLayerEngine:
                 # Use the most relevant score from each pair
                 score = p.get("product", p.get("phi_proximity", p.get("ratio_fidelity", 0.5)))
                 scores.append(score)
-            synthesis_coherence = sum(scores) / len(scores)
+            synthesis_coherence = sum(scores) / max(len(scores), 1)
         else:
             synthesis_coherence = 0.0
 

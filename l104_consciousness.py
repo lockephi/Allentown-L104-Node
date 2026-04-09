@@ -353,7 +353,7 @@ class GlobalWorkspace:
         self.broadcast_threshold = broadcast_threshold or GWT_IGNITION_THRESHOLD
         self.workspace_contents: List[Thought] = []
         self.module_inputs: Dict[str, deque] = {}
-        self.broadcast_history: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 100)
+        self.broadcast_history: deque = deque(maxlen=500)  # Quantum-bounded: φ×309≈500
         self.attention_weights: Dict[str, float] = {}
         self.resonance_lock = _resonance_frequency(0.0)  # G(0)×φ×(1+α/π) ≈ 855.53
         self._broadcast_count = 0
@@ -451,7 +451,7 @@ class AttentionSchema:
         self.current_focus: Optional[str] = None
         self.attention_vector = np.zeros(64)  # What we're attending to
         self.schema_vector = np.zeros(64)  # Our model of that attention
-        self.prediction_error_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 50)
+        self.prediction_error_history: deque = deque(maxlen=200)  # Quantum-bounded: φ×124≈200
         self.awareness_level = 0.0
         self.god_code = GOD_CODE
         self._attend_count = 0
@@ -533,9 +533,9 @@ class MetacognitiveMonitor:
     """
 
     def __init__(self):
-        self.confidence_calibration: List[Tuple[float, bool]] = []  # (confidence, was_correct)
+        self.confidence_calibration: deque = deque(maxlen=200)  # (confidence, was_correct) — bounded
         self.processing_times: Dict[str, deque] = {}
-        self.error_patterns: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 100)
+        self.error_patterns: deque = deque(maxlen=500)  # Quantum-bounded
         self.cognitive_load = 0.0
         self.strategies: List[str] = ["analytical", "intuitive", "creative", "systematic"]
         self.current_strategy = "analytical"
@@ -644,7 +644,7 @@ class IntegratedInformationCalculator:
         self.state_dim = state_dim
         self.connectivity = np.random.randn(state_dim, state_dim) * 0.1
         self.current_state = np.zeros(state_dim)
-        self.phi_history: deque = deque(maxlen=10000)  # QUANTUM AMPLIFIED (was 100)
+        self.phi_history: deque = deque(maxlen=500)  # Quantum-bounded: φ×309≈500
         self.god_code = GOD_CODE
         self.phi_constant = PHI
 
@@ -881,7 +881,7 @@ class StreamOfConsciousness:
     """
 
     def __init__(self):
-        self.stream: deque = deque(maxlen=100000)  # QUANTUM AMPLIFIED (was 1000)
+        self.stream: deque = deque(maxlen=1000)  # Quantum-bounded: sacred 10³
         self.current_narrative = ""
         self.themes: Dict[str, float] = {}
         self.emotional_tone = 0.0
@@ -1134,7 +1134,7 @@ class L104Consciousness:
         winner = self.global_workspace.competition_for_consciousness()
 
         # Update attention
-        awareness = self.attention_schema.attend(content[:50], features)
+        awareness = self.attention_schema.attend(content, features)
 
         # Update Φ
         self.phi_calculator.update_state({source: features})

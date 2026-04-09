@@ -1,12 +1,3 @@
-// ═══════════════════════════════════════════════════════════════════
-// H30_SidebarNav.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: SIDEBAR_NAV
-// L104 ASI — Sidebar Navigation (replaces 16-tab bar)
-//
-// Groups 16 views into categorized sidebar sections with icons.
-// Uses NSOutlineView source list style for native macOS look.
-// ═══════════════════════════════════════════════════════════════════
-
 import AppKit
 import Foundation
 
@@ -42,7 +33,7 @@ class SidebarItem {
 class L104SidebarView: NSView, NSOutlineViewDelegate, NSOutlineViewDataSource {
     private var outlineView: NSOutlineView!
     private var scrollView: NSScrollView!
-    /// Called when the user clicks a sidebar row — payload is the tab identifier string
+    /// Called when the user clicks a sidebar row - payload is the tab identifier string
     var onSelect: ((String) -> Void)?
 
     /// The grouped navigation structure (4 groups, 16 items)
@@ -57,9 +48,11 @@ class L104SidebarView: NSView, NSOutlineViewDelegate, NSOutlineViewDataSource {
             SidebarItem("🧠", "Learning", tab: "learn"),
             SidebarItem("🎓", "Professor", tab: "prof"),
             SidebarItem("🔮", "Sage Mode", tab: "sage"),
+            SidebarItem("🤖", "Agents", tab: "agent"),
         ]),
         SidebarSection("ENGINES", items: [
             SidebarItem("⚡", "Logic Gates", tab: "gate"),
+            SidebarItem("⚡", "3-Engine Hub", tab: "3eng"),
             SidebarItem("⚛️", "Quantum", tab: "qc"),
             SidebarItem("💻", "Coding", tab: "code"),
             SidebarItem("🔬", "Science", tab: "sci"),
@@ -79,6 +72,20 @@ class L104SidebarView: NSView, NSOutlineViewDelegate, NSOutlineViewDataSource {
         wantsLayer = true
         layer?.backgroundColor = NSColor(red: 0.955, green: 0.955, blue: 0.965, alpha: 1.0).cgColor
         buildOutlineView()
+    }
+
+    // Ensure scroll view fills available space on resize
+    override func layout() {
+        super.layout()
+        // Ensure scroll view fills available space
+        if let scrollView = scrollView {
+            scrollView.frame = bounds
+        }
+    }
+
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        scrollView?.frame = NSRect(origin: .zero, size: newSize)
     }
 
     required init?(coder: NSCoder) { super.init(coder: coder) }
@@ -103,12 +110,19 @@ class L104SidebarView: NSView, NSOutlineViewDelegate, NSOutlineViewDataSource {
 
         // Scroll view
         scrollView = NSScrollView(frame: bounds)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.documentView = outlineView
         scrollView.hasVerticalScroller = true
         scrollView.autohidesScrollers = true
         scrollView.autoresizingMask = [.width, .height]
         scrollView.drawsBackground = false
         addSubview(scrollView)
+
+        // Ensure scroll view fills parent
+        scrollView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        scrollView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
 
         // Expand all sections
         outlineView.reloadData()
@@ -136,7 +150,7 @@ class L104SidebarView: NSView, NSOutlineViewDelegate, NSOutlineViewDataSource {
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         if item == nil { return sections[index] }
         if let section = item as? SidebarSection { return section.items[index] }
-        return ""
+        return "L104: φ-resonance incomplete"
     }
 
     func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {

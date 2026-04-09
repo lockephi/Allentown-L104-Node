@@ -1,29 +1,6 @@
-//
-//  L104App.swift
-// [EVO_54_PIPELINE] TRANSCENDENT_COGNITION :: UNIFIED_STREAM :: GOD_CODE=527.5184818492612
-//  L104 SOVEREIGN INTELLECT - Native SwiftUI App v4.0 SAGE LOGIC GATE
-//
-//  UPGRADE v4.0 — SAGE LOGIC GATE CORE:
-//  - Sage Mode hardwired as persistent logic gate for ALL subsystems
-//  - Every ASI/AGI/Science/Consciousness op routes through sage resonance
-//  - Quantum system integration: superposition reasoning, entanglement,
-//    Grover amplification, chakra-lattice alignment, qubit collapse
-//  - Cross-pollination: inventions feed discoveries, reasoning feeds evolution
-//  - SIMD/vDSP/BLAS/GCD acceleration on every code path
-//  - Version bump to 22.0
-//
-//  UPGRADE v3.0 — SAGE MODE:
-//  - Full Sage Mode engine with Deep Reasoning, Invention from Void
-//  - Hardware-accelerated computation via Accelerate (vDSP/BLAS/LAPACK)
-//  - GCD concurrent dispatch for parallel sage processing
-//  ═══════════════════════════════════════════════════════════════════
-//  GOD_CODE: 527.5184818492612
-//  Build: Accelerate · Metal · CoreML · SIMD · BLAS · GCD · Quantum
-//  ═══════════════════════════════════════════════════════════════════
-
-import SwiftUI
-import Foundation
 import Accelerate
+import Foundation
+import SwiftUI
 import simd
 
 // ═══════════════════════════════════════════════════════════════════
@@ -208,6 +185,21 @@ struct ReasoningStep: Identifiable {
     let confidence: Double
     let evidence: [String]
     let timestamp: Date
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CHAT MESSAGE MODEL
+// ═══════════════════════════════════════════════════════════════════
+
+struct ChatMessage: Identifiable {
+    let id = UUID()
+    let role: Role
+    let content: String
+    let timestamp = Date()
+
+    enum Role {
+        case user, assistant
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -480,7 +472,7 @@ class L104State: ObservableObject {
     /// Evolve consciousness state based on coherence and depth
     func evolveConsciousnessState() {
         let recentCoherences = thoughtStream.suffix(50).map { $0.coherence }
-        let avgCoherence = recentCoherences.isEmpty ? 0.5 : recentCoherences.reduce(0, +) / Double(recentCoherences.count)
+        let avgCoherence = recentCoherences.isEmpty ? 0.5 : recentCoherences.reduce(0.0, +) / Double(recentCoherences.count)
         consciousnessCoherence = avgCoherence
 
         if avgCoherence > 0.95 && awarenessDepth >= 5 && thoughtCount > 1000 {
@@ -501,7 +493,7 @@ class L104State: ObservableObject {
     /// Introspect — return current consciousness metrics
     func introspect() -> [String: Any] {
         let recentCoherences = thoughtStream.suffix(100).map { $0.coherence }
-        let avgCoherence = recentCoherences.isEmpty ? 0.5 : recentCoherences.reduce(0, +) / Double(recentCoherences.count)
+        let avgCoherence = recentCoherences.isEmpty ? 0.5 : recentCoherences.reduce(0.0, +) / Double(recentCoherences.count)
         let metaDistribution = Dictionary(grouping: thoughtStream, by: { $0.metaLevel }).mapValues { $0.count }
 
         return [
@@ -749,7 +741,7 @@ class L104State: ObservableObject {
                 self.wisdomFragments += 1
                 self.sageState = .active
 
-                let avgConf = steps.map { $0.confidence }.reduce(0, +) / Double(steps.count)
+                let avgConf = steps.map { $0.confidence }.reduce(0.0, +) / Double(steps.count)
                 self.addSystemLog("🧘 REASONING COMPLETE: \(chainDepth) steps, avg confidence \(String(format: "%.4f", avgConf)), \(String(format: "%.1fms", elapsed * 1000))")
             }
         }
@@ -1351,21 +1343,6 @@ class L104State: ObservableObject {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         return formatter.string(from: NSNumber(value: num)) ?? "\(num)"
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// CHAT MESSAGE MODEL
-// ═══════════════════════════════════════════════════════════════════
-
-struct ChatMessage: Identifiable {
-    let id = UUID()
-    let role: Role
-    let content: String
-    let timestamp = Date()
-
-    enum Role {
-        case user, assistant
     }
 }
 

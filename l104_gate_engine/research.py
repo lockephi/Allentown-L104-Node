@@ -107,8 +107,10 @@ class GateResearchEngine:
     def _detect_anomalies(self, gates: List[LogicGate],
                           complexities: List[int], entropies: List[float],
                           link_counts: List[int]) -> Dict:
-        """IQR-based outlier detection on gate metrics."""
+        """IQR-based outlier detection on gate metrics with sacred constant validation."""
         anomalies = []
+        from .constants import PHI, GOD_CODE
+
         for prop_name, values in [("complexity", complexities),
                                    ("entropy", entropies),
                                    ("connectivity", link_counts)]:
@@ -119,15 +121,20 @@ class GateResearchEngine:
             n = len(sorted_v)
             q1, q3 = sorted_v[n // 4], sorted_v[3 * n // 4]
             iqr = q3 - q1
-            lower, upper = q1 - 2.0 * iqr, q3 + 2.0 * iqr
+            # Tightened thresholds using PHI
+            lower, upper = q1 - 1.5 * iqr / PHI, q3 + 1.5 * iqr * PHI
 
             for i, v in enumerate(fvals):
                 if v < lower or v > upper:
+                    # Check deviation from GOD_CODE ratio
+                    dev = abs(v - GOD_CODE) / GOD_CODE if v > 0 else 1.0
+                    severity = "extreme" if (v < lower - iqr or v > upper + iqr or dev > 0.5) else "mild"
                     anomalies.append({
                         "gate": gates[i].name[:60],
                         "property": prop_name,
                         "value": v,
-                        "severity": "extreme" if (v < lower - iqr or v > upper + iqr) else "mild",
+                        "deviation_from_god_code": dev,
+                        "severity": severity,
                     })
 
         return {

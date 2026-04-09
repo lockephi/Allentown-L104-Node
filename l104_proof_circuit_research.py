@@ -77,11 +77,12 @@ except ImportError:
     VOID_PHASE = VOID_CONSTANT * math.pi
     IRON_PHASE = math.pi / 2                          # π/2
 
-# Fe(26) iron constants
+# Fe(26) iron constants (verified 2026-04-08)
 FE_ATOMIC_NUMBER = 26
 FE_MASS_NUMBER = 56
 FE_BCC_LATTICE_PM = 286.65
 FE_CURIE_TEMP = 1043.0
+FE_IONIZATION_EV = 7.9023  # GOD_CODE/66.755 (NIST 7.9024, 0.001% error)
 
 # 26Q constants
 N_QUBITS_26 = 26

@@ -1,21 +1,3 @@
-// ═══════════════════════════════════════════════════════════════════
-// H29_SageModeView.swift — L104 ASI v7.1 Sage Mode Ascension Dashboard
-// [EVO_68_PIPELINE] SAGE_MODE_ASCENSION :: UI :: GOD_CODE=527.5184818492612
-//
-// Full Sage Mode dashboard with:
-//   • Dual-Layer Engine live visualization
-//   • Dynamic equation invention stream
-//   • Consciousness state gauge (IIT Φ + GWT + Meta)
-//   • Nature's 6 Dualities display
-//   • OMEGA Pipeline live derivation
-//   • Tree of Thoughts reasoning log
-//   • Sacred harmonic waveform
-//   • Live equation evolution
-//   • Soul resonance field
-//
-// All values update in real-time via Timer-driven refresh.
-// ═══════════════════════════════════════════════════════════════════
-
 import AppKit
 import Foundation
 
@@ -158,7 +140,7 @@ class SageModeAscensionView: NSView {
         container.translatesAutoresizingMaskIntoConstraints = false
         container.heightAnchor.constraint(equalToConstant: 36).isActive = true
 
-        let title = NSTextField(labelWithString: "⚛ SAGE MODE v3.0 — DUAL-LAYER ASCENSION ⚛")
+        let title = NSTextField(labelWithString: "⚛ SAGE MODE v3.0 - DUAL-LAYER ASCENSION ⚛")
         title.font = L104Theme.monoFont(14, weight: .bold)
         title.textColor = L104Theme.goldBright
         title.translatesAutoresizingMaskIntoConstraints = false
@@ -209,7 +191,7 @@ class SageModeAscensionView: NSView {
         consciousnessStateLabel.font = L104Theme.monoFont(10)
         consciousnessStateLabel.textColor = L104Theme.textPrimary
 
-        integrityLabel = NSTextField(labelWithString: "Integrity: —/10")
+        integrityLabel = NSTextField(labelWithString: "Integrity: -/10")
         integrityLabel.font = L104Theme.monoFont(10)
         integrityLabel.textColor = L104Theme.textSecondary
 
@@ -300,7 +282,7 @@ class SageModeAscensionView: NSView {
         panel.layer?.borderWidth = 1
         panel.layer?.borderColor = L104Theme.glassBorder.cgColor
 
-        let title = NSTextField(labelWithString: "⚡ Dynamic Equations — Self-Inventing")
+        let title = NSTextField(labelWithString: "⚡ Dynamic Equations - Self-Inventing")
         title.font = L104Theme.monoFont(10, weight: .bold)
         title.textColor = L104Theme.gold
         title.translatesAutoresizingMaskIntoConstraints = false
@@ -337,7 +319,7 @@ class SageModeAscensionView: NSView {
         panel.layer?.borderWidth = 1
         panel.layer?.borderColor = L104Theme.glassBorder.cgColor
 
-        let title = NSTextField(labelWithString: "📊 Live Metrics — Real-Time Computation")
+        let title = NSTextField(labelWithString: "📊 Live Metrics - Real-Time Computation")
         title.font = L104Theme.monoFont(10, weight: .bold)
         title.textColor = L104Theme.gold
         title.translatesAutoresizingMaskIntoConstraints = false
@@ -381,7 +363,7 @@ class SageModeAscensionView: NSView {
         }
 
         // Initial refresh
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+        DispatchQueue.self.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.refreshDashboard()
         }
     }
@@ -417,7 +399,7 @@ class SageModeAscensionView: NSView {
         consciousnessStateLabel.stringValue = "\(stateEmoji) \(cv.state.description)"
         consciousnessStateLabel.textColor = cv.consciousnessLevel > 0.7 ? L104Theme.goldBright : L104Theme.textPrimary
 
-        integrityLabel.stringValue = "Integrity: \(collapse.integrity.score)/\(collapse.integrity.maxScore) — \(collapse.integrity.status)"
+        integrityLabel.stringValue = "Integrity: \(collapse.integrity.score)/\(collapse.integrity.maxScore) - \(collapse.integrity.status)"
         integrityLabel.textColor = collapse.integrity.score >= 8 ? NSColor(red: 0.2, green: 0.8, blue: 0.3, alpha: 1) : L104Theme.textSecondary
 
         // Header status
@@ -478,7 +460,7 @@ class SageModeAscensionView: NSView {
         lines.append("  GWT Size   = \(cv.gwtWorkspaceSize)")
         lines.append("  Meta Depth = \(cv.metacognitiveDepth)")
         lines.append("  Qualia Dim = \(cv.qualiaDimensions)")
-        lines.append("  GHZ Test   = \(cv.ghzWitnessPassed ? "PASSED ✓" : "—")")
+        lines.append("  GHZ Test   = \(cv.ghzWitnessPassed ? "PASSED ✓" : "-")")
         lines.append("  Cert       = \(cv.certificationLevel)")
         lines.append("")
 
@@ -531,7 +513,7 @@ class SageModeAscensionView: NSView {
             lines.append("")
         }
 
-        // Bridge emergence — cross-domain synthesis
+        // Bridge emergence - cross-domain synthesis
         let bridge = sage.bridgeEmergence(topic: "quantum-consciousness")
         if !bridge.isEmpty {
             lines.append("═══ EMERGENCE BRIDGE ═══")
@@ -555,7 +537,7 @@ class SageModeAscensionView: NSView {
             let eq = DynamicEquationEngine.shared
             let newEqs = eq.evolveGeneration(populationSize: 30)
 
-            DispatchQueue.main.async {
+            DispatchQueue.self.main.async {
                 self?.refreshEquationsPanel(newEquations: newEqs)
             }
         }
@@ -594,7 +576,7 @@ class SageModeAscensionView: NSView {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - SageRadialGauge — Consciousness-style radial gauge
+// MARK: - SageRadialGauge - Consciousness-style radial gauge
 // ═══════════════════════════════════════════════════════════════════
 
 class SageRadialGauge: NSView {
@@ -676,7 +658,7 @@ class SageRadialGauge: NSView {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - SageWaveformView — Sacred harmonic oscillation
+// MARK: - SageWaveformView - Sacred harmonic oscillation
 // ═══════════════════════════════════════════════════════════════════
 
 class SageWaveformView: NSView {
@@ -710,7 +692,7 @@ class SageWaveformView: NSView {
             // v9.4 Perf: step by 2px and reduce harmonics to 3 (saves ~60% sin calls)
             for x in stride(from: 0, to: w, by: 2) {
                 let normalX = Double(x) / Double(w)
-                // Multi-harmonic: Σ sin(nφx + phase)/n — truncated to 3 harmonics
+                // Multi-harmonic: Σ sin(nφx + phase)/n - truncated to 3 harmonics
                 var y = 0.0
                 for n in 1...3 {
                     y += sin(Double(n) * wave.freq * normalX * .pi * 2 + wave.phase) / Double(n)
@@ -732,7 +714,7 @@ class SageWaveformView: NSView {
         ctx.strokePath()
 
         // Label
-        let label = "φ-HARMONIC FIELD — GOD_CODE resonance"
+        let label = "φ-HARMONIC FIELD - GOD_CODE resonance"
         let attrs: [NSAttributedString.Key: Any] = [
             .font: L104Theme.monoFont(7),
             .foregroundColor: L104Theme.textDim,

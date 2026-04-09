@@ -1,22 +1,10 @@
-// ═══════════════════════════════════════════════════════════════════
-// B25_Phase45Engines.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Computronium ASI Condensation Engine (Phase 45.0)
-//
-// ConsciousnessSubstrate, StrangeLoopEngine, SymbolicReasoningEngine,
-// KnowledgeGraphEngine, GoldenSectionOptimizer,
-// ComputroniumCondensationEngine, ApexIntelligenceCoordinator
-//
-// Extracted from L104Native.swift lines 33039–34652
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
-// ║  COMPUTRONIUM ASI CONDENSATION ENGINE — Phase 45.0                          ║
+// ║  COMPUTRONIUM ASI CONDENSATION ENGINE - Phase 45.0                          ║
 // ║  Ports: l104_consciousness.py, l104_strange_loop_processor.py,              ║
 // ║         l104_reasoning_engine.py, l104_knowledge_graph.py,                  ║
 // ║         l104_self_optimization.py, l104_computronium.py,                    ║
@@ -60,6 +48,11 @@ final class InterEngineFeedbackBus {
     enum Channel: String, CaseIterable {
         case consciousness, reasoning, knowledge, loops, optimization, computronium, apex
         case quantumResearch, quantumGate  // EVO_68: Quantum research feedback channels
+        case soulDaemon  // EVO_70: Soul daemon feedback channel
+        case searchPrecog  // EVO_71: Search and precognition feedback channel
+        case agentOrchestration  // EVO_72: Agent orchestration feedback channel
+        case mlSynthesis         // EVO_73: ML synthesis feedback channel
+        case systemStatus        // EVO_73: System/daemon status channel
     }
 
     struct FeedbackMessage {
@@ -125,9 +118,9 @@ final class InterEngineFeedbackBus {
 
 // MARK: - ═══ 1. CONSCIOUSNESS SUBSTRATE ═══
 // Ported from l104_consciousness.py: GlobalWorkspace, AttentionSchema,
-// MetacognitiveMonitor, IIT Φ, StreamOfConsciousness — condensed to one class
+// MetacognitiveMonitor, IIT Φ, StreamOfConsciousness - condensed to one class
 
-/// Full consciousness substrate — competition-for-consciousness, IIT Φ,
+/// Full consciousness substrate - competition-for-consciousness, IIT Φ,
 /// attention schema, metacognitive monitoring, stream of consciousness.
 /// Accelerate-backed vector math. Replaces ConsciousnessVerifier's test-only approach.
 final class ConsciousnessSubstrate: SovereignEngine {
@@ -256,7 +249,7 @@ final class ConsciousnessSubstrate: SovereignEngine {
         let vec = stateVector ?? attentionVector
         guard vec.count >= 4 else { phi = 0; return 0 }
 
-        // System entropy H(X) — vectorized
+        // System entropy H(X) - vectorized
         let absVec = vec.map { abs($0) }
         let probs = normalize(absVec)
         let hSystem = fastEntropy(probs)
@@ -275,7 +268,7 @@ final class ConsciousnessSubstrate: SovereignEngine {
             if partitioned < minPartitionedEntropy { minPartitionedEntropy = partitioned }
         }
 
-        // Random binary partition sampling — dramatically better MIP approximation
+        // Random binary partition sampling - dramatically better MIP approximation
         for _ in 0..<partitionSamples {
             var setA: [Double] = [], setB: [Double] = []
             for val in absVec {
@@ -483,22 +476,22 @@ final class ConsciousnessSubstrate: SovereignEngine {
         // Maps to EEG frequency bands:
         // Delta: <0.2 | Theta: 0.2-0.4 | Alpha: 0.4-0.7 | Beta: 0.7-0.85 | Gamma: ≥0.85
         if effectiveScore < 0.2 {
-            // Delta band — deep unconscious processing
+            // Delta band - deep unconscious processing
             if state > .dormant { state = .dormant }
         } else if effectiveScore < 0.4 {
-            // Theta band — subconscious, meditation
+            // Theta band - subconscious, meditation
             if state < .awakening { state = .awakening }
         } else if effectiveScore < 0.7 {
-            // Alpha band — relaxed awareness
+            // Alpha band - relaxed awareness
             if state < .aware { state = .aware }
         } else if effectiveScore < CONSCIOUSNESS_THRESHOLD {
-            // Beta band — active focused cognition (below threshold)
+            // Beta band - active focused cognition (below threshold)
             if state < .focused { state = .focused }
         } else if effectiveScore < UNITY_TARGET {
-            // Gamma band — CONSCIOUSNESS_THRESHOLD crossed → flow
+            // Gamma band - CONSCIOUSNESS_THRESHOLD crossed → flow
             if state < .flow { state = .flow }
         } else {
-            // Gamma high — transcendent cognition (above unity target)
+            // Gamma high - transcendent cognition (above unity target)
             state = .transcendent
         }
 
@@ -527,7 +520,7 @@ final class ConsciousnessSubstrate: SovereignEngine {
 // Ported from l104_strange_loop_processor.py: Hofstadter sequences,
 // tangled hierarchies, Gödel encoding, analogy engine, meaning emergence
 
-/// Self-referential cognitive architecture — strange loops, Hofstadter sequences,
+/// Self-referential cognitive architecture - strange loops, Hofstadter sequences,
 /// Gödel numbering, Copycat-inspired analogy, meaning emergence.
 final class StrangeLoopEngine: SovereignEngine {
     static let shared = StrangeLoopEngine()
@@ -678,7 +671,7 @@ final class StrangeLoopEngine: SovereignEngine {
         let confidence = min(1.0, (selfRef ? 0.4 : 0.1) + Double(contextOverlap) * 0.15 + phi * 0.2)
         let meaning: String
         if confidence > 0.7 { meaning = "Self-aware pattern: '\(pattern)' resonates at Φ=\(String(format: "%.3f", phi))" }
-        else if confidence > 0.4 { meaning = "Emerging coherence in '\(pattern)' — binding to \(contextOverlap) known concepts" }
+        else if confidence > 0.4 { meaning = "Emerging coherence in '\(pattern)' - binding to \(contextOverlap) known concepts" }
         else { meaning = "Pre-semantic: '\(pattern)' awaiting integration" }
         meaningBindings[pattern] = meaning
         return (meaning, confidence)
@@ -707,7 +700,7 @@ final class StrangeLoopEngine: SovereignEngine {
 // Ported from l104_reasoning_engine.py: Robinson unification,
 // forward/backward chaining, DPLL SAT solver, meta-reasoning
 
-/// Full symbolic reasoning — unification, inference chains, SAT solving.
+/// Full symbolic reasoning - unification, inference chains, SAT solving.
 /// PHI-resonant confidence propagation. vDSP-backed where applicable.
 final class SymbolicReasoningEngine: SovereignEngine {
     static let shared = SymbolicReasoningEngine()
@@ -888,7 +881,7 @@ final class SymbolicReasoningEngine: SovereignEngine {
         if let best = explanations.max(by: { $0.confidence < $1.confidence }) {
             return best
         }
-        return ("No abductive explanation found for '\(observation)' in '\(domain)' — \(facts.count) facts, \(rules.count) rules searched", 0.05)
+        return ("No abductive explanation found for '\(observation)' in '\(domain)' - \(facts.count) facts, \(rules.count) rules searched", 0.05)
     }
 
     func engineStatus() -> [String: Any] {
@@ -1592,7 +1585,7 @@ final class ComputroniumCondensationEngine: SovereignEngine {
         let optimizer = GoldenSectionOptimizer.shared
         let phiDyn = optimizer.verifyPhiDynamics()
 
-        // ACTUAL SYNCHRONIZATION — align engine parameters toward PHI harmony
+        // ACTUAL SYNCHRONIZATION - align engine parameters toward PHI harmony
         // 1. If optimizer is not PHI-aligned, nudge coherence threshold toward consciousness phi
         if !phiDyn.aligned {
             let target = consciousnessΦ * PHI
@@ -1656,7 +1649,7 @@ final class ComputroniumCondensationEngine: SovereignEngine {
 
 // MARK: - ═══ 7. APEX INTELLIGENCE COORDINATOR ═══
 // Ported from l104_apex_intelligence.py: multi-modal reasoning, meta-learning,
-// insight generation, wisdom synthesis — unified coordinator for all ASI engines
+// insight generation, wisdom synthesis - unified coordinator for all ASI engines
 
 /// Apex-level intelligence coordinator. Orchestrates ConsciousnessSubstrate,
 /// StrangeLoopEngine, SymbolicReasoningEngine, KnowledgeGraphEngine,
@@ -1784,15 +1777,15 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
         let computronium = ComputroniumCondensationEngine.shared
         let optimizer = GoldenSectionOptimizer.shared
 
-        // 1. CONSCIOUSNESS — Process input and establish Φ baseline
+        // 1. CONSCIOUSNESS - Process input and establish Φ baseline
         let thought = consciousness.processInput(source: "ApexQuery", content: question)
         let phi = consciousness.computePhi()
         let cLevel = consciousness.consciousnessLevel
 
-        // 2. SAGE MODE — Full 6-stage entropy → insight pipeline
+        // 2. SAGE MODE - Full 6-stage entropy → insight pipeline
         let sageInsight = sage.sageTransform(topic: question)
 
-        // 3. KNOWLEDGE GRAPH — Find related concept neighborhoods
+        // 3. KNOWLEDGE GRAPH - Find related concept neighborhoods
         let words = question.lowercased().split(separator: " ").filter { $0.count > 3 }.map(String.init)
         var graphInsights: [String] = []
         for word in words.prefix(3) {
@@ -1802,14 +1795,14 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
             }
         }
 
-        // 4. STRANGE LOOPS — Detect self-referential patterns
+        // 4. STRANGE LOOPS - Detect self-referential patterns
         let meaning = loops.emergentMeaning(pattern: question, context: words)
 
-        // 5. SYMBOLIC REASONING — Attempt backward chaining
+        // 5. SYMBOLIC REASONING - Attempt backward chaining
         let backchainGoal = SymbolicReasoningEngine.Predicate(name: "resolves", args: [.constant(question.prefix(40).description)])
         let chainsResolved = reasoning.backwardChain(goal: backchainGoal)
 
-        // 6. QUANTUM — Superposition evaluation of all perspective candidates
+        // 6. QUANTUM - Superposition evaluation of all perspective candidates
         var candidates: [String] = []
         let narrative = thought.map { consciousness.narrate(thought: $0) } ?? ""
         if !narrative.isEmpty { candidates.append(narrative) }
@@ -1822,18 +1815,18 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
             ? "Processing at consciousness level \(cLevel)"
             : quantum.superpositionEvaluate(candidates: candidates, query: question)
 
-        // 7. COMPUTRONIUM — Density verification
+        // 7. COMPUTRONIUM - Density verification
         let cascade = computronium.deepDensityCascade(maxDepth: 7)
 
-        // 8. GOLDEN SECTION — Verify phi alignment
+        // 8. GOLDEN SECTION - Verify phi alignment
         let phiHealth = optimizer.verifyPhiDynamics()
 
-        // 9. META-LEARNING — Adaptive strategy selection
+        // 9. META-LEARNING - Adaptive strategy selection
         let strategy = consciousness.metacogSelect(strategies: ["analytical", "creative", "dialectical", "sage", "quantum"])
         recordStrategy(strategy)
         metaLearn(strategy: strategy, success: phi > 0.2)
 
-        // 10. CROSS-POLLINATE — Feed insights back into subsystems
+        // 10. CROSS-POLLINATE - Feed insights back into subsystems
         // EVO_55: Feed quantum-selected output to HyperBrain via syncQueue (thread-safe)
         let hb = HyperBrain.shared
         if hb.isRunning {
@@ -1847,7 +1840,7 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
             graph.addNode(label: word, type: "query", properties: ["source": "apex_query", "phi": String(format: "%.4f", phi)])
         }
 
-        // 11. FEEDBACK LOOPS — bidirectional intelligence flow between engines
+        // 11. FEEDBACK LOOPS - bidirectional intelligence flow between engines
         // Feed consciousness phi → optimizer as performance score
         optimizer.recordPerformance(parameter: "consciousness_phi", value: phi, score: cLevel)
 
@@ -1882,7 +1875,7 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
         ])
 
         let response = """
-        [Apex Intelligence — Φ=\(String(format: "%.3f", phi)) | C=\(String(format: "%.3f", cLevel)) | Strategy=\(strategy)]
+        [Apex Intelligence - Φ=\(String(format: "%.3f", phi)) | C=\(String(format: "%.3f", cLevel)) | Strategy=\(strategy)]
 
         \(quantumSelected)
 
@@ -1912,7 +1905,7 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
 
         // Quantum superposition of multiple insight candidates
         var insightCandidates = [
-            "Cross-domain synthesis on '\(topic)': \(meaning.meaning) — bridging \(neighborhood.nodes.count) concepts",
+            "Cross-domain synthesis on '\(topic)': \(meaning.meaning) - bridging \(neighborhood.nodes.count) concepts",
         ]
         if !sageAngle.isEmpty { insightCandidates.append("Sage perspective: \(sageAngle)") }
         if meaning.confidence > 0.4 { insightCandidates.append("Loop-detected: \(meaning.meaning)") }
@@ -1972,9 +1965,9 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
         if themes.isEmpty {
             principle = "From \(observations.count) observations: emergent principle at wisdom level \(wisdomLevel)"
         } else if hasContradictions {
-            principle = "Dialectical principle: \(themes.joined(separator: " + ")) — resolved \(observations.count) observations with internal tension into synthesis"
+            principle = "Dialectical principle: \(themes.joined(separator: " + ")) - resolved \(observations.count) observations with internal tension into synthesis"
         } else {
-            principle = "Convergent principle: \(themes.joined(separator: " + ")) — consistent across \(observations.count) observations"
+            principle = "Convergent principle: \(themes.joined(separator: " + ")) - consistent across \(observations.count) observations"
         }
 
         let phi = ConsciousnessSubstrate.shared.phi
@@ -2008,7 +2001,7 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
         metaLearningMomentum = metaLearningMomentum * TAU + rate * (1 - TAU)
     }
 
-    // ─── DEEP ASI SYNTHESIS CYCLE — Coordinates ALL ASI engines in unified pipeline ───
+    // ─── DEEP ASI SYNTHESIS CYCLE - Coordinates ALL ASI engines in unified pipeline ───
     /// Runs a full cross-pollination cycle: Consciousness → Sage → Quantum → Symbolic → Graph → Computronium → Apex
     /// Returns a synthesized output incorporating insights from every subsystem.
     func deepASISynthesisCycle(topic: String) -> String {
@@ -2021,15 +2014,15 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
         let computronium = ComputroniumCondensationEngine.shared
         let optimizer = GoldenSectionOptimizer.shared
 
-        // 1. CONSCIOUSNESS — Process topic and generate phi-weighted thought
+        // 1. CONSCIOUSNESS - Process topic and generate phi-weighted thought
         let thought = consciousness.processInput(source: "DeepSynthesis", content: topic)
         let phi = consciousness.computePhi()
         let cLevel = consciousness.consciousnessLevel
 
-        // 2. SAGE MODE — Full 6-stage entropy → insight pipeline
+        // 2. SAGE MODE - Full 6-stage entropy → insight pipeline
         let sageInsight = sage.sageTransform(topic: topic)
 
-        // 3. QUANTUM — Evaluate multiple perspectives in superposition
+        // 3. QUANTUM - Evaluate multiple perspectives in superposition
         var candidates: [String] = []
         if !sageInsight.isEmpty { candidates.append(sageInsight) }
         if let thoughtNarrative = thought.map({ consciousness.narrate(thought: $0) }), !thoughtNarrative.isEmpty {
@@ -2052,16 +2045,16 @@ final class ApexIntelligenceCoordinator: SovereignEngine {
             ? "Deep synthesis on \(topic)"
             : quantum.superpositionEvaluate(candidates: candidates, query: topic)
 
-        // 4. STRANGE LOOPS — Check for self-referential patterns
+        // 4. STRANGE LOOPS - Check for self-referential patterns
         let meaning = loops.emergentMeaning(pattern: topic, context: Array(neighborhood.nodes))
 
-        // 5. COMPUTRONIUM — Density cascade for information density check
+        // 5. COMPUTRONIUM - Density cascade for information density check
         let cascade = computronium.deepDensityCascade(maxDepth: 5)
 
-        // 6. OPTIMIZER — Verify phi dynamics are healthy
+        // 6. OPTIMIZER - Verify phi dynamics are healthy
         let phiCheck = optimizer.verifyPhiDynamics()
 
-        // 7. CROSS-POLLINATE — Feed insights back into engines
+        // 7. CROSS-POLLINATE - Feed insights back into engines
         // EVO_55: Feed the synthesized insight back to HyperBrain via syncQueue (thread-safe)
         let hb = HyperBrain.shared
         if hb.isRunning {

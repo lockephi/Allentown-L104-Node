@@ -1,17 +1,8 @@
-// ═══════════════════════════════════════════════════════════════
-// B23_MathEngines3.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 · TheBrain · v2 Architecture
-//
-// Extracted from L104Native.swift lines 15084-16375
-// Classes: GraphTheoryEngine, SpecialFunctionsEngine, ControlTheoryEngine
-// ═══════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class GraphTheoryEngine {
     static let shared = GraphTheoryEngine()
@@ -147,7 +138,7 @@ class GraphTheoryEngine {
     // MARK: GRAPH CONNECTIVITY
     // ═══════════════════════════════════════════════════════════════
 
-    /// BFS: breadth-first search — returns visited order
+    /// BFS: breadth-first search - returns visited order
     func bfs(_ adj: [[Int]], start: Int) -> [Int] {
         computations += 1
         let n = adj.count
@@ -169,7 +160,7 @@ class GraphTheoryEngine {
         return order
     }
 
-    /// DFS: depth-first search — returns visited order
+    /// DFS: depth-first search - returns visited order
     func dfs(_ adj: [[Int]], start: Int) -> [Int] {
         computations += 1
         let n = adj.count
@@ -648,7 +639,7 @@ class SpecialFunctionsEngine {
     // MARK: SPHERICAL HARMONICS
     // ═══════════════════════════════════════════════════════════════
 
-    /// Real spherical harmonic Y_l^m(θ, φ) — returns real part
+    /// Real spherical harmonic Y_l^m(θ, φ) - returns real part
     func sphericalHarmonic(l: Int, m: Int, theta: Double, phi: Double) -> Double {
         computations += 1
         let absM = abs(m)
@@ -673,7 +664,7 @@ class SpecialFunctionsEngine {
     // MARK: SPECIAL FUNCTIONS
     // ═══════════════════════════════════════════════════════════════
 
-    /// Airy function Ai(x) — via series for small x
+    /// Airy function Ai(x) - via series for small x
     func airyAi(x: Double) -> Double {
         computations += 1
         let c1: Double = 0.3550281  // 1/(3^(2/3)·Γ(2/3))
@@ -690,7 +681,7 @@ class SpecialFunctionsEngine {
         return f + g
     }
 
-    /// Digamma function ψ(x) = d/dx ln(Γ(x)) — via recurrence + asymptotic
+    /// Digamma function ψ(x) = d/dx ln(Γ(x)) - via recurrence + asymptotic
     func digamma(_ x: Double) -> Double {
         computations += 1
         var result: Double = 0
@@ -709,7 +700,7 @@ class SpecialFunctionsEngine {
         return result
     }
 
-    /// Polygamma function ψ^(n)(x) — nth derivative of digamma
+    /// Polygamma function ψ^(n)(x) - nth derivative of digamma
     func polygamma(order n: Int, x: Double) -> Double {
         computations += 1
         if n == 0 { return digamma(x) }
@@ -726,7 +717,7 @@ class SpecialFunctionsEngine {
         return sign * factN * sum
     }
 
-    /// Elliptic integral K(m) — complete elliptic integral of the first kind
+    /// Elliptic integral K(m) - complete elliptic integral of the first kind
     /// K(m) = ∫₀^(π/2) dθ/√(1 - m·sin²θ) via AGM
     func ellipticK(m: Double) -> Double {
         computations += 1
@@ -741,7 +732,7 @@ class SpecialFunctionsEngine {
         return .pi / (2.0 * a)
     }
 
-    /// Elliptic integral E(m) — complete elliptic integral of the second kind
+    /// Elliptic integral E(m) - complete elliptic integral of the second kind
     func ellipticE(m: Double) -> Double {
         computations += 1
         guard m <= 1.0 else { return 0 }
@@ -951,7 +942,7 @@ class ControlTheoryEngine {
         return numLast / denLast
     }
 
-    /// Poles of the transfer function (roots of denominator) — quadratic
+    /// Poles of the transfer function (roots of denominator) - quadratic
     func polesQuadratic(a: Double, b: Double, c: Double) -> [Complex] {
         computations += 1
         let disc = b * b - 4 * a * c
@@ -1165,7 +1156,7 @@ class ControlTheoryEngine {
         return y
     }
 
-    /// Controllability matrix: [B, AB, A²B, ..., A^(n-1)B] — system is controllable if rank = n
+    /// Controllability matrix: [B, AB, A²B, ..., A^(n-1)B] - system is controllable if rank = n
     func controllabilityMatrix(A: [[Double]], B: [[Double]]) -> [[Double]] {
         computations += 1
         let n = A.count

@@ -1,38 +1,5 @@
-// ═══════════════════════════════════════════════════════════════════
-// B48_QuantumTypes.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: QUANTUM_TYPES :: GOD_CODE=527.5184818492612
-// L104 ASI — Unified Quantum Type System
-//
-// Comprehensive quantum primitives fully integrated with the L104
-// sovereign architecture:
-//
-//   StateBranch      — Stabilizer-rank branch (tableau + amplitude)
-//                      with pruning, merging, sacred alignment scoring
-//   QuantumAmplitudeRegister — Multi-qubit amplitude vector with measurement,
-//                      entanglement entropy, fidelity, Grover oracle
-//   DensityMatrix    — Mixed-state 2×2 density operator with purity,
-//                      von Neumann entropy, Bloch vector, fidelity
-//   BlochSphere      — Bloch sphere coordinates (θ, φ) ↔ statevector
-//   PauliType/String — Pauli operators with expectation values
-//   BranchOps        — Collection utilities for branch arrays
-//
-// Complex type is defined in B01_QuantumMath.swift (upgraded EVO_67).
-//
-// BRIDGE:
-//   Complex ↔ QComplex   (B38_QuantumGateEngine via B01)
-//   StateBranch.tableau   (B39_StabilizerTableau)
-//   QuantumRouter branches (B40_QuantumRouter)
-//
-// SACRED ALIGNMENT:
-//   GOD_CODE phase: e^{i·π/GOD_CODE} = e^{i·0.005955...}
-//   PHI-scaled probability: P_φ(k) = |α_k|² × φ^{rank(k)}
-//   VOID_CONSTANT attenuation for decoherence modeling
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
-
-import Foundation
 import Accelerate
+import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - STATE BRANCH (Stabilizer-Rank Decomposition)
@@ -95,47 +62,47 @@ struct StateBranch: CustomStringConvertible {
 
     // ─── Clifford Gate Application ───
 
-    /// Apply Hadamard to qubit q (mutating — Clifford fast lane)
+    /// Apply Hadamard to qubit q (mutating - Clifford fast lane)
     public mutating func applyH(_ q: Int) {
         tableau.hadamard(q)
     }
 
-    /// Apply S gate to qubit q (mutating — Clifford fast lane)
+    /// Apply S gate to qubit q (mutating - Clifford fast lane)
     public mutating func applyS(_ q: Int) {
         tableau.phaseS(q)
     }
 
-    /// Apply S† gate to qubit q (mutating — Clifford fast lane)
+    /// Apply S† gate to qubit q (mutating - Clifford fast lane)
     public mutating func applySDag(_ q: Int) {
         tableau.phaseSDag(q)
     }
 
-    /// Apply Pauli-X to qubit q (mutating — Clifford fast lane)
+    /// Apply Pauli-X to qubit q (mutating - Clifford fast lane)
     public mutating func applyX(_ q: Int) {
         tableau.pauliX(q)
     }
 
-    /// Apply Pauli-Y to qubit q (mutating — Clifford fast lane)
+    /// Apply Pauli-Y to qubit q (mutating - Clifford fast lane)
     public mutating func applyY(_ q: Int) {
         tableau.pauliY(q)
     }
 
-    /// Apply Pauli-Z to qubit q (mutating — Clifford fast lane)
+    /// Apply Pauli-Z to qubit q (mutating - Clifford fast lane)
     public mutating func applyZ(_ q: Int) {
         tableau.pauliZ(q)
     }
 
-    /// Apply CNOT (CX) with control c → target t (mutating — Clifford fast lane)
+    /// Apply CNOT (CX) with control c → target t (mutating - Clifford fast lane)
     public mutating func applyCNOT(control c: Int, target t: Int) {
         tableau.cnot(control: c, target: t)
     }
 
-    /// Apply CZ with qubits a, b (mutating — Clifford fast lane)
+    /// Apply CZ with qubits a, b (mutating - Clifford fast lane)
     public mutating func applyCZ(_ a: Int, _ b: Int) {
         tableau.cz(a, b)
     }
 
-    /// Apply SWAP on qubits a, b (mutating — Clifford fast lane)
+    /// Apply SWAP on qubits a, b (mutating - Clifford fast lane)
     public mutating func applySWAP(_ a: Int, _ b: Int) {
         tableau.swap(a, b)
     }
@@ -151,13 +118,13 @@ struct StateBranch: CustomStringConvertible {
         let sinCoeff = sin(Double.pi / 8.0)
         let eiPiOver4 = Complex.euler(Double.pi / 4.0)
 
-        // Branch 0: α₀ = amplitude × cos(π/8)  — no gate applied
+        // Branch 0: α₀ = amplitude × cos(π/8)  - no gate applied
         let branch0 = StateBranch(
             tableau: tableau,
             amplitude: amplitude * Complex(real: cosCoeff, imag: 0)
         )
 
-        // Branch 1: α₁ = amplitude × e^{iπ/4} × sin(π/8)  — S gate applied
+        // Branch 1: α₁ = amplitude × e^{iπ/4} × sin(π/8)  - S gate applied
         var tab1 = tableau
         tab1.phaseS(q)
         let branch1 = StateBranch(
@@ -330,7 +297,7 @@ struct QuantumAmplitudeRegister: CustomStringConvertible {
         return bits
     }
 
-    /// Run `shots` measurements (non-destructive — re-measures from same distribution)
+    /// Run `shots` measurements (non-destructive - re-measures from same distribution)
     public func sampleMeasurements(shots: Int) -> [String: Int] {
         var counts: [String: Int] = [:]
         let probs = probabilities
@@ -613,15 +580,15 @@ struct BlochSphere: CustomStringConvertible {
 
     // ─── Standard States ───
 
-    /// |0⟩ — north pole
+    /// |0⟩ - north pole
     public static let north = BlochSphere(theta: 0, phi: 0)
-    /// |1⟩ — south pole
+    /// |1⟩ - south pole
     public static let south = BlochSphere(theta: .pi, phi: 0)
-    /// |+⟩ — equator (x-axis)
+    /// |+⟩ - equator (x-axis)
     public static let plus  = BlochSphere(theta: .pi / 2.0, phi: 0)
-    /// |−⟩ — equator (−x-axis)
+    /// |−⟩ - equator (−x-axis)
     public static let minus = BlochSphere(theta: .pi / 2.0, phi: .pi)
-    /// |i⟩ — equator (y-axis)
+    /// |i⟩ - equator (y-axis)
     public static let iPlus = BlochSphere(theta: .pi / 2.0, phi: .pi / 2.0)
 
     // ─── Conversions ───
@@ -742,7 +709,7 @@ struct PauliString: CustomStringConvertible {
         let dim = register.dimension
         var expVal = Complex.zero
         for i in 0..<dim {
-            // Compute P|i⟩ — Pauli string acting on basis state |i⟩
+            // Compute P|i⟩ - Pauli string acting on basis state |i⟩
             var phase = Complex.one
             var flipped = i
             for (q, op) in operators.enumerated() {
@@ -776,7 +743,7 @@ struct PauliString: CustomStringConvertible {
 // MARK: - BRANCH COLLECTION UTILITIES
 // ═══════════════════════════════════════════════════════════════════
 
-/// Utilities for working with arrays of StateBranch — pruning, merging,
+/// Utilities for working with arrays of StateBranch - pruning, merging,
 /// normalization, and total probability computation.
 enum BranchOps {
 

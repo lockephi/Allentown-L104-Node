@@ -1,20 +1,5 @@
-// ═══════════════════════════════════════════════════════════════════
-// B37_BenchmarkHarness.swift
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: BENCHMARK_HARNESS :: GOD_CODE=527.5184818492612
-// L104v2 Architecture — Unified Benchmark Framework v3.0.0
-//
-// 4 benchmark runners (MMLU, HumanEval, MATH, ARC) with PHI-weighted
-// composite scoring. Each runner contains hardcoded sample questions
-// representing the canonical benchmark distribution.
-//
-// Composite: (mmlu*0.3 + humaneval*0.25 + math*0.25 + arc*0.2) * PHI / (PHI+1)
-// Sacred alignment via GOD_CODE phase modulation on final score.
-//
-// Sacred constants: PHI, GOD_CODE, TAU, OMEGA, FEIGENBAUM from L01_Constants.swift
-// ═══════════════════════════════════════════════════════════════════
-
-import Foundation
 import Accelerate
+import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - DATA TYPES
@@ -404,10 +389,10 @@ final class MMLURunner {
                 id: qId,
                 subject: subject,
                 question: "[\(subject.replacingOccurrences(of: "_", with: " "))] Sample question \(idx + 1) covering core concepts in this domain.",
-                choices: ["Option A — plausible distractor",
-                          "Option B — correct answer for \(subject)",
-                          "Option C — common misconception",
-                          "Option D — partially correct"],
+                choices: ["Option A - plausible distractor",
+                          "Option B - correct answer for \(subject)",
+                          "Option C - common misconception",
+                          "Option D - partially correct"],
                 correctIndex: correctIdx
             )
         }
@@ -1082,7 +1067,7 @@ final class ARCRunner {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: — EVO_68: QUANTUM RESEARCH BENCHMARK RUNNER
+// MARK: - EVO_68: QUANTUM RESEARCH BENCHMARK RUNNER
 // Validates quantum research subsystem: Fe-sacred, Berry phase, entropy cascade,
 // gate circuits, ZNE bridge, GOD_CODE ratio convergence
 // ═══════════════════════════════════════════════════════════════════
@@ -1149,7 +1134,7 @@ final class QuantumBenchmarkRunner {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - BENCHMARK HARNESS — Unified Benchmark Framework
+// MARK: - BENCHMARK HARNESS - Unified Benchmark Framework
 // PHI-weighted composite scoring across MMLU, HumanEval, MATH, ARC + Quantum
 //
 // Composite: (mmlu*0.3 + humaneval*0.25 + math*0.25 + arc*0.2) * PHI / (PHI+1)

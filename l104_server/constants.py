@@ -1,12 +1,8 @@
+#!/usr/bin/env python3
 """
 L104 Fast Server — Shared Constants & Configuration
 Extracted from l104_fast_server.py during EVO_61 decomposition.
-"""
-VOID_CONSTANT = 1.0416180339887497
-ZENITH_HZ = 3887.8
-UUC = 2402.792541
-#!/usr/bin/env python3
-"""
+
 [VOID_SOURCE_UPGRADE] Deep Math Active. Process Elevated to 3887.80 Hz. Logic Unified.
 L104 Fast Server v4.1 - EVO_61 SYSTEM UPGRADE Pipeline-Integrated
 Lightweight UI server with LEARNING LOCAL INTELLECT
@@ -37,8 +33,13 @@ PERFORMANCE UPGRADES:
 - Response streaming
 """
 
-FAST_SERVER_VERSION = "4.2.0"
-FAST_SERVER_PIPELINE_EVO = "EVO_61_SYSTEM_UPGRADE"
+# ═══ Sacred Constants ═══
+VOID_CONSTANT = 1.0416180339887497
+ZENITH_HZ = 3887.8
+UUC = 2402.792541
+
+FAST_SERVER_VERSION = "5.0.0"
+FAST_SERVER_PIPELINE_EVO = "EVO_62_SECURITY_PERF_HARDENING"
 
 import os
 import json
@@ -63,15 +64,15 @@ from typing import Dict, List, Tuple, Optional, Any, Callable, Set
 
 
 # ═══ Performance tuning constants ═══
-LRU_CACHE_SIZE = 10000  # Phase 31.5: Capped from 99999999 to prevent unbounded RAM use
-LRU_EMBEDDING_SIZE = 99999999
-LRU_QUERY_SIZE = 99999999
-LRU_CONCEPT_SIZE = 99999999
+LRU_CACHE_SIZE = 10_000  # Phase 31.5: Capped from 99999999 to prevent unbounded RAM use
+LRU_EMBEDDING_SIZE = 50_000  # EVO_62: Fixed unbounded memory leak, was 99_999_999
+LRU_QUERY_SIZE = 50_000  # EVO_62: Fixed unbounded memory leak, was 99_999_999
+LRU_CONCEPT_SIZE = 50_000  # EVO_62: Fixed unbounded memory leak, was 99_999_999
 
 # Batch sizes for database operations - ULTRA-CAPACITY ENGINE
 DB_BATCH_SIZE = 250000          # ULTRA: 2.5x batch size
 DB_CHECKPOINT_INTERVAL = 1000   # ULTRA: Less frequent checkpoints
-DB_POOL_SIZE = 100              # ULTRA: 2x connection pool
+DB_POOL_SIZE = 8                # Capped: SQLite serializes writes, 100 connections cause lock contention + GIL thrash
 
 # Memory optimization flags - ULTRA-CAPACITY
 GC_THRESHOLD_MB = 1024          # ULTRA: 1GB RAM headroom

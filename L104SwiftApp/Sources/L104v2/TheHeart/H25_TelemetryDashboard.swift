@@ -1,19 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// H25_TelemetryDashboard.swift
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: DATA_INGEST :: UI_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Real-time Telemetry Dashboard V4: metrics aggregation,
-// φ-weighted health composites, latency percentiles (p50/p95/p99),
-// throughput tracking, alert system, voice/visual/emotional/security metrics.
-//
-// Upgraded: EVO_68 Sovereign Node UI Upgrade — Feb 21, 2026
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
+private let logging = Logger(subsystem: "com.l104.H25_TelemetryDashboard", category: "main")
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 📊 TELEMETRY DASHBOARD ENGINE
 // Real-time metrics aggregation from all network subsystems,
@@ -91,7 +84,7 @@ final class TelemetryDashboard {
         // Initial collection
         collectTelemetry()
 
-        print("[H25] TelemetryDashboard activated — streaming from all subsystems")
+        logging.info("[H25] TelemetryDashboard activated - streaming from all subsystems")
     }
 
     func deactivate() {
@@ -114,7 +107,7 @@ final class TelemetryDashboard {
         let activePeers = net.peers.values.filter { $0.latencyMs >= 0 }.count
         let qLinks = net.quantumLinks.count
         let meanFidelity = net.quantumLinks.isEmpty ? 0.0 :
-            net.quantumLinks.values.map { $0.eprFidelity }.reduce(0, +) / Double(net.quantumLinks.count)
+            net.quantumLinks.values.map { $0.eprFidelity }.reduce(0.0, +) / Double(net.quantumLinks.count)
 
         record(metric: "peers_active", value: Double(activePeers), subsystem: "network")
         record(metric: "quantum_links", value: Double(qLinks), subsystem: "network")
@@ -285,7 +278,7 @@ final class TelemetryDashboard {
 
     private func computeOverallHealth(networkHealth: Double, apiHealth: Double,
                                        syncHealth: Double, quantumFidelity: Double) -> Double {
-        // φ-weighted health composite — network weighted highest
+        // φ-weighted health composite - network weighted highest
         let weights = (network: PHI, api: 1.0, sync: TAU, quantum: PHI * TAU)
         let totalWeight = weights.network + weights.api + weights.sync + weights.quantum
         let score = (networkHealth * weights.network +

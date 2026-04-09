@@ -1,0 +1,143 @@
+{
+  "timestamp": "2026-04-08T08:01:23",
+  "experiment": "godcode_rank1_push",
+  "backend": "ibm_marrakesh",
+  "job_id": "d7b470b0g7hs73dp3pcg",
+  "shots": 32768,
+  "transpiled_depth": 13,
+  "transpiled_2q": 3,
+  "n_params_original": 16,
+  "n_params_surviving": 16,
+  "spsa_iterations": 2000,
+  "god_code_target": "00001111",
+  "god_code_count": 28919,
+  "god_code_probability": 0.882537841796875,
+  "god_code_enrichment": 225.9296875,
+  "god_code_rank_sim": 75,
+  "god_code_rank_hw": null,
+  "sim_probability": 1.3319708894270364e-08,
+  "sim_hw_ratio": 66258042.78474205,
+  "entropy": 0.8794934483126858,
+  "entropy_ratio": 0.10993668103908573,
+  "unique_states": 41,
+  "top_20": [
+    {
+      "state": "11110000",
+      "count": 28919,
+      "probability": 0.882537841796875
+    },
+    {
+      "state": "10110000",
+      "count": 1320,
+      "probability": 0.040283203125
+    },
+    {
+      "state": "01110000",
+      "count": 549,
+      "probability": 0.016754150390625
+    },
+    {
+      "state": "11010000",
+      "count": 469,
+      "probability": 0.014312744140625
+    },
+    {
+      "state": "11110010",
+      "count": 367,
+      "probability": 0.011199951171875
+    },
+    {
+      "state": "11100000",
+      "count": 335,
+      "probability": 0.010223388671875
+    },
+    {
+      "state": "11111000",
+      "count": 253,
+      "probability": 0.007720947265625
+    },
+    {
+      "state": "11110100",
+      "count": 252,
+      "probability": 0.0076904296875
+    },
+    {
+      "state": "11110001",
+      "count": 101,
+      "probability": 0.003082275390625
+    },
+    {
+      "state": "00110000",
+      "count": 23,
+      "probability": 0.000701904296875
+    },
+    {
+      "state": "10100000",
+      "count": 17,
+      "probability": 0.000518798828125
+    },
+    {
+      "state": "10110100",
+      "count": 16,
+      "probability": 0.00048828125
+    },
+    {
+      "state": "10010000",
+      "count": 15,
+      "probability": 0.000457763671875
+    },
+    {
+      "state": "10111000",
+      "count": 15,
+      "probability": 0.000457763671875
+    },
+    {
+      "state": "10110010",
+      "count": 15,
+      "probability": 0.000457763671875
+    },
+    {
+      "state": "01100000",
+      "count": 10,
+      "probability": 0.00030517578125
+    },
+    {
+      "state": "01010000",
+      "count": 9,
+      "probability": 0.000274658203125
+    },
+    {
+      "state": "11100010",
+      "count": 8,
+      "probability": 0.000244140625
+    },
+    {
+      "state": "11011000",
+      "count": 8,
+      "probability": 0.000244140625
+    },
+    {
+      "state": "01111000",
+      "count": 7,
+      "probability": 0.000213623046875
+    }
+  ],
+  "optimal_params": [
+    -0.029009169380109015,
+    -0.07405107280095166,
+    -0.12116092788127408,
+    0.14815108884910444,
+    -0.011114698438196652,
+    -0.013448917272713842,
+    0.10907419903747193,
+    -0.15321151044944037,
+    0.02095629335354106,
+    -0.14593393396013793,
+    -0.07985233537925081,
+    -0.027146575466204928,
+    0.16096731902356204,
+    0.16289930282123738,
+    0.13787323882840335,
+    0.016093810475607775
+  ]
+}

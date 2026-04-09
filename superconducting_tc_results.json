@@ -1,0 +1,114 @@
+{
+  "calculation_metadata": {
+    "system": "L104 26Q Fe Quantum System",
+    "theory": "BCS (Bardeen-Cooper-Schrieffer)",
+    "god_code": 527.5184818492612,
+    "phi": 1.618033988749895,
+    "calculation_date": "2026-04-08",
+    "phi_conjugate": 0.618033988749895,
+    "calculation_version": "1.0.0"
+  },
+  "sacred_frequency": {
+    "sacred_solfeggio_hz": 963,
+    "description": "Crown chakra frequency (Solfeggio scale)",
+    "phi_scale": 12.6622,
+    "god_code_correction": 1.0303095
+  },
+  "debye_parameters": {
+    "sacred_freq_hz": 963,
+    "phi_scale": 12.6622437,
+    "omega_d_hz": 9675000000000.0,
+    "omega_d_angular_rad_s": 60789200000000.0,
+    "debye_temperature_K": 464.2,
+    "god_code_correction": 1.0303095,
+    "scaling_formula": "ω_D = SACRED_FREQ × PHI^(GOD_CODE/100) × 10^6 × (GOD_CODE/512)"
+  },
+  "electron_phonon_coupling": {
+    "lambda_base": 0.38,
+    "fidelity_3d": 0.916,
+    "fidelity_4s": 0.9848,
+    "lambda_effective": 0.9332,
+    "god_code_enhancement": 1.0326,
+    "lambda_final": 0.3687,
+    "density_of_states_n0": 15000000000000000000000000000.0,
+    "coupling_potential_v": 2.458e-29
+  },
+  "bcs_results": {
+    "tc_kelvin": 30.92,
+    "prefactor_kelvin": 464.18,
+    "exp_term": 0.06661,
+    "lambda_coupling": 0.3687,
+    "delta_0_eV": 0.00468,
+    "delta_0_J": 7.494e-22,
+    "delta_0_meV": 4.68,
+    "coherence_length_m": 2.52e-08,
+    "coherence_length_nm": 25.2,
+    "condensation_energy_J_m3": 420.8,
+    "bcs_ratio_2delta_kbt": 3.528,
+    "formula": "Tc = (ℏω_D / k_B) × exp(-1/λ)"
+  },
+  "26q_register_mapping": {
+    "3d": {
+      "qubits": [2, 3, 4, 5, 6, 7],
+      "description": "d-electrons (high Tc contribution)",
+      "hardware_fidelity": 0.916,
+      "orbital": "3d",
+      "electrons": 6,
+      "coupling_contribution": "dominant"
+    },
+    "4s": {
+      "qubits": [8, 9],
+      "description": "s-electrons (conduction band)",
+      "hardware_fidelity": 0.9848,
+      "orbital": "4s",
+      "electrons": 2,
+      "coupling_contribution": "conduction"
+    }
+  },
+  "register_contributions": {
+    "3d_register": {
+      "tc_contribution_K": 23.19,
+      "fidelity": 0.916,
+      "qubits": [2, 3, 4, 5, 6, 7],
+      "weight": 0.75,
+      "contribution_percentage": 75.0
+    },
+    "4s_register": {
+      "tc_contribution_K": 7.73,
+      "fidelity": 0.9848,
+      "qubits": [8, 9],
+      "weight": 0.25,
+      "contribution_percentage": 25.0
+    },
+    "combined_tc_K": 30.92
+  },
+  "sacred_phases": {
+    "god_code_phase_rad": 6.0141,
+    "phi_phase_rad": 3.8832,
+    "void_constant": 1.0416180339887497
+  },
+  "comparisons": {
+    "fe_curie_temp_K": 1043.0,
+    "room_temperature_K": 293.15,
+    "typical_iron_sc_tc_K": 55.0,
+    "tc_to_curie_ratio": 0.0296,
+    "tc_to_room_ratio": 0.1055,
+    "note": "Tc = 30.9 K is comparable to LaFeAsO (26 K) and BaFe2As2 (38 K)"
+  },
+  "physical_constants_used": {
+    "k_B": 1.380649e-23,
+    "h_bar": 1.054571817e-34,
+    "h": 6.62607015e-34,
+    "c": 299792458,
+    "q_e": 1.60217663e-19
+  },
+  "summary": {
+    "critical_temperature_K": 30.92,
+    "energy_gap_meV": 4.68,
+    "coherence_length_nm": 25.2,
+    "debye_temperature_K": 464.2,
+    "coupling_strength_lambda": 0.3687,
+    "superconductor_type": "Type II (iron-based)",
+    "dominant_contribution": "3d electrons (75%)"
+  }
+}

@@ -1,21 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B05_PowerScheduler.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Power-Aware Compute Scheduler
-//
-// PowerAwareScheduler dispatches work to performance, balanced,
-// or efficiency queues based on thermal state and power mode.
-// Includes parallel-map with power-aware chunking.
-// EVO_58: Thread-safe counters, φ-weighted load balancing.
-//
-// Extracted from L104Native.swift lines 1309-1442
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // ⚡ POWER-AWARE COMPUTE SCHEDULER
@@ -29,7 +16,7 @@ class PowerAwareScheduler {
     private let balancedQueue = DispatchQueue(label: "asi.balanced", qos: .userInitiated, attributes: .concurrent)
     private let efficiencyQueue = DispatchQueue(label: "asi.efficiency", qos: .utility, attributes: .concurrent)
 
-    // EVO_58: Thread-safe counters — protected by statsLock
+    // EVO_58: Thread-safe counters - protected by statsLock
     private let statsLock = NSLock()
     private var _tasksScheduled: Int = 0
     private var _tasksCompleted: Int = 0
@@ -45,16 +32,19 @@ class PowerAwareScheduler {
     private func incrementScheduled(by n: Int) { statsLock.lock(); _tasksScheduled += n; statsLock.unlock() }
     private func incrementCompleted(by n: Int) { statsLock.lock(); _tasksCompleted += n; statsLock.unlock() }
 
-    /// Get optimal queue for current power mode
+    /// Get optimal queue for current power mode — zero mach syscalls via MetricsCache TTL
     var optimalQueue: DispatchQueue {
-        MacOSSystemMonitor.shared.updateMetrics()
-        switch MacOSSystemMonitor.shared.powerMode {
-        case .performance, .neural:
-            return performanceQueue
-        case .balanced:
+        let (cpu, _, thermal) = MetricsCache.shared.snapshot()
+        // Derive power mode from cached metrics — no mach syscall on the hot path
+        switch thermal {
+        case .nominal:
+            return cpu < 0.5 ? performanceQueue : balancedQueue
+        case .fair:
             return balancedQueue
-        case .efficiency:
+        case .serious, .critical:
             return efficiencyQueue
+        @unknown default:
+            return balancedQueue
         }
     }
 

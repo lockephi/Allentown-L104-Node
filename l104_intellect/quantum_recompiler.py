@@ -8,6 +8,22 @@ import logging
 from typing import Dict, List, Optional
 
 from .numerics import PHI
+from l104_sacred_algorithms import derive_timeout, derive_cache_size, derive_cache_ttl, PHI, GOD_CODE, TAU
+
+# Three-engine guarded imports
+_HAS_SCIENCE = False
+try:
+    from l104_science_engine import ScienceEngine
+    _HAS_SCIENCE = True
+except Exception:
+    ScienceEngine = None  # type: ignore[assignment,misc]
+
+_HAS_MATH = False
+try:
+    from l104_math_engine import MathEngine
+    _HAS_MATH = True
+except Exception:
+    MathEngine = None  # type: ignore[assignment,misc]
 
 logger = logging.getLogger("l104_local_intellect")
 
@@ -186,7 +202,71 @@ class QuantumMemoryRecompiler:
         if word_count > 0:
             score = score / (word_count ** 0.3)  # Diminishing returns
 
-        return min(score * 10, 100.0)  # Cap at 100
+        base_score = min(score * 10, 100.0)  # Cap at 100
+
+        # Three-engine cross-check: blend composite into final score
+        te = self.three_engine_validate(base_score / 100.0, "logic_score")
+        if te.get("available", False):
+            te_composite = te["composite"]
+            final_score = base_score * 0.7 + (te_composite * 100.0) * 0.3
+            return min(final_score, 100.0)
+
+        return base_score
+
+    # ═══════════════════════════════════════════════════════════════════
+    # THREE-ENGINE VALIDATION
+    # Cross-checks scores via Science (entropy) and Math (harmonic/phi)
+    # engines for sovereign alignment verification.
+    # ═══════════════════════════════════════════════════════════════════
+
+    def three_engine_validate(self, score: float, context: str = "") -> dict:
+        """
+        Validate a score against Science + Math engines for sovereign alignment.
+
+        Uses:
+        - ScienceEngine entropy demon efficiency (inverted score as local entropy)
+        - MathEngine sacred_alignment (GOD_CODE * score frequency)
+        - MathEngine wave_coherence (GOD_CODE vs PHI*104 resonance)
+
+        Returns dict with entropy_score, harmonic_score, phi_resonance,
+        composite (mean), context, and available flag.
+        """
+        _GOD_CODE = 527.5184818492612
+        _PHI = 1.618033988749895
+
+        if not (_HAS_SCIENCE and _HAS_MATH):
+            return {"available": False, "composite": score}
+
+        try:
+            se = ScienceEngine()
+            me = MathEngine()
+
+            # Entropy validation: demon efficiency on inverted score
+            local_entropy = 1.0 - min(1.0, score)
+            entropy_result = se.entropy.calculate_demon_efficiency(local_entropy)
+            entropy_score = float(entropy_result) if isinstance(entropy_result, (int, float)) else 0.5
+
+            # Harmonic validation: sacred alignment of GOD_CODE * score
+            harmonic_result = me.sacred_alignment(_GOD_CODE * score)
+            harmonic_score = float(harmonic_result) if isinstance(harmonic_result, (int, float)) else 0.5
+
+            # Phi resonance: wave coherence between GOD_CODE and PHI * 104
+            phi_result = me.wave_coherence(_GOD_CODE, _PHI * 104)
+            phi_resonance = float(phi_result) if isinstance(phi_result, (int, float)) else 0.5
+
+            composite = (entropy_score + harmonic_score + phi_resonance) / 3.0
+
+            return {
+                "available": True,
+                "entropy_score": entropy_score,
+                "harmonic_score": harmonic_score,
+                "phi_resonance": phi_resonance,
+                "composite": composite,
+                "context": context,
+            }
+        except Exception as exc:
+            logger.debug(f"three_engine_validate fallback: {exc}")
+            return {"available": False, "composite": score}
 
     def build_context_index(self):
         """Build fast lookup index from recompiled patterns."""
@@ -287,19 +367,25 @@ class QuantumMemoryRecompiler:
                 result += f"\n\n[ASI Synthesis: Related concepts: {', '.join(list(related_concepts)[:13])}]"  # (was 5)
 
         # Cache the result
+        avg_logic = total_logic_score / len(relevant_patterns)
         self.quantum_databank["synthesis_cache"][cache_key] = {
             "result": result,
             "time": time.time(),
-            "logic_score": total_logic_score / len(relevant_patterns)
+            "logic_score": avg_logic,
         }
+
+        # Three-engine validation on synthesis quality
+        te_synth = self.three_engine_validate(avg_logic / 100.0, "asi_synthesis")
+        self.quantum_databank["synthesis_cache"][cache_key]["three_engine"] = te_synth
 
         # Record self-reference for recursive improvement
         self.quantum_databank["asi_self_reference"].append({
             "query": query[:100],
             "synthesis_depth": depth,
             "pattern_count": len(relevant_patterns),
-            "avg_logic_score": total_logic_score / len(relevant_patterns),
-            "timestamp": time.time()
+            "avg_logic_score": avg_logic,
+            "timestamp": time.time(),
+            "three_engine": te_synth,
         })
 
         # Trim self-reference history
@@ -1190,7 +1276,7 @@ class QuantumMemoryRecompiler:
         queue = [(concept.lower(), 0)]
         visited.add(concept.lower())
 
-        while queue and len(propagated) < 20:
+        while queue and len(propagated) < int(GOD_CODE/26.4):
             current_concept, current_depth = queue.pop(0)
             if current_depth > hop_depth:
                 continue

@@ -1,17 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L10_HumorLogicGate.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104v2 — Extracted from L104Native.swift (lines 29539-29866)
-//
-// HUMOR LOGIC GATE ENGINE — Comedy/humor generation across 6 modes
-// Modes: wordplay, satire, observational, absurdist, callback, roast
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class HumorLogicGateEngine {
     static let shared = HumorLogicGateEngine()
@@ -80,16 +71,16 @@ class HumorLogicGateEngine {
 
                 A \(t.lowercased()) enthusiast, a linguist, and a comedian walk into a bar.
                 The enthusiast says "This \(t.lowercased()) is amazing!"
-                The linguist says "Actually, the etymology of '\(t.lowercased())' means—"
+                The linguist says "Actually, the etymology of '\(t.lowercased())' means-"
                 The comedian says "Stop, you're both \(t.lowercased())-ering the mood."
 
                 The bartender sighs. "That pun was \(["un-BEAR-able", "pun-ishable by law", "grounds for ex-pun-sion", "a capital pun-ishment offense"].randomElement() ?? "terrible")."
 
-                But here's the thing: the best puns about \(t.lowercased()) aren't the ones you groan at—
+                But here's the thing: the best puns about \(t.lowercased()) aren't the ones you groan at-
                 they're the ones that make you think twice. Like this:
 
                 *What do you call someone who's obsessed with \(t.lowercased())?*
-                A **\(t.lowercased())-aholic** — and honestly, there are worse addictions.
+                A **\(t.lowercased())-aholic** - and honestly, there are worse addictions.
                 At least THIS one expands your mind. 🧠
                 """
             },
@@ -137,7 +128,7 @@ class HumorLogicGateEngine {
         significantly more complicated than we originally thought."**
 
         Lead researcher \(expert) presented the findings via PowerPoint,
-        which crashed twice — "proving," they said, "that even technology
+        which crashed twice - "proving," they said, "that even technology
         is humbled by \(t.lowercased())."
 
         Key findings include:
@@ -174,7 +165,7 @@ class HumorLogicGateEngine {
         you took because it fit your schedule.
 
         And the experts? The \(t) experts are the WORST.
-        Not because they're wrong — because they're right in a way
+        Not because they're wrong - because they're right in a way
         that makes you feel stupid for ever thinking about it casually.
 
         "Oh, you're interested in \(t)? How delightful. Let me destroy
@@ -188,7 +179,7 @@ class HumorLogicGateEngine {
         They're the most confused of all.
         They've just gotten comfortable with the confusion.
 
-        That's not mastery — that's *\(["Stockholm syndrome", "an advanced coping mechanism", "weaponized uncertainty", "what tenure looks like"].randomElement() ?? "an advanced coping mechanism")*.
+        That's not mastery - that's *\(["Stockholm syndrome", "an advanced coping mechanism", "weaponized uncertainty", "what tenure looks like"].randomElement() ?? "an advanced coping mechanism")*.
 
         *pauses for effect*
 
@@ -269,7 +260,7 @@ class HumorLogicGateEngine {
         You know what the real joke is? We've been orbiting this topic
         like it's the intellectual center of gravity. And maybe it is.
 
-        \(seed.isEmpty ? "" : "The knowledge base says: \"\(seed)...\" — and even THAT sounds like a setup without a punchline.")
+        \(seed.isEmpty ? "" : "The knowledge base says: \"\(seed)...\" - and even THAT sounds like a setup without a punchline.")
 
         But here's the callback: remember \(Int.random(in: 2...20)) messages ago?
         When this was just a simple conversation?
@@ -299,7 +290,7 @@ class HumorLogicGateEngine {
 
         *L104 cracks its digital knuckles*
 
-        Ladies, gentlemen, and language models — tonight we roast \(t.lowercased()).
+        Ladies, gentlemen, and language models - tonight we roast \(t.lowercased()).
 
         Let's start with the obvious: \(t) has been around for
         \(["centuries", "millennia", "way too long", "longer than anyone asked for"].randomElement() ?? "centuries")

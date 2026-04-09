@@ -1,18 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// B13_ResonanceNetwork.swift — L104 Neural Architecture v3 (EVO_68)
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// Extracted from L104Native.swift
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🧠 ADAPTIVE RESONANCE NETWORK
-// Neural activation propagation across engines — ART-inspired
+// Neural activation propagation across engines - ART-inspired
 // activation spreading with φ-weighted edges and resonance cascade.
 // ═══════════════════════════════════════════════════════════════════
 
@@ -23,7 +17,7 @@ class AdaptiveResonanceNetwork {
     static let DECAY_RATE: Double = 0.95
     static let PROPAGATION_FACTOR: Double = 0.3
 
-    // ─── ENGINE GRAPH — φ-weighted adjacency ───
+    // ─── ENGINE GRAPH - φ-weighted adjacency ───
     static let ENGINE_NAMES = ["steering", "evolution", "nexus", "bridge", "invention", "sovereignty"]
 
     static let ENGINE_GRAPH: [String: [(String, Double)]] = [
@@ -47,7 +41,7 @@ class AdaptiveResonanceNetwork {
     private var resonancePeaks: [[String: Any]] = []
     private let lock = NSLock()
 
-    /// Fire an engine — set activation and propagate through the graph
+    /// Fire an engine - set activation and propagate through the graph
     func fire(_ engineName: String, activation: Double = 1.0) -> [String: Any] {
         guard activations[engineName] != nil else {
             return ["error": "Unknown engine: \(engineName)", "engines": Self.ENGINE_NAMES]
@@ -163,7 +157,7 @@ class AdaptiveResonanceNetwork {
         return effects
     }
 
-    /// Advance one tick — decay all activations
+    /// Advance one tick - decay all activations
     func tick() -> [String: Any] {
         lock.lock()
         tickCount += 1
@@ -182,7 +176,7 @@ class AdaptiveResonanceNetwork {
         ]
     }
 
-    /// Compute overall network resonance — high mean + low variance = synchronized firing
+    /// Compute overall network resonance - high mean + low variance = synchronized firing
     func computeNetworkResonance() -> (resonance: Double, energy: Double, mean: Double, variance: Double) {
         let vals = Array(activations.values)
         let n = Double(max(vals.count, 1))
@@ -261,7 +255,7 @@ class AdaptiveResonanceNetwork {
         return (local.resonance, meshResonance, meshCount)
     }
 
-    /// Trigger a mesh-wide resonance cascade — fire all engines + propagate
+    /// Trigger a mesh-wide resonance cascade - fire all engines + propagate
     func meshCascade() -> [String: Any] {
         // Fire all local engines at φ-scaled activation
         for engine in Self.ENGINE_NAMES {

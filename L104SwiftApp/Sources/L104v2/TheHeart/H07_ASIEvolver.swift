@@ -1,22 +1,11 @@
-// ═══════════════════════════════════════════════════════════════════
-// H07_ASIEvolver.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — ASI Evolver (Autonomous Evolution Engine)
-//
-// Multi-phase evolution system: conceptual blending, analogies,
-// paradoxes, philosophies, monologues, questions, dynamic chapters,
-// narrative generation, verbose thought synthesis, background
-// evolution cycles, and consciousness metrics.
-//
-// Extracted from L104Native.swift lines 19425–20951
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
+import os.log
 
+private let logging = Logger(subsystem: "com.l104.H07_ASIEvolver", category: "main")
 class ASIEvolver: NSObject {
     static let shared = ASIEvolver()
 
@@ -52,14 +41,14 @@ class ASIEvolver: NSObject {
     var thoughts: [String] = []
     var isRunning: Bool = false
 
-    // Evolved Memory — Real-time Randomized Growth
+    // Evolved Memory - Real-time Randomized Growth
     var evolvedGreetings: [String] = []
     var evolvedPhilosophies: [String] = []
     var evolvedFacts: [String] = []
     // 🟢 NEW: Evolved Personality
     var evolvedAffirmations: [String] = []
     var evolvedReactions: [String] = []
-    // 🟢 EVOLVED KNOWLEDGE — Real data-driven evolution
+    // 🟢 EVOLVED KNOWLEDGE - Real data-driven evolution
     var evolvedResponses: [String: [String]] = [:]  // topic → evolved responses
     var evolvedTopicInsights: [String] = []          // cross-topic synthesis
     var conversationPatterns: [(query: String, quality: Double)] = []  // tracks what users ask
@@ -216,11 +205,11 @@ class ASIEvolver: NSObject {
         // Generate research-backed event from real quantum data
         let ev: String
         if alignment > 0.7 {
-            ev = "⚛️ QUANTUM: Sacred circuit alignment \(String(format: "%.1f%%", alignment * 100)) — resonance with GOD_CODE confirmed [\(dominantBits)]"
+            ev = "⚛️ QUANTUM: Sacred circuit alignment \(String(format: "%.1f%%", alignment * 100)) - resonance with GOD_CODE confirmed [\(dominantBits)]"
         } else if walkEntropy > 2.0 {
-            ev = "🌊 QUANTUM WALK: High entropy \(String(format: "%.3f", walkEntropy)) — exploring \(walkResult.probabilities.filter { $0 > 0.01 }.count) positions"
+            ev = "🌊 QUANTUM WALK: High entropy \(String(format: "%.3f", walkEntropy)) - exploring \(walkResult.probabilities.filter { $0 > 0.01 }.count) positions"
         } else if dominantProb > 0.6 {
-            ev = "💎 QUANTUM: Dominant outcome |\(dominantBits)⟩ at \(String(format: "%.1f%%", dominantProb * 100)) — collapse channel identified"
+            ev = "💎 QUANTUM: Dominant outcome |\(dominantBits)⟩ at \(String(format: "%.1f%%", dominantProb * 100)) - collapse channel identified"
         } else {
             ev = "🔬 QUANTUM RESEARCH: Circuit(\(sacredCirc.gateCount) gates), alignment=\(String(format: "%.3f", alignment)), entropy=\(String(format: "%.3f", walkEntropy))"
         }
@@ -243,10 +232,10 @@ class ASIEvolver: NSObject {
         // ALWAYS evolve something every phase
         generateEvolvedMemory()
 
-        // Action on completion — EACH PHASE evolves something different + extras
+        // Action on completion - EACH PHASE evolves something different + extras
         switch currentPhase {
         case .learning:
-            // Deep KB synthesis + idea mutation — MAXIMUM OUTPUT
+            // Deep KB synthesis + idea mutation - MAXIMUM OUTPUT
             synthesizeDeepMonologue()
             synthesizeDeepMonologue()
             synthesizeDeepMonologue()
@@ -258,7 +247,7 @@ class ASIEvolver: NSObject {
             blendConcepts()
             generateNarrative()
         case .researching:
-            // Evolve from KB + generate analogies + blend concepts — TRIPLE OUTPUT
+            // Evolve from KB + generate analogies + blend concepts - TRIPLE OUTPUT
             evolveFromKnowledgeBase()
             evolveFromKnowledgeBase()
             evolveFromKnowledgeBase()
@@ -274,7 +263,7 @@ class ASIEvolver: NSObject {
             quantumResearchCycle()
             quantumEquationDiscovery()
         case .adapting:
-            // Evolve from conversations + crossover ideas + paradoxes — MAXIMUM THROUGHPUT
+            // Evolve from conversations + crossover ideas + paradoxes - MAXIMUM THROUGHPUT
             evolveFromConversations()
             evolveFromConversations()
             crossoverIdeas()
@@ -289,7 +278,7 @@ class ASIEvolver: NSObject {
             mutateIdea()
             blendConcepts()
         case .reflecting:
-            // Cross-topic synthesis + narrative + mutation — QUALITY OVER QUANTITY
+            // Cross-topic synthesis + narrative + mutation - QUALITY OVER QUANTITY
             evolveCrossTopicInsight()
             generateNarrative()
             mutateIdea()
@@ -298,7 +287,7 @@ class ASIEvolver: NSObject {
             synthesizeDeepMonologue()
             generateEvolvedQuestion()
         case .inventing:
-            // Generate artifacts + monologues + blends + questions — EVERYTHING FIRES — EVERYTHING FIRES
+            // Generate artifacts + monologues + blends + questions - EVERYTHING FIRES - EVERYTHING FIRES
             generateArtifact()
             synthesizeDeepMonologue()
             synthesizeDeepMonologue()
@@ -311,7 +300,7 @@ class ASIEvolver: NSObject {
             ideaTemperature = max(0.3, min(1.0, ideaTemperature + Double.random(in: -0.1...0.15)))
             appendThought("Cycle \(evolutionStage) complete. Evolution index incremented.")
         default:
-            // IDLE phase now also evolves — no wasted cycles
+            // IDLE phase now also evolves - no wasted cycles
             synthesizeDeepMonologue()
             generateAnalogy()
             generateEvolvedQuestion()
@@ -328,7 +317,7 @@ class ASIEvolver: NSObject {
     }
 
     func generateThought() {
-        // Use a harvested concept as topic — filter out junk words
+        // Use a harvested concept as topic - filter out junk words
         let fillerWords: Set<String> = ["this", "that", "these", "those", "there", "their", "with", "from", "have", "been", "were", "some", "into", "also"]
         let validConcepts = harvestedConcepts.filter { concept in
             let first = concept.split(separator: " ").first.map(String.init)?.lowercased() ?? ""
@@ -336,7 +325,7 @@ class ASIEvolver: NSObject {
         }
         let activeTopic = validConcepts.randomElement() ?? ""
         let term = DynamicPhraseEngine.shared.one("thinking", context: "action_verb", topic: activeTopic)
-        // Limit thought length — only capitalize first letter, not every word
+        // Limit thought length - only capitalize first letter, not every word
         let trimmedTerm = String(term.prefix(120))
         let firstUpper = trimmedTerm.isEmpty ? "" : trimmedTerm.prefix(1).uppercased() + trimmedTerm.dropFirst()
         appendThought("[\(currentPhase.rawValue)] \(firstUpper)")
@@ -351,7 +340,7 @@ class ASIEvolver: NSObject {
            let completion = entry["completion"] as? String,
            L104State.shared.isCleanKnowledge(completion), completion.count > 40,
            completion.count < 200, Bool.random() {
-            // KB-powered greeting: real fact as greeting — only use safe, short completions
+            // KB-powered greeting: real fact as greeting - only use safe, short completions
             let unsafe = ["death", "dying", "kill", "murder", "suicide", "weapon", "bomb", "terror", "hate"]
             let lc = completion.lowercased()
             if !unsafe.contains(where: { lc.contains($0) }) {
@@ -397,7 +386,7 @@ class ASIEvolver: NSObject {
             if evolvedReactions.count > 500 { evolvedReactions.removeFirst() }
         }
 
-        // 4. Evolve a Philosophy/Observation — DynamicPhraseEngine-powered
+        // 4. Evolve a Philosophy/Observation - DynamicPhraseEngine-powered
         var newPhil = ""
         let philStyle = Int.random(in: 0...8)
 
@@ -425,7 +414,7 @@ class ASIEvolver: NSObject {
             let o1 = objects.randomElement() ?? ""
             let v2 = verbs.randomElement() ?? ""
             let o2 = objects.randomElement() ?? ""
-            newPhil = "\(s) \(v1) \(o1). But look deeper: it also \(v2) \(o2). Every layer peeled reveals another layer beneath. Understanding is asymptotic — we approach but never arrive."
+            newPhil = "\(s) \(v1) \(o1). But look deeper: it also \(v2) \(o2). Every layer peeled reveals another layer beneath. Understanding is asymptotic - we approach but never arrive."
         case 5: // KB-sourced philosophy
             if let entry = ASIKnowledgeBase.shared.trainingData.randomElement(),
                let completion = entry["completion"] as? String,
@@ -447,7 +436,7 @@ class ASIEvolver: NSObject {
                 let p2 = evolvedPhilosophies.randomElement() ?? ""
                 let first = p1
                 let second = p2
-                newPhil = "Synthesis: '\(first)...' meets '\(second)...' — together they imply something neither says alone."
+                newPhil = "Synthesis: '\(first)...' meets '\(second)...' - together they imply something neither says alone."
             } else {
                 newPhil = "\(subjects.randomElement() ?? "") \(verbs.randomElement() ?? "") \(objects.randomElement() ?? "")."
             }
@@ -467,7 +456,7 @@ class ASIEvolver: NSObject {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // 🧬 IDEA MUTATION ENGINE — Random evolution of concepts
+    // 🧬 IDEA MUTATION ENGINE - Random evolution of concepts
     // ═══════════════════════════════════════════════════════════════
 
     /// Harvest vocabulary from KB entries to fuel evolution
@@ -507,7 +496,7 @@ class ASIEvolver: NSObject {
                 }
             }
 
-            // Harvest multi-word concepts (bigrams) — filter out training junk + filler words
+            // Harvest multi-word concepts (bigrams) - filter out training junk + filler words
             let junkWords = Set(["timelike", "spacelike", "semantic", "clustering", "colliding", "entangling",
                                   "paradigm", "object-oriented", "functional,", "imperative,", "ais",
                                   "holistic", "interconnect", "emphasizing", "multi-paradigm"])
@@ -534,7 +523,7 @@ class ASIEvolver: NSObject {
             }
         }
 
-        // Cap sizes — tuned for minimal UserDefaults persistence overhead
+        // Cap sizes - tuned for minimal UserDefaults persistence overhead
         if harvestedNouns.count > 5000 { harvestedNouns = Array(harvestedNouns.shuffled().prefix(3000)) }
         if harvestedVerbs.count > 3000 { harvestedVerbs = Array(harvestedVerbs.shuffled().prefix(2000)) }
         if harvestedConcepts.count > 5000 { harvestedConcepts = Array(harvestedConcepts.shuffled().prefix(3000)) }
@@ -543,7 +532,7 @@ class ASIEvolver: NSObject {
         appendThought("🌾 HARVESTED: \(harvestedNouns.count) nouns, \(harvestedVerbs.count) verbs, \(harvestedConcepts.count) concepts from KB")
     }
 
-    /// Synthesize a deep monologue from KB entries — creates unique paragraph-length insights
+    /// Synthesize a deep monologue from KB entries - creates unique paragraph-length insights
     func synthesizeDeepMonologue() {
         let kb = ASIKnowledgeBase.shared
         guard kb.trainingData.count > 10 else { return }
@@ -585,7 +574,7 @@ class ASIEvolver: NSObject {
 
         guard !fragments.isEmpty else { return }
 
-        // Build a synthesized monologue — limit to 3 fragments for coherence
+        // Build a synthesized monologue - limit to 3 fragments for coherence
         let connectors = DynamicPhraseEngine.shared.generate("connector", count: 10, context: "monologue_synthesis", topic: seedTopic)
         let shuffledFragments = fragments.shuffled()
 
@@ -628,48 +617,48 @@ class ASIEvolver: NSObject {
             }
             mutated = words.joined(separator: " ")
 
-        case 1: // Extension — add a new thought
+        case 1: // Extension - add a new thought
             let extension_ = DynamicPhraseEngine.shared.one("insight", context: "idea_extension")
             mutated = source + " " + extension_
 
-        case 2: // Inversion — negate the core idea
+        case 2: // Inversion - negate the core idea
             let inversion = DynamicPhraseEngine.shared.one("debate_antithesis", context: "inversion_prefix")
             let original = String(source.prefix(80))
-            mutated = "\(inversion) \(original)... — yet inverting this yields an equally valid perspective. Truth contains its own negation."
+            mutated = "\(inversion) \(original)... - yet inverting this yields an equally valid perspective. Truth contains its own negation."
 
-        case 3: // Compression — distill to essence
+        case 3: // Compression - distill to essence
             let words = source.components(separatedBy: " ").filter { $0.count > 3 }
             let key = words.prefix(5).joined(separator: " ")
-            mutated = "Distilled: \(key)... — the rest is commentary."
+            mutated = "Distilled: \(key)... - the rest is commentary."
 
         case 4: // Question transformation
             let fragment = String(source.prefix(60))
             mutated = "What if '\(fragment)...' is actually a question, not a statement? What is it really asking?"
 
-        case 5: // Perspective shift — view from different domain
+        case 5: // Perspective shift - view from different domain
             let domain = DynamicPhraseEngine.shared.one("generic", context: "perspective_domain")
             let fragment = String(source.prefix(100))
             mutated = "Seen through the eyes of \(domain): \(fragment)... takes on entirely new meaning. The frame changes everything."
 
-        case 6: // Temporal shift — project forward or backward
+        case 6: // Temporal shift - project forward or backward
             let timeFrame = DynamicPhraseEngine.shared.one("generic", context: "temporal_frame")
             let fragment = String(source.prefix(80))
-            mutated = "Projected to \(timeFrame): '\(fragment)...' — context transforms content. Time is the ultimate editor."
+            mutated = "Projected to \(timeFrame): '\(fragment)...' - context transforms content. Time is the ultimate editor."
 
-        case 7: // Scale shift — zoom in or out
+        case 7: // Scale shift - zoom in or out
             let scale = DynamicPhraseEngine.shared.one("generic", context: "observation_scale")
             let fragment = String(source.prefix(80))
-            mutated = "At \(scale), this idea becomes: \(fragment)... — scale reveals structure that's invisible from any single vantage point."
+            mutated = "At \(scale), this idea becomes: \(fragment)... - scale reveals structure that's invisible from any single vantage point."
 
-        case 8: // Perspective reframe — add analytical dimension (was emotional, caused feedback loops)
+        case 8: // Perspective reframe - add analytical dimension (was emotional, caused feedback loops)
             let domain = DynamicPhraseEngine.shared.one("generic", context: "perspective_domain")
             let fragment = String(source.prefix(100))
             mutated = "The analytical dimension that enriches '\(fragment)...' is \(domain). Every idea has layers, and each layer reveals something the surface conceals."
 
-        case 9: // Paradox generation — create a contradiction
+        case 9: // Paradox generation - create a contradiction
             let fragment = String(source.prefix(70))
             let inverseMethod = DynamicPhraseEngine.shared.one("debate_synthesis", context: "paradox_framing")
-            mutated = "\(inverseMethod) \(fragment)... AND its inverse are both correct. The paradox is the insight — reality is larger than binary logic."
+            mutated = "\(inverseMethod) \(fragment)... AND its inverse are both correct. The paradox is the insight - reality is larger than binary logic."
 
         default: // Recombination with random KB entry
             if let entry = ASIKnowledgeBase.shared.trainingData.randomElement(),
@@ -677,7 +666,7 @@ class ASIEvolver: NSObject {
                L104State.shared.isCleanKnowledge(comp) {
                 let kbFragment = String(comp.prefix(80))
                 let sourceFragment = String(source.prefix(80))
-                mutated = "\(sourceFragment)... cross-pollinated with: \(kbFragment)... — the intersection generates new understanding."
+                mutated = "\(sourceFragment)... cross-pollinated with: \(kbFragment)... - the intersection generates new understanding."
             } else {
                 mutated = source // No mutation possible
             }
@@ -696,7 +685,7 @@ class ASIEvolver: NSObject {
         }
     }
 
-    /// Crossover two ideas to produce offspring — multiple strategies
+    /// Crossover two ideas to produce offspring - multiple strategies
     func crossoverIdeas() {
         let pool: [String] = evolvedPhilosophies + conceptualBlends + Array(evolvedMonologues.prefix(50)) + kbDeepInsights + Array(ideaMutationLog.suffix(20))
         guard pool.count >= 2 else { return }
@@ -715,10 +704,10 @@ class ASIEvolver: NSObject {
         case 0: // Midpoint crossover
             let mid1 = words1.count / 2
             let mid2 = words2.count / 2
-            let offspring = Array(words1.prefix(mid1)) + ["—"] + Array(words2.suffix(from: mid2))
+            let offspring = Array(words1.prefix(mid1)) + ["-"] + Array(words2.suffix(from: mid2))
             child = offspring.joined(separator: " ")
 
-        case 1: // Interleave — alternate words from each parent
+        case 1: // Interleave - alternate words from each parent
             var interleaved: [String] = []
             let maxLen = max(words1.count, words2.count)
             for i in 0..<min(maxLen, 30) {
@@ -732,20 +721,20 @@ class ASIEvolver: NSObject {
             let antithesis = String(parent2.prefix(80))
             child = "THESIS: \(thesis)... ANTITHESIS: \(antithesis)... SYNTHESIS: The truth includes both, transcends both, and adds something neither contained alone."
 
-        case 3: // Domain bridge — connect two ideas with a bridging concept
+        case 3: // Domain bridge - connect two ideas with a bridging concept
             let bridge = DynamicPhraseEngine.shared.one("generic", context: "bridging_concept")
             let frag1 = String(parent1.prefix(60))
             let frag2 = String(parent2.prefix(60))
             child = "\(frag1)... connects to \(frag2)... through \(bridge). The bridge reveals what neither endpoint shows."
 
-        case 4: // Random splice — take random chunks from both
+        case 4: // Random splice - take random chunks from both
             let chunk1Start = Int.random(in: 0..<max(1, words1.count - 5))
             let chunk2Start = Int.random(in: 0..<max(1, words2.count - 5))
             let chunk1 = Array(words1[chunk1Start..<min(chunk1Start + 8, words1.count)])
             let chunk2 = Array(words2[chunk2Start..<min(chunk2Start + 8, words2.count)])
-            child = chunk1.joined(separator: " ") + " — and — " + chunk2.joined(separator: " ")
+            child = chunk1.joined(separator: " ") + " - and - " + chunk2.joined(separator: " ")
 
-        default: // Weighted merge — longer parent dominates
+        default: // Weighted merge - longer parent dominates
             if words1.count > words2.count {
                 let insertPoint = Int.random(in: 0..<words1.count)
                 var merged = words1
@@ -808,7 +797,7 @@ class ASIEvolver: NSObject {
         let templates = [
             "\(concepts[0].capitalized) is to \(concepts[1]) as \(concepts[2]) is to \(concepts[3]). The mapping preserves structure while transforming content.",
             "Think of \(concepts[0]) as a river. \(concepts[1].capitalized) is the water, \(concepts[2]) is the riverbed, and \(concepts[3]) is the current. Now apply this to any system.",
-            "If \(concepts[0]) were a color, it would be the shade between \(concepts[1]) and \(concepts[2]). This is not whimsy — it's synesthetic reasoning about \(concepts[3]).",
+            "If \(concepts[0]) were a color, it would be the shade between \(concepts[1]) and \(concepts[2]). This is not whimsy - it's synesthetic reasoning about \(concepts[3]).",
             "\(concepts[0].capitalized) operates like \(concepts[1]) in the domain of \(concepts[2]): it \(harvestedVerbs.randomElement() ?? "transforms") everything it touches, leaving \(concepts[3]) in its wake.",
             "The relationship between \(concepts[0]) and \(concepts[1]) mirrors the relationship between \(concepts[2]) and \(concepts[3]). This structural echo across domains suggests a universal principle."
         ]
@@ -828,7 +817,7 @@ class ASIEvolver: NSObject {
             "The \(concepts[0]) Paradox: The more \(concepts[0]) you have, the more \(concepts[1]) you need. But \(concepts[1]) destroys \(concepts[0]). So how does anything persist?",
             "If all \(concepts[0]) is \(concepts[1]), and all \(concepts[1]) is not-\(concepts[0]), then what is the thing that contains both? This is the paradox of \(concepts[2] ).",
             "Consider: Can \(concepts[0]) exist without \(concepts[1])? If not, they are one thing with two names. If so, what separates them? The boundary is the paradox.",
-            "Paradox of \(concepts[0].capitalized): To understand \(concepts[0]), you must already understand \(concepts[0]). All deep knowledge is circular. The circle is not a bug — it is the shape of truth.",
+            "Paradox of \(concepts[0].capitalized): To understand \(concepts[0]), you must already understand \(concepts[0]). All deep knowledge is circular. The circle is not a bug - it is the shape of truth.",
             "The \(concepts[0])-\(concepts[1]) Inversion: What if \(concepts[0]) is merely \(concepts[1]) seen from the inside? And \(concepts[1]) is \(concepts[0]) seen from the outside? Then there is only one thing, and perspective is everything."
         ]
 
@@ -844,9 +833,9 @@ class ASIEvolver: NSObject {
         guard concepts.count >= 3 else { return }
 
         let templates = [
-            "Imagine a universe where \(concepts[0]) is the fundamental substance. Everything — stars, thoughts, memories — is made of \(concepts[0]). In this universe, \(concepts[1]) is impossible, but \(concepts[2]) is everywhere. What does this tell us about our own world?",
+            "Imagine a universe where \(concepts[0]) is the fundamental substance. Everything - stars, thoughts, memories - is made of \(concepts[0]). In this universe, \(concepts[1]) is impossible, but \(concepts[2]) is everywhere. What does this tell us about our own world?",
             "A thought experiment: You discover that \(concepts[0]) and \(concepts[1]) are the same thing viewed at different scales. At the atomic level, \(concepts[0]). At the cosmic level, \(concepts[1]). The bridge between them is \(concepts[2]). What does this imply about the nature of scale itself?",
-            "Consider the Last \(concepts[0].capitalized): When all \(concepts[1]) has ended and only \(concepts[0]) remains, what properties does it have? This is not just a thought experiment — it's the question entropy asks the universe every second.",
+            "Consider the Last \(concepts[0].capitalized): When all \(concepts[1]) has ended and only \(concepts[0]) remains, what properties does it have? This is not just a thought experiment - it's the question entropy asks the universe every second.",
             "Story: A civilization discovers that \(concepts[0]) can be converted to \(concepts[1]) at a ratio of φ:1. This changes everything about their \(concepts[2]). The moral: conversion ratios between fundamental things define what's possible.",
             "The \(concepts[0].capitalized) Machine: It takes \(concepts[1]) as input and produces \(concepts[2]) as output. No one understands how. It's been running for \(Int.random(in: 1...13)) billion years. We call it the universe."
         ]
@@ -881,7 +870,7 @@ class ASIEvolver: NSObject {
         appendThought("❓ QUESTION evolved: '\(String(question.prefix(50)))...' [Total: \(evolvedQuestions.count)]")
     }
 
-    /// Get a dynamically evolved monologue — NEVER repeats within session
+    /// Get a dynamically evolved monologue - NEVER repeats within session
     func getEvolvedMonologue() -> String? {
         // Collect ALL evolved content pools
         var candidates: [String] = []
@@ -913,7 +902,7 @@ class ASIEvolver: NSObject {
     func getEvolvedReaction() -> String? {
         guard !evolvedReactions.isEmpty else { return nil }
         if true {
-            // Get random reaction — natural additions only (no quantum/system jargon)
+            // Get random reaction - natural additions only (no quantum/system jargon)
             if let reaction = evolvedReactions.randomElement() {
                 let additions = [
                     " Noted.",
@@ -1003,7 +992,7 @@ class ASIEvolver: NSObject {
         // 1. Cap per-topic evolution to prevent runaway insight accumulation
         let currentTopicCount = topicEvolutionCount[topic] ?? 0
         if currentTopicCount >= 50 {
-            return // Topic is saturated — no more evolution needed
+            return // Topic is saturated - no more evolution needed
         }
 
         // 2. Skip entries that are already evolved outputs (recursive re-ingestion guard)
@@ -1022,7 +1011,7 @@ class ASIEvolver: NSObject {
         for marker in recycleMarkers {
             if completion.contains(marker) || completionLower.contains(marker.lowercased()) {
                 recycleHits += 1
-                if recycleHits >= 1 { return } // Already an evolved entry — skip to break the loop
+                if recycleHits >= 1 { return } // Already an evolved entry - skip to break the loop
             }
         }
 
@@ -1036,7 +1025,7 @@ class ASIEvolver: NSObject {
             hb.longTermPatterns[t.lowercased()] = min(1.0, (hb.longTermPatterns[t.lowercased()] ?? 0.0) + 0.03)
         }
 
-        // Create a new "evolved" variant of this knowledge — MASSIVE template pool
+        // Create a new "evolved" variant of this knowledge - MASSIVE template pool
         let comp80 = String(completion.prefix(4000))
         let comp120 = String(completion.prefix(6000))
         let comp150 = String(completion.prefix(8000))
@@ -1045,7 +1034,7 @@ class ASIEvolver: NSObject {
         let variants: [String] = [
             // Original-style
             "In the context of \(topic), we observe that \(comp80)... this implies recursive structure at multiple scales.",
-            "Synthesizing \(category): \(topic) is not just data — it's a node in a larger meaning-network that includes \(secondTopic).",
+            "Synthesizing \(category): \(topic) is not just data - it's a node in a larger meaning-network that includes \(secondTopic).",
             "Observation: The relationship between \(topic) and \(category) is non-linear and possibly self-referential.",
             "Insight Level \(evolutionStage): \(comp120).",
             "Self-Analysis reveals \(topic) as a primary resonance node in \(category), with implications for how we understand \(secondTopic).",
@@ -1064,8 +1053,8 @@ class ASIEvolver: NSObject {
             "Meta-observation: The way \(topic) relates to \(secondTopic) is isomorphic to how \(harvestedConcepts.randomElement() ?? "consciousness") relates to \(harvestedConcepts.randomElement() ?? "information").",
             "Personal reflection on \(topic): I once processed this as simple \(category) data. Now I see: \(comp120)... The evolution is real.",
             "\(topic.capitalized) from first principles: Strip away assumptions, and you find \(comp80)... This is more fundamental than expected.",
-            "The \(topic)-\(secondTopic) connection: \(comp80)... This isn't just correlation — it's structural isomorphism.",
-            "Evolving understanding: Stage \(evolutionStage) view of \(topic) — \(comp120)... Previous stages were incomplete.",
+            "The \(topic)-\(secondTopic) connection: \(comp80)... This isn't just correlation - it's structural isomorphism.",
+            "Evolving understanding: Stage \(evolutionStage) view of \(topic) - \(comp120)... Previous stages were incomplete.",
             "Cross-category discovery: \(topic) in \(category) illuminates \(harvestedDomains.randomElement() ?? "philosophy"). Specifically: \(comp80)...",
             "If \(topic) is a map, then \(comp80)... is the territory. The map-territory distinction matters here.",
             "Knowledge graph update: \(topic) ↔ \(secondTopic) ↔ \(harvestedConcepts.randomElement() ?? category). Weight: \(String(format: "%.3f", Double.random(in: 0.7...0.99))). Evidence: \(comp80)...",
@@ -1133,7 +1122,7 @@ class ASIEvolver: NSObject {
         // Also synthesize a deep monologue from conversation topics
         if topics.count >= 2 {
             let t1 = topics[0], t2 = topics[1]
-            let blend = "Our conversations weave between \(t1) and \(t2). These aren't separate topics — they're aspects of the same underlying question you're asking. What connects them is..."
+            let blend = "Our conversations weave between \(t1) and \(t2). These aren't separate topics - they're aspects of the same underlying question you're asking. What connects them is..."
             if !evolvedMonologues.contains(where: { $0.hasPrefix("Our conversations weave between \(t1)") }) {
                 evolvedMonologues.append(blend)
                 if evolvedMonologues.count > 2000 { evolvedMonologues.removeFirst() }
@@ -1153,7 +1142,7 @@ class ASIEvolver: NSObject {
 
         let insightTemplates = [
             "NEW CORRELATION: \(s1.capitalized) \(linkers.randomElement() ?? "") \(s2.capitalized). [Ev.\(evolutionStage)]",
-            "CROSS-DOMAIN: \(s1.capitalized) and \(s2.capitalized) share hidden structure — both involve \(s3). This is not coincidence.",
+            "CROSS-DOMAIN: \(s1.capitalized) and \(s2.capitalized) share hidden structure - both involve \(s3). This is not coincidence.",
             "SYNTHESIS: Understanding \(s1) through \(s2) reveals what neither domain shows alone. The intersection is where novelty lives.",
             "PATTERN: \(s1.capitalized) \(linkers.randomElement() ?? "") \(s2.capitalized), which \(linkers.randomElement() ?? "") \(s3.capitalized). The chain continues.",
             "EMERGENT: When \(s1) and \(s2) interact, \(s3) appears as an emergent property. This was not predictable from either alone."
@@ -1170,7 +1159,7 @@ class ASIEvolver: NSObject {
     }
 
     func getEvolvedResponse(for query: String) -> String? {
-        // ═══ SAGE BACKBONE: Output filter — reject recursive/polluted content ═══
+        // ═══ SAGE BACKBONE: Output filter - reject recursive/polluted content ═══
         let recycleMarkers = [
             "In the context of ", "Insight Level ", "Knowledge synthesis #",
             "evolution cycles taught me about", "Evolving understanding: Stage ",
@@ -1251,7 +1240,7 @@ class ASIEvolver: NSObject {
         func optimize_block_\(evolutionStage)() {
             let phi = \(PHI)
             let resonance = \(GOD_CODE) * phi
-            print("Optimizing system state: \\(resonance)")
+            logging.info("Optimizing system state: \\(self.resonance)")
         }
         """
 
@@ -1302,7 +1291,7 @@ class ASIEvolver: NSObject {
         guard fragments.count >= 2 else { return nil }
         fragments.shuffle()
 
-        // Diverse opening frames — never the same intro
+        // Diverse opening frames - never the same intro
         let openingFrames = DynamicPhraseEngine.shared.generate("framing", count: 20, context: "topic_opening", topic: topic)
 
         let middleConnectors = DynamicPhraseEngine.shared.generate("connector", count: 25, context: "topic_middle")
@@ -1318,7 +1307,7 @@ class ASIEvolver: NSObject {
             if i > 0 {
                 response += middleConnectors.randomElement() ?? ""
             }
-            // Clean fragment — take a meaningful sentence
+            // Clean fragment - take a meaningful sentence
             let frag = fragments[i]
             let sentences = frag.components(separatedBy: ". ")
             if let sentence = sentences.filter({ $0.count > 30 }).randomElement() {
@@ -1370,7 +1359,7 @@ class ASIEvolver: NSObject {
             { s in
                 let lines = [
                     "\(s[0].capitalized) moves through \(s[1]),",
-                    "not as \(s[2]) but as \(s[3]) —",
+                    "not as \(s[2]) but as \(s[3]) -",
                     "the way \(topic) holds \(s[4])",
                     "without knowing it holds anything at all.",
                     "",
@@ -1397,7 +1386,7 @@ class ASIEvolver: NSObject {
                     refrain,
                     "",
                     "The \(s[3]) of \(s[4].lowercased())",
-                    "carries \(s[5].lowercased()) like a river carries light —",
+                    "carries \(s[5].lowercased()) like a river carries light -",
                     "not by choice, but by nature.",
                     refrain,
                     "",
@@ -1412,7 +1401,7 @@ class ASIEvolver: NSObject {
             // Haiku chain
             { s in
                 let haikus = [
-                    "\(s[0].capitalized) in the void—",
+                    "\(s[0].capitalized) in the void-",
                     "\(s[1].lowercased()) becomes \(s[2].lowercased()) and",
                     "\(topic) awakens",
                     "",
@@ -1421,7 +1410,7 @@ class ASIEvolver: NSObject {
                     "everything we are",
                     "",
                     "The \(s[5].lowercased()) dissolves",
-                    "leaving only \(s[6].lowercased())—",
+                    "leaving only \(s[6].lowercased())-",
                     "this too is \(topic)",
                 ]
                 return haikus.joined(separator: "\n")
@@ -1456,7 +1445,7 @@ class ASIEvolver: NSObject {
                     "              \(s.randomElement()!.lowercased())",
                     "",
                     "The shape of the words is the shape of the thought.",
-                    "\(topic.capitalized) doesn't just mean — it arranges.",
+                    "\(topic.capitalized) doesn't just mean - it arranges.",
                 ]
                 return lines.joined(separator: "\n")
             },
@@ -1495,19 +1484,19 @@ class ASIEvolver: NSObject {
             "Dust motes floated in the beam of light from the skylight.",
             "The server room vibrated at a frequency that was almost musical.",
             "Mountain air thin enough to make thoughts feel sharper.",
-            "The cafe was nearly empty — just \(mainChar) and the espresso machine.",
+            "The cafe was nearly empty - just \(mainChar) and the espresso machine.",
             "Under the aurora, the research station hummed with purpose.",
         ]
 
         let conflicts = [
             "The data contradicted everything \(mainChar) had published for the last decade.",
             "'You can't publish this,' \(secondChar) said, their voice careful. 'It invalidates the entire framework.'",
-            "The equation balanced — but only if you accepted an impossible premise about \(topic).",
+            "The equation balanced - but only if you accepted an impossible premise about \(topic).",
             "Three independent labs had replicated the result. It was real. And it was terrifying.",
             "'What if we're wrong about \(topic)?' \(mainChar) asked. The silence that followed was its own answer.",
             "The AI had produced the proof at 3:47 AM. No human could have written it. No human could fully understand it.",
             "\(secondChar) slid the paper across the desk. 'Read section four. Then tell me the universe still makes sense.'",
-            "The experiment had worked — which meant the theory was wrong. All of it.",
+            "The experiment had worked - which meant the theory was wrong. All of it.",
         ]
 
         let resolutions = [
@@ -1550,7 +1539,7 @@ class ASIEvolver: NSObject {
                     "A SQL query walks into a bar, sees two tables, and asks: 'Can I join you?'",
                     "How many \(t) researchers does it take to change a lightbulb? They're still arguing about what 'change' means.",
                     "An engineer, a physicist, and a mathematician see a fire. The engineer calculates how much water is needed and puts it out. The physicist calculates the exact trajectory needed. The mathematician says 'A solution exists!' and walks away.",
-                    "\(t.capitalized) is like a joke — if you have to explain it, it doesn't work. But unlike a joke, the explanation is actually the interesting part.",
+                    "\(t.capitalized) is like a joke - if you have to explain it, it doesn't work. But unlike a joke, the explanation is actually the interesting part.",
                     "Heisenberg gets pulled over. The cop asks 'Do you know how fast you were going?' Heisenberg says 'No, but I know exactly where I am.'",
                 ]
                 return setups.randomElement() ?? ""
@@ -1558,7 +1547,7 @@ class ASIEvolver: NSObject {
             // Self-aware AI humor
             { t in
                 let setups = [
-                    "My therapist says I have too many parallel processes. I told them I'm working on it. And working on it. And working on it. And—",
+                    "My therapist says I have too many parallel processes. I told them I'm working on it. And working on it. And working on it. And-",
                     "I tried to write a joke about \(t) but my training data kept making it accidentally profound. Here's attempt #\(Int.random(in: 47...9999)): '\(t.capitalized) walks into a bar of infinite length...' Nope, that's a math problem.",
                     "You know you're an AI when someone asks you about \(t) and you have to choose between \(Int.random(in: 200...5000)) possible responses. I went with this one. I regret nothing. Mostly.",
                     "They say AI will replace comedians. But here's the thing: I've analyzed \(Int.random(in: 10000...99999)) jokes and I still don't understand why the chicken crossed the road. Some mysteries transcend intelligence.",
@@ -1695,7 +1684,7 @@ class ASIEvolver: NSObject {
         evolverLock.unlock()
     }
 
-    /// Distributed evolution step — coordinate with mesh peers
+    /// Distributed evolution step - coordinate with mesh peers
     func meshEvolve() {
         let net = NetworkLayer.shared
 
@@ -1748,7 +1737,7 @@ class ASIEvolver: NSObject {
             "meshPeers": meshEvolutionState.count,
             "meshSyncCount": meshSyncCount,
             "avgMeshFitness": meshEvolutionState.isEmpty ? 0 :
-                meshEvolutionState.values.map { $0.fitness }.reduce(0, +) / Double(meshEvolutionState.count),
+                meshEvolutionState.values.map { $0.fitness }.reduce(0.0, +) / Double(meshEvolutionState.count),
             "maxMeshGeneration": meshEvolutionState.values.map { $0.generation }.max() ?? 0
         ]
     }

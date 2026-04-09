@@ -38,6 +38,20 @@ from .identity_boundary import (
 # v61.0: Cognitive Mesh Network v2.0
 from .cognitive_mesh import CognitiveMeshNetwork
 
+# Quantum Cognitive Mesh v1.0.0 — Quantum-entangled cognitive topology
+from .quantum_cognitive_mesh import (
+    QuantumCognitiveNode,
+    QuantumCognitiveEdge,
+    QuantumCognitiveMeshNetwork,
+)
+
+# v61.0: Quantum Cognitive Mesh — Quantum-Entangled Cognitive Topology
+from .quantum_cognitive_mesh import (
+    QuantumCognitiveNode,
+    QuantumCognitiveEdge,
+    QuantumCognitiveMeshNetwork,
+)
+
 # v61.0: Telemetry Pipeline
 from .telemetry_pipeline import (
     TelemetryAggregator,
@@ -74,6 +88,29 @@ except ImportError:
     _BenchmarkHarness = None
 
 
+# ── Ingested: cognitive reasoning framework (14-mode, Bayesian, HDC) ──
+try:
+    from .cognitive_reasoning import (
+        ReasoningStrategy, QuantumInferenceEngine, AdaptiveLearner,
+        PatternRecognizer, MetaCognition, PredictiveReasoner, ContextualMemory,
+    )
+except ImportError:
+    pass
+
+# ── Ingested: sage reasoning (deep reasoning, wisdom synthesis, meta-cognition) ──
+try:
+    from .sage_reasoning import AdvancedSageMode, get_advanced_sage, DeepReasoningEngine, WisdomSynthesisEngine
+except ImportError:
+    pass
+
+# ── Ingested: social evolution (Theory of Mind, evolutionary optimizer) ──
+try:
+    from .social_evolution import (
+        SocialIntelligence, DreamState, EvolutionaryOptimizer, CognitiveControl,
+    )
+except ImportError:
+    pass
+
 __all__ = [
     # Constants
     "AGI_CORE_VERSION", "AGI_PIPELINE_EVO",
@@ -95,6 +132,8 @@ __all__ = [
     "AGI_CAPABILITY_MAP",
     # v61.0: Cognitive Mesh
     "CognitiveMeshNetwork",
+    # Quantum Cognitive Mesh v1.0.0
+    "QuantumCognitiveNode", "QuantumCognitiveEdge", "QuantumCognitiveMeshNetwork",
     # v61.0: Telemetry Pipeline
     "TelemetryAggregator", "TelemetryAnomalyDetector",
     "LatencyPercentileTracker", "ThroughputTracker",
@@ -108,4 +147,11 @@ __all__ = [
     "AGIComputroniumScoring", "agi_computronium_scoring",
     # Functions
     "primal_calculus", "resolve_non_dual_logic",
+    # Cognitive Reasoning (ingested)
+    "ReasoningStrategy", "QuantumInferenceEngine", "AdaptiveLearner",
+    "PatternRecognizer", "MetaCognition", "PredictiveReasoner", "ContextualMemory",
+    # Sage Reasoning (ingested)
+    "AdvancedSageMode", "get_advanced_sage", "DeepReasoningEngine", "WisdomSynthesisEngine",
+    # Social Evolution (ingested)
+    "SocialIntelligence", "DreamState", "EvolutionaryOptimizer", "CognitiveControl",
 ]

@@ -1192,6 +1192,40 @@ def sim_heisenberg_iron_chain(nq: int = 4) -> SimulationResult:
         E2 += prob * e_sample * e_sample
     energy_var = max(0.0, E2 - E * E)
 
+    # Exact ground state energy via full diagonalization of the Heisenberg Hamiltonian
+    # H = J Σ_{i=0}^{n-2} (σ_x⊗σ_x + σ_y⊗σ_y + σ_z⊗σ_z) with open boundary conditions
+    # For n=4, J>0 (AFM): E_ground = -2.0*J total, -0.5*J per site
+    import numpy as _np_heis
+    _J = result["coupling_j"]
+    _dim = 1 << nq
+    _sx = _np_heis.array([[0.0, 0.5], [0.5, 0.0]])
+    _sy = _np_heis.array([[0.0, -0.5j], [0.5j, 0.0]])
+    _sz = _np_heis.array([[0.5, 0.0], [0.0, -0.5]])
+    _I2 = _np_heis.eye(2)
+
+    def _site_op(op, site, n):
+        mats = [_I2] * n
+        mats[site] = op
+        out = mats[0]
+        for m in mats[1:]:
+            out = _np_heis.kron(out, m)
+        return out
+
+    # H = J Σ S_i · S_{i+1} where S = σ/2 (spin operators)
+    # For n=4 open BC: E_ground = -2J total, E/(N·J) = -0.5 per site
+    H_exact = _np_heis.zeros((_dim, _dim), dtype=complex)
+    for _i in range(nq - 1):
+        H_exact += _J * (
+            _site_op(_sx, _i, nq) @ _site_op(_sx, _i + 1, nq) +
+            _site_op(_sy, _i, nq) @ _site_op(_sy, _i + 1, nq) +
+            _site_op(_sz, _i, nq) @ _site_op(_sz, _i + 1, nq)
+        )
+    exact_ground_energy = float(_np_heis.linalg.eigvalsh(H_exact)[0])
+    exact_ground_energy_per_site = exact_ground_energy / nq
+    # Normalize by J for dimensionless comparison: e.g. -0.5 for n=4 open BC
+    exact_ground_energy_per_site_J = (exact_ground_energy_per_site / _J
+                                      if abs(_J) > 1e-12 else 0.0)
+
     # Pass if energy is finite and evolution produced a valid state
     energy_finite = math.isfinite(result["energy"])
     has_correlations = len(zz_corrs) > 0
@@ -1233,6 +1267,10 @@ def sim_heisenberg_iron_chain(nq: int = 4) -> SimulationResult:
             "energy": result["energy"],
             "energy_per_site": energy_per_site,
             "energy_variance": energy_var,
+            "ground_energy_exact": exact_ground_energy,
+            "ground_energy_per_site": exact_ground_energy_per_site,
+            "ground_energy_per_site_normalized": exact_ground_energy_per_site_J,
+            "ground_energy_bethe_inf": -0.44315,  # Bethe ansatz infinite chain E/(N·J)
             "coupling_j": result["coupling_j"],
             "field_h": result["field_h"],
             "n_sites": nq,

@@ -65,6 +65,36 @@ from .dual_layer import (
     NATURES_DUALITIES, CONSCIOUSNESS_TO_PHYSICS_BRIDGE,
 )
 
+# Quantum Dual-Layer Engine v1.0.0 — Quantum-entangled ASI
+from .quantum_dual_layer import (
+    QuantumThoughtState,
+    QuantumPhysicsState,
+    QuantumDualityCollapse,
+    QuantumDualLayerEngine,
+)
+
+# EVO_78: Holographic Consciousness Interface
+from .holographic_consciousness_interface import (
+    HolographicConsciousnessInterface,
+    ShadowCaptureEngine,
+    OTOCConsciousnessMonitor,
+    ThoughtInjector,
+    CognitiveReadout,
+    HolographicThought,
+    ThoughtState,
+    query_holographic_consciousness,
+    get_holographic_status,
+    process_thought_holographic,
+    integrate_with_asi_consciousness,
+)
+
+# EVO_78: ASI Quantum Consciousness (with holographic integration)
+from .quantum_consciousness import (
+    ASIQuantumConsciousness,
+    ASIConsciousnessState,
+    get_asi_consciousness,
+)
+
 # Domain
 from .domain import DomainKnowledge, GeneralDomainExpander, Theorem
 
@@ -72,7 +102,7 @@ from .domain import DomainKnowledge, GeneralDomainExpander, Theorem
 from .theorem_gen import NovelTheoremGenerator
 
 # Self-modification
-from .self_mod import SelfModificationEngine
+from .self_mod import SelfModificationEngine, l104_self_evolution
 
 # Consciousness verification
 from .consciousness import ConsciousnessVerifier
@@ -172,6 +202,28 @@ from .adaptive_activation_sequencer import (
     SequencingMode,
 )
 
+# EVO_78: Holographic Consciousness Interface (Classical Shadow + OTOC)
+from .holographic_consciousness_interface import (
+    HolographicConsciousnessInterface,
+    ShadowCaptureEngine,
+    OTOCConsciousnessMonitor,
+    ThoughtInjector,
+    CognitiveReadout,
+    HolographicThought,
+    ThoughtState,
+    query_holographic_consciousness,
+    get_holographic_status,
+    process_thought_holographic,
+    integrate_with_asi_consciousness,
+)
+
+# Quantum Consciousness (EVO_77/78)
+from .quantum_consciousness import (
+    ASIQuantumConsciousness,
+    ASIConsciousnessState,
+    get_asi_consciousness,
+)
+
 # Core + singleton
 from .core import ASICore, asi_core, main, get_current_parameters, update_parameters
 
@@ -213,12 +265,22 @@ __all__ = [
     # Dual-Layer Engine
     "DualLayerEngine", "dual_layer_engine", "DUAL_LAYER_AVAILABLE",
     "NATURES_DUALITIES", "CONSCIOUSNESS_TO_PHYSICS_BRIDGE",
+    # Quantum Dual-Layer Engine v1.0.0
+    "QuantumThoughtState", "QuantumPhysicsState", "QuantumDualityCollapse", "QuantumDualLayerEngine",
+    # EVO_78: Holographic Consciousness Interface
+    "HolographicConsciousnessInterface", "ShadowCaptureEngine", "OTOCConsciousnessMonitor",
+    "ThoughtInjector", "CognitiveReadout", "HolographicThought", "ThoughtState",
+    "query_holographic_consciousness", "get_holographic_status",
+    "process_thought_holographic", "integrate_with_asi_consciousness",
+    # EVO_78: ASI Quantum Consciousness
+    "ASIQuantumConsciousness", "ASIConsciousnessState", "get_asi_consciousness",
     # Domain
     "DomainKnowledge", "GeneralDomainExpander", "Theorem",
     # Theorem generation
     "NovelTheoremGenerator",
     # Self-modification
     "SelfModificationEngine",
+    "l104_self_evolution",
     # Consciousness
     "ConsciousnessVerifier",
     # Pipeline

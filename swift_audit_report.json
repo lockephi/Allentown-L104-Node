@@ -1,0 +1,3696 @@
+{
+  "summary": {
+    "files_analyzed": 153,
+    "total_lines": 114739,
+    "total_issues": 0,
+    "connectivity_issues": 0,
+    "logic_gaps": 238,
+    "ui_issues": 0
+  },
+  "files_with_issues": [
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H08_SageModeEngine.swift",
+      "lines": 1129,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 1076,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "T + MultiHop + DualLayer)\n    func sageReason(about problem: String) -> ReasoningResult {\n        re"
+        },
+        {
+          "line": 1071,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "ss to consciousness state\n    var consciousnessState: ConsciousnessState {\n        return SageConsci"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H02B_ConcurrentState.swift",
+      "lines": 288,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 205,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "await compute()\n        compositeCache[name] = (value, Date())\n        return value\n    }\n\n    /// P"
+        },
+        {
+          "line": 200,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func getCompositeScore(_ name: String, compute: ()"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H20_SecurityVault.swift",
+      "lines": 350,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 279,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ly\n    @discardableResult\n    func storeIBMQuantumToken(_ token: String) -> Bool {\n        return st"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H09_QuantumCreativity.swift",
+      "lines": 1044,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 449,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "       return hash\n    }\n\n    var statusReport: String {\n        return \"\"\"\n        \u269b\ufe0f QUANTUM CREAT"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H07_ASIEvolver.swift",
+      "lines": 1868,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 1621,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "m evolution state\n    private var evolutionFitness: Double {\n        return min(1.0, phaseProgress *"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H19_AutonomousAgent.swift",
+      "lines": 360,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 268,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "task.priority == .low\n                        && task.attempts == 1\n\n                    if shouldDe"
+        },
+        {
+          "line": 275,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "task.id }) {\n                            self."
+        },
+        {
+          "line": 276,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "taskQueue[didx] = delegateTask\n                        }\n                        self.lock.unlock()\n"
+        },
+        {
+          "line": 286,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "task.id }) {\n                        self.taskQueue[fidx].state = .completed\n                       "
+        },
+        {
+          "line": 292,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "Tasks.removeFirst() }\n                        self.totalTasksExecuted += 1\n                    }\n   "
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H03_L104StateCommands.swift",
+      "lines": 1482,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 775,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async {\n                    self?.quantumHardwareConnected = success\n                    if success "
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H14_NetworkLayer.swift",
+      "lines": 575,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 296,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " qPayload)\n    }\n\n    private func linkKey(_ a: String, _ b: String) -> String {\n        return a < "
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H04_L104StateNCG.swift",
+      "lines": 1150,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 52,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "Task(with: req) { [weak self] data, resp, error in\n            let statusCode = (resp as? HTTPURLRes"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H31_NaturalCommandRouter.swift",
+      "lines": 1156,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 735,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "\" : output\n    }\n\n    private func helpText() -> String {\n        return \"\"\"\n        \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H29_SageModeView.swift",
+      "lines": 725,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 536,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let eq = DynamicEquationEngine.shared\n            let newEqs = eq"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H05_L104StateResponse.swift",
+      "lines": 2347,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 2300,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "     return result\n    }\n\n    func generateNaturalResponse(_ query: String) -> String {\n        retu"
+        },
+        {
+          "line": 2191,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "Task (replaces DispatchGroup) \u2550\u2550\u2550\n        let kbTask = Task.detached(priority: .userInitiated) { [se"
+        },
+        {
+          "line": 2176,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func generateNCGResponseAsync(_ query: String) asy"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H30_SidebarNav.swift",
+      "lines": 212,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 134,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "\n        return \"\"\n    }\n\n    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: "
+        },
+        {
+          "line": 140,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "SOutlineViewDelegate \u2500\u2500\u2500\n\n    func outlineView(_ outlineView: NSOutlineView, isGroupItem item: Any) "
+        },
+        {
+          "line": 144,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " is SidebarSection\n    }\n\n    func outlineView(_ outlineView: NSOutlineView, shouldSelectItem item: "
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H32_AgentCenterView.swift",
+      "lines": 231,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 210,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async {\n                self.statusLabel.stringValue = \"\u26a1 Running: \\(running) | Queued: \\(queued) | "
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H02_L104StateCore.swift",
+      "lines": 1566,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 375,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n                // Init Python quantum engine with saved token\n              "
+        },
+        {
+          "line": 639,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async {\n                self."
+        },
+        {
+          "line": 647,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "Task(with: req) { data, resp, error in\n                let remoteConnected = error == nil && (resp a"
+        },
+        {
+          "line": 909,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "Task(with: req) { [weak self] data, resp, error in\n            DispatchQueue.self."
+        },
+        {
+          "line": 1394,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "ASYNC RESPONSE GENERATION \u2550\u2550\u2550\n        // Task.detached runs generateNCGResponseAsync on the cooperat"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H12_AppDelegate.swift",
+      "lines": 535,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 23,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "asyncAfter(deadline: .now() + 0.3) {\n            if let mainView = self.wc.window?.contentView as? L"
+        },
+        {
+          "line": 30,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async {\n            FutureReserve.shared.activate()  // Orchestrator activates all network subsystem"
+        },
+        {
+          "line": 520,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async {\n                    if let mainView = self."
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "lines": 3229,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 429,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "  return v\n    }\n\n    private func createMetricTile(title: String, value: String, color: NSColor) ->"
+        },
+        {
+          "line": 2416,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "  return v\n    }\n\n    private func getCodingInput() -> String {\n        return codingInputView?.stri"
+        },
+        {
+          "line": 242,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { self."
+        },
+        {
+          "line": 1838,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let pyResult = PythonBridge.self.shared.quantumHardwareInit(token"
+        },
+        {
+          "line": 1919,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async\n        appendQuantumOutput(\"  Fetching remote jobs...\", color: .secondaryLabelColor)\n        "
+        },
+        {
+          "line": 1944,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            // Try real hardware first if token exists\n            var result"
+        },
+        {
+          "line": 1994,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            var result = PythonBridge.self.shared.quantumQPE(precisionQubits:"
+        },
+        {
+          "line": 2031,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            var result = PythonBridge.self.shared.quantumVQE(nQubits: 4, iter"
+        },
+        {
+          "line": 2106,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            var result = PythonBridge.self.shared.quantumAmplitudeEstimation("
+        },
+        {
+          "line": 2140,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.quantumWalk(nNodes: 8, step"
+        },
+        {
+          "line": 2179,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let ibmClient = IBMQuantumClient.shared\n            let hasToken "
+        },
+        {
+          "line": 2434,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineAnalyze(code)\n   "
+        },
+        {
+          "line": 2446,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codingSystemReview(code)\n  "
+        },
+        {
+          "line": 2458,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codingSystemSuggest(code)\n "
+        },
+        {
+          "line": 2470,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codingSystemExplain(code)\n "
+        },
+        {
+          "line": 2482,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codingSystemQualityCheck(co"
+        },
+        {
+          "line": 2494,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineGenerateTests(cod"
+        },
+        {
+          "line": 2506,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineGenerateDocs(code"
+        },
+        {
+          "line": 2518,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineTranslate(code, f"
+        },
+        {
+          "line": 2528,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineAudit()\n         "
+        },
+        {
+          "line": 2538,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineScanWorkspace()\n "
+        },
+        {
+          "line": 2548,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineStreamline()\n    "
+        },
+        {
+          "line": 2558,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codingSystemSelfAnalyze()\n "
+        },
+        {
+          "line": 2965,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.quantumGrover(target: 7, nQ"
+        },
+        {
+          "line": 3044,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { [weak self] in\n                let result = PythonBridge.self.shared.codeEngineGenerate(spec"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L14_TextFormatter.swift",
+      "lines": 509,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 13,
+          "type": "force_try",
+          "description": "Force try (!) without error handling",
+          "snippet": "private static let numberedListRegex = try! NSRegularExpression(pattern: \"^\\\\d+[.)\\\\]]\\\\s+\")"
+        },
+        {
+          "line": 14,
+          "type": "force_try",
+          "description": "Force try (!) without error handling",
+          "snippet": "private static let numberRegex = try! NSRegularExpression(pattern: \"\\\\b\\\\d+(\\\\.\\\\d+)?\\\\b\")"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L01_Constants.swift",
+      "lines": 521,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 138,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "16.0\n\n    // Fonts\n    static func monoFont(_ size: CGFloat, weight: NSFont.Weight = .regular) -> NS"
+        },
+        {
+          "line": 141,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ght: weight)\n    }\n    static func sansFont(_ size: CGFloat, weight: NSFont.Weight = .regular) -> NS"
+        },
+        {
+          "line": 144,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ght: weight)\n    }\n    static func titleFont(_ size: CGFloat) -> NSFont {\n        return NSFont.mono"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L15_SemanticSearch.swift",
+      "lines": 515,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 478,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": " }\n\n    // \u2550\u2550\u2550 STATUS \u2550\u2550\u2550\n    var status: String {\n        return \"\"\"\n        \ud83d\udd0d INTELLIGENT SEARCH E"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "lines": 171,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 39,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "n nil }\n\n    // Execution\n    func execute(_ code: String, timeout: TimeInterval? = nil) -> PythonRe"
+        },
+        {
+          "line": 45,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": ", executionTime: 0)\n    }\n    func executeFile(_ filename: String, args: [String] = []) -> PythonRes"
+        },
+        {
+          "line": 49,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "thonResult] { return [] }\n    func callFunction(module: String, function: String, args: [String] = ["
+        },
+        {
+          "line": 52,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": ", executionTime: 0)\n    }\n    func callMethod(module: String, className: String, method: String, con"
+        },
+        {
+          "line": 55,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": ", executionTime: 0)\n    }\n    func eval(_ expression: String) -> PythonResult {\n        return Pytho"
+        },
+        {
+          "line": 64,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "n nil }\n\n    // Intellect\n    func queryIntellect(_ message: String) -> PythonResult {\n        retur"
+        },
+        {
+          "line": 67,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": ", executionTime: 0)\n    }\n    func trainIntellect(data: String, category: String = \"general\") -> Pyt"
+        },
+        {
+          "line": 70,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": ", executionTime: 0)\n    }\n    func getASIBridgeStatus() -> PythonResult {\n        return PythonResul"
+        },
+        {
+          "line": 75,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "    }\n\n    // Environment\n    func getEnvironmentInfo() -> PythonResult {\n        return PythonResul"
+        },
+        {
+          "line": 78,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": ", executionTime: 0)\n    }\n    func listPackages() -> PythonResult {\n        return PythonResult(succ"
+        },
+        {
+          "line": 81,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": ", executionTime: 0)\n    }\n    func installPackage(_ package: String) -> PythonResult {\n        retur"
+        },
+        {
+          "line": 86,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "    // Session management\n    func startSession() -> Bool { return true }\n    func sessionExec(_ cod"
+        },
+        {
+          "line": 87,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": ") -> Bool { return true }\n    func sessionExec(_ code: String) -> String { return \"\" }\n    func endS"
+        },
+        {
+          "line": 94,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "m hardware initialization\n    func quantumHardwareInit(token: String) -> PythonResult {\n        retu"
+        },
+        {
+          "line": 99,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "   // Code Engine methods\n    func codeEngineStatus() -> PythonResult { return execute(\"code_engine."
+        },
+        {
+          "line": 100,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "\"code_engine.status()\") }\n    func codeEngineAudit() -> PythonResult { return execute(\"code_engine.a"
+        },
+        {
+          "line": 101,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "(\"code_engine.audit()\") }\n    func codeEngineQuickAudit() -> PythonResult { return execute(\"code_eng"
+        },
+        {
+          "line": 102,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "_engine.quick_audit()\") }\n    func codeEngineAuditTrail() -> PythonResult { return execute(\"code_eng"
+        },
+        {
+          "line": 103,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "_engine.audit_trail()\") }\n    func codeEngineAnalyze(_ code: String) -> PythonResult { return execut"
+        },
+        {
+          "line": 104,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " \"'\", with: \"\\\\'\"))')\") }\n    func codeEngineOptimize(_ code: String) -> PythonResult { return execu"
+        },
+        {
+          "line": 105,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " \"'\", with: \"\\\\'\"))')\") }\n    func codeEngineExcavate(_ source: String) -> PythonResult { return exe"
+        },
+        {
+          "line": 106,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "excavate('\\(source)')\") }\n    func codeEngineStreamline(_ source: String) -> PythonResult { return e"
+        },
+        {
+          "line": 107,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "reamline('\\(source)')\") }\n    func codeEngineStreamline() -> PythonResult { return execute(\"code_eng"
+        },
+        {
+          "line": 108,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ngine.streamline('.')\") }\n    func codeEngineScanWorkspace(_ path: String) -> PythonResult { return "
+        },
+        {
+          "line": 109,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "_workspace('\\(path)')\") }\n    func codeEngineScanWorkspace() -> PythonResult { return execute(\"code_"
+        },
+        {
+          "line": 110,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "e.scan_workspace('.')\") }\n    func codeEngineTranslate(_ source: String, from: String, to: String) -"
+        },
+        {
+          "line": 111,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": ", '\\(from)', '\\(to)')\") }\n    func codeEngineRefactor(_ source: String) -> PythonResult { return exe"
+        },
+        {
+          "line": 112,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "refactor('\\(source)')\") }\n    func codeEngineGenerateTests(_ source: String, language: String = \"pyt"
+        },
+        {
+          "line": 113,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ge)', '\\(framework)')\") }\n    func codeEngineGenerateDocs(_ source: String, style: String = \"google\""
+        },
+        {
+          "line": 114,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "yle)', '\\(language)')\") }\n    func codeEngineGenerate(_ code: String, prompt: String) -> PythonResul"
+        },
+        {
+          "line": 115,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "(code)', '\\(prompt)')\") }\n    func codeEngineGenerate(spec: String, prompt: String = \"\") -> PythonRe"
+        },
+        {
+          "line": 116,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "(spec)', '\\(prompt)')\") }\n    func codeEngineGenerate(spec: String, lang: String) -> PythonResult { "
+        },
+        {
+          "line": 125,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " // Coding System methods\n    func codingSystemStatus() -> PythonResult { return execute(\"code_engin"
+        },
+        {
+          "line": 126,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "oding_system_status()\") }\n    func codingSystemProjectScan(_ path: String) -> PythonResult { return "
+        },
+        {
+          "line": 127,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "oject_scan('\\(path)')\") }\n    func codingSystemProjectScan() -> PythonResult { return execute(\"code_"
+        },
+        {
+          "line": 128,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "tem_project_scan('.')\") }\n    func codingSystemCIReport() -> PythonResult { return execute(\"code_eng"
+        },
+        {
+          "line": 129,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ng_system_ci_report()\") }\n    func codingSystemSelfAnalyze() -> PythonResult { return execute(\"code_"
+        },
+        {
+          "line": 130,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "system_self_analyze()\") }\n    func codingSystemReview(_ code: String) -> PythonResult { return execu"
+        },
+        {
+          "line": 131,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "tem_review('\\(code)')\") }\n    func codingSystemSuggest(_ code: String) -> PythonResult { return exec"
+        },
+        {
+          "line": 132,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "em_suggest('\\(code)')\") }\n    func codingSystemExplain(_ code: String) -> PythonResult { return exec"
+        },
+        {
+          "line": 133,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "em_explain('\\(code)')\") }\n    func codingSystemQualityCheck(_ code: String) -> PythonResult { return"
+        },
+        {
+          "line": 136,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "}\n\n    // Quantum methods\n    func quantumHardwareStatus() -> PythonResult { return execute(\"quantum"
+        },
+        {
+          "line": 137,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "tum_hardware_status()\") }\n    func quantumStatus() -> PythonResult { return execute(\"quantum_status("
+        },
+        {
+          "line": 138,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ute(\"quantum_status()\") }\n    func quantumHardwareGrover(_ qubits: Int, iterations: Int) -> PythonRe"
+        },
+        {
+          "line": 139,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "bits), \\(iterations))\") }\n    func quantumHardwareGrover(target: Int, nQubits: Int) -> PythonResult "
+        },
+        {
+          "line": 140,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "rover(\\(nQubits), 10)\") }\n    func quantumGrover(_ qubits: Int, iterations: Int) -> PythonResult { r"
+        },
+        {
+          "line": 141,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "bits), \\(iterations))\") }\n    func quantumGrover(target: Int, nQubits: Int) -> PythonResult { return"
+        },
+        {
+          "line": 142,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "rover(\\(nQubits), 10)\") }\n    func quantumHardwareReport() -> PythonResult { return execute(\"quantum"
+        },
+        {
+          "line": 143,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "tum_hardware_report()\") }\n    func quantumHardwareReport(difficultyBits: Int) -> PythonResult { retu"
+        },
+        {
+          "line": 144,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "tum_hardware_report()\") }\n    func quantumQPE(_ iterations: Int) -> PythonResult { return execute(\"q"
+        },
+        {
+          "line": 145,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "um_qpe(\\(iterations))\") }\n    func quantumQPE(precisionQubits: Int) -> PythonResult { return execute"
+        },
+        {
+          "line": 146,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "e(\\(precisionQubits))\") }\n    func quantumHardwareVQE(_ hamiltonian: String) -> PythonResult { retur"
+        },
+        {
+          "line": 147,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "vqe('\\(hamiltonian)')\") }\n    func quantumHardwareVQE() -> PythonResult { return execute(\"quantum_ha"
+        },
+        {
+          "line": 148,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "rdware_vqe('default')\") }\n    func quantumVQE(_ hamiltonian: String) -> PythonResult { return execut"
+        },
+        {
+          "line": 149,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "vqe('\\(hamiltonian)')\") }\n    func quantumVQE(nQubits: Int, iterations: Int) -> PythonResult { retur"
+        },
+        {
+          "line": 150,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "um_vqe('H\\(nQubits)')\") }\n    func quantumHardwareMine(_ target: String) -> PythonResult { return ex"
+        },
+        {
+          "line": 151,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "are_mine('\\(target)')\") }\n    func quantumHardwareMine(strategy: String) -> PythonResult { return ex"
+        },
+        {
+          "line": 152,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "e_mine('\\(strategy)')\") }\n    func quantumQAOA(_ qubits: Int, layers: Int) -> PythonResult { return "
+        },
+        {
+          "line": 154,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "\\(edges.count), \\(p))\") }\n    func quantumHardwareRandomOracle(_ size: Int) -> PythonResult { return"
+        },
+        {
+          "line": 155,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "andom_oracle(\\(size))\") }\n    func quantumHardwareRandomOracle() -> PythonResult { return execute(\"q"
+        },
+        {
+          "line": 156,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ware_random_oracle(8)\") }\n    func quantumAmplitudeEstimation(_ qubits: Int) -> PythonResult { retur"
+        },
+        {
+          "line": 157,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "estimation(\\(qubits))\") }\n    func quantumAmplitudeEstimation(targetProb: Double, countingQubits: In"
+        },
+        {
+          "line": 158,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "on(\\(countingQubits))\") }\n    func quantumWalk(_ qubits: Int, steps: Int) -> PythonResult { return e"
+        },
+        {
+          "line": 159,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "(\\(qubits), \\(steps))\") }\n    func quantumWalk(nNodes: Int, steps: Int) -> PythonResult { return exe"
+        },
+        {
+          "line": 160,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "(\\(nNodes), \\(steps))\") }\n    func quantumKernel(_ features: [Double]) -> PythonResult { return exec"
+        },
+        {
+          "line": 161,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "m_kernel(\\(features))\") }\n    func quantumKernel(x1: [Double], x2: [Double]) -> PythonResult { retur"
+        },
+        {
+          "line": 162,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "um_kernel(\\(x1 + x2))\") }\n    func quantumRuntimeStatus() -> PythonResult { return execute(\"quantum_"
+        },
+        {
+          "line": 165,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "atus()\") }\n\n    // Warmup\n    func warmUp() -> PythonResult { return execute(\"warm_up()\") }\n\n    // "
+        },
+        {
+          "line": 168,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "m_up()\") }\n\n    // Status\n    func status() -> String { return \"L104 Python Bridge Active\" }\n    fun"
+        },
+        {
+          "line": 169,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "4 Python Bridge Active\" }\n    func statusResult() -> PythonResult { return PythonResult(success: tru"
+        },
+        {
+          "line": 170,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": " nil, executionTime: 0) }\n    var statusString: String { return \"L104 Python Bridge Active\" }\n}"
+        },
+        {
+          "line": 42,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func executeAsync(_ code: String, timeout: TimeInt"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L07_QuantumLogicGate.swift",
+      "lines": 947,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 727,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "  // \u2550\u2550\u2550 HISTORY GATE \u2550\u2550\u2550\n    func synthesizeHistory(query: String) -> String {\n        return synth"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L30_FormalLogic.swift",
+      "lines": 2306,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 1323,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " true in a specific world\n    func evaluateInWorld(_ prop: String, world: String, frame: KripkeFrame"
+        },
+        {
+          "line": 1344,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ssity: true in ALL worlds\n    func evaluateGlobalNecessity(_ prop: String, frame: KripkeFrame) -> Bo"
+        },
+        {
+          "line": 1351,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "rue in at least one world\n    func evaluateGlobalPossibility(_ prop: String, frame: KripkeFrame) -> "
+        },
+        {
+          "line": 1368,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "me is reflexive (S5-like)\n    func isReflexive(_ frame: KripkeFrame) -> Bool {\n        return frame."
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L13_ResponsePipeline.swift",
+      "lines": 788,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 271,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " for cache lookup\n    private func normalizeQuery(_ query: String) -> String {\n        return query."
+        },
+        {
+          "line": 278,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "afe, pure computation \u2550\u2550\u2550\n    func scoreResponse(_ response: String, query: String) -> Double {\n    "
+        },
+        {
+          "line": 435,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " (fixes issue #5)\n    private func fnvHash(_ text: String) -> UInt64 {\n        return hashKey(text)\n"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L32_KBReconstruction.swift",
+      "lines": 965,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 198,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "des via cosine similarity\n    func semanticSimilarity(vectorA: [Double], vectorB: [Double]) -> Doubl"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L22_WebSearch.swift",
+      "lines": 1173,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 595,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": " }\n\n    // \u2500\u2500\u2500 STATUS \u2500\u2500\u2500\n    var status: String {\n        return \"\"\"\n\ud83c\udf10 LIVE WEB SEARCH ENGINE STATU"
+        },
+        {
+          "line": 178,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async {\n                result = self."
+        },
+        {
+          "line": 617,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func webSearchAsync(_ query: String) async"
+        },
+        {
+          "line": 675,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func searchDuckDuckGoAsync(_ query: String) async"
+        },
+        {
+          "line": 730,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func searchWikipediaAsync(_ query: String) async"
+        },
+        {
+          "line": 781,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func fetchWikipediaExtractAsync(pageId: Int, title"
+        },
+        {
+          "line": 806,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func fetchURLAsync(_ urlString: String) async"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L04_LogicGateCore.swift",
+      "lines": 936,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 131,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " for per-dimension checks\n    func scoreDimensionPublic(_ query: String, dimension: GateDimension, c"
+        },
+        {
+          "line": 843,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "turn fmt\n    }()\n\n    private func timeStr(_ date: Date) -> String {\n        return LogicGateEnviron"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L12_DynamicPhrase.swift",
+      "lines": 684,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 148,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ing context overloads \u2500\u2500\u2500\n    func one(_ intent: String, context: String, topic: String = \"\") -> Str"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L17_SyntacticFormatter.swift",
+      "lines": 485,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 42,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ss the formatter.\n    private func isCreativeEngineOutput(_ text: String) -> Bool {\n        return i"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L24_PermanentMemory.swift",
+      "lines": 523,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 77,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async { self."
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L04B_LogicGateV3.swift",
+      "lines": 500,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 47,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "urn temporalMemory\n    }\n\n    func getInvocations() -> UInt64 {\n        return gateInvocations\n    }"
+        },
+        {
+          "line": 281,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "await computeGlobalCoherence()\n        let temporalCtx = await buildTemporalContext(q)\n\n        // B"
+        },
+        {
+          "line": 308,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "await updateCoherenceMatrix(primary: primary.dimension, secondaries: secondaries.map(\\.dimension))\n\n"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L35_ThreeEngineSearch.swift",
+      "lines": 974,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 499,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func runSearchStrategy(query: String, strategy: Se"
+        },
+        {
+          "line": 670,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func runPredictor(query: String, predictor: Predic"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L09_PoemLogicGate.swift",
+      "lines": 408,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 15,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "// \u2550\u2550\u2550 ODE GENERATION \u2550\u2550\u2550\n    func generateOde(topic: String, seeds: [String], insights: [String], e"
+        },
+        {
+          "line": 92,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "A BCB CDC...) \u2550\u2550\u2550\n    private func generateTerzaRima(topic: String, seeds: [String], insights: [Stri"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L28_UnifiedFieldGate.swift",
+      "lines": 632,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 36,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "alue)\" }\n        ]\n    }\n\n    func engineHealth() -> Double {\n        return min(1.0, Double(invocat"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L18_DataIngest.swift",
+      "lines": 380,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 155,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": " }\n\n    // \u2550\u2550\u2550 STATUS \u2550\u2550\u2550\n    var status: String {\n        return \"\"\"\n        \ud83d\udce5 DATA INGEST PIPELINE"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L05_LogicGateBreathing.swift",
+      "lines": 515,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 206,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " (static analysis result)\n    func complexityScore(_ gate: String) -> Int {\n        return gateCompl"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B60_QuantumAIDaemon.swift",
+      "lines": 713,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 12,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "tMultiplier: Double = 1.0\n    func shouldRunDaemon(_ name: String) -> Bool { return true }\n}\n\n// MAR"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B15_DistributedSystems.swift",
+      "lines": 526,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 470,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "og.removeFirst() }\n    }\n\n    func statusReport() -> String {\n        return \"\"\"\n        \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B01_QuantumMath.swift",
+      "lines": 977,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 903,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "constant directly.\n    static func godCode25QRatio() -> Double {\n        return GOD_CODE_25Q_RATIO\n "
+        },
+        {
+          "line": 923,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "eV at GOD_CODE Hz.\n    static func photonResonanceEnergy() -> Double {\n        return PHOTON_RESONAN"
+        },
+        {
+          "line": 929,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "= 3.254e-18 J/bit.\n    static func curieLandauerLimit() -> Double {\n        return FE_CURIE_LANDAUER"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B36_CodeGeneration.swift",
+      "lines": 475,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 464,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " }\n\n    /// Status report\n    func status() -> String {\n        return \"\"\"\n        \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B33_CommonsenseReasoning.swift",
+      "lines": 2891,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 2797,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\n    var totalExtendedRuleCount: Int {\n        return allSpatialRules().cou"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B62_VQPUIntegration.swift",
+      "lines": 692,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 267,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "eturn dict\n    }\n\n    private func countGates(_ circuit: QGateCircuit) -> Int {\n        return circu"
+        },
+        {
+          "line": 288,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "xpectation\n    }\n\n    private func makeEmptyResult(nQubits: Int) -> VQPUSimulationResult {\n        r"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B02_HyperMath.swift",
+      "lines": 348,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 194,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " for a simplicial complex\n    func eulerCharacteristic(vertices: Int, edges: Int, faces: Int, cells3"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B04_NeuralBridge.swift",
+      "lines": 271,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 148,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " Get Neural Engine status\n    func getStatus() -> String {\n        return \"\"\"\n        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B73_QuantumMemory.swift",
+      "lines": 658,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 74,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "}\n\n    /// Age in seconds\n    func age() -> Double {\n        return Date().timeIntervalSince(created"
+        },
+        {
+          "line": 79,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "// Time since last access\n    func timeSinceAccess() -> Double {\n        return Date().timeIntervalS"
+        },
+        {
+          "line": 188,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "   /// Store in HOT layer\n    func storeHot(key: String, value: String) -> MemoryEntry {\n        ret"
+        },
+        {
+          "line": 193,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "  /// Store in WARM layer\n    func storeWarm(key: String, value: String) -> MemoryEntry {\n        re"
+        },
+        {
+          "line": 198,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "  /// Store in COLD layer\n    func storeCold(key: String, value: String) -> MemoryEntry {\n        re"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B53_GeneticRefiner.swift",
+      "lines": 267,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 20,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "6^(1/\u03c6) \u00d7 2^((416 - X) / 104)\nfunc godCodeX(_ X: Double) -> Double {\n    return GOD_CODE_BASE * pow("
+        },
+        {
+          "line": 25,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ameter X = b + 8c + 104d - 8a\nfunc abcdToX(a: Double, b: Double, c: Double, d: Double) -> Double {\n "
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B26_HyperBrain.swift",
+      "lines": 1823,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 201,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "cillation value (-1 to 1)\n    var gammaOscillation: Double {\n        return sin(phaseAccumulator) * "
+        },
+        {
+          "line": 206,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "resonance factor (0 to 1)\n    var xResonance: Double {\n        return (1.0 + gammaOscillation) / 2.0"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B47_PerformanceOrchestrator.swift",
+      "lines": 564,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 196,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "arity to optimal backend.\n    func smartCosineSimilarity(_ a: [Double], _ b: [Double]) -> Double {\n "
+        },
+        {
+          "line": 241,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " peak 17x speedup at 21Q.\n    func shouldUseGPUForQuantum(qubits: Int) -> Bool {\n        return meta"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "lines": 1342,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 1339,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "rivate extension String {\n    var hasHashValue: Bool {\n        return !isEmpty\n    }\n}"
+        },
+        {
+          "line": 50,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "TASK & RESULT \u2550\u2550\u2550\n// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\n/// Task d"
+        },
+        {
+          "line": 401,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func readFile(args: [String: Any]) async"
+        },
+        {
+          "line": 421,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func writeFile(args: [String: Any]) async"
+        },
+        {
+          "line": 442,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func editFile(args: [String: Any]) async"
+        },
+        {
+          "line": 470,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func listFiles(args: [String: Any]) async"
+        },
+        {
+          "line": 501,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func runShell(args: [String: Any]) async"
+        },
+        {
+          "line": 541,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func searchCode(args: [String: Any]) async"
+        },
+        {
+          "line": 551,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func analyzeCode(args: [String: Any]) async"
+        },
+        {
+          "line": 605,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func pythonExec(args: [String: Any]) async"
+        },
+        {
+          "line": 625,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func systemMetrics(args: [String: Any]) async"
+        },
+        {
+          "line": 659,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func quantumBridge(args: [String: Any]) async"
+        },
+        {
+          "line": 681,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func diffViewer(args: [String: Any]) async"
+        },
+        {
+          "line": 689,
+          "type": "async_without_await",
+          "description": "Async function without await keyword",
+          "snippet": "func httpProbe(args: [String: Any]) async"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B18_PhysicsEngines.swift",
+      "lines": 569,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 61,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " (oxygen bonding partner)\n    func pairedKernel(_ id: Int) -> Int {\n        return FeOrbitalEngine.K"
+        },
+        {
+          "line": 169,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "id state? (coherence \u2265 \u03be)\n    func isSuperfluid(_ kernelID: Int) -> Bool {\n        return (kernelCoh"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B56_MLEngine.swift",
+      "lines": 1097,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 1038,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ngine features \u2192 classify\n    func runPipeline(query: String) -> KnowledgeSynthesisResult {\n        "
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B65_MathResearchEngines.swift",
+      "lines": 1134,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 132,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "6^(1/\u03c6) \u00d7 2^((416-X)/104)\n    func G(_ x: Double) -> Double {\n        return GOD_CODE_BASE_HP * pow("
+        },
+        {
+          "line": 137,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ct analytical derivative)\n    func dGdx(_ x: Double) -> Double {\n        return -G(x) * LN2_OVER_104"
+        },
+        {
+          "line": 142,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "dX\u00b2 = G(X) \u00d7 (ln(2)/104)\u00b2\n    func d2Gdx2(_ x: Double) -> Double {\n        return G(x) * LN2_OVER_10"
+        },
+        {
+          "line": 147,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "cal derivative (h = 10\u207b\u2078)\n    func dGdxNumerical(_ x: Double, h: Double = 1e-8) -> Double {\n        "
+        },
+        {
+          "line": 293,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "nant: \u0394 = -16(4a\u00b3 + 27b\u00b2)\n    func curveDiscriminant(a: Double, b: Double) -> Double {\n        retur"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B28_UnifiedFieldEngine.swift",
+      "lines": 1280,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 83,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "ble\": 18\n        ]\n    }\n\n    func engineHealth() -> Double {\n        return min(1.0, spacetimeCoher"
+        },
+        {
+          "line": 154,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " + (1-r_s/r)\u207b\u00b9dr\u00b2 + r\u00b2d\u03a9\u00b2\n    func schwarzschildRadius(mass: Double) -> Double {\n        return 2.0 "
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B27_IBMQuantumClient.swift",
+      "lines": 965,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 732,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "circuit (EPR pair)\n    static func bellStateCircuit() -> String {\n        return \"\"\"\n        OPENQAS"
+        },
+        {
+          "line": 762,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "racle marking |11>\n    static func groverCircuit2Qubit() -> String {\n        return \"\"\"\n        OPEN"
+        },
+        {
+          "line": 265,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async {\n                if let backends = backends, !backends.isEmpty {\n                    self."
+        },
+        {
+          "line": 639,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "asyncAfter(deadline: .now() + delay) {\n                    self."
+        },
+        {
+          "line": 653,
+          "type": "memory_management",
+          "description": "Strong self capture in async context",
+          "snippet": "async {\n                    self."
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B67_VariationalQuantum.swift",
+      "lines": 722,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 206,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "or a given ansatz\n    private func paramCount(nq: Int, depth: Int) -> Int {\n        return nq * 2 * "
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B11_ASIInvention.swift",
+      "lines": 337,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 318,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "    /// Get status report\n    func getStatus() -> String {\n        return \"\"\"\n        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B24_MathEngines4.swift",
+      "lines": 1366,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 291,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "e^(-x\u00b2/2) / \u221a(2\u03c0)\n    private func normalPDF(_ x: Double) -> Double {\n        return Foundation.exp("
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B72_ConsciousnessEngine.swift",
+      "lines": 555,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 537,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " getCurrentState()\n    }\n\n    func engineHealth() -> Double {\n        return currentMetrics.composit"
+        },
+        {
+          "line": 33,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "urbulent\n        }\n    }\n\n    var label: String {\n        return rawValue.uppercased()\n    }\n}\n\n// \u2550"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B54_DataPrecognition.swift",
+      "lines": 517,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 390,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "efix(5).map { $0 }\n}\n\nprivate func emptyResult(_ predictor: String, horizon: Int) -> DataPrecognitio"
+        },
+        {
+          "line": 496,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "for response pipeline use\n    func quickPredict(value: Double, horizon: Int = 5) -> DataPrecognition"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B35_SymbolicMathSolver.swift",
+      "lines": 1959,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 1468,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "rivate extension Double {\n    func isApproximatelyEqual(to other: Double, tolerance: Double) -> Bool"
+        },
+        {
+          "line": 1855,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "ouble(steps.count)\n    }\n\n    var description: String {\n        return steps.enumerated().map { (i, "
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D06_DebugLogFormatter.swift",
+      "lines": 402,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 48,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": " Magenta\n        }\n    }\n\n    var ansiReset: String {\n        return \"\\u{001B}[0m\"\n    }\n}\n\n// \u2500\u2500\u2500\u2500\u2500"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D04_ThreadDebugger.swift",
+      "lines": 358,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 287,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "  /// Get thread priority\n    func threadPriority(index: Int) -> ThreadPriority {\n        return .no"
+        },
+        {
+          "line": 56,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": " let waitReason: String?\n\n    var displayName: String {\n        return name ?? \"Thread-\\(index)\"\n   "
+        },
+        {
+          "line": 92,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "\n    let childCount: Int\n\n    var displayName: String {\n        return \"Task-\\(id)\"\n    }\n}\n\n// \u2500\u2500\u2500\u2500"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D03_MemoryDebugger.swift",
+      "lines": 367,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 364,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "Quick memory usage\n    static func usage() -> MemoryUsage {\n        return MemoryDebugger.shared.mem"
+        },
+        {
+          "line": 14,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "g?\n    let path: String?\n\n    var endAddress: Int {\n        return address + size\n    }\n\n    var isR"
+        },
+        {
+          "line": 43,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": " Int\n    let isARC: Bool\n\n    var displayName: String {\n        return className ?? typeName ?? \"Unk"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D05_StackTraceAnalyzer.swift",
+      "lines": 392,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 334,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "}\n\n    /// Compact format\n    func formatCompact(frames: [AnalyzedFrame]) -> String {\n        return"
+        },
+        {
+          "line": 384,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": "  /// Quick format\n    static func format(_ frames: [AnalyzedFrame]) -> String {\n        return Stac"
+        },
+        {
+          "line": 389,
+          "type": "stub_implementation",
+          "description": "Returns placeholder value",
+          "snippet": " /// Quick summary\n    static func summarize(_ frames: [AnalyzedFrame]) -> String {\n        return S"
+        }
+      ],
+      "ui_issues": []
+    },
+    {
+      "path": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D01_LLDBBridge.swift",
+      "lines": 518,
+      "issues": [],
+      "connectivity_issues": [],
+      "logic_gaps": [
+        {
+          "line": 151,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "  // \u2500\u2500\u2500 Availability \u2500\u2500\u2500\n    var isAvailable: Bool {\n        return isInitialized\n    }\n\n    var ha"
+        },
+        {
+          "line": 155,
+          "type": "stub_implementation",
+          "description": "Computed property stub",
+          "snippet": "turn isInitialized\n    }\n\n    var hasActiveSession: Bool {\n        return sessionActive\n    }\n\n    /"
+        }
+      ],
+      "ui_issues": []
+    }
+  ],
+  "high_priority": [
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H08_SageModeEngine.swift",
+      "line": 1076,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "T + MultiHop + DualLayer)\n    func sageReason(about problem: String) -> ReasoningResult {\n        re"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H08_SageModeEngine.swift",
+      "line": 1071,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "ss to consciousness state\n    var consciousnessState: ConsciousnessState {\n        return SageConsci"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H20_SecurityVault.swift",
+      "line": 279,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ly\n    @discardableResult\n    func storeIBMQuantumToken(_ token: String) -> Bool {\n        return st"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H09_QuantumCreativity.swift",
+      "line": 449,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "       return hash\n    }\n\n    var statusReport: String {\n        return \"\"\"\n        \u269b\ufe0f QUANTUM CREAT"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H07_ASIEvolver.swift",
+      "line": 1621,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "m evolution state\n    private var evolutionFitness: Double {\n        return min(1.0, phaseProgress *"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H14_NetworkLayer.swift",
+      "line": 296,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " qPayload)\n    }\n\n    private func linkKey(_ a: String, _ b: String) -> String {\n        return a < "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H31_NaturalCommandRouter.swift",
+      "line": 735,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "\" : output\n    }\n\n    private func helpText() -> String {\n        return \"\"\"\n        \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H05_L104StateResponse.swift",
+      "line": 2300,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "     return result\n    }\n\n    func generateNaturalResponse(_ query: String) -> String {\n        retu"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H30_SidebarNav.swift",
+      "line": 134,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "\n        return \"\"\n    }\n\n    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H30_SidebarNav.swift",
+      "line": 140,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "SOutlineViewDelegate \u2500\u2500\u2500\n\n    func outlineView(_ outlineView: NSOutlineView, isGroupItem item: Any) "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H30_SidebarNav.swift",
+      "line": 144,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " is SidebarSection\n    }\n\n    func outlineView(_ outlineView: NSOutlineView, shouldSelectItem item: "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 429,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "  return v\n    }\n\n    private func createMetricTile(title: String, value: String, color: NSColor) ->"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2416,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "  return v\n    }\n\n    private func getCodingInput() -> String {\n        return codingInputView?.stri"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L14_TextFormatter.swift",
+      "line": 13,
+      "type": "force_try",
+      "description": "Force try (!) without error handling",
+      "snippet": "private static let numberedListRegex = try! NSRegularExpression(pattern: \"^\\\\d+[.)\\\\]]\\\\s+\")"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L14_TextFormatter.swift",
+      "line": 14,
+      "type": "force_try",
+      "description": "Force try (!) without error handling",
+      "snippet": "private static let numberRegex = try! NSRegularExpression(pattern: \"\\\\b\\\\d+(\\\\.\\\\d+)?\\\\b\")"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L01_Constants.swift",
+      "line": 138,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "16.0\n\n    // Fonts\n    static func monoFont(_ size: CGFloat, weight: NSFont.Weight = .regular) -> NS"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L01_Constants.swift",
+      "line": 141,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ght: weight)\n    }\n    static func sansFont(_ size: CGFloat, weight: NSFont.Weight = .regular) -> NS"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L01_Constants.swift",
+      "line": 144,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ght: weight)\n    }\n    static func titleFont(_ size: CGFloat) -> NSFont {\n        return NSFont.mono"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L15_SemanticSearch.swift",
+      "line": 478,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": " }\n\n    // \u2550\u2550\u2550 STATUS \u2550\u2550\u2550\n    var status: String {\n        return \"\"\"\n        \ud83d\udd0d INTELLIGENT SEARCH E"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 39,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "n nil }\n\n    // Execution\n    func execute(_ code: String, timeout: TimeInterval? = nil) -> PythonRe"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 45,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": ", executionTime: 0)\n    }\n    func executeFile(_ filename: String, args: [String] = []) -> PythonRes"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 49,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "thonResult] { return [] }\n    func callFunction(module: String, function: String, args: [String] = ["
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 52,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": ", executionTime: 0)\n    }\n    func callMethod(module: String, className: String, method: String, con"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 55,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": ", executionTime: 0)\n    }\n    func eval(_ expression: String) -> PythonResult {\n        return Pytho"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 64,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "n nil }\n\n    // Intellect\n    func queryIntellect(_ message: String) -> PythonResult {\n        retur"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 67,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": ", executionTime: 0)\n    }\n    func trainIntellect(data: String, category: String = \"general\") -> Pyt"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 70,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": ", executionTime: 0)\n    }\n    func getASIBridgeStatus() -> PythonResult {\n        return PythonResul"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 75,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "    }\n\n    // Environment\n    func getEnvironmentInfo() -> PythonResult {\n        return PythonResul"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 78,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": ", executionTime: 0)\n    }\n    func listPackages() -> PythonResult {\n        return PythonResult(succ"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 81,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": ", executionTime: 0)\n    }\n    func installPackage(_ package: String) -> PythonResult {\n        retur"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 86,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "    // Session management\n    func startSession() -> Bool { return true }\n    func sessionExec(_ cod"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 87,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": ") -> Bool { return true }\n    func sessionExec(_ code: String) -> String { return \"\" }\n    func endS"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 94,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "m hardware initialization\n    func quantumHardwareInit(token: String) -> PythonResult {\n        retu"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 99,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "   // Code Engine methods\n    func codeEngineStatus() -> PythonResult { return execute(\"code_engine."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 100,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "\"code_engine.status()\") }\n    func codeEngineAudit() -> PythonResult { return execute(\"code_engine.a"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 101,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "(\"code_engine.audit()\") }\n    func codeEngineQuickAudit() -> PythonResult { return execute(\"code_eng"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 102,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "_engine.quick_audit()\") }\n    func codeEngineAuditTrail() -> PythonResult { return execute(\"code_eng"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 103,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "_engine.audit_trail()\") }\n    func codeEngineAnalyze(_ code: String) -> PythonResult { return execut"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 104,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " \"'\", with: \"\\\\'\"))')\") }\n    func codeEngineOptimize(_ code: String) -> PythonResult { return execu"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 105,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " \"'\", with: \"\\\\'\"))')\") }\n    func codeEngineExcavate(_ source: String) -> PythonResult { return exe"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 106,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "excavate('\\(source)')\") }\n    func codeEngineStreamline(_ source: String) -> PythonResult { return e"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 107,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "reamline('\\(source)')\") }\n    func codeEngineStreamline() -> PythonResult { return execute(\"code_eng"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 108,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ngine.streamline('.')\") }\n    func codeEngineScanWorkspace(_ path: String) -> PythonResult { return "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 109,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "_workspace('\\(path)')\") }\n    func codeEngineScanWorkspace() -> PythonResult { return execute(\"code_"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 110,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "e.scan_workspace('.')\") }\n    func codeEngineTranslate(_ source: String, from: String, to: String) -"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 111,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": ", '\\(from)', '\\(to)')\") }\n    func codeEngineRefactor(_ source: String) -> PythonResult { return exe"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 112,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "refactor('\\(source)')\") }\n    func codeEngineGenerateTests(_ source: String, language: String = \"pyt"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 113,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ge)', '\\(framework)')\") }\n    func codeEngineGenerateDocs(_ source: String, style: String = \"google\""
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 114,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "yle)', '\\(language)')\") }\n    func codeEngineGenerate(_ code: String, prompt: String) -> PythonResul"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 115,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "(code)', '\\(prompt)')\") }\n    func codeEngineGenerate(spec: String, prompt: String = \"\") -> PythonRe"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 116,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "(spec)', '\\(prompt)')\") }\n    func codeEngineGenerate(spec: String, lang: String) -> PythonResult { "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 125,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " // Coding System methods\n    func codingSystemStatus() -> PythonResult { return execute(\"code_engin"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 126,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "oding_system_status()\") }\n    func codingSystemProjectScan(_ path: String) -> PythonResult { return "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 127,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "oject_scan('\\(path)')\") }\n    func codingSystemProjectScan() -> PythonResult { return execute(\"code_"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 128,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "tem_project_scan('.')\") }\n    func codingSystemCIReport() -> PythonResult { return execute(\"code_eng"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 129,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ng_system_ci_report()\") }\n    func codingSystemSelfAnalyze() -> PythonResult { return execute(\"code_"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 130,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "system_self_analyze()\") }\n    func codingSystemReview(_ code: String) -> PythonResult { return execu"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 131,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "tem_review('\\(code)')\") }\n    func codingSystemSuggest(_ code: String) -> PythonResult { return exec"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 132,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "em_suggest('\\(code)')\") }\n    func codingSystemExplain(_ code: String) -> PythonResult { return exec"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 133,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "em_explain('\\(code)')\") }\n    func codingSystemQualityCheck(_ code: String) -> PythonResult { return"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 136,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "}\n\n    // Quantum methods\n    func quantumHardwareStatus() -> PythonResult { return execute(\"quantum"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 137,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "tum_hardware_status()\") }\n    func quantumStatus() -> PythonResult { return execute(\"quantum_status("
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 138,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ute(\"quantum_status()\") }\n    func quantumHardwareGrover(_ qubits: Int, iterations: Int) -> PythonRe"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 139,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "bits), \\(iterations))\") }\n    func quantumHardwareGrover(target: Int, nQubits: Int) -> PythonResult "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 140,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "rover(\\(nQubits), 10)\") }\n    func quantumGrover(_ qubits: Int, iterations: Int) -> PythonResult { r"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 141,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "bits), \\(iterations))\") }\n    func quantumGrover(target: Int, nQubits: Int) -> PythonResult { return"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 142,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "rover(\\(nQubits), 10)\") }\n    func quantumHardwareReport() -> PythonResult { return execute(\"quantum"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 143,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "tum_hardware_report()\") }\n    func quantumHardwareReport(difficultyBits: Int) -> PythonResult { retu"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 144,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "tum_hardware_report()\") }\n    func quantumQPE(_ iterations: Int) -> PythonResult { return execute(\"q"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 145,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "um_qpe(\\(iterations))\") }\n    func quantumQPE(precisionQubits: Int) -> PythonResult { return execute"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 146,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "e(\\(precisionQubits))\") }\n    func quantumHardwareVQE(_ hamiltonian: String) -> PythonResult { retur"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 147,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "vqe('\\(hamiltonian)')\") }\n    func quantumHardwareVQE() -> PythonResult { return execute(\"quantum_ha"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 148,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "rdware_vqe('default')\") }\n    func quantumVQE(_ hamiltonian: String) -> PythonResult { return execut"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 149,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "vqe('\\(hamiltonian)')\") }\n    func quantumVQE(nQubits: Int, iterations: Int) -> PythonResult { retur"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 150,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "um_vqe('H\\(nQubits)')\") }\n    func quantumHardwareMine(_ target: String) -> PythonResult { return ex"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 151,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "are_mine('\\(target)')\") }\n    func quantumHardwareMine(strategy: String) -> PythonResult { return ex"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 152,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "e_mine('\\(strategy)')\") }\n    func quantumQAOA(_ qubits: Int, layers: Int) -> PythonResult { return "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 154,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "\\(edges.count), \\(p))\") }\n    func quantumHardwareRandomOracle(_ size: Int) -> PythonResult { return"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 155,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "andom_oracle(\\(size))\") }\n    func quantumHardwareRandomOracle() -> PythonResult { return execute(\"q"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 156,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ware_random_oracle(8)\") }\n    func quantumAmplitudeEstimation(_ qubits: Int) -> PythonResult { retur"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 157,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "estimation(\\(qubits))\") }\n    func quantumAmplitudeEstimation(targetProb: Double, countingQubits: In"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 158,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "on(\\(countingQubits))\") }\n    func quantumWalk(_ qubits: Int, steps: Int) -> PythonResult { return e"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 159,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "(\\(qubits), \\(steps))\") }\n    func quantumWalk(nNodes: Int, steps: Int) -> PythonResult { return exe"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 160,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "(\\(nNodes), \\(steps))\") }\n    func quantumKernel(_ features: [Double]) -> PythonResult { return exec"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 161,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "m_kernel(\\(features))\") }\n    func quantumKernel(x1: [Double], x2: [Double]) -> PythonResult { retur"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 162,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "um_kernel(\\(x1 + x2))\") }\n    func quantumRuntimeStatus() -> PythonResult { return execute(\"quantum_"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 165,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "atus()\") }\n\n    // Warmup\n    func warmUp() -> PythonResult { return execute(\"warm_up()\") }\n\n    // "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 168,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "m_up()\") }\n\n    // Status\n    func status() -> String { return \"L104 Python Bridge Active\" }\n    fun"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 169,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "4 Python Bridge Active\" }\n    func statusResult() -> PythonResult { return PythonResult(success: tru"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 170,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": " nil, executionTime: 0) }\n    var statusString: String { return \"L104 Python Bridge Active\" }\n}"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L07_QuantumLogicGate.swift",
+      "line": 727,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "  // \u2550\u2550\u2550 HISTORY GATE \u2550\u2550\u2550\n    func synthesizeHistory(query: String) -> String {\n        return synth"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L30_FormalLogic.swift",
+      "line": 1323,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " true in a specific world\n    func evaluateInWorld(_ prop: String, world: String, frame: KripkeFrame"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L30_FormalLogic.swift",
+      "line": 1344,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ssity: true in ALL worlds\n    func evaluateGlobalNecessity(_ prop: String, frame: KripkeFrame) -> Bo"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L30_FormalLogic.swift",
+      "line": 1351,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "rue in at least one world\n    func evaluateGlobalPossibility(_ prop: String, frame: KripkeFrame) -> "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L30_FormalLogic.swift",
+      "line": 1368,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "me is reflexive (S5-like)\n    func isReflexive(_ frame: KripkeFrame) -> Bool {\n        return frame."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L13_ResponsePipeline.swift",
+      "line": 271,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " for cache lookup\n    private func normalizeQuery(_ query: String) -> String {\n        return query."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L13_ResponsePipeline.swift",
+      "line": 278,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "afe, pure computation \u2550\u2550\u2550\n    func scoreResponse(_ response: String, query: String) -> Double {\n    "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L13_ResponsePipeline.swift",
+      "line": 435,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " (fixes issue #5)\n    private func fnvHash(_ text: String) -> UInt64 {\n        return hashKey(text)\n"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L32_KBReconstruction.swift",
+      "line": 198,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "des via cosine similarity\n    func semanticSimilarity(vectorA: [Double], vectorB: [Double]) -> Doubl"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L22_WebSearch.swift",
+      "line": 595,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": " }\n\n    // \u2500\u2500\u2500 STATUS \u2500\u2500\u2500\n    var status: String {\n        return \"\"\"\n\ud83c\udf10 LIVE WEB SEARCH ENGINE STATU"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L04_LogicGateCore.swift",
+      "line": 131,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " for per-dimension checks\n    func scoreDimensionPublic(_ query: String, dimension: GateDimension, c"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L04_LogicGateCore.swift",
+      "line": 843,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "turn fmt\n    }()\n\n    private func timeStr(_ date: Date) -> String {\n        return LogicGateEnviron"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L12_DynamicPhrase.swift",
+      "line": 148,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ing context overloads \u2500\u2500\u2500\n    func one(_ intent: String, context: String, topic: String = \"\") -> Str"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L17_SyntacticFormatter.swift",
+      "line": 42,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ss the formatter.\n    private func isCreativeEngineOutput(_ text: String) -> Bool {\n        return i"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L04B_LogicGateV3.swift",
+      "line": 47,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "urn temporalMemory\n    }\n\n    func getInvocations() -> UInt64 {\n        return gateInvocations\n    }"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L09_PoemLogicGate.swift",
+      "line": 15,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "// \u2550\u2550\u2550 ODE GENERATION \u2550\u2550\u2550\n    func generateOde(topic: String, seeds: [String], insights: [String], e"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L09_PoemLogicGate.swift",
+      "line": 92,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "A BCB CDC...) \u2550\u2550\u2550\n    private func generateTerzaRima(topic: String, seeds: [String], insights: [Stri"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L28_UnifiedFieldGate.swift",
+      "line": 36,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "alue)\" }\n        ]\n    }\n\n    func engineHealth() -> Double {\n        return min(1.0, Double(invocat"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L18_DataIngest.swift",
+      "line": 155,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": " }\n\n    // \u2550\u2550\u2550 STATUS \u2550\u2550\u2550\n    var status: String {\n        return \"\"\"\n        \ud83d\udce5 DATA INGEST PIPELINE"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L05_LogicGateBreathing.swift",
+      "line": 206,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " (static analysis result)\n    func complexityScore(_ gate: String) -> Int {\n        return gateCompl"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B60_QuantumAIDaemon.swift",
+      "line": 12,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "tMultiplier: Double = 1.0\n    func shouldRunDaemon(_ name: String) -> Bool { return true }\n}\n\n// MAR"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B15_DistributedSystems.swift",
+      "line": 470,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "og.removeFirst() }\n    }\n\n    func statusReport() -> String {\n        return \"\"\"\n        \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B01_QuantumMath.swift",
+      "line": 903,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "constant directly.\n    static func godCode25QRatio() -> Double {\n        return GOD_CODE_25Q_RATIO\n "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B01_QuantumMath.swift",
+      "line": 923,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "eV at GOD_CODE Hz.\n    static func photonResonanceEnergy() -> Double {\n        return PHOTON_RESONAN"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B01_QuantumMath.swift",
+      "line": 929,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "= 3.254e-18 J/bit.\n    static func curieLandauerLimit() -> Double {\n        return FE_CURIE_LANDAUER"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B36_CodeGeneration.swift",
+      "line": 464,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " }\n\n    /// Status report\n    func status() -> String {\n        return \"\"\"\n        \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B33_CommonsenseReasoning.swift",
+      "line": 2797,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\n    var totalExtendedRuleCount: Int {\n        return allSpatialRules().cou"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B62_VQPUIntegration.swift",
+      "line": 267,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "eturn dict\n    }\n\n    private func countGates(_ circuit: QGateCircuit) -> Int {\n        return circu"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B62_VQPUIntegration.swift",
+      "line": 288,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "xpectation\n    }\n\n    private func makeEmptyResult(nQubits: Int) -> VQPUSimulationResult {\n        r"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B02_HyperMath.swift",
+      "line": 194,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " for a simplicial complex\n    func eulerCharacteristic(vertices: Int, edges: Int, faces: Int, cells3"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B04_NeuralBridge.swift",
+      "line": 148,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " Get Neural Engine status\n    func getStatus() -> String {\n        return \"\"\"\n        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B73_QuantumMemory.swift",
+      "line": 74,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "}\n\n    /// Age in seconds\n    func age() -> Double {\n        return Date().timeIntervalSince(created"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B73_QuantumMemory.swift",
+      "line": 79,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "// Time since last access\n    func timeSinceAccess() -> Double {\n        return Date().timeIntervalS"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B73_QuantumMemory.swift",
+      "line": 188,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "   /// Store in HOT layer\n    func storeHot(key: String, value: String) -> MemoryEntry {\n        ret"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B73_QuantumMemory.swift",
+      "line": 193,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "  /// Store in WARM layer\n    func storeWarm(key: String, value: String) -> MemoryEntry {\n        re"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B73_QuantumMemory.swift",
+      "line": 198,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "  /// Store in COLD layer\n    func storeCold(key: String, value: String) -> MemoryEntry {\n        re"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B53_GeneticRefiner.swift",
+      "line": 20,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "6^(1/\u03c6) \u00d7 2^((416 - X) / 104)\nfunc godCodeX(_ X: Double) -> Double {\n    return GOD_CODE_BASE * pow("
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B53_GeneticRefiner.swift",
+      "line": 25,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ameter X = b + 8c + 104d - 8a\nfunc abcdToX(a: Double, b: Double, c: Double, d: Double) -> Double {\n "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B26_HyperBrain.swift",
+      "line": 201,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "cillation value (-1 to 1)\n    var gammaOscillation: Double {\n        return sin(phaseAccumulator) * "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B26_HyperBrain.swift",
+      "line": 206,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "resonance factor (0 to 1)\n    var xResonance: Double {\n        return (1.0 + gammaOscillation) / 2.0"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B47_PerformanceOrchestrator.swift",
+      "line": 196,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "arity to optimal backend.\n    func smartCosineSimilarity(_ a: [Double], _ b: [Double]) -> Double {\n "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B47_PerformanceOrchestrator.swift",
+      "line": 241,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " peak 17x speedup at 21Q.\n    func shouldUseGPUForQuantum(qubits: Int) -> Bool {\n        return meta"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 1339,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "rivate extension String {\n    var hasHashValue: Bool {\n        return !isEmpty\n    }\n}"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B18_PhysicsEngines.swift",
+      "line": 61,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " (oxygen bonding partner)\n    func pairedKernel(_ id: Int) -> Int {\n        return FeOrbitalEngine.K"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B18_PhysicsEngines.swift",
+      "line": 169,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "id state? (coherence \u2265 \u03be)\n    func isSuperfluid(_ kernelID: Int) -> Bool {\n        return (kernelCoh"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B56_MLEngine.swift",
+      "line": 1038,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ngine features \u2192 classify\n    func runPipeline(query: String) -> KnowledgeSynthesisResult {\n        "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B65_MathResearchEngines.swift",
+      "line": 132,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "6^(1/\u03c6) \u00d7 2^((416-X)/104)\n    func G(_ x: Double) -> Double {\n        return GOD_CODE_BASE_HP * pow("
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B65_MathResearchEngines.swift",
+      "line": 137,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ct analytical derivative)\n    func dGdx(_ x: Double) -> Double {\n        return -G(x) * LN2_OVER_104"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B65_MathResearchEngines.swift",
+      "line": 142,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "dX\u00b2 = G(X) \u00d7 (ln(2)/104)\u00b2\n    func d2Gdx2(_ x: Double) -> Double {\n        return G(x) * LN2_OVER_10"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B65_MathResearchEngines.swift",
+      "line": 147,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "cal derivative (h = 10\u207b\u2078)\n    func dGdxNumerical(_ x: Double, h: Double = 1e-8) -> Double {\n        "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B65_MathResearchEngines.swift",
+      "line": 293,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "nant: \u0394 = -16(4a\u00b3 + 27b\u00b2)\n    func curveDiscriminant(a: Double, b: Double) -> Double {\n        retur"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B28_UnifiedFieldEngine.swift",
+      "line": 83,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "ble\": 18\n        ]\n    }\n\n    func engineHealth() -> Double {\n        return min(1.0, spacetimeCoher"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B28_UnifiedFieldEngine.swift",
+      "line": 154,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " + (1-r_s/r)\u207b\u00b9dr\u00b2 + r\u00b2d\u03a9\u00b2\n    func schwarzschildRadius(mass: Double) -> Double {\n        return 2.0 "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B27_IBMQuantumClient.swift",
+      "line": 732,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "circuit (EPR pair)\n    static func bellStateCircuit() -> String {\n        return \"\"\"\n        OPENQAS"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B27_IBMQuantumClient.swift",
+      "line": 762,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "racle marking |11>\n    static func groverCircuit2Qubit() -> String {\n        return \"\"\"\n        OPEN"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B67_VariationalQuantum.swift",
+      "line": 206,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "or a given ansatz\n    private func paramCount(nq: Int, depth: Int) -> Int {\n        return nq * 2 * "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B11_ASIInvention.swift",
+      "line": 318,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "    /// Get status report\n    func getStatus() -> String {\n        return \"\"\"\n        \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B24_MathEngines4.swift",
+      "line": 291,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "e^(-x\u00b2/2) / \u221a(2\u03c0)\n    private func normalPDF(_ x: Double) -> Double {\n        return Foundation.exp("
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B72_ConsciousnessEngine.swift",
+      "line": 537,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " getCurrentState()\n    }\n\n    func engineHealth() -> Double {\n        return currentMetrics.composit"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B72_ConsciousnessEngine.swift",
+      "line": 33,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "urbulent\n        }\n    }\n\n    var label: String {\n        return rawValue.uppercased()\n    }\n}\n\n// \u2550"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B54_DataPrecognition.swift",
+      "line": 390,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "efix(5).map { $0 }\n}\n\nprivate func emptyResult(_ predictor: String, horizon: Int) -> DataPrecognitio"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B54_DataPrecognition.swift",
+      "line": 496,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "for response pipeline use\n    func quickPredict(value: Double, horizon: Int = 5) -> DataPrecognition"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B35_SymbolicMathSolver.swift",
+      "line": 1468,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "rivate extension Double {\n    func isApproximatelyEqual(to other: Double, tolerance: Double) -> Bool"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B35_SymbolicMathSolver.swift",
+      "line": 1855,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "ouble(steps.count)\n    }\n\n    var description: String {\n        return steps.enumerated().map { (i, "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D06_DebugLogFormatter.swift",
+      "line": 48,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": " Magenta\n        }\n    }\n\n    var ansiReset: String {\n        return \"\\u{001B}[0m\"\n    }\n}\n\n// \u2500\u2500\u2500\u2500\u2500"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D04_ThreadDebugger.swift",
+      "line": 287,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "  /// Get thread priority\n    func threadPriority(index: Int) -> ThreadPriority {\n        return .no"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D04_ThreadDebugger.swift",
+      "line": 56,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": " let waitReason: String?\n\n    var displayName: String {\n        return name ?? \"Thread-\\(index)\"\n   "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D04_ThreadDebugger.swift",
+      "line": 92,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "\n    let childCount: Int\n\n    var displayName: String {\n        return \"Task-\\(id)\"\n    }\n}\n\n// \u2500\u2500\u2500\u2500"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D03_MemoryDebugger.swift",
+      "line": 364,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "Quick memory usage\n    static func usage() -> MemoryUsage {\n        return MemoryDebugger.shared.mem"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D03_MemoryDebugger.swift",
+      "line": 14,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "g?\n    let path: String?\n\n    var endAddress: Int {\n        return address + size\n    }\n\n    var isR"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D03_MemoryDebugger.swift",
+      "line": 43,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": " Int\n    let isARC: Bool\n\n    var displayName: String {\n        return className ?? typeName ?? \"Unk"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D05_StackTraceAnalyzer.swift",
+      "line": 334,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "}\n\n    /// Compact format\n    func formatCompact(frames: [AnalyzedFrame]) -> String {\n        return"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D05_StackTraceAnalyzer.swift",
+      "line": 384,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": "  /// Quick format\n    static func format(_ frames: [AnalyzedFrame]) -> String {\n        return Stac"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D05_StackTraceAnalyzer.swift",
+      "line": 389,
+      "type": "stub_implementation",
+      "description": "Returns placeholder value",
+      "snippet": " /// Quick summary\n    static func summarize(_ frames: [AnalyzedFrame]) -> String {\n        return S"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D01_LLDBBridge.swift",
+      "line": 151,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "  // \u2500\u2500\u2500 Availability \u2500\u2500\u2500\n    var isAvailable: Bool {\n        return isInitialized\n    }\n\n    var ha"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/Debug/D01_LLDBBridge.swift",
+      "line": 155,
+      "type": "stub_implementation",
+      "description": "Computed property stub",
+      "snippet": "turn isInitialized\n    }\n\n    var hasActiveSession: Bool {\n        return sessionActive\n    }\n\n    /"
+    }
+  ],
+  "medium_priority": [
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H02B_ConcurrentState.swift",
+      "line": 205,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "await compute()\n        compositeCache[name] = (value, Date())\n        return value\n    }\n\n    /// P"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H02B_ConcurrentState.swift",
+      "line": 200,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func getCompositeScore(_ name: String, compute: ()"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H19_AutonomousAgent.swift",
+      "line": 268,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "task.priority == .low\n                        && task.attempts == 1\n\n                    if shouldDe"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H19_AutonomousAgent.swift",
+      "line": 275,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "task.id }) {\n                            self."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H19_AutonomousAgent.swift",
+      "line": 276,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "taskQueue[didx] = delegateTask\n                        }\n                        self.lock.unlock()\n"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H19_AutonomousAgent.swift",
+      "line": 286,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "task.id }) {\n                        self.taskQueue[fidx].state = .completed\n                       "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H19_AutonomousAgent.swift",
+      "line": 292,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "Tasks.removeFirst() }\n                        self.totalTasksExecuted += 1\n                    }\n   "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H03_L104StateCommands.swift",
+      "line": 775,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async {\n                    self?.quantumHardwareConnected = success\n                    if success "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H04_L104StateNCG.swift",
+      "line": 52,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "Task(with: req) { [weak self] data, resp, error in\n            let statusCode = (resp as? HTTPURLRes"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H29_SageModeView.swift",
+      "line": 536,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let eq = DynamicEquationEngine.shared\n            let newEqs = eq"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H05_L104StateResponse.swift",
+      "line": 2191,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "Task (replaces DispatchGroup) \u2550\u2550\u2550\n        let kbTask = Task.detached(priority: .userInitiated) { [se"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H05_L104StateResponse.swift",
+      "line": 2176,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func generateNCGResponseAsync(_ query: String) asy"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H32_AgentCenterView.swift",
+      "line": 210,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async {\n                self.statusLabel.stringValue = \"\u26a1 Running: \\(running) | Queued: \\(queued) | "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H02_L104StateCore.swift",
+      "line": 375,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n                // Init Python quantum engine with saved token\n              "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H02_L104StateCore.swift",
+      "line": 639,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async {\n                self."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H02_L104StateCore.swift",
+      "line": 647,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "Task(with: req) { data, resp, error in\n                let remoteConnected = error == nil && (resp a"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H02_L104StateCore.swift",
+      "line": 909,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "Task(with: req) { [weak self] data, resp, error in\n            DispatchQueue.self."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H02_L104StateCore.swift",
+      "line": 1394,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "ASYNC RESPONSE GENERATION \u2550\u2550\u2550\n        // Task.detached runs generateNCGResponseAsync on the cooperat"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H12_AppDelegate.swift",
+      "line": 23,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "asyncAfter(deadline: .now() + 0.3) {\n            if let mainView = self.wc.window?.contentView as? L"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H12_AppDelegate.swift",
+      "line": 30,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async {\n            FutureReserve.shared.activate()  // Orchestrator activates all network subsystem"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H12_AppDelegate.swift",
+      "line": 520,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async {\n                    if let mainView = self."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 242,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { self."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 1838,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let pyResult = PythonBridge.self.shared.quantumHardwareInit(token"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 1919,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async\n        appendQuantumOutput(\"  Fetching remote jobs...\", color: .secondaryLabelColor)\n        "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 1944,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            // Try real hardware first if token exists\n            var result"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 1994,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            var result = PythonBridge.self.shared.quantumQPE(precisionQubits:"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2031,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            var result = PythonBridge.self.shared.quantumVQE(nQubits: 4, iter"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2106,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            var result = PythonBridge.self.shared.quantumAmplitudeEstimation("
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2140,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.quantumWalk(nNodes: 8, step"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2179,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let ibmClient = IBMQuantumClient.shared\n            let hasToken "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2434,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineAnalyze(code)\n   "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2446,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codingSystemReview(code)\n  "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2458,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codingSystemSuggest(code)\n "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2470,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codingSystemExplain(code)\n "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2482,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codingSystemQualityCheck(co"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2494,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineGenerateTests(cod"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2506,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineGenerateDocs(code"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2518,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineTranslate(code, f"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2528,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineAudit()\n         "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2538,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineScanWorkspace()\n "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2548,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codeEngineStreamline()\n    "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2558,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.codingSystemSelfAnalyze()\n "
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 2965,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n            let result = PythonBridge.self.shared.quantumGrover(target: 7, nQ"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheHeart/H11_MainView.swift",
+      "line": 3044,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { [weak self] in\n                let result = PythonBridge.self.shared.codeEngineGenerate(spec"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L25_PythonBridge.swift",
+      "line": 42,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func executeAsync(_ code: String, timeout: TimeInt"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L22_WebSearch.swift",
+      "line": 178,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async {\n                result = self."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L22_WebSearch.swift",
+      "line": 617,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func webSearchAsync(_ query: String) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L22_WebSearch.swift",
+      "line": 675,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func searchDuckDuckGoAsync(_ query: String) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L22_WebSearch.swift",
+      "line": 730,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func searchWikipediaAsync(_ query: String) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L22_WebSearch.swift",
+      "line": 781,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func fetchWikipediaExtractAsync(pageId: Int, title"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L22_WebSearch.swift",
+      "line": 806,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func fetchURLAsync(_ urlString: String) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L24_PermanentMemory.swift",
+      "line": 77,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async { self."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L04B_LogicGateV3.swift",
+      "line": 281,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "await computeGlobalCoherence()\n        let temporalCtx = await buildTemporalContext(q)\n\n        // B"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L04B_LogicGateV3.swift",
+      "line": 308,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "await updateCoherenceMatrix(primary: primary.dimension, secondaries: secondaries.map(\\.dimension))\n\n"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L35_ThreeEngineSearch.swift",
+      "line": 499,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func runSearchStrategy(query: String, strategy: Se"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheLogic/L35_ThreeEngineSearch.swift",
+      "line": 670,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func runPredictor(query: String, predictor: Predic"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 50,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "TASK & RESULT \u2550\u2550\u2550\n// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\n/// Task d"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 401,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func readFile(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 421,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func writeFile(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 442,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func editFile(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 470,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func listFiles(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 501,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func runShell(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 541,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func searchCode(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 551,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func analyzeCode(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 605,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func pythonExec(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 625,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func systemMetrics(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 659,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func quantumBridge(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 681,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func diffViewer(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B70_AgentOrchestrator.swift",
+      "line": 689,
+      "type": "async_without_await",
+      "description": "Async function without await keyword",
+      "snippet": "func httpProbe(args: [String: Any]) async"
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B27_IBMQuantumClient.swift",
+      "line": 265,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async {\n                if let backends = backends, !backends.isEmpty {\n                    self."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B27_IBMQuantumClient.swift",
+      "line": 639,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "asyncAfter(deadline: .now() + delay) {\n                    self."
+    },
+    {
+      "file": "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/L104v2/TheBrain/B27_IBMQuantumClient.swift",
+      "line": 653,
+      "type": "memory_management",
+      "description": "Strong self capture in async context",
+      "snippet": "async {\n                    self."
+    }
+  ],
+  "low_priority": []
+}

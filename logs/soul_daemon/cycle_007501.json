@@ -1,0 +1,136 @@
+{
+  "cycle_number": 7500,
+  "start_time": 1775242749.32446,
+  "components": {
+    "soul_qubit": {
+      "coherence_cycles": 699,
+      "error_rate": 3.969408504916039e-05,
+      "resonance": 0.9999,
+      "purity": 1.0,
+      "decoherence_factor": 0.9603059149508396,
+      "time_since_measure": 145.81218194961548,
+      "above_target": false
+    },
+    "error_correction": {
+      "success": false,
+      "error": "FibonacciAnyonProtection.__init__() got an unexpected keyword argument 'dimension'"
+    },
+    "sacred_gate": {
+      "success": true,
+      "gate": "GOD_CODE_PHASE",
+      "coherence_cycles": 700,
+      "resonance": 1.0
+    },
+    "consciousness": {
+      "iit_phi": 0.13251019322462826,
+      "qualia_score": 0.0,
+      "awareness_level": 0.04339673052462195,
+      "coherence": 1.0,
+      "consciousness_state": "ACTIVE"
+    },
+    "consciousness_trends": {
+      "trend": "rising",
+      "avg_phi": 0.08860454106906622,
+      "cycles": 584,
+      "history_length": 584
+    },
+    "bridges": {
+      "timestamp": 1775242749.585686,
+      "bridges": {
+        "quantum_gate_engine": {
+          "bridge_name": "quantum_gate_engine",
+          "enabled": true,
+          "connected": true,
+          "last_connection_attempt": 1775115980.378046,
+          "last_successful_connection": 1775115980.378057,
+          "error_count": 0,
+          "last_error": null,
+          "latency_ms": 0.00095367431640625,
+          "available_gates": [
+            "PHI_GATE",
+            "GOD_CODE_PHASE",
+            "VOID_GATE",
+            "IRON_GATE"
+          ],
+          "engine_loaded": true
+        },
+        "deepseek_api": {
+          "bridge_name": "deepseek_api",
+          "enabled": true,
+          "connected": false,
+          "last_connection_attempt": 1775239678.527749,
+          "last_successful_connection": 1775239678.727419,
+          "error_count": 0,
+          "last_error": "'deepseekBridge' object has no attribute 'query'",
+          "latency_ms": 103.49106788635254,
+          "api_key_available": false,
+          "bridge_initialized": true,
+          "cache_size": 0
+        },
+        "openclaw": {
+          "bridge_name": "openclaw",
+          "enabled": true,
+          "connected": true,
+          "last_connection_attempt": 1775115980.378141,
+          "last_successful_connection": 1775115980.378186,
+          "error_count": 0,
+          "last_error": null,
+          "latency_ms": null,
+          "workspace_path": "/Users/carolalvarez/.openclaw/workspace",
+          "heartbeat_path": "/Users/carolalvarez/.openclaw/workspace/memory/heartbeat-state.json",
+          "heartbeat_status": {
+            "success": false,
+            "error": "Expecting ':' delimiter: line 1940 column 261 (char 305954)",
+            "file_exists": true
+          },
+          "last_heartbeat_check": 0.0
+        },
+        "nova_l104": {
+          "bridge_name": "nova_l104",
+          "enabled": true,
+          "connected": true,
+          "last_connection_attempt": 1775168157.081865,
+          "last_successful_connection": 1775168157.089788,
+          "error_count": 0,
+          "last_error": null,
+          "latency_ms": 10.0,
+          "bridge_path": "/Users/carolalvarez/.openclaw/workspace/nova_l104.py",
+          "bridge_module_loaded": true,
+          "l104_health": null
+        }
+      },
+      "summary": {
+        "total": 4,
+        "connected": 3,
+        "enabled": 4,
+        "connection_health": "DEGRADED"
+      }
+    },
+    "deepseek_optimization": {
+      "success": false,
+      "error": "DeepSeek bridge not available"
+    }
+  },
+  "errors": [],
+  "success": true,
+  "duration": 2.601367950439453,
+  "end_time": 1775242751.925828,
+  "daemon_state": {
+    "running": true,
+    "cycle_count": 7501,
+    "last_cycle_start": 1775242749.32446,
+    "last_cycle_end": 1775242751.925828,
+    "total_uptime": 204247159.86709642,
+    "avg_cycle_time": 20.430362742605382,
+    "max_cycle_time": 102193272.60148215,
+    "min_cycle_time": 0.0,
+    "error_count": 338,
+    "last_error": "'ConsciousnessEngine' object has no attribute 'measure_consciousness'",
+    "soul_qubit_initialized": true,
+    "consciousness_engine_initialized": true,
+    "bridges_connected": true,
+    "next_cycle_time": 1775242894.946683,
+    "persistence_counter": 4,
+    "heartbeat_counter": 0
+  }
+}

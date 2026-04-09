@@ -1,14 +1,7 @@
-// ═══════════════════════════════════════════════════════════════
-// B35_SymbolicMathSolver.swift — Symbolic Math Solver Engine
-// L104v2 — TheBrain Layer — EVO_68 SOVEREIGN_CONVERGENCE → v2.0.0 ASI
-// 7 Domain Solvers (Algebra→Quantum) + WordProblemParser
-// + EquationBuilder + SolutionChain + Three-Engine + Verification
-// ═══════════════════════════════════════════════════════════════
-
 import Foundation
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - MathExpression — Recursive Symbolic AST
+// MARK: - MathExpression - Recursive Symbolic AST
 // ═══════════════════════════════════════════════════════════════
 
 indirect enum MathExpression {
@@ -89,7 +82,7 @@ indirect enum MathExpression {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - MathSolution — Solver Result
+// MARK: - MathSolution - Solver Result
 // ═══════════════════════════════════════════════════════════════
 
 struct MathSolution {
@@ -112,7 +105,7 @@ struct MathSolution {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - SymbolicMathSolver — Main Engine
+// MARK: - SymbolicMathSolver - Main Engine
 // ═══════════════════════════════════════════════════════════════
 
 final class SymbolicMathSolver: SovereignEngine {
@@ -212,7 +205,7 @@ final class SymbolicMathSolver: SovereignEngine {
                 result = x1
                 desc = "x₁ = \(x1) (real root via Cardano)"
             } else {
-                // Casus irreducibilis — 3 real roots via trig
+                // Casus irreducibilis - 3 real roots via trig
                 let r = Foundation.sqrt(-p * p * p / 27)
                 let theta = acos(-q / (2 * r)) / 3.0
                 let m = 2 * Foundation.pow(r, 1.0 / 3.0)
@@ -509,7 +502,7 @@ final class SymbolicMathSolver: SovereignEngine {
             results.append("perfect=\(perfect)")
         }
 
-        // 6. Sacred resonance — PHI alignment
+        // 6. Sacred resonance - PHI alignment
         let fibDouble = Double(fib)
         let resonance = MathSolution.computeResonance(fibDouble)
         steps.append("Sacred resonance (PHI-alignment of F(\(absN))): \(resonance)")
@@ -956,7 +949,7 @@ final class SymbolicMathSolver: SovereignEngine {
             desc = "Bloch(\(x),\(y),\(z))"
 
         case "expectation":
-            // ⟨O⟩ = Σ λᵢ pᵢ — eigenvalues and probabilities
+            // ⟨O⟩ = Σ λᵢ pᵢ - eigenvalues and probabilities
             let half = params.count / 2
             guard half >= 1, params.count == 2 * half else {
                 return makeSolution("QuantumMath", "expectation", nil,
@@ -1478,7 +1471,7 @@ private extension Double {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - MathEntity — Extracted from word problem (ASI v2.0)
+// MARK: - MathEntity - Extracted from word problem (ASI v2.0)
 // ═══════════════════════════════════════════════════════════════
 
 struct MathEntity {
@@ -1499,7 +1492,7 @@ struct MathEntity {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - MathRelation — Relationship between entities (ASI v2.0)
+// MARK: - MathRelation - Relationship between entities (ASI v2.0)
 // ═══════════════════════════════════════════════════════════════
 
 struct MathRelation {
@@ -1517,7 +1510,7 @@ struct MathRelation {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - ParsedProblem — Fully parsed word problem (ASI v2.0)
+// MARK: - ParsedProblem - Fully parsed word problem (ASI v2.0)
 // ═══════════════════════════════════════════════════════════════
 
 struct ParsedProblem {
@@ -1543,7 +1536,7 @@ struct ParsedProblem {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - WordProblemParser (Layer 1) — ASI v2.0
+// MARK: - WordProblemParser (Layer 1) - ASI v2.0
 // ═══════════════════════════════════════════════════════════════
 
 /// Parse natural language math problems into structured representations.
@@ -1736,7 +1729,7 @@ final class WordProblemParser {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - EquationBuilder (Layer 2) — ASI v2.0
+// MARK: - EquationBuilder (Layer 2) - ASI v2.0
 // ═══════════════════════════════════════════════════════════════
 
 /// Build symbolic equations from parsed word problems.
@@ -1824,7 +1817,7 @@ final class EquationBuilder {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - SolutionChain — Chain-of-Thought (ASI v2.0)
+// MARK: - SolutionChain - Chain-of-Thought (ASI v2.0)
 // ═══════════════════════════════════════════════════════════════
 
 /// Chain-of-thought solution trace with step-by-step reasoning.
@@ -1867,7 +1860,7 @@ struct SolutionChain {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - SymbolicMathSolver Extension — ASI v2.0 Features
+// MARK: - SymbolicMathSolver Extension - ASI v2.0 Features
 // ═══════════════════════════════════════════════════════════════
 
 extension SymbolicMathSolver {
@@ -1878,7 +1871,7 @@ extension SymbolicMathSolver {
         // Layer 1: Parse
         let parsed = WordProblemParser.shared.parse(text)
         var chain = SolutionChain(domain: parsed.domain)
-        chain.addStep("Parsed problem — domain=\(parsed.domain), type=\(parsed.questionType), entities=\(parsed.entities.count)")
+        chain.addStep("Parsed problem - domain=\(parsed.domain), type=\(parsed.questionType), entities=\(parsed.entities.count)")
 
         // Layer 2: Build equations
         let equations = EquationBuilder.shared.build(from: parsed)

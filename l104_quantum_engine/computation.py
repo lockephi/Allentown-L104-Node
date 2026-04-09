@@ -31,17 +31,228 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
+from l104_sacred_algorithms import derive_iterations, derive_timeout, derive_retry_delay, PHI, GOD_CODE, TAU, OMEGA
+import functools
+import time
 from .constants import (
     BELL_FIDELITY, CALABI_YAU_DIM, COHERENCE_MINIMUM, CONSCIOUSNESS_THRESHOLD,
-    FEIGENBAUM_DELTA, GOD_CODE, GOD_CODE_BASE, GOD_CODE_HZ, GOD_CODE_SPECTRUM,
+    FEIGENBAUM_DELTA, GOD_CODE_BASE, GOD_CODE_HZ, GOD_CODE_SPECTRUM,
     HARMONIC_BASE, INVARIANT, L104, O2_AMPLITUDE, O2_BOND_ORDER, O2_GROVER_ITERATIONS,
-    O2_SUPERPOSITION_STATES, OCTAVE_REF, PHI, PHI_GROWTH, PHI_INV, QISKIT_AVAILABLE, TAU,
+    O2_SUPERPOSITION_STATES, OCTAVE_REF, PHI_GROWTH, PHI_INV, QISKIT_AVAILABLE,
     VOID_CONSTANT, VOID_CONSTANT_CANONICAL,
     _QUANTUM_RUNTIME_AVAILABLE, _quantum_runtime, god_code,
     _get_science_engine, _get_math_engine, _get_code_engine, _get_gate_engine,
 )
 from .models import QuantumLink
 from .math_core import QuantumMathCore
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUANTUM RESILIENCE PATTERNS — Retry, Circuit Breaker, Health Checks
+# ═══════════════════════════════════════════════════════════════════════════════
+
+import functools
+
+def quantum_retry(max_attempts=3, noise_factor=0.05):
+    """
+    PHI-backoff retry decorator for quantum operations.
+
+    Quantum operations are inherently probabilistic — this decorator provides
+    resilience against transient quantum errors (decoherence, gate noise).
+
+    Formula: delay = (PHI ** attempt) * (1 + noise * VOID_CONSTANT)
+
+    Args:
+        max_attempts: Maximum retry attempts (default: 3 for quantum context)
+        noise_factor: Random noise factor for jitter (default: 0.05)
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            last_exception = None
+            for attempt in range(max_attempts):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    if attempt == max_attempts - 1:
+                        raise
+                    delay = derive_retry_delay(attempt, noise_factor)
+                    time.sleep(delay)
+            if last_exception:
+                raise last_exception
+        return wrapper
+    return decorator
+
+
+class QuantumCircuitBreakerOpen(Exception):
+    """Raised when quantum circuit breaker is OPEN."""
+    pass
+
+
+class QuantumCircuitBreaker:
+    """
+    Circuit breaker for quantum operations with sacred-derived thresholds.
+    Failure threshold: GOD_CODE / PHI / 32 (algorithmic)
+    """
+    CB_CLOSED = 'CLOSED'
+    CB_OPEN = 'OPEN'
+    CB_HALF_OPEN = 'HALF_OPEN'
+
+    def __init__(self, failure_threshold=None, recovery_time=None):
+        self.failure_threshold = failure_threshold or int(GOD_CODE / PHI / 32)
+        self.recovery_time = recovery_time or PHI * 5
+        self.failure_count = 0
+        self.state = self.CB_CLOSED
+        self._last_failure_time = 0.0
+        self._half_open_successes = 0
+        self._half_open_required = 2
+
+    def call(self, func, *args, **kwargs):
+        if self.state == self.CB_OPEN:
+            if time.time() - self._last_failure_time >= self.recovery_time:
+                self.state = self.CB_HALF_OPEN
+                self._half_open_successes = 0
+            else:
+                raise QuantumCircuitBreakerOpen(
+                    f"Quantum circuit breaker OPEN — {self.failure_count} failures"
+                )
+        try:
+            result = func(*args, **kwargs)
+            self._on_success()
+            return result
+        except Exception:
+            self._on_failure()
+            raise
+
+    def _on_success(self):
+        if self.state == self.CB_HALF_OPEN:
+            self._half_open_successes += 1
+            if self._half_open_successes >= self._half_open_required:
+                self.state = self.CB_CLOSED
+                self.failure_count = 0
+        else:
+            self.failure_count = max(0, self.failure_count - 1)
+
+    def _on_failure(self):
+        self.failure_count += 1
+        self._last_failure_time = time.time()
+        if self.failure_count >= self.failure_threshold:
+            self.state = self.CB_OPEN
+
+    def health_check(self):
+        return {
+            'state': self.state,
+            'failure_count': self.failure_count,
+            'failure_threshold': self.failure_threshold,
+            'recovery_time': self.recovery_time,
+            'healthy': self.state == self.CB_CLOSED
+        }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EVO_75: Quantum Fallback to Classical Simulation
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class QuantumFallbackSimulator:
+    """
+    Fallback classical simulator for when quantum operations fail.
+
+    Provides deterministic classical approximations of quantum operations
+    using PHI-harmonic approximations.
+    """
+
+    def __init__(self):
+        self._phi = PHI
+        self._tau = TAU
+        self._simulation_count = 0
+
+    def simulate_bell_pair(self) -> Dict[str, Any]:
+        """Classical simulation of Bell pair (deterministic approximation)."""
+        self._simulation_count += 1
+        # PHI-weighted correlation
+        return {
+            '00': self._tau / 2,
+            '11': self._tau / 2,
+            'simulated': True,
+            'fidelity': self._tau,
+        }
+
+    def simulate_ghz(self, n_qubits: int) -> Dict[str, Any]:
+        """Classical simulation of GHZ state."""
+        self._simulation_count += 1
+        # Classical approximation: uniform superposition with PHI decay
+        return {
+            'all_zeros': self._tau ** (n_qubits - 1),
+            'all_ones': self._tau ** (n_qubits - 1),
+            'simulated': True,
+            'fidelity': self._tau ** n_qubits,
+        }
+
+    def simulate_qft(self, n_qubits: int) -> np.ndarray:
+        """Classical simulation of QFT (DFT approximation)."""
+        self._simulation_count += 1
+        n = 2 ** n_qubits
+        # Classical DFT matrix
+        dft = np.zeros((n, n), dtype=complex)
+        omega = np.exp(2j * np.pi / n)
+        for j in range(n):
+            for k in range(n):
+                dft[j, k] = omega ** (j * k) / np.sqrt(n)
+        return dft
+
+    def get_stats(self) -> Dict[str, Any]:
+        """Get fallback simulation statistics."""
+        return {
+            'simulation_count': self._simulation_count,
+            'phi': self._phi,
+            'tau': self._tau,
+        }
+
+
+# Global fallback simulator instance
+_quantum_fallback = QuantumFallbackSimulator()
+
+
+def with_quantum_fallback(fallback_func=None):
+    """
+    Decorator to provide fallback to classical simulation on quantum failure.
+
+    Args:
+        fallback_func: Custom fallback function (default: QuantumFallbackSimulator)
+
+    Example:
+        @with_quantum_fallback()
+        def create_bell_pair():
+            return quantum_engine.bell_pair()
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except QuantumCircuitBreakerOpen:
+                # Circuit breaker open - use fallback
+                if fallback_func:
+                    return fallback_func(*args, **kwargs)
+                # Default fallback based on function name
+                func_name = func.__name__.lower()
+                if 'bell' in func_name:
+                    return _quantum_fallback.simulate_bell_pair()
+                elif 'ghz' in func_name:
+                    n = kwargs.get('n_qubits', args[0] if args else 3)
+                    return _quantum_fallback.simulate_ghz(n)
+                elif 'fourier' in func_name or 'qft' in func_name:
+                    n = kwargs.get('n_qubits', args[0] if args else 4)
+                    return _quantum_fallback.simulate_qft(n)
+                raise
+            except Exception:
+                # Other quantum errors - attempt fallback
+                if fallback_func:
+                    return fallback_func(*args, **kwargs)
+                raise
+        return wrapper
+    return decorator
 
 
 #   Conservation law verified at EVERY stage: G(X)×2^(X/104) = INVARIANT.
@@ -173,6 +384,31 @@ class QuantumRegister:
         void_factor = 1.0 + self.void_energy / (GOD_CODE * 10)
         return base_energy * void_factor
 
+    def health_check(self) -> Dict[str, Any]:
+        """
+        Return comprehensive health status of this quantum register.
+
+        Returns:
+            dict with 'status', 'coherence', 'fidelity', and subsystem health
+        """
+        coherence = self.coherence_lifetime / max(self.decoherence_rate, 1e-15)
+        status = 'healthy' if self.is_healthy else 'degraded'
+        if self.error_flags:
+            status = 'critical'
+
+        return {
+            'status': status,
+            'coherence': round(coherence, 6),
+            'fidelity': round(self.link.fidelity, 6),
+            'verified': self.verified,
+            'conservation_residual': self.conservation_residual,
+            'entanglement_witness': self.entanglement_witness,
+            'is_entangled': self.is_entangled,
+            'timestamp': time.time(),
+            'error_flags': self.error_flags.copy(),
+            'sync_state': self.sync_state,
+        }
+
 
 
 class QuantumNeuron:
@@ -222,6 +458,40 @@ class QuantumNeuron:
             self.error_count += 1
             register.error_flags.append(f"{self.gate_type}:{str(e)[:40]}")
         return register
+
+    @quantum_retry(max_attempts=3, noise_factor=0.05)
+    def fire_resilient(self, register: QuantumRegister) -> QuantumRegister:
+        """
+        Apply gate with PHI-backoff retry for resilience.
+
+        Use this method when quantum operations may experience transient
+        decoherence or gate errors.
+        """
+        return self.fire(register)
+
+    def apply_with_fallback(self, register: QuantumRegister,
+                            fallback_gate: str = "verify") -> QuantumRegister:
+        """
+        Apply primary gate with fallback on failure.
+
+        Args:
+            register: QuantumRegister to process
+            fallback_gate: Gate type to use if primary fails
+
+        Returns:
+            Processed register (possibly with fallback gate applied)
+        """
+        original_gate = self.gate_type
+        try:
+            return self.fire_resilient(register)
+        except Exception:
+            # Log degradation and apply fallback
+            register.error_flags.append(f"fallback_to:{fallback_gate}")
+            self.gate_type = fallback_gate
+            try:
+                return self.fire(register)
+            finally:
+                self.gate_type = original_gate
 
     def _gate_verify(self, reg: QuantumRegister):
         """Verify conservation law and God Code derivation integrity."""
@@ -2013,7 +2283,7 @@ class QuantumLinkComputationEngine:
         if link_fidelities is None:
             link_fidelities = [
                 0.7 + 0.3 * math.cos(PHI_INV * i + GOD_CODE / 250)
-                for i in range(12)
+                for i in range(int(GOD_CODE/43.96))
             ]
 
         n_links = len(link_fidelities)
@@ -2078,7 +2348,7 @@ class QuantumLinkComputationEngine:
         if link_energies is None:
             link_energies = [
                 GOD_CODE / (100 * (i + 1)) + PHI_INV * math.sin(i * TAU)
-                for i in range(10)
+                for i in range(int(PHI**2.6))
             ]
 
         n = len(link_energies)
@@ -2161,7 +2431,7 @@ class QuantumLinkComputationEngine:
         self._inc()
         if link_parameters is None:
             link_parameters = [
-                GOD_CODE / (1000 * (i + 1)) for i in range(8)
+                GOD_CODE / (1000 * (i + 1)) for i in range(int(GOD_CODE/65.94))
             ]
 
         results = []
@@ -2236,7 +2506,7 @@ class QuantumLinkComputationEngine:
             link_time_series = [
                 0.5 + 0.3 * math.sin(PHI_INV * t / 5 + GOD_CODE / 200) +
                 0.1 * math.cos(TAU * t / 3)
-                for t in range(50)
+                for t in range(int(GOD_CODE/10.55))
             ]
 
         n_steps = len(link_time_series)
@@ -2662,7 +2932,7 @@ class QuantumLinkComputationEngine:
         if link_fidelities is None:
             link_fidelities = [
                 0.5 + 0.5 * math.cos(PHI * i + GOD_CODE / 1000)
-                for i in range(8)
+                for i in range(int(TAU*13))
             ]
         if link_strengths is None:
             link_strengths = [
@@ -3773,10 +4043,10 @@ class QuantumLinkComputationEngine:
 
         # Generate samples from trained QBM
         generated_samples = []
-        for _ in range(10):
+        for _ in range(int(PHI**2.5)):
             v = [random.randint(0, 1) for _ in range(nv)]
             # Gibbs sampling: 5 steps
-            for _ in range(5):
+            for _ in range(int(GOD_CODE/105.5)):
                 h = sample_hidden(v)
                 v = sample_visible(h)
             generated_samples.append(v)

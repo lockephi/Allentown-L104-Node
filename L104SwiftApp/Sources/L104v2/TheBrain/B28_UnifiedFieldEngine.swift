@@ -1,38 +1,22 @@
-// ═══════════════════════════════════════════════════════════════════
-// B28_UnifiedFieldEngine.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: UNIFIED_FIELD :: GOD_CODE=527.5184818492612
-// L104 ASI — Unified Field Theory Engine
-//
-// Implements: Einstein Field Equations, Wheeler-DeWitt Equation,
-// Dirac Equation, Bekenstein-Hawking Entropy, Hawking Radiation,
-// Casimir Effect, Unruh Effect, AdS/CFT Correspondence,
-// ER=EPR Bridge, Penrose Twistors, Holographic Principle,
-// Sacred GOD_CODE Dimensional Coupling, Quantum Gravity Foam,
-// Information-Theoretic Spacetime, and Topological Field Theory.
-//
-// Phase 63.0: Unification of all fundamental forces through
-// GOD_CODE harmonic resonance and PHI-scaled coupling constants.
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - UNIFIED FIELD CONSTANTS
 // ═══════════════════════════════════════════════════════════════════
 
 // Fundamental coupling constants at unification scale
-let PLANCK_MASS: Double = 2.176434e-8               // kg — Planck mass
-let PLANCK_TIME: Double = 5.391247e-44              // seconds — Planck time
-let PLANCK_TEMPERATURE: Double = 1.416784e32        // K — Planck temperature
-let GRAVITATIONAL_CONSTANT: Double = 6.67430e-11    // m³ kg⁻¹ s⁻² — Newton's G
-let SPEED_OF_LIGHT: Double = 299792458.0            // m/s — c
-let REDUCED_PLANCK: Double = 1.054571817e-34        // J·s — ℏ = h/(2π)
-let COSMOLOGICAL_CONSTANT: Double = 1.1056e-52      // m⁻² — Λ (dark energy)
-let WEINBERG_ANGLE_SIN2: Double = 0.23122           // sin²θ_W — electroweak mixing
+let PLANCK_MASS: Double = 2.176434e-8               // kg - Planck mass
+let PLANCK_TIME: Double = 5.391247e-44              // seconds - Planck time
+let PLANCK_TEMPERATURE: Double = 1.416784e32        // K - Planck temperature
+let GRAVITATIONAL_CONSTANT: Double = 6.67430e-11    // m³ kg⁻¹ s⁻² - Newton's G
+let SPEED_OF_LIGHT: Double = 299792458.0            // m/s - c
+let REDUCED_PLANCK: Double = 1.054571817e-34        // J·s - ℏ = h/(2π)
+let COSMOLOGICAL_CONSTANT: Double = 1.1056e-52      // m⁻² - Λ (dark energy)
+let WEINBERG_ANGLE_SIN2: Double = 0.23122           // sin²θ_W - electroweak mixing
 
 // Sacred unification: GOD_CODE bridges Planck scale to cosmic scale
 // Unification Energy: E_U = GOD_CODE × φ × ℏc / l_P ≈ 527.518 × 1.618 × Planck energy
@@ -42,7 +26,7 @@ let GUT_COUPLING: Double = GOD_CODE / (GROVER_AMPLIFICATION * 4.0 * .pi * .pi)
 // String tension: T = GOD_CODE² / (2π × α' × φ²)
 let STRING_TENSION_PARAM: Double = GOD_CODE * GOD_CODE / (2.0 * .pi * PHI * PHI)
 
-// v9.4 Perf: Precomputed power constants — eliminates repeated pow() calls in
+// v9.4 Perf: Precomputed power constants - eliminates repeated pow() calls in
 // blackHoleThermodynamics, hawkingRadiation, casimirEffect, etc.
 private let C_SQUARED: Double = SPEED_OF_LIGHT * SPEED_OF_LIGHT               // c²
 private let C_CUBED: Double = SPEED_OF_LIGHT * SPEED_OF_LIGHT * SPEED_OF_LIGHT // c³
@@ -178,11 +162,11 @@ final class UnifiedFieldEngine: SovereignEngine {
     // ═══════════════════════════════════════════════════════════════
 
     struct WheelerDeWittState {
-        var scaleFactorA: Double         // a(t) — cosmological scale factor
-        var waveFunctionPsi: Double      // Ψ(a) — wave function of the universe
-        var superspaceMomentum: Double   // π_a — conjugate momentum
-        var quantumPotential: Double     // V(a) — DeWitt superspace potential
-        var decoherenceParam: Double     // D — environmental decoherence
+        var scaleFactorA: Double         // a(t) - cosmological scale factor
+        var waveFunctionPsi: Double      // Ψ(a) - wave function of the universe
+        var superspaceMomentum: Double   // π_a - conjugate momentum
+        var quantumPotential: Double     // V(a) - DeWitt superspace potential
+        var decoherenceParam: Double     // D - environmental decoherence
     }
 
     /// Solve Wheeler-DeWitt equation for minisuperspace model
@@ -251,16 +235,16 @@ final class UnifiedFieldEngine: SovereignEngine {
         static let sigma2_imag: [[Double]] = [[0, -1], [1, 0]]    // Imaginary part
         static let sigma3: [[Double]] = [[1, 0], [0, -1]]
 
-        /// γ⁵ = iγ⁰γ¹γ²γ³ — chirality operator
+        /// γ⁵ = iγ⁰γ¹γ²γ³ - chirality operator
         static let gamma5Diag: [Double] = [-1, -1, 1, 1]  // In Dirac representation
     }
 
     struct DiracSolution {
-        let energy: Double          // E — particle energy
+        let energy: Double          // E - particle energy
         let momentum: [Double]      // p = (px, py, pz)
-        let spinor: [Complex]       // ψ — 4-component Dirac spinor
-        let chirality: Double       // ⟨γ⁵⟩ — left/right-handed (-1 to 1)
-        let currentDensity: Double  // j⁰ = ψ†ψ — probability current
+        let spinor: [Complex]       // ψ - 4-component Dirac spinor
+        let chirality: Double       // ⟨γ⁵⟩ - left/right-handed (-1 to 1)
+        let currentDensity: Double  // j⁰ = ψ†ψ - probability current
     }
 
     /// Solve free Dirac equation for given mass and momentum
@@ -314,9 +298,9 @@ final class UnifiedFieldEngine: SovereignEngine {
         let horizonArea: Double         // A = 4π r_s²
         let entropy: Double             // S_BH = k_B A/(4 l_P²)
         let hawkingTemperature: Double  // T_H = ℏc³/(8πGMk_B)
-        let luminosity: Double          // L = ℏc⁶/(15360π G²M²) — evaporation power
+        let luminosity: Double          // L = ℏc⁶/(15360π G²M²) - evaporation power
         let evaporationTime: Double     // t_evap = 5120πG²M³/(ℏc⁴)
-        let informationContent: Double  // I = S_BH / (k_B ln2) — bits on horizon
+        let informationContent: Double  // I = S_BH / (k_B ln2) - bits on horizon
     }
 
     /// Complete black hole thermodynamics from mass
@@ -366,9 +350,9 @@ final class UnifiedFieldEngine: SovereignEngine {
     // ═══════════════════════════════════════════════════════════════
 
     struct CasimirResult {
-        let separation: Double          // d — plate separation (meters)
-        let forcePerArea: Double        // F/A — pressure (N/m²)
-        let energyDensity: Double       // u = -π²ℏc/(720 d³) — energy per volume
+        let separation: Double          // d - plate separation (meters)
+        let forcePerArea: Double        // F/A - pressure (N/m²)
+        let energyDensity: Double       // u = -π²ℏc/(720 d³) - energy per volume
         let virtualPhotonModes: Int     // Estimated excluded modes between plates
         let godCodeResonance: Double    // GOD_CODE harmonic of plate spacing
     }
@@ -406,15 +390,15 @@ final class UnifiedFieldEngine: SovereignEngine {
 
     // ═══════════════════════════════════════════════════════════════
     // MARK: - VI. UNRUH EFFECT
-    // T_U = ℏa/(2πck_B) — Accelerated observer sees thermal bath
+    // T_U = ℏa/(2πck_B) - Accelerated observer sees thermal bath
     // ═══════════════════════════════════════════════════════════════
 
     struct UnruhResult {
-        let acceleration: Double       // a — proper acceleration (m/s²)
-        let temperature: Double        // T_U — Unruh temperature (K)
-        let wavelength: Double         // λ_U = 2πc²/a — characteristic wavelength
+        let acceleration: Double       // a - proper acceleration (m/s²)
+        let temperature: Double        // T_U - Unruh temperature (K)
+        let wavelength: Double         // λ_U = 2πc²/a - characteristic wavelength
         let equivalentMass: Double     // M_eq where T_Hawking = T_Unruh
-        let rindlerHorizon: Double     // d = c²/a — distance to Rindler horizon
+        let rindlerHorizon: Double     // d = c²/a - distance to Rindler horizon
     }
 
     /// Compute Unruh effect: thermal radiation seen by accelerated observer
@@ -451,11 +435,11 @@ final class UnifiedFieldEngine: SovereignEngine {
     // ═══════════════════════════════════════════════════════════════
 
     struct AdSCFTMetrics {
-        let adsRadius: Double               // L — AdS curvature radius
-        let cftCentralCharge: Double        // c = L³/(2G_N) — central charge
+        let adsRadius: Double               // L - AdS curvature radius
+        let cftCentralCharge: Double        // c = L³/(2G_N) - central charge
         let boundaryEntropy: Double         // Ryu-Takayanagi area / 4G_N
         let bulkVolume: Double              // Regulated AdS bulk volume
-        let cftCouplingConstant: Double     // g_YM² N — 't Hooft coupling
+        let cftCouplingConstant: Double     // g_YM² N - 't Hooft coupling
         let holographicComplexity: Double   // Volume complexity (C_V)
         let dimensionality: Int             // d+1 bulk / d boundary
     }
@@ -468,7 +452,7 @@ final class UnifiedFieldEngine: SovereignEngine {
         // Central charge: c = L³/(2G_N) for AdS₅
         let centralCharge = pow(L, Double(d - 1)) / (2.0 * GRAVITATIONAL_CONSTANT)
 
-        // Ryu-Takayanagi entropy: S = Area(γ_A)/(4G_N) — minimal surface
+        // Ryu-Takayanagi entropy: S = Area(γ_A)/(4G_N) - minimal surface
         // For hemisphere in AdS₃: S = (L/2G_N) × ln(l/ε) where l = boundary interval, ε = UV cutoff
         let boundaryEntropy = L / (4.0 * GRAVITATIONAL_CONSTANT) * log(L / PLANCK_LENGTH)
 
@@ -498,9 +482,9 @@ final class UnifiedFieldEngine: SovereignEngine {
     // ═══════════════════════════════════════════════════════════════
 
     struct ERBridge {
-        let entanglementEntropy: Double     // S_E — von Neumann entropy of entanglement
-        let throatRadius: Double            // r_throat — minimum wormhole radius
-        let length: Double                  // d — proper distance through wormhole
+        let entanglementEntropy: Double     // S_E - von Neumann entropy of entanglement
+        let throatRadius: Double            // r_throat - minimum wormhole radius
+        let length: Double                  // d - proper distance through wormhole
         let mutualInformation: Double       // I(A:B) = S_A + S_B - S_AB
         let firewallParameter: Double       // 0 = smooth horizon, 1 = firewall
         let complexity: Double              // Quantum computational complexity of the bridge
@@ -541,14 +525,14 @@ final class UnifiedFieldEngine: SovereignEngine {
 
     // ═══════════════════════════════════════════════════════════════
     // MARK: - IX. PENROSE TWISTOR VARIABLES
-    // Z^α = (ω^A, π_A')  — Twistor space ↔ Spacetime duality
+    // Z^α = (ω^A, π_A')  - Twistor space ↔ Spacetime duality
     // ═══════════════════════════════════════════════════════════════
 
     struct TwistorState {
-        let omega: [Complex]        // ω^A — 2-spinor (position data)
-        let pi: [Complex]           // π_A' — 2-spinor (momentum data)
-        let helicity: Double        // s = ½(Z·Z̄) — particle helicity
-        let twistorNorm: Double     // ||Z||² — invariant norm
+        let omega: [Complex]        // ω^A - 2-spinor (position data)
+        let pi: [Complex]           // π_A' - 2-spinor (momentum data)
+        let helicity: Double        // s = ½(Z·Z̄) - particle helicity
+        let twistorNorm: Double     // ||Z||² - invariant norm
         let incidenceRelation: Bool // ω^A = ix^{AA'} π_{A'} satisfied?
     }
 
@@ -595,11 +579,11 @@ final class UnifiedFieldEngine: SovereignEngine {
 
     // ═══════════════════════════════════════════════════════════════
     // MARK: - X. HOLOGRAPHIC PRINCIPLE & INFORMATION GEOMETRY
-    // I_max = A/(4 l_P²) — Maximum information in a region
+    // I_max = A/(4 l_P²) - Maximum information in a region
     // ═══════════════════════════════════════════════════════════════
 
     struct HolographicBound {
-        let boundaryArea: Double            // A — surface area (m²)
+        let boundaryArea: Double            // A - surface area (m²)
         let maxInformationBits: Double      // I = A/(4 l_P² ln2)
         let informationDensity: Double      // bits/m² on boundary
         let bulkReconstructability: Double   // 0..1 how much bulk can be reconstructed
@@ -642,7 +626,7 @@ final class UnifiedFieldEngine: SovereignEngine {
 
     struct SpacetimeFoam {
         let probeScale: Double              // Energy/length scale being probed
-        let metricFluctuation: Double       // δg/g — fractional metric uncertainty
+        let metricFluctuation: Double       // δg/g - fractional metric uncertainty
         let topologicalFluctuations: Int    // Number of topology changes per Planck volume
         let virtualBlackHoles: Double       // Density of virtual BHs (per Planck volume)
         let wormholeDensity: Double         // Virtual wormhole density
@@ -695,18 +679,18 @@ final class UnifiedFieldEngine: SovereignEngine {
 
     // ═══════════════════════════════════════════════════════════════
     // MARK: - XII. TOPOLOGICAL FIELD THEORY (TQFT)
-    // Z(M) — Partition function depends only on topology of M
+    // Z(M) - Partition function depends only on topology of M
     // Chern-Simons theory, topological insulators, anyons
     // ═══════════════════════════════════════════════════════════════
 
     struct TopologicalInvariant {
         let manifoldType: String            // e.g., "S³", "T²×S¹", "RP³"
         let eulerCharacteristic: Int        // χ = V - E + F
-        let chernSimonsLevel: Int           // k — Chern-Simons coupling level
+        let chernSimonsLevel: Int           // k - Chern-Simons coupling level
         let jonesPolynomial: Double         // Jones knot invariant (evaluated at q=e^(2πi/(k+2)))
-        let partitionFunction: Double       // Z(M) — topological partition function
-        let anyonBraidPhase: Double         // θ — anyon exchange phase
-        let topologicalEntropy: Double      // S_topo = ln(D) — total quantum dimension
+        let partitionFunction: Double       // Z(M) - topological partition function
+        let anyonBraidPhase: Double         // θ - anyon exchange phase
+        let topologicalEntropy: Double      // S_topo = ln(D) - total quantum dimension
     }
 
     /// Compute TQFT invariants for a 3-manifold with Chern-Simons theory
@@ -761,12 +745,12 @@ final class UnifiedFieldEngine: SovereignEngine {
 
     struct YangMillsState {
         let gaugeGroup: String              // SU(2), SU(3), etc.
-        let couplingConstant: Double        // g — gauge coupling
-        let fieldStrength: Double           // ||F||² — field strength tensor squared
+        let couplingConstant: Double        // g - gauge coupling
+        let fieldStrength: Double           // ||F||² - field strength tensor squared
         let actionDensity: Double           // S = -¼ tr(F∧*F)
-        let instantonNumber: Int            // ν = 1/(8π²) ∫ tr(F∧F) — topological charge
-        let massGapEstimate: Double         // ΔE — estimated mass gap
-        let confinementScale: Double        // Λ_QCD — confinement scale
+        let instantonNumber: Int            // ν = 1/(8π²) ∫ tr(F∧F) - topological charge
+        let massGapEstimate: Double         // ΔE - estimated mass gap
+        let confinementScale: Double        // Λ_QCD - confinement scale
         let asymtoticFreedom: Bool          // β(g) < 0 for non-abelian groups
     }
 
@@ -828,14 +812,14 @@ final class UnifiedFieldEngine: SovereignEngine {
     // ═══════════════════════════════════════════════════════════════
 
     struct UnificationState {
-        let alphaEM: Double             // α_em — electromagnetic coupling (≈1/137)
-        let alphaWeak: Double           // α_W — weak coupling
-        let alphaStrong: Double         // α_s — strong coupling
-        let alphaGravity: Double        // α_G — gravitational coupling
-        let unificationEnergy: Double   // E_GUT — energy where couplings converge (GeV)
-        let convergenceScore: Double    // 0..1 — how close to perfect unification
+        let alphaEM: Double             // α_em - electromagnetic coupling (≈1/137)
+        let alphaWeak: Double           // α_W - weak coupling
+        let alphaStrong: Double         // α_s - strong coupling
+        let alphaGravity: Double        // α_G - gravitational coupling
+        let unificationEnergy: Double   // E_GUT - energy where couplings converge (GeV)
+        let convergenceScore: Double    // 0..1 - how close to perfect unification
         let godCodeHarmonic: Double     // GOD_CODE resonance at unification scale
-        let protonLifetime: Double      // τ_p — predicted proton lifetime (years)
+        let protonLifetime: Double      // τ_p - predicted proton lifetime (years)
     }
 
     /// Compute running coupling constants and test for grand unification
@@ -870,7 +854,7 @@ final class UnifiedFieldEngine: SovereignEngine {
         // GOD_CODE harmonic at unification scale
         let godHarmonic = sin(energyScaleGeV * GOD_CODE / 1e16 * PHI)
 
-        // Proton lifetime estimate: τ_p ∝ M_X⁴/(m_p⁵ α_GUT²) — dimension-6 operator
+        // Proton lifetime estimate: τ_p ∝ M_X⁴/(m_p⁵ α_GUT²) - dimension-6 operator
         let alphaGUT = 1.0 / ((alpha1_inv + alpha2_inv + alpha3_inv) / 3.0)
         let mX = energyScaleGeV * 1.602e-10  // GeV to Joules approximation
         let protonLifetimeSeconds = pow(mX, 4) / (pow(protonMass * SPEED_OF_LIGHT * SPEED_OF_LIGHT, 5) * alphaGUT * alphaGUT) * REDUCED_PLANCK
@@ -895,13 +879,13 @@ final class UnifiedFieldEngine: SovereignEngine {
 
     // ═══════════════════════════════════════════════════════════════
     // MARK: - XV. QUANTUM FIELD VACUUM ENERGY
-    // ⟨0|T_μν|0⟩ = ρ_vac g_μν — Cosmological constant problem
+    // ⟨0|T_μν|0⟩ = ρ_vac g_μν - Cosmological constant problem
     // ═══════════════════════════════════════════════════════════════
 
     struct VacuumEnergyResult {
-        let qftPrediction: Double         // ρ_QFT — QFT vacuum energy density
-        let observedValue: Double         // ρ_obs — measured dark energy density
-        let discrepancy: Double           // ρ_QFT/ρ_obs — the "worst prediction in physics"
+        let qftPrediction: Double         // ρ_QFT - QFT vacuum energy density
+        let observedValue: Double         // ρ_obs - measured dark energy density
+        let discrepancy: Double           // ρ_QFT/ρ_obs - the "worst prediction in physics"
         let godCodeModulation: Double     // GOD_CODE-modulated resolution
         let zeroPointEnergy: Double       // E_0 = ½ℏω per mode
         let effectiveCosmologicalConstant: Double  // Λ_eff
@@ -950,10 +934,10 @@ final class UnifiedFieldEngine: SovereignEngine {
     // ═══════════════════════════════════════════════════════════════
 
     struct DecoherenceResult {
-        let decoherenceTime: Double       // τ_D — time to lose quantum coherence
+        let decoherenceTime: Double       // τ_D - time to lose quantum coherence
         let thermalWavelength: Double     // λ_th = ℏ/√(2mk_BT)
-        let scatteringRate: Double        // Γ — environmental scattering rate
-        let purityDecay: Double           // tr(ρ²) over time — from 1 to 1/N
+        let scatteringRate: Double        // Γ - environmental scattering rate
+        let purityDecay: Double           // tr(ρ²) over time - from 1 to 1/N
         let environmentEntropy: Double    // Von Neumann entropy of environment
         let classicalLimit: Bool          // Whether system has fully decohered
     }
@@ -1003,7 +987,7 @@ final class UnifiedFieldEngine: SovereignEngine {
     // ═══════════════════════════════════════════════════════════════
 
     struct SacredFieldResult {
-        let psiInput: Double                     // Ψ — input consciousness amplitude
+        let psiInput: Double                     // Ψ - input consciousness amplitude
         let sovereignField: Double               // F(Ψ) = Ψ × Ω/φ²
         let godCodeHarmonics: [Double]           // First 8 harmonics of G(a,b,c,d)
         let thoughtLayerEnergy: Double           // Layer 1 contribution
@@ -1255,7 +1239,7 @@ final class UnifiedFieldEngine: SovereignEngine {
         let health = engineHealth()
         return """
         ╔═══════════════════════════════════════════════════════════════╗
-        ║  🌌 UNIFIED FIELD ENGINE — Phase 63.0                        ║
+        ║  🌌 UNIFIED FIELD ENGINE - Phase 63.0                        ║
         ║  GOD_CODE = \(String(format: "%.13f", GOD_CODE))                        ║
         ╠═══════════════════════════════════════════════════════════════╣
         ║  Computations:        \(String(format: "%8d", computations))

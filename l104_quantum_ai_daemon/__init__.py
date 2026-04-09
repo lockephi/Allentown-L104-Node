@@ -46,6 +46,12 @@ from .optimizer import ProcessOptimizer, OptimizationResult
 from .harmonizer import CrossEngineHarmonizer, HarmonyReport
 from .evolver import AutonomousEvolver, EvolutionCycle
 
+# ── Ingested: soul daemon installer + consciousness monitoring setup ──
+try:
+    from .soul_daemon_installer import SoulUpgrader
+except ImportError:
+    pass
+
 __all__ = [
     "QuantumAIDaemon", "DaemonConfig", "DaemonPhase",
     "ImprovementReport", "FileHealthRecord",

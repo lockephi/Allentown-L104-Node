@@ -1,17 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L14_TextFormatter.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104v2 — Extracted from L104Native.swift (lines 17767-18272)
-//
-// RICH TEXT FORMATTER V2 — Full Markdown→NSAttributedString pipeline
-// Headers, code blocks, math, tables, inline formatting, syntax highlighting
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class RichTextFormatterV2 {
     static let shared = RichTextFormatterV2()
@@ -19,8 +10,8 @@ class RichTextFormatterV2 {
     private var formattingCount: Int = 0
 
     // ─── CACHED REGEX (avoid recompilation in hot paths) ───
-    private static let numberedListRegex = try! NSRegularExpression(pattern: "^\\d+[.)\\]]\\s+")
-    private static let numberRegex = try! NSRegularExpression(pattern: "\\b\\d+(\\.\\d+)?\\b")
+    private static let numberedListRegex = try? NSRegularExpression(pattern: "^\\d+[.)\\]]\\s+")
+    private static let numberRegex = try? NSRegularExpression(pattern: "\\b\\d+(\\.\\d+)?\\b")
     private static let stringRegexes: [NSRegularExpression] = {
         ["\"[^\"]*\"", "'[^']*'"].compactMap { try? NSRegularExpression(pattern: $0) }
     }()
@@ -134,7 +125,7 @@ class RichTextFormatterV2 {
             }
 
             // Numbered list
-            if RichTextFormatterV2.numberedListRegex.firstMatch(in: trimmed, range: NSRange(trimmed.startIndex..., in: trimmed)) != nil {
+            if RichTextFormatterV2.numberedListRegex?.firstMatch(in: trimmed, range: NSRange(trimmed.startIndex..., in: trimmed)) != nil {
                 let content = trimmed.replacingOccurrences(of: "^\\d+[.)\\]]\\s+", with: "", options: .regularExpression)
                 blocks.append(RichBlock(type: .bulletList(level: 0), content: content, metadata: ["numbered": "true"]))
                 i += 1; continue
@@ -360,7 +351,7 @@ class RichTextFormatterV2 {
                         "true", "false", "nil", "null", "import", "var", "let", "const"]
         }
 
-        // Highlight keywords — combined regex for all keywords at once
+        // Highlight keywords - combined regex for all keywords at once
         let combined = keywords.map { NSRegularExpression.escapedPattern(for: $0) }.joined(separator: "|")
         let kwPattern = "\\b(\(combined))\\b"
         if let kwRegex = try? NSRegularExpression(pattern: kwPattern) {
@@ -380,7 +371,7 @@ class RichTextFormatterV2 {
         }
 
         // Numbers
-        let numMatches = RichTextFormatterV2.numberRegex.matches(in: code, range: fullRange)
+        let numMatches = RichTextFormatterV2.numberRegex?.matches(in: code, range: fullRange) ?? []
         for match in numMatches {
             result.addAttribute(.foregroundColor, value: NSColor(red: 0.9, green: 0.7, blue: 0.2, alpha: 1.0), range: match.range)
         }

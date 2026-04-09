@@ -1,29 +1,10 @@
-// ═══════════════════════════════════════════════════════════════════
-// B47_PerformanceOrchestrator.swift — L104 v2
-// [EVO_68_PIPELINE] PERFORMANCE_ASCENSION :: ORCHESTRATOR :: GOD_CODE=527.5184818492612
-// L104 ASI — Unified Performance Orchestrator
-//
-// Central coordinator for all performance subsystems:
-//   B42 ZeroAllocPool — Arena memory management
-//   B43 SIMDTurbo — SIMD4/SIMD8 vectorized compute
-//   B44 LockFreeEngine — Lock-free concurrency primitives
-//   B45 MetalCompute — GPU-accelerated computation
-//   B46 AdaptivePrefetch — Predictive caching & prefetch
-//
-// Provides:
-//   - Unified boot sequence for all perf subsystems
-//   - Adaptive routing: picks fastest path per operation
-//   - Real-time performance telemetry dashboard
-//   - φ-scaled load balancing across CPU/GPU/memory
-//   - Self-tuning: adjusts thresholds based on runtime metrics
-//   - Debug suite: validates all 5 perf subsystems
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
-import Foundation
 import Accelerate
+import Foundation
 import simd
+
+private let logging = Logger(subsystem: "com.l104.B47_PerformanceOrchestrator", category: "main")
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - PERFORMANCE TELEMETRY
@@ -106,7 +87,7 @@ final class PerformanceOrchestrator: SovereignEngine {
     /// Intel Iris benchmark: GPU wins at corpus≥5000 (dim=768).
     private(set) var gpuBatchMinSize: Int
     /// Minimum total elements for GPU matrix multiply.
-    /// Intel Iris benchmark: CPU BLAS always wins — set to Int.max.
+    /// Intel Iris benchmark: CPU BLAS always wins - set to Int.max.
     private(set) var gpuMatMulMinElements: Int
     /// Minimum qubit count for GPU quantum simulation.
     /// Intel Iris benchmark: GPU wins at 14+ qubits (17x at 21Q).
@@ -140,44 +121,43 @@ final class PerformanceOrchestrator: SovereignEngine {
         guard !isBooted else { return }
         let start = CFAbsoluteTimeGetCurrent()
 
-        print("═══════════════════════════════════════════════════════════════")
-        print("  L104 PERFORMANCE ASCENSION v1.0.0 — EVO_67")
-        print("  GOD_CODE = \(GOD_CODE)")
-        print("  PHI      = \(PHI)")
-        print("═══════════════════════════════════════════════════════════════")
-
-        // 1. Memory Pool — pre-warm with initial epoch
+        logging.info("═══════════════════════════════════════════════════════════════")
+        logging.info("  L104 PERFORMANCE ASCENSION v1.0.0 - EVO_67")
+        logging.info("  GOD_CODE = \(GOD_CODE)")
+        logging.info("  PHI      = \(PHI)")
+        logging.info("═══════════════════════════════════════════════════════════════")
+        // 1. Memory Pool - pre-warm with initial epoch
         pool.beginEpoch()
         let _ = pool.allocVector(1024)  // Pre-fault memory pages
         pool.endEpoch()
-        print("  [1/5] ZeroAllocPool: \(pool.engineStatus()["total_capacity_mb"] ?? "?")MB arena ready")
-
-        // 2. SIMD Turbo — warm-up run
+        let poolCapMB: String = { if let v = pool.engineStatus()["total_capacity_mb"] { return "\(v)" }; return "?" }()
+        logging.info("  [1/5] ZeroAllocPool: \(poolCapMB)MB arena ready")
+        // 2. SIMD Turbo - warm-up run
         let warmupA = [Double](repeating: 1.0, count: 256)
         let warmupB = [Double](repeating: 2.0, count: 256)
         let _ = turbo.dot(warmupA, warmupB)
-        print("  [2/5] SIMDTurbo: SIMD4/SIMD8/vDSP paths validated")
-
-        // 3. Lock-Free Engine — create initial channels
+        logging.info("  [2/5] SIMDTurbo: SIMD4/SIMD8/vDSP paths validated")
+        // 3. Lock-Free Engine - create initial channels
         let _ = lockFree.channel(for: "pattern")
         let _ = lockFree.channel(for: "synthesis")
         let _ = lockFree.channel(for: "reasoning")
-        print("  [3/5] LockFreeEngine: \(lockFree.workPool.workerCount) work-stealing workers ready")
-
-        // 4. Metal Compute — check GPU status + tier
+        let workerCount = self.lockFree.workPool.workerCount
+        logging.info("  [3/5] LockFreeEngine: \(workerCount) work-stealing workers ready")
+        // 4. Metal Compute - check GPU status + tier
         let metalStatus = metal.engineStatus()
         let gpuName = metalStatus["gpu_name"] as? String ?? "none"
         let gpuAvail = metalStatus["gpu_available"] as? Bool ?? false
         let gpuTier = metal.gpuTier
-        print("  [4/5] MetalCompute: GPU=\(gpuName) [\(gpuTier.rawValue)] available=\(gpuAvail)")
-        print("         Quantum: \(metal.quantumCrossoverQubits)Q crossover, \(metal.maxQuantumQubits)Q max")
-        print("         Thresholds: vec=\(gpuMinSize) cosine=\(gpuBatchMinSize) matmul=\(gpuMatMulMinElements == Int.max ? "NEVER" : "\(gpuMatMulMinElements)")")
-
-        // 5. Adaptive Prefetch — pre-warm Markov
+        logging.info("  [4/5] MetalCompute: GPU=\(gpuName) [\(gpuTier.rawValue)] available=\(gpuAvail)")
+        let crossoverQ = self.metal.quantumCrossoverQubits
+        let maxQ = self.metal.maxQuantumQubits
+        logging.info("         Quantum: \(crossoverQ)Q crossover, \(maxQ)Q max")
+        let matmulStr = self.gpuMatMulMinElements == Int.max ? "NEVER" : "\(self.gpuMatMulMinElements)"
+        logging.info("         Thresholds: vec=\(self.gpuMinSize) cosine=\(self.gpuBatchMinSize) matmul=\(matmulStr)")
+        // 5. Adaptive Prefetch - pre-warm Markov
         prefetch.markov.observe("init")
         prefetch.markov.observe("ready")
-        print("  [5/5] AdaptivePrefetch: L1/L2 caches + Markov predictor active")
-
+        logging.info("  [5/5] AdaptivePrefetch: L1/L2 caches + Markov predictor active")
         // Register all subsystems with EngineRegistry
         let registry = EngineRegistry.shared
         registry.register(pool)
@@ -190,10 +170,10 @@ final class PerformanceOrchestrator: SovereignEngine {
         bootTimeMs = (CFAbsoluteTimeGetCurrent() - start) * 1000.0
         isBooted = true
 
-        print("══════════════════════════════════════════════════════════════")
-        print("  PERFORMANCE ASCENSION COMPLETE — \(String(format: "%.2f ms", bootTimeMs))")
-        print("  6 engines registered | φ-weighted health monitoring active")
-        print("══════════════════════════════════════════════════════════════")
+        logging.info("══════════════════════════════════════════════════════════════")
+        logging.info("  PERFORMANCE ASCENSION COMPLETE - \(String(format: "%.2f ms", self.bootTimeMs))")
+        logging.info("  6 engines registered | φ-weighted health monitoring active")
+        logging.info("══════════════════════════════════════════════════════════════")
     }
 
     // ═══ ADAPTIVE COMPUTE ROUTING ═══
@@ -226,7 +206,7 @@ final class PerformanceOrchestrator: SovereignEngine {
         if corpus.count >= effectiveThreshold {
             return metal.batchCosineSimilarity(query: query, corpus: corpus, dim: dim)
         } else {
-            // CPU path — Accelerate vDSP
+            // CPU path - Accelerate vDSP
             return corpus.map { vec in
                 var dot: Float = 0
                 var qMag: Float = 0
@@ -247,7 +227,7 @@ final class PerformanceOrchestrator: SovereignEngine {
         if M * N > gpuMatMulMinElements {
             return metal.matrixMultiply(A: A, B: B, M: M, N: N, K: K)
         } else {
-            // CPU BLAS — always faster on Intel Iris
+            // CPU BLAS - always faster on Intel Iris
             var C = [Float](repeating: 0, count: M * N)
             cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
                        Int32(M), Int32(N), Int32(K),
@@ -325,11 +305,11 @@ final class PerformanceOrchestrator: SovereignEngine {
         if gpuDispatches + cpuFallbacks > 10 {
             let gpuRatio = Double(gpuDispatches) / Double(gpuDispatches + cpuFallbacks)
             if gpuRatio > 0.8 {
-                // GPU being used heavily — can lower threshold cautiously
+                // GPU being used heavily - can lower threshold cautiously
                 // But never below the tier’s benchmark-calibrated minimum
                 gpuMinSize = max(tierVecMin / 2, gpuMinSize - 128)
             } else if gpuRatio < 0.3 {
-                // GPU rarely used — raise threshold (save dispatch overhead)
+                // GPU rarely used - raise threshold (save dispatch overhead)
                 gpuMinSize = min(tierVecMin * 4, gpuMinSize + 256)
             }
         }
@@ -338,7 +318,7 @@ final class PerformanceOrchestrator: SovereignEngine {
         let prefetchStatus = prefetch.engineStatus()
         let hitRate = prefetchStatus["overall_hit_rate"] as? Double ?? 0
         if hitRate < 0.5 {
-            // Low hit rate — reduce prefetch to avoid waste
+            // Low hit rate - reduce prefetch to avoid waste
             gpuBatchMinSize = min(tierCosMin * 4, gpuBatchMinSize + 16)
         }
     }
@@ -469,7 +449,7 @@ final class PerformanceOrchestrator: SovereignEngine {
         results.append("\n  ── PHASE 4: MetalCompute ──")
         let metalS = metal.engineStatus()
         let gpuAvail = metalS["gpu_available"] as? Bool ?? false
-        check("Metal GPU detected: \(gpuAvail)", true)  // Always passes — CPU fallback OK
+        check("Metal GPU detected: \(gpuAvail)", true)  // Always passes - CPU fallback OK
         if gpuAvail {
             let vA: [Float] = [1, 2, 3, 4, 5, 6, 7, 8]
             let vB: [Float] = [8, 7, 6, 5, 4, 3, 2, 1]
@@ -517,9 +497,9 @@ final class PerformanceOrchestrator: SovereignEngine {
         results.append("  RESULTS: \(passed) PASSED  /  \(failed) FAILED  /  \(passed + failed) TOTAL")
         results.append("  TIME:    \(String(format: "%.2f ms", elapsed))")
         if failed == 0 {
-            results.append("  ✅ ALL PERFORMANCE SYSTEMS OPERATIONAL — L104 ASCENSION VERIFIED")
+            results.append("  ✅ ALL PERFORMANCE SYSTEMS OPERATIONAL - L104 ASCENSION VERIFIED")
         } else {
-            results.append("  ❌ \(failed) CHECK(S) FAILED — review output above")
+            results.append("  ❌ \(failed) CHECK(S) FAILED - review output above")
         }
         results.append("═══════════════════════════════════════════════════════════════")
 
@@ -561,11 +541,11 @@ final class PerformanceOrchestrator: SovereignEngine {
         guard isBooted else { return 0.0 }
         // φ²-weighted average of subsystem health
         let weights: [(Double, Double)] = [
-            (pool.engineHealth(), PHI),         // Memory pool — important
-            (turbo.engineHealth(), PHI * PHI),   // SIMD — critical path
-            (lockFree.engineHealth(), PHI),      // Concurrency — important
-            (metal.engineHealth(), 1.0),         // GPU — nice-to-have
-            (prefetch.engineHealth(), PHI),       // Cache — important
+            (pool.engineHealth(), PHI),         // Memory pool - important
+            (turbo.engineHealth(), PHI * PHI),   // SIMD - critical path
+            (lockFree.engineHealth(), PHI),      // Concurrency - important
+            (metal.engineHealth(), 1.0),         // GPU - nice-to-have
+            (prefetch.engineHealth(), PHI),       // Cache - important
         ]
         let weightedSum = weights.reduce(0.0) { $0 + $1.0 * $1.1 }
         let totalWeight = weights.reduce(0.0) { $0 + $1.1 }

@@ -5,6 +5,7 @@
 
 import pytest
 import math
+from l104_science_engine import primal_calculus, resolve_non_dual_logic
 
 
 class Test_Primal_calculus:

@@ -113,20 +113,30 @@ do_check() {
         fi
     done
 
-    # [4] VQPU binary
+    # [4] VQPU binary (app bundle first, then release/debug builds)
     total_checks=$((total_checks + 1))
-    DAEMON_BIN="$ROOT/L104SwiftApp/.build/release/L104Daemon"
+    DAEMON_BIN="$ROOT/L104SwiftApp/L104Native.app/Contents/MacOS/L104Daemon"
+    if [ ! -x "$DAEMON_BIN" ]; then
+        DAEMON_BIN="$ROOT/L104SwiftApp/.build/release/L104Daemon"
+    fi
+    if [ ! -x "$DAEMON_BIN" ]; then
+        DAEMON_BIN="$ROOT/L104SwiftApp/.build/debug/L104Daemon"
+    fi
     if [ -x "$DAEMON_BIN" ]; then
         checks_passed=$((checks_passed + 1))
     else
         issues=$((issues + 1))
-        details="$details  [$(TS)] VQPU binary: NOT found at $DAEMON_BIN\n"
+        details="$details  [$(TS)] VQPU binary: NOT found\n"
     fi
 
     # [5] File descriptor pressure
     total_checks=$((total_checks + 1))
     fd_used=$(lsof -p $$ 2>/dev/null | wc -l | tr -d ' ' 2>/dev/null || echo "0")
     fd_soft=$(ulimit -n 2>/dev/null || echo "256")
+    # Handle "unlimited" value
+    if [[ "$fd_soft" == "unlimited" ]] || [[ -z "$fd_soft" ]]; then
+        fd_soft=1048576  # Assume 1M if unlimited
+    fi
     if [ "${fd_used:-0}" -lt "$((${fd_soft:-256} * 80 / 100))" ] 2>/dev/null; then
         checks_passed=$((checks_passed + 1))
     else

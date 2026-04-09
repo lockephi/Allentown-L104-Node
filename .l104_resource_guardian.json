@@ -1,188 +1,184 @@
 {
-  "version": "3.0.0",
-  "pid": 51270,
-  "start_time": 1773084579.5297542,
-  "ticks": 2100,
-  "current_level": "SURVIVAL",
-  "peak_level": "SURVIVAL",
+  "version": "3.1.0",
+  "pid": 528,
+  "start_time": 1775693635.64191,
+  "ticks": 900,
+  "current_level": "ELEVATED",
+  "peak_level": "CRITICAL",
   "level_durations_s": {
-    "NOMINAL": 7.3,
-    "ELEVATED": 1119.1,
-    "HIGH": 4901.3,
-    "CRITICAL": 453.6,
-    "SURVIVAL": 693.0
+    "NOMINAL": 3512.9,
+    "ELEVATED": 23062.3,
+    "HIGH": 16902.2,
+    "CRITICAL": 9577.5,
+    "SURVIVAL": 0.0
   },
-  "interventions_total": 1000,
+  "interventions_total": 89,
   "recent_interventions": [
     {
-      "time": 1773094056.967819,
-      "level": "SURVIVAL",
-      "action": "emergency_halt",
-      "detail": "SURVIVAL: Broadcast halt. RAM=124MB swap=0 mem=97%"
+      "time": 1775723387.89233,
+      "level": "ELEVATED",
+      "action": "gc_gen0",
+      "detail": "Collected gen0: freed 121 objects"
     },
     {
-      "time": 1773094061.835132,
+      "time": 1775724138.714487,
+      "level": "ELEVATED",
+      "action": "gc_gen0",
+      "detail": "Collected gen0: freed 184 objects"
+    },
+    {
+      "time": 1775724270.025596,
+      "level": "ELEVATED",
+      "action": "gc_gen0",
+      "detail": "Collected gen0: freed 184 objects"
+    },
+    {
+      "time": 1775724397.549484,
+      "level": "ELEVATED",
+      "action": "gc_gen0",
+      "detail": "Collected gen0: freed 217 objects"
+    },
+    {
+      "time": 1775724525.0246851,
+      "level": "ELEVATED",
+      "action": "gc_gen0",
+      "detail": "Collected gen0: freed 184 objects"
+    },
+    {
+      "time": 1775724652.855113,
+      "level": "ELEVATED",
+      "action": "gc_gen0",
+      "detail": "Collected gen0: freed 184 objects"
+    },
+    {
+      "time": 1775724674.6495948,
+      "level": "ELEVATED",
+      "action": "gc_gen0",
+      "detail": "Collected gen0: freed 118 objects"
+    },
+    {
+      "time": 1775734519.308772,
+      "level": "ELEVATED",
+      "action": "gc_gen0",
+      "detail": "Collected gen0: freed 118 objects"
+    },
+    {
+      "time": 1775734881.459799,
+      "level": "ELEVATED",
+      "action": "gc_gen0",
+      "detail": "Collected gen0: freed 184 objects"
+    },
+    {
+      "time": 1775736708.396956,
       "level": "CRITICAL",
       "action": "emergency_gc",
       "detail": "Emergency double-GC with aggressive thresholds"
     },
     {
-      "time": 1773094061.836712,
-      "level": "SURVIVAL",
-      "action": "emergency_halt",
-      "detail": "SURVIVAL: Broadcast halt. RAM=162MB swap=0 mem=96%"
-    },
-    {
-      "time": 1773094067.7358248,
+      "time": 1775736768.8542871,
       "level": "CRITICAL",
       "action": "emergency_gc",
       "detail": "Emergency double-GC with aggressive thresholds"
     },
     {
-      "time": 1773094067.7444701,
-      "level": "SURVIVAL",
-      "action": "emergency_halt",
-      "detail": "SURVIVAL: Broadcast halt. RAM=165MB swap=0 mem=96%"
+      "time": 1775736788.898997,
+      "level": "CRITICAL",
+      "action": "emergency_gc",
+      "detail": "Emergency double-GC with aggressive thresholds"
     },
     {
-      "time": 1773094073.105609,
+      "time": 1775736893.948428,
+      "level": "CRITICAL",
+      "action": "emergency_gc",
+      "detail": "Emergency double-GC with aggressive thresholds"
+    },
+    {
+      "time": 1775736919.5896268,
+      "level": "CRITICAL",
+      "action": "emergency_gc",
+      "detail": "Emergency double-GC with aggressive thresholds"
+    },
+    {
+      "time": 1775745947.204587,
       "level": "HIGH",
       "action": "gc_full",
-      "detail": "Full GC: freed 52 objects"
+      "detail": "Full GC: freed 35 objects"
     },
     {
-      "time": 1773094073.137755,
+      "time": 1775745947.600886,
       "level": "CRITICAL",
       "action": "emergency_gc",
       "detail": "Emergency double-GC with aggressive thresholds"
     },
     {
-      "time": 1773094073.154549,
-      "level": "SURVIVAL",
-      "action": "emergency_halt",
-      "detail": "SURVIVAL: Broadcast halt. RAM=168MB swap=0 mem=96%"
-    },
-    {
-      "time": 1773094079.259226,
-      "level": "HIGH",
-      "action": "gc_full",
-      "detail": "Full GC: freed 54 objects"
-    },
-    {
-      "time": 1773094079.3875608,
+      "time": 1775745993.7052429,
       "level": "CRITICAL",
       "action": "emergency_gc",
       "detail": "Emergency double-GC with aggressive thresholds"
     },
     {
-      "time": 1773094079.408303,
-      "level": "SURVIVAL",
-      "action": "emergency_halt",
-      "detail": "SURVIVAL: Broadcast halt. RAM=192MB swap=0 mem=95%"
-    },
-    {
-      "time": 1773094085.895481,
-      "level": "HIGH",
-      "action": "gc_full",
-      "detail": "Full GC: freed 52 objects"
-    },
-    {
-      "time": 1773094086.004919,
+      "time": 1775746012.209314,
       "level": "CRITICAL",
       "action": "emergency_gc",
       "detail": "Emergency double-GC with aggressive thresholds"
     },
     {
-      "time": 1773094086.029491,
-      "level": "SURVIVAL",
-      "action": "emergency_halt",
-      "detail": "SURVIVAL: Broadcast halt. RAM=172MB swap=0 mem=96%"
+      "time": 1775746226.273664,
+      "level": "ELEVATED",
+      "action": "gc_gen0",
+      "detail": "Collected gen0: freed 121 objects"
     },
     {
-      "time": 1773094091.202422,
-      "level": "HIGH",
-      "action": "gc_full",
-      "detail": "Full GC: freed 52 objects"
-    },
-    {
-      "time": 1773094091.2512078,
-      "level": "CRITICAL",
-      "action": "emergency_gc",
-      "detail": "Emergency double-GC with aggressive thresholds"
-    },
-    {
-      "time": 1773094091.262291,
-      "level": "SURVIVAL",
-      "action": "emergency_halt",
-      "detail": "SURVIVAL: Broadcast halt. RAM=219MB swap=0 mem=95%"
-    },
-    {
-      "time": 1773094096.927239,
-      "level": "HIGH",
-      "action": "gc_full",
-      "detail": "Full GC: freed 52 objects"
-    },
-    {
-      "time": 1773094097.01566,
-      "level": "CRITICAL",
-      "action": "emergency_gc",
-      "detail": "Emergency double-GC with aggressive thresholds"
-    },
-    {
-      "time": 1773094097.033366,
-      "level": "SURVIVAL",
-      "action": "emergency_halt",
-      "detail": "SURVIVAL: Broadcast halt. RAM=216MB swap=0 mem=95%"
+      "time": 1775746603.5476658,
+      "level": "ELEVATED",
+      "action": "gc_gen0",
+      "detail": "Collected gen0: freed 184 objects"
     }
   ],
   "governor": {
     "installed": true,
-    "current_cap": 1,
+    "current_cap": 16,
     "total_clamped": 0
   },
   "predicted_level": null,
-  "mem_slope": -0.1276,
+  "mem_slope": -0.0157,
   "cross_daemon_health": {
-    "micro": {
-      "alive": false,
-      "error": "parse"
-    },
     "quantum_ai": {
       "alive": false,
       "error": "parse"
     }
   },
   "telemetry_window": 1000,
-  "telemetry_filled": 1000,
-  "predicted_pressure_level": "SURVIVAL",
-  "swap_predicted_mb": 14666.3,
-  "resilience_score": 0.4791,
+  "telemetry_filled": 900,
+  "predicted_pressure_level": "NOMINAL",
+  "swap_predicted_mb": 7864.9,
+  "resilience_score": 0.6705,
   "resilience_history": [
     {
-      "ts": 1773094088.1483798,
-      "score": 0.4518,
-      "diversity": 0.25,
-      "recovery": 0.52,
-      "headroom": 0.042,
-      "stability": 0.995
+      "ts": 1775746668.932086,
+      "score": 0.5445,
+      "diversity": 0.5,
+      "recovery": 0.55,
+      "headroom": 0.2,
+      "stability": 0.927
     },
     {
-      "ts": 1773094093.404253,
-      "score": 0.4818,
-      "diversity": 0.25,
-      "recovery": 0.63,
-      "headroom": 0.053,
-      "stability": 0.994
+      "ts": 1775746690.550551,
+      "score": 0.6722,
+      "diversity": 0.5,
+      "recovery": 1.0,
+      "headroom": 0.246,
+      "stability": 0.943
     },
     {
-      "ts": 1773094099.110461,
-      "score": 0.4791,
-      "diversity": 0.25,
-      "recovery": 0.62,
-      "headroom": 0.053,
-      "stability": 0.994
+      "ts": 1775746721.669326,
+      "score": 0.6705,
+      "diversity": 0.5,
+      "recovery": 1.0,
+      "headroom": 0.321,
+      "stability": 0.861
     }
   ],
   "quota_violations": [],
-  "saved_at": 1773094099.3268962
+  "saved_at": 1775746721.787462
 }

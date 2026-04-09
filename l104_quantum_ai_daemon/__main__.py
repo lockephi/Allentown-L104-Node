@@ -11,4 +11,9 @@ Usage:
 from .daemon import _cli_main
 
 if __name__ == "__main__":
+    try:
+        import setproctitle
+        setproctitle.setproctitle("L104-QuantumAIDaemon")
+    except ImportError:
+        pass
     _cli_main()

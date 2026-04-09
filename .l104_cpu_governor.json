@@ -1,0 +1,71 @@
+{
+  "timestamp": "2026-04-03T22:37:44.873099+00:00",
+  "cpu_percent": 1.58,
+  "memory_percent": 26.6,
+  "load_tier": 0,
+  "allowed_daemons": [
+    "vqpu",
+    "quantum_sim",
+    "soul",
+    "orchestrator"
+  ],
+  "deferred_daemons": [
+    "quantum_ai"
+  ],
+  "grover_schedule": [
+    "quantum_ai",
+    "quantum_sim",
+    "orchestrator",
+    "vqpu",
+    "soul"
+  ],
+  "qaoa_schedule": [
+    "quantum_sim",
+    "orchestrator",
+    "vqpu",
+    "soul"
+  ],
+  "vqe_schedule": [
+    "vqpu",
+    "soul",
+    "orchestrator"
+  ],
+  "should_throttle": false,
+  "throttle_multiplier": 1.0,
+  "interval_multipliers": {
+    "vqpu": 1.0,
+    "quantum_ai": 1.0,
+    "quantum_sim": 1.0,
+    "soul": 1.0,
+    "orchestrator": 1.0
+  },
+  "poll_delays_ms": [
+    50.0,
+    53.9,
+    66.3,
+    89.0,
+    125.0,
+    177.8,
+    251.6,
+    350.8,
+    480.2,
+    645.0,
+    850.3,
+    1101.7,
+    1404.6,
+    1764.7,
+    2188.0
+  ],
+  "circuit_router": {
+    "engine": "stabilizer",
+    "clifford_ratio": 0.7143,
+    "total_gates": 7,
+    "sacred_alignment": 0.8443,
+    "speedup_estimate": 100.0
+  },
+  "sacred_resonance": 0.195864,
+  "governor_version": "1.1.0",
+  "phi_interval_seconds": 1.0,
+  "god_code": 527.5184818492612,
+  "phi": 1.618033988749895
+}

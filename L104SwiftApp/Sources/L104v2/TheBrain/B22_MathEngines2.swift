@@ -1,17 +1,8 @@
-// ═══════════════════════════════════════════════════════════════
-// B22_MathEngines2.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 · TheBrain · v2 Architecture
-//
-// Extracted from L104Native.swift lines 14128-15083
-// Classes: TensorCalculusEngine, OptimizationEngine, ProbabilityEngine
-// ═══════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class TensorCalculusEngine {
     static let shared = TensorCalculusEngine()
@@ -321,7 +312,8 @@ class OptimizationEngine {
                 var xMinus = x; xMinus[i] -= h
                 grad[i] = (f(xPlus) - f(xMinus)) / (2.0 * h)
             }
-            let gradNorm = Foundation.sqrt(grad.map { $0 * $0 }.reduce(0, +))
+            var gSq = 0.0; vDSP_svesqD(grad, 1, &gSq, vDSP_Length(grad.count))
+            let gradNorm = Foundation.sqrt(gSq)
             if gradNorm < tol { return (x, f(x), iter) }
             for i in 0..<x.count { x[i] -= learningRate * grad[i] }
         }
@@ -458,7 +450,7 @@ class OptimizationEngine {
         let n = xPoints.count
         guard n >= 3, n == yPoints.count else { return lagrangeInterpolate(xPoints: xPoints, yPoints: yPoints, at: x) }
 
-        // Compute h[i] = x[i+1] - x[i] — guard against zero-width intervals
+        // Compute h[i] = x[i+1] - x[i] - guard against zero-width intervals
         let h: [Double] = (0..<n-1).map { (i: Int) -> Double in xPoints[i + 1] - xPoints[i] }
         // Validate: all intervals must be positive (strictly monotonic x-points)
         guard h.allSatisfy({ $0 > 0 }) else { return .nan }
@@ -643,7 +635,7 @@ class OptimizationEngine {
 // information theory, Born rule, tunneling, entanglement priors
 // ═══════════════════════════════════════════════════════════════════════════════
 
-/// Quantum gate state — consolidated from logic gates + quantum links via GOD_CODE
+/// Quantum gate state - consolidated from logic gates + quantum links via GOD_CODE
 struct QuantumGateState {
     let name: String
     let gateType: QuantumGateType
@@ -686,7 +678,7 @@ class ProbabilityEngine {
     static let shared = ProbabilityEngine()
     private var computations: Int = 0
 
-    // Sacred constants — use globals from L01_Constants (no local shadows)
+    // Sacred constants - use globals from L01_Constants (no local shadows)
 
     // Consolidated quantum gate registry
     private(set) var quantumGates: [QuantumGateState] = []
@@ -748,7 +740,7 @@ class ProbabilityEngine {
         return cdf
     }
 
-    /// Geometric PMF: P(X=k) = (1-p)^(k-1) · p — trials until first success
+    /// Geometric PMF: P(X=k) = (1-p)^(k-1) · p - trials until first success
     func geometricPMF(p: Double, k: Int) -> Double {
         computations += 1
         guard k >= 1, p > 0, p <= 1 else { return 0 }

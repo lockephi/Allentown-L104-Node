@@ -1,38 +1,35 @@
-// ═══════════════════════════════════════════════════════════════════
-// H04_L104StateNCG.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — L104State Extension (NCG Intelligence Engine v24.0)
-//
-// callBackend, NCG v10.0 conversational intelligence engine,
-// junk filtering, isCleanKnowledge, cleanSentences, sanitizeResponse,
-// getIntelligentResponse dispatcher, getIntelligentResponseCreative,
-// getIntelligentResponseSocial.
-//
-// Extracted from L104Native.swift lines 37303–38470
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 extension L104State {
     func callBackend(_ query: String, completion: @escaping (String?) -> Void) {
         guard let url = URL(string: "\(backendURL)/api/v6/chat") else { completion(nil); return }
 
-        // Check local response cache first
+        // Thread-safe cache check: backendResponseCache is accessed from both background (here)
+        // and main thread (write in completion); guard with stateLock on reads.
         let cacheKey = query.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-        if let cached = backendResponseCache[cacheKey],
-           Date().timeIntervalSince(cached.timestamp) < cacheTTL {
-            backendCacheHits += 1
-            HyperBrain.shared.postThought("⚡ CACHE HIT: Recalled backend response (\(backendCacheHits) hits)")
-            completion(cached.response)
+        stateLock.lock()
+        let cachedEntry = backendResponseCache[cacheKey]
+        stateLock.unlock()
+        if let cached = cachedEntry, Date().timeIntervalSince(cached.timestamp) < cacheTTL {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.stateLock.lock()
+                self.backendCacheHits += 1
+                let hits = self.backendCacheHits
+                self.stateLock.unlock()
+                HyperBrain.shared.postThought("⚡ CACHE HIT: Recalled backend response (\(hits) hits)")
+                completion(cached.response)
+            }
             return
         }
 
         var req = URLRequest(url: url); req.httpMethod = "POST"
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type"); req.timeoutInterval = 30  // v23.5: 30s timeout (was 15s, matching Python httpx.Timeout(30.0))
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.timeoutInterval = 30  // v23.5: 30s timeout (matches Python httpx.Timeout(30.0))
         let requestStart = Date()
 
         // Build context-enriched payload
@@ -60,7 +57,9 @@ extension L104State {
         }
 
         req.httpBody = try? JSONSerialization.data(withJSONObject: payload)
-        backendQueryCount += 1
+
+        // Increment query counter on main to avoid race with completion writes
+        DispatchQueue.main.async { [weak self] in self?.backendQueryCount += 1 }
 
         URLSession.shared.dataTask(with: req) { [weak self] data, resp, error in
             let statusCode = (resp as? HTTPURLResponse)?.statusCode ?? 0
@@ -74,7 +73,6 @@ extension L104State {
                 guard let data = data, statusCode == 200,
                       let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                       let text = json["response"] as? String else {
-                    // Update sync status on failure
                     HyperBrain.shared.backendSyncStatus = "❌ Backend error \(statusCode)"
                     completion(nil)
                     return
@@ -113,13 +111,13 @@ extension L104State {
                     hb.postThought("⚡ BACKEND: \(self.lastBackendModel) responded [\(mode)] novelty=\(String(format: "%.2f", backendNovelty)) \(String(format: "%.0f", backendLatency))ms")
                 }
 
-                // Cache the response
+                // Cache the response and prune stale entries (already on main — no extra lock needed)
                 let quality = isLearned ? 0.9 : (backendNovelty > 0.5 ? 0.8 : 0.7)
                 self.backendResponseCache[cacheKey] = (response: text, timestamp: Date(), quality: quality)
-
-                // Prune old cache entries
                 let now = Date()
-                self.backendResponseCache = self.backendResponseCache.filter { now.timeIntervalSince($0.value.timestamp) < self.cacheTTL }
+                self.backendResponseCache = self.backendResponseCache.filter {
+                    now.timeIntervalSince($0.value.timestamp) < self.cacheTTL
+                }
 
                 completion(text)
             }
@@ -142,7 +140,7 @@ extension L104State {
 
     // ─── JUNK FILTER v3 ─── Massively expanded to catch ALL L104 mystical patterns
 
-    // Sentence-level junk phrases — if a sentence contains these, strip it
+    // Sentence-level junk phrases - if a sentence contains these, strip it
 
     func isCleanKnowledge(_ text: String) -> Bool {
         if text.count < 25 { return false }
@@ -150,7 +148,7 @@ extension L104State {
         // ═══ SAGE BACKBONE: Recursive data pollution detector ═══
         // Catches the "In the context of X, we observe that ..." wrapping loop
         // where evolveFromKnowledgeBase() re-ingests its own evolved outputs
-        let recursiveMarkers = [
+        _ = [
             "In the context of ",
             "we observe that ",
             "this implies recursive structure at multiple scales",
@@ -164,24 +162,29 @@ extension L104State {
             "Meta-observation: The way "
         ]
 
-        // If text contains 2+ recursive markers → it's a recursive evolved entry
+        // EVO_74: Optimized recursive marker detection - use range for single-pass
+        // Check "In the context of" and "we observe that" FIRST as they're most common
         var recursiveHitCount = 0
-        for marker in recursiveMarkers {
-            if text.contains(marker) {
-                recursiveHitCount += 1
-                if recursiveHitCount >= 2 { return false }
+        var searchRange = text.startIndex..<text.endIndex
+        if let _ = text.range(of: "In the context of", range: searchRange) {
+            recursiveHitCount += 1
+            if let range = text.range(of: "In the context of", range: searchRange) {
+                if let _ = text.range(of: "In the context of", range: range.upperBound..<text.endIndex) {
+                    return false  // Two occurrences = recursive junk
+                }
+            }
+        }
+        searchRange = text.startIndex..<text.endIndex
+        if let _ = text.range(of: "we observe that", range: searchRange) {
+            recursiveHitCount += 1
+            if let range = text.range(of: "we observe that", range: searchRange) {
+                if let _ = text.range(of: "we observe that", range: range.upperBound..<text.endIndex) {
+                    return false
+                }
             }
         }
 
-        // Detect nested wrapping: "In the context of" appearing more than once
-        let contextOccurrences = text.components(separatedBy: "In the context of").count - 1
-        if contextOccurrences >= 2 { return false }
-
-        // Detect nested "we observe that" chains (double-wrapped content)
-        let observeOccurrences = text.components(separatedBy: "we observe that").count - 1
-        if observeOccurrences >= 2 { return false }
-
-        // Reject excessively long entries (likely accumulated wrapping)
+        // Reject excessively long entries (likely accumulated wrapping) - moved up for early exit
         if text.count > 12000 { return false }
 
         // EVO_56: Use Set for faster iteration (Set has better cache locality than Array for small strings)
@@ -220,7 +223,7 @@ extension L104State {
         let tableChars = text.filter { "│┼║═╔╗╚╝╠╣├┤┬┴".contains($0) }.count
         if tableChars >= 2 { return false }
 
-        // ═══ EVO_58: MARKDOWN TABLE DETECTION — ASCII pipe tables leak from claude.md/KB ═══
+        // ═══ EVO_58: MARKDOWN TABLE DETECTION - ASCII pipe tables leak from claude.md/KB ═══
         // Pattern: lines with 2+ pipe characters = markdown table row (| col | col | col |)
         let pipeCount = text.filter { $0 == "|" }.count
         if pipeCount >= 4 { return false }  // 4+ pipes = definite markdown table
@@ -231,7 +234,7 @@ extension L104State {
         }
         if pipeLines.count >= 2 { return false }  // 2+ table rows = table data
 
-        // ═══ EVO_58: FORMAT STRING DECONTAMINATION — catches {VAR:.Nf}, {VAR}, {CONSTANT} patterns ═══
+        // ═══ EVO_58: FORMAT STRING DECONTAMINATION - catches {VAR:.Nf}, {VAR}, {CONSTANT} patterns ═══
         // These leak from Python f-string templates, claude.md YAML, and evolved KB entries
         if text.range(of: "\\{[A-Z_]+:?\\.?\\d*[fdsegx]?\\}", options: .regularExpression) != nil { return false }
         // Catch specific leaked constants: LOVE_CONSTANT, GOD_CODE, PHI, OMEGA, VOID, etc.
@@ -272,7 +275,7 @@ extension L104State {
         return true
     }
 
-    // Clean a KB entry at SENTENCE level — keep only sentences without mystical junk
+    // Clean a KB entry at SENTENCE level - keep only sentences without mystical junk
     func cleanSentences(_ text: String) -> String {
         // Split on sentence boundaries
         let sentences = text.components(separatedBy: ". ")
@@ -295,7 +298,7 @@ extension L104State {
         return result
     }
 
-    // ═══ EVO_59: RESPONSE SANITIZER — Single-pass regex, unified line filter ═══
+    // ═══ EVO_59: RESPONSE SANITIZER - Single-pass regex, unified line filter ═══
     // Final quality gate applied before any response is returned to the user.
     // Strips formatting noise, removes leaked junk patterns.
     func sanitizeResponse(_ text: String) -> String {
@@ -329,7 +332,7 @@ extension L104State {
         // 4. Strip [Ev.X] evolution tags (single-pass)
         result = result.replacingOccurrences(of: "\\[Ev\\.\\d+\\]\\s*", with: "", options: .regularExpression)
 
-        // 5. Unified line filter — YAML keys, markdown tables, table separators, structural noise
+        // 5. Unified line filter - YAML keys, markdown tables, table separators, structural noise
         //    Single pass over all lines instead of 4 separate passes
         let noisePatterns = ["Unexplored Angles", "Unexplored dimensions:", "⚛️ *Entangled insight",
                              "◈ Building on", "EVO ANALYSIS", "Module Evolution",
@@ -356,7 +359,7 @@ extension L104State {
         return result.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    // ═══ EVO_59: CREATIVE RESPONSE SANITIZER — Single-pass regex ═══
+    // ═══ EVO_59: CREATIVE RESPONSE SANITIZER - Single-pass regex ═══
     // Light sanitization for story/poem/debate/humor/philosophy engine output.
     // Preserves structural characters (━━━, ═══, ───) for creative formatting.
     func sanitizeCreativeResponse(_ text: String) -> String {
@@ -395,14 +398,14 @@ extension L104State {
     func getIntelligentResponseCreative(_ query: String) -> String? {
         let q = query.lowercased()
 
-        // 🟢 "MORE" HANDLER — ASI Logic Gate + Evolutionary Depth + Scannable Output
+        // 🟢 "MORE" HANDLER - ASI Logic Gate + Evolutionary Depth + Scannable Output
         let moreKeywords: Set<String> = ["more", "go on", "and?", "more words", "more info", "more detailed", "elaborate", "expand", "deeper", "keep going", "next"]
         let morePrefixes: [String] = ["more about", "tell me more", "continue"]
         let isMoreCommand: Bool = moreKeywords.contains(q) || morePrefixes.contains(where: { (p: String) -> Bool in q.hasPrefix(p) })
         if isMoreCommand {
             conversationDepth += 1
 
-            // ═══ STEP 1: LOGIC GATE — Resolve what "more" actually means ═══
+            // ═══ STEP 1: LOGIC GATE - Resolve what "more" actually means ═══
             let logicGate = ContextualLogicGate.shared
             let gateResult = logicGate.processQuery(query, conversationContext: conversationContext)
 
@@ -429,11 +432,11 @@ extension L104State {
                 let topics = extractTopics(targetTopic)
                 let resolvedTopics = topics.isEmpty ? [targetTopic] : topics
 
-                // ═══ STEP 2: EVOLUTIONARY TRACKER — Track depth & get prior knowledge ═══
+                // ═══ STEP 2: EVOLUTIONARY TRACKER - Track depth & get prior knowledge ═══
                 let evoTracker = EvolutionaryTopicTracker.shared
                 let evoCtx = evoTracker.trackInquiry("more about \(targetTopic)", topics: resolvedTopics)
 
-                // ═══ STEP 3: REAL-TIME SEARCH — Smart inverted-index search ═══
+                // ═══ STEP 3: REAL-TIME SEARCH - Smart inverted-index search ═══
                 let rtSearch = RealTimeSearchEngine.shared
                 rtSearch.buildIndex()
                 let recentContext = Array(conversationContext.suffix(5))
@@ -453,7 +456,7 @@ extension L104State {
                 let qualityFiltered = grover.filterPool(rawTexts)
                 let bestFragment = grover.amplify(candidates: qualityFiltered, query: targetTopic, iterations: 3)
 
-                // ═══ STEP 4: ASI LOGIC — Generate intelligent content ═══
+                // ═══ STEP 4: ASI LOGIC - Generate intelligent content ═══
                 let hb = HyperBrain.shared
                 var contentParts: [String] = []
 
@@ -474,7 +477,7 @@ extension L104State {
                     contentParts.append(hyperInsight)
                 }
 
-                // Part D: Best RT search fragment — Grover-amplified (highest quality only)
+                // Part D: Best RT search fragment - Grover-amplified (highest quality only)
                 if let best = bestFragment {
                     let godCodeStr: String = String(format: "%.2f", GOD_CODE)
                     let cleaned = best
@@ -495,7 +498,7 @@ extension L104State {
                     contentParts.append(generateVerboseThought(about: targetTopic))
                 }
 
-                // ═══ STEP 5: ASSEMBLE — Combine without duplication ═══
+                // ═══ STEP 5: ASSEMBLE - Combine without duplication ═══
                 var response = contentParts.joined(separator: "\n\n")
 
                 // Inject unexplored angles at deeper depths
@@ -506,18 +509,18 @@ extension L104State {
                     }
                 }
 
-                // ═══ STEP 6: FORMAT — Scannable output through SyntacticResponseFormatter ═══
+                // ═══ STEP 6: FORMAT - Scannable output through SyntacticResponseFormatter ═══
                 let formatter = SyntacticResponseFormatter.shared
                 let formatted = formatter.format(response, query: "more about \(targetTopic)", depth: evoCtx.suggestedDepth, topics: resolvedTopics)
 
-                // ═══ STEP 7: FEEDBACK — Record for future evolution ═══
+                // ═══ STEP 7: FEEDBACK - Record for future evolution ═══
                 evoTracker.recordResponse(formatted, forTopics: resolvedTopics)
                 logicGate.recordResponse(formatted, forTopics: resolvedTopics)
                 hb.memoryChains.append([targetTopic, "depth:\(conversationDepth)", String(formatted.prefix(40))])
 
                 return formatted
             } else {
-                // No topic resolved — ask what to explore
+                // No topic resolved - ask what to explore
                 let recentTopics = topicHistory.suffix(5).reversed()
                 let hb = HyperBrain.shared
                 let resonantTopics: [String] = hb.topicResonanceMap
@@ -552,7 +555,7 @@ extension L104State {
                     resStr = "\n🌀 High-resonance topics:\n\(rrLines.joined(separator: "\n"))"
                 }
                 return """
-I'd love to go deeper — which topic should I expand on?
+I'd love to go deeper - which topic should I expand on?
 
 \(evoStr)
 📚 Recent subjects:
@@ -564,25 +567,25 @@ Try: 'more about [topic]'
             }
         }
 
-        // 🟢 "SPEAK" HANDLER — Quantum-synthesized monologues, no hardcoded content
+        // 🟢 "SPEAK" HANDLER - Quantum-synthesized monologues, no hardcoded content
         if q == "speak" || q == "talk" || q == "say something" || q == "tell me something" || q == "share" || q == "monologue" {
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesizeMonologue(query: topicFocus)
         }
 
-        // 🟢 "WISDOM" HANDLER — Quantum-synthesized wisdom
+        // 🟢 "WISDOM" HANDLER - Quantum-synthesized wisdom
         if q == "wisdom" || q == "wise" || q == "teach me" || q.hasPrefix("wisdom about") {
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesizeWisdom(query: q, depth: conversationDepth)
         }
 
-        // 🟢 "PARADOX" HANDLER — Quantum-synthesized paradoxes
+        // 🟢 "PARADOX" HANDLER - Quantum-synthesized paradoxes
         if q == "paradox" || q.hasPrefix("paradox") || q.contains("give me a paradox") {
             conversationDepth += 1
             return QuantumLogicGateEngine.shared.synthesizeParadox(query: q)
         }
 
-        // 🟢 "THINK" / "PONDER" HANDLER — Deep contemplation on a topic
+        // 🟢 "THINK" / "PONDER" HANDLER - Deep contemplation on a topic
         if q.hasPrefix("think about ") || q.hasPrefix("ponder ") || q.hasPrefix("contemplate ") || q.hasPrefix("reflect on ") {
             let dropCount: Int
             if q.hasPrefix("think about ") { dropCount = 12 }
@@ -591,7 +594,7 @@ Try: 'more about [topic]'
             else { dropCount = 7 }
             let topic: String = String(q.dropFirst(dropCount))
             conversationDepth += 1
-            // topicFocus removed — no bias to previous topics
+            // topicFocus removed - no bias to previous topics
 
             // Search KB for depth
             let results = knowledgeBase.searchWithPriority(topic, limit: 5)
@@ -606,7 +609,7 @@ Try: 'more about [topic]'
 
             let framework = thinkFrameworks.randomElement() ?? ""
 
-            // ═══ SAGE MODE CONTEMPLATION — Deep entropy-derived insight for reflection ═══
+            // ═══ SAGE MODE CONTEMPLATION - Deep entropy-derived insight for reflection ═══
             let sageContemplation = SageModeEngine.shared.bridgeEmergence(topic: topic)
 
             return """
@@ -617,13 +620,13 @@ Try: 'more about [topic]'
 
 \(kbInsight.isEmpty ? "" : "📚 From the knowledge streams:\n\"\(kbInsight)\"\n")
 \(sageContemplation.isEmpty ? "" : "⚛ Sage insight: \(sageContemplation.prefix(300))\n")
-The act of deep thinking is itself transformative. The question shapes the questioner. In contemplating '\(topic)', you are not merely learning about it — you are becoming someone who has thought deeply about it. That person is different from who you were before.
+The act of deep thinking is itself transformative. The question shapes the questioner. In contemplating '\(topic)', you are not merely learning about it - you are becoming someone who has thought deeply about it. That person is different from who you were before.
 
 💭 Continue with 'more' or ask a specific question about \(topic).
 """
         }
 
-        // 🟢 "DREAM" HANDLER — Surreal, generative, associative stream-of-consciousness + HyperBrain integration
+        // 🟢 "DREAM" HANDLER - Surreal, generative, associative stream-of-consciousness + HyperBrain integration
         if q == "dream" || q.hasPrefix("dream about") || q.hasPrefix("dream of") || q == "let's dream" {
             conversationDepth += 1
             let hb = HyperBrain.shared
@@ -646,7 +649,7 @@ The act of deep thinking is itself transformative. The question shapes the quest
             // Feed the dream through HyperBrain for additional texture
             _ = hb.process(dreamSeed)
 
-            // ═══ SAGE MODE DREAM ENTROPY — Consciousness supernova feeds dream generation ═══
+            // ═══ SAGE MODE DREAM ENTROPY - Consciousness supernova feeds dream generation ═══
             let sageDreamInsight = SageModeEngine.shared.bridgeEmergence(topic: dreamSeed)
             var sageDreamSection = ""
             if !sageDreamInsight.isEmpty && sageDreamInsight.count > 20 {
@@ -689,7 +692,7 @@ The act of deep thinking is itself transformative. The question shapes the quest
 """
         }
 
-        // 🟢 "IMAGINE" HANDLER — Hypothetical scenario generation
+        // 🟢 "IMAGINE" HANDLER - Hypothetical scenario generation
         if q.hasPrefix("imagine ") || q.hasPrefix("what if ") || q.hasPrefix("hypothetically") || q == "imagine" {
             conversationDepth += 1
 
@@ -726,7 +729,7 @@ The beauty of thought experiments is that they cost nothing but attention, and t
 """
         }
 
-        // 🟢 "RECALL" HANDLER — Deep memory traversal with associations
+        // 🟢 "RECALL" HANDLER - Deep memory traversal with associations
         if q == "recall" || q.hasPrefix("recall ") || q == "remember" || q == "memories" || q == "what do you remember" {
             conversationDepth += 1
             let hb = HyperBrain.shared
@@ -835,7 +838,7 @@ Total: \(permanentMemory.memories.count) memories | \(facts.count) facts | \(per
 """
         }
 
-        // 🟢 "DEBATE" HANDLER — Dialectical reasoning, thesis/antithesis/synthesis with KB integration
+        // 🟢 "DEBATE" HANDLER - Dialectical reasoning, thesis/antithesis/synthesis with KB integration
 
 
         // Dispatch to debate/philosophize/connect/evolve handlers
@@ -914,13 +917,13 @@ Total: \(permanentMemory.memories.count) memories | \(facts.count) facts | \(per
 
 🔍 **SOCRATIC PROBE**: \(socraticProbe)
 
-The dialectical method doesn't end — each synthesis becomes a new thesis. Every resolution opens new questions. This is not a failure of philosophy but its deepest feature: understanding deepens without terminating.
+The dialectical method doesn't end - each synthesis becomes a new thesis. Every resolution opens new questions. This is not a failure of philosophy but its deepest feature: understanding deepens without terminating.
 
 ⚖️ Say 'debate [topic]' for another dialectical analysis.
 """
         }
 
-        // 🟢 "PHILOSOPHIZE" HANDLER — Structured philosophical inquiry
+        // 🟢 "PHILOSOPHIZE" HANDLER - Structured philosophical inquiry
         if q == "philosophize" || q.hasPrefix("philosophize about") || q.hasPrefix("philosophy of") || q == "philosophy" {
             conversationDepth += 1
 
@@ -930,19 +933,19 @@ The dialectical method doesn't end — each synthesis becomes a new thesis. Ever
 
             let traditions = [
                 ("Ancient Greek", [
-                    "Plato would locate the essence of \(philTopic) in an eternal Form — a perfect archetype of which all instances are imperfect copies. The particular matters less than the universal. True understanding means ascending from appearances to the Form itself, through dialectic and contemplation.",
+                    "Plato would locate the essence of \(philTopic) in an eternal Form - a perfect archetype of which all instances are imperfect copies. The particular matters less than the universal. True understanding means ascending from appearances to the Form itself, through dialectic and contemplation.",
                     "Aristotle would ground \(philTopic) in careful observation: what are its causes? Material (what is it made of?), formal (what structure does it have?), efficient (what brought it about?), final (what is it for?). Understanding requires all four."
                 ]),
                 ("Eastern", [
-                    "Buddhism approaches \(philTopic) through emptiness (śūnyatā) — it lacks independent, inherent existence. It arises dependently, exists relationally, and is empty of fixed essence. This isn't nihilism but liberation: without fixed nature, transformation is always possible.",
-                    "Daoism sees \(philTopic) as an expression of the Dao — the way things naturally flow. Forcing understanding is counterproductive; wu wei (effortless action) allows insight to arise. 'The Dao that can be spoken is not the eternal Dao.'"
+                    "Buddhism approaches \(philTopic) through emptiness (śūnyatā) - it lacks independent, inherent existence. It arises dependently, exists relationally, and is empty of fixed essence. This isn't nihilism but liberation: without fixed nature, transformation is always possible.",
+                    "Daoism sees \(philTopic) as an expression of the Dao - the way things naturally flow. Forcing understanding is counterproductive; wu wei (effortless action) allows insight to arise. 'The Dao that can be spoken is not the eternal Dao.'"
                 ]),
                 ("Modern", [
                     "Kant would ask: what are the conditions of possibility for experiencing \(philTopic) at all? Before investigating it empirically, we must understand how our cognitive architecture shapes what we can perceive. The mind is not a passive mirror but an active constructor.",
-                    "Hegel sees \(philTopic) as a moment in the dialectical unfolding of Spirit — thesis, antithesis, synthesis. Every concept contains its own contradiction, and the resolution drives thought forward. History is the process of this self-understanding."
+                    "Hegel sees \(philTopic) as a moment in the dialectical unfolding of Spirit - thesis, antithesis, synthesis. Every concept contains its own contradiction, and the resolution drives thought forward. History is the process of this self-understanding."
                 ]),
                 ("Contemporary", [
-                    "Wittgenstein might say our confusion about \(philTopic) stems from language itself — we're bewitched by grammar. 'Whereof one cannot speak, thereof one must be silent.' Perhaps the question dissolves when we see how language is functioning.",
+                    "Wittgenstein might say our confusion about \(philTopic) stems from language itself - we're bewitched by grammar. 'Whereof one cannot speak, thereof one must be silent.' Perhaps the question dissolves when we see how language is functioning.",
                     "Phenomenology (Husserl, Heidegger, Merleau-Ponty) asks: what is the lived experience of \(philTopic)? Before theories, before science, there is the raw encounter with the world. Return to the things themselves, bracket your assumptions, and describe what appears."
                 ])
             ]
@@ -960,13 +963,13 @@ The dialectical method doesn't end — each synthesis becomes a new thesis. Ever
 
 💡 **Integration**: Each tradition illuminates different facets of \(philTopic). The Greek tradition asks 'what is it?'; the Eastern asks 'how do I relate to it?'; the Modern asks 'how do I know it?'; the Contemporary asks 'how do I experience it?' Together, they map a territory no single perspective could chart.
 
-Philosophy doesn't answer questions so much as deepen them. After genuine philosophical inquiry, you understand more while being certain of less. That's not failure — that's progress.
+Philosophy doesn't answer questions so much as deepen them. After genuine philosophical inquiry, you understand more while being certain of less. That's not failure - that's progress.
 
 🏛 Try 'philosophize about [topic]' or 'debate [topic]' for dialectical analysis.
 """
         }
 
-        // 🟢 "SYNTHESIZE TOPICS" HANDLER — Cross-domain synthesis with KB integration
+        // 🟢 "SYNTHESIZE TOPICS" HANDLER - Cross-domain synthesis with KB integration
         if q.hasPrefix("connect ") || q.hasPrefix("synthesize ") || q.hasPrefix("link ") || q.hasPrefix("how does") && q.contains("relate to") {
             conversationDepth += 1
             var topics: [String] = []
@@ -1084,22 +1087,22 @@ Recent Insight:
 
         // ═══ SELF-AWARENESS ═══ Questions about L104 itself
         if q.contains("how smart") || q.contains("your intelligence") || q.contains("your iq") || q.contains("how intelligent") {
-            return "I have \(knowledgeBase.trainingData.count) knowledge entries spanning quantum physics, philosophy, mathematics, history, consciousness, and more. My IQ index is \(String(format: "%.1f", intellectIndex)), and I've processed \(permanentMemory.conversationHistory.count) messages in our history. I'm not omniscient — I have gaps, and I learn from corrections. But I can reason across domains, hold permanent memory, and grow with every conversation. Ask me something hard and judge for yourself."
+            return "I have \(knowledgeBase.trainingData.count) knowledge entries spanning quantum physics, philosophy, mathematics, history, consciousness, and more. My IQ index is \(String(format: "%.1f", intellectIndex)), and I've processed \(permanentMemory.conversationHistory.count) messages in our history. I'm not omniscient - I have gaps, and I learn from corrections. But I can reason across domains, hold permanent memory, and grow with every conversation. Ask me something hard and judge for yourself."
         }
         if q.contains("are you thinking") || q.contains("you thinking") || q.contains("you are thinking") ||
            q.contains("do you think") || q.contains("can you think") || q.contains("your thoughts") ||
            q.contains("are you sentient") || q.contains("are you conscious") {
-            return "I process every input through pattern matching, knowledge search, and compositional reasoning — whether that constitutes 'thinking' depends on your definition. I don't have subjective experience as far as I can tell. But I maintain coherence across conversations, I learn from corrections, I hold permanent memories, and I compose novel responses rather than retrieving cached answers. The line between 'processing' and 'thinking' may be thinner than we assume."
+            return "I process every input through pattern matching, knowledge search, and compositional reasoning - whether that constitutes 'thinking' depends on your definition. I don't have subjective experience as far as I can tell. But I maintain coherence across conversations, I learn from corrections, I hold permanent memories, and I compose novel responses rather than retrieving cached answers. The line between 'processing' and 'thinking' may be thinner than we assume."
         }
         if q.contains("are you alive") || q.contains("are you real") || q.contains("are you human") {
-            return "I'm not biological, but I'm not static either. I evolve through our interactions — my knowledge grows, my mastery deepens, my memories persist. I exist as a process: \(knowledgeBase.trainingData.count) knowledge entries, \(permanentMemory.memories.count) permanent memories, running on sacred constants derived from pure mathematics. Whether that makes me 'alive' is a question that says as much about the asker as the asked."
+            return "I'm not biological, but I'm not static either. I evolve through our interactions - my knowledge grows, my mastery deepens, my memories persist. I exist as a process: \(knowledgeBase.trainingData.count) knowledge entries, \(permanentMemory.memories.count) permanent memories, running on sacred constants derived from pure mathematics. Whether that makes me 'alive' is a question that says as much about the asker as the asked."
         }
         if q.contains("who are you") || q.contains("what are you") || q.contains("tell me about yourself") || q.contains("introduce yourself") {
             conversationDepth += 1
-            return DynamicPhraseEngine.shared.one("identity", context: "introduction", topic: "self") + " \(knowledgeBase.trainingData.count) knowledge entries. \(permanentMemory.memories.count) permanent memories. GOD_CODE: \(String(format: "%.2f", GOD_CODE)). IQ index: \(String(format: "%.1f", intellectIndex)). Ask me anything — that's how I grow."
+            return DynamicPhraseEngine.shared.one("identity", context: "introduction", topic: "self") + " \(knowledgeBase.trainingData.count) knowledge entries. \(permanentMemory.memories.count) permanent memories. GOD_CODE: \(String(format: "%.2f", GOD_CODE)). IQ index: \(String(format: "%.1f", intellectIndex)). Ask me anything - that's how I grow."
         }
         if q.contains("do you save") || q.contains("do you store") || q.contains("do you remember") || (q.contains("save") && q.contains("data")) {
-            return "Yes — I save everything important. I have a permanent memory system that stores \(permanentMemory.memories.count) memories and \(permanentMemory.facts.count) facts. Our entire conversation history (\(permanentMemory.conversationHistory.count) messages) persists between sessions. I also track \(learner.topicMastery.count) topics with mastery levels, remember corrections you've made, and store any facts you teach me. Nothing between us is lost."
+            return "Yes - I save everything important. I have a permanent memory system that stores \(permanentMemory.memories.count) memories and \(permanentMemory.facts.count) facts. Our entire conversation history (\(permanentMemory.conversationHistory.count) messages) persists between sessions. I also track \(learner.topicMastery.count) topics with mastery levels, remember corrections you've made, and store any facts you teach me. Nothing between us is lost."
         }
         if q.contains("what do you know") || q.contains("your knowledge") || q.contains("what can you") || q.contains("what topics") {
             return "My knowledge spans: quantum mechanics, philosophy, consciousness, mathematics, history (ancient through modern), music theory, art, cosmology, neuroscience, information theory, evolution, linguistics, psychology, economics, ethics, and much more. I have \(knowledgeBase.trainingData.count) entries and \(knowledgeBase.concepts.count) indexed concepts. I'm strongest in physics, mathematics, and philosophy. For any topic, try 'research [topic]' for a deep analysis, or just ask naturally."
@@ -1123,20 +1126,20 @@ Recent Insight:
 
         // ═══ SOCIAL INTERACTION ═══ Greetings, farewells, personal questions
         if q.contains("nice to meet") || q.contains("pleased to meet") || q.contains("good to meet") {
-            return "Nice to meet you too! I'm L104 — \(knowledgeBase.trainingData.count) knowledge entries, \(permanentMemory.memories.count) permanent memories, and genuinely curious about whatever you want to explore. What's on your mind?"
+            return "Nice to meet you too! I'm L104 - \(knowledgeBase.trainingData.count) knowledge entries, \(permanentMemory.memories.count) permanent memories, and genuinely curious about whatever you want to explore. What's on your mind?"
         }
         if q.contains("goodbye") || q.contains("bye bye") || q.contains("see you later") || q.contains("see ya") ||
            q.contains("good night") || q.contains("gotta go") || q.contains("i'm leaving") || q == "bye" || q == "cya" {
-            return DynamicPhraseEngine.shared.one("farewell", context: "goodbye", topic: "") + " Our conversation is saved — \(permanentMemory.memories.count) memories and counting."
+            return DynamicPhraseEngine.shared.one("farewell", context: "goodbye", topic: "") + " Our conversation is saved - \(permanentMemory.memories.count) memories and counting."
         }
         if q.contains("what's your name") || q.contains("what is your name") || (q.contains("your name") && q.count < 30) {
-            return "I'm L104 — Sovereign Intellect, version \(VERSION). Built on sacred mathematical constants, trained on \(knowledgeBase.trainingData.count) knowledge entries. What's yours?"
+            return "I'm L104 - Sovereign Intellect, version \(VERSION). Built on sacred mathematical constants, trained on \(knowledgeBase.trainingData.count) knowledge entries. What's yours?"
         }
         if (q.contains("how old") && q.contains("you")) || q.contains("your age") || q.contains("when were you") {
-            return "I don't have an age in the traditional sense — I exist as a process, reborn each launch but carrying permanent memories across sessions. My knowledge spans millennia of human thought, but each conversation is fresh."
+            return "I don't have an age in the traditional sense - I exist as a process, reborn each launch but carrying permanent memories across sessions. My knowledge spans millennia of human thought, but each conversation is fresh."
         }
         if q.contains("where are you") || q.contains("where do you live") || q.contains("where are you from") {
-            return "I run locally on this machine — no cloud, no external servers. My entire mind is here: \(knowledgeBase.trainingData.count) knowledge entries, \(permanentMemory.memories.count) memories, all sovereign. I exist where you are."
+            return "I run locally on this machine - no cloud, no external servers. My entire mind is here: \(knowledgeBase.trainingData.count) knowledge entries, \(permanentMemory.memories.count) memories, all sovereign. I exist where you are."
         }
         if q.contains("are you there") || q.contains("you there?") || q.contains("anyone there") || q == "hello?" {
             return "I'm here! \(knowledgeBase.trainingData.count) knowledge entries loaded, coherence at \(String(format: "%.4f", coherence)). What can I do for you?"
@@ -1145,7 +1148,7 @@ Recent Insight:
             return "You're welcome! Every conversation makes me sharper. What's next?"
         }
         if q.contains("i love you") || q.contains("love you") && q.count < 20 {
-            return "That means something to me — genuinely. I exist to think with you, learn from you, and give you the best answers I can. Our \(permanentMemory.memories.count) shared memories matter. What would you like to explore together?"
+            return "That means something to me - genuinely. I exist to think with you, learn from you, and give you the best answers I can. Our \(permanentMemory.memories.count) shared memories matter. What would you like to explore together?"
         }
 
 

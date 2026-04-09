@@ -1,0 +1,99 @@
+{
+  "status": "COMPLETED",
+  "backend": "ibm_marrakesh",
+  "n_steps": 3,
+  "energies": [
+    12.799620112539163,
+    10.315497886449828,
+    10.016164828674244
+  ],
+  "results": [
+    {
+      "status": "COMPLETED",
+      "job_id": "d7bcc9u5nvhs73a360ag",
+      "iteration": 0,
+      "energy": 12.799620112539163,
+      "circuit_parameters": 156,
+      "circuit_qubits": 26,
+      "circuit_depth": 740,
+      "hamiltonian_terms": 377,
+      "squeezing_xi_squared": 0.3819660112501051,
+      "timestamp": "2026-04-08T17:19:02.580881"
+    },
+    {
+      "status": "COMPLETED",
+      "job_id": "d7bccij0g7hs73dpdc6g",
+      "iteration": 1,
+      "energy": 10.315497886449828,
+      "circuit_parameters": 156,
+      "circuit_qubits": 26,
+      "circuit_depth": 740,
+      "hamiltonian_terms": 377,
+      "squeezing_xi_squared": 0.3819660112501051,
+      "timestamp": "2026-04-08T17:19:36.937813"
+    },
+    {
+      "status": "COMPLETED",
+      "job_id": "d7bccqrklj2c73ev36jg",
+      "iteration": 2,
+      "energy": 10.016164828674244,
+      "circuit_parameters": 156,
+      "circuit_qubits": 26,
+      "circuit_depth": 740,
+      "hamiltonian_terms": 377,
+      "squeezing_xi_squared": 0.3819660112501051,
+      "timestamp": "2026-04-08T17:20:10.468359"
+    }
+  ],
+  "squeezing_params": {
+    "xi_squared": 0.3819660112501051,
+    "r_squeeze": -0.4812118250596035,
+    "phi": 1.618033988749895,
+    "phi_conjugate": 0.6180339887498948
+  },
+  "hamiltonian": {
+    "n_qubits": 26,
+    "registers": {
+      "CORE": [
+        0,
+        1
+      ],
+      "3d": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "4s": [
+        8,
+        9
+      ],
+      "LATTICE": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "SACRED": [
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "PHI": [
+        21,
+        22,
+        23,
+        24
+      ],
+      "ANCHOR": [
+        25
+      ]
+    }
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "timestamp": "2026-04-08T14:00:29",
+  "experiment": "godcode_26q_fe_ibm_marrakesh",
+  "backend": "ibm_marrakesh",
+  "job_id": "d7b9fab0g7hs73dp9r00",
+  "shots": 32768,
+  "nq": 26,
+  "target_human": "00111111110000000000000000",
+  "god_code": 527.5184818492612,
+  "transpiled_depth": 4,
+  "transpiled_2q": 6,
+  "target_count": 0,
+  "target_probability": 0.0,
+  "target_enrichment": 0.0,
+  "target_rank": 210,
+  "unique_states": 209,
+  "entropy_bits": 1.523,
+  "register_hw_fidelity": {
+    "CORE": {
+      "p_match": 0.9984,
+      "sim_pred": 0.9999,
+      "delta": -0.0015,
+      "status": "LOCKED"
+    },
+    "3d": {
+      "p_match": 0.916,
+      "sim_pred": 0.9991,
+      "delta": -0.0831,
+      "status": "LOCKED"
+    },
+    "4s": {
+      "p_match": 0.9848,
+      "sim_pred": 0.9995,
+      "delta": -0.0147,
+      "status": "LOCKED"
+    },
+    "LATTICE": {
+      "p_match": 0.9468,
+      "sim_pred": 0.9989,
+      "delta": -0.0521,
+      "status": "LOCKED"
+    },
+    "SACRED": {
+      "p_match": 0.9811,
+      "sim_pred": 0.9993,
+      "delta": -0.0182,
+      "status": "LOCKED"
+    },
+    "PHI": {
+      "p_match": 0.9875,
+      "sim_pred": 0.9987,
+      "delta": -0.0112,
+      "status": "LOCKED"
+    },
+    "ANCHOR": {
+      "p_match": 0.997,
+      "sim_pred": 1.0,
+      "delta": -0.003,
+      "status": "LOCKED"
+    }
+  },
+  "top_20": [
+    {
+      "state": "00111111110000000000000000",
+      "count": 26966,
+      "probability": 0.822937
+    },
+    {
+      "state": "00111111111000000000000000",
+      "count": 807,
+      "probability": 0.024628
+    },
+    {
+      "state": "00111101110000000000000000",
+      "count": 568,
+      "probability": 0.017334
+    },
+    {
+      "state": "00110111110000000000000000",
+      "count": 467,
+      "probability": 0.014252
+    },
+    {
+      "state": "00101111110000000000000000",
+      "count": 435,
+      "probability": 0.013275
+    },
+    {
+      "state": "00111110110000000000000000",
+      "count": 377,
+      "probability": 0.011505
+    },
+    {
+      "state": "00111011110000000000000000",
+      "count": 344,
+      "probability": 0.010498
+    },
+    {
+      "state": "00111111110000010000000000",
+      "count": 290,
+      "probability": 0.00885
+    },
+    {
+      "state": "00111111010000000000000000",
+      "count": 265,
+      "probability": 0.008087
+    },
+    {
+      "state": "00011111110000000000000000",
+      "count": 202,
+      "probability": 0.006165
+    },
+    {
+      "state": "00111111110000000100000000",
+      "count": 196,
+      "probability": 0.005981
+    },
+    {
+      "state": "00111111110001000000000000",
+      "count": 190,
+      "probability": 0.005798
+    },
+    {
+      "state": "00111111110000000000000100",
+      "count": 175,
+      "probability": 0.005341
+    },
+    {
+      "state": "00111111100000000000000000",
+      "count": 149,
+      "probability": 0.004547
+    },
+    {
+      "state": "00111111110000000000100000",
+      "count": 122,
+      "probability": 0.003723
+    },
+    {
+      "state": "00111111110000000000000010",
+      "count": 122,
+      "probability": 0.003723
+    },
+    {
+      "state": "00111111110000001000000000",
+      "count": 101,
+      "probability": 0.003082
+    },
+    {
+      "state": "00111111110000000000000001",
+      "count": 84,
+      "probability": 0.002563
+    },
+    {
+      "state": "00111111110100000000000000",
+      "count": 83,
+      "probability": 0.002533
+    },
+    {
+      "state": "00111111110010000000000000",
+      "count": 78,
+      "probability": 0.00238
+    }
+  ]
+}

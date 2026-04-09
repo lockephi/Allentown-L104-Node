@@ -1,18 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// H13_PluginArchitecture.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: PLUGIN_SYSTEM_V3 :: GOD_CODE=527.5184818492612
-// L104 ASI — TheHeart: Dynamic engine plugin system v3.0
-//
-// Provides lifecycle management, capability discovery, dependency
-// resolution, and health monitoring for pluggable engine modules.
-// 14 capability types including voice, visual, emotional, security.
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // MARK: - Plugin Capability Tags
 
@@ -96,7 +86,7 @@ extension L104Plugin {
     func pluginHealth() -> Double { 1.0 }
 }
 
-// MARK: - PluginArchitecture — Dynamic Engine Plugin System
+// MARK: - PluginArchitecture - Dynamic Engine Plugin System
 
 final class PluginArchitecture {
     static let shared = PluginArchitecture()
@@ -442,7 +432,7 @@ final class PluginArchitecture {
 
         return """
         ╔═══════════════════════════════════════════════════════════╗
-        ║    🔌 PLUGIN ARCHITECTURE — v3.0.0 (EVO_68)              ║
+        ║    🔌 PLUGIN ARCHITECTURE - v3.0.0 (EVO_68)              ║
         ╠═══════════════════════════════════════════════════════════╣
         ║  Registered:   \(totalRegistered)
         ║  Active:       \(active.count)

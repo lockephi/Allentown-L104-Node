@@ -1,0 +1,61 @@
+{
+  "version": "2.0.0",
+  "vqpu_version": "15.0.0",
+  "timestamp": 1773566542.206006,
+  "topology": "all_to_all",
+  "topology_version": 2,
+  "node_ids": [
+    "micro-6d55409a",
+    "micro-ad4b741d"
+  ],
+  "qubits_per_node": 4,
+  "channels": {
+    "qch-micro-6d-micro-ad-e2f32d": {
+      "channel_id": "qch-micro-6d-micro-ad-e2f32d",
+      "node_a": "micro-6d55409a",
+      "node_b": "micro-ad4b741d",
+      "fidelity": 0.98458763,
+      "active": true,
+      "established_at": 1773566342.52479,
+      "purification_count": 36,
+      "messages_sent": 0,
+      "messages_received": 0
+    }
+  },
+  "total_teleportations": 0,
+  "total_purifications": 36,
+  "health": {
+    "version": "2.0.0",
+    "nodes": 2,
+    "active_channels": 1,
+    "total_channels": 1,
+    "topology": "all_to_all",
+    "detected_topology": "all_to_all",
+    "topology_version": 2,
+    "avg_fidelity": 0.98458763,
+    "min_fidelity": 0.98458763,
+    "max_fidelity": 0.98458763,
+    "connectivity": 1.0,
+    "mean_degree": 1.0,
+    "diameter": 1,
+    "sacred_alignment": 1.0,
+    "sacred_topology_score": 0.61803399,
+    "network_score": 0.90116142,
+    "total_teleportations": 0,
+    "total_purifications": 36,
+    "register_health": {
+      "micro-6d55409a": {
+        "avg_fidelity": 0.81611748,
+        "degraded_qubits": 4,
+        "total_gates": 20
+      },
+      "micro-ad4b741d": {
+        "avg_fidelity": 0.81898844,
+        "degraded_qubits": 4,
+        "total_gates": 20
+      }
+    },
+    "god_code": 527.5184818492612,
+    "qpu_mean_fidelity": 0.9747593
+  }
+}

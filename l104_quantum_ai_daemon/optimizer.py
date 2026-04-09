@@ -171,7 +171,7 @@ class ProcessOptimizer:
         psutil = _get_psutil()
         if psutil is not None:
             try:
-                return psutil.cpu_percent(interval=0.1)
+                return psutil.cpu_percent(interval=None)  # non-blocking (EVO_76: was 0.1 — blocked 100ms)
             except Exception:
                 pass
         return 50.0  # Unknown → assume moderate

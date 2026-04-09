@@ -1,20 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B04_NeuralBridge.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Neural Engine Bridge & Unified Memory Pool
-//
-// NeuralEngineBridge (ANE dispatch, softmax, ReLU, GELU,
-// layer norm) and UnifiedMemoryPool (zero-copy tensor/matrix
-// cache for CPU/GPU/ANE sharing).
-//
-// Extracted from L104Native.swift lines 1092-1309
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // 🧠 NEURAL ENGINE BRIDGE (Apple Neural Engine Interface)
@@ -94,7 +82,7 @@ class NeuralEngineBridge {
         return SIMDVector(result)
     }
 
-    /// GELU activation (Gaussian Error Linear Unit) — vDSP vectorized
+    /// GELU activation (Gaussian Error Linear Unit) - vDSP vectorized
     func gelu(_ input: SIMDVector) -> SIMDVector {
         // GELU(x) ≈ 0.5 * x * (1 + tanh(√(2/π) * (x + 0.044715 * x³)))
         let n = input.count
@@ -145,7 +133,7 @@ class NeuralEngineBridge {
 
         let invStd = 1.0 / sqrt(variance + epsilon)
 
-        // Normalize, scale, and shift — vectorized
+        // Normalize, scale, and shift - vectorized
         var scaled = [Double](repeating: 0, count: input.count)
         var invStdVar = invStd
         vDSP_vsmulD(centered, 1, &invStdVar, &scaled, 1, vDSP_Length(input.count))

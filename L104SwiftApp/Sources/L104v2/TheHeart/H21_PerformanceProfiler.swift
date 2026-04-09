@@ -1,19 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// H21_PerformanceProfiler.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Performance Profiler V2
-//
-// Runtime profiling, latency tracking, CPU time measurement, percentile stats,
-// and cross-node performance comparison.
-// EVO_58: Added real thread CPU time, p50/p95/p99 percentiles, hot-path detection
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
+private let logging = Logger(subsystem: "com.l104.H21_PerformanceProfiler", category: "main")
 // MARK: - Performance Sample
 
 struct PerfSample {
@@ -24,7 +17,7 @@ struct PerfSample {
     let timestamp: Date
 }
 
-// MARK: - PerformanceProfiler — Full Implementation
+// MARK: - PerformanceProfiler - Full Implementation
 
 final class PerformanceProfiler {
     static let shared = PerformanceProfiler()
@@ -45,7 +38,7 @@ final class PerformanceProfiler {
         lock.lock()
         defer { lock.unlock() }
         isActive = true
-        print("[H21] PerformanceProfiler activated — mesh performance comparison enabled")
+        logging.info("[H21] PerformanceProfiler activated - mesh performance comparison enabled")
     }
 
     func deactivate() {

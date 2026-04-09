@@ -1,0 +1,122 @@
+{
+  "metadata": {
+    "god_code": 527.5184818492612,
+    "phi": 1.618033988749895,
+    "ibm_job_id": "d7b9fab0g7hs73dp9r00",
+    "p_target": 0.822937
+  },
+  "spin_wave_stiffness": {
+    "calculation": "spin_wave_stiffness",
+    "exchange_coupling_J_over_kB": 4.4312,
+    "lattice_constant_a_nm": 0.462758,
+    "spin_wave_stiffness_D_meV_nm2": 0.081796,
+    "magnon_velocity_c_meV_nm": 0.3535,
+    "max_omega_at_pi": 3.7698,
+    "k_points": [
+      0.0,
+      0.06857424026013514,
+      0.1371484805202703,
+      0.20572272078040543,
+      0.2742969610405406,
+      0.3428712013006757,
+      0.41144544156081087,
+      0.480019681820946,
+      0.5485939220810812,
+      0.6171681623412163
+    ],
+    "omega_k_sample": [
+      0.0,
+      0.00038463924012876126,
+      0.001538556960515045,
+      0.003461753161158851,
+      0.00615422784206018,
+      0.009615981003219032,
+      0.013847012644635405,
+      0.0188473227663093,
+      0.02461691136824072,
+      0.03115577845042966
+    ],
+    "error_estimate": 0.006871
+  },
+  "superconducting_tc": {
+    "calculation": "superconducting_tc",
+    "debye_frequency_THz": 1558.1667,
+    "electron_phonon_coupling_3d": 6.6602,
+    "electron_phonon_coupling_4s": 37.5704,
+    "effective_coupling_lambda": 15.9333,
+    "Tc_BCS_K": 0.0,
+    "Tc_McMillan_K": 0.0,
+    "coherence_length_nm": 1.0155,
+    "london_penetration_depth_nm": 3.2794,
+    "coupling_regime": "strong"
+  },
+  "quantum_fisher_info": {
+    "calculation": "quantum_fisher_information",
+    "total_F_Q": 2404.5741,
+    "F_Q_per_qubit": 92.48362,
+    "squeezing_parameter_xi2": 3.557062,
+    "quantum_enhancement": 0.2811,
+    "regime": "unsqueezed",
+    "per_register": {
+      "CORE": {
+        "N_qubits": 2,
+        "F_Q": 0.3545,
+        "variance": 0.088621,
+        "p_match": 0.9984
+      },
+      "3d": {
+        "N_qubits": 6,
+        "F_Q": 43.1174,
+        "variance": 10.779344,
+        "p_match": 0.916
+      },
+      "4s": {
+        "N_qubits": 2,
+        "F_Q": 3.2319,
+        "variance": 0.807966,
+        "p_match": 0.9848
+      },
+      "LATTICE": {
+        "N_qubits": 6,
+        "F_Q": 30.1559,
+        "variance": 7.538987,
+        "p_match": 0.9468
+      },
+      "SACRED": {
+        "N_qubits": 5,
+        "F_Q": 9.9336,
+        "variance": 2.483402,
+        "p_match": 0.9811
+      },
+      "PHI": {
+        "N_qubits": 4,
+        "F_Q": 5.3594,
+        "variance": 1.339852,
+        "p_match": 0.9875
+      },
+      "ANCHOR": {
+        "N_qubits": 1,
+        "F_Q": 0.3309,
+        "variance": 0.082734,
+        "p_match": 0.997
+      }
+    },
+    "entanglement_entropy_bits": 2.905
+  },
+  "heisenberg_ring_6site": {
+    "calculation": "heisenberg_ring_6site",
+    "N_sites": 6,
+    "Hilbert_space_dim": 64,
+    "exchange_coupling_J": 4.8321,
+    "ground_state_energy_E0": -13.543206,
+    "E0_per_site": -2.257201,
+    "first_excited_gap": 3.308719,
+    "correlation_length": 0.025,
+    "nearest_neighbor_correlation": 0.0,
+    "singlet_fraction": 1.0,
+    "target_state_overlap": 0.0,
+    "entanglement_entropy_bits": 1.3836,
+    "max_possible_entropy": 3.0,
+    "entanglement_ratio": 0.4612
+  }
+}

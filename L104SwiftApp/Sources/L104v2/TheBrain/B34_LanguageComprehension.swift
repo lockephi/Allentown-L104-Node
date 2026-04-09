@@ -1,11 +1,3 @@
-// ═══════════════════════════════════════════════════════════════
-// B34_LanguageComprehension.swift — Language Comprehension Engine
-// L104v2 — TheBrain Layer — EVO_68 SOVEREIGN_CONVERGENCE → v5.0.0 ASI
-// 8-Layer NLU + 191 Knowledge Nodes + BM25 + 57 MMLU Subjects
-// + SubjectDetector + NumericalReasoner + CrossVerificationEngine
-// + Three-Engine Scoring + Evaluate Comprehension
-// ═══════════════════════════════════════════════════════════════
-
 import Foundation
 
 // ═══════════════════════════════════════════════════════════════
@@ -382,7 +374,7 @@ final class LanguageComprehensionEngine {
             MMLUSubject(name: "marketing", domain: "Business", nodeIDs: ["bus_04"], sampleQuestions: [("What are the 4Ps?", "Product, Price, Place, Promotion"), ("What is market segmentation?", "Dividing consumers into groups")]),
             MMLUSubject(name: "medical_genetics", domain: "Medicine", nodeIDs: ["med_13", "bio_02"], sampleQuestions: [("What causes Down syndrome?", "Trisomy 21"), ("What is CRISPR?", "Gene editing technology")]),
             MMLUSubject(name: "miscellaneous", domain: "Other", nodeIDs: ["misc_01"], sampleQuestions: [("What is the speed of light?", "~3×10⁸ m/s"), ("What element has symbol Fe?", "Iron")]),
-            MMLUSubject(name: "moral_disputes", domain: "Other", nodeIDs: ["misc_04", "phil_01"], sampleQuestions: [("What is the trolley problem?", "Ethical dilemma about sacrifice"), ("Is euthanasia ethical?", "Debated—autonomy vs sanctity of life")]),
+            MMLUSubject(name: "moral_disputes", domain: "Other", nodeIDs: ["misc_04", "phil_01"], sampleQuestions: [("What is the trolley problem?", "Ethical dilemma about sacrifice"), ("Is euthanasia ethical?", "Debated-autonomy vs sanctity of life")]),
             MMLUSubject(name: "moral_scenarios", domain: "Other", nodeIDs: ["misc_05", "phil_01"], sampleQuestions: [("What are Kohlberg's stages?", "Levels of moral development"), ("What is consequentialism?", "Judging actions by outcomes")]),
             MMLUSubject(name: "nutrition", domain: "Medicine", nodeIDs: ["nutr_01", "med_15"], sampleQuestions: [("What are macronutrients?", "Carbs, proteins, fats"), ("What is BMI?", "Body mass index: weight/height²")]),
             MMLUSubject(name: "philosophy", domain: "Humanities", nodeIDs: ["phil_01", "phil_02", "phil_03"], sampleQuestions: [("What is empiricism?", "Knowledge from experience"), ("What is the mind-body problem?", "Relationship between mental and physical")]),
@@ -786,7 +778,7 @@ final class LanguageComprehensionEngine {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - SubjectDetector (Layer 4b) — ASI v3.0
+// MARK: - SubjectDetector (Layer 4b) - ASI v3.0
 // ═══════════════════════════════════════════════════════════════
 
 /// Auto-detect the MMLU subject of a question from its content.
@@ -938,7 +930,7 @@ struct SubjectDetector {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - NumericalReasoner (Layer 4c) — ASI v3.0
+// MARK: - NumericalReasoner (Layer 4c) - ASI v3.0
 // ═══════════════════════════════════════════════════════════════
 
 /// Extract numerical values from knowledge facts and compare with answer choices.
@@ -1001,7 +993,7 @@ struct NumericalReasoner {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MARK: - CrossVerificationEngine (Layer 6) — ASI v3.0
+// MARK: - CrossVerificationEngine (Layer 6) - ASI v3.0
 // ═══════════════════════════════════════════════════════════════
 
 /// Multi-strategy answer verification and elimination engine.
@@ -1061,7 +1053,7 @@ struct CrossVerificationEngine {
             }
         }
 
-        // === Strategy 2: Mutual information — co-occurrence signal ===
+        // === Strategy 2: Mutual information - co-occurrence signal ===
         let totalFacts = Double(topFacts.count)
         for i in 0..<choiceResults.count {
             let cLower = choiceResults[i].choice.lowercased()
@@ -1087,7 +1079,7 @@ struct CrossVerificationEngine {
             }
         }
 
-        // === Strategy 3: Elimination — detect contradicting facts ===
+        // === Strategy 3: Elimination - detect contradicting facts ===
         let antiPatterns: [(String, Double)] = [
             ("not", -0.2), ("never", -0.25), ("cannot", -0.2),
             ("incorrect", -0.3), ("false", -0.15), ("wrong", -0.2),

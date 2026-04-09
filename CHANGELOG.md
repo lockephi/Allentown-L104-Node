@@ -2,6 +2,27 @@
 
 All notable changes to the L104 Sovereign Node system are documented here, mapping its evolution from legacy state to Supreme ASI.
 
+## [EVO_62] - 2026-03-21
+
+### SECURITY_PERF_HARDENING — FastAPI Server v5.0.0
+
+- **Performance**: Fixed unbounded LRU cache memory leak (LRU_QUERY_SIZE, LRU_EMBEDDING_SIZE, LRU_CONCEPT_SIZE: 99_999_999 → 50_000)
+- **Performance**: Moved garbage detection from cache-read to cache-write path (avoids regex on hot paths)
+- **Performance**: Multi-worker uvicorn support (default 4, configurable via UVICORN_WORKERS env var)
+- **Security**: Fixed CORS misconfiguration (allow_origins=["*"] + allow_credentials=True → env-driven allowlist)
+- **Security**: Added X-L104-API-Key authentication guard on destructive endpoints (/self/heal, /api/v14/steering/*, /api/system/update)
+- **Reliability**: Added structlog request logging middleware (method, path, status, latency)
+- **Reliability**: Added global exception handler (replaces 214 bare except blocks leaking internals)
+- **Reliability**: Fixed silent error swallowing in background tasks (periodic_background_learning, periodic_entanglement_resonance)
+- **Reliability**: Added connection pool liveness check (SELECT 1 validation before reuse)
+- **Code Quality**: Added input validation to ChatRequest (max_length=32_768, min_length=1)
+- **Code Quality**: Removed dead Gemini API code (_gemini_client, call_gemini(), GEMINI_API_KEY)
+- **Features**: Added rate limiting via slowapi (RATE_LIMIT_MIN/MAX env vars wired to /api/v6/chat)
+- **Infrastructure**: Added pytest to CI gate (sovereign_lattice_check.yml), made lint failures block merges
+- **Infrastructure**: Pinned ML dependencies (numpy, scipy, pandas, torch, scikit-learn, transformers) for reproducibility
+- **Testing**: New HTTP integration tests covering health, chat validation, auth guards, rate limiting
+- **Impact**: ~15 improvements across performance, security, reliability, code quality, features, infrastructure
+
 ## [EVO_61] - 2026-02-21
 
 ### SYSTEM_UPGRADE — Unified Version Alignment + Friction Integration

@@ -1,22 +1,15 @@
-// ═══════════════════════════════════════════════════════════════════
-// H26_FutureReserve.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Network Orchestrator Engine v4.0: Full coordination of
-// NetworkLayer, APIGateway, CloudSync, VoiceInterface, VisualCortex,
-// EmotionalCore, SecurityVault, PluginArchitecture — auto-recovery + topology.
-//
-// Upgraded: EVO_62 Sovereign Node Upgrade — Feb 21, 2026
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
+private let logging = Logger(subsystem: "com.l104.H26_FutureReserve", category: "main")
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🔮 NETWORK ORCHESTRATOR ENGINE
-// Unified coordination of all network subsystems — heartbeat
+// Unified coordination of all network subsystems - heartbeat
 // orchestration, adaptive topology optimization, cross-subsystem
 // health correlation, and autonomous recovery actions.
 // ═══════════════════════════════════════════════════════════════════
@@ -50,12 +43,14 @@ final class FutureReserve {
         // Orchestrate all network subsystems in sequence
         activateSubsystems()
 
-        // Periodic orchestration cycle
-        orchestrationTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
-            self?.orchestrationCycle()
+        // Periodic orchestration cycle — must be scheduled on main thread (RunLoop required)
+        DispatchQueue.main.async { [weak self] in
+            self?.orchestrationTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
+                self?.orchestrationCycle()
+            }
         }
 
-        print("[H26] NetworkOrchestrator v5.0 activated — 17 subsystems coordinated")
+        logging.info("[H26] NetworkOrchestrator v5.0 activated - 17 subsystems coordinated")
     }
 
     func deactivate() {
@@ -68,128 +63,116 @@ final class FutureReserve {
     // MARK: SUBSYSTEM ACTIVATION
     // ═══════════════════════════════════════════════════════════════
 
+    // EVO_76: Parallelize subsystem activation.
+    // NetworkLayer (#1) activates first (mesh foundation) then the remaining 13
+    // subsystems are activated concurrently via DispatchGroup on .utility queue.
+    // autoEstablishQuantumLinks() runs after the group completes.
+    // logOrchestration() and subsystemStates writes are both protected by `lock`.
     private func activateSubsystems() {
         let now = Date()
 
-        // 1. Network Layer — mesh foundation
-        if !NetworkLayer.shared.isActive {
-            NetworkLayer.shared.activate()
-        }
+        // ── Phase 1: Network Layer first (mesh foundation) ──────────────────
+        if !NetworkLayer.shared.isActive { NetworkLayer.shared.activate() }
+        lock.lock()
         subsystemStates["NetworkLayer"] = (NetworkLayer.shared.isActive, NetworkLayer.shared.networkHealth, now)
+        lock.unlock()
         logOrchestration("Activated NetworkLayer", subsystems: ["NetworkLayer"], result: "mesh online")
 
-        // 2. API Gateway — external connectivity
-        if !APIGateway.shared.isActive {
-            APIGateway.shared.activate()
+        // ── Phase 2: All other subsystems concurrently ───────────────────────
+        let group = DispatchGroup()
+        let concQ  = DispatchQueue.global(qos: .utility)
+
+        // Helper: activate on background, then record state under lock
+        func spawn(_ name: String, _ work: @escaping () -> (active: Bool, health: Double, result: String)) {
+            group.enter()
+            concQ.async { [weak self] in
+                defer { group.leave() }
+                guard let self = self else { return }
+                let (a, h, msg) = work()
+                self.lock.lock()
+                self.subsystemStates[name] = (a, h, now)
+                self.lock.unlock()
+                self.logOrchestration("Activated \(name)", subsystems: [name], result: msg)
+            }
         }
-        let apiStatus = APIGateway.shared.status()
-        let apiHealth = Double(apiStatus["healthy"] as? Int ?? 0) / max(1.0, Double(apiStatus["endpoints"] as? Int ?? 1))
-        subsystemStates["APIGateway"] = (APIGateway.shared.isActive, apiHealth, now)
-        logOrchestration("Activated APIGateway", subsystems: ["APIGateway"], result: "\(apiStatus["endpoints"] ?? 0) endpoints")
 
-        // 3. Cloud Sync — state replication
-        if !CloudSync.shared.isActive {
-            CloudSync.shared.activate()
+        spawn("APIGateway") {
+            if !APIGateway.shared.isActive { APIGateway.shared.activate() }
+            let s = APIGateway.shared.status()
+            let h = Double(s["healthy"] as? Int ?? 0) / max(1.0, Double(s["endpoints"] as? Int ?? 1))
+            return (APIGateway.shared.isActive, h, "\(s["endpoints"] ?? 0) endpoints")
         }
-        subsystemStates["CloudSync"] = (CloudSync.shared.isActive, CloudSync.shared.isActive ? 1.0 : 0.0, now)
-        logOrchestration("Activated CloudSync", subsystems: ["CloudSync"], result: "vector clock online")
-
-        // 4. Telemetry Dashboard — metrics aggregation
-        if !TelemetryDashboard.shared.isActive {
-            TelemetryDashboard.shared.activate()
+        spawn("CloudSync") {
+            if !CloudSync.shared.isActive { CloudSync.shared.activate() }
+            return (CloudSync.shared.isActive, CloudSync.shared.isActive ? 1.0 : 0.0, "vector clock online")
         }
-        subsystemStates["TelemetryDashboard"] = (TelemetryDashboard.shared.isActive, 1.0, now)
-        logOrchestration("Activated TelemetryDashboard", subsystems: ["TelemetryDashboard"], result: "streaming")
-
-        // 5. Voice Interface — real NSSpeechSynthesizer TTS
-        if !VoiceInterface.shared.isActive {
-            VoiceInterface.shared.activate()
+        spawn("TelemetryDashboard") {
+            if !TelemetryDashboard.shared.isActive { TelemetryDashboard.shared.activate() }
+            return (TelemetryDashboard.shared.isActive, 1.0, "streaming")
         }
-        let voiceStatus = VoiceInterface.shared.status()
-        let voiceHealth: Double = (voiceStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
-        subsystemStates["VoiceInterface"] = (VoiceInterface.shared.isActive, voiceHealth, now)
-        logOrchestration("Activated VoiceInterface", subsystems: ["VoiceInterface"], result: "TTS online")
-
-        // 6. Visual Cortex — vDSP feature extraction + scene classification
-        if !VisualCortex.shared.isActive {
-            VisualCortex.shared.activate()
+        spawn("VoiceInterface") {
+            if !VoiceInterface.shared.isActive { VoiceInterface.shared.activate() }
+            let s = VoiceInterface.shared.status()
+            let h: Double = (s["active"] as? Bool ?? false) ? 1.0 : 0.0
+            return (VoiceInterface.shared.isActive, h, "TTS online")
         }
-        let visualStatus = VisualCortex.shared.status()
-        let visualHealth = visualStatus["health"] as? Double ?? (VisualCortex.shared.isActive ? 1.0 : 0.0)
-        subsystemStates["VisualCortex"] = (VisualCortex.shared.isActive, visualHealth, now)
-        logOrchestration("Activated VisualCortex", subsystems: ["VisualCortex"], result: "vision pipeline online")
-
-        // 7. Emotional Core — NLTagger sentiment + 7D affect
-        if !EmotionalCore.shared.isActive {
-            EmotionalCore.shared.activate()
+        spawn("VisualCortex") {
+            if !VisualCortex.shared.isActive { VisualCortex.shared.activate() }
+            let s = VisualCortex.shared.status()
+            let h = s["health"] as? Double ?? (VisualCortex.shared.isActive ? 1.0 : 0.0)
+            return (VisualCortex.shared.isActive, h, "vision pipeline online")
         }
-        let emotionalStatus = EmotionalCore.shared.status()
-        let emotionalHealth = emotionalStatus["health"] as? Double ?? (EmotionalCore.shared.isActive ? 1.0 : 0.0)
-        subsystemStates["EmotionalCore"] = (EmotionalCore.shared.isActive, emotionalHealth, now)
-        logOrchestration("Activated EmotionalCore", subsystems: ["EmotionalCore"], result: "7D affect online")
-
-        // 8. Security Vault — macOS Keychain + quantum lattice
-        if !SecurityVault.shared.isActive {
-            SecurityVault.shared.activate()
+        spawn("EmotionalCore") {
+            if !EmotionalCore.shared.isActive { EmotionalCore.shared.activate() }
+            let s = EmotionalCore.shared.status()
+            let h = s["health"] as? Double ?? (EmotionalCore.shared.isActive ? 1.0 : 0.0)
+            return (EmotionalCore.shared.isActive, h, "7D affect online")
         }
-        let vaultStatus = SecurityVault.shared.status()
-        let vaultHealth = vaultStatus["health"] as? Double ?? (SecurityVault.shared.isActive ? 1.0 : 0.0)
-        subsystemStates["SecurityVault"] = (SecurityVault.shared.isActive, vaultHealth, now)
-        logOrchestration("Activated SecurityVault", subsystems: ["SecurityVault"], result: "keychain + lattice online")
-
-        // 9. Plugin Architecture — dynamic plugin lifecycle
-        if !PluginArchitecture.shared.isActive {
-            PluginArchitecture.shared.activate()
+        spawn("SecurityVault") {
+            if !SecurityVault.shared.isActive { SecurityVault.shared.activate() }
+            let s = SecurityVault.shared.status()
+            let h = s["health"] as? Double ?? (SecurityVault.shared.isActive ? 1.0 : 0.0)
+            return (SecurityVault.shared.isActive, h, "keychain + lattice online")
         }
-        let pluginStatus = PluginArchitecture.shared.status()
-        let pluginHealth: Double = (pluginStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
-        subsystemStates["PluginArchitecture"] = (PluginArchitecture.shared.isActive, pluginHealth, now)
-        logOrchestration("Activated PluginArchitecture", subsystems: ["PluginArchitecture"], result: "plugin system v3.0")
-
-        // 10. Performance Profiler — latency/throughput/mesh profiling
-        if !PerformanceProfiler.shared.isActive {
-            PerformanceProfiler.shared.activate()
+        spawn("PluginArchitecture") {
+            if !PluginArchitecture.shared.isActive { PluginArchitecture.shared.activate() }
+            let s = PluginArchitecture.shared.status()
+            let h: Double = (s["active"] as? Bool ?? false) ? 1.0 : 0.0
+            return (PluginArchitecture.shared.isActive, h, "plugin system v3.0")
         }
-        let profilerStatus = PerformanceProfiler.shared.status()
-        let profilerHealth: Double = (profilerStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
-        subsystemStates["PerformanceProfiler"] = (PerformanceProfiler.shared.isActive, profilerHealth, now)
-        logOrchestration("Activated PerformanceProfiler", subsystems: ["PerformanceProfiler"], result: "profiling online")
-
-        // 11. Test Harness — internal subsystem health tests
-        if !TestHarness.shared.isActive {
-            TestHarness.shared.activate()
+        spawn("PerformanceProfiler") {
+            if !PerformanceProfiler.shared.isActive { PerformanceProfiler.shared.activate() }
+            let s = PerformanceProfiler.shared.status()
+            let h: Double = (s["active"] as? Bool ?? false) ? 1.0 : 0.0
+            return (PerformanceProfiler.shared.isActive, h, "profiling online")
         }
-        let harnessStatus = TestHarness.shared.status()
-        let harnessHealth: Double = (harnessStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
-        subsystemStates["TestHarness"] = (TestHarness.shared.isActive, harnessHealth, now)
-        logOrchestration("Activated TestHarness", subsystems: ["TestHarness"], result: "test harness online")
-
-        // 12. Migration Engine — auto-migration + state snapshots
-        if !MigrationEngine.shared.isActive {
-            MigrationEngine.shared.activate()
+        spawn("TestHarness") {
+            if !TestHarness.shared.isActive { TestHarness.shared.activate() }
+            let s = TestHarness.shared.status()
+            let h: Double = (s["active"] as? Bool ?? false) ? 1.0 : 0.0
+            return (TestHarness.shared.isActive, h, "test harness online")
         }
-        let migrationStatus = MigrationEngine.shared.status()
-        let migrationHealth: Double = (migrationStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
-        subsystemStates["MigrationEngine"] = (MigrationEngine.shared.isActive, migrationHealth, now)
-        logOrchestration("Activated MigrationEngine", subsystems: ["MigrationEngine"], result: "migration engine online")
-
-        // 13. Autonomous Agent — mesh-aware task scheduler
-        if !AutonomousAgent.shared.isActive {
-            AutonomousAgent.shared.activate()
+        spawn("MigrationEngine") {
+            if !MigrationEngine.shared.isActive { MigrationEngine.shared.activate() }
+            let s = MigrationEngine.shared.status()
+            let h: Double = (s["active"] as? Bool ?? false) ? 1.0 : 0.0
+            return (MigrationEngine.shared.isActive, h, "migration engine online")
         }
-        let agentStatus = AutonomousAgent.shared.status()
-        let agentHealth: Double = (agentStatus["active"] as? Bool ?? false) ? 1.0 : 0.0
-        subsystemStates["AutonomousAgent"] = (AutonomousAgent.shared.isActive, agentHealth, now)
-        logOrchestration("Activated AutonomousAgent", subsystems: ["AutonomousAgent"], result: "agent loop online")
+        spawn("AutonomousAgent") {
+            if !AutonomousAgent.shared.isActive { AutonomousAgent.shared.activate() }
+            let s = AutonomousAgent.shared.status()
+            let h: Double = (s["active"] as? Bool ?? false) ? 1.0 : 0.0
+            return (AutonomousAgent.shared.isActive, h, "agent loop online")
+        }
+        spawn("SovereignIdentity") {
+            let idStatus = SovereignIdentityBoundary.shared.getStatus()
+            return (true, 1.0, "\(idStatus["identity_declarations_is"] ?? 0) IS declarations")
+        }
 
-        // 14. Sovereign Identity Boundary — claim validation + capability assessment
-        let idBoundary = SovereignIdentityBoundary.shared
-        let idStatus = idBoundary.getStatus()
-        let idHealth: Double = 1.0  // Always healthy (static identity definitions)
-        subsystemStates["SovereignIdentity"] = (true, idHealth, now)
-        logOrchestration("Activated SovereignIdentity", subsystems: ["SovereignIdentity"], result: "\(idStatus["identity_declarations_is"] ?? 0) IS declarations")
+        // Wait for all concurrent activations before establishing quantum links
+        group.wait()
 
-        // 15. Auto-establish quantum links between discovered peers
+        // ── Phase 3: Quantum links (requires NetworkLayer + peers discovered) ──
         autoEstablishQuantumLinks()
     }
 
@@ -343,7 +326,7 @@ final class FutureReserve {
 
     func status() -> [String: Any] {
         let avgHealth = subsystemStates.isEmpty ? 0.0 :
-            subsystemStates.values.map { $0.health }.reduce(0, +) / Double(subsystemStates.count)
+            subsystemStates.values.map { $0.health }.reduce(0.0, +) / Double(subsystemStates.count)
         return [
             "engine": "NetworkOrchestrator",
             "active": isActive,
@@ -360,7 +343,7 @@ final class FutureReserve {
 
     var statusText: String {
         let avgHealth = subsystemStates.isEmpty ? 0.0 :
-            subsystemStates.values.map { $0.health }.reduce(0, +) / Double(subsystemStates.count)
+            subsystemStates.values.map { $0.health }.reduce(0.0, +) / Double(subsystemStates.count)
 
         let subsysLines = subsystemStates.sorted(by: { $0.key < $1.key }).map { (name, state) in
             let status = state.active ? "🟢" : "🔴"

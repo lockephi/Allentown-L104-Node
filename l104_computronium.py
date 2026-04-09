@@ -231,7 +231,7 @@ class ComputroniumOptimizer:
 
         # Lattice sync pooling — avoid redundant ZPE probes
         self._last_sync_time: float = 0.0
-        self._sync_cooldown: float = 2.0  # seconds between syncs
+        self._sync_cooldown: float = 30.0  # seconds between syncs (reduced CPU load)
         self._sync_count: int = 0
 
         # Pipeline metrics

@@ -36,6 +36,7 @@ from .constants import (
     QUANTUM_26Q_SHOTS, QUANTUM_26Q_NOISE_PROFILE,
 )
 from .numerics import PHI, GOD_CODE
+from l104_sacred_algorithms import derive_timeout, derive_cache_size, derive_cache_ttl, TAU
 
 logger = logging.getLogger("l104_local_intellect")
 
@@ -196,9 +197,9 @@ class SageModeMixin:
 
         with ThreadPoolExecutor(max_workers=min(8, len(loaders))) as pool:
             futures = {pool.submit(fn): fn.__name__ for fn in loaders}
-            for fut in as_completed(futures, timeout=25):
+            for fut in as_completed(futures, timeout=GOD_CODE/PHI/10):
                 try:
-                    result = fut.result(timeout=20)
+                    result = fut.result(timeout=GOD_CODE/PHI/13)
                     if result is not None:
                         attr_name, obj, state_key = result
                         setattr(self, f"_{attr_name}", obj)

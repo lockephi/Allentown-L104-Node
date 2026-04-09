@@ -341,8 +341,8 @@ class NoiseDampenerMixin:
         # Flat spectrum → ratio ≈ 1.0. Peaked spectrum → ratio ≈ 0.0.
         # All ranked_freqs are ≥ 1 (hapax check above), so log(f) is safe.
         log_sum = sum(math.log(f) for f in ranked_freqs)
-        geometric_mean = math.exp(log_sum / len(ranked_freqs))
-        arithmetic_mean = sum(ranked_freqs) / len(ranked_freqs)
+        geometric_mean = math.exp(log_sum / max(len(ranked_freqs), 1))
+        arithmetic_mean = sum(ranked_freqs) / max(len(ranked_freqs), 1)
 
         if arithmetic_mean <= 0:
             return 0.5
@@ -499,8 +499,8 @@ class NoiseDampenerMixin:
 
             # Compute average noise ratio over window
             recent = self._hl_dampener_history[-HL_ADAPTIVE_WINDOW:]
-            avg_noise_ratio = sum(h['noise_ratio'] for h in recent) / len(recent)
-            avg_pass_ratio = sum(h['pass_ratio'] for h in recent) / len(recent)
+            avg_noise_ratio = sum(h['noise_ratio'] for h in recent) / max(len(recent), 1)
+            avg_pass_ratio = sum(h['pass_ratio'] for h in recent) / max(len(recent), 1)
 
             # Target: 30-60% pass rate (not too strict, not too lenient)
             current_floor = getattr(self, '_hl_current_score_floor', NOISE_DAMPENER_SCORE_FLOOR)

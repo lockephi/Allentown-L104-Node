@@ -1,19 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L15_SemanticSearch.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104v2 — Extracted from L104Native.swift
-//   SemanticSearchEngine (lines 11129-11224)
-//   IntelligentSearchEngine (lines 32229-32519)
-//
-// Semantic similarity via NLEmbedding + comprehensive multi-stage
-// search with BM25 scoring, data reconstruction, evolution integration
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class SemanticSearchEngine {
     static let shared = SemanticSearchEngine()
@@ -121,7 +110,7 @@ class SemanticSearchEngine {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// INTELLIGENT SEARCH ENGINE — Comprehensive Logic Gate Search
+// INTELLIGENT SEARCH ENGINE - Comprehensive Logic Gate Search
 // Multi-stage search with data reconstruction + ingest
 // ═══════════════════════════════════════════════════════════════════
 
@@ -150,6 +139,11 @@ class IntelligentSearchEngine {
         guard !kb.trainingData.isEmpty else { return }
         let start = CFAbsoluteTimeGetCurrent()
 
+        // EVO_74: Acquire lock to prevent race condition during index building
+        // Previous crash: Dictionary resize during concurrent write caused EXC_BAD_ACCESS
+        indexLock.lock()
+        defer { indexLock.unlock() }
+
         searchIndex.removeAll()
         documentVectors.removeAll()
 
@@ -164,14 +158,16 @@ class IntelligentSearchEngine {
             let combined = "\(prompt) \(completion)".lowercased()
             let words = tokenize(combined)
 
-            // Build inverted index
+            // Build inverted index - FIX: use Set<Int> not Array
             for word in words {
-                searchIndex[word, default: []].insert(idx)
+                searchIndex[word, default: Set<Int>()].insert(idx)
             }
 
-            // Build TF-IDF vector for this document
+            // Build TF-IDF vector for this document - FIX: use proper default
             var tf: [String: Double] = [:]
-            for word in words { tf[word, default: 0] += 1.0 }
+            for word in words {
+                tf[word, default: 0.0] += 1.0
+            }
             let maxFreq = tf.values.max() ?? 1.0
             for key in tf.keys { tf[key] = tf[key]! / maxFreq }
             documentVectors.append(tf)
@@ -266,10 +262,10 @@ class IntelligentSearchEngine {
         rankedResults.sort { $0.score > $1.score }
         let finalResults = Array(rankedResults.prefix(maxResults))
 
-        // ── STAGE 5: Data Reconstruction — synthesize coherent answer ──
+        // ── STAGE 5: Data Reconstruction - synthesize coherent answer ──
         let synthesized = reconstructData(query: query, results: finalResults.map { $0.text })
 
-        // ── STAGE 6: Evolution Integration — check evolved knowledge ──
+        // ── STAGE 6: Evolution Integration - check evolved knowledge ──
         var evolvedContent: [String] = []
         let evolver = ASIEvolver.shared
         if let evolved = evolver.getEvolvedResponse(for: query) {
@@ -351,7 +347,7 @@ class IntelligentSearchEngine {
 
         let synthesisTemplates = [
             "Based on analysis of \(topicStr): \(fragmentsJoined).",
-            "Research synthesis on \(topicStr) — \(fragmentsJoined). This represents the current understanding across \(results.count) knowledge sources.",
+            "Research synthesis on \(topicStr) - \(fragmentsJoined). This represents the current understanding across \(results.count) knowledge sources.",
             "Regarding \(topicStr): \(fragmentsJoined). The evidence points to interconnected principles across multiple domains.",
             "\(fragmentsJoined). These findings about \(topicStr) suggest deeper patterns worth investigating.",
             "Comprehensive analysis of \(topicStr) reveals: \(fragmentsJoined)."

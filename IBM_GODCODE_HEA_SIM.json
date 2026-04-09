@@ -1,0 +1,50 @@
+{
+  "timestamp": "2026-04-08T06:47:56",
+  "experiment": "godcode_hea_v2",
+  "n_params": 24,
+  "spsa_iterations": 5000,
+  "god_code_rank": 187,
+  "god_code_probability": 1.3695356712848144e-10,
+  "top_10": [
+    {
+      "state": "10000001",
+      "probability": 0.8271644967755358
+    },
+    {
+      "state": "10101001",
+      "probability": 0.05245623308592425
+    },
+    {
+      "state": "00100001",
+      "probability": 0.03348759631068895
+    },
+    {
+      "state": "10000011",
+      "probability": 0.031770678784836436
+    },
+    {
+      "state": "10010101",
+      "probability": 0.015591253031023131
+    },
+    {
+      "state": "10001011",
+      "probability": 0.010466363522709531
+    },
+    {
+      "state": "11000001",
+      "probability": 0.010326388237730888
+    },
+    {
+      "state": "11010001",
+      "probability": 0.005901952876180272
+    },
+    {
+      "state": "00001001",
+      "probability": 0.0021236805549664727
+    },
+    {
+      "state": "10101011",
+      "probability": 0.0020147989162156454
+    }
+  ]
+}

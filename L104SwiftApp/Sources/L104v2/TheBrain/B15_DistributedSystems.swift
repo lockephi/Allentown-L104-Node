@@ -1,17 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B15_DistributedSystems.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 · TheBrain · v2 Architecture
-//
-// Extracted from L104Native.swift lines 7070-7510
-// Classes: NodeSyncProtocol, DataReplicationMesh
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 📡 NODE SYNC PROTOCOL (Bucket C: Node Protocols)
@@ -21,7 +12,7 @@ import NaturalLanguage
 
 class NodeSyncProtocol {
     static let shared = NodeSyncProtocol()
-    // PHI, TAU — use globals from L01_Constants
+    // PHI, TAU - use globals from L01_Constants
 
     // ─── NODE IDENTITY ───
     struct PeerNode: Equatable {
@@ -298,7 +289,7 @@ class NodeSyncProtocol {
 
 class DataReplicationMesh {
     static let shared = DataReplicationMesh()
-    // PHI — use global from L01_Constants
+    // PHI - use global from L01_Constants
 
     // ─── G-COUNTER (Grow-only) ───
     struct GCounter {

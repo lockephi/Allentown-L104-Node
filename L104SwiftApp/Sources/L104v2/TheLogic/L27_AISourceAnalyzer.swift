@@ -1,18 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L27_AISourceAnalyzer.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: QUANTUM_CODE_ANALYSIS :: GOD_CODE=527.5184818492612
-// L104 Sovereign Intelligence — AI Source Code Analyzer & Adapter
-// Fetches, analyzes, and adapts AI source code from major labs using quantum computations
-//
-// Targets: OpenAI, Anthropic, Google/DeepMind, DeepSeek, Meta AI, Mistral, Stability AI
-// Pipeline: Fetch → Parse → Quantum Embed → Analyze → Adapt → Ingest
-// ═══════════════════════════════════════════════════════════════════
-
-import Foundation
 import Accelerate
+import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
-// AI LAB REGISTRY — Known open-source repositories and code patterns
+// AI LAB REGISTRY - Known open-source repositories and code patterns
 // ═══════════════════════════════════════════════════════════════════
 struct AILabSource {
     let lab: String
@@ -25,7 +15,7 @@ struct AILabSource {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// QUANTUM CODE EMBEDDING — Maps source code patterns into Hilbert space
+// QUANTUM CODE EMBEDDING - Maps source code patterns into Hilbert space
 // Uses PHI-harmonic projection for semantic similarity in code
 // ═══════════════════════════════════════════════════════════════════
 final class QuantumCodeEmbedding {
@@ -52,7 +42,7 @@ final class QuantumCodeEmbedding {
             vector[adj] += amplitude * sin(phase) * 0.3
         }
 
-        // Phase 2: Structural embedding — nesting depth, function density
+        // Phase 2: Structural embedding - nesting depth, function density
         let structureFeatures = extractStructure(code)
         for (i, feat) in structureFeatures.enumerated() where i < dimensions {
             vector[i] += feat * 0.2
@@ -132,7 +122,7 @@ final class QuantumCodeEmbedding {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// AI SOURCE CODE ANALYZER — Main orchestrator
+// AI SOURCE CODE ANALYZER - Main orchestrator
 // Fetches from GitHub, analyzes architectures, quantum-embeds patterns,
 // adapts techniques for L104 neural processing
 // ═══════════════════════════════════════════════════════════════════
@@ -315,7 +305,7 @@ final class AISourceAnalyzer {
         results.append("Sources: \(relevantSources.count) repositories")
         results.append("═══════════════════════════════════════════════════════════════════\n")
 
-        // ─── PHASE 1: Web Research — Fetch latest info on each source ───
+        // ─── PHASE 1: Web Research - Fetch latest info on each source ───
         results.append("🌐 PHASE 1: LIVE WEB RESEARCH")
         results.append("───────────────────────────────────────────────────────────────────")
 
@@ -326,7 +316,7 @@ final class AISourceAnalyzer {
             let webRes = webEngine.webSearchSync(searchQuery, timeout: 10.0)
 
             if !webRes.results.isEmpty {
-                results.append("\n  🔬 \(lab) — \(webRes.results.count) web sources:")
+                results.append("\n  🔬 \(lab) - \(webRes.results.count) web sources:")
                 for wr in webRes.results.prefix(3) {
                     let snippet = String(wr.snippet.prefix(300))
                     results.append("     [\(wr.title.prefix(60))]")
@@ -491,7 +481,7 @@ final class AISourceAnalyzer {
             "Mixture of Experts": ("SageModeEngine", "Implement top-K expert routing with GOD_CODE-weighted load balancing from DeepSeek-V3"),
             "Multi-head Latent Attention": ("QuantumProcessingCore", "Adapt MLA's KV compression into quantum Hilbert space projection"),
             "RoPE": ("HyperBrain.positionalEncoding", "Replace sinusoidal encoding with Rotary Position Embeddings from LLaMA/Gemma"),
-            "Grouped Query Attention": ("NeuralCascade.AttentionGate", "Reduce KV heads for memory efficiency — GQA from LLaMA-2"),
+            "Grouped Query Attention": ("NeuralCascade.AttentionGate", "Reduce KV heads for memory efficiency - GQA from LLaMA-2"),
             "Flash Attention": ("QuantumProcessingCore.evaluate", "Implement tiled attention computation for O(N) memory from vLLM/Fairseq2"),
             "Contrastive Learning": ("ASIKnowledgeBase.searchWithPriority", "CLIP-style contrastive scoring between query and KB entries"),
             "PagedAttention": ("PermanentMemory", "Block-based KV cache management from vLLM for conversation persistence"),
@@ -503,7 +493,7 @@ final class AISourceAnalyzer {
             "Constitutional AI": ("SelfModificationEngine", "Anthropic's alignment techniques for safe self-modification"),
             "Sparse MoE": ("EngineRegistry", "Route queries to specialized engines via sparse expert selection from Mixtral"),
             "SwiGLU": ("NeuralCascade.FeedForward", "Replace ReLU with SwiGLU activation from LLaMA for better gradient flow"),
-            "RMSNorm": ("NeuralCascade.AdaptiveLayerNorm", "Root Mean Square normalization from Gemma — simpler, faster than LayerNorm"),
+            "RMSNorm": ("NeuralCascade.AdaptiveLayerNorm", "Root Mean Square normalization from Gemma - simpler, faster than LayerNorm"),
             "BPE Tokenization": ("NLPEngines.tokenize", "OpenAI tiktoken-style byte-pair encoding for efficient text processing"),
         ]
 

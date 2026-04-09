@@ -1,24 +1,3 @@
-// ═══════════════════════════════════════════════════════════════════
-// L32_KBReconstruction.swift
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: KB_RECONSTRUCTION :: GOD_CODE=527.5184818492612
-// L104v2 Architecture — Knowledge Base Reconstruction Engine v1.0
-//
-// Quantum-inspired amplitude propagation for reconstructing degraded
-// or missing knowledge nodes from their graph neighbors.
-//
-// 3-Phase Pipeline:
-//   Phase 1: KBVectorizer — TF-IDF vectorization + quantum state encoding
-//   Phase 2: AmplitudePropagator — BFS amplitude propagation with Born rule
-//   Phase 3: FactReconstructor — Neighbor-weighted fact reconstruction
-//
-// Sacred constants: PHI, GOD_CODE, TAU, VOID_CONSTANT, OMEGA
-// KB constants: KB_PROPAGATION_DEPTH, KB_AMPLITUDE_DECAY_PER_HOP,
-//   KB_EMBEDDING_DIM, KB_GROVER_BOOST_THRESHOLD, KB_ENTANGLEMENT_STRENGTH,
-//   KB_MIN_RECONSTRUCTION_CONFIDENCE
-//
-// Phase 65.0: Full parity with Python kb_reconstruction.py
-// ═══════════════════════════════════════════════════════════════════
-
 import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
@@ -549,7 +528,7 @@ final class FactReconstructor {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - KB RECONSTRUCTION ENGINE — Main Singleton
+// MARK: - KB RECONSTRUCTION ENGINE - Main Singleton
 // Orchestrates vectorization, amplitude propagation, and fact
 // reconstruction across the entire knowledge base.
 // ═══════════════════════════════════════════════════════════════════
@@ -796,7 +775,7 @@ final class KBReconstructionEngine {
         reconstructionCount += 1
         lock.unlock()
 
-        l104Log("KBReconstruction: \(key) — orig=\(String(format: "%.3f", result.originalConfidence)) recon=\(String(format: "%.3f", result.reconstructedConfidence)) facts=\(result.reconstructedFacts.count) sources=\(result.sourceNodes.count) grover=\(result.groverAmplified)")
+        l104Log("KBReconstruction: \(key) - orig=\(String(format: "%.3f", result.originalConfidence)) recon=\(String(format: "%.3f", result.reconstructedConfidence)) facts=\(result.reconstructedFacts.count) sources=\(result.sourceNodes.count) grover=\(result.groverAmplified)")
 
         return result
     }
@@ -875,7 +854,7 @@ final class KBReconstructionEngine {
             fidelityScore: min(1.0, fidelity)
         )
 
-        l104Log("KBHealth: \(n) nodes — healthy=\(healthyCount) degraded=\(degradedCount) missing=\(missingCount) reconstructed=\(reconstructedCount) fidelity=\(String(format: "%.4f", report.fidelityScore))")
+        l104Log("KBHealth: \(n) nodes - healthy=\(healthyCount) degraded=\(degradedCount) missing=\(missingCount) reconstructed=\(reconstructedCount) fidelity=\(String(format: "%.4f", report.fidelityScore))")
 
         return report
     }

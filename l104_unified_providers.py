@@ -91,10 +91,10 @@ PROVIDER_CONFIGS = {
                 "base_url": "https://api.openai.com/v1",
                 "env_key": "OPENAI_API_KEY",
                 "models": [
-                        "gpt-5-mini",
                         "gpt-4o",
                         "gpt-4o-mini",
-                        "gpt-4-turbo"
+                        "gpt-4-turbo",
+                        "gpt-4"
                 ]
         },
         "anthropic": {
@@ -120,6 +120,33 @@ PROVIDER_CONFIGS = {
                 "models": [
                         "llama-3.3-70b-versatile",
                         "mixtral-8x7b-32768"
+                ]
+        },
+        "mistral": {
+                "base_url": "https://api.mistral.ai/v1",
+                "env_key": "MISTRAL_API_KEY",
+                "models": [
+                        "mistral-large-latest",
+                        "mistral-medium-latest",
+                        "mistral-small-latest"
+                ]
+        },
+        "cohere": {
+                "base_url": "https://api.cohere.ai/v1",
+                "env_key": "COHERE_API_KEY",
+                "models": [
+                        "command-r-plus",
+                        "command-r",
+                        "command-light"
+                ]
+        },
+        "perplexity": {
+                "base_url": "https://api.perplexity.ai",
+                "env_key": "PERPLEXITY_API_KEY",
+                "models": [
+                        "sonar-pro",
+                        "sonar",
+                        "sonar-small"
                 ]
         }
 }

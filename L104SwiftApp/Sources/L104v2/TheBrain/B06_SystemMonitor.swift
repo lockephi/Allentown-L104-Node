@@ -1,17 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B06_SystemMonitor.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — macOS System Monitor V2
-//
-// Real hardware detection, CPU/memory/disk metrics, thermal management.
-// EVO_58: Added real CPU usage (host_processor_info), disk space, uptime
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // 🍎 macOS SYSTEM MONITOR (Apple Silicon Detection & Optimization)
@@ -85,8 +76,22 @@ class MacOSSystemMonitor {
         }
     }
 
+    // 500 ms TTL guard — prevents expensive mach syscalls from running more than 2x/sec
+    private var lastUpdateTimeInterval: TimeInterval = 0
+
+    /// Register with UnifiedHeartbeat so background polling drives metric updates.
+    func startBackgroundPolling() {
+        UnifiedHeartbeat.shared.register(id: "SystemMonitor.poll", baseIntervalMs: 1000, cpuCost: 0.02) { [weak self] in
+            self?.updateMetrics()
+        }
+    }
+
     /// Update runtime metrics
     func updateMetrics() {
+        let now = CFAbsoluteTimeGetCurrent()
+        guard now - lastUpdateTimeInterval > 0.5 else { return }   // 500 ms TTL
+        lastUpdateTimeInterval = now
+
         thermalState = ProcessInfo.processInfo.thermalState
 
         // Calculate memory pressure
@@ -204,11 +209,11 @@ class MacOSSystemMonitor {
         if latencyPeers.isEmpty {
             avgLatency = 0
         } else {
-            avgLatency = latencyPeers.map(\.latencyMs).reduce(0, +) / Double(latencyPeers.count)
+            avgLatency = latencyPeers.map { $0.latencyMs }.reduce(0, +) / Double(latencyPeers.count)
         }
-        let totalBandwidth = net.peers.values.map(\.bandwidth).reduce(0, +)
-        let totalMsgIn = net.peers.values.map(\.messagesIn).reduce(0, +)
-        let totalMsgOut = net.peers.values.map(\.messagesOut).reduce(0, +)
+        let totalBandwidth = net.peers.values.map { $0.bandwidth }.reduce(0, +)
+        let totalMsgIn = net.peers.values.map { $0.messagesIn }.reduce(0, +)
+        let totalMsgOut = net.peers.values.map { $0.messagesOut }.reduce(0, +)
 
         return """
         ═══════════════════════════════════════════════════════════════

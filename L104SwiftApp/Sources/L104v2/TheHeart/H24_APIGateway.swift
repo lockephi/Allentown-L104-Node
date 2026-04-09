@@ -1,17 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// H24_APIGateway.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — API Gateway: HTTP endpoint management, request routing,
-// rate limiting, connection pooling, and external service integration
-// for the L104 network mesh.
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
+private let logging = Logger(subsystem: "com.l104.H24_APIGateway", category: "main")
 // ═══════════════════════════════════════════════════════════════════
 // MARK: - 🔌 API GATEWAY ENGINE
 // HTTP request routing, endpoint health tracking, rate limiting,
@@ -60,10 +55,10 @@ final class APIGateway {
 
     init() {
         let config = URLSessionConfiguration.ephemeral
-        config.timeoutIntervalForRequest = 6     // EVO_63: 6s (was 10) — fail fast
-        config.timeoutIntervalForResource = 15   // EVO_63: 15s (was 30) — don't hold stale connections
-        config.httpMaximumConnectionsPerHost = 6  // EVO_63: 6 (was 4) — more parallel requests
-        config.waitsForConnectivity = true        // EVO_63: true (was false) — wait briefly for connectivity
+        config.timeoutIntervalForRequest = 6     // EVO_63: 6s (was 10) - fail fast
+        config.timeoutIntervalForResource = 15   // EVO_63: 15s (was 30) - don't hold stale connections
+        config.httpMaximumConnectionsPerHost = 6  // EVO_63: 6 (was 4) - more parallel requests
+        config.waitsForConnectivity = true        // EVO_63: true (was false) - wait briefly for connectivity
         session = URLSession(configuration: config)
     }
 
@@ -99,7 +94,7 @@ final class APIGateway {
             self?.healthCheck()
         }
 
-        // EVO_56: Per-minute rate counter reset — prevents permanent rate blocking
+        // EVO_56: Per-minute rate counter reset - prevents permanent rate blocking
         rateLimitResetTimer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { [weak self] _ in
             self?.resetRateCounters()
         }
@@ -107,7 +102,7 @@ final class APIGateway {
         // Initial health sweep
         healthCheck()
 
-        print("[H24] APIGateway activated — \(endpoints.count) endpoints, pool=\(poolSize)")
+        logging.info("[H24] APIGateway activated - \(self.endpoints.count) endpoints, pool=\(self.poolSize)")
     }
 
     func deactivate() {
@@ -119,7 +114,7 @@ final class APIGateway {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // MARK: RATE LIMIT RESET (EVO_56 — prevents permanent blocking)
+    // MARK: RATE LIMIT RESET (EVO_56 - prevents permanent blocking)
     // ═══════════════════════════════════════════════════════════════
 
     private func resetRateCounters() {
@@ -180,7 +175,7 @@ final class APIGateway {
 
         let startTime = CFAbsoluteTimeGetCurrent()
 
-        let task = session.dataTask(with: request) { [weak self] data, response, error in
+        let task = self.session.dataTask(with: request) { [weak self] data, response, error in
             guard let self = self else { return }
             let elapsed = (CFAbsoluteTimeGetCurrent() - startTime) * 1000.0
             let httpStatus = (response as? HTTPURLResponse)?.statusCode ?? 0
@@ -263,12 +258,12 @@ final class APIGateway {
         route(endpointID: "agi-scoring", path: "/api/v10/agi/score", completion: completion)
     }
 
-    /// Run VQPU speed benchmark — saves results to _bench_vqpu_speed_results.json
+    /// Run VQPU speed benchmark - saves results to _bench_vqpu_speed_results.json
     func runVQPUSpeedBenchmark(completion: @escaping ([String: Any]) -> Void) {
         route(endpointID: "fast-server", path: "/api/v14/vqpu/speed-benchmark", body: [:], completion: completion)
     }
 
-    /// Run system upgrade — saves results to _system_upgrade_results.json
+    /// Run system upgrade - saves results to _system_upgrade_results.json
     func runSystemUpgrade(completion: @escaping ([String: Any]) -> Void) {
         route(endpointID: "fast-server", path: "/api/v14/system-upgrade", body: [:], completion: completion)
     }
@@ -278,7 +273,7 @@ final class APIGateway {
         route(endpointID: "fast-server", path: "/api/v14/vqpu/daemon/status", completion: completion)
     }
 
-    /// Trigger VQPU daemon cycle — saves results to _vqpu_daemon_cycle_results.json
+    /// Trigger VQPU daemon cycle - saves results to _vqpu_daemon_cycle_results.json
     func triggerVQPUDaemonCycle(completion: @escaping ([String: Any]) -> Void) {
         route(endpointID: "fast-server", path: "/api/v14/vqpu/daemon/cycle", body: [:], completion: completion)
     }
@@ -361,7 +356,7 @@ final class APIGateway {
             request.timeoutInterval = 3
 
             let start = CFAbsoluteTimeGetCurrent()
-            let task = session.dataTask(with: request) { [weak self] _, response, error in
+            let task = self.session.dataTask(with: request) { [weak self] _, response, error in
                 guard let self = self else { return }
                 let elapsed = (CFAbsoluteTimeGetCurrent() - start) * 1000.0
                 let httpStatus = (response as? HTTPURLResponse)?.statusCode ?? 0
@@ -429,5 +424,18 @@ final class APIGateway {
         \(epLines.isEmpty ? "  (none)" : epLines)
         ╚═══════════════════════════════════════════════════════════════╝
         """
+    }
+}
+
+// MARK: - DeepSeek API ( stubs)
+extension APIGateway {
+    var isDeepSeekConfigured: Bool { false }
+
+    func callDeepSeek(prompt: String, model: String, completion: @escaping (Result<[String: Any], Error>) -> Void) {
+        completion(.failure(NSError(domain: "APIGateway", code: -1, userInfo: [NSLocalizedDescriptionKey: "DeepSeek not configured"])))
+    }
+
+    func deployAgent(task: String, agentType: String, completion: @escaping (Result<[String: Any], Error>) -> Void) {
+        completion(.failure(NSError(domain: "APIGateway", code: -1, userInfo: [NSLocalizedDescriptionKey: "Agent deployment not configured"])))
     }
 }

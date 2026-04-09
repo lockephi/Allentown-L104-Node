@@ -281,7 +281,7 @@ class LatencyPercentileTracker:
             "p99_ms": round(self.percentile(metric, 99), 3),
             "min_ms": round(min(samples), 3),
             "max_ms": round(max(samples), 3),
-            "mean_ms": round(sum(samples) / len(samples), 3),
+            "mean_ms": round(sum(samples) / max(len(samples), 1), 3),
         }
 
     def all_reports(self) -> Dict[str, Dict[str, Any]]:
@@ -428,7 +428,7 @@ class PipelineHealthDashboard:
         # 3. Throughput health — at least some events flowing
         throughputs = self.throughput_tracker.all_throughputs()
         if throughputs:
-            avg_throughput = sum(throughputs.values()) / len(throughputs)
+            avg_throughput = sum(throughputs.values()) / max(len(throughputs), 1)
             throughput_health = avg_throughput / 10.0  # uncapped
         else:
             throughput_health = 0.0

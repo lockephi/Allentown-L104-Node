@@ -2462,7 +2462,7 @@ class SymbolicMathSolver:
             nums_str = m.group(1)
             nums = [float(x.strip()) for x in re.findall(r'\d+(?:\.\d+)?', nums_str)]
             if nums:
-                result = sum(nums) / len(nums)
+                result = sum(nums) / max(len(nums), 1)
                 if abs(result - round(result)) < 1e-9:
                     result = int(round(result))
                 chain.add_step("Mean/Average", f"({' + '.join(str(n) for n in nums)}) / {len(nums)} = {result}", result)
@@ -2503,8 +2503,8 @@ class SymbolicMathSolver:
             nums_str = m.group(1)
             nums = [float(x.strip()) for x in re.findall(r'\d+(?:\.\d+)?', nums_str)]
             if len(nums) >= 2:
-                mean = sum(nums) / len(nums)
-                variance = sum((x - mean) ** 2 for x in nums) / len(nums)
+                mean = sum(nums) / max(len(nums), 1)
+                variance = sum((x - mean) ** 2 for x in nums) / max(len(nums), 1)
                 result = round(_math.sqrt(variance), 6)
                 chain.add_step("Standard deviation", f"σ = {result}", result)
                 return result, 0.88
@@ -2968,12 +2968,12 @@ class SymbolicMathSolver:
             elif any(w in text_lower for w in ['product', 'multiply']):
                 candidates.append((reduce(operator.mul, vals, 1), f"Product", 0.55))
             elif any(w in text_lower for w in ['average', 'mean']):
-                candidates.append((sum(vals) / len(vals), f"Average", 0.60))
+                candidates.append((sum(vals) / max(len(vals), 1), f"Average", 0.60))
             else:
                 candidates = [
                     (sum(vals), f"Sum: {' + '.join(str(v) for v in vals)}", 0.30),
                     (reduce(operator.mul, vals, 1), f"Product", 0.20),
-                    (sum(vals) / len(vals), f"Average", 0.25),
+                    (sum(vals) / max(len(vals), 1), f"Average", 0.25),
                 ]
 
         best = None

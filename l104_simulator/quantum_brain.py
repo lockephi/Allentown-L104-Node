@@ -955,13 +955,6 @@ class ConsciousnessMetric:
         shape = [2] * n_total + [2] * n_total
         rho_tensor = rho.reshape(shape)
 
-        # Trace out unwanted qubits by contracting bra and ket indices
-        # We need to sum over pairs (q, q + n_total) for each traced qubit.
-        # Process from highest qubit index down to avoid shifting.
-        for q in sorted(trace_qubits, reverse=True):
-            rho_tensor = np.trace(rho_tensor, axis1=q, axis2=q + n_keep + len(trace_qubits) - 1)
-            # After tracing, the effective number of axes shrinks.
-            # Simpler approach: use einsum for the full contraction.
 
         # Simpler: use np.einsum via string construction.
         # Build einsum subscripts: bra indices a,b,c,...  ket indices A,B,C,...

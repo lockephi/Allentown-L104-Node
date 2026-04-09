@@ -56,6 +56,22 @@ class FidelityMonitor:
         self._auto_replenishments = 0
         self._start_time = time.time()
 
+        # v1.1: Predictive fidelity decay models per channel
+        self._decay_models: Dict[str, Any] = {}
+        try:
+            from l104_quantum_coherence_enhancements import PredictiveFidelityDecay
+            self._decay_class = PredictiveFidelityDecay
+        except ImportError:
+            self._decay_class = None
+
+        # v1.5: Predictive fidelity decay models per channel
+        self._predictive_models: Dict[str, Any] = {}
+        try:
+            from l104_quantum_coherence_enhancements import PredictiveFidelityDecay
+            self._predictive_class = PredictiveFidelityDecay
+        except ImportError:
+            self._predictive_class = None
+
     def scan(self, auto_heal: bool = True) -> Dict:
         """Perform a full network fidelity scan.
 
@@ -106,6 +122,12 @@ class FidelityMonitor:
             self._channel_history[cid].append(metrics)
             if len(self._channel_history[cid]) > self.history_window:
                 self._channel_history[cid] = self._channel_history[cid][-self.history_window:]
+
+            # v1.1: Update predictive fidelity decay model
+            if self._decay_class:
+                if cid not in self._decay_models:
+                    self._decay_models[cid] = self._decay_class(prediction_horizon=13)
+                self._decay_models[cid].record(metrics.mean_fidelity)
 
             channel_reports.append(metrics)
 
@@ -163,6 +185,13 @@ class FidelityMonitor:
         # Decoherence trend
         trend = self._compute_trend()
 
+        # v1.1: Generate predictions for all channels
+        predictions = {}
+        for cid in self._decay_models:
+            forecast = self._decay_models[cid].get_health_forecast()
+            if forecast.get('status') == 'ok':
+                predictions[cid] = forecast
+
         return {
             "scan_number": self._scans_completed,
             "channels_scanned": len(channel_reports),
@@ -173,6 +202,9 @@ class FidelityMonitor:
             "channels_purified": channels_purified,
             "channels_replenished": channels_replenished,
             "scan_time_ms": (time.time() - t0) * 1000,
+            # v1.1: Predictive fidelity forecasts
+            "predictions": predictions,
+            "channels_with_predictions": len(predictions),
         }
 
     def get_channel_metrics(self, channel_id: str) -> Optional[ChannelMetrics]:
@@ -280,6 +312,81 @@ class FidelityMonitor:
         fid_mean = sum(fids) / len(fids) if fids else 0.0
 
         return (sacred_mean * PHI + fid_mean) / (PHI + 1.0)
+
+    def compute_phi_weighted_fidelity(self, channel_id: str) -> float:
+        """Compute PHI-weighted coherence fidelity for a channel.
+
+        Golden ratio weighted coherence provides enhanced sensitivity to
+        quantum correlations by leveraging the sacred proportion PHI.
+
+        Formula: fidelity = base_fidelity * (PHI / (PHI + TAU * noise))
+
+        Args:
+            channel_id: Channel identifier
+
+        Returns:
+            PHI-weighted coherence fidelity value
+        """
+        ch = self.router.channels.get(channel_id)
+        if not ch or not ch.usable_pairs:
+            return 0.0
+
+        # Calculate base fidelity from pair pool
+        base_fidelity = ch.mean_fidelity
+
+        # Estimate noise from fidelity degradation over time
+        noise = 1.0 - base_fidelity if base_fidelity < 1.0 else 0.0
+
+        # Compute PHI-weighted coherence factor
+        tau = PHI_INV  # 1/PHI ≈ 0.618
+        phi_weight = PHI / (PHI + tau * noise)
+
+        # Apply sacred coherence weighting
+        coherence_fidelity = base_fidelity * phi_weight
+
+        # Apply GOD_CODE harmonic correction
+        gc_correction = GOD_CODE / 1000.0 / PHI
+        corrected_fidelity = min(1.0, coherence_fidelity * gc_correction)
+
+        return round(corrected_fidelity, 6)
+
+    def get_sacred_coherence_metrics(self) -> Dict:
+        """Generate PHI-weighted coherence metrics for all channels.
+
+        Returns:
+            Dict with sacred coherence metrics per channel and network-wide
+        """
+        channel_metrics = {}
+        phi_weighted_fidelities = []
+
+        for cid, ch in self.router.channels.items():
+            phi_fid = self.compute_phi_weighted_fidelity(cid)
+            sacred_score = self._channel_sacred_score(ch)
+
+            channel_metrics[cid] = {
+                "phi_weighted_fidelity": phi_fid,
+                "sacred_score": round(sacred_score, 6),
+                "mean_fidelity": round(ch.mean_fidelity, 6),
+                "pair_count": len(ch.usable_pairs),
+                "coherence_enhanced": phi_fid > ch.mean_fidelity * PHI_INV,
+            }
+            phi_weighted_fidelities.append(phi_fid)
+
+        network_phi_fidelity = (
+            statistics.mean(phi_weighted_fidelities)
+            if phi_weighted_fidelities else 0.0
+        )
+
+        return {
+            "channels": channel_metrics,
+            "network_phi_weighted_fidelity": round(network_phi_fidelity, 6),
+            "sacred_constants": {
+                "PHI": PHI,
+                "PHI_INV": PHI_INV,
+                "GOD_CODE": GOD_CODE,
+            },
+            "phi_enhancement_active": True,
+        }
 
     def _compute_trend(self) -> str:
         """Overall network fidelity trend based on recent scans."""

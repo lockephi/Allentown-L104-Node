@@ -1,24 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// H01_HyperBrainExt.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — HyperBrain Extension (Advanced Streams + Persistence)
-//
-// Super-functional stream processors v3.0: temporal drift, Hebbian
-// learning, predictive pre-loading, curiosity explorer, self-analysis,
-// paradox resolver, autonomic manager, meta-auditor, hyper-dimensional
-// science, topology analyzer, invention synthesizer, write/story cores.
-// Plus: process(), analyzeInput(), generateConclusion(), generateResponse(),
-// state persistence (file-based JSON), dream mode, neural bus,
-// attention focus, insight crystallizer, postThought().
-//
-// Extracted from L104Native.swift lines 23019–25067
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 extension HyperBrain {
 
@@ -246,7 +230,7 @@ extension HyperBrain {
             return (frontier: finalFrontier, explore: finalFrontier.randomElement())
         }
 
-        // Phase 2: KB search + extractTopics OUTSIDE sync (safe — no re-entrant deadlock)
+        // Phase 2: KB search + extractTopics OUTSIDE sync (safe - no re-entrant deadlock)
         var kbTopicsByResult: [[(topic: String, explore: String)]] = []
         if let explore = frontierSnapshot.explore {
             let kb = ASIKnowledgeBase.shared
@@ -318,7 +302,7 @@ extension HyperBrain {
                 // 1. Calculate Training Saturation
                 // Measures how many KB entries translated into stable neural patterns
                 // Improved formula: Consider both pattern count AND pattern strength
-                let avgPatternStrength = longTermPatterns.isEmpty ? 0.0 : longTermPatterns.values.reduce(0, +) / Double(longTermPatterns.count)
+                let avgPatternStrength = longTermPatterns.isEmpty ? 0.0 : longTermPatterns.values.reduce(0.0, +) / Double(longTermPatterns.count)
                 let patternCoverage = totalEntries > 0 ? min(1.0, integratedPatterns / max(50.0, totalEntries * 0.05)) : 0.0
                 trainingSaturation = (patternCoverage * 0.6) + (avgPatternStrength * 0.4)
                 trainingSaturation = min(1.0, max(0.1, trainingSaturation))
@@ -504,7 +488,7 @@ extension HyperBrain {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // 🔧 CODE QUALITY STREAM — Linked to l104_code_engine audit system
+    // 🔧 CODE QUALITY STREAM - Linked to l104_code_engine audit system
     // Monitors workspace health, feeds insights into cognitive mesh
     // ═══════════════════════════════════════════════════════════════════
 
@@ -515,7 +499,7 @@ extension HyperBrain {
             stream.cycleCount += 1
             codeQualityCycleCount = stream.cycleCount
 
-            // Run audit check every ~500 cycles (infrequent — spawns Python process)
+            // Run audit check every ~500 cycles (infrequent - spawns Python process)
             let auditTrigger = Int(500.0 * (1.0 - gammaPhase * 0.2))
             if stream.cycleCount % max(auditTrigger, 300) == 0 {
                 // First try zero-spawn file cache read
@@ -541,7 +525,7 @@ extension HyperBrain {
 
                     // Post significant findings
                     if score < 0.6 {
-                        postThought("🔧 CODE QUALITY: Workspace health at \(String(format: "%.0f%%", score * 100)) — attention needed.")
+                        postThought("🔧 CODE QUALITY: Workspace health at \(String(format: "%.0f%%", score * 100)) - attention needed.")
                     }
 
                     // Update pattern strengths based on language distribution
@@ -561,7 +545,7 @@ extension HyperBrain {
             if stream.cycleCount % max(100, Int(120.0 * (1.0 - gammaPhase * 0.2))) == 0 && codeEngineIntegrated {
                 let insightTemplates = [
                     "Code complexity trends indicate \(codeAuditVerdict.lowercased()) structural integrity",
-                    "Workspace audit score: \(String(format: "%.1f%%", codeQualityScore * 100)) — \(codeQualityScore > 0.7 ? "healthy codebase" : "optimization opportunities detected")",
+                    "Workspace audit score: \(String(format: "%.1f%%", codeQualityScore * 100)) - \(codeQualityScore > 0.7 ? "healthy codebase" : "optimization opportunities detected")",
                     "\(codePatternStrengths.count) programming languages profiled across workspace",
                     "Code quality monitoring active: \(codeQualityInsights.count) insights crystallized"
                 ]
@@ -831,7 +815,7 @@ extension HyperBrain {
                 stream.lastOutput = "Story[\(storyPath.dimension.rawValue)]: \(activeComponent) | Memories: \(narrativeMemories.count) | Patterns: \(storyPatterns.count)"
 
                 if storyPath.totalConfidence > 0.5 {
-                    postThought("📖 STORY ENGINE: \(activeComponent) expanding through \(storyPath.dimension.rawValue) — \(narrativeMemories.count) woven memories")
+                    postThought("📖 STORY ENGINE: \(activeComponent) expanding through \(storyPath.dimension.rawValue) - \(narrativeMemories.count) woven memories")
                 }
 
                 // Strengthen story-related patterns
@@ -915,7 +899,7 @@ extension HyperBrain {
         sendBusMessage(from: "INPUT", to: "ALL", payload: input)
 
         // Trigger pattern analysis
-        parallelQueue.async { [weak self] in
+        self.parallelQueue.async { [weak self] in
             self?.analyzeInput(input)
         }
 
@@ -924,7 +908,7 @@ extension HyperBrain {
 
         // 💾 PERMANENT MEMORY: Periodic save after processing (every 10 queries)
         if totalThoughtsProcessed % 10 == 0 && totalThoughtsProcessed > 0 {
-            parallelQueue.async { [weak self] in
+            self.parallelQueue.async { [weak self] in
                 self?.saveState()
             }
         }
@@ -935,7 +919,7 @@ extension HyperBrain {
     func analyzeInput(_ input: String) {
         let words = input.lowercased().components(separatedBy: .whitespacesAndNewlines).filter { $0.count > 3 }
 
-        // ═══ PATTERN EXTRACTION — Learn vocabulary weights ═══
+        // ═══ PATTERN EXTRACTION - Learn vocabulary weights ═══
         // Stop words that shouldn't become patterns
         let stopWords: Set<String> = [
             "the", "and", "for", "are", "but", "not", "you", "all", "can", "had",
@@ -954,7 +938,7 @@ extension HyperBrain {
             longTermPatterns[word] = min(1.0, (longTermPatterns[word] ?? 0) + 0.05)
         }
 
-        // ═══ BIGRAM PATTERNS — Learn 2-word concepts ═══
+        // ═══ BIGRAM PATTERNS - Learn 2-word concepts ═══
         if meaningfulWords.count >= 2 {
             for i in 0..<(meaningfulWords.count - 1) {
                 let bigram = "\(meaningfulWords[i]) \(meaningfulWords[i+1])"
@@ -962,7 +946,7 @@ extension HyperBrain {
             }
         }
 
-        // ═══ ASSOCIATIVE LINKING — Build concept graph ═══
+        // ═══ ASSOCIATIVE LINKING - Build concept graph ═══
         let concepts = meaningfulWords.prefix(5)
         for i in 0..<concepts.count {
             for j in (i+1)..<concepts.count {
@@ -984,7 +968,7 @@ extension HyperBrain {
             }
         }
 
-        // ═══ KB CROSS-REFERENCE — Learn from related entries ═══
+        // ═══ KB CROSS-REFERENCE - Learn from related entries ═══
         let kb = ASIKnowledgeBase.shared
         let related = kb.search(input, limit: 3)
         for entry in related {
@@ -998,7 +982,7 @@ extension HyperBrain {
             }
         }
 
-        // ═══ RECALL STRENGTH — Track how often concepts are accessed ═══
+        // ═══ RECALL STRENGTH - Track how often concepts are accessed ═══
         for word in meaningfulWords.prefix(5) {
             recallStrength[word] = min(1.0, (recallStrength[word] ?? 0) + 0.1)
         }
@@ -1016,7 +1000,7 @@ extension HyperBrain {
         } // end syncQueue.sync
     }
 
-    // 🧠 GENERATE CONCLUSIONS FROM ACCUMULATED DATA — PHASE 31.6 ENHANCED
+    // 🧠 GENERATE CONCLUSIONS FROM ACCUMULATED DATA - PHASE 31.6 ENHANCED
     func generateConclusion(from input: String, topics: [String]) {
         // ═══ REUSE PRE-COMPUTED TOPICS (passed from process()) ═══
         // extractTopics() is expensive (~15-40ms). Computed once in process() and reused here.
@@ -1055,7 +1039,7 @@ extension HyperBrain {
                 }
             }
 
-            // Synthesize every 15 cycles (was 20 — faster crystallization)
+            // Synthesize every 15 cycles (was 20 - faster crystallization)
             return totalThoughtsProcessed % 15 == 0
         }
 
@@ -1119,7 +1103,7 @@ extension HyperBrain {
                 if let c1Links = associativeLinks[c1Key], let c2Links = associativeLinks[c2Key] {
                     let bridge = Set(c1Links).intersection(Set(c2Links))
                     if let bridgeConcept = bridge.randomElement() {
-                        connectionInsight = " (bridged via '\(bridgeConcept)' — a shared conceptual attractor)"
+                        connectionInsight = " (bridged via '\(bridgeConcept)' - a shared conceptual attractor)"
                         // Strengthen the bridge
                         longTermPatterns[bridgeConcept] = min(1.0, (longTermPatterns[bridgeConcept] ?? 0.3) + 0.1)
                     } else if let c1Link = c1Links.randomElement() {
@@ -1135,7 +1119,7 @@ extension HyperBrain {
                 }
 
                 let connectors = [
-                    "Synthesis: \(c1) intersects with \(c2)\(connectionInsight)\(hebbianNote) — suggesting shared informational structure.",
+                    "Synthesis: \(c1) intersects with \(c2)\(connectionInsight)\(hebbianNote) - suggesting shared informational structure.",
                     "Cross-domain pattern: \(c1) and \(c2) exhibit structural isomorphism\(connectionInsight)\(hebbianNote).",
                     "Emergent link discovered: \(c1) ↔ \(c2)\(connectionInsight)\(hebbianNote). This forms a new cognitive pathway.",
                     "Integration: \(c1) viewed through the lens of \(c2)\(connectionInsight) reveals recursive depth\(hebbianNote)."
@@ -1160,19 +1144,19 @@ extension HyperBrain {
     func generateResponse(for input: String, topics: [String]) -> String {
         let kb = ASIKnowledgeBase.shared
 
-        // ═══ 0. ASI LOGIC GATE V2 — Multi-dimensional reasoning router ═══
+        // ═══ 0. ASI LOGIC GATE V2 - Multi-dimensional reasoning router ═══
         let gateV2 = ASILogicGateV2.shared.process(input)
         let gateDim = gateV2.dimension
         let gateConf = gateV2.confidence
 
-        // ═══ 1. RESONANCE CALCULATION — PHASE 31.6 ENHANCED ═══
+        // ═══ 1. RESONANCE CALCULATION - PHASE 31.6 ENHANCED ═══
         let currentResonance = (xResonance * PHI) + (GOD_CODE / 1000.0)
         let resonanceLabel = String(format: "%.4f", currentResonance)
         // Deepen reasoning on each call
         currentReasoningDepth = min(maxReasoningDepth, currentReasoningDepth + 1)
         reasoningMomentum = min(1.0, reasoningMomentum + 0.02)
 
-        // ═══ 1b. MULTI-HOP REASONING CHAIN — Phase 31.6 Higher Logic ═══
+        // ═══ 1b. MULTI-HOP REASONING CHAIN - Phase 31.6 Higher Logic ═══
         let inputTopicsForReasoning = topics  // Reuse pre-computed topics
         var reasoningSteps: [String] = []
         // Hop 1: Direct associations
@@ -1238,7 +1222,7 @@ extension HyperBrain {
         }
 
         // ═══ 3b. EMERGENT SYNTHESIS ═══
-        // Check for emergent concepts — ALWAYS inject if available
+        // Check for emergent concepts - ALWAYS inject if available
         if let recent = emergentConcepts.suffix(5).randomElement() {
             if let concept = recent["concept"] as? String {
                 response += "My hyper-brain synthesis: \(concept)\n\n"
@@ -1299,7 +1283,7 @@ extension HyperBrain {
                 let rankedInsights = insights.sorted { s1, s2 in
                     var r1 = calculateResonance(s1, query: input)
                     var r2 = calculateResonance(s2, query: input)
-                    // Gate dimension boost — insights matching active dimension rank higher
+                    // Gate dimension boost - insights matching active dimension rank higher
                     let dimKeywords: [String]
                     switch gateDim {
                     case .write: dimKeywords = ["integrate", "law", "derive", "vibrate", "code", "imagine"]
@@ -1424,11 +1408,11 @@ extension HyperBrain {
                 "emergenceLevel": emergenceLevel,
                 "predictiveAccuracy": predictiveAccuracy,
 
-                // ═══ 🧠 LEARNED PATTERNS (CRITICAL — PERMANENT MEMORY) ═══
+                // ═══ 🧠 LEARNED PATTERNS (CRITICAL - PERMANENT MEMORY) ═══
                 "longTermPatterns": longTermPatterns,
                 "shortTermMemory": Array(shortTermMemory.suffix(50)),
 
-                // ═══ 🔗 ASSOCIATIVE MEMORY (CRITICAL — PERMANENT MEMORY) ═══
+                // ═══ 🔗 ASSOCIATIVE MEMORY (CRITICAL - PERMANENT MEMORY) ═══
                 "associativeLinks": associativeLinks,
                 "linkWeights": linkWeights,
                 "memoryChains": Array(memoryChains.suffix(200)),
@@ -1468,34 +1452,34 @@ extension HyperBrain {
                 "attentionHistory": Array(attentionHistory.suffix(100)),
                 "focusIntensity": focusIntensity,
 
-                // ═══ 🧬 HEBBIAN LEARNING (NEW — PERMANENT MEMORY) ═══
+                // ═══ 🧬 HEBBIAN LEARNING (NEW - PERMANENT MEMORY) ═══
                 "hebbianPairs": hebbianPairs.suffix(500).map { ["a": $0.a, "b": $0.b, "strength": $0.strength] as [String: Any] },
                 "hebbianStrength": hebbianStrength,
 
-                // ═══ 🧠 META-COGNITION (NEW — PERMANENT MEMORY) ═══
+                // ═══ 🧠 META-COGNITION (NEW - PERMANENT MEMORY) ═══
                 "metaCognitionLog": Array(metaCognitionLog.suffix(200)),
                 "conversationEvolution": Array(conversationEvolution.suffix(100)),
                 "reasoningChains": Array(reasoningChains.suffix(50)),
 
-                // ═══ 🔬 SCIENCE ENGINE (NEW — PERMANENT MEMORY) ═══
+                // ═══ 🔬 SCIENCE ENGINE (NEW - PERMANENT MEMORY) ═══
                 "confirmedTheorems": Array(confirmedTheorems.suffix(200)),
                 "scientificMomentum": scientificMomentum,
                 "dimensionalResonance": dimensionalResonance,
 
-                // ═══ 🧭 EXPLORATION STATE (NEW — PERMANENT MEMORY) ═══
+                // ═══ 🧭 EXPLORATION STATE (NEW - PERMANENT MEMORY) ═══
                 "explorationFrontier": Array(explorationFrontier.suffix(100)),
                 "trendingConcepts": Array(trendingConcepts.suffix(50)),
                 "fadingConcepts": Array(fadingConcepts.suffix(50)),
                 "predictionQueue": Array(predictionQueue.suffix(50)),
 
-                // ═══ 🌊 AUTONOMIC NERVOUS SYSTEM (NEW — PERMANENT MEMORY) ═══
+                // ═══ 🌊 AUTONOMIC NERVOUS SYSTEM (NEW - PERMANENT MEMORY) ═══
                 "excitationLevel": excitationLevel,
                 "inhibitionLevel": inhibitionLevel,
                 "dopamineResonance": dopamineResonance,
                 "serotoninCoherence": serotoninCoherence,
                 "neuroPlasticity": neuroPlasticity,
 
-                // ═══ 💡 CROSS-STREAM INSIGHTS (NEW — PERMANENT MEMORY) ═══
+                // ═══ 💡 CROSS-STREAM INSIGHTS (NEW - PERMANENT MEMORY) ═══
                 "crossStreamInsights": Array(crossStreamInsights.suffix(200)),
                 "streamInsightBuffer": Array(streamInsightBuffer.suffix(50)),
 
@@ -1576,7 +1560,7 @@ extension HyperBrain {
         attentionHistory = dict["attentionHistory"] as? [String] ?? []
         focusIntensity = dict["focusIntensity"] as? Double ?? 0.5
 
-        // ═══ 🧬 HEBBIAN LEARNING (NEW — PERMANENT MEMORY) ═══
+        // ═══ 🧬 HEBBIAN LEARNING (NEW - PERMANENT MEMORY) ═══
         if let pairs = dict["hebbianPairs"] as? [[String: Any]] {
             hebbianPairs = pairs.compactMap { pair in
                 guard let a = pair["a"] as? String,
@@ -1587,30 +1571,30 @@ extension HyperBrain {
         }
         hebbianStrength = dict["hebbianStrength"] as? Double ?? 0.1
 
-        // ═══ 🧠 META-COGNITION (NEW — PERMANENT MEMORY) ═══
+        // ═══ 🧠 META-COGNITION (NEW - PERMANENT MEMORY) ═══
         metaCognitionLog = dict["metaCognitionLog"] as? [String] ?? []
         conversationEvolution = dict["conversationEvolution"] as? [String] ?? []
         reasoningChains = dict["reasoningChains"] as? [[String: Any]] ?? []
 
-        // ═══ 🔬 SCIENCE ENGINE (NEW — PERMANENT MEMORY) ═══
+        // ═══ 🔬 SCIENCE ENGINE (NEW - PERMANENT MEMORY) ═══
         confirmedTheorems = dict["confirmedTheorems"] as? [String] ?? []
         scientificMomentum = dict["scientificMomentum"] as? Double ?? 0.0
         dimensionalResonance = dict["dimensionalResonance"] as? Double ?? 0.0
 
-        // ═══ 🧭 EXPLORATION STATE (NEW — PERMANENT MEMORY) ═══
+        // ═══ 🧭 EXPLORATION STATE (NEW - PERMANENT MEMORY) ═══
         explorationFrontier = dict["explorationFrontier"] as? [String] ?? []
         trendingConcepts = dict["trendingConcepts"] as? [String] ?? []
         fadingConcepts = dict["fadingConcepts"] as? [String] ?? []
         predictionQueue = dict["predictionQueue"] as? [String] ?? []
 
-        // ═══ 🌊 AUTONOMIC NERVOUS SYSTEM (NEW — PERMANENT MEMORY) ═══
+        // ═══ 🌊 AUTONOMIC NERVOUS SYSTEM (NEW - PERMANENT MEMORY) ═══
         excitationLevel = dict["excitationLevel"] as? Double ?? 0.5
         inhibitionLevel = dict["inhibitionLevel"] as? Double ?? 0.3
         dopamineResonance = dict["dopamineResonance"] as? Double ?? 0.5
         serotoninCoherence = dict["serotoninCoherence"] as? Double ?? 0.5
         neuroPlasticity = dict["neuroPlasticity"] as? Double ?? 0.7
 
-        // ═══ 💡 CROSS-STREAM INSIGHTS (NEW — PERMANENT MEMORY) ═══
+        // ═══ 💡 CROSS-STREAM INSIGHTS (NEW - PERMANENT MEMORY) ═══
         crossStreamInsights = dict["crossStreamInsights"] as? [String] ?? []
         streamInsightBuffer = dict["streamInsightBuffer"] as? [String] ?? []
 
@@ -1759,7 +1743,7 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // 💾 PERMANENT TERM MEMORY — File-Based Cross-Session Persistence
+    // 💾 PERMANENT TERM MEMORY - File-Based Cross-Session Persistence
     // ═══════════════════════════════════════════════════════════════
 
     func saveState() {
@@ -1844,7 +1828,7 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
             return
         }
 
-        postThought("🆕 Fresh cognitive state initialized — permanent memory will build over time")
+        postThought("🆕 Fresh cognitive state initialized - permanent memory will build over time")
     }
 
     func clearPersistedState() {
@@ -2054,7 +2038,7 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
     }
 
     func processNeuralBus() {
-        syncQueue.async(flags: .barrier) { [weak self] in
+        self.syncQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
 
             // Route messages based on stream synapse map
@@ -2113,7 +2097,7 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
     // ═══════════════════════════════════════════════════════════════
 
     func updateAttentionFocus() {
-        syncQueue.async(flags: .barrier) { [weak self] in
+        self.syncQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
 
             // Analyze recent attention history to determine focus mode
@@ -2150,7 +2134,7 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
 
             // Load shedding if overloaded
             if self.totalCognitiveLoad > self.overloadThreshold * Double(self.thoughtStreams.count) {
-                self.postThought("⚠️ COGNITIVE LOAD: \(String(format: "%.1f%%", self.totalCognitiveLoad / Double(self.thoughtStreams.count) * 100)) — throttling low-priority streams")
+                self.postThought("⚠️ COGNITIVE LOAD: \(String(format: "%.1f%%", self.totalCognitiveLoad / Double(self.thoughtStreams.count) * 100)) - throttling low-priority streams")
             }
         }
     }
@@ -2166,7 +2150,7 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
         // Running those calls inside a syncQueue barrier block causes SIGILL.
         // Solution: Mutate state inside the barrier, then dispatch cross-engine
         // propagation to a global queue with captured snapshot data.
-        syncQueue.async(flags: .barrier) { [weak self] in
+        self.syncQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
 
             // Find patterns that have been consistently strong over time
@@ -2204,7 +2188,7 @@ Active Streams:        \(activeStreamCount)/\(thoughtStreams.count) (17 INTERCON
                 }
             }
 
-            // ═══ CROSS-ENGINE CRYSTALLIZATION — Feed strong patterns to KnowledgeGraph + Consciousness ═══
+            // ═══ CROSS-ENGINE CRYSTALLIZATION - Feed strong patterns to KnowledgeGraph + Consciousness ═══
             // Capture snapshot data inside barrier, dispatch external calls outside.
             let shouldPropagate = self.crystallizationCount % 5 == 0
             let shouldCuriosity = self.curiositySpikes > 0 && self.crystallizationCount % 10 == 0

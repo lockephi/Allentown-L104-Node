@@ -1,0 +1,702 @@
+[
+  {
+    "file": ".venv/lib/python3.11/site-packages/starlette/middleware/gzip.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 15.607605934143066
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/tensorflow/_api/v2/compat/v2/__internal__/monitoring/__init__.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.28848695755004883
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/diskcache/fanout.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.7942979335784912
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/google/genai/chats.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.6846520900726318
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/mpmath/calculus/__init__.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.3344757556915283
+  },
+  {
+    "file": "start_fast_server.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.3466200828552246
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/keras/_tf_keras/keras/applications/resnet50/__init__.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.22606301307678223
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/samplomatic/virtual_registers/group_register.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.2624943256378174
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/torch/distributed/tensor/parallel/api.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.2085130214691162
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/sympy/polys/rationaltools.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.26827287673950195
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/anthropic/types/beta_error_response.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.12131309509277344
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/tensorflow/python/ops/signal/util_ops.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.19397783279418945
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/dill/objtypes.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.17575716972351074
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/qiskit/synthesis/linear_phase/cx_cz_depth_lnn.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.09871101379394531
+  },
+  {
+    "file": "l104_vqpu/entanglement.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 1.4253089427947998
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/scipy/_lib/_bunch.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.30544519424438477
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/pygments/lexers/webmisc.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 1.1079659461975098
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/openai/types/fine_tuning/jobs/checkpoint_list_params.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.11964797973632812
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/scipy/optimize/_linprog.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.15472793579101562
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/tensorflow/python/compiler/tensorrt/__init__.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.11235284805297852
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pygments/formatters/__init__.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.14071083068847656
+  },
+  {
+    "file": "l104_quantum_ai_daemon/__main__.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.08823895454406738
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/torch/fx/passes/fake_tensor_prop.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.10464787483215332
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/anthropic/types/beta/beta_request_mcp_server_tool_configuration_param.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.0405886173248291
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/PIL/IcnsImagePlugin.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.5481128692626953
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/fontTools/pens/svgPathPen.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.23107004165649414
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/tensorflow/python/util/tf_decorator_export.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.07964515686035156
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/PIL/XVThumbImagePlugin.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.08167695999145508
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/google/genai/_interactions/types/video_content.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.10279273986816406
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/anthropic/resources/beta/messages/batches.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.8949241638183594
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/llama_cpp/llama_speculative.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.12364411354064941
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/openai/types/beta/threads/runs/tool_call_delta.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.08794808387756348
+  },
+  {
+    "file": "oracle.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.07153892517089844
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/google/auth/jwt.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.3364720344543457
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/h11/_events.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.22357988357543945
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/torch/onnx/_internal/onnxruntime.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.7094871997833252
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/torch/distributed/algorithms/_checkpoint/checkpoint_wrapper.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.4866828918457031
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/pip/_vendor/urllib3/packages/six.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.7997591495513916
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/torch/ao/pruning/_experimental/data_sparsifier/__init__.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.12820100784301758
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/tensorboard/summary/v2.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.08784914016723633
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/tensorboard/backend/empty_path_redirect.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.09445595741271973
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/pip/_vendor/requests/adapters.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.28775787353515625
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/google/protobuf/unknown_fields.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.13443589210510254
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/numpy/_core/getlimits.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.21762490272521973
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/google/protobuf/field_mask_pb2.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.054042816162109375
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/fontTools/feaLib/variableScalar.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.3292820453643799
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/google/protobuf/wrappers_pb2.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.1013331413269043
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/sympy/tensor/array/arrayop.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.29933810234069824
+  },
+  {
+    "file": ".venv/lib/python3.11/site-packages/qiskit/synthesis/one_qubit/__init__.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.14214086532592773
+  },
+  {
+    "file": ".venv/lib/python3.12/site-packages/PIL/ImageCms.py",
+    "valid": true,
+    "code_smells": 6,
+    "science_error": null,
+    "math_error": null,
+    "consensus": {
+      "valid_count": 3,
+      "total_engines": 3,
+      "consensus_reached": true,
+      "confidence": 1.0
+    },
+    "scan_time": 0.42385411262512207
+  }
+]

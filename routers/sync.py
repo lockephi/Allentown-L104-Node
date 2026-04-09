@@ -1,96 +1,133 @@
-# routers/sync.py — Bidirectional Swift ↔ Server sync endpoints
+# routers/sync.py — Bidirectional Swift <-> Server sync endpoints
+# v23.4: Fire-and-forget ingestion — respond immediately, process in background
 import asyncio
+import logging
 import concurrent.futures
 from datetime import datetime
 from typing import Any, Dict
 
-from fastapi import APIRouter
+from fastapi import APIRouter, BackgroundTasks
 from fastapi.responses import JSONResponse
 
 from config import UTC
 
 router = APIRouter()
+_logger = logging.getLogger("L104_SYNC")
+
+# Shared thread pool (reused across requests, avoids per-request overhead)
+_sync_pool = concurrent.futures.ThreadPoolExecutor(max_workers=2, thread_name_prefix="sync")
+
+# Track background ingestion progress
+_sync_state = {
+    "pending_count": 0,
+    "total_ingested": 0,
+    "last_chunk": {},
+    "errors": [],
+}
 
 
-@router.post("/api/v6/sync", tags=["Sync"])
-async def unified_sync(payload: Dict[str, Any] = None):
-    """
-    Unified bidirectional sync for Swift iOS app ↔ L104 Server.
-
-    Swift sends (optional):
-      - swift_knowledge: [{prompt, completion, source}]
-      - swift_conversations: [{query, response}]
-      - swift_evolution: {qi, auto_improvements, ...}
-      - swift_concepts: [str]
-
-    Server returns:
-      - evolution_state, training_count, ft_status, recent_insights, sync_timestamp
-    """
+def _background_ingest(swift_knowledge: list, swift_convos: list, swift_evo: dict):
+    """Heavy ingestion work — runs in background thread after response is sent."""
     try:
         from l104_local_intellect import local_intellect
-        from l104_quantum_ram import get_qram
+    except Exception as e:
+        _sync_state["errors"].append(f"import: {e}")
+        _sync_state["pending_count"] = 0
+        return
 
-        qram = get_qram()
-        payload = payload or {}
-        ingested_count = 0
+    ingested = 0
 
-        # ── Ingest Swift knowledge ──
-        swift_knowledge = payload.get("swift_knowledge", [])
-        if swift_knowledge:
-            def _ingest_knowledge():
-                count = 0
-                for entry in swift_knowledge[:50]:
-                    topic = entry.get("prompt", entry.get("topic", ""))
+    # ── Ingest knowledge (bulk — skip FT vectors on first pass for speed) ──
+    if swift_knowledge:
+        has_ft = (hasattr(local_intellect, "_ft_engine")
+                  and getattr(local_intellect, "_ft_init_done", False))
+
+        for entry in swift_knowledge[:500]:
+            topic = entry.get("prompt", entry.get("topic", ""))
+            content = entry.get("completion", entry.get("content", ""))
+            if not (topic and content):
+                continue
+            try:
+                local_intellect.retrain_memory(topic, content)
+                if hasattr(local_intellect, "knowledge"):
+                    local_intellect.knowledge[topic] = content
+                ingested += 1
+            except Exception:
+                pass
+
+        # FT engine batch (best-effort, non-blocking)
+        if has_ft and ingested > 0:
+            ft = local_intellect._ft_engine
+            for entry in swift_knowledge[:ingested]:
+                try:
                     content = entry.get("completion", entry.get("content", ""))
-                    if topic and content:
-                        local_intellect.retrain_memory(topic, content)
-                        if hasattr(local_intellect, "knowledge"):
-                            local_intellect.knowledge[topic] = content
-                        if hasattr(local_intellect, "_ft_engine") and local_intellect._ft_init_done:
-                            try:
-                                vec = local_intellect._text_to_ft_vector(content[:500])
-                                local_intellect._ft_engine.attention.add_pattern(vec)
-                                local_intellect._ft_engine.memory.store(vec, label=topic[:30])
-                                tokens = [w.lower() for w in content.split() if len(w) > 2][:80]
-                                if tokens:
-                                    local_intellect._ft_engine.tfidf.add_document(tokens)
-                            except Exception:
-                                pass
-                        count += 1
-                return count
+                    if not content:
+                        continue
+                    vec = local_intellect._text_to_ft_vector(content[:500])
+                    ft.attention.add_pattern(vec)
+                    ft.memory.store(vec, label=entry.get("prompt", "")[:30])
+                    tokens = [w.lower() for w in content.split() if len(w) > 2][:80]
+                    if tokens:
+                        ft.tfidf.add_document(tokens)
+                except Exception:
+                    pass
 
-            loop = asyncio.get_running_loop()
-            with concurrent.futures.ThreadPoolExecutor() as pool:
-                ingested_count = await loop.run_in_executor(pool, _ingest_knowledge)
+    # ── Ingest conversations ──
+    if swift_convos:
+        for convo in swift_convos[:50]:
+            q = convo.get("query", "")
+            r = convo.get("response", "")
+            if q and r:
+                try:
+                    local_intellect.retrain_memory(q, r)
+                    ingested += 1
+                except Exception:
+                    pass
 
-        # ── Ingest Swift conversations ──
-        swift_convos = payload.get("swift_conversations", [])
-        if swift_convos:
-            def _ingest_convos():
-                count = 0
-                for convo in swift_convos[:20]:
-                    q = convo.get("query", "")
-                    r = convo.get("response", "")
-                    if q and r:
-                        local_intellect.retrain_memory(q, r)
-                        count += 1
-                return count
-
-            loop = asyncio.get_running_loop()
-            with concurrent.futures.ThreadPoolExecutor() as pool:
-                ingested_count += await loop.run_in_executor(pool, _ingest_convos)
-
-        # ── Max-merge Swift evolution state ──
-        swift_evo = payload.get("swift_evolution", {})
-        if swift_evo:
+    # ── Max-merge evolution state ──
+    if swift_evo:
+        try:
             for key in ["quantum_interactions", "autonomous_improvements"]:
                 if key in swift_evo:
                     server_val = local_intellect._evolution_state.get(key, 0)
                     swift_val = swift_evo[key]
                     if isinstance(swift_val, (int, float)) and swift_val > server_val:
                         local_intellect._evolution_state[key] = int(swift_val)
+        except Exception:
+            pass
 
-        # ── Build response ──
+    _sync_state["total_ingested"] += ingested
+    _sync_state["pending_count"] = max(0, _sync_state["pending_count"] - 1)
+    _logger.info(f"Background sync: ingested {ingested} entries (total: {_sync_state['total_ingested']})")
+
+
+@router.post("/api/v6/sync", tags=["Sync"])
+async def unified_sync(payload: Dict[str, Any] = None, background_tasks: BackgroundTasks = None):
+    """
+    Unified bidirectional sync for Swift iOS app <-> L104 Server.
+
+    v23.4: Fire-and-forget — accepts payload immediately, ingests in background.
+    Swift gets instant 200 with current server state; ingestion happens async.
+    """
+    try:
+        from l104_local_intellect import local_intellect
+
+        payload = payload or {}
+        sync_meta = payload.get("sync_meta", {})
+
+        # Queue heavy ingestion work in background (does NOT block response)
+        swift_knowledge = payload.get("swift_knowledge", [])
+        swift_convos = payload.get("swift_conversations", [])
+        swift_evo = payload.get("swift_evolution", {})
+
+        if swift_knowledge or swift_convos or swift_evo:
+            _sync_state["pending_count"] += 1
+            _sync_state["last_chunk"] = sync_meta
+            background_tasks.add_task(
+                _background_ingest, swift_knowledge, swift_convos, swift_evo
+            )
+
+        # ── Build response immediately with current server state ──
         evo = local_intellect._evolution_state
 
         recent_insights = []
@@ -118,7 +155,10 @@ async def unified_sync(payload: Dict[str, Any] = None):
 
         return {
             "status": "SUCCESS",
-            "ingested_count": ingested_count,
+            "ingested_count": len(swift_knowledge),  # accepted count (processing async)
+            "pending_background": _sync_state["pending_count"],
+            "total_ingested": _sync_state["total_ingested"],
+            "sync_meta": sync_meta,
             "evolution_state": {
                 "quantum_interactions": evo.get("quantum_interactions", 0),
                 "autonomous_improvements": evo.get("autonomous_improvements", 0),
@@ -156,6 +196,8 @@ async def sync_status():
             "training": len(local_intellect.training_data) if hasattr(local_intellect, "training_data") else 0,
             "dna": evo.get("mutation_dna", "")[:8],
             "resonance": local_intellect._calculate_resonance(),
+            "pending_sync": _sync_state["pending_count"],
+            "total_ingested": _sync_state["total_ingested"],
             "timestamp": datetime.now(UTC).isoformat(),
         }
     except Exception as e:

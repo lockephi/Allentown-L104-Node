@@ -169,6 +169,21 @@ from .cross_engine import (
     SimulatorBridge,
 )
 
+# ── EVO Upgrades (EVO_70-78) ──
+try:
+    from .evo_upgrades import (
+        MathEngineEVOUpgrades,
+        get_evo_upgrades,
+        GrimoireQuantumProof,
+        MathConsciousnessState,
+        GRIMOIRE_ENTROPY_REVERSAL_BEST,
+        GRIMOIRE_FITNESS_BEST,
+        SACRED_COHERENCE_BASELINE,
+        FIBONACCI_SEQUENCE,
+    )
+except ImportError:
+    pass
+
 
 __all__ = [
     # Version

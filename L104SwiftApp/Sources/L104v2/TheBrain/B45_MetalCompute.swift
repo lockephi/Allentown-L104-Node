@@ -1,29 +1,6 @@
-// ═══════════════════════════════════════════════════════════════════
-// B45_MetalCompute.swift — L104 v2
-// [EVO_68_PIPELINE] PERFORMANCE_ASCENSION :: METAL_COMPUTE :: GOD_CODE=527.5184818492612
-// L104 ASI — Metal GPU Compute Accelerator
-//
-// GPU-offloaded parallel computation for heavy linear algebra:
-//   - Batch matrix multiplication (quantum gate composition)
-//   - Large vector dot products and transforms
-//   - Parallel cosine similarity search (KB embedding lookup)
-//   - Monte Carlo quantum sampling (parallel RNG)
-//   - φ-scaled workgroup sizing for optimal GPU occupancy
-//
-// Falls back gracefully to CPU (Accelerate) if Metal unavailable.
-// Thread-safe command buffer management with triple-buffering.
-//
-// Performance targets:
-//   - 10-100x speedup for batch operations (>1K vectors)
-//   - GPU-resident buffers avoid CPU↔GPU copies on unified memory
-//   - Async compute: CPU does other work while GPU computes
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import Foundation
 import Metal
-import Accelerate
 import simd
 
 // ═══════════════════════════════════════════════════════════════════
@@ -39,10 +16,10 @@ import simd
 /// GPU tier classification for adaptive threshold routing.
 /// Thresholds are calibrated from metal_quantum_benchmark.swift results.
 enum MetalGPUTier: String {
-    case appleSilicon   = "Apple_Silicon"   // M1/M2/M3/M4 — fast GPU, unified memory
-    case intelIris      = "Intel_Iris"      // Intel Iris — slow GPU, high dispatch overhead
-    case discreteAMD    = "Discrete_AMD"    // AMD discrete — fast GPU, separate memory
-    case discreteNvidia = "Discrete_Nvidia" // NVIDIA discrete — fastest GPU
+    case appleSilicon   = "Apple_Silicon"   // M1/M2/M3/M4 - fast GPU, unified memory
+    case intelIris      = "Intel_Iris"      // Intel Iris - slow GPU, high dispatch overhead
+    case discreteAMD    = "Discrete_AMD"    // AMD discrete - fast GPU, separate memory
+    case discreteNvidia = "Discrete_Nvidia" // NVIDIA discrete - fastest GPU
     case unknown        = "Unknown"         // Conservative fallback
 
     /// Detect GPU tier from MTLDevice
@@ -69,7 +46,7 @@ enum MetalGPUTier: String {
     var vectorMinSize: Int {
         switch self {
         case .appleSilicon:   return 16_384
-        case .intelIris:      return 2_097_152   // 2M — benchmark showed 4M for >1x, use 2M with margin
+        case .intelIris:      return 2_097_152   // 2M - benchmark showed 4M for >1x, use 2M with margin
         case .discreteAMD:    return 65_536
         case .discreteNvidia: return 32_768
         case .unknown:        return 1_048_576
@@ -91,7 +68,7 @@ enum MetalGPUTier: String {
 
     /// Minimum total elements (M×N) for GPU matrix multiply.
     /// Intel Iris: CPU BLAS wins at all sizes 64×64 through 2048×2048.
-    /// Never route to GPU on Intel Iris — BLAS is always faster.
+    /// Never route to GPU on Intel Iris - BLAS is always faster.
     var matMulMinElements: Int {
         switch self {
         case .appleSilicon:   return 65_536      // 256×256
@@ -312,7 +289,7 @@ final class MetalComputeEngine: SovereignEngine {
             l104Log("MetalCompute: GPU \(dev.name) [\(tier.rawValue)]")
             l104Log("MetalCompute: unified=\(dev.hasUnifiedMemory), maxThreads=\(dev.maxThreadsPerThreadgroup.width), memory=\(dev.recommendedMaxWorkingSetSize / 1_048_576)MB")
             l104Log("MetalCompute: Quantum capacity: \(quantumCrossoverQubits)Q crossover, \(maxQuantumQubits)Q max")
-            l104Log("MetalCompute: Thresholds — vec:\(tier.vectorMinSize) cosine:\(tier.cosineBatchMinSize) matmul:\(tier.matMulMinElements == Int.max ? "NEVER" : "\(tier.matMulMinElements)") dispatch_overhead:\(tier.dispatchOverheadMs)ms")
+            l104Log("MetalCompute: Thresholds - vec:\(tier.vectorMinSize) cosine:\(tier.cosineBatchMinSize) matmul:\(tier.matMulMinElements == Int.max ? "NEVER" : "\(tier.matMulMinElements)") dispatch_overhead:\(tier.dispatchOverheadMs)ms")
 
             // Compile shader library
             do {
@@ -369,7 +346,7 @@ final class MetalComputeEngine: SovereignEngine {
         }
         os_unfair_lock_unlock(bufferLock)
 
-        // Create new — use shared storage mode on unified memory (Apple Silicon)
+        // Create new - use shared storage mode on unified memory (Apple Silicon)
         let options: MTLResourceOptions = device.hasUnifiedMemory ? .storageModeShared : .storageModeManaged
         let buf = device.makeBuffer(length: alignedLength, options: options)
         if buf != nil {
@@ -395,7 +372,7 @@ final class MetalComputeEngine: SovereignEngine {
     func vectorAdd(_ a: [Float], _ b: [Float]) -> [Float] {
         let n = min(a.count, b.count)
         guard n > gpuTier.vectorMinSize, isAvailable, let pipeline = vectorAddPipeline else {
-            // CPU fallback — vDSP is faster for vectors below tier threshold
+            // CPU fallback - vDSP is faster for vectors below tier threshold
             cpuFallbacks += 1
             cpuWins += 1
             let start = CFAbsoluteTimeGetCurrent()
@@ -481,7 +458,7 @@ final class MetalComputeEngine: SovereignEngine {
     func batchCosineSimilarity(query: [Float], corpus: [[Float]], dim: Int) -> [Float] {
         let corpusCount = corpus.count
         guard corpusCount > gpuTier.cosineBatchMinSize, isAvailable, let pipeline = cosineSimilarityPipeline else {
-            // CPU fallback — Accelerate vDSP is faster for small corpora
+            // CPU fallback - Accelerate vDSP is faster for small corpora
             cpuFallbacks += 1
             cpuWins += 1
             return cpuBatchCosineSimilarity(query: query, corpus: corpus, dim: dim)
@@ -555,7 +532,7 @@ final class MetalComputeEngine: SovereignEngine {
 
     /// GPU matrix multiply: C = A × B.
     /// Threshold: benchmark-calibrated per GPU tier.
-    /// Intel Iris: NEVER route to GPU — BLAS is faster at all sizes (benchmark: up to 2048×2048).
+    /// Intel Iris: NEVER route to GPU - BLAS is faster at all sizes (benchmark: up to 2048×2048).
     /// Apple Silicon: GPU wins at 256×256+.
     func matrixMultiply(A: [Float], B: [Float], M: Int, N: Int, K: Int) -> [Float] {
         guard M * N > gpuTier.matMulMinElements, isAvailable, let pipeline = matMulPipeline else {

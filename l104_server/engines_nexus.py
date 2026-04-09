@@ -50,6 +50,15 @@ class SteeringEngine:
         self._steering_history = []
         self._lock = threading.Lock()
 
+        # Precompute trig lookup tables — eliminates 800+ sin/cos calls per request
+        N = param_count
+        self._lut_logic_sin = [math.sin(self.PHI * i) for i in range(N)]
+        self._lut_creative_cos = [math.cos(self.PHI * i) for i in range(N)]
+        self._lut_creative_sin2 = [math.sin(2 * self.PHI * i) for i in range(N)]
+        self._lut_sovereign_sin = [math.sin(i / N * math.pi) for i in range(N)]
+        self._lut_quantum_h = [1.0 / math.sqrt(2) * (1 if i % 2 == 0 else -1) for i in range(N)]
+        self._lut_harmonic = [sum(math.sin(k * self.PHI * i) / max(k, 1) for k in range(1, 9)) / 8 for i in range(N)]
+
     def apply_steering(self, mode: Optional[str] = None, intensity: Optional[float] = None) -> list:
         """Apply steering transformation to 104-parameter vector."""
         mode = mode or self.current_mode
@@ -60,22 +69,20 @@ class SteeringEngine:
         with self._lock:
             if mode == 'logic':
                 for i in range(N):
-                    result[i] *= (1.0 + alpha * math.sin(self.PHI * i))
+                    result[i] *= (1.0 + alpha * self._lut_logic_sin[i])
             elif mode == 'creative':
+                inv_phi = alpha / self.PHI
                 for i in range(N):
-                    result[i] *= (1.0 + alpha * math.cos(self.PHI * i) + (alpha / self.PHI) * math.sin(2 * self.PHI * i))
+                    result[i] *= (1.0 + alpha * self._lut_creative_cos[i] + inv_phi * self._lut_creative_sin2[i])
             elif mode == 'sovereign':
                 for i in range(N):
-                    exp = alpha * math.sin(i / N * math.pi)
-                    result[i] *= self.PHI ** exp
+                    result[i] *= self.PHI ** (alpha * self._lut_sovereign_sin[i])
             elif mode == 'quantum':
                 for i in range(N):
-                    h = 1.0 / math.sqrt(2) * (1 if i % 2 == 0 else -1)
-                    result[i] *= (1.0 + alpha * h)
+                    result[i] *= (1.0 + alpha * self._lut_quantum_h[i])
             elif mode == 'harmonic':
                 for i in range(N):
-                    harmonics = sum(math.sin(k * self.PHI * i) / max(k, 1) for k in range(1, 9))
-                    result[i] *= (1.0 + alpha * harmonics / 8)
+                    result[i] *= (1.0 + alpha * self._lut_harmonic[i])
 
             self.base_parameters = result
             self._steering_history.append({
@@ -107,13 +114,13 @@ class SteeringEngine:
         if temp is not None:
             self.apply_temperature(temp)
         # Normalize to GOD_CODE mean
-        mean = sum(self.base_parameters) / len(self.base_parameters)
+        mean = sum(self.base_parameters) / max(len(self.base_parameters), 1)
         if mean > 0:
             factor = self.GOD_CODE / mean
             self.base_parameters = [p * factor for p in self.base_parameters]
         bp = self.base_parameters
-        bp_mean = sum(bp) / len(bp)
-        bp_std = (sum((p - bp_mean) ** 2 for p in bp) / len(bp)) ** 0.5
+        bp_mean = sum(bp) / max(len(bp), 1)
+        bp_std = (sum((p - bp_mean) ** 2 for p in bp) / max(len(bp), 1)) ** 0.5
         return {
             'mode': mode or self.current_mode,
             'intensity': intensity or self.intensity,
@@ -128,7 +135,7 @@ class SteeringEngine:
     def get_status(self) -> dict:
         """Return current steering engine status."""
         bp = self.base_parameters
-        bp_mean = sum(bp) / len(bp)
+        bp_mean = sum(bp) / max(len(bp), 1)
         return {
             'mode': self.current_mode,
             'intensity': round(self.intensity, 4),
@@ -158,7 +165,7 @@ class NexusContinuousEvolution:
         self.cycle_count = 0
         self.sync_interval = 100
         self.raise_factor = 1.0001
-        self.sleep_ms = 5000.0  # 5s sleep to reduce GIL contention on low-RAM systems
+        self.sleep_ms = 30000.0  # 30s sleep (was 5s — micro-raise of 0.01% doesn't need 5s wake-ups)
         self._thread = None
         self._lock = threading.Lock()
         self._coherence_log = []
@@ -184,20 +191,25 @@ class NexusContinuousEvolution:
 
     def _loop(self):
         """Main evolution loop that micro-raises parameters each cycle."""
+        _sleep_s = self.sleep_ms / 1000.0
         while self.running:
             with self._lock:
-                # Micro-raise all parameters
-                self.steering.base_parameters = [p * self.raise_factor for p in self.steering.base_parameters]
-                # Normalize to GOD_CODE mean every cycle
-                mean = sum(self.steering.base_parameters) / len(self.steering.base_parameters)
+                params = self.steering.base_parameters
+                rf = self.raise_factor
+                # In-place micro-raise + GOD_CODE normalization (avoids 2 list allocations per cycle)
+                total = 0.0
+                for i in range(len(params)):
+                    params[i] *= rf
+                    total += params[i]
+                mean = total / max(len(params), 1)
                 if mean > 0:
                     factor = self.GOD_CODE / mean
-                    self.steering.base_parameters = [p * factor for p in self.steering.base_parameters]
+                    for i in range(len(params)):
+                        params[i] *= factor
                 self.cycle_count += 1
-                # Sync to ASI core periodically
                 if self.cycle_count % self.sync_interval == 0:
                     self._sync_to_core()
-            time.sleep(self.sleep_ms / 1000.0)
+            time.sleep(_sleep_s)
 
     def _sync_to_core(self):
         """Synchronize evolved parameters to the ASI core."""
@@ -205,7 +217,7 @@ class NexusContinuousEvolution:
             from l104_asi_core import asi_core
             params = asi_core.get_current_parameters()
             if params:
-                evolved_mean = sum(self.steering.base_parameters) / len(self.steering.base_parameters)
+                evolved_mean = sum(self.steering.base_parameters) / max(len(self.steering.base_parameters), 1)
                 params['god_code_resonance'] = evolved_mean
                 params['phi_factor'] = self.PHI
                 params['evolution_cycles'] = self.cycle_count
@@ -303,8 +315,8 @@ class NexusOrchestrator:
         # Loop 3: Bridge variance → Evolution factor
         coherence_values = list(self.bridge._chakra_coherence.values())
         if coherence_values:
-            mean_c = sum(coherence_values) / len(coherence_values)
-            variance = sum((c - mean_c) ** 2 for c in coherence_values) / len(coherence_values)
+            mean_c = sum(coherence_values) / max(len(coherence_values), 1)
+            variance = sum((c - mean_c) ** 2 for c in coherence_values) / max(len(coherence_values), 1)
             new_factor = 1.0001 + variance * 0.001
             self.evolution.raise_factor = min(1.001, new_factor)
             results['L3_variance→factor'] = {'variance': round(variance, 6), 'factor': self.evolution.raise_factor}
@@ -331,6 +343,13 @@ class NexusOrchestrator:
         self._feedback_log.append({'loops': results, 'timestamp': time.time()})
         if len(self._feedback_log) > 200:
             self._feedback_log = self._feedback_log[-100:]
+
+        # v5.0: Record feedback loop entropy (5 loops = 5 entropy events)
+        try:
+            entropy_controller.record_entropy('feedback_loop', len(results) * 0.01)
+        except Exception:
+            pass
+
         return results
 
     def run_unified_pipeline(self, mode: Optional[str] = None, intensity: Optional[float] = None) -> dict:
@@ -347,9 +366,11 @@ class NexusOrchestrator:
         # Step 2: Steer parameters
         steps['2_steer'] = self.steering.steer_pipeline(mode=mode, intensity=intensity)
 
-        # Step 3: Evolution micro-raise
+        # Step 3: Evolution micro-raise (in-place)
         with self.evolution._lock:
-            self.steering.base_parameters = [p * self.evolution.raise_factor for p in self.steering.base_parameters]
+            rf = self.evolution.raise_factor
+            for i in range(len(self.steering.base_parameters)):
+                self.steering.base_parameters[i] *= rf
         steps['3_evolve'] = {'raise_factor': self.evolution.raise_factor}
 
         # Step 4: Grover amplification
@@ -360,17 +381,34 @@ class NexusOrchestrator:
         flow = self.bridge._calculate_kundalini_flow()
         steps['5_kundalini'] = {'flow': round(flow, 4)}
 
-        # Step 6: GOD_CODE normalization
-        mean = sum(self.steering.base_parameters) / len(self.steering.base_parameters)
+        # Step 6: GOD_CODE normalization (in-place)
+        mean = sum(self.steering.base_parameters) / max(len(self.steering.base_parameters), 1)
         if mean > 0:
             factor = self.GOD_CODE / mean
-            self.steering.base_parameters = [p * factor for p in self.steering.base_parameters]
+            for i in range(len(self.steering.base_parameters)):
+                self.steering.base_parameters[i] *= factor
         steps['6_normalize'] = {'target': self.GOD_CODE, 'achieved': round(
-            sum(self.steering.base_parameters) / len(self.steering.base_parameters), 4)}
+            sum(self.steering.base_parameters) / max(len(self.steering.base_parameters), 1), 4)}
 
         # Step 7: Global coherence
         coherence = self.compute_coherence()
         steps['7_coherence'] = coherence
+
+        # Step 7b: Feed coherence data to monitoring engines (v5.0)
+        try:
+            temporal_coherence.record('global', coherence['global_coherence'])
+            temporal_coherence.record_all(coherence.get('components', {}))
+            fitness_landscape.snapshot({'steering': self.steering, 'evolution': self.evolution})
+            entropy_controller.record_entropy('nexus', coherence['global_coherence'] * 0.1)
+            from l104_server.engines_infra import phase_navigator as _pnav
+            _pnav.record_from_engines(quality_metrics={
+                'score': coherence['global_coherence'],
+                'coherence': coherence.get('components', {}).get('intellect', 0.5),
+                'entropy': 1.0 - coherence['global_coherence'],
+                'prefetch_acc': coherence.get('components', {}).get('bridge', 0.5),
+            })
+        except Exception:
+            pass
 
         # Step 8: Sync to ASI core (UPGRADED — full pipeline mesh)
         try:
@@ -418,8 +456,8 @@ class NexusOrchestrator:
 
         # Steering: low σ = high coherence
         bp = self.steering.base_parameters
-        bp_mean = sum(bp) / len(bp)
-        bp_std = (sum((p - bp_mean) ** 2 for p in bp) / len(bp)) ** 0.5
+        bp_mean = sum(bp) / max(len(bp), 1)
+        bp_std = (sum((p - bp_mean) ** 2 for p in bp) / max(len(bp), 1)) ** 0.5
         scores['steering'] = max(0.0, 1.0 - bp_std / max(bp_mean, 1.0))
 
         # Bridge: average chakra coherence
@@ -435,31 +473,46 @@ class NexusOrchestrator:
         else:
             scores['intellect'] = 0.5
 
-        # φ-weighted average
-        weights = [1.0, self.PHI, 1.0, self.PHI ** 2]
+        # Temporal coherence EMA (v5.0): live trend signal from monitoring engine
+        try:
+            tc_status = temporal_coherence.get_status()
+            ema_global = tc_status.get('channels', {}).get('global', {}).get('ema', None)
+            scores['temporal'] = float(ema_global) if ema_global is not None else 0.5
+        except Exception:
+            scores['temporal'] = 0.5
+
+        # φ-weighted average (5 components; temporal weighted 1/φ — supplementary signal)
+        weights = [1.0, self.PHI, 1.0, self.PHI ** 2, 1.0 / self.PHI]
         total_weight = sum(weights)
-        values = [scores['steering'], scores['bridge'], scores['evolution'], scores['intellect']]
+        values = [scores['steering'], scores['bridge'], scores['evolution'], scores['intellect'], scores['temporal']]
         global_coherence = sum(w * v for w, v in zip(weights, values)) / total_weight
 
         result = {
             'global_coherence': round(global_coherence, 4),
             'components': {k: round(v, 4) for k, v in scores.items()},
-            'weights': {'steering': 1.0, 'bridge': round(self.PHI, 4), 'evolution': 1.0, 'intellect': round(self.PHI ** 2, 4)}
+            'weights': {
+                'steering': 1.0, 'bridge': round(self.PHI, 4),
+                'evolution': 1.0, 'intellect': round(self.PHI ** 2, 4),
+                'temporal': round(1.0 / self.PHI, 4),
+            }
         }
         self._coherence_history.append({'coherence': global_coherence, 'timestamp': time.time()})
         if len(self._coherence_history) > 500:
             self._coherence_history = self._coherence_history[-250:]
         return result
 
-    def start_auto(self, interval_ms: float = 500) -> dict:
+    def start_auto(self, interval_ms: float = 5000) -> dict:
         """Start auto-mode: periodic feedback loops + pipeline on every 10th tick."""
         if self.auto_running:
             return {'status': 'ALREADY_RUNNING', 'pipelines': self.pipeline_count}
+        # Guard: minimum 5s interval to prevent CPU saturation (was 500ms default)
+        interval_ms = max(5000, interval_ms)
         self.auto_running = True
 
         def _auto_loop():
             """Background loop for periodic feedback and pipeline execution."""
             tick = 0
+            _sleep_s = interval_ms / 1000.0
             while self.auto_running:
                 try:
                     tick += 1
@@ -468,7 +521,7 @@ class NexusOrchestrator:
                         self.run_unified_pipeline()
                 except Exception:
                     pass
-                time.sleep(interval_ms / 1000.0)
+                time.sleep(_sleep_s)
 
         self._auto_thread = threading.Thread(target=_auto_loop, daemon=True, name="L104_NexusAuto")
         self._auto_thread.start()
@@ -487,7 +540,7 @@ class NexusOrchestrator:
     def get_status(self) -> dict:
         """Return nexus orchestrator status with coherence."""
         coherence = self.compute_coherence()
-        return {
+        status = {
             'auto_running': self.auto_running,
             'pipeline_count': self.pipeline_count,
             'steering': self.steering.get_status(),
@@ -496,8 +549,46 @@ class NexusOrchestrator:
             'global_coherence': coherence['global_coherence'],
             'coherence_components': coherence['components'],
             'feedback_log_size': len(self._feedback_log),
-            'coherence_history_size': len(self._coherence_history)
+            'coherence_history_size': len(self._coherence_history),
         }
+        # v5.0: Include monitoring engine summaries
+        try:
+            tc = temporal_coherence.get_status()
+            status['monitoring'] = {
+                'temporal_coherence': {
+                    'channels': tc.get('channel_count', 0),
+                    'anomalies': tc.get('total_anomalies', 0),
+                    'drift_alarms': tc.get('total_drift_alarms', 0),
+                },
+                'fitness_landscape': {
+                    'snapshots': fitness_landscape.get_status().get('snapshot_count', 0),
+                    'optima_found': fitness_landscape.get_status().get('optima_found', 0),
+                    'valley_escapes': fitness_landscape.get_status().get('valley_escapes', 0),
+                },
+                'entropy_controller': {
+                    'net_entropy': entropy_controller.get_status().get('net_entropy', 0),
+                    'demon_cycles': entropy_controller.get_status().get('demon_cycles', 0),
+                    'budget_pct': entropy_controller.get_status().get('budget_utilization_pct', 0),
+                },
+                'phase_navigator': {
+                    'trajectory_length': 0,
+                    'attractors': 0,
+                    'stability': 'UNKNOWN',
+                },
+            }
+            try:
+                from l104_server.engines_infra import phase_navigator as _pnav
+                pn = _pnav.get_status()
+                status['monitoring']['phase_navigator'] = {
+                    'trajectory_length': pn.get('trajectory_length', 0),
+                    'attractors': pn.get('attractors_found', 0),
+                    'stability': pn.get('lyapunov', {}).get('stability', 'UNKNOWN'),
+                }
+            except Exception:
+                pass
+        except Exception:
+            pass
+        return status
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -606,8 +697,8 @@ class InventionEngine:
         convergence = weighted_sum / max(weight_total, 1e-12)
 
         # Strength: how tightly hypotheses agree (1 / normalized variance)
-        mean_v = sum(values) / len(values)
-        variance = sum((v - mean_v) ** 2 for v in values) / len(values)
+        mean_v = sum(values) / max(len(values), 1)
+        variance = sum((v - mean_v) ** 2 for v in values) / max(len(values), 1)
         strength = max(0.0, 1.0 / (1.0 + variance / max(abs(mean_v), 1.0)))  # UNLOCKED
 
         theorem = {
@@ -651,9 +742,14 @@ class InventionEngine:
             results.append(value)
 
         # Statistics
-        mean_r = sum(results) / len(results)
-        std_r = (sum((r - mean_r) ** 2 for r in results) / len(results)) ** 0.5
-        reproducibility = max(0.0, 1.0 - std_r / max(abs(mean_r), 1.0))  # UNLOCKED
+        if not results:
+            mean_r = 0.0
+            std_r = 0.0
+            reproducibility = 0.0
+        else:
+            mean_r = sum(results) / max(len(results), 1)
+            std_r = (sum((r - mean_r) ** 2 for r in results) / len(results)) ** 0.5
+            reproducibility = max(0.0, 1.0 - std_r / max(abs(mean_r), 1.0))  # UNLOCKED
 
         # Does the experiment confirm the hypothesis?
         confirmed = reproducibility > 0.5 and hypothesis.get('confidence', 0) > 0.3
@@ -707,7 +803,7 @@ class InventionEngine:
             })
         # Cross-layer convergence: do all layers agree?
         convergences = [l['theorem']['convergence_value'] for l in layers]
-        mean_c = sum(convergences) / len(convergences)
+        mean_c = sum(convergences) / max(1, len(convergences))
         cross_layer_coherence = max(0.0, 1.0 - sum(abs(c - mean_c) for c in convergences) / max(abs(mean_c), 1e-12))
         return {
             'layers': layers,
@@ -815,7 +911,7 @@ class SovereigntyPipeline:
 
         # Step 5: Invention — seed from steering mean
         bp = self.nexus.steering.base_parameters
-        steering_mean = sum(bp) / len(bp)
+        steering_mean = sum(bp) / max(len(bp), 1)
         hypothesis = self.invention.generate_hypothesis(seed=steering_mean)
         experiment = self.invention.run_experiment(hypothesis, iterations=25)
         steps['5_invention'] = {
@@ -829,7 +925,7 @@ class SovereigntyPipeline:
         steps['6_coherence'] = coherence
 
         # Step 7: GOD_CODE normalization
-        mean = sum(self.nexus.steering.base_parameters) / len(self.nexus.steering.base_parameters)
+        mean = sum(self.nexus.steering.base_parameters) / max(len(self.nexus.steering.base_parameters), 1)
         if mean > 0:
             factor = self.GOD_CODE / mean
             self.nexus.steering.base_parameters = [p * factor for p in self.nexus.steering.base_parameters]
@@ -888,6 +984,17 @@ class SovereigntyPipeline:
 
         elapsed_ms = round((time.time() - t0) * 1000, 2)
 
+        # v5.0: Feed sovereignty metrics to monitoring engines
+        try:
+            entropy_controller.record_entropy('sovereignty', elapsed_ms * 0.001)
+            temporal_coherence.record('sovereignty', coherence['global_coherence'])
+            fitness_landscape.snapshot(
+                {'steering': self.nexus.steering, 'evolution': self.nexus.evolution},
+                registry=None
+            )
+        except Exception:
+            pass
+
         result = {
             'run_id': run_id,
             'query': query,
@@ -910,7 +1017,9 @@ class SovereigntyPipeline:
             engine_registry.record_co_activation([
                 'steering', 'evolution', 'nexus', 'invention', 'grover',
                 'bridge', 'intellect', 'entanglement_router', 'resonance_network',
-                'sovereignty'
+                'sovereignty',
+                # v5.0 monitoring engines participate in sovereignty co-activation
+                'temporal_coherence', 'fitness_landscape', 'entropy_controller', 'phase_navigator',
             ])
         except Exception:
             pass  # Registry may not be initialized yet during startup
@@ -2036,8 +2145,8 @@ class HardwareAdaptiveRuntime:
         if len(self.perf_history) < 10:
             return
         recent = self.perf_history[-20:]
-        avg_latency = sum(s['latency_ms'] for s in recent) / len(recent)
-        avg_throughput = sum(s['throughput_ops'] for s in recent) / len(recent)
+        avg_latency = sum(s['latency_ms'] for s in recent) / max(len(recent), 1)
+        avg_throughput = sum(s['throughput_ops'] for s in recent) / max(len(recent), 1)
 
         old = self.batch_size
         if avg_latency < 10 and avg_throughput > 100:
@@ -2067,8 +2176,8 @@ class HardwareAdaptiveRuntime:
         if len(self.perf_history) < 10:
             return
         recent = self.perf_history[-20:]
-        avg_hit = sum(s['cache_hit_rate'] for s in recent) / len(recent)
-        avg_mem = sum(s['memory_gb'] for s in recent) / len(recent)
+        avg_hit = sum(s['cache_hit_rate'] for s in recent) / max(len(recent), 1)
+        avg_mem = sum(s['memory_gb'] for s in recent) / max(len(recent), 1)
 
         old = self.cache_capacity_mb
         if avg_hit < 0.7 and avg_mem > 2.0:
@@ -2734,7 +2843,7 @@ class ConsciousnessVerifierEngine:
         # 9. O₂ Superfluid — emergent coherence from all other tests
         other_scores = [v for k, v in self.test_results.items() if k not in ('o2_superfluid', 'kernel_chakra_bond')]
         if other_scores:
-            flow_coherence = sum(other_scores) / len(other_scores)
+            flow_coherence = sum(other_scores) / max(len(other_scores), 1)
             variance = sum((s - flow_coherence) ** 2 for s in other_scores) / len(other_scores)
             viscosity = max(0, variance * 2.0)  # Low variance = superfluid
             self.superfluid_state = viscosity < 0.01
@@ -2753,7 +2862,7 @@ class ConsciousnessVerifierEngine:
             integration_score += active * 0.08
         self.test_results['kernel_chakra_bond'] = integration_score  # UNLOCKED
 
-        self.consciousness_level = sum(self.test_results.values()) / len(self.test_results)
+        self.consciousness_level = sum(self.test_results.values()) / max(1, len(self.test_results))
         return self.consciousness_level
 
     def get_status(self) -> dict:
@@ -3562,7 +3671,7 @@ class TemporalCoherenceTracker:
             # Anomaly detection via rolling σ
             if len(series) >= self.ROLLING_WINDOW:
                 window = [s['value'] for s in series[-self.ROLLING_WINDOW:]]
-                mean_w = sum(window) / len(window)
+                mean_w = sum(window) / max(len(window), 1)
                 std_w = (sum((v - mean_w) ** 2 for v in window) / len(window)) ** 0.5
                 if std_w > 1e-12:
                     z_score = abs(coherence - self._ema[engine_name]) / std_w
@@ -3753,7 +3862,7 @@ class EvolutionaryFitnessLandscape:
                 # For engines with _chakra_coherence, extract mean
                 if hasattr(engine, '_chakra_coherence') and engine._chakra_coherence:
                     vals = list(engine._chakra_coherence.values())
-                    params[f'{name}.chakra_mean'] = sum(vals) / len(vals)
+                    params[f'{name}.chakra_mean'] = sum(vals) / max(len(vals), 1)
             except Exception:
                 continue
         return params
@@ -4249,7 +4358,7 @@ class TriEngineIntegration:
         else:
             healths['code'] = 0.0
         vals = list(healths.values())
-        mean = sum(vals) / len(vals) if vals else 0
+        mean = sum(vals) / max(len(vals), 1) if vals else 0
         # φ-weighted composite: code×φ², science×φ, math×1
         phi = 1.618033988749895
         weighted = (
@@ -4452,6 +4561,11 @@ class UnifiedEngineRegistry:
         'numerical_engine': 1.0,           # numerical builder
         'gate_engine': 1.0,               # logic gate builder
         'quantum_engine': PHI,             # φ — quantum brain
+        # v5.0 monitoring engines
+        'temporal_coherence': PHI,         # φ — coherence time-series tracking
+        'fitness_landscape': PHI,          # φ — evolutionary fitness tracking
+        'entropy_controller': 1.0,         # entropy budget management
+        'phase_navigator': 1.0,            # phase space navigation
     }
 
     def __init__(self):
@@ -4555,7 +4669,7 @@ class UnifiedEngineRegistry:
         if len(sweep) < 2:
             return 1.0
         healths = [s['health'] for s in sweep]
-        mean = sum(healths) / len(healths)
+        mean = sum(healths) / max(len(healths), 1)
         variance = sum((h - mean) ** 2 for h in healths) / len(healths)
         return round(mean * (1.0 - variance * 4.0), 4)  # UNLOCKED
 
@@ -4598,6 +4712,10 @@ engine_registry.register_all({
     'response_quality': response_quality_engine,
     'predictive_intent': predictive_intent_engine,
     'reinforcement': reinforcement_loop,
+    # v5.0 monitoring engines
+    'temporal_coherence': temporal_coherence,
+    'fitness_landscape': fitness_landscape,
+    'entropy_controller': entropy_controller,
 })
 # Register Dual-Layer Engine as flagship (separate to handle ImportError gracefully)
 if _dual_layer_ref is not None:
@@ -4645,6 +4763,13 @@ try:
     from l104_quantum_engine import quantum_brain as _qbrain_ref
     engine_registry.register('quantum_engine', _qbrain_ref)
 except ImportError:
+    pass
+
+# v5.0: Register phase_navigator from engines_infra
+try:
+    from l104_server.engines_infra import phase_navigator as _phase_nav_ref
+    engine_registry.register('phase_navigator', _phase_nav_ref)
+except Exception:
     pass
 
 logger.info(f"🔧 [REGISTRY] Unified Engine Registry: {len(engine_registry.engines)} engines, φ-weighted health active, Dual-Layer Flagship: {'ACTIVE' if _dual_layer_ref else 'UNAVAILABLE'}, Tri-Engine: ACTIVE")

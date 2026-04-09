@@ -1,0 +1,321 @@
+#!/usr/bin/env python3
+"""
+L104 DAEMON ADAPTER v1.0.0
+═════════════════════════════════════════════════════════════════════════
+
+Bridges existing L104 daemons (VQPU, QuantumAI, Soul) to the
+unified orchestrator. Each daemon uses this to:
+  • Register with orchestrator
+  • Report cycle metrics
+  • Subscribe to orchestrator events
+  • Coordinate timing via orchestrator
+  • Emit health/fidelity events
+
+USAGE in existing daemon code:
+
+  from l104_daemon_adapter import DaemonAdapter
+
+  adapter = DaemonAdapter("vqpu_daemon", orchestrator_instance)
+  adapter.on_cycle_start()
+
+  # ... do work ...
+
+  adapter.on_cycle_end(success=True, duration_ms=123.4, cpu_pct=15.2, mem_mb=128.5)
+  adapter.emit_fidelity_alert(fidelity=0.95, trending="down")
+"""
+
+import time
+import logging
+from dataclasses import dataclass
+from typing import Optional, Dict, Any
+
+
+@dataclass
+class CycleMetrics:
+    """Metrics for one daemon cycle."""
+    duration_ms: float
+    success: bool
+    cpu_percent: float = 0.0
+    memory_mb: float = 0.0
+    fidelity_score: float = 1.0
+    error_message: Optional[str] = None
+
+
+class DaemonAdapter:
+    """Adapter for connecting a daemon to the orchestrator."""
+
+    def __init__(self, daemon_id: str, orchestrator):
+        """
+        Args:
+            daemon_id: Unique daemon identifier (e.g., "vqpu_daemon", "quantum_ai_daemon")
+            orchestrator: L104DaemonOrchestrator instance
+        """
+        self._daemon_id = daemon_id
+        self._orchestrator = orchestrator
+        self._logger = logging.getLogger(f"L104_DAEMON_{daemon_id.upper()}")
+
+        # Cycle tracking
+        self._cycle_start_time = None
+        self._metrics_history = []
+
+        # Register with orchestrator
+        if orchestrator:
+            daemon_type = daemon_id.split("_")[0]  # Extract type from ID
+            try:
+                orchestrator.register_daemon(daemon_id, daemon_type)
+            except Exception as e:
+                self._logger.warning(f"Failed to register with orchestrator: {e}")
+
+    # ─────────────────────────────────────────────────────────────────────
+    # CYCLE LIFECYCLE
+    # ─────────────────────────────────────────────────────────────────────
+
+    def on_cycle_start(self):
+        """Mark cycle start (call at beginning of each daemon cycle)."""
+        self._cycle_start_time = time.perf_counter()
+
+    def on_cycle_end(self, success: bool, duration_ms: float = None,
+                     cpu_percent: float = 0.0, memory_mb: float = 0.0,
+                     error: Optional[str] = None):
+        """
+        Report cycle completion (call at end of each daemon cycle).
+
+        Args:
+            success: Whether cycle succeeded
+            duration_ms: Cycle duration (auto-calculated if None)
+            cpu_percent: CPU usage during cycle (optional)
+            memory_mb: Memory usage during cycle (optional)
+            error: Error message if failed (optional)
+        """
+        if duration_ms is None and self._cycle_start_time is not None:
+            duration_ms = (time.perf_counter() - self._cycle_start_time) * 1000.0
+        elif duration_ms is None:
+            duration_ms = 0.0
+
+        # Record metrics
+        metrics = CycleMetrics(
+            duration_ms=duration_ms,
+            success=success,
+            cpu_percent=cpu_percent,
+            memory_mb=memory_mb,
+            error_message=error
+        )
+        self._metrics_history.append(metrics)
+
+        # Report to orchestrator
+        if self._orchestrator:
+            try:
+                self._orchestrator.report_cycle(
+                    self._daemon_id,
+                    duration_ms=duration_ms,
+                    success=success,
+                    cpu_percent=cpu_percent,
+                    memory_mb=memory_mb
+                )
+            except Exception as e:
+                self._logger.debug(f"Failed to report cycle: {e}")
+
+        # Log result
+        status = "SUCCESS" if success else "FAILED"
+        self._logger.info(
+            f"Cycle complete: {status} | "
+            f"duration={duration_ms:.1f}ms | "
+            f"cpu={cpu_percent:.1f}% | "
+            f"mem={memory_mb:.1f}MB"
+        )
+
+    # ─────────────────────────────────────────────────────────────────────
+    # EVENT EMISSION
+    # ─────────────────────────────────────────────────────────────────────
+
+    def emit_fidelity_alert(self, fidelity: float, trending: str = "stable",
+                           sim_count: int = 0, error_count: int = 0):
+        """
+        Emit fidelity/quality metric.
+
+        Args:
+            fidelity: Fidelity score (0.0-1.0)
+            trending: Trend direction ("up", "stable", "down")
+            sim_count: Number of simulations run
+            error_count: Number of errors
+        """
+        if self._orchestrator:
+            try:
+                self._orchestrator.emit_event("fidelity_update", self._daemon_id, {
+                    "fidelity": round(fidelity, 3),
+                    "trending": trending,
+                    "sim_count": sim_count,
+                    "error_count": error_count,
+                    "timestamp": time.time()
+                })
+            except Exception as e:
+                self._logger.debug(f"Failed to emit fidelity event: {e}")
+
+    def emit_resource_alert(self, alert_type: str, cpu_percent: float,
+                           memory_mb: float, message: str = ""):
+        """
+        Emit resource usage alert.
+
+        Args:
+            alert_type: "high_cpu", "high_memory", "disk_io", etc.
+            cpu_percent: Current CPU usage
+            memory_mb: Current memory usage
+            message: Description
+        """
+        if self._orchestrator:
+            try:
+                self._orchestrator.emit_event("resource_alert", self._daemon_id, {
+                    "alert_type": alert_type,
+                    "cpu_percent": cpu_percent,
+                    "memory_mb": memory_mb,
+                    "message": message,
+                    "timestamp": time.time()
+                })
+            except Exception as e:
+                self._logger.debug(f"Failed to emit resource alert: {e}")
+
+    def emit_error(self, error_type: str, message: str, severity: str = "warning"):
+        """
+        Emit error/failure event.
+
+        Args:
+            error_type: Category ("import", "timeout", "crash", etc.)
+            message: Error description
+            severity: "warning", "error", "critical"
+        """
+        if self._orchestrator:
+            try:
+                self._orchestrator.emit_event("daemon_error", self._daemon_id, {
+                    "error_type": error_type,
+                    "message": message,
+                    "severity": severity,
+                    "timestamp": time.time()
+                })
+            except Exception as e:
+                self._logger.debug(f"Failed to emit error event: {e}")
+
+    def emit_success(self, task_type: str, result_summary: Dict[str, Any]):
+        """
+        Emit success event with summary.
+
+        Args:
+            task_type: Type of task completed
+            result_summary: Dict of results
+        """
+        if self._orchestrator:
+            try:
+                self._orchestrator.emit_event("task_success", self._daemon_id, {
+                    "task_type": task_type,
+                    "summary": result_summary,
+                    "timestamp": time.time()
+                })
+            except Exception as e:
+                self._logger.debug(f"Failed to emit success event: {e}")
+
+    # ─────────────────────────────────────────────────────────────────────
+    # SUBSCRIPTION & CALLBACKS
+    # ─────────────────────────────────────────────────────────────────────
+
+    def subscribe_to_event(self, event_type: str, callback):
+        """Subscribe to orchestrator events."""
+        if self._orchestrator:
+            try:
+                self._orchestrator.subscribe(event_type, callback)
+                self._logger.debug(f"Subscribed to {event_type} events")
+            except Exception as e:
+                self._logger.debug(f"Failed to subscribe: {e}")
+
+    # ─────────────────────────────────────────────────────────────────────
+    # METRICS & STATUS
+    # ─────────────────────────────────────────────────────────────────────
+
+    def get_recent_metrics(self, count: int = 10) -> list:
+        """Get last N cycle metrics."""
+        return self._metrics_history[-count:]
+
+    def get_stats(self) -> Dict[str, Any]:
+        """Get cycle statistics."""
+        if not self._metrics_history:
+            return {
+                "cycles_total": 0,
+                "cycles_success": 0,
+                "cycles_failed": 0,
+            }
+
+        total = len(self._metrics_history)
+        success = sum(1 for m in self._metrics_history if m.success)
+        failed = total - success
+
+        durations = [m.duration_ms for m in self._metrics_history]
+        avg_duration = sum(durations) / len(durations) if durations else 0.0
+        max_duration = max(durations) if durations else 0.0
+        min_duration = min(durations) if durations else 0.0
+
+        cpu_values = [m.cpu_percent for m in self._metrics_history]
+        avg_cpu = sum(cpu_values) / len(cpu_values) if cpu_values else 0.0
+
+        memory_values = [m.memory_mb for m in self._metrics_history]
+        avg_memory = sum(memory_values) / len(memory_values) if memory_values else 0.0
+
+        return {
+            "cycles_total": total,
+            "cycles_success": success,
+            "cycles_failed": failed,
+            "success_rate": success / total if total > 0 else 0.0,
+            "avg_duration_ms": round(avg_duration, 2),
+            "min_duration_ms": round(min_duration, 2),
+            "max_duration_ms": round(max_duration, 2),
+            "avg_cpu_percent": round(avg_cpu, 1),
+            "avg_memory_mb": round(avg_memory, 1),
+        }
+
+
+# ═════════════════════════════════════════════════════════════════════════
+# INTEGRATION EXAMPLES
+# ═════════════════════════════════════════════════════════════════════════
+
+def example_vqpu_daemon_integration():
+    """Example: Integrate VQPU daemon with orchestrator."""
+    from l104_daemon_orchestrator import L104DaemonOrchestrator
+
+    orchestrator = L104DaemonOrchestrator()
+    orchestrator.start()
+
+    adapter = DaemonAdapter("vqpu_daemon", orchestrator)
+
+    # ... in VQPU daemon's main cycle loop:
+    while True:
+        adapter.on_cycle_start()
+
+        try:
+            # ... run VQPU simulations ...
+            success = True
+            fidelity = 0.95
+            sim_count = 23
+            error_count = 0
+
+        except Exception as e:
+            success = False
+            error = str(e)
+            fidelity = 0.0
+            sim_count = 0
+            error_count = 1
+
+        finally:
+            adapter.on_cycle_end(success=success, cpu_percent=15.2, memory_mb=128.5)
+            if not success:
+                adapter.emit_error("sim_error", f"Simulation failed: {error}", "error")
+            else:
+                adapter.emit_fidelity_alert(fidelity, "stable", sim_count, error_count)
+
+        time.sleep(60)
+
+
+if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format="%(asctime)s [%(name)s] %(levelname)s: %(message)s"
+    )
+
+    print("L104 Daemon Adapter - Integration layer between daemons and orchestrator")
+    print("See example_vqpu_daemon_integration() for usage pattern")

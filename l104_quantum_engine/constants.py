@@ -96,6 +96,14 @@ def _get_quantum_networker():
     except Exception:
         return None
 
+def _get_llm_orchestrator():
+    """Lazy-load LLM orchestrator for quantum circuit generation."""
+    try:
+        from l104_unified_providers import get_orchestrator
+        return get_orchestrator()
+    except Exception:
+        return None
+
 def _get_format_iq():
     """Lazy-load format_iq from l104_intellect."""
     try:
@@ -372,4 +380,4 @@ ALL_REPO_FILES = _discover_all_python_files()
 STATE_FILE = WORKSPACE_ROOT / ".l104_quantum_link_state.json"
 
 # Package version
-VERSION = "13.0.0"
+VERSION = "14.0.0"

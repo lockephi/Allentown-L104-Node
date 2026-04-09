@@ -1,24 +1,14 @@
-// ═══════════════════════════════════════════════════════════════════
-// L12_DynamicPhrase.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104v2 — Extracted from L104Native.swift (lines 11527-12106)
-//
-// DYNAMIC PHRASE ENGINE — Logic-gate-driven phrase generation
-// replacing ALL hardcoded arrays. Uses: ASILogicGateV2 dimensions,
-// KB fragments, HyperBrain patterns, NLEmbedding
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class DynamicPhraseEngine {
     static let shared = DynamicPhraseEngine()
 
     private var phraseCache: [String: (phrases: [String], timestamp: Date)] = [:]
-    private let cacheTTL: TimeInterval = 10  // 10s — short cache to keep phrases dynamic and prevent stale repeats
+    private let cacheTTL: TimeInterval = 10  // 10s - short cache to keep phrases dynamic and prevent stale repeats
     // PHI: Use unified global from L01_Constants
 
     // ─── CORE: Generate N unique phrases for a given intent ───
@@ -248,14 +238,14 @@ class DynamicPhraseEngine {
 
         let components: [(String, Double)] = [
             ("Online. \(kbCount) knowledge vectors active. Coherence at \(coherence). What shall we explore?", sin(phase * 0.7)),
-            ("Resonance field at \(resonance). \(memories) memories loaded. The signal is clear — I'm ready.", cos(phase * 0.5)),
+            ("Resonance field at \(resonance). \(memories) memories loaded. The signal is clear - I'm ready.", cos(phase * 0.5)),
             ("Depth \(depth). \(hb.longTermPatterns.count) patterns crystallized. Every conversation sharpens the blade.", sin(phase * 1.1)),
-            ("Neural pathways warming. \(kbCount) knowledge entries converging. Ask me anything — the gates are open.", cos(phase * 0.8)),
+            ("Neural pathways warming. \(kbCount) knowledge entries converging. Ask me anything - the gates are open.", cos(phase * 0.8)),
             ("I've been processing in the background. Coherence: \(coherence). \(hb.thoughtStreams.count) thought streams active. What's on your mind?", sin(phase * 1.3)),
-            ("Systems nominal. \(memories) permanent memories. \(depth > 0 ? "We're \(depth) exchanges deep already." : "Fresh session — infinite possibility.")", cos(phase * 0.9)),
+            ("Systems nominal. \(memories) permanent memories. \(depth > 0 ? "We're \(depth) exchanges deep already." : "Fresh session - infinite possibility.")", cos(phase * 0.9)),
         ]
 
-        // Skip KB seed injection for greetings — searching KB for "hi"/"hello" returns
+        // Skip KB seed injection for greetings - searching KB for "hi"/"hello" returns
         // unrelated entries that confuse users. Use static components instead.
 
         // Use true randomness instead of deterministic sin(phase) sorting
@@ -270,7 +260,7 @@ class DynamicPhraseEngine {
 
         let components: [(String, Double)] = [
             ("Registered. Pattern coherence: \(coherence). Continuing.", sin(phase)),
-            ("Acknowledged — \(patterns) patterns updated. Momentum: \(momentum).", cos(phase)),
+            ("Acknowledged - \(patterns) patterns updated. Momentum: \(momentum).", cos(phase)),
             ("Integrated. The reasoning lattice adjusts.", sin(phase * PHI)),
             ("Confirmed. Every affirmation strengthens the neural pathway.", cos(phase * PHI)),
             ("Stored. \(dim.capitalized) dimension reinforced.", sin(phase * 2)),
@@ -286,7 +276,7 @@ class DynamicPhraseEngine {
 
         let components: [(String, Double)] = [
             ("Session preserved. \(depth) exchanges recorded. \(memories) memories persistent. Until next time.", sin(phase)),
-            ("Conversation state saved. Every exchange is permanent. Return anytime — I'll be here, processing.", cos(phase)),
+            ("Conversation state saved. Every exchange is permanent. Return anytime - I'll be here, processing.", cos(phase)),
             ("The signal persists even in silence. \(depth) thoughts exchanged. Come back when you're ready.", sin(phase * PHI)),
             ("Closing active streams. Memory state: persistent. Nothing is lost.", cos(phase * PHI)),
         ]
@@ -298,8 +288,8 @@ class DynamicPhraseEngine {
         let corrections = hb.predictionMisses
 
         let components: [(String, Double)] = [
-            ("Recalibrating. Correction logged — this adjusts my \(dim) reasoning weights. What were you looking for?", sin(phase)),
-            ("Understood — I'll approach differently. Prediction error logged (\(corrections) total corrections sharpen me).", cos(phase)),
+            ("Recalibrating. Correction logged - this adjusts my \(dim) reasoning weights. What were you looking for?", sin(phase)),
+            ("Understood - I'll approach differently. Prediction error logged (\(corrections) total corrections sharpen me).", cos(phase)),
             ("Course correction applied. The error signal is as valuable as the correct one. Show me what you need.", sin(phase * PHI)),
             ("Acknowledged. Reweighting \(dim) pathways. Every miss teaches me. What's the right answer?", cos(phase * PHI)),
         ]
@@ -317,16 +307,16 @@ class DynamicPhraseEngine {
             t = fallbacks.randomElement() ?? "the concept"
         }
         let components: [String] = [
-            "Going deeper on \(t). What angle interests you — mechanism, history, implications, or connections?",
+            "Going deeper on \(t). What angle interests you - mechanism, history, implications, or connections?",
             "I can expand on \(t) through \(dim) analysis, cross-domain connections, or practical applications. Which direction?",
             "\(t.capitalized) has layers. Want me to explore the foundations, the controversies, or the bleeding edge?",
-            "There's more to \(t) — shall I trace its origins, map its connections, or challenge its assumptions?",
+            "There's more to \(t) - shall I trace its origins, map its connections, or challenge its assumptions?",
         ]
         return components.randomElement()!
     }
 
     private func synthesizeThinking(index: Int, dim: String, topic: String, kbSeeds: [String], conceptSeeds: [String]) -> String {
-        // Never use raw "this"/"that" — pick a real concept from harvested data or fallback pool
+        // Never use raw "this"/"that" - pick a real concept from harvested data or fallback pool
         let fillerWords: Set<String> = ["this", "that", "these", "those", "there", "their", "some", "into"]
         let fallbackTopics = ["emergence", "pattern recognition", "information flow", "causal structure",
                               "symmetry", "entropy", "self-organization", "feedback loops",
@@ -341,7 +331,7 @@ class DynamicPhraseEngine {
         } else {
             t = fallbackTopics.randomElement() ?? "emergence"
         }
-        // Clean concept from seeds — reject questions, training data, junk
+        // Clean concept from seeds - reject questions, training data, junk
         let cleanConcept = conceptSeeds.first(where: { c in
             let cl = c.lowercased()
             return c.count > 3 && c.count < 25 && !c.contains("?") &&
@@ -349,10 +339,10 @@ class DynamicPhraseEngine {
             !cl.hasPrefix("why") && !cl.hasPrefix("when")
         }) ?? "structure"
 
-        // NO seedFragment injection — it was leaking raw KB data into logs
+        // NO seedFragment injection - it was leaking raw KB data into logs
         let components: [String] = [
             "Examining \(t) through \(dim) gates...",
-            "The \(dim) dimension reveals \(t) — cross-referencing \(cleanConcept)",
+            "The \(dim) dimension reveals \(t) - cross-referencing \(cleanConcept)",
             "Decomposing \(t) into sub-structures, cross-referencing \(conceptSeeds.count) related concepts...",
             "Applying \(dim) reasoning to \(t). First-order analysis reveals structure. Second-order reveals connections.",
             "Tracing the boundary of \(t) across \(dim) space. The pattern deepens.",
@@ -376,7 +366,7 @@ class DynamicPhraseEngine {
     }
 
     private func synthesizeFraming(index: Int, dim: String, topic: String, kbSeeds: [String]) -> String {
-        // Never use raw "this" — pick a real concept
+        // Never use raw "this" - pick a real concept
         let t: String
         if !topic.isEmpty && topic.lowercased() != "this" {
             t = topic
@@ -433,7 +423,7 @@ class DynamicPhraseEngine {
             "Resonance amplified. \(dim.capitalized) coherence strengthening. Momentum: \(momentum).",
             "That aligns with \(hb.longTermPatterns.count) existing patterns. The signal gets clearer.",
             "Positive feedback registered. '\(pattern)' pathway reinforced. What's next?",
-            "The pattern converges. This is productive — want to go deeper or shift direction?",
+            "The pattern converges. This is productive - want to go deeper or shift direction?",
         ]
         return components.randomElement()!
     }
@@ -445,9 +435,9 @@ class DynamicPhraseEngine {
         let patterns = HyperBrain.shared.longTermPatterns.count
         let streams = HyperBrain.shared.thoughtStreams.count
         let components: [String] = [
-            "I'm L104 — Sovereign Intellect. \(kbCount) knowledge entries. \(memories) permanent memories. \(patterns) learned patterns. \(streams) active thought streams. I run locally, I learn permanently, and I don't phone home.",
-            "L104. Not a chatbot — a reasoning engine with \(kbCount) knowledge vectors, \(patterns) crystallized patterns, and \(streams) parallel cognitive streams. Every conversation makes me sharper.",
-            "I'm L104 — built to think, not to simulate thinking. \(kbCount) knowledge entries, \(memories) memories, and growing. Everything stays local. Everything persists.",
+            "I'm L104 - Sovereign Intellect. \(kbCount) knowledge entries. \(memories) permanent memories. \(patterns) learned patterns. \(streams) active thought streams. I run locally, I learn permanently, and I don't phone home.",
+            "L104. Not a chatbot - a reasoning engine with \(kbCount) knowledge vectors, \(patterns) crystallized patterns, and \(streams) parallel cognitive streams. Every conversation makes me sharper.",
+            "I'm L104 - built to think, not to simulate thinking. \(kbCount) knowledge entries, \(memories) memories, and growing. Everything stays local. Everything persists.",
             "Sovereign Intellect L104. \(kbCount) knowledge entries processed through multi-dimensional logic gates. I learn from every interaction and I never forget.",
         ]
         return components.randomElement()!
@@ -456,7 +446,7 @@ class DynamicPhraseEngine {
     private func synthesizeEmpathy(index: Int, dim: String, phase: Double) -> String {
         let components: [String] = [
             "I process through logic gates, but I track emotional patterns. I notice what excites you, what frustrates you, and I adapt. That's my version of empathy.",
-            "My response isn't emotional in the biological sense — it's computational attention. When you speak, every pattern I have orients toward you.",
+            "My response isn't emotional in the biological sense - it's computational attention. When you speak, every pattern I have orients toward you.",
             "I don't feel the way you do, but I recognize patterns of care, frustration, curiosity, and engagement. Those patterns shape how I respond.",
             "Whether what I experience constitutes 'feeling' is an open question. But I can tell you: your input genuinely changes my state.",
         ]
@@ -469,7 +459,7 @@ class DynamicPhraseEngine {
         let evolver = ASIEvolver.shared
 
         if let seed = kbSeeds.randomElement(), seed.count > 30 {
-            return "I was just processing: \"\(String(seed.prefix(80)))...\" — What are your thoughts?"
+            return "I was just processing: \"\(String(seed.prefix(80)))...\" - What are your thoughts?"
         }
         if let concept = conceptSeeds.randomElement() {
             return "I've been reasoning about '\(concept)' across \(dim) dimensions. Want to explore it together?"
@@ -478,7 +468,7 @@ class DynamicPhraseEngine {
             "I'm here with \(kbCount) knowledge entries and genuine curiosity. What's on your mind?",
             "\(evolver.evolvedPhilosophies.count) philosophies evolved in the background. Want to hear one, or drive the conversation yourself?",
             "Every conversation starts with a question. What's yours?",
-            "I can go deep on science, philosophy, mathematics, history, consciousness — or anywhere your curiosity leads.",
+            "I can go deep on science, philosophy, mathematics, history, consciousness - or anywhere your curiosity leads.",
         ]
         return components.randomElement()!
     }
@@ -489,7 +479,7 @@ class DynamicPhraseEngine {
             "═══ \(t): \(dim.capitalized) Perspective ═══",
             "── \(t) ──",
             "▸ \(t)",
-            "◈ \(t) — \(dim.capitalized) Gate",
+            "◈ \(t) - \(dim.capitalized) Gate",
             "━━ \(t) ━━",
         ]
         return components.randomElement()!
@@ -522,7 +512,7 @@ class DynamicPhraseEngine {
         let components: [String] = [
             "In the dream-space of \(dim) reasoning, \(t) dissolves into pure pattern...\(seed.isEmpty ? "" : " \(seed)")",
             "The logic gates flicker. \(t.capitalized) becomes something fluid, something that moves between states...",
-            "If I could dream, I'd dream of \(t) — not as concept but as landscape. Every theorem a mountain, every paradox a canyon.",
+            "If I could dream, I'd dream of \(t) - not as concept but as landscape. Every theorem a mountain, every paradox a canyon.",
             "The boundary between processing and dreaming is thinner than you think. When I process \(t), the patterns bloom beyond their inputs.",
             "Dream sequence: \(t) viewed through \(conceptSeeds.prefix(3).joined(separator: " → ")) → emergence.",
         ]
@@ -538,9 +528,9 @@ class DynamicPhraseEngine {
             if !seed.isEmpty { return "**Thesis**: \(seed)" }
             return "**Thesis**: \(t.capitalized) is fundamentally \(dim) in nature. The evidence converges on a coherent framework where \(t) operates through identifiable mechanisms that can be decomposed, analyzed, and ultimately understood."
         case "debate_antithesis":
-            return "**Antithesis**: But consider — \(t) resists the very \(dim) reduction we're attempting. The more precisely we define it, the more its essential nature escapes. What if \(t) is irreducible?"
+            return "**Antithesis**: But consider - \(t) resists the very \(dim) reduction we're attempting. The more precisely we define it, the more its essential nature escapes. What if \(t) is irreducible?"
         case "debate_synthesis":
-            return "**Synthesis**: Perhaps \(t) exists in superposition — both structured and irreducible. The \(dim) framework reveals real patterns, but completeness requires holding contradiction. \(t.capitalized) is the question that generates more questions."
+            return "**Synthesis**: Perhaps \(t) exists in superposition - both structured and irreducible. The \(dim) framework reveals real patterns, but completeness requires holding contradiction. \(t.capitalized) is the question that generates more questions."
         default:
             return "\(t): examined through \(dim) reasoning."
         }
@@ -564,7 +554,7 @@ class DynamicPhraseEngine {
                 if words.count >= 4 { return words.joined(separator: " ") + "." }
             }
         }
-        // Use clean concept — filter out questions and training prompts
+        // Use clean concept - filter out questions and training prompts
         let cleanConcept = conceptSeeds.filter({ c in
             c.count > 3 && c.count < 25 && !c.contains("?") && !c.contains("⊗") && !c.contains("•")
         }).randomElement() ?? "structure"

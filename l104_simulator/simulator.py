@@ -893,6 +893,21 @@ class SimulationResult:
     execution_time_ms: float
 
     @property
+    def success(self) -> bool:
+        """True if simulation completed with a valid statevector."""
+        return self.statevector is not None and len(self.statevector) > 0
+
+    @property
+    def metrics(self) -> Dict[str, Any]:
+        """Simulation metrics dictionary."""
+        return {
+            "n_qubits": self.n_qubits,
+            "circuit_name": self.circuit_name,
+            "gate_count": self.gate_count,
+            "execution_time_ms": self.execution_time_ms,
+        }
+
+    @property
     def probabilities(self) -> Dict[str, float]:
         """Measurement probabilities for each basis state."""
         probs = np.abs(self.statevector) ** 2

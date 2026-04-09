@@ -1,19 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B03_SIMDAccelerate.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — SIMD-Accelerated Vector & Matrix Operations
-//
-// SIMDVector (vDSP-powered ops, FFT) and AcceleratedMatrix
-// (BLAS cblas_dgemm / cblas_dgemv, transpose, norms).
-//
-// Extracted from L104Native.swift lines 860-1092
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 // ═══════════════════════════════════════════════════════════════════
 // ⚡ SIMD-ACCELERATED VECTOR OPERATIONS (Apple Unified Architecture)
@@ -190,7 +179,7 @@ struct AcceleratedMatrix {
     /// Matrix-matrix multiplication using BLAS (cblas_dgemm)
     static func * (lhs: AcceleratedMatrix, rhs: AcceleratedMatrix) -> AcceleratedMatrix {
         guard lhs.cols == rhs.rows else {
-            // Return zero matrix instead of crashing — dimensions mismatch is a logic error upstream
+            // Return zero matrix instead of crashing - dimensions mismatch is a logic error upstream
             return AcceleratedMatrix(rows: lhs.rows, cols: rhs.cols)
         }
 

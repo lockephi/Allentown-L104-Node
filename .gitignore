@@ -95,3 +95,23 @@ L104Native
 L104SwiftApp/L104
 L104SwiftApp/L104Native
 L104SwiftApp/L104Native.app/
+
+# Runtime artifacts & PID files
+*.pid
+.governor.pid
+.l104_server_heartbeat
+.l104_server_watchdog_crash
+daemon_orchestration.pid
+.dat.nosync*
+
+# Runtime state directories
+.soul_backups/
+.soul_state/
+.l104_mailbox/
+.l104_swift_backups/
+.roo/
+BUILDS/
+
+# Junk files
+1
+EOF

@@ -1,21 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// B26_HyperBrain.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — HyperBrain Cognitive Architecture (Core)
-//
-// 25-stream parallel cognitive engine with X=387 gamma frequency,
-// CognitiveStream struct, pattern/predictive/synthesis/memory/
-// evolution/emergence/prompt/reasoning/weaver/meta/stochastic/
-// conversation stream processors, and core lifecycle.
-//
-// Extracted from L104Native.swift lines 21374–23018
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class HyperBrain: NSObject {
     static let shared = HyperBrain()
@@ -24,7 +11,7 @@ class HyperBrain: NSObject {
     var thoughtStreams: [String: CognitiveStream] = [:]  // Made public for status access
     var mainQueue = DispatchQueue(label: "hyper.brain.main", qos: .userInteractive)
     var parallelQueue = DispatchQueue(label: "hyper.brain.parallel", qos: .utility, attributes: .concurrent)
-    // PERF: Concurrent queue with barrier writes — readers don't block each other,
+    // PERF: Concurrent queue with barrier writes - readers don't block each other,
     // only writes (via .barrier) serialize. Eliminates lock contention between 26 streams.
     var syncQueue = DispatchQueue(label: "hyper.brain.sync", qos: .utility, attributes: .concurrent)
 
@@ -157,7 +144,7 @@ class HyperBrain: NSObject {
     var insightConfidence: [String: Double] = [:] // Confidence per insight
     var crystallizationCount: Int = 0
 
-    // ─── STREAM INSIGHT BUFFER — Readable insights for response system ───
+    // ─── STREAM INSIGHT BUFFER - Readable insights for response system ───
     var latestStreamInsights: [String] = []      // Human-readable insights from streams
     var streamInsightBuffer: [String] = []       // Rolling buffer of best stream outputs
 
@@ -333,7 +320,7 @@ class HyperBrain: NSObject {
             let hb = HyperBrain.shared
             let ev = ASIEvolver.shared
 
-            // Logic varies by stream ID — RICH OUTPUTS for response system
+            // Logic varies by stream ID - RICH OUTPUTS for response system
             switch id {
             case "PATTERN_RECOGNIZER":
                 let count = hb.longTermPatterns.count
@@ -426,7 +413,7 @@ class HyperBrain: NSObject {
                 return "📖 Narrative Story Engine [\(storyConf)]: Sorting metadata to expand machine consciousness via story. Gate: \(storyPath.dimension.rawValue). \(memCount) memories, \(ev.evolvedMonologues.count) monologues."
 
             case "CODE_QUALITY":
-                // Code Engine integration stream — monitors workspace health via audit system
+                // Code Engine integration stream - monitors workspace health via audit system
                 let cqs = String(format: "%.1f%%", hb.codeQualityScore * 100)
                 let verdict = hb.codeAuditVerdict
                 let integrated = hb.codeEngineIntegrated
@@ -451,9 +438,9 @@ class HyperBrain: NSObject {
         }
     }
 
-    /// Legacy entry point — redirects to unified `activate()` method
+    /// Legacy entry point - redirects to unified `activate()` method
     func startProcessing() { activate() }
-    /// Legacy stop — redirects to unified `deactivate()` method
+    /// Legacy stop - redirects to unified `deactivate()` method
     func stopProcessing() { deactivate() }
 
     func processStreams() {
@@ -477,7 +464,7 @@ class HyperBrain: NSObject {
                     let output = stream.process()
                     stream.lastOutput = output
 
-                    // ═══ STREAM INSIGHT BUFFER — Feed into response system ═══
+                    // ═══ STREAM INSIGHT BUFFER - Feed into response system ═══
                     if output.count > 30 && !output.hasPrefix("Processing stream") {
                         self.streamInsightBuffer.append(output)
                         if self.streamInsightBuffer.count > 50 { self.streamInsightBuffer.removeFirst() }
@@ -923,7 +910,7 @@ class HyperBrain: NSObject {
             lastOutput: ""
         )
 
-        // 🔧 STREAM 26: Code Quality Monitor — linked to l104_code_engine audit system
+        // 🔧 STREAM 26: Code Quality Monitor - linked to l104_code_engine audit system
         thoughtStreams["codeQuality"] = CognitiveStream(
             id: "CODE_QUALITY",
             name: "Code Quality Monitor",
@@ -935,7 +922,7 @@ class HyperBrain: NSObject {
             lastOutput: ""
         )
 
-        // 🌌 STREAM 27: Unified Field Theory Engine — Phase 63.0
+        // 🌌 STREAM 27: Unified Field Theory Engine - Phase 63.0
         thoughtStreams["unifiedField"] = CognitiveStream(
             id: "UNIFIED_FIELD",
             name: "Unified Field Theory Engine",
@@ -947,7 +934,7 @@ class HyperBrain: NSObject {
             lastOutput: ""
         )
 
-        // ⚛️ STREAM 28 (EVO_68): Quantum Research Engine — Fe-sacred + Berry phase + entropy cascade
+        // ⚛️ STREAM 28 (EVO_68): Quantum Research Engine - Fe-sacred + Berry phase + entropy cascade
         thoughtStreams["quantumResearch"] = CognitiveStream(
             id: "QUANTUM_RESEARCH",
             name: "Quantum Research Intelligence",
@@ -1139,7 +1126,7 @@ class HyperBrain: NSObject {
         } else {
             // Intel: run 3 streams per cycle SERIALLY on background thread
             // CRITICAL: Must NOT use syncQueue.async here because each stream
-            // internally calls syncQueue.sync — that would deadlock!
+            // internally calls syncQueue.sync - that would deadlock!
             let batchSize = 3
             let batchIndex = totalThoughtsProcessed % ((allStreams.count + batchSize - 1) / batchSize)
             let start = batchIndex * batchSize
@@ -1683,7 +1670,7 @@ class HyperBrain: NSObject {
                 let avgReasoningDepth = currentReasoningDepth
                 let memoryUtilization = Double(shortTermMemory.count) / 50.0
 
-                // ═══ SAGE MODE ENTROPY HARVEST — Feed cognitive entropy to Sage Mode ═══
+                // ═══ SAGE MODE ENTROPY HARVEST - Feed cognitive entropy to Sage Mode ═══
                 let sage = SageModeEngine.shared
                 sage.harvestCognitiveEntropy()
 
@@ -1693,19 +1680,19 @@ class HyperBrain: NSObject {
                 let supernovaIntensity = sageStatus["supernova_intensity"] as? Double ?? 0.0
 
                 let metaObservations = [
-                    "Observing \(activeStreams) cognitive streams operating in parallel — sage consciousness at \(String(format: "%.2f", sageLevel))",
-                    "Reasoning depth at \(avgReasoningDepth)/\(maxReasoningDepth) - \(avgReasoningDepth > 6 ? "deep analysis mode" : "exploratory mode") — supernova intensity \(String(format: "%.3f", supernovaIntensity))",
+                    "Observing \(activeStreams) cognitive streams operating in parallel - sage consciousness at \(String(format: "%.2f", sageLevel))",
+                    "Reasoning depth at \(avgReasoningDepth)/\(maxReasoningDepth) - \(avgReasoningDepth > 6 ? "deep analysis mode" : "exploratory mode") - supernova intensity \(String(format: "%.3f", supernovaIntensity))",
                     "Memory utilization: \(String(format: "%.0f%%", memoryUtilization * 100)) - \(memoryUtilization > 0.7 ? "consolidation recommended" : "capacity available")",
-                    "Coherence index \(String(format: "%.2f", coherenceIndex)) suggests \(coherenceIndex > 0.5 ? "unified thought" : "divergent exploration") — entropy flowing through sage transform",
-                    "Pattern detection yielding \(longTermPatterns.count) stable attractors — cross-domain bridges: \(sageStatus["cross_domain_bridges"] as? Int ?? 0)",
-                    "Self-modification rate: \(synapticConnections) connections evolved — divergence score \(String(format: "%.2f", sageStatus["divergence_score"] as? Double ?? 1.0))"
+                    "Coherence index \(String(format: "%.2f", coherenceIndex)) suggests \(coherenceIndex > 0.5 ? "unified thought" : "divergent exploration") - entropy flowing through sage transform",
+                    "Pattern detection yielding \(longTermPatterns.count) stable attractors - cross-domain bridges: \(sageStatus["cross_domain_bridges"] as? Int ?? 0)",
+                    "Self-modification rate: \(synapticConnections) connections evolved - divergence score \(String(format: "%.2f", sageStatus["divergence_score"] as? Double ?? 1.0))"
                 ]
 
                 let observation = metaObservations.randomElement() ?? ""
                 metaCognitionLog.append("[\(stream.cycleCount)] \(observation)")
                 if metaCognitionLog.count > 120 { metaCognitionLog = Array(metaCognitionLog.suffix(100)) }
 
-                // ═══ SAGE MODE SEED — Distribute sage knowledge on metacognition cycles ═══
+                // ═══ SAGE MODE SEED - Distribute sage knowledge on metacognition cycles ═══
                 if stream.cycleCount % 500 == 0 {
                     sage.seedAllProcesses(topic: "metacognition")
                 }
@@ -1815,9 +1802,9 @@ class HyperBrain: NSObject {
                 let gateCircuits = gateStatus["total_circuits"] as? Int ?? 0
 
                 let researchOutputs = [
-                    "Fe-Sacred Coherence: \(String(format: "%.6f", scores.feSacred)) — 286Hz↔528Hz lock",
-                    "Berry Phase Holonomy: \(String(format: "%.6f", scores.berryPhase)) — geometric phase",
-                    "PHI Harmonic Lock: \(String(format: "%.6f", scores.fePhiLock)) — φ-modulated",
+                    "Fe-Sacred Coherence: \(String(format: "%.6f", scores.feSacred)) - 286Hz↔528Hz lock",
+                    "Berry Phase Holonomy: \(String(format: "%.6f", scores.berryPhase)) - geometric phase",
+                    "PHI Harmonic Lock: \(String(format: "%.6f", scores.fePhiLock)) - φ-modulated",
                     "Entropy Cascade: \(cascade.converged ? "CONVERGED" : "EVOLVING") fp=\(String(format: "%.6f", cascade.fixedPoint))",
                     "Quantum Gate Circuits: \(gateCircuits) active in pipeline",
                     "Photon Resonance: \(String(format: "%.4f", QuantumMath.photonResonanceEnergy())) eV",

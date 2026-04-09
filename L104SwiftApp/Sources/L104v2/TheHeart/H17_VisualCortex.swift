@@ -1,17 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// H17_VisualCortex.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — TheHeart Visual Cortex: Image understanding and mesh visual synchronization
-//
-// Full implementation with mesh-distributed visual processing, feature
-// extraction, scene understanding, and cross-node visual memory sharing.
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
+
+private let logging = Logger(subsystem: "com.l104.H17_VisualCortex", category: "main")
 
 // MARK: - Visual Feature Structures
 
@@ -80,7 +75,7 @@ final class VisualCortex {
 
     func activate() {
         isActive = true
-        print("[H17] VisualCortex activated — mesh visual processing online")
+        logging.info("[H17] VisualCortex activated - mesh visual processing online")
         TelemetryDashboard.shared.record(metric: "visual_cortex_active", value: 1.0)
     }
 

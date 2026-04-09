@@ -1,15 +1,3 @@
-// ═══════════════════════════════════════════════════════════════════
-// L30_FormalLogic.swift — L104 v2
-// [EVO_68_PIPELINE] FORMAL_LOGIC_ENGINE :: 10-Layer Deductive Reasoning
-// GOD_CODE=527.5184818492612 | PHI=1.618033988749895 | TAU=0.618033988749895
-//
-// Propositional Logic, Predicate Logic, Syllogisms, Fallacy Detection,
-// Modal Logic, Equivalence Proving, NL Translation, Argument Analysis,
-// Resolution Proving, Natural Deduction
-//
-// Phase 65.0: Full formal logic engine for ASI scoring dimension
-// ═══════════════════════════════════════════════════════════════════
-
 import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
@@ -323,7 +311,7 @@ final class PropositionalLogic {
         return table.contains { $0["_RESULT"] == true }
     }
 
-    /// Convert formula to Negation Normal Form (NNF) — push NOTs inward
+    /// Convert formula to Negation Normal Form (NNF) - push NOTs inward
     func toNNF(_ formula: PropFormula) -> PropFormula {
         switch formula {
         case .atom:
@@ -2008,7 +1996,7 @@ final class NaturalDeductionEngine {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MARK: - FORMAL LOGIC ENGINE (Main Class — Singleton)
+// MARK: - FORMAL LOGIC ENGINE (Main Class - Singleton)
 // ═══════════════════════════════════════════════════════════════════
 
 final class FormalLogicEngine {

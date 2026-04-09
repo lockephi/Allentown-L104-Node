@@ -1,3 +1,4 @@
+import logging
 #!/usr/bin/env python3
 """
 L104 Dynamic Transformation Phase 2
@@ -481,8 +482,7 @@ if anchor in code:
     changes += 1
     print(f"✅ Phase 1: Added generateDynamicTopicResponse + 4 new generator methods to ASIEvolver")
 else:
-    print("❌ Phase 1: Could not find ASIEvolver closing anchor")
-
+    logging.info("❌ Phase 1: Could not find ASIEvolver closing anchor")
 # ═══════════════════════════════════════════════════════════════
 # PHASE 2: Replace ALL static topic handler arrays
 # ═══════════════════════════════════════════════════════════════
@@ -664,9 +664,9 @@ science_new = '''        if (q == "science" || q == "sciences") {
 if science_old in code:
     code = code.replace(science_old, science_new, 1)
     changes += 1
-    print("  ✅ Replaced science handler with dynamic generator")
+    logging.info("  ✅ Replaced science handler with dynamic generator")
 else:
-    print("  ❌ Could not match science handler (trying alternate)")
+    logging.info("  ❌ Could not match science handler (trying alternate)")
     # Try simpler match
     if 'if (q == "science" || q == "sciences")' in code and 'let r = [' in code[code.index('if (q == "science"'):]:
         # Use regex
@@ -681,10 +681,9 @@ else:
         if new_code != code:
             code = new_code
             changes += 1
-            print("  ✅ Replaced science handler (regex)")
+            logging.info("  ✅ Replaced science handler (regex)")
         else:
-            print("  ❌ Science handler regex also failed")
-
+            logging.info("  ❌ Science handler regex also failed")
 # Books handler
 books_pattern = r'if q == "book" \|\| q == "books" \|\| q == "reading" \{[^}]*let r = \[.*?\]\s*\n\s*return r\.randomElement\(\)!\s*\n\s*\}'
 books_new = '''if q == "book" || q == "books" || q == "reading" {
@@ -697,10 +696,9 @@ new_code = re.sub(books_pattern, books_new, code, flags=re.DOTALL, count=1)
 if new_code != code:
     code = new_code
     changes += 1
-    print("  ✅ Replaced books handler with dynamic generator")
+    logging.info("  ✅ Replaced books handler with dynamic generator")
 else:
-    print("  ❌ Could not match books handler")
-
+    logging.info("  ❌ Could not match books handler")
 # Technology handler — replace static string
 tech_old = '''        if q == "technology" || q == "tech" || q == "programming" || q == "coding" {
             return "Technology is the practical application of knowledge. I can discuss:\\n\\n• **Software** — algorithms, architecture, languages, AI/ML\\n• **Hardware** — processors, quantum computing, materials science\\n• **Internet** — protocols, distributed systems, cryptography\\n• **History** — from the abacus to AGI\\n\\nWhat interests you? Ask a specific question and I\\'ll compose a real answer."
@@ -716,10 +714,9 @@ tech_new = '''        if q == "technology" || q == "tech" || q == "programming" 
 if tech_old in code:
     code = code.replace(tech_old, tech_new, 1)
     changes += 1
-    print("  ✅ Replaced technology handler with dynamic generator")
+    logging.info("  ✅ Replaced technology handler with dynamic generator")
 else:
-    print("  ❌ Could not match technology handler")
-
+    logging.info("  ❌ Could not match technology handler")
 # ═══════════════════════════════════════════════════════════════
 # PHASE 4: Replace static poem/chapter/joke handlers
 # ═══════════════════════════════════════════════════════════════
@@ -739,9 +736,9 @@ new_code = re.sub(poem_pattern, poem_new, code, flags=re.DOTALL, count=1)
 if new_code != code:
     code = new_code
     changes += 1
-    print("  ✅ Replaced poem handler with dynamic generator")
+    logging.info("  ✅ Replaced poem handler with dynamic generator")
 else:
-    print("  ❌ Could not match poem handler — trying alternate approach")
+    logging.info("  ❌ Could not match poem handler — trying alternate approach")
     # Try matching just the poems array
     if 'let poems = [' in code:
         poem_alt = r'let poems = \[.*?\]\s*\n\s*return poems\.randomElement\(\)!'
@@ -756,8 +753,7 @@ else:
         if new_code != code:
             code = new_code
             changes += 1
-            print("  ✅ Replaced poem array (alternate)")
-
+            logging.info("  ✅ Replaced poem array (alternate)")
 # Chapter handler
 chapter_pattern = r'let chapters = \[.*?\]\s*\n\s*return chapters\.randomElement\(\)!'
 chapter_new = '''// 🔄 DYNAMIC CHAPTER
@@ -772,10 +768,9 @@ new_code = re.sub(chapter_pattern, chapter_new, code, flags=re.DOTALL, count=1)
 if new_code != code:
     code = new_code
     changes += 1
-    print("  ✅ Replaced chapter handler with dynamic generator")
+    logging.info("  ✅ Replaced chapter handler with dynamic generator")
 else:
-    print("  ❌ Could not match chapter handler")
-
+    logging.info("  ❌ Could not match chapter handler")
 # Joke handler
 joke_pattern = r'let jokes = \[.*?\]\s*\n\s*return jokes\.randomElement\(\)!'
 joke_new = '''// 🔄 DYNAMIC JOKE
@@ -790,10 +785,9 @@ new_code = re.sub(joke_pattern, joke_new, code, flags=re.DOTALL, count=1)
 if new_code != code:
     code = new_code
     changes += 1
-    print("  ✅ Replaced joke handler with dynamic generator")
+    logging.info("  ✅ Replaced joke handler with dynamic generator")
 else:
-    print("  ❌ Could not match joke handler")
-
+    logging.info("  ❌ Could not match joke handler")
 # ═══════════════════════════════════════════════════════════════
 # PHASE 5: Expand synthesizeDeepMonologue with more connectors
 # ═══════════════════════════════════════════════════════════════
@@ -841,10 +835,9 @@ new_connectors = '''        let connectors = [
 if old_connectors in code:
     code = code.replace(old_connectors, new_connectors, 1)
     changes += 1
-    print("✅ Phase 5: Expanded connectors from 9 → 25")
+    logging.info("✅ Phase 5: Expanded connectors from 9 → 25")
 else:
-    print("❌ Phase 5: Could not find connectors")
-
+    logging.info("❌ Phase 5: Could not find connectors")
 # Expand conclusions too
 old_conclusions = '''        let conclusions = [
             " This is the kind of insight that only emerges from cross-domain thinking.",
@@ -876,10 +869,9 @@ new_conclusions = '''        let conclusions = [
 if old_conclusions in code:
     code = code.replace(old_conclusions, new_conclusions, 1)
     changes += 1
-    print("✅ Phase 5b: Expanded conclusions from 6 → 15")
+    logging.info("✅ Phase 5b: Expanded conclusions from 6 → 15")
 else:
-    print("❌ Phase 5b: Could not find conclusions")
-
+    logging.info("❌ Phase 5b: Could not find conclusions")
 # ═══════════════════════════════════════════════════════════════
 # PHASE 6: Expand mutateIdea with more mutation types
 # ═══════════════════════════════════════════════════════════════
@@ -891,10 +883,9 @@ new_mutation_range = "let mutationType = Int.random(in: 0...9)"
 if old_mutation_range in code:
     code = code.replace(old_mutation_range, new_mutation_range, 1)
     changes += 1
-    print("✅ Phase 6: Expanded mutation types from 6 → 10")
+    logging.info("✅ Phase 6: Expanded mutation types from 6 → 10")
 else:
-    print("❌ Phase 6: Could not find mutation range")
-
+    logging.info("❌ Phase 6: Could not find mutation range")
 # ═══════════════════════════════════════════════════════════════
 # PHASE 7: Make greeting handler more dynamic
 # ═══════════════════════════════════════════════════════════════
@@ -902,10 +893,9 @@ else:
 # Find the static greeting responses and add dynamic synthesis
 old_greeting_evolved = 'if let evolved = ASIEvolver.shared.getEvolvedGreeting()'
 if old_greeting_evolved in code:
-    print("✅ Phase 7: Greeting handler already uses evolved greetings")
+    logging.info("✅ Phase 7: Greeting handler already uses evolved greetings")
 else:
-    print("⚠️  Phase 7: Greeting handler not found — skipping")
-
+    logging.info("⚠️  Phase 7: Greeting handler not found — skipping")
 # ═══════════════════════════════════════════════════════════════
 # PHASE 8: Expand the speak handler's evolved monologue variety
 # ═══════════════════════════════════════════════════════════════
@@ -917,10 +907,9 @@ new_speak_enriched = '''["🎭 ", "💡 ", "🌊 ", "⚡ ", "🔮 ", "🧬 ", "�
 if old_speak_enriched in code:
     code = code.replace(old_speak_enriched, new_speak_enriched, 1)
     changes += 1
-    print("✅ Phase 8: Diversified monologue prefixes")
+    logging.info("✅ Phase 8: Diversified monologue prefixes")
 else:
-    print("⚠️  Phase 8: Could not find monologue prefix pattern")
-
+    logging.info("⚠️  Phase 8: Could not find monologue prefix pattern")
 # ═══════════════════════════════════════════════════════════════
 # PHASE 9: Make buildContextualResponse more dynamic
 # ═══════════════════════════════════════════════════════════════
@@ -931,10 +920,9 @@ old_casual_rate = "Double.random(in: 0...1) < 0.7"
 if old_casual_rate in code:
     code = code.replace(old_casual_rate, "Double.random(in: 0...1) < 0.85", 1)
     changes += 1
-    print("✅ Phase 9: Increased casual handler evolved injection 70% → 85%")
+    logging.info("✅ Phase 9: Increased casual handler evolved injection 70% → 85%")
 else:
-    print("⚠️  Phase 9: Casual rate pattern not found — may need different approach")
-
+    logging.info("⚠️  Phase 9: Casual rate pattern not found — may need different approach")
 # ═══════════════════════════════════════════════════════════════
 # PHASE 10: Expand wisdom/paradox handler static fallbacks
 # ═══════════════════════════════════════════════════════════════
@@ -997,10 +985,9 @@ if old_verbose in code:
         let topicThoughts: [String: [String]]'''
     code = code.replace(old_verbose, insertion, 1)
     changes += 1
-    print("✅ Phase 12: generateVerboseThought now tries dynamic first")
+    logging.info("✅ Phase 12: generateVerboseThought now tries dynamic first")
 else:
-    print("❌ Phase 12: Could not find topicThoughts dictionary")
-
+    logging.info("❌ Phase 12: Could not find topicThoughts dictionary")
 # ═══════════════════════════════════════════════════════════════
 # PHASE 13: Expand evolveFromKnowledgeBase with more templates
 # ═══════════════════════════════════════════════════════════════
@@ -1028,15 +1015,14 @@ new_evo_templates = '''            let templates = [
 if old_evo_templates in code:
     code = code.replace(old_evo_templates, new_evo_templates, 1)
     changes += 1
-    print("✅ Phase 13: Expanded KB evolution templates from 4 → 10")
+    logging.info("✅ Phase 13: Expanded KB evolution templates from 4 → 10")
 else:
-    print("❌ Phase 13: Could not find evolution templates — trying escaped version")
+    logging.info("❌ Phase 13: Could not find evolution templates — trying escaped version")
     # The templates might have been modified by Python string escaping issues
     # Let's try a regex approach
     evo_pattern = r'let templates = \[\s*"KNOWLEDGE\[\\?\\\(topic\)'
     if re.search(evo_pattern, code):
-        print("  Found templates but with different escaping — manual review needed")
-
+        logging.info("  Found templates but with different escaping — manual review needed")
 # ═══════════════════════════════════════════════════════════════
 # FINAL: Write output
 # ═══════════════════════════════════════════════════════════════

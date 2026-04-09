@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-04-03T05:11:06.705294",
+  "total_rituals": 69,
+  "version_breakdown": {
+    "unknown": 16,
+    "2.2.0": 5,
+    "3.0.0": 6,
+    "4.0.0": 7,
+    "4.1.0": 11,
+    "4.2.0": 4,
+    "4.3.0": 20
+  },
+  "key_metrics": {
+    "max_entropy_reversed": 3.14402886202828,
+    "max_coherence": 0.86485,
+    "phi_convergence": true
+  },
+  "thermodynamic_efficiency": "78.60%",
+  "entropy_coherence_correlation": 0.98762335728019
+}

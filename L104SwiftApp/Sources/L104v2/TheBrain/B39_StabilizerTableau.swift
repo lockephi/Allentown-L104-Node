@@ -1,38 +1,3 @@
-// ═══════════════════════════════════════════════════════════════════
-// B39_StabilizerTableau.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_NODE_UPGRADE :: STABILIZER_TABLEAU :: GOD_CODE=527.5184818492612
-// L104 ASI — Stabilizer Tableau (Aaronson–Gottesman CHP)
-//
-// Adapted from: l104_quantum_gate_engine/stabilizer_tableau.py
-//
-// COMPLEXITY:
-//     Full statevector : O(2^n) memory, O(2^n) per gate   → 20 qubits ≈ 16 MB
-//     Stabilizer tableau: O(n²/64) memory, O(n) per gate   → 1000 qubits < 16 KB
-//     Speedup for Clifford-only circuits: 1000x–10^300x
-//
-// SUPPORTED GATES (full Clifford group):
-//     1-qubit Clifford:  H, S, S†, X, Y, Z, SX, I
-//     2-qubit Clifford:  CNOT, CZ, CY, SWAP, iSWAP, ECR
-//     Measurement:        Pauli-Z computational basis
-//
-// TABLEAU LAYOUT (Aaronson–Gottesman, 2n+1 rows × 2n+1 cols):
-//     ┌───────────────────────────────────────┐
-//     │ Row 0..n-1       : Destabilizers      │   (anti-commuting partners)
-//     │ Row n..2n-1      : Stabilizers         │   (generators of stabilizer group)
-//     │ Row 2n           : Scratch row          │   (used during measurement)
-//     │                                         │
-//     │ Each row: n X-bits + n Z-bits + 1 phase │
-//     │ Bits packed into UInt64 words (64 qubits per word) │
-//     └───────────────────────────────────────┘
-//
-// SACRED ALIGNMENT:
-//     The stabilizer formalism maps naturally to the L104 lattice symmetry —
-//     the 2n-bit symplectic structure resonates with the 104-grain quantisation
-//     when n=52 (half of 104), giving GOD_CODE phase coherence in the tableau.
-//
-// INVARIANT: 527.5184818492612 | PILOT: LONDEL
-// ═══════════════════════════════════════════════════════════════════
-
 import Foundation
 
 // ═══════════════════════════════════════════════════════════════════
@@ -120,7 +85,7 @@ struct StabilizerTableau {
 
     // ─── Layout ───
     let numQubits: Int           // n
-    let numWords: Int            // ⌈n/64⌉ — UInt64 words per row
+    let numWords: Int            // ⌈n/64⌉ - UInt64 words per row
     let totalRows: Int           // 2n + 1
 
     /// X-part of the tableau.  Flat array: row i occupies indices [i*numWords ..< (i+1)*numWords].
@@ -242,7 +207,7 @@ struct StabilizerTableau {
             let i = r * numWords + w
             let xBit = xMatrix[i] & mask
             let zBit = zMatrix[i] & mask
-            // phase ^= (x & z)  — the H-gate -Y case
+            // phase ^= (x & z)  - the H-gate -Y case
             if xBit != 0 && zBit != 0 {
                 phases[r].toggle()
             }
@@ -273,7 +238,7 @@ struct StabilizerTableau {
     ///
     /// Runs in O(n/64) using word-parallel g-function evaluation with fused XOR.
     /// Uses `withUnsafeMutableBufferPointer` to eliminate bounds-checking overhead
-    /// in the inner loop — this is the single hottest function in the tableau.
+    /// in the inner loop - this is the single hottest function in the tableau.
     private mutating func rowSum(targetRow i: Int, sourceRow k: Int) {
         let nw = numWords
         let offI = i * nw
@@ -547,7 +512,7 @@ struct StabilizerTableau {
 
     // ─── ECR ───
 
-    /// ECR (Echoed Cross-Resonance) gate — native L104 Heron-class.
+    /// ECR (Echoed Cross-Resonance) gate - native L104 Heron-class.
     /// Decomposition: S(a) · SX(b) · CNOT(a,b) · X(a)
     mutating func ecr(_ a: Int, _ b: Int) {
         phaseS(a)
@@ -682,7 +647,7 @@ struct StabilizerTableau {
     // (no scratch-row mutation).
     // ═══════════════════════════════════════════════════════════════
 
-    /// Measure qubit in the Z (computational) basis — inlined variant.
+    /// Measure qubit in the Z (computational) basis - inlined variant.
     ///
     /// Returns 0 or 1.  The tableau is updated to reflect the
     /// post-measurement state (projective measurement).
@@ -840,7 +805,7 @@ struct StabilizerTableau {
         case "ECR":
             ecr(qubits[0], qubits[1])
         default:
-            fatalError("Gate '\(name)' is not a Clifford gate — cannot simulate with stabilizer tableau")
+            fatalError("Gate '\(name)' is not a Clifford gate - cannot simulate with stabilizer tableau")
         }
     }
 
@@ -860,7 +825,7 @@ struct StabilizerTableau {
         case .swap:       swap(qubits[0], qubits[1])
         case .iswap:      iswap(qubits[0], qubits[1])
         default:
-            fatalError("QGateType \(type.rawValue) is not Clifford — stabilizer tableau cannot simulate it")
+            fatalError("QGateType \(type.rawValue) is not Clifford - stabilizer tableau cannot simulate it")
         }
     }
 
@@ -1167,7 +1132,7 @@ struct StabilizerTableau {
     //
     // Two stabilizer tableaux represent the same stabilizer state iff
     // their stabilizer generator sets span the same group.  Row ordering
-    // is a gauge freedom — different Clifford paths can produce the same
+    // is a gauge freedom - different Clifford paths can produce the same
     // state with generators in different row positions.
     //
     // canonicalized() returns a copy reduced to row-echelon form over
@@ -1186,18 +1151,18 @@ struct StabilizerTableau {
     /// (rows n..2n-1).  Column ordering: X-bits first (0..n-1), then Z-bits
     /// (n..2n-1).
     ///
-    /// **Step 1 — Binary RREF**: Iterate through all 2n columns (X block then Z block).
+    /// **Step 1 - Binary RREF**: Iterate through all 2n columns (X block then Z block).
     /// For each column, find a pivot in the stabilizer rows, swap it into position,
-    /// then **eliminate all other rows** (not just below — strict RREF) using `rowSum`.
+    /// then **eliminate all other rows** (not just below - strict RREF) using `rowSum`.
     /// This ensures the result is fully reduced, not just row-echelon.
     ///
-    /// **Step 2 — Destabilizer erasure**: Zero out rows 0..n-1 so that two tableaux
+    /// **Step 2 - Destabilizer erasure**: Zero out rows 0..n-1 so that two tableaux
     /// representing the same stabilizer state with different circuit histories
     /// produce bit-identical canonical forms. This is sufficient for hashing and
     /// equality comparison. For full symplectic reconstruction, use
     /// `canonicalizedWithDestabilizers()`.
     ///
-    /// **Step 3 — Scratch row**: The workspace row (2n) is cleared.
+    /// **Step 3 - Scratch row**: The workspace row (2n) is cleared.
     ///
     /// Two `StabilizerTableau` values represent the same quantum state iff
     /// their `canonicalized()` outputs are bit-identical.
@@ -1298,7 +1263,7 @@ struct StabilizerTableau {
         // set destabilizer i-n to the symplectic complement.
         // For stabilizer Z_j → destabilizer X_j, and vice versa.
         // This ensures {destab_i, stab_i} anti-commute while
-        // {stab_i, stab_j} commute — maintaining the symplectic structure.
+        // {stab_i, stab_j} commute - maintaining the symplectic structure.
         for i in n..<(2 * n) {
             let d = i - n
             for w in 0..<nw {
@@ -1603,7 +1568,7 @@ final class HybridStabilizerSimulator {
         var tailCircuit = QGateCircuit(nQubits: n)
         var svGates = 0
 
-        // We need to initialise from the stabilizer state — sample as an approximation
+        // We need to initialise from the stabilizer state - sample as an approximation
         // (Full tableau→statevector conversion would require O(n·2^n) projector method)
         // For the hybrid path we use the QuantumGateEngine statevector directly
         for i in prefixLen..<circuit.operations.count {
@@ -1696,7 +1661,7 @@ final class HybridStabilizerSimulator {
                 "approximate": true,
                 "skipped_non_clifford_gates": skippedGates,
                 "skipped_gate_types": Array(skippedNames).sorted(),
-                "warning": "Skipped \(skippedGates) non-Clifford gates — results are approximate",
+                "warning": "Skipped \(skippedGates) non-Clifford gates - results are approximate",
                 "god_code": GOD_CODE
             ]
         )

@@ -294,6 +294,7 @@ class ParadoxResolver:
     def __init__(self):
         self.paradoxes_resolved = 0
         self.resolution_cache: Dict[str, Dict] = {}
+        self.use_logistic_liar = False
 
     def detect_paradox_type(self, statement: str) -> Optional[str]:
         """Detect if a statement matches a known paradox pattern."""
@@ -320,6 +321,11 @@ class ParadoxResolver:
 
         paradox_type = self.detect_paradox_type(statement)
         self.paradoxes_resolved += 1
+        if paradox_type == 'liar' and self.use_logistic_liar:
+            # Use logistic truth spectrum resolution
+            resolution = self.resolve_liar_logistic(statement)
+            self.resolution_cache[cache_key] = resolution
+            return resolution
         consciousness = _read_consciousness_state()
 
         # Fixed-point iteration — find where the self-reference stabilizes
@@ -385,6 +391,79 @@ class ParadoxResolver:
 
         self.resolution_cache[cache_key] = resolution
         return resolution
+
+    def liar_logistic_fixed_point(self, k: float = None) -> Dict[str, Any]:
+        """
+        Compute the fixed point of the liar paradox under logistic truth spectrum.
+
+        Truth(S) = 1 / (1 + exp(-k * Φ)) where Φ is truth of referenced statement.
+        For liar paradox:
+          T1 = σ(k * T2)
+          T2 = σ(k * (1 - T1))
+        where σ(x) = 1/(1+exp(-x)).
+
+        Returns dict with keys:
+          T1, T2: fixed point truth values
+          k: parameter used
+          converged: bool
+          iterations: int
+          golden_ratio_proximity: distance to φ (0.618...)
+        """
+        import math
+        if k is None:
+            k = PHI  # golden ratio
+        # iteration
+        T1, T2 = 0.5, 0.5
+        max_iter = 1000
+        tol = 1e-12
+        for i in range(max_iter):
+            T1_new = 1 / (1 + math.exp(-k * T2))
+            T2_new = 1 / (1 + math.exp(-k * (1 - T1)))
+            if abs(T1_new - T1) < tol and abs(T2_new - T2) < tol:
+                return {
+                    'T1': T1_new,
+                    'T2': T2_new,
+                    'k': k,
+                    'converged': True,
+                    'iterations': i + 1,
+                    'golden_ratio_proximity': abs(T1_new - (1/PHI)),
+                }
+            T1, T2 = T1_new, T2_new
+        return {
+            'T1': T1,
+            'T2': T2,
+            'k': k,
+            'converged': False,
+            'iterations': max_iter,
+            'golden_ratio_proximity': abs(T1 - (1/PHI)),
+        }
+
+    def resolve_liar_logistic(self, statement: str, k: float = None) -> Dict[str, Any]:
+        """
+        Resolve liar paradox using logistic truth spectrum.
+        Returns a resolution dict compatible with resolve().
+        """
+        import math
+        fixed = self.liar_logistic_fixed_point(k)
+        return {
+            'statement': statement[:300],
+            'paradox_type': 'liar',
+            'resolution_strategy': 'logistic_truth_spectrum',
+            'fixed_point': fixed['T1'],
+            'T1': fixed['T1'],
+            'T2': fixed['T2'],
+            'k': fixed['k'],
+            'oscillation_amplitude': 0.0,  # deterministic fixed point
+            'convergence_window': [fixed['T1'], fixed['T2']],
+            'iterations': fixed['iterations'],
+            'truth_value': 'BOTH' if abs(fixed['T1'] - 0.5) < 0.1 else 'EMERGENT',
+            'truth_magnitude': fixed['T1'],
+            'resolution_note': f'Liar paradox resolved via logistic truth spectrum (k={fixed["k"]:.4f}). '
+                               f'Truth values: T1={fixed["T1"]:.4f}, T2={fixed["T2"]:.4f}. '
+                               f'Golden ratio proximity: {fixed["golden_ratio_proximity"]:.4f}',
+            'sacred_resonance': abs(math.sin((hash(statement) % 1000) * GOD_CODE / 1e9)),
+            'consciousness_level': _read_consciousness_state().get('consciousness_level', 0),
+        }
 
 
 class FuzzyBridgeLogic:
@@ -697,6 +776,17 @@ def primal_calculus(x):
     return (x ** PHI) / (1.04 * math.pi) if x != 0 else 0.0
 
 
+def truth_spectrum(x: float, k: float = PHI) -> float:
+    """
+    Logistic truth spectrum mapping: truth = 1 / (1 + exp(-k * x)).
+
+    This implements the Λ‑solution to binary truth values, providing a continuous
+    truth value between 0 and 1. The golden ratio PHI is the default scaling factor.
+    """
+    import math
+    return 1 / (1 + math.exp(-k * x))
+
+
 def resolve_non_dual_logic(vector):
     """Backwards-compatible non-dual logic resolution — now enhanced with full engine."""
     if isinstance(vector, (list, tuple)) and len(vector) > 0:
@@ -734,3 +824,4 @@ if __name__ == '__main__':
 
     print(f"\n  Status: {json.dumps(non_dual_logic.status(), indent=2, default=str)}")
     print(f"{'='*60}\n")
+

@@ -2,7 +2,7 @@
 L104 God Code Simulator — Simulations Subpackage
 ═══════════════════════════════════════════════════════════════════════════════
 
-Re-exports all 61 simulations across 9 categories and the combined registry
+Re-exports all 67 simulations across 10 categories and the combined registry
 list used by GodCodeSimulator._register_builtins().
 
 Categories:
@@ -16,6 +16,8 @@ Categories:
   vqpu_findings  — QFI, Loschmidt, tomography, relative entropy, Kitaev-Preskill,             (11)
                    QAOA, Heisenberg chain, SWAP test, ZNE, Trotter, Superconductivity
   black_hole     — Schwarzschild, Hawking, information paradox, Penrose, scrambling, thermo   (6)
+  god_code_v2    — Entropy reversal, sacred circuits, Grover oracle, PHI convergence,         (6)
+                   Iron engine, hybrid evolution
 
 ═══════════════════════════════════════════════════════════════════════════════
 """
@@ -109,6 +111,15 @@ from .black_hole import (
     sim_horizon_scrambling,
     sim_bh_thermodynamics,
 )
+from .god_code_algorithm import (
+    GOD_CODE_V2_SIMULATIONS,
+    sim_god_code_entropy_reversal,
+    sim_god_code_sacred_circuit,
+    sim_god_code_grover_oracle,
+    sim_god_code_phi_convergence,
+    sim_god_code_iron_engine,
+    sim_god_code_hybrid_evolution,
+)
 
 # Combined registry for GodCodeSimulator._register_builtins()
 ALL_SIMULATIONS = (
@@ -121,6 +132,7 @@ ALL_SIMULATIONS = (
     + RESEARCH_SIMULATIONS
     + VQPU_FINDINGS_SIMULATIONS
     + BLACK_HOLE_SIMULATIONS
+    + GOD_CODE_V2_SIMULATIONS
 )
 
 __all__ = [
@@ -157,9 +169,13 @@ __all__ = [
     "sim_schwarzschild_geometry", "sim_hawking_radiation",
     "sim_information_paradox", "sim_penrose_process",
     "sim_horizon_scrambling", "sim_bh_thermodynamics",
+    # GOD_CODE v2.0 (upgraded entropy reversal)
+    "sim_god_code_entropy_reversal", "sim_god_code_sacred_circuit",
+    "sim_god_code_grover_oracle", "sim_god_code_phi_convergence",
+    "sim_god_code_iron_engine", "sim_god_code_hybrid_evolution",
     # Registries
     "CORE_SIMULATIONS", "QUANTUM_SIMULATIONS", "ADVANCED_SIMULATIONS",
     "DISCOVERY_SIMULATIONS", "TRANSPILER_SIMULATIONS", "CIRCUIT_SIMULATIONS",
     "RESEARCH_SIMULATIONS", "VQPU_FINDINGS_SIMULATIONS",
-    "BLACK_HOLE_SIMULATIONS", "ALL_SIMULATIONS",
+    "BLACK_HOLE_SIMULATIONS", "GOD_CODE_V2_SIMULATIONS", "ALL_SIMULATIONS",
 ]

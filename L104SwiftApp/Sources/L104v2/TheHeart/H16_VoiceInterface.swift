@@ -1,15 +1,12 @@
-// ═══════════════════════════════════════════════════════════════════
-// H16_VoiceInterface.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 ASI — Mesh-Aware Voice & Audio Interface v3.0
-// Real NSSpeechSynthesizer TTS, speech recognition prep, mesh voice relay
-// ═══════════════════════════════════════════════════════════════════
+import os.log
 
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
+
+private let logging = Logger(subsystem: "com.l104.H16_VoiceInterface", category: "main")
 
 // MARK: - Voice Message for Mesh Relay
 
@@ -21,7 +18,7 @@ struct VoiceRelay {
     let audioHash: UInt64  // FNV hash of audio data
 }
 
-// MARK: - VoiceInterface — Full Implementation
+// MARK: - VoiceInterface - Full Implementation
 
 final class VoiceInterface {
     static let shared = VoiceInterface()
@@ -57,7 +54,7 @@ final class VoiceInterface {
         lock.lock()
         defer { lock.unlock() }
         isActive = true
-        print("[H16] VoiceInterface v3.0 activated — real TTS + mesh voice relay")
+        logging.info("[H16] VoiceInterface v3.0 activated - real TTS + mesh voice relay")
     }
 
     func deactivate() {
@@ -106,7 +103,7 @@ final class VoiceInterface {
 
             self.synthesizer.startSpeaking(text)
 
-            // Wait for speech to complete (polling with usleep — background thread only)
+            // Wait for speech to complete (polling with usleep - background thread only)
             while self.synthesizer.isSpeaking {
                 usleep(50_000)  // 50ms
             }
@@ -139,12 +136,12 @@ final class VoiceInterface {
         synthesizer.rate = rate
     }
 
-    /// Set TTS volume (0.0 — 1.0)
+    /// Set TTS volume (0.0 - 1.0)
     func setVolume(_ vol: Float) {
         synthesizer.volume = vol
     }
 
-    // ═══ MESH VOICE RELAY — Send transcription to quantum-linked peers ═══
+    // ═══ MESH VOICE RELAY - Send transcription to quantum-linked peers ═══
     func broadcastVoiceToMesh(_ text: String, confidence: Double = 0.9) {
         guard isActive else { return }
         let net = NetworkLayer.shared

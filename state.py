@@ -19,7 +19,7 @@ app_metrics: dict = {
     "uptime_start": datetime.now(UTC),
 }
 
-rate_limit_store: defaultdict = defaultdict(list)
+rate_limit_store: defaultdict = defaultdict(list)  # Pruned per-request; stale IPs cleaned every 60s
 responder_counts: defaultdict = defaultdict(int)
 
 # ─── HTTP Client (shared, lazy-initialized) ───────────────────────────────────

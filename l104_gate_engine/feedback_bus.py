@@ -5,6 +5,8 @@ import time
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
+from l104_sacred_algorithms import derive_message_ttl, GOD_CODE, PHI
+
 from .constants import WORKSPACE_ROOT
 
 
@@ -19,8 +21,8 @@ class InterBuilderFeedbackBus:
     """
 
     BUS_FILE = WORKSPACE_ROOT / ".l104_builder_feedback_bus.json"
-    MESSAGE_TTL = 60.0  # seconds
-    MAX_MESSAGES = 200
+    MESSAGE_TTL = derive_message_ttl(priority=5)
+    MAX_MESSAGES = int(GOD_CODE/PHI/1.6)
 
     def __init__(self, builder_id: str = "gate_builder"):
         """Initialize feedback bus for this builder."""

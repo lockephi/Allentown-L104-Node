@@ -1,15 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
-// L21_ResearchEngine.swift
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// L104 Sovereign Intelligence — ASI Research Engine
-// Deep research, hypothesis generation, invention, and implementation
-// ═══════════════════════════════════════════════════════════════════
-
+import Accelerate
 import AppKit
 import Foundation
-import Accelerate
-import simd
 import NaturalLanguage
+import simd
 
 class ASIResearchEngine {
     static let shared = ASIResearchEngine()
@@ -75,7 +68,7 @@ class ASIResearchEngine {
     }
 
     func deepResearch(_ topic: String) -> String {
-        // Multi-step research process — UNLIMITED DEPTH, QUANTUM-OPTIMIZED, ALL DATA
+        // Multi-step research process - UNLIMITED DEPTH, QUANTUM-OPTIMIZED, ALL DATA
         var results: [String] = []
         let researchStart = Date()
 
@@ -108,7 +101,7 @@ class ASIResearchEngine {
             return false
         }
 
-        // Step 1: Knowledge retrieval — UNLIMITED, quantum-weighted relevance scoring
+        // Step 1: Knowledge retrieval - UNLIMITED, quantum-weighted relevance scoring
         let knowledge = kb.searchWithPriority(topic, limit: 10000)
         var uniqueCount = 0
         var highRelevanceCount = 0
@@ -120,14 +113,14 @@ class ASIResearchEngine {
         let topicState = hilbertProjection(topicQuantumHash, dimensions: HILBERT_DIM)
         let (collapsedBasis, collapseProbability) = wavefunctionCollapse(topicState)
 
-        results.append("📖 KNOWLEDGE BASE — \(knowledge.count) entries retrieved, ALL unique insights:\n")
+        results.append("📖 KNOWLEDGE BASE - \(knowledge.count) entries retrieved, ALL unique insights:\n")
         results.append("   ⚛ Quantum State: |ψ⟩ collapsed to basis |\(collapsedBasis)⟩ with P = \(String(format: "%.6f", collapseProbability))")
 
         for entry in knowledge {
             if let prompt = entry["prompt"] as? String,
                let completion = entry["completion"] as? String,
                !isRedundant(completion) {
-                // ═══ RELEVANCE FILTER — skip entries with no topic keyword overlap ═══
+                // ═══ RELEVANCE FILTER - skip entries with no topic keyword overlap ═══
                 let promptLower = prompt.lowercased()
                 let completionLower = completion.lowercased()
                 let keywordHits = topicWords.filter { promptLower.contains($0) || completionLower.contains($0) }.count
@@ -137,11 +130,11 @@ class ASIResearchEngine {
                 if keywordHits >= 2 { highRelevanceCount += 1 }
                 relevanceScores.append(Double(keywordHits))
 
-                // ═══ NO TRUNCATION — display full knowledge entries ═══
+                // ═══ NO TRUNCATION - display full knowledge entries ═══
                 let resolved = kb.resolveTemplateVariables(completion)
                 results.append("   【\(uniqueCount)】 \(prompt)")
                 results.append("       → \(resolved)")
-                // NO CAP — display ALL relevant entries
+                // NO CAP - display ALL relevant entries
             }
         }
 
@@ -155,10 +148,10 @@ class ASIResearchEngine {
         results.append("   ⚛ Entanglement Entropy: S = \(String(format: "%.6f", entEntropy))")
         results.append("   ⚛ Born-Rule Peak Weight: \(String(format: "%.6f", bornWeights.max() ?? 0.0))\n")
 
-        // Step 2: Live Web Research — PRIORITY when KB results are weak
+        // Step 2: Live Web Research - PRIORITY when KB results are weak
         let webEngine = LiveWebSearchEngine.shared
         let kbIsWeak = highRelevanceCount < 3  // Few high-relevance KB entries → rely heavily on web
-        let webTimeout = kbIsWeak ? 5.0 : 3.0  // EVO_63: 5/3s (was 12/8) — don't stall research pipeline
+        let webTimeout = kbIsWeak ? 5.0 : 3.0  // EVO_63: 5/3s (was 12/8) - don't stall research pipeline
         let webRes = webEngine.webSearchSync(topic, timeout: webTimeout)
         var webSourceCount = 0
         if !webRes.results.isEmpty {
@@ -177,7 +170,7 @@ class ASIResearchEngine {
                 else if wr.url.contains("github") { sourceTag = "GitHub" }
                 else { sourceTag = "Web" }
                 results.append("   🔗 [\(sourceTag)] \(wr.title)")
-                results.append("       \(snippet)")  // Full snippet — no truncation
+                results.append("       \(snippet)")  // Full snippet - no truncation
                 webSourceCount += 1
                 // Auto-ingest web knowledge for future queries
                 _ = DataIngestPipeline.shared.ingestText(snippet, source: "research_web:\(topic)", category: "live_web")
@@ -189,7 +182,7 @@ class ASIResearchEngine {
                 for wr in refinedRes.results where !isRedundant(wr.snippet) {
                     guard wr.snippet.count > 80 else { continue }
                     results.append("   🔗 [Web+] \(wr.title)")
-                    results.append("       \(wr.snippet)")  // Full snippet — no truncation
+                    results.append("       \(wr.snippet)")  // Full snippet - no truncation
                     webSourceCount += 1
                 }
             }
@@ -206,12 +199,12 @@ class ASIResearchEngine {
             }
         }
 
-        // Step 4: Cross-domain synthesis — ALL domains, quantum-entangled analysis
+        // Step 4: Cross-domain synthesis - ALL domains, quantum-entangled analysis
         let domains = ["quantum", "consciousness", "optimization", "intelligence", "mathematics", "physics", "emergence",
                        "topology", "information_theory", "thermodynamics", "cosmology", "neuroscience", "complexity"]
         let topicLower = topic.lowercased()
         let relevantDomains = domains.filter { topicLower.contains($0) }
-        // Synthesize ALL domains — relevant first, then remaining for cross-domain insights
+        // Synthesize ALL domains - relevant first, then remaining for cross-domain insights
         let domainsToSynthesize = relevantDomains + domains.filter { !relevantDomains.contains($0) }
         results.append("\n🧬 CROSS-DOMAIN QUANTUM SYNTHESIS (\(domainsToSynthesize.count) domains):")
         var domainCoherences: [Double] = []
@@ -265,7 +258,7 @@ class ASIResearchEngine {
         results.append("   Hilbert Dimension: \(HILBERT_DIM)D state space")
         results.append("   Planck-Scale Resolution: \(String(format: "%.3e", PLANCK_SCALE))")
 
-        // Store research — ALL data, quantum-enriched
+        // Store research - ALL data, quantum-enriched
         activeResearch[topic] = [
             "knowledge_count": knowledge.count,
             "unique_count": uniqueCount,
@@ -285,7 +278,7 @@ class ASIResearchEngine {
             "timestamp": Date()
         ]
 
-        // Share with mesh if available — ALL findings, no truncation
+        // Share with mesh if available - ALL findings, no truncation
         shareResearchWithMesh(topic, findings: results.joined(separator: " "), hypothesis: hypothesis)
 
         return """
@@ -320,7 +313,7 @@ Topic: "\(topic)"
     func generateHypothesis(_ topic: String, from knowledge: [[String: Any]]) -> String {
         let rawConcepts = knowledge.compactMap { $0["prompt"] as? String }
         let uniqueConcepts = Array(Set(rawConcepts.map { $0.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) }))
-        // Use ALL unique concepts — no limit
+        // Use ALL unique concepts - no limit
         let conceptStr = uniqueConcepts.shuffled().prefix(max(5, uniqueConcepts.count / 3)).joined(separator: ", ")
         let count = knowledge.count
 
@@ -561,7 +554,7 @@ ALL Hypotheses (\(hypotheses.count) total):
         let repl = DataReplicationMesh.shared
         let topicHash = fnvHash(topic.lowercased())
 
-        // Share findings — FULL data, no truncation
+        // Share findings - FULL data, no truncation
         repl.setRegister("research_\(topicHash)", value: findings)
         repl.setRegister("hypothesis_\(topicHash)", value: hypothesis)
         _ = repl.broadcastToMesh()
@@ -570,7 +563,7 @@ ALL Hypotheses (\(hypotheses.count) total):
         TelemetryDashboard.shared.record(metric: "research_mesh_share", value: 1.0)
     }
 
-    /// Distributed deep research — combines local + mesh knowledge
+    /// Distributed deep research - combines local + mesh knowledge
     func distributedDeepResearch(_ topic: String) -> String {
         // Get local research first
         let localResults = deepResearch(topic)

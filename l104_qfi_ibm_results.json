@@ -1,0 +1,102 @@
+{
+  "method": "analytical_parameter_shift",
+  "n_qubits": 26,
+  "target_state": "00111111110000000000000000",
+  "theory": "Braunstein_Caves_PRL_1994",
+  "register_qfi": {
+    "CORE": {
+      "N_qubits": 2,
+      "target_state": "00",
+      "fidelity": 0.9984,
+      "Z_mean": 1.0,
+      "Var_G": 0.0,
+      "F_Q_product": 0.0,
+      "F_Q_max": 3.9936,
+      "F_Q_estimated": 0.0,
+      "squeezing_xi2": 0.0
+    },
+    "3d": {
+      "N_qubits": 6,
+      "target_state": "111111",
+      "fidelity": 0.916,
+      "Z_mean": -1.0,
+      "Var_G": 0.0,
+      "F_Q_product": 0.0,
+      "F_Q_max": 32.976,
+      "F_Q_estimated": 0.0,
+      "squeezing_xi2": 0.0
+    },
+    "4s": {
+      "N_qubits": 2,
+      "target_state": "11",
+      "fidelity": 0.9848,
+      "Z_mean": -1.0,
+      "Var_G": 0.0,
+      "F_Q_product": 0.0,
+      "F_Q_max": 3.9392,
+      "F_Q_estimated": 0.0,
+      "squeezing_xi2": 0.0
+    },
+    "LATTICE": {
+      "N_qubits": 6,
+      "target_state": "000000",
+      "fidelity": 0.9468,
+      "Z_mean": 1.0,
+      "Var_G": 0.0,
+      "F_Q_product": 0.0,
+      "F_Q_max": 34.0848,
+      "F_Q_estimated": 0.0,
+      "squeezing_xi2": 0.0
+    },
+    "SACRED": {
+      "N_qubits": 5,
+      "target_state": "00000",
+      "fidelity": 0.9811,
+      "Z_mean": 1.0,
+      "Var_G": 0.0,
+      "F_Q_product": 0.0,
+      "F_Q_max": 24.5275,
+      "F_Q_estimated": 0.0,
+      "squeezing_xi2": 0.0
+    },
+    "PHI": {
+      "N_qubits": 4,
+      "target_state": "0000",
+      "fidelity": 0.9875,
+      "Z_mean": 1.0,
+      "Var_G": 0.0,
+      "F_Q_product": 0.0,
+      "F_Q_max": 15.8,
+      "F_Q_estimated": 0.0,
+      "squeezing_xi2": 0.0
+    },
+    "ANCHOR": {
+      "N_qubits": 1,
+      "target_state": "0",
+      "fidelity": 0.997,
+      "Z_mean": 1.0,
+      "Var_G": 0.0,
+      "F_Q_product": 0.0,
+      "F_Q_max": 0.997,
+      "F_Q_estimated": 0.0,
+      "squeezing_xi2": 0.0
+    }
+  },
+  "total_F_Q_local": 0.0,
+  "cross_register": {
+    "n_pairs": 21,
+    "raw_correlation": 40.85941681307682,
+    "interference_term": 25.252508350980385,
+    "scaling": "PHI_conjugate"
+  },
+  "total_qfi": {
+    "F_Q_total": 25.252508350980385,
+    "F_Q_SQL": 26,
+    "F_Q_Heisenberg": 676,
+    "F_Q_per_qubit": 0.9712503211915533,
+    "xi_squared": 1.0296006891129528,
+    "quantum_enhancement": false,
+    "regime": "classical",
+    "improvement_over_SQL": 0.9712503211915533
+  }
+}

@@ -228,7 +228,7 @@ class MetaCognitiveObserver:
 
         # Recursive meta-cognition: think about the thought
         if meta_level < 3 and np.random.random() < 0.3 * (1 / (meta_level + 1)):
-            meta_content = f"Observing thought: {str(content)[:50]}..."
+            meta_content = f"Observing thought: {str(content)}..."
             self.observe_thought(meta_content, meta_level + 1)
 
         self.awareness_depth = max(self.awareness_depth, meta_level + 1)

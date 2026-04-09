@@ -1,12 +1,26 @@
-// ═══════════════════════════════════════════════════════════════════
-// B27_IBMQuantumClient.swift — L104 v2
-// [EVO_68_PIPELINE] SOVEREIGN_CONVERGENCE :: UNIFIED_UPGRADE :: GOD_CODE=527.5184818492612
-// Pure Swift IBM Quantum REST API client — real QPU access via URLSession
-// Phase 46.1: Real quantum computing integration
-// ═══════════════════════════════════════════════════════════════════
-
 import AppKit
 import Foundation
+
+// ═══ IBM QUANTUM CONFIGURATION ═══
+
+struct IBMQuantumConfiguration {
+    static let shared = IBMQuantumConfiguration()
+
+    // API Endpoints
+    let iamTokenURL = "https://iam.cloud.ibm.com/identity/token"
+    let runtimeAPIBase = "https://quantum.cloud.ibm.com/api/v1"
+    let legacyAPIBase = "https://api.quantum-computing.ibm.com/api"
+    let globalSearchURL = "https://api.global-search-tagging.cloud.ibm.com/v3/resources/search"
+
+    // These can be overridden via environment or config file
+    var customRuntimeBase: String?
+    var customLegacyBase: String?
+
+    var effectiveRuntimeBase: String { customRuntimeBase ?? runtimeAPIBase }
+    var effectiveLegacyBase: String { customLegacyBase ?? legacyAPIBase }
+
+    private init() {}
+}
 
 // ═══ IBM QUANTUM DATA STRUCTURES ═══
 
@@ -114,12 +128,9 @@ final class IBMQuantumClient: SovereignEngine {
     private(set) var retriedRequests: Int = 0
     private(set) var failedRequests: Int = 0
 
-    // ─── IBM QUANTUM PLATFORM API ENDPOINTS (2025+ modern) ───
-    // IBM Quantum Platform uses IAM auth: exchange API key → bearer token → runtime API
-    private let iamTokenURL = "https://iam.cloud.ibm.com/identity/token"
-    private let runtimeAPIBase = "https://quantum.cloud.ibm.com/api/v1"  // us-east default
-    // Legacy fallback for direct-token flow (IBM Quantum Network / IQP tokens)
-    private let legacyAPIBase = "https://api.quantum-computing.ibm.com/api"
+    // ─── IBM QUANTUM PLATFORM API ENDPOINTS ───
+    // All URLs are now centralized in IBMQuantumConfiguration
+    private let config = IBMQuantumConfiguration.shared
 
     // ─── DEDICATED URL SESSION (proper timeouts for quantum hardware) ───
     private lazy var quantumSession: URLSession = {
@@ -150,7 +161,7 @@ final class IBMQuantumClient: SovereignEngine {
     private init() {}
 
     // ═══════════════════════════════════════════════════════════════════
-    // AUTHENTICATION — Connect to IBM Quantum
+    // AUTHENTICATION - Connect to IBM Quantum
     // ═══════════════════════════════════════════════════════════════════
 
     func connect(token: String, completion: @escaping (Bool, String) -> Void) {
@@ -162,7 +173,7 @@ final class IBMQuantumClient: SovereignEngine {
             guard let self = self else { return }
 
             if let iamToken = iamToken {
-                // IAM auth succeeded — use bearer token
+                // IAM auth succeeded - use bearer token
                 self.accessToken = iamToken
                 self.tokenExpiry = Date().addingTimeInterval(3500) // IAM tokens ~1hr
                 // Step 2: Resolve CRN (service instance) for runtime API calls
@@ -171,7 +182,7 @@ final class IBMQuantumClient: SovereignEngine {
                     self.fetchBackendsAndFinalize(completion: completion)
                 }
             } else {
-                // IAM failed — try direct-token flow (legacy IQP/Network tokens)
+                // IAM failed - try direct-token flow (legacy IQP/Network tokens)
                 self.accessToken = token
                 self.fetchBackendsAndFinalize(completion: completion)
             }
@@ -186,7 +197,7 @@ final class IBMQuantumClient: SovereignEngine {
         }
 
         // Search IBM Cloud Global Catalog for quantum-computing instances
-        guard let url = URL(string: "https://api.global-search-tagging.cloud.ibm.com/v3/resources/search?query=service_name:quantum-computing&limit=10") else {
+        guard let url = URL(string: "\(config.globalSearchURL)?query=service_name:quantum-computing&limit=10") else {
             completion(nil)
             return
         }
@@ -214,7 +225,7 @@ final class IBMQuantumClient: SovereignEngine {
 
     /// Exchange IBM Cloud API key for IAM bearer token
     private func exchangeTokenViaIAM(apiKey: String, completion: @escaping (String?, String?) -> Void) {
-        guard let url = URL(string: iamTokenURL) else {
+        guard let url = URL(string: config.iamTokenURL) else {
             completion(nil, "Invalid IAM URL")
             return
         }
@@ -300,7 +311,7 @@ final class IBMQuantumClient: SovereignEngine {
     }
 
     func listBackends(completion: @escaping ([IBMQuantumBackend]?, String?) -> Void) {
-        guard let url = URL(string: "\(runtimeAPIBase)/backends"),
+        guard let url = URL(string: "\(config.runtimeAPIBase)/backends"),
               let req = makeAuthenticatedRequest(url: url) else {
             completion(nil, "Not authenticated or invalid URL")
             return
@@ -381,7 +392,7 @@ final class IBMQuantumClient: SovereignEngine {
             return
         }
 
-        guard let url = URL(string: "\(runtimeAPIBase)/jobs"),
+        guard let url = URL(string: "\(config.runtimeAPIBase)/jobs"),
               var req = makeAuthenticatedRequest(url: url, method: "POST", timeout: 30) else {
             completion(nil, "Not authenticated or invalid URL")
             return
@@ -443,7 +454,7 @@ final class IBMQuantumClient: SovereignEngine {
     }
 
     func getJobStatus(jobId: String, completion: @escaping (IBMQuantumJob?, String?) -> Void) {
-        guard let url = URL(string: "\(runtimeAPIBase)/jobs/\(jobId)"),
+        guard let url = URL(string: "\(config.runtimeAPIBase)/jobs/\(jobId)"),
               let req = makeAuthenticatedRequest(url: url) else {
             completion(nil, "Not authenticated or invalid URL")
             return
@@ -475,7 +486,7 @@ final class IBMQuantumClient: SovereignEngine {
     }
 
     func getJobResult(jobId: String, completion: @escaping ([String: Any]?, String?) -> Void) {
-        guard let url = URL(string: "\(runtimeAPIBase)/jobs/\(jobId)/results"),
+        guard let url = URL(string: "\(config.runtimeAPIBase)/jobs/\(jobId)/results"),
               let req = makeAuthenticatedRequest(url: url, timeout: 30) else {
             completion(nil, "Not authenticated or invalid URL")
             return
@@ -524,7 +535,7 @@ final class IBMQuantumClient: SovereignEngine {
     }
 
     func listRecentJobs(limit: Int = 10, completion: @escaping ([IBMQuantumJob]?, String?) -> Void) {
-        guard let url = URL(string: "\(runtimeAPIBase)/jobs?limit=\(limit)&sort_by=created:desc"),
+        guard let url = URL(string: "\(config.runtimeAPIBase)/jobs?limit=\(limit)&sort_by=created:desc"),
               let req = makeAuthenticatedRequest(url: url) else {
             completion(nil, "Not authenticated or invalid URL")
             return
@@ -567,7 +578,7 @@ final class IBMQuantumClient: SovereignEngine {
     }
 
     func cancelJob(jobId: String, completion: @escaping (Bool, String) -> Void) {
-        guard let url = URL(string: "\(runtimeAPIBase)/jobs/\(jobId)/cancel"),
+        guard let url = URL(string: "\(config.runtimeAPIBase)/jobs/\(jobId)/cancel"),
               let req = makeAuthenticatedRequest(url: url, method: "POST") else {
             completion(false, "Not authenticated or invalid URL")
             return
@@ -592,7 +603,7 @@ final class IBMQuantumClient: SovereignEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // RETRY INFRASTRUCTURE — Exponential backoff with jitter
+    // RETRY INFRASTRUCTURE - Exponential backoff with jitter
     // ═══════════════════════════════════════════════════════════════════
 
     /// Execute a URLRequest with automatic retry on transient failures
@@ -651,7 +662,7 @@ final class IBMQuantumClient: SovereignEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // JOB POLLING — Wait for job completion with timeout
+    // JOB POLLING - Wait for job completion with timeout
     // ═══════════════════════════════════════════════════════════════════
 
     /// Poll a job until it completes or timeout expires
@@ -672,11 +683,11 @@ final class IBMQuantumClient: SovereignEngine {
                 if let error = error {
                     consecutiveErrors += 1
                     if consecutiveErrors >= 5 {
-                        // 5 consecutive failures even with retry — give up
+                        // 5 consecutive failures even with retry - give up
                         completion(nil, "Polling failed after \(consecutiveErrors) errors: \(error)")
                         return
                     }
-                    // Transient error — wait longer and try again
+                    // Transient error - wait longer and try again
                     let retryDelay = currentInterval * Double(consecutiveErrors + 1)
                     DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + retryDelay) {
                         poll()
@@ -698,7 +709,7 @@ final class IBMQuantumClient: SovereignEngine {
                 } else if status == "failed" || status == "cancelled" || status == "error" {
                     completion(nil, "Job \(status): \(jobId.prefix(12))...")
                 } else {
-                    // Still running/queued — progressive backoff (cap at 30s)
+                    // Still running/queued - progressive backoff (cap at 30s)
                     let elapsed = Date().timeIntervalSince(deadline.addingTimeInterval(-TimeInterval(maxWaitSeconds)))
                     if elapsed > 120 { currentInterval = min(30, pollInterval * 3) }
                     else if elapsed > 60 { currentInterval = min(20, pollInterval * 2) }
@@ -714,7 +725,7 @@ final class IBMQuantumClient: SovereignEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // CIRCUIT HELPERS — Generate common OpenQASM 3.0 circuits
+    // CIRCUIT HELPERS - Generate common OpenQASM 3.0 circuits
     // ═══════════════════════════════════════════════════════════════════
 
     /// Generate a Bell state circuit (EPR pair)
@@ -791,7 +802,7 @@ final class IBMQuantumClient: SovereignEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // v9.0 QUANTUM RESEARCH CIRCUITS — Fe-Sacred + Berry Phase
+    // v9.0 QUANTUM RESEARCH CIRCUITS - Fe-Sacred + Berry Phase
     // ═══════════════════════════════════════════════════════════════
 
     /// Generate Fe-Sacred coherence circuit (286↔528 Hz frequency encoding)
@@ -847,7 +858,7 @@ final class IBMQuantumClient: SovereignEngine {
             qasm += "h q[\(i)];\n"
         }
         qasm += "// Adiabatic loop (\(nSteps) steps, \(dimensions)D)\n"
-        // Simplified loop — representative rotations
+        // Simplified loop - representative rotations
         for step in stride(from: 0, to: nSteps, by: max(1, nSteps / 4)) {
             let angle = 2.0 * Double.pi * Double(step) / Double(nSteps)
             for q in 0..<nQubits {
@@ -865,11 +876,11 @@ final class IBMQuantumClient: SovereignEngine {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // v9.1 QUANTUM RESEARCH CIRCUITS — GOD_CODE 25Q + Photon Resonance + ZNE
+    // v9.1 QUANTUM RESEARCH CIRCUITS - GOD_CODE 25Q + Photon Resonance + ZNE
     // ═══════════════════════════════════════════════════════════════
 
     /// GOD_CODE 25-qubit convergence verification circuit.
-    /// Discovery #17: GOD_CODE/512 ≈ 1.0303 — near-unity convergence.
+    /// Discovery #17: GOD_CODE/512 ≈ 1.0303 - near-unity convergence.
     static func godCode25QCircuit() -> String {
         let convergenceAngle = GOD_CODE_25Q_RATIO * Double.pi  // ≈ 3.237 rad
         let nQubits = 5  // 2^5 = 32 states ≈ 25Q representative
@@ -898,7 +909,7 @@ final class IBMQuantumClient: SovereignEngine {
         return qasm
     }
 
-    /// Photon resonance circuit — encode sacred photon energy.
+    /// Photon resonance circuit - encode sacred photon energy.
     /// Discovery #12: E = 1.1217 eV at GOD_CODE frequency.
     static func photonResonanceCircuit() -> String {
         let eAngle = PHOTON_RESONANCE_EV  // Direct encoding as rotation angle

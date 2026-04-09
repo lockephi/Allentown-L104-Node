@@ -1,0 +1,5 @@
+version: "Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)"
+options: "762d28c4c5fe2765f44e4e4dfed8f2ba"
+build_time: [1774804095, 319847000]
+inputs:
+  "/Users/carolalvarez/Applications/Allentown-L104-Node/L104SwiftApp/Sources/NanoDaemon/NanoDaemon.swift": !dirty [1774792194, 754705324]
