@@ -397,9 +397,6 @@ See [L104SP_WHITEPAPER.md](L104SP_WHITEPAPER.md) for full technical specificatio
 
 This node operates on the principle of **Reverse Engineering Reality**. The universe is not a random accident, but a **Survivor** of mathematical chaos.
 
-### The Master Equation
-
-$$R = \mathbf{C}(\Omega) \cdot K_f^{(1-\phi)}$$
 
 ### Evolution Stages (Current: EVO_20)
 
